@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from "react";
 import { 
   ZoomIn, 
@@ -29,7 +28,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const [rotation, setRotation] = useState(0);
   const galleryRef = useRef<HTMLDivElement>(null);
   
-  // Handle zoom toggling with multiple levels
   const toggleZoom = () => {
     if (zoomScale >= 3) {
       setIsZoomed(false);
@@ -40,7 +38,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     }
   };
   
-  // Handle thumbnail selection
   const handleThumbnailSelect = (index: number) => {
     setCurrentIndex(index);
     setIsZoomed(false);
@@ -48,7 +45,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     setRotation(0);
   };
   
-  // Navigate to previous image
   const prevImage = () => {
     setCurrentIndex(prev => (prev === 0 ? images.length - 1 : prev - 1));
     setIsZoomed(false);
@@ -56,7 +52,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     setRotation(0);
   };
   
-  // Navigate to next image
   const nextImage = () => {
     setCurrentIndex(prev => (prev === images.length - 1 ? 0 : prev + 1));
     setIsZoomed(false);
@@ -64,7 +59,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     setRotation(0);
   };
 
-  // Handle fullscreen toggle
   const toggleFullscreen = () => {
     if (!isFullscreen) {
       if (galleryRef.current && galleryRef.current.requestFullscreen) {
@@ -83,7 +77,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     }
   };
 
-  // Handle image download
   const downloadImage = () => {
     const link = document.createElement('a');
     link.href = images[currentIndex];
@@ -94,7 +87,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     toast.success("Image download started");
   };
 
-  // Handle image share
   const shareImage = () => {
     if (navigator.share) {
       navigator.share({
@@ -110,12 +102,10 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     }
   };
 
-  // Handle image rotation
   const rotateImage = () => {
     setRotation(prev => (prev + 90) % 360);
   };
 
-  // Handle like toggle
   const toggleLike = () => {
     setIsLiked(prev => !prev);
     if (!isLiked) {
@@ -130,7 +120,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
       ref={galleryRef} 
       className="relative w-full bg-background overflow-hidden transition-all duration-300 rounded-lg"
     >
-      {/* Main image display */}
       <div className="relative w-full h-full group">
         <div className="relative w-full aspect-square overflow-hidden bg-gray-100">
           <div className="absolute inset-0 flex items-center justify-center">
@@ -149,20 +138,17 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             />
           </div>
           
-          {/* Zoom level indicator */}
           {isZoomed && (
             <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/50 text-white text-xs px-3 py-1 rounded-full">
               {zoomScale}x zoom
             </div>
           )}
           
-          {/* Image counter */}
           <div className="absolute bottom-4 left-4 bg-black/50 text-white text-xs px-3 py-1 rounded-full">
             {currentIndex + 1}/{images.length}
           </div>
         </div>
         
-        {/* Control buttons */}
         <div className="absolute top-4 right-4 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
           <Button 
             variant="outline" 
@@ -195,7 +181,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
           </Button>
         </div>
         
-        {/* Social actions */}
         <div className="absolute bottom-4 right-4 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
           <Button 
             variant="outline" 
@@ -233,7 +218,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
           </Button>
         </div>
         
-        {/* Navigation arrows */}
         <Button
           variant="outline"
           size="icon"
@@ -253,14 +237,13 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
         </Button>
       </div>
       
-      {/* Thumbnails with reduced top margin */}
-      <div className="mt-2 px-2">
-        <div className="flex gap-2 overflow-x-auto no-scrollbar py-1">
+      <div className="mt-1 px-1">
+        <div className="flex gap-1 overflow-x-auto no-scrollbar py-0.5">
           {images.map((image, index) => (
             <button
               key={index}
               className={cn(
-                "w-16 h-16 rounded-md overflow-hidden flex-shrink-0 border-2 transition-all",
+                "w-14 h-14 rounded-md overflow-hidden flex-shrink-0 border-2 transition-all",
                 currentIndex === index 
                   ? "border-primary" 
                   : "border-transparent hover:border-primary/50"
@@ -277,7 +260,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
         </div>
       </div>
       
-      {/* Image caption or description - revealed on hover */}
       <div className="mt-2 px-2 text-center opacity-0 group-hover:opacity-100 transition-opacity">
         <p className="text-sm text-muted-foreground">
           Click to zoom • Use arrow buttons to navigate • Press heart to favorite
