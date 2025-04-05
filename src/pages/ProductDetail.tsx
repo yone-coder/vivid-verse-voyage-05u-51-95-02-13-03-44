@@ -336,12 +336,6 @@ const ProductDetail = () => {
       
       <div className={`flex-1 ${isScrolled ? 'pt-14' : ''}`}>
         <div className="bg-white p-4 mb-2">
-          <div className="flex items-center mb-1">
-            <Badge variant="outline" className="text-xs bg-red-50 text-red-500 border-red-200">Flash Deal</Badge>
-            <Badge variant="outline" className="text-xs bg-orange-50 text-orange-500 border-orange-200 ml-2">Top Seller</Badge>
-            <Badge variant="outline" className="text-xs bg-green-50 text-green-500 border-green-200 ml-2">Free Shipping</Badge>
-          </div>
-          
           <div className="flex items-baseline">
             <span className="text-xl font-bold text-red-500">${formatPrice(currentPrice)}</span>
             <span className="ml-2 text-sm line-through text-gray-500">${formatPrice(originalPrice)}</span>
