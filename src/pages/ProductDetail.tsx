@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { ArrowLeft, Share, Heart, ShoppingCart, MessageCircle, Truck, Shield, Award, Percent, ThumbsUp, Zap, Star, Sparkles, ArrowRight, Crown } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -109,9 +108,10 @@ const ProductDetail = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (headerRef.current) {
+      if (headerRef.current && tabsRef.current) {
         const headerBottom = headerRef.current.getBoundingClientRect().bottom;
-        setIsScrolled(headerBottom < 0);
+        const tabsTop = tabsRef.current.getBoundingClientRect().top;
+        setIsScrolled(headerBottom < 0 || tabsTop <= 0);
       }
     };
 
@@ -503,7 +503,7 @@ const ProductDetail = () => {
             product={product} 
             activeTab={activeTab}
             setActiveTab={setActiveTab}
-            isScrolled={false}
+            isScrolled={isScrolled}
           />
         </div>
           
