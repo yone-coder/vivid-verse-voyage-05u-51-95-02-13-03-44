@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from "react";
 import { 
   ZoomIn, 
@@ -244,7 +243,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             <button
               key={index}
               className={cn(
-                "w-12 h-12 rounded-md overflow-hidden flex-shrink-0 border-2 transition-all", // Reduced from w-14 h-14 to w-12 h-12
+                "w-14 h-14 rounded-md overflow-hidden flex-shrink-0 border-2 transition-all",
                 currentIndex === index 
                   ? "border-primary" 
                   : "border-transparent hover:border-primary/50"
@@ -261,8 +260,8 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
         </div>
       </div>
       
-      <div className="mt-1 px-2 text-center opacity-0 group-hover:opacity-100 transition-opacity"> {/* Reduced from mt-2 to mt-1 */}
-        <p className="text-xs text-muted-foreground"> {/* Changed from text-sm to text-xs */}
+      <div className="mt-2 px-2 text-center opacity-0 group-hover:opacity-100 transition-opacity">
+        <p className="text-sm text-muted-foreground">
           Click to zoom • Use arrow buttons to navigate • Press heart to favorite
         </p>
       </div>
@@ -271,4 +270,3 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
 };
 
 export default ProductImageGallery;
-
