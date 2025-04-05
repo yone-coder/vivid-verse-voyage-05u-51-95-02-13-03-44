@@ -659,10 +659,8 @@ const ProductDetail = () => {
         />
       </div>
       
-      {/* Improved Floating Buy Button Section */}
       <div className="fixed bottom-0 left-0 right-0 z-30">
         <div className="bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.1)] p-3">
-          {/* Price and Discount Info Section */}
           <div className="flex flex-col mb-3">
             <div className="flex justify-between items-center">
               <div className="flex flex-col">
@@ -689,7 +687,6 @@ const ProductDetail = () => {
               </div>
             </div>
             
-            {/* Add-ons Indicator */}
             {(warrantyPrice > 0 || giftWrap || isExpressSelected) && (
               <div className="flex items-center mt-1 text-xs text-gray-600">
                 <Info className="h-3 w-3 mr-1" />
@@ -705,13 +702,66 @@ const ProductDetail = () => {
             )}
           </div>
           
-          {/* Actions Section - Improved for Mobile */}
           <div className={`flex ${isMobile ? 'flex-col gap-2' : 'items-center justify-between'}`}>
-            {/* Quantity and Variant Selection - Mobile: Full Width */}
             <div className={`flex ${isMobile ? 'justify-between w-full' : 'items-center'}`}>
               <div className="flex items-center">
                 <div className="flex border border-gray-300 rounded-md overflow-hidden">
                   <Button 
                     onClick={decrementQuantity} 
                     variant="ghost" 
-                    className={`${isMobile ? 'h-10 px-4' : 'h-9 px-3'} rounded-none
+                    className={`${isMobile ? 'h-10 px-4' : 'h-9 px-3'} rounded-none`}
+                    disabled={quantity <= 1}
+                  >
+                    -
+                  </Button>
+                  <div className="w-10 text-center flex items-center justify-center">
+                    {quantity}
+                  </div>
+                  <Button 
+                    onClick={incrementQuantity} 
+                    variant="ghost" 
+                    className={`${isMobile ? 'h-10 px-4' : 'h-9 px-3'} rounded-none`}
+                    disabled={quantity >= 10}
+                  >
+                    +
+                  </Button>
+                </div>
+              </div>
+              
+              {!isMobile && (
+                <div className="mx-4 text-sm text-gray-600">
+                  <Badge variant="outline" className="ml-2 bg-blue-50 text-blue-600 border-blue-100">
+                    {selectedColor}
+                  </Badge>
+                </div>
+              )}
+            </div>
+            
+            <div className={`flex ${isMobile ? 'w-full' : 'ml-4'} ${isMobile ? 'gap-2' : 'gap-3'}`}>
+              <Button 
+                onClick={addToCart} 
+                variant="outline" 
+                className={`${isMobile ? 'flex-1' : 'w-[120px]'} h-12 border-purple-200`}
+              >
+                <ShoppingCart className="mr-1 h-5 w-5" />
+                <span>Add to Cart</span>
+              </Button>
+              <Button 
+                onClick={buyNow} 
+                variant="purple" 
+                className={`${isMobile ? 'flex-1' : 'w-[120px]'} h-12`}
+              >
+                <Zap className="mr-1 h-5 w-5" />
+                <span>Buy Now</span>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <LiveActivityNotifications />
+    </div>
+  );
+};
+
+export default ProductDetail;
