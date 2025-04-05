@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { ShoppingCart, Clock, Check, ChevronDown, Star, Info, TrendingUp, Heart, ShieldCheck, ArrowRight, AlertTriangle, Plus, Minus } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
@@ -468,9 +469,37 @@ const ModernBuyButton = () => {
         <div className="bg-gray-50 py-0.5 px-4 flex items-center justify-between border-t border-gray-200">
           <div className="flex items-center space-x-1">
             <div className="flex space-x-1">
-              <div className="w-5 h-3 bg-blue-600 rounded"></div>
-              <div className="w-5 h-3 bg-yellow-400 rounded"></div>
-              <div className="w-5 h-3 bg-gray-800 rounded"></div>
+              {/* Visa Card */}
+              <div className="w-6 h-4 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="10">
+                  <rect fill="#2566AF" width="24" height="24"/>
+                  <path fill="#E6A540" d="M12 18V6c2.2 0 4 1.8 4 4s-1.8 4-4 4"/>
+                  <path fill="white" d="M4 14l1-6h2l-1 6H4zm3 0l2-6h1.5l-2 6H7zm4-6v6h1V8h-1zm6 0c-.5 0-1 .2-1.2.6-.2-.4-.8-.6-1.3-.6-.9 0-1.5.5-1.5 1.3v4.7h1V11c0-.4.3-.6.6-.6.4 0 .6.2.6.6v3h1V11c0-.4.3-.6.6-.6.4 0 .6.2.6.6v3h1V10c0-1.1-.8-2-1.4-2z"/>
+                </svg>
+              </div>
+              {/* Mastercard */}
+              <div className="w-6 h-4 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="10">
+                  <circle fill="#EA001B" cx="8" cy="12" r="5"/>
+                  <circle fill="#F79E1B" cx="16" cy="12" r="5"/>
+                  <path fill="#FF5F00" d="M12 7.5v9a5 5 0 0 0 0-9z"/>
+                </svg>
+              </div>
+              {/* PayPal */}
+              <div className="w-6 h-4 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="10">
+                  <path fill="#253B80" d="M7 7h2c1.4 0 1.9 1 1.9 1.5 0 1.8-2 1.8-2.5 1.8H7.3L7 7z"/>
+                  <path fill="#179BD7" d="M19 7.8C18.7 5.8 16.9 5 14.7 5H9.2c-.3 0-.5.2-.6.5l-1.7 11c0 .2.1.4.4.4h2.9l.7-4.7v.3c.1-.3.3-.5.6-.5h1.3c2.5 0 4.4-1 5-3.9V8c-.1-.2-.1-.2-.1-.2H19z"/>
+                  <path fill="#253B80" d="M8.3 11.5l-.3 2.1-.2 1h-3c-.2 0-.4-.2-.3-.4L6.1 5.9c.1-.3.3-.5.6-.5h5.5c1.5 0 2.6.3 3.2 1 .3.3.5.7.6 1.1.1.3.1.7.1 1.1-1-.6-2-.8-3.3-.8L8.3 11.5z"/>
+                </svg>
+              </div>
+              {/* Venmo */}
+              <div className="w-6 h-4 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="10">
+                  <rect fill="#008CFF" width="24" height="24" rx="2"/>
+                  <path fill="white" d="M17.2 7.2c.4 1-.2 2.4-1 3.8-1.6 2.9-4 5.2-5.7 5.2-.9 0-1.6-.8-2.2-2.5l-1.2-4.4c-.3-1-.8-1.5-1.3-1.5-.2 0-.8.3-1.6.9l-.7-1c1-1 2-2 2.9-3 1.3-1.1 2.3-1.7 2.9-1.7 1.5-.1 2.4.9 2.7 3 .4 2.5.7 4 .8 4.6.5 2.2 1 3.3 1.7 3.3.5 0 1.2-.8 2.1-2.3.9-1.5 1.4-2.7 1.4-3.5 0-1.3-.7-2-2.1-2-1 0-1.7.2-2 .6 1.1-3.5 3.3-5.2 6.5-5.1 2.4.1 3.5 1.6 3.3 4.6l-1.7-.1c.1-1.3-.3-1.9-1.3-1.9z"/>
+                </svg>
+              </div>
             </div>
             <span className="text-[10px] text-gray-500">Secure payment</span>
           </div>
@@ -547,3 +576,4 @@ const ModernBuyButton = () => {
 };
 
 export default ModernBuyButton;
+
