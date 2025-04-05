@@ -24,6 +24,7 @@ const buttonVariants = cva(
         warning: "bg-amber-500 text-white hover:bg-amber-600",
         minimal: "bg-transparent hover:bg-gray-100 text-gray-700 border border-gray-200",
         chip: "h-7 text-xs rounded-full border border-gray-200 bg-white hover:bg-gray-50 px-2.5",
+        compact: "h-7 text-xs px-2 py-0 border border-gray-200 bg-white hover:bg-gray-50",
       },
       size: {
         default: "h-10 px-4 py-2",
@@ -32,6 +33,7 @@ const buttonVariants = cva(
         xl: "h-12 rounded-md px-10 text-base",
         icon: "h-10 w-10",
         xs: "h-7 text-xs rounded-md px-2.5 py-1",
+        tiny: "h-6 text-xs rounded-md px-2 py-0.5",
       },
     },
     defaultVariants: {

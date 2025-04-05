@@ -660,7 +660,7 @@ const ProductDetail = () => {
       </div>
       
       <div className="fixed bottom-0 left-0 right-0 z-30">
-        <div className="bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.1)] p-4">
+        <div className="bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.1)] p-3 sm:p-4">
           <div className="flex items-center justify-between">
             <div className="flex flex-col">
               <div className="flex items-baseline">
@@ -670,7 +670,7 @@ const ProductDetail = () => {
                   {Math.round((1 - currentPrice / originalPrice) * 100)}% OFF
                 </Badge>
               </div>
-              <div className="flex items-center text-xs mt-0.5 text-gray-600">
+              <div className="hidden sm:flex items-center text-xs mt-0.5 text-gray-600">
                 <Truck className="h-3 w-3 mr-1" />
                 <span>{product.shipping.free ? "Free Shipping" : "Standard Shipping"}</span>
                 {currentStock < 50 && (
@@ -682,11 +682,11 @@ const ProductDetail = () => {
               </div>
             </div>
             
-            <div className="flex gap-2">
+            <div className="flex gap-1.5 sm:gap-2">
               <Button 
                 variant="chip" 
-                size="xs"
-                className="animate-pulse" 
+                size="tiny"
+                className="animate-pulse hidden sm:inline-flex" 
                 onClick={() => {
                   toast({
                     title: "Coupon applied!",
@@ -701,7 +701,7 @@ const ProductDetail = () => {
               <Button 
                 variant="minimal" 
                 size="icon" 
-                className="h-8 w-8 rounded-full"
+                className="h-8 w-8 rounded-full hidden sm:flex"
                 onClick={toggleFavorite}
               >
                 <Heart className={`h-4 w-4 ${isFavorite ? "fill-red-500 text-red-500" : ""}`} />
@@ -710,16 +710,16 @@ const ProductDetail = () => {
               <Button 
                 variant="outline"
                 size="sm" 
-                className="rounded-full border-purple-200 text-purple-700 hover:bg-purple-50 hover:text-purple-800 hover:border-purple-300"
+                className="rounded-full border-purple-200 text-purple-700 hover:bg-purple-50 hover:text-purple-800 hover:border-purple-300 text-xs sm:text-sm"
                 onClick={addToCart}
               >
-                <ShoppingCart className="h-4 w-4" />
-                Add to Cart
+                <ShoppingCart className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span className="sm:inline">Add to Cart</span>
               </Button>
               <Button 
                 variant="purple"
                 size="sm" 
-                className="rounded-full"
+                className="rounded-full text-xs sm:text-sm px-3 sm:px-4"
                 onClick={buyNow}
               >
                 Buy Now
