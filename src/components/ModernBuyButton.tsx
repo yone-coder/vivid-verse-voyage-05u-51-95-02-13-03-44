@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { ShoppingCart, Clock, Check, ChevronDown, Star, Info, TrendingUp, Heart, ShieldCheck, ArrowRight, AlertTriangle, Plus, Minus } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
@@ -25,6 +24,28 @@ const ModernBuyButton = () => {
   const [stockProgressAnimation, setStockProgressAnimation] = useState(false);
   const [heartCount, setHeartCount] = useState(432);
   const [isHearted, setIsHearted] = useState(false);
+
+  // New state for social proof messages
+  const [currentSocialProofMessage, setCurrentSocialProofMessage] = useState('');
+
+  // Array of diverse social proof messages
+  const socialProofMessages = [
+    "15 people bought this in the last hour!",
+    "Someone from New York just purchased this.",
+    "32 people are currently viewing this item.",
+    "Back in stock! Limited quantity available.",
+    "Hot right now! Selling 5x faster than usual.",
+    "Only 2 left in stock — selling fast!",
+    "Deal ends soon — don't miss out!",
+    "Rated 4.9/5 by 870 customers.",
+    "\"Exactly what I needed!\" – James T.",
+    "Over 3,000 people love this product.",
+    "Top-rated in its category.",
+    "You've been looking at this for a while… ready to grab it?",
+    "This item completes your vibe. Just sayin'.",
+    "Seen on TikTok – going viral now!",
+    "Cart's waiting… but this product won't!"
+  ];
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -64,8 +85,13 @@ const ModernBuyButton = () => {
 
   useEffect(() => {
     const socialProofTimer = setInterval(() => {
-      setShowSocialProof(prev => !prev);
-    }, 5000);
+      // Randomly select a new social proof message
+      const randomMessage = socialProofMessages[Math.floor(Math.random() * socialProofMessages.length)];
+      setCurrentSocialProofMessage(randomMessage);
+    }, 5000); // Change message every 5 seconds
+    
+    // Initial message
+    setCurrentSocialProofMessage(socialProofMessages[0]);
     
     return () => clearInterval(socialProofTimer);
   }, []);
@@ -228,16 +254,10 @@ const ModernBuyButton = () => {
           <div className="w-4 h-4 rounded-full bg-gray-500 border-2 border-white"></div>
         </div>
         <p className="text-xs font-medium text-gray-700">
-          {showSocialProof ? 
-            <span className="inline-flex items-center">
-              <span className="animate-pulse text-red-500 mr-1">•</span>
-              15 people bought this recently
-            </span> : 
-            <span className="inline-flex items-center">
-              <span className="animate-pulse text-yellow-500 mr-1">★</span>
-              Highly rated product: 4.8/5
-            </span>
-          }
+          <span className="inline-flex items-center">
+            <span className="animate-pulse text-red-500 mr-1">•</span>
+            {currentSocialProofMessage}
+          </span>
         </p>
       </div>
       
