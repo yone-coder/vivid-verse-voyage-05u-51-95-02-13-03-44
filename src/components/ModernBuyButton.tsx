@@ -470,10 +470,7 @@ const ModernBuyButton = () => {
             <div className="flex space-x-1">
               {/* Visa Card */}
               <div className="w-6 h-4 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="10">
-                  <rect fill="#1434CB" width="24" height="16" rx="2"/>
-                  <path fill="#FFFFFF" d="M10.5 7l-1.5 6h2l1.5-6h-2zm7.5 0h-2l-2 6h2l.25-1h1.5l.25 1h2l-2-6zm-1.25 3.5l.5-2.5.5 2.5h-1zm-10-1.5c0-.75.62-1.5 2-1.5.31 0 1 .15 1 .5v1c-.13-.08-.67-.25-1-.25-.41 0-.5.25-.5.38 0 .55 2 .4 2 2.12 0 1.25-1 1.75-2 1.75-.44 0-1-.15-1-.5v-1c.13.1.69.25 1 .25.38 0 .5-.25.5-.38 0-.65-2-.5-2-2.12z"/>
-                </svg>
+                <span className="font-bold text-[8px] text-blue-800">VISA</span>
               </div>
               {/* Mastercard */}
               <div className="w-6 h-4 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
