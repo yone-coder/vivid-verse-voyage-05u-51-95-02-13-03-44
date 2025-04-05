@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const ProductDetail = () => {
   const [activeTab, setActiveTab] = useState("description");
@@ -140,10 +141,9 @@ const ProductDetail = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (headerRef.current && tabsRef.current) {
-        const headerBottom = headerRef.current.getBoundingClientRect().bottom;
+      if (tabsRef.current) {
         const tabsTop = tabsRef.current.getBoundingClientRect().top;
-        setIsScrolled(headerBottom < 0 || tabsTop <= 0);
+        setIsScrolled(tabsTop <= 0);
       }
     };
 
@@ -278,35 +278,43 @@ const ProductDetail = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
-      <div ref={headerRef} className="relative w-full">
-        <ProductImageGallery images={product.images} />
-        
-        <div className="absolute top-4 left-4 right-4 flex justify-between z-10">
+      <div ref={tabsRef} className="sticky top-0 z-20 bg-white shadow-sm border-b border-gray-200">
+        <div className="flex items-center justify-between p-2 px-4">
           <Link to="/">
-            <Button variant="outline" size="icon" className="rounded-full bg-white/70 backdrop-blur-sm hover:bg-white/90">
+            <Button variant="ghost" size="icon" className="rounded-full">
               <ArrowLeft className="h-5 w-5" />
             </Button>
           </Link>
-          <div className="flex gap-2">
+          <div className="flex items-center space-x-2">
             <Button 
-              variant="outline" 
+              variant="ghost" 
               size="icon" 
-              className="rounded-full bg-white/70 backdrop-blur-sm hover:bg-white/90"
+              className="rounded-full"
               onClick={toggleFavorite}
             >
               <Heart className={`h-5 w-5 ${isFavorite ? "fill-red-500 text-red-500" : ""}`} />
             </Button>
             <Button 
-              variant="outline" 
+              variant="ghost" 
               size="icon" 
-              className="rounded-full bg-white/70 backdrop-blur-sm hover:bg-white/90"
+              className="rounded-full"
               onClick={handleShare}
             >
               <Share className="h-5 w-5" />
             </Button>
           </div>
         </div>
-
+        <ProductTabs 
+          product={product} 
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          isScrolled={isScrolled}
+        />
+      </div>
+      
+      <div className="relative">
+        <ProductImageGallery images={product.images} />
+        
         <div className="absolute bottom-4 left-4 flex flex-wrap gap-1.5">
           {product.badges.map((badge, index) => (
             <Badge 
@@ -329,9 +337,9 @@ const ProductDetail = () => {
           </div>
           
           <div className="flex items-baseline">
-            <span className="text-xl font-bold text-red-500">${formatPrice(currentPrice)}</span>
+            <span className="text-2xl font-bold text-orange-500">${formatPrice(currentPrice)}</span>
             <span className="ml-2 text-sm line-through text-gray-500">${formatPrice(originalPrice)}</span>
-            <span className="ml-2 text-xs px-1.5 py-0.5 bg-red-100 text-red-500 rounded">
+            <span className="ml-2 text-xs px-1.5 py-0.5 bg-orange-100 text-orange-600 rounded-sm">
               {Math.round((1 - currentPrice / originalPrice) * 100)}% OFF
             </span>
           </div>
@@ -695,109 +703,97 @@ const ProductDetail = () => {
           )}
         </div>
 
-        <div ref={tabsRef} className="sticky top-0 z-20 bg-white shadow-sm">
-          <ProductTabs 
-            product={product} 
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-            isScrolled={isScrolled}
-          />
+        <div className="h-[100px]"></div>
+      </div>
+
+      <div className="fixed bottom-0 left-0 right-0 z-30">
+        <div className="bg-orange-50 text-orange-800 py-1.5 px-4 text-xs flex items-center justify-between border-t border-orange-100">
+          <div className="flex items-center">
+            <Clock className="h-3.5 w-3.5 mr-1.5 text-orange-500" />
+            <span>Flash Sale ends in: </span>
+            <div className="ml-2 flex gap-1">
+              <span className="bg-orange-500 text-white px-1.5 py-0.5 rounded">{timeLeft.hours.toString().padStart(2, '0')}</span>
+              <span>:</span>
+              <span className="bg-orange-500 text-white px-1.5 py-0.5 rounded">{timeLeft.minutes.toString().padStart(2, '0')}</span>
+              <span>:</span>
+              <span className="bg-orange-500 text-white px-1.5 py-0.5 rounded">{timeLeft.seconds.toString().padStart(2, '0')}</span>
+            </div>
+          </div>
+          {isLowStock && (
+            <div className="flex items-center text-red-500 font-medium">
+              <div className="w-2 h-2 bg-red-500 rounded-full mr-1.5 animate-pulse"></div>
+              {currentStock} left
+            </div>
+          )}
         </div>
         
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-3 z-20">
-          <Button 
-            onClick={buyNow}
-            className="w-full bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-700 hover:to-purple-900 text-white relative overflow-hidden rounded-xl shadow-lg h-16 group"
+        <div className="bg-white border-t border-gray-200 flex items-stretch shadow-lg">
+          <div className="flex flex-col items-center justify-center py-2 px-3 border-r border-gray-200 text-xs">
+            <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center mb-1">
+              <ShoppingCart className="h-4 w-4 text-gray-600" />
+            </div>
+            <span className="text-gray-700">Store</span>
+          </div>
+          
+          <div className="flex flex-col items-center justify-center py-2 px-3 border-r border-gray-200 text-xs">
+            <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center mb-1">
+              <MessageCircle className="h-4 w-4 text-gray-600" />
+            </div>
+            <span className="text-gray-700">Chat</span>
+          </div>
+          
+          <button 
+            className="flex-1 bg-orange-50 text-orange-600 font-bold flex items-center justify-center"
+            onClick={addToCart}
           >
-            <div className="absolute inset-0 w-full h-full">
-              <div className="absolute inset-0 bg-white/10 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              
-              <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 rounded-full bg-white/20 animate-ping ${isCriticalStock ? 'opacity-100' : 'opacity-0'}`}></div>
-              
-              <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 animate-pulse opacity-50"></div>
-              </div>
-              
-              <div className="absolute bottom-0 left-0 right-0 h-1.5">
-                <Progress 
-                  value={urgencyPercentage} 
-                  className="h-full rounded-none"
-                  indicatorClassName="bg-red-500/60"
-                />
-              </div>
+            <ShoppingCart className="h-4 w-4 mr-1" />
+            Add to Cart
+          </button>
+          
+          <button 
+            className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold flex items-center justify-center relative overflow-hidden"
+            onClick={buyNow}
+          >
+            <div className="absolute inset-0 bg-white/10 animate-pulse opacity-0 hover:opacity-100 transition-opacity"></div>
+            
+            <div className="absolute bottom-0 left-0 right-0 h-1">
+              <Progress 
+                value={urgencyPercentage} 
+                className="h-full rounded-none"
+                indicatorClassName="bg-white/30"
+              />
             </div>
             
-            <div className="relative z-10 w-full px-4">
-              <div className="flex flex-col">
-                <div className="flex items-center justify-between w-full">
-                  <div className="flex items-center">
-                    <Rocket className="h-5 w-5 mr-1.5 animate-pulse" />
-                    <span className="font-extrabold text-lg tracking-wide">BUY NOW</span>
-                    {discountPercentage >= 20 && (
-                      <span className="ml-2 text-xs bg-red-500 text-white px-1.5 py-0.5 rounded-md animate-pulse">
-                        SAVE {discountPercentage}%
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex items-baseline">
-                    <span className="font-bold text-lg">${formatPrice(totalPrice)}</span>
-                    {warrantyPrice > 0 && (
-                      <span className="text-xs ml-1 opacity-80">+warranty</span>
-                    )}
-                  </div>
-                </div>
-                
-                <div className="flex items-center justify-between text-xs mt-0.5 text-white/90">
-                  <div className="flex items-center">
-                    <span className="font-medium mr-1.5">{quantity}x</span>
-                    <span className="truncate max-w-[100px]">{selectedColor}</span>
-                    {giftWrap && (
-                      <Gift className="h-3 w-3 ml-1.5" />
-                    )}
-                  </div>
-                  
-                  <div className="flex items-center">
-                    {isLowStock && (
-                      <div className="flex items-center animate-pulse">
-                        <Clock className="h-3 w-3 mr-1" />
-                        <span className="font-medium">
-                          {isCriticalStock ? 'Selling out fast!' : `${estimatedSellOut} day${estimatedSellOut !== 1 ? 's' : ''} left!`}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-                
-                <div className="flex items-center justify-center gap-2 mt-1">
-                  <div className="flex items-center bg-white/20 rounded-full px-1.5 py-0.5 text-xs">
-                    <Shield className="h-2.5 w-2.5 mr-0.5" />
-                    <span>Secure</span>
-                  </div>
-                  <div className="flex items-center bg-white/20 rounded-full px-1.5 py-0.5 text-xs">
-                    <Truck className="h-2.5 w-2.5 mr-0.5" />
-                    <span>{isExpressSelected ? 'Express' : 'Free'}</span>
-                  </div>
-                  <div className="flex items-center bg-white/20 rounded-full px-1.5 py-0.5 text-xs">
-                    <Award className="h-2.5 w-2.5 mr-0.5" />
-                    <span>Top Rated</span>
-                  </div>
-                </div>
+            {discountPercentage >= 25 && (
+              <div className="absolute -top-1 -right-1 bg-red-500 text-white text-[8px] px-1 py-0.5 rounded-bl-md rotate-12 animate-pulse font-normal">
+                SALE
               </div>
+            )}
+            
+            <div className="flex flex-col items-center">
+              <span className="text-sm">Buy Now</span>
+              <span className="text-xs">Only ${formatPrice(currentPrice)}</span>
             </div>
-          </Button>
-          
-          <div className="flex items-center justify-center mt-2 gap-1">
-            {[...Array(5)].map((_, index) => (
-              <div 
-                key={index} 
-                className={`w-1.5 h-1.5 rounded-full ${index < Math.ceil(urgencyPercentage/20) ? 'bg-red-500' : 'bg-gray-300'}`}
-              ></div>
-            ))}
-          </div>
+          </button>
         </div>
         
-        <div className="h-20"></div>
+        <div className="bg-white px-3 py-1.5 border-t border-gray-100 flex items-center justify-between text-[10px] text-gray-500">
+          <div className="flex items-center">
+            <Shield className="h-3 w-3 mr-1 text-green-500" />
+            <span>90-Day Buyer Protection</span>
+          </div>
+          <div className="flex items-center">
+            <Award className="h-3 w-3 mr-1 text-orange-500" />
+            <span>Authentic Product</span>
+          </div>
+          <div className="flex items-center">
+            <Truck className="h-3 w-3 mr-1 text-blue-500" />
+            <span>{product.shipping.free ? "Free Shipping" : "Fast Delivery"}</span>
+          </div>
+        </div>
       </div>
+      
+      <div className="h-20"></div>
     </div>
   );
 };
