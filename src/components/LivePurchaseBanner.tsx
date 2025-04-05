@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingBag, Users, Clock, AlertCircle } from 'lucide-react';
-import { useIsMobile } from "@/hooks/use-mobile";
 
 interface LivePurchaseBannerProps {
   productName: string;
@@ -12,7 +11,6 @@ const LivePurchaseBanner: React.FC<LivePurchaseBannerProps> = ({ productName }) 
   const [isVisible, setIsVisible] = useState(false);
   const [bannerType, setBannerType] = useState<'purchase' | 'visitors' | 'urgent'>('purchase');
   const [purchaseCount, setPurchaseCount] = useState(0);
-  const isMobile = useIsMobile();
   
   useEffect(() => {
     // Show first banner after 5 seconds
@@ -57,7 +55,7 @@ const LivePurchaseBanner: React.FC<LivePurchaseBannerProps> = ({ productName }) 
           <div className="flex items-center">
             <ShoppingBag className="w-4 h-4 mr-2 text-green-500" />
             <span>
-              <strong>{purchaseCount} people</strong> purchased this {isMobile ? "" : productName} in the last 24 hours!
+              <strong>{purchaseCount} people</strong> purchased this {productName} in the last 24 hours!
             </span>
           </div>
         );
@@ -94,15 +92,12 @@ const LivePurchaseBanner: React.FC<LivePurchaseBannerProps> = ({ productName }) 
     }
   };
   
-  const bannerSize = isMobile ? "text-xs max-w-[90%]" : "text-sm max-w-md";
-  const bannerPosition = isMobile ? "top-14" : "top-16";
-  
   return (
-    <div className={`fixed ${bannerPosition} left-0 right-0 z-40 flex justify-center pointer-events-none`}>
+    <div className="fixed top-16 left-0 right-0 z-40 flex justify-center pointer-events-none">
       <AnimatePresence>
         {isVisible && (
           <motion.div
-            className={`font-medium py-2 px-4 rounded-b-lg shadow-md border-x border-b ${getBannerColor()} ${bannerSize} mx-auto`}
+            className={`text-sm font-medium py-2 px-4 rounded-b-lg shadow-md border-x border-b ${getBannerColor()} max-w-md mx-auto`}
             initial={{ y: -50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -50, opacity: 0 }}
