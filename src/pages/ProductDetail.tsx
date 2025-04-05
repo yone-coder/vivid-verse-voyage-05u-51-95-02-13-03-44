@@ -29,6 +29,7 @@ const ProductDetail = () => {
   const [showWarrantyOptions, setShowWarrantyOptions] = useState(false);
   const [selectedWarranty, setSelectedWarranty] = useState("none");
   const [maxQuantityReached, setMaxQuantityReached] = useState(false);
+  const headerRef = useRef<HTMLDivElement>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
 
@@ -277,17 +278,13 @@ const ProductDetail = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
-      {/* Top navigation bar with back button, title and actions */}
-      <div className="sticky top-0 z-30 bg-white shadow-sm">
-        <div className="flex items-center justify-between p-3 pb-0">
+      <div ref={tabsRef} className="sticky top-0 z-20 bg-white shadow-sm border-b border-gray-200">
+        <div className="flex items-center justify-between p-2 px-4">
           <Link to="/">
             <Button variant="ghost" size="icon" className="rounded-full">
               <ArrowLeft className="h-5 w-5" />
             </Button>
           </Link>
-          <div className="text-sm font-medium truncate max-w-[200px]">
-            {product.name}
-          </div>
           <div className="flex items-center space-x-2">
             <Button 
               variant="ghost" 
@@ -307,37 +304,31 @@ const ProductDetail = () => {
             </Button>
           </div>
         </div>
+        <ProductTabs 
+          product={product} 
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          isScrolled={isScrolled}
+        />
+      </div>
+      
+      <div className="relative">
+        <ProductImageGallery images={product.images} />
         
-        {/* Tabs section */}
-        <div ref={tabsRef}>
-          <ProductTabs 
-            product={product} 
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-            isScrolled={isScrolled}
-          />
+        <div className="absolute bottom-4 left-4 flex flex-wrap gap-1.5">
+          {product.badges.map((badge, index) => (
+            <Badge 
+              key={index} 
+              variant="outline" 
+              className="text-xs text-white border-white/30 bg-black/50 backdrop-blur-sm"
+            >
+              {badge}
+            </Badge>
+          ))}
         </div>
       </div>
       
       <div className="flex-1">
-        {/* Product Image Gallery */}
-        <div className="relative">
-          <ProductImageGallery images={product.images} />
-          
-          <div className="absolute bottom-4 left-4 flex flex-wrap gap-1.5">
-            {product.badges.map((badge, index) => (
-              <Badge 
-                key={index} 
-                variant="outline" 
-                className="text-xs text-white border-white/30 bg-black/50 backdrop-blur-sm"
-              >
-                {badge}
-              </Badge>
-            ))}
-          </div>
-        </div>
-        
-        {/* Product Info Section */}
         <div className="bg-white p-4 mb-2">
           <div className="flex items-center mb-1">
             <Badge variant="outline" className="text-xs bg-red-50 text-red-500 border-red-200">Flash Deal</Badge>
@@ -715,10 +706,96 @@ const ProductDetail = () => {
         <div className="h-[100px]"></div>
       </div>
 
-      {/* AliExpress-style bottom bar */}
       <div className="fixed bottom-0 left-0 right-0 z-30">
-        {/* Flash sale timer bar */}
         <div className="bg-orange-50 text-orange-800 py-1.5 px-4 text-xs flex items-center justify-between border-t border-orange-100">
           <div className="flex items-center">
             <Clock className="h-3.5 w-3.5 mr-1.5 text-orange-500" />
             <span>Flash Sale ends in: </span>
+            <div className="ml-2 flex gap-1">
+              <span className="bg-orange-500 text-white px-1.5 py-0.5 rounded">{timeLeft.hours.toString().padStart(2, '0')}</span>
+              <span>:</span>
+              <span className="bg-orange-500 text-white px-1.5 py-0.5 rounded">{timeLeft.minutes.toString().padStart(2, '0')}</span>
+              <span>:</span>
+              <span className="bg-orange-500 text-white px-1.5 py-0.5 rounded">{timeLeft.seconds.toString().padStart(2, '0')}</span>
+            </div>
+          </div>
+          {isLowStock && (
+            <div className="flex items-center text-red-500 font-medium">
+              <div className="w-2 h-2 bg-red-500 rounded-full mr-1.5 animate-pulse"></div>
+              {currentStock} left
+            </div>
+          )}
+        </div>
+        
+        <div className="bg-white border-t border-gray-200 flex items-stretch shadow-lg">
+          <div className="flex flex-col items-center justify-center py-2 px-3 border-r border-gray-200 text-xs">
+            <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center mb-1">
+              <ShoppingCart className="h-4 w-4 text-gray-600" />
+            </div>
+            <span className="text-gray-700">Store</span>
+          </div>
+          
+          <div className="flex flex-col items-center justify-center py-2 px-3 border-r border-gray-200 text-xs">
+            <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center mb-1">
+              <MessageCircle className="h-4 w-4 text-gray-600" />
+            </div>
+            <span className="text-gray-700">Chat</span>
+          </div>
+          
+          <button 
+            className="flex-1 bg-orange-50 text-orange-600 font-bold flex items-center justify-center"
+            onClick={addToCart}
+          >
+            <ShoppingCart className="h-4 w-4 mr-1" />
+            Add to Cart
+          </button>
+          
+          <button 
+            className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold flex items-center justify-center relative overflow-hidden"
+            onClick={buyNow}
+          >
+            <div className="absolute inset-0 bg-white/10 animate-pulse opacity-0 hover:opacity-100 transition-opacity"></div>
+            
+            <div className="absolute bottom-0 left-0 right-0 h-1">
+              <Progress 
+                value={urgencyPercentage} 
+                className="h-full rounded-none"
+                indicatorClassName="bg-white/30"
+              />
+            </div>
+            
+            {discountPercentage >= 25 && (
+              <div className="absolute -top-1 -right-1 bg-red-500 text-white text-[8px] px-1 py-0.5 rounded-bl-md rotate-12 animate-pulse font-normal">
+                SALE
+              </div>
+            )}
+            
+            <div className="flex flex-col items-center">
+              <span className="text-sm">Buy Now</span>
+              <span className="text-xs">Only ${formatPrice(currentPrice)}</span>
+            </div>
+          </button>
+        </div>
+        
+        <div className="bg-white px-3 py-1.5 border-t border-gray-100 flex items-center justify-between text-[10px] text-gray-500">
+          <div className="flex items-center">
+            <Shield className="h-3 w-3 mr-1 text-green-500" />
+            <span>90-Day Buyer Protection</span>
+          </div>
+          <div className="flex items-center">
+            <Award className="h-3 w-3 mr-1 text-orange-500" />
+            <span>Authentic Product</span>
+          </div>
+          <div className="flex items-center">
+            <Truck className="h-3 w-3 mr-1 text-blue-500" />
+            <span>{product.shipping.free ? "Free Shipping" : "Fast Delivery"}</span>
+          </div>
+        </div>
+      </div>
+      
+      <div className="h-20"></div>
+    </div>
+  );
+};
+
+export default ProductDetail;
