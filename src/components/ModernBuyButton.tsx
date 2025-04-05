@@ -1,8 +1,6 @@
 
-import React, { useState, useEffect, useRef } from 'react';
-import { ShoppingCart, Check, ChevronDown, Star, Info, TrendingUp, Heart, ShieldCheck, ArrowRight, AlertTriangle, Plus, Minus } from 'lucide-react';
-import { Progress } from "@/components/ui/progress";
-import { Slider } from "@/components/ui/slider";
+import React, { useState, useEffect } from 'react';
+import { ShoppingCart, Clock, Check, ChevronDown, Star, Info, TrendingUp, Heart, ShieldCheck, ArrowRight, AlertTriangle, Plus, Minus } from 'lucide-react';
 
 const ModernBuyButton = () => {
   const [isHovering, setIsHovering] = useState(false);
@@ -18,13 +16,11 @@ const ModernBuyButton = () => {
   const [buttonHover, setButtonHover] = useState(false);
   const [showFeature, setShowFeature] = useState(0);
   const [shakeButton, setShakeButton] = useState(false);
-  const [stockRemaining, setStockRemaining] = useState(100); // Set initial stock to 100
+  const [stockRemaining, setStockRemaining] = useState(4);
   const [basePrice, setBasePrice] = useState(49.99);
   const [priceIncrement, setPriceIncrement] = useState(0);
   const [showPriceIncrease, setShowPriceIncrease] = useState(false);
   const [quantity, setQuantity] = useState(1);
-  const [animateStockBar, setAnimateStockBar] = useState(false);
-  const prevStockRef = useRef(100);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -87,12 +83,10 @@ const ModernBuyButton = () => {
     return () => clearInterval(featureInterval);
   }, []);
 
-  // Effect for stock and price changes
   useEffect(() => {
     const priceInterval = setInterval(() => {
-      if (stockRemaining <= 50 && Math.random() > 0.5) {
-        // More aggressive price increases when stock is low
-        const newIncrement = priceIncrement + parseFloat((Math.random() * (stockRemaining < 25 ? 3 : 2)).toFixed(2));
+      if (stockRemaining <= 5 && Math.random() > 0.5) {
+        const newIncrement = priceIncrement + parseFloat((Math.random() * 2).toFixed(2));
         setPriceIncrement(newIncrement);
         setAnimatePrice(true);
         setShowPriceIncrease(true);
@@ -122,58 +116,23 @@ const ModernBuyButton = () => {
     return () => clearInterval(shakeInterval);
   }, [isHovering]);
 
-  // Effect for stock changes with animation
   useEffect(() => {
     const stockInterval = setInterval(() => {
       if (Math.random() > 0.7 && stockRemaining > 1) {
-        // Store previous stock before changing
-        prevStockRef.current = stockRemaining;
-        
-        // Reduce stock by a random amount between 1-3
-        const reduction = Math.floor(Math.random() * 3) + 1;
-        const newStock = Math.max(1, stockRemaining - reduction);
-        
-        // Trigger animations
-        setStockRemaining(newStock);
+        setStockRemaining(prev => prev - 1);
         setHighlightStock(true);
-        setAnimateStockBar(true);
-        
-        // Increase price when stock decreases
-        if (stockRemaining < 50) {
-          const newIncrement = priceIncrement + parseFloat((Math.random() * 1.5).toFixed(2));
-          setPriceIncrement(newIncrement);
-          setAnimatePrice(true);
-        }
-        
-        // Reset animations after delay
-        setTimeout(() => {
-          setHighlightStock(false);
-          setAnimatePrice(false);
-        }, 1000);
-        
-        setTimeout(() => {
-          setAnimateStockBar(false);
-        }, 1500);
+        setTimeout(() => setHighlightStock(false), 1000);
       }
-    }, 10000); // More frequent stock changes
+    }, 30000);
     
     return () => clearInterval(stockInterval);
-  }, [stockRemaining, priceIncrement]);
+  }, [stockRemaining]);
 
   const handleBuyNow = () => {
     setShowAddedAnimation(true);
     setItemsInCart(prev => prev + quantity);
     if (stockRemaining >= quantity) {
-      // Store previous stock before changing
-      prevStockRef.current = stockRemaining;
-      
-      // Reduce stock and trigger animations
       setStockRemaining(prev => prev - quantity);
-      setAnimateStockBar(true);
-      
-      setTimeout(() => {
-        setAnimateStockBar(false);
-      }, 1500);
     }
     
     setTimeout(() => {
@@ -212,7 +171,7 @@ const ModernBuyButton = () => {
     { icon: <Heart size={12} />, text: "Customer favorite" }
   ];
 
-  const stockPercentage = (stockRemaining / 100) * 100; // Calculate percentage based on max stock of 100
+  const stockPercentage = (stockRemaining / 10) * 100;
   
   const currentPrice = (basePrice + priceIncrement).toFixed(2);
   const totalPrice = (parseFloat(currentPrice) * quantity).toFixed(2);
@@ -289,16 +248,15 @@ const ModernBuyButton = () => {
             </span>
           </div>
           <div className="text-xs text-red-600">
-            {stockRemaining <= 25 && "Prices may increase soon!"}
+            {stockRemaining <= 2 && "Prices may increase!"}
           </div>
         </div>
         
-        <div className="h-1 w-full bg-gray-200">
-          <Progress 
-            value={stockPercentage} 
-            indicatorClassName={`${stockRemaining <= 10 ? 'bg-red-500' : stockRemaining <= 30 ? 'bg-amber-500' : 'bg-green-500'} 
-                                ${animateStockBar ? 'transition-all duration-1000 ease-in-out' : ''}`}
-          />
+        <div className="h-0.5 w-full bg-gray-200">
+          <div 
+            className={`h-full ${stockRemaining <= 2 ? 'bg-red-500' : stockRemaining <= 5 ? 'bg-amber-500' : 'bg-green-500'}`}
+            style={{ width: `${stockPercentage}%`, transition: 'width 0.5s ease-in-out' }}
+          ></div>
         </div>
         
         {isHovering && (
@@ -308,6 +266,7 @@ const ModernBuyButton = () => {
           >
             <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-black rotate-45"></div>
             <span className="inline-flex items-center">
+              <Clock size={10} className="mr-1 animate-pulse text-red-400" />
               Hurry! Almost gone!
             </span>
           </div>
@@ -345,7 +304,7 @@ const ModernBuyButton = () => {
               
               <div>
                 <div className="flex items-center">
-                  <span className={`font-bold text-sm ${animatePrice ? 'text-red-500 scale-110 transition-all' : 'transition-all'}`}>
+                  <span className={`font-bold text-sm ${animatePrice ? 'text-red-500' : ''}`}>
                     ${currentPrice}
                   </span>
                   <span className="text-xs text-gray-500 line-through ml-1">
@@ -389,7 +348,7 @@ const ModernBuyButton = () => {
                   </div>
                 </div>
               </div>
-              <span className={`text-xs ${stockRemaining <= 10 ? 'text-red-500' : 'text-amber-500'} font-medium mt-0.5 block ${highlightStock ? 'animate-pulse font-bold' : ''}`}>
+              <span className="text-xs text-red-500 font-medium mt-0.5 block">
                 {stockRemaining <= 1 ? 'Last one!' : `Only ${stockRemaining} left!`}
               </span>
               {itemsInCart > 0 && (
@@ -452,7 +411,7 @@ const ModernBuyButton = () => {
               onMouseEnter={() => setButtonHover(true)}
               onMouseLeave={() => setButtonHover(false)}
               className={`bg-gradient-to-r from-red-500 to-pink-600 text-white font-bold py-1.5 px-4 rounded-lg flex-grow flex items-center justify-center space-x-1 transition-all duration-300 
-                         ${buttonHover ? 'shadow-lg scale-105' : 'shadow-md'} ${shakeButton ? 'animate-[wiggle_0.8s_ease-in-out]' : ''}`}
+                         ${buttonHover ? 'shadow-lg scale-105' : 'shadow-md'}`}
               aria-label="Buy Now"
               style={{ 
                 backgroundSize: buttonHover ? '200% 100%' : '100% 100%',
@@ -497,15 +456,6 @@ const ModernBuyButton = () => {
           @keyframes slideDown {
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
-          }
-          
-          @keyframes wiggle {
-            0% { transform: rotate(0deg); }
-            20% { transform: rotate(-3deg); }
-            40% { transform: rotate(2deg); }
-            60% { transform: rotate(-2deg); }
-            80% { transform: rotate(1deg); }
-            100% { transform: rotate(0deg); }
           }
           
           .countdown-container {
