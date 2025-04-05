@@ -16,12 +16,30 @@ import {
   Download, 
   Share2, 
   Heart, 
-  X
+  X,
+  Play,
+  Pause,
+  RotateCw,
+  Flip2,
+  Sun,
+  Moon,
+  SlidersHorizontal,
+  Camera,
+  Layers,
+  Grid3X3,
+  Info
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Slider } from "@/components/ui/slider";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface ProductImageGalleryProps {
   images: string[];
@@ -39,6 +57,13 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const [autoScrollEnabled, setAutoScrollEnabled] = useState(false);
   const [autoScrollInterval, setAutoScrollInterval] = useState<NodeJS.Timeout | null>(null);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [isRotated, setIsRotated] = useState(0); // 0, 90, 180, 270 degrees
+  const [isFlipped, setIsFlipped] = useState(false);
+  const [brightness, setBrightness] = useState(100);
+  const [showAdvancedControls, setShowAdvancedControls] = useState(false);
+  const [showGrid, setShowGrid] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
+  const [isCinemaMode, setIsCinemaMode] = useState(false);
   
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
@@ -76,6 +101,9 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
       // Reset zoom when changing images
       setZoomLevel(1);
       setDragOffset({ x: 0, y: 0 });
+      setIsRotated(0);
+      setIsFlipped(false);
+      setBrightness(100);
     });
   }, []);
 
@@ -107,6 +135,9 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
       if (!document.fullscreenElement) {
         setZoomLevel(1);
         setDragOffset({ x: 0, y: 0 });
+        setIsRotated(0);
+        setIsFlipped(false);
+        setBrightness(100);
       }
     };
     
@@ -253,6 +284,47 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     if (api) api.scrollNext();
   }, [api]);
 
+  // Rotation handling
+  const handleRotate = useCallback(() => {
+    setIsRotated(prev => (prev + 90) % 360);
+  }, []);
+
+  // Flip handling
+  const handleFlip = useCallback(() => {
+    setIsFlipped(prev => !prev);
+  }, []);
+
+  // Brightness handling
+  const handleBrightnessChange = useCallback((value: number[]) => {
+    setBrightness(value[0]);
+  }, []);
+
+  // Toggle cinema mode
+  const toggleCinemaMode = useCallback(() => {
+    setIsCinemaMode(prev => !prev);
+    if (!isCinemaMode) {
+      document.body.style.backgroundColor = "black";
+      if (containerRef.current) {
+        containerRef.current.style.backgroundColor = "black";
+      }
+    } else {
+      document.body.style.backgroundColor = "";
+      if (containerRef.current) {
+        containerRef.current.style.backgroundColor = "";
+      }
+    }
+  }, [isCinemaMode]);
+
+  // Toggle grid overlay
+  const toggleGrid = useCallback(() => {
+    setShowGrid(prev => !prev);
+  }, []);
+
+  // Toggle image info
+  const toggleInfo = useCallback(() => {
+    setShowInfo(prev => !prev);
+  }, []);
+
   // Auto-hide controls on inactivity
   useEffect(() => {
     const handleMouseMove = () => {
@@ -307,6 +379,18 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
         case 'f':
           toggleFullscreen();
           break;
+        case 'r':
+          handleRotate();
+          break;
+        case 'g':
+          toggleGrid();
+          break;
+        case 'i':
+          toggleInfo();
+          break;
+        case 'c':
+          toggleCinemaMode();
+          break;
         default:
           break;
       }
@@ -316,7 +400,18 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [handleNext, handlePrevious, handleZoom, isFullscreen, toggleFullscreen, zoomLevel]);
+  }, [
+    handleNext, 
+    handlePrevious, 
+    handleZoom, 
+    isFullscreen, 
+    toggleFullscreen, 
+    zoomLevel, 
+    handleRotate, 
+    toggleGrid,
+    toggleInfo,
+    toggleCinemaMode
+  ]);
 
   // Auto scroll setup
   useEffect(() => {
@@ -379,12 +474,27 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     return zoomLevel === 1;
   }, [zoomLevel]);
 
+  // Reset all image modifications
+  const resetImage = useCallback(() => {
+    setZoomLevel(1);
+    setDragOffset({ x: 0, y: 0 });
+    setIsRotated(0);
+    setIsFlipped(false);
+    setBrightness(100);
+    toast({
+      title: "Image reset",
+      description: "All image modifications have been reset",
+      duration: 2000,
+    });
+  }, []);
+
   return (
     <div 
       ref={containerRef}
       className={cn(
         "flex flex-col gap-4 relative",
-        isFullscreen && "fixed inset-0 bg-black z-50"
+        isFullscreen && "fixed inset-0 bg-black z-50",
+        isCinemaMode && "bg-black"
       )}
     >
       {/* Main image carousel */}
@@ -400,13 +510,15 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
-        style={{ cursor: isDragging ? "grabbing" : zoomLevel > 1 ? "grab" : "default" }}
+        style={{ 
+          cursor: isDragging ? "grabbing" : zoomLevel > 1 ? "grab" : "default",
+          backgroundColor: isCinemaMode ? "black" : ""
+        }}
       >
         <Carousel
           className="w-full h-full"
           opts={{
             loop: true,
-            // Fix: The 'draggable' property is removed from opts and handled by the Carousel component itself
           }}
           setApi={onApiChange}
         >
@@ -423,14 +535,27 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                       zoomLevel === 1 ? "w-full h-full" : "max-w-none max-h-none"
                     )}
                     style={{ 
-                      transform: zoomLevel > 1 
-                        ? `scale(${zoomLevel}) translate(${constrainedOffset.x / zoomLevel}px, ${constrainedOffset.y / zoomLevel}px)` 
-                        : "none",
-                      transition: isDragging ? "none" : "transform 0.2s ease-out"
+                      transform: `
+                        ${zoomLevel > 1 ? `scale(${zoomLevel})` : 'scale(1)'}
+                        translate(${zoomLevel > 1 ? constrainedOffset.x / zoomLevel : 0}px, ${zoomLevel > 1 ? constrainedOffset.y / zoomLevel : 0}px)
+                        rotate(${isRotated}deg)
+                        ${isFlipped ? 'scaleX(-1)' : ''}
+                      `,
+                      transition: isDragging ? "none" : "transform 0.2s ease-out",
+                      filter: `brightness(${brightness}%)`,
                     }}
                     onDoubleClick={() => zoomLevel === 1 ? handleZoom(true) : setZoomLevel(1)}
                     draggable={false}
                   />
+                  {showGrid && (
+                    <div className="absolute inset-0 pointer-events-none">
+                      <div className="w-full h-full grid grid-cols-3 grid-rows-3">
+                        {Array.from({ length: 9 }).map((_, i) => (
+                          <div key={i} className="border border-white/30" />
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </CarouselItem>
             ))}
@@ -463,68 +588,15 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             </div>
           )}
           
-          {/* Image controls */}
-          {showControls && (
-            <div className="absolute top-3 right-3 flex flex-row gap-2">
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-8 w-8 rounded-full bg-black/50 text-white border-none hover:bg-black/70"
-                onClick={() => handleZoom(true)}
-                disabled={zoomLevel >= 3}
-                aria-label="Zoom in"
-              >
-                <ZoomIn size={16} />
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-8 w-8 rounded-full bg-black/50 text-white border-none hover:bg-black/70"
-                onClick={() => handleZoom(false)}
-                disabled={zoomLevel <= 1}
-                aria-label="Zoom out"
-              >
-                <ZoomOut size={16} />
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-8 w-8 rounded-full bg-black/50 text-white border-none hover:bg-black/70"
-                onClick={toggleFullscreen}
-                aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
-              >
-                {isFullscreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-8 w-8 rounded-full bg-black/50 text-white border-none hover:bg-black/70"
-                onClick={handleDownload}
-                aria-label="Download image"
-              >
-                <Download size={16} />
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-8 w-8 rounded-full bg-black/50 text-white border-none hover:bg-black/70"
-                onClick={handleShare}
-                aria-label="Share image"
-              >
-                <Share2 size={16} />
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-8 w-8 rounded-full bg-black/50 text-white border-none hover:bg-black/70"
-                onClick={toggleFavorite}
-                aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
-              >
-                <Heart 
-                  size={16} 
-                  className={isFavorite ? "fill-red-500 text-red-500" : ""} 
-                />
-              </Button>
+          {/* Image info overlay */}
+          {showInfo && showControls && (
+            <div className="absolute bottom-12 left-3 bg-black/70 text-white text-xs p-3 rounded-md max-w-xs">
+              <h4 className="font-medium mb-1">Image Information</h4>
+              <p className="mb-1">Filename: product-image-{currentIndex + 1}.jpg</p>
+              <p className="mb-1">Current Zoom: {Math.round(zoomLevel * 100)}%</p>
+              <p className="mb-1">Rotation: {isRotated}°</p>
+              <p className="mb-1">Flipped: {isFlipped ? 'Yes' : 'No'}</p>
+              <p>Brightness: {brightness}%</p>
             </div>
           )}
           
@@ -547,22 +619,295 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
               {Math.round(zoomLevel * 100)}%
             </div>
           )}
+          
+          {/* Bottom controls bar */}
+          {showControls && (
+            <div className={cn(
+              "absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/60 to-transparent",
+              "flex justify-center gap-2 flex-wrap",
+              !isFullscreen && "pb-1",
+              isFullscreen && "pb-6"
+            )}>
+              <TooltipProvider>
+                <div className="flex items-center justify-center gap-2 bg-black/50 backdrop-blur-sm p-1 rounded-full">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8 rounded-full bg-transparent text-white border-none hover:bg-white/20"
+                        onClick={() => handleZoom(true)}
+                        disabled={zoomLevel >= 3}
+                        aria-label="Zoom in"
+                      >
+                        <ZoomIn size={16} />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Zoom In (+)</TooltipContent>
+                  </Tooltip>
+                  
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8 rounded-full bg-transparent text-white border-none hover:bg-white/20"
+                        onClick={() => handleZoom(false)}
+                        disabled={zoomLevel <= 1}
+                        aria-label="Zoom out"
+                      >
+                        <ZoomOut size={16} />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Zoom Out (-)</TooltipContent>
+                  </Tooltip>
+                  
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8 rounded-full bg-transparent text-white border-none hover:bg-white/20"
+                        onClick={toggleFullscreen}
+                        aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
+                      >
+                        {isFullscreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>{isFullscreen ? "Exit Fullscreen (Esc)" : "Enter Fullscreen (F)"}</TooltipContent>
+                  </Tooltip>
+                </div>
+                
+                <div className="flex items-center justify-center gap-2 bg-black/50 backdrop-blur-sm p-1 rounded-full">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8 rounded-full bg-transparent text-white border-none hover:bg-white/20"
+                        onClick={handleRotate}
+                        aria-label="Rotate image"
+                      >
+                        <RotateCw size={16} />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Rotate 90° (R)</TooltipContent>
+                  </Tooltip>
+                  
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8 rounded-full bg-transparent text-white border-none hover:bg-white/20"
+                        onClick={handleFlip}
+                        aria-label="Flip image"
+                      >
+                        <Flip2 size={16} />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Flip Horizontally</TooltipContent>
+                  </Tooltip>
+                </div>
+                
+                <div className="flex items-center justify-center gap-2 bg-black/50 backdrop-blur-sm p-1 rounded-full">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8 rounded-full bg-transparent text-white border-none hover:bg-white/20"
+                        onClick={handleDownload}
+                        aria-label="Download image"
+                      >
+                        <Download size={16} />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Download Image</TooltipContent>
+                  </Tooltip>
+                  
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8 rounded-full bg-transparent text-white border-none hover:bg-white/20"
+                        onClick={handleShare}
+                        aria-label="Share image"
+                      >
+                        <Share2 size={16} />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Share Image</TooltipContent>
+                  </Tooltip>
+                  
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className={cn(
+                          "h-8 w-8 rounded-full bg-transparent border-none hover:bg-white/20",
+                          isFavorite ? "text-red-500" : "text-white"
+                        )}
+                        onClick={toggleFavorite}
+                        aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+                      >
+                        <Heart size={16} className={isFavorite ? "fill-red-500" : ""} />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>{isFavorite ? "Remove from Favorites" : "Add to Favorites"}</TooltipContent>
+                  </Tooltip>
+                </div>
+                
+                <div className="flex items-center justify-center gap-2 bg-black/50 backdrop-blur-sm p-1 rounded-full">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className={cn(
+                          "h-8 w-8 rounded-full bg-transparent border-none hover:bg-white/20",
+                          autoScrollEnabled ? "text-green-400" : "text-white"
+                        )}
+                        onClick={toggleAutoScroll}
+                        aria-label={autoScrollEnabled ? "Disable auto-scroll" : "Enable auto-scroll"}
+                      >
+                        {autoScrollEnabled ? <Pause size={16} /> : <Play size={16} />}
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>{autoScrollEnabled ? "Disable Auto-scroll" : "Enable Auto-scroll"}</TooltipContent>
+                  </Tooltip>
+                  
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className={cn(
+                          "h-8 w-8 rounded-full bg-transparent border-none hover:bg-white/20",
+                          showAdvancedControls ? "text-blue-400" : "text-white"
+                        )}
+                        onClick={() => setShowAdvancedControls(!showAdvancedControls)}
+                        aria-label={showAdvancedControls ? "Hide advanced controls" : "Show advanced controls"}
+                      >
+                        <SlidersHorizontal size={16} />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>{showAdvancedControls ? "Hide Advanced Controls" : "Show Advanced Controls"}</TooltipContent>
+                  </Tooltip>
+                </div>
+                
+                {showAdvancedControls && (
+                  <div className="flex items-center justify-center gap-2 bg-black/50 backdrop-blur-sm p-1 rounded-full">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className={cn(
+                            "h-8 w-8 rounded-full bg-transparent border-none hover:bg-white/20",
+                            showGrid ? "text-blue-400" : "text-white"
+                          )}
+                          onClick={toggleGrid}
+                          aria-label={showGrid ? "Hide grid" : "Show grid"}
+                        >
+                          <Grid3X3 size={16} />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>{showGrid ? "Hide Grid" : "Show Grid (G)"}</TooltipContent>
+                    </Tooltip>
+                    
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className={cn(
+                            "h-8 w-8 rounded-full bg-transparent border-none hover:bg-white/20",
+                            showInfo ? "text-blue-400" : "text-white"
+                          )}
+                          onClick={toggleInfo}
+                          aria-label={showInfo ? "Hide info" : "Show info"}
+                        >
+                          <Info size={16} />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>{showInfo ? "Hide Info" : "Show Info (I)"}</TooltipContent>
+                    </Tooltip>
+                    
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className={cn(
+                            "h-8 w-8 rounded-full bg-transparent border-none hover:bg-white/20",
+                            isCinemaMode ? "text-blue-400" : "text-white"
+                          )}
+                          onClick={toggleCinemaMode}
+                          aria-label={isCinemaMode ? "Exit cinema mode" : "Enter cinema mode"}
+                        >
+                          {isCinemaMode ? <Sun size={16} /> : <Moon size={16} />}
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>{isCinemaMode ? "Exit Cinema Mode" : "Enter Cinema Mode (C)"}</TooltipContent>
+                    </Tooltip>
+                    
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="h-8 w-8 rounded-full bg-transparent text-white border-none hover:bg-white/20"
+                          onClick={resetImage}
+                          aria-label="Reset image"
+                        >
+                          <Camera size={16} />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Reset Image</TooltipContent>
+                    </Tooltip>
+                  </div>
+                )}
+              </TooltipProvider>
+            </div>
+          )}
+          
+          {/* Brightness control */}
+          {showAdvancedControls && showControls && (
+            <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 bg-black/70 text-white p-2 rounded-md flex items-center gap-2 w-64">
+              <Sun size={14} />
+              <Slider
+                value={[brightness]}
+                min={50}
+                max={150}
+                step={5}
+                onValueChange={handleBrightnessChange}
+                className="w-full"
+              />
+              <span className="text-xs">{brightness}%</span>
+            </div>
+          )}
+          
+          {/* Advanced Instructions (only visible in fullscreen) */}
+          {isFullscreen && showControls && (
+            <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-black/70 text-white text-xs px-4 py-2 rounded-full flex gap-3">
+              <span>⬅️ ➡️ Navigate</span>
+              <span>+/- Zoom</span>
+              <span>R Rotate</span>
+              <span>G Grid</span>
+              <span>I Info</span>
+              <span>C Cinema</span>
+              <span>ESC Exit</span>
+            </div>
+          )}
         </Carousel>
       </div>
       
-      {/* Advanced Instructions (only visible in fullscreen) */}
-      {isFullscreen && showControls && (
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/70 text-white text-xs px-4 py-2 rounded-full flex gap-3">
-          <span>⬅️ ➡️ Navigate</span>
-          <span>+/- Zoom</span>
-          <span>ESC Exit</span>
-          <span>F Toggle fullscreen</span>
-        </div>
-      )}
-      
       {/* Thumbnail gallery (not shown in fullscreen) */}
       {!isFullscreen && (
-        <div className="flex gap-2 overflow-x-auto pb-2 px-1">
+        <div className="flex gap-2 overflow-x-auto pb-2 px-1 scrollbar-none">
           {images.map((image, index) => (
             <button
               key={index}
@@ -595,10 +940,14 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
           <Button
             variant="ghost"
             size="sm"
-            className="text-xs flex items-center gap-1 h-8 px-2 text-gray-600 hover:text-gray-900"
+            className={cn(
+              "text-xs flex items-center gap-1 h-8 px-2 transition-colors",
+              autoScrollEnabled ? "text-primary" : "text-gray-600 hover:text-gray-900"
+            )}
             onClick={toggleAutoScroll}
           >
-            <span>{autoScrollEnabled ? "Disable" : "Enable"} Auto-scroll</span>
+            {autoScrollEnabled ? <Pause size={14} className="mr-1" /> : <Play size={14} className="mr-1" />}
+            <span>{autoScrollEnabled ? "Stop Auto-scroll" : "Auto-scroll"}</span>
           </Button>
         </div>
       )}
@@ -607,4 +956,3 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
 };
 
 export default ProductImageGallery;
-
