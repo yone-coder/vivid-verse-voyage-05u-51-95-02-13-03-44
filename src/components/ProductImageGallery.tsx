@@ -44,6 +44,11 @@ interface ProductImageGalleryProps {
   images: string[];
 }
 
+interface TouchPosition {
+  x: number;
+  y: number;
+}
+
 const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [api, setApi] = useState<CarouselApi | null>(null);
@@ -67,6 +72,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
   const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const touchStartPosition = useRef<TouchPosition | null>(null);
   const isMobile = useIsMobile();
 
   useEffect(() => {
