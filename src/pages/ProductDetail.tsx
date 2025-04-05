@@ -112,7 +112,7 @@ const ProductDetail = () => {
       reserved: 56,
       selling_fast: true
     },
-    badges: []
+    badges: ["Best Seller", "New Model", "Top Rated", "Official Store"]
   };
 
   const incrementQuantity = () => {
@@ -299,6 +299,18 @@ const ProductDetail = () => {
             </Button>
           </div>
         </div>
+
+        <div className="absolute bottom-4 left-4 flex flex-wrap gap-1.5">
+          {product.badges.map((badge, index) => (
+            <Badge 
+              key={index} 
+              variant="outline" 
+              className="text-xs text-white border-white/30 bg-black/50 backdrop-blur-sm"
+            >
+              {badge}
+            </Badge>
+          ))}
+        </div>
       </div>
 
       {isScrolled && (
@@ -335,7 +347,13 @@ const ProductDetail = () => {
       )}
       
       <div className={`flex-1 ${isScrolled ? 'pt-14' : ''}`}>
-        <div className="bg-white p-4 mb-1">
+        <div className="bg-white p-4 mb-2">
+          <div className="flex items-center mb-1">
+            <Badge variant="outline" className="text-xs bg-red-50 text-red-500 border-red-200">Flash Deal</Badge>
+            <Badge variant="outline" className="text-xs bg-orange-50 text-orange-500 border-orange-200 ml-2">Top Seller</Badge>
+            <Badge variant="outline" className="text-xs bg-green-50 text-green-500 border-green-200 ml-2">Free Shipping</Badge>
+          </div>
+          
           <div className="flex items-baseline">
             <span className="text-xl font-bold text-red-500">${formatPrice(currentPrice)}</span>
             <span className="ml-2 text-sm line-through text-gray-500">${formatPrice(originalPrice)}</span>
@@ -577,7 +595,7 @@ const ProductDetail = () => {
           )}
         </div>
         
-        <div className="bg-white p-4 mb-1">
+        <div className="bg-white p-4 mb-2">
           <div className="flex items-center justify-between mb-1">
             <div className="text-sm text-gray-700 font-medium">Select Variant</div>
             <div 
