@@ -7,6 +7,7 @@ import {
   CarouselPrevious,
   CarouselNext,
 } from "@/components/ui/carousel";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface ProductImageGalleryProps {
   images: string[];
@@ -48,12 +49,34 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="left-2" />
-        <CarouselNext className="right-2" />
+        
+        {/* Hide the default arrows from the main view */}
+        <div className="hidden">
+          <CarouselPrevious />
+          <CarouselNext />
+        </div>
       </Carousel>
       
-      {/* Image counter indicator */}
-      <div className="absolute bottom-3 right-3 bg-black/50 text-white text-xs px-2 py-1 rounded-full">
+      {/* Compact navigation controls in the bottom right */}
+      <div className="absolute bottom-3 right-3 flex items-center space-x-2 bg-black/50 rounded-full px-2 py-1">
+        <button 
+          onClick={() => document.querySelector<HTMLButtonElement>('[data-carousel-prev]')?.click()}
+          className="text-white hover:text-gray-200 transition-colors focus:outline-none"
+          aria-label="Previous image"
+        >
+          <ChevronLeft size={16} />
+        </button>
+        <button 
+          onClick={() => document.querySelector<HTMLButtonElement>('[data-carousel-next]')?.click()}
+          className="text-white hover:text-gray-200 transition-colors focus:outline-none"
+          aria-label="Next image"
+        >
+          <ChevronRight size={16} />
+        </button>
+      </div>
+      
+      {/* Image counter indicator moved to bottom left */}
+      <div className="absolute bottom-3 left-3 bg-black/50 text-white text-xs px-2 py-1 rounded-full">
         {currentIndex + 1}/{images.length}
       </div>
     </div>
