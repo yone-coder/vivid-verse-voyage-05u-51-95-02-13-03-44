@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { ArrowLeft, Share, Heart, ShoppingCart, MessageCircle, Truck, Shield, Award, Percent, ThumbsUp, Zap, Star, Sparkles, ArrowRight, Crown } from "lucide-react";
+import { ArrowLeft, Share, Heart, ShoppingCart, MessageCircle, Truck, Shield, Award, Percent, ThumbsUp, Zap, Star, Sparkles, ArrowRight, Crown, Clock, Gift, Check, Info, CreditCard, AlertCircle, Bookmark, Box, Tag, Download, Users, Rocket } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Progress } from "@/components/ui/progress";
 
 const ProductDetail = () => {
   const [activeTab, setActiveTab] = useState("description");
@@ -22,6 +23,11 @@ const ProductDetail = () => {
   const [showDeliveryOptions, setShowDeliveryOptions] = useState(false);
   const [isExpressSelected, setIsExpressSelected] = useState(false);
   const [showMoreFeatures, setShowMoreFeatures] = useState(false);
+  const [timeLeft, setTimeLeft] = useState({ hours: 12, minutes: 35, seconds: 47 });
+  const [giftWrap, setGiftWrap] = useState(false);
+  const [showWarrantyOptions, setShowWarrantyOptions] = useState(false);
+  const [selectedWarranty, setSelectedWarranty] = useState("none");
+  const [maxQuantityReached, setMaxQuantityReached] = useState(false);
   const headerRef = useRef<HTMLDivElement>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
@@ -95,15 +101,41 @@ const ProductDetail = () => {
       "Google Pay",
       "Afterpay - Buy Now Pay Later",
       "Klarna - 4 interest-free payments"
-    ]
+    ],
+    warranty: [
+      { name: "Standard", duration: "1 year", price: 0 },
+      { name: "Extended", duration: "2 years", price: 4.99 },
+      { name: "Premium", duration: "3 years", price: 9.99 }
+    ],
+    stock: {
+      total: 1204,
+      reserved: 56,
+      selling_fast: true
+    },
+    badges: ["Best Seller", "New Model", "Top Rated", "Official Store"]
   };
 
   const incrementQuantity = () => {
-    setQuantity(prev => Math.min(prev + 1, 10));
+    if (quantity < 10) {
+      setQuantity(prev => prev + 1);
+      if (quantity === 9) {
+        setMaxQuantityReached(true);
+        toast({
+          title: "Maximum quantity reached",
+          description: "You've reached the maximum allowed quantity for this item.",
+          variant: "destructive"
+        });
+      }
+    }
   };
 
   const decrementQuantity = () => {
-    setQuantity(prev => Math.max(prev - 1, 1));
+    if (quantity > 1) {
+      setQuantity(prev => prev - 1);
+      if (maxQuantityReached) {
+        setMaxQuantityReached(false);
+      }
+    }
   };
 
   useEffect(() => {
@@ -117,6 +149,35 @@ const ProductDetail = () => {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(prevTime => {
+        const newSeconds = prevTime.seconds - 1;
+        
+        if (newSeconds < 0) {
+          const newMinutes = prevTime.minutes - 1;
+          
+          if (newMinutes < 0) {
+            const newHours = prevTime.hours - 1;
+            
+            if (newHours < 0) {
+              clearInterval(timer);
+              return { hours: 0, minutes: 0, seconds: 0 };
+            }
+            
+            return { hours: newHours, minutes: 59, seconds: 59 };
+          }
+          
+          return { ...prevTime, minutes: newMinutes, seconds: 59 };
+        }
+        
+        return { ...prevTime, seconds: newSeconds };
+      });
+    }, 1000);
+    
+    return () => clearInterval(timer);
   }, []);
 
   const handleShare = () => {
@@ -184,10 +245,29 @@ const ProductDetail = () => {
     }
   };
 
-  // Calculate the current price based on selected variant
+  const toggleGiftWrap = () => {
+    setGiftWrap(!giftWrap);
+    toast({
+      title: !giftWrap ? "Gift wrapping added" : "Gift wrapping removed",
+      description: !giftWrap 
+        ? "Your item will be gift wrapped with a personalized message" 
+        : "Gift wrapping has been removed from your order"
+    });
+  };
+
   const currentVariant = product.variants.find(v => v.name === selectedColor);
   const currentPrice = currentVariant ? currentVariant.price : product.discountPrice;
   const originalPrice = currentVariant ? Math.round(currentVariant.price * 1.6 * 100) / 100 : product.price;
+  
+  const warrantyOption = product.warranty.find(w => w.name.toLowerCase() === selectedWarranty);
+  const warrantyPrice = warrantyOption ? warrantyOption.price : 0;
+  
+  const totalPrice = (currentPrice * quantity) + warrantyPrice + (giftWrap ? 2.99 : 0) + (isExpressSelected ? product.shipping.express : 0);
+  
+  const formatPrice = (price: number) => price.toFixed(2);
+
+  const currentStock = currentVariant ? currentVariant.stock : 0;
+  const stockPercentage = Math.min(100, Math.max(5, (currentStock / 300) * 100));
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
@@ -218,6 +298,18 @@ const ProductDetail = () => {
               <Share className="h-5 w-5" />
             </Button>
           </div>
+        </div>
+
+        <div className="absolute bottom-4 left-4 flex flex-wrap gap-1.5">
+          {product.badges.map((badge, index) => (
+            <Badge 
+              key={index} 
+              variant="outline" 
+              className="text-xs text-white border-white/30 bg-black/50 backdrop-blur-sm"
+            >
+              {badge}
+            </Badge>
+          ))}
         </div>
       </div>
 
@@ -263,8 +355,8 @@ const ProductDetail = () => {
           </div>
           
           <div className="flex items-baseline">
-            <span className="text-xl font-bold text-red-500">${currentPrice}</span>
-            <span className="ml-2 text-sm line-through text-gray-500">${originalPrice}</span>
+            <span className="text-xl font-bold text-red-500">${formatPrice(currentPrice)}</span>
+            <span className="ml-2 text-sm line-through text-gray-500">${formatPrice(originalPrice)}</span>
             <span className="ml-2 text-xs px-1.5 py-0.5 bg-red-100 text-red-500 rounded">
               {Math.round((1 - currentPrice / originalPrice) * 100)}% OFF
             </span>
@@ -283,6 +375,26 @@ const ProductDetail = () => {
             <span className="text-gray-500">{product.reviewCount} Reviews</span>
             <span className="mx-2 text-gray-300">|</span>
             <span className="text-gray-500">{product.sold}+ Sold</span>
+          </div>
+
+          <div className="mt-4">
+            <div className="bg-gradient-to-r from-purple-50 to-indigo-100 p-3 rounded-md border border-purple-200">
+              <div className="flex items-center text-sm">
+                <Zap className="h-4 w-4 text-purple-500 mr-2" />
+                <span className="font-medium text-purple-800">Limited Time Offer</span>
+              </div>
+              <div className="text-xs text-purple-700 mt-1 flex items-center">
+                <Clock className="h-3.5 w-3.5 mr-1.5" />
+                <span>Deal ends in:</span>
+                <div className="ml-2 flex gap-1">
+                  <span className="bg-purple-800 text-white px-1.5 py-0.5 rounded">{timeLeft.hours.toString().padStart(2, '0')}</span>
+                  <span className="text-purple-800">:</span>
+                  <span className="bg-purple-800 text-white px-1.5 py-0.5 rounded">{timeLeft.minutes.toString().padStart(2, '0')}</span>
+                  <span className="text-purple-800">:</span>
+                  <span className="bg-purple-800 text-white px-1.5 py-0.5 rounded">{timeLeft.seconds.toString().padStart(2, '0')}</span>
+                </div>
+              </div>
+            </div>
           </div>
           
           <div className="mt-3 bg-red-50 p-2.5 rounded-md">
@@ -305,18 +417,6 @@ const ProductDetail = () => {
                   </div>
                 </div>
               ))}
-            </div>
-          </div>
-
-          <div className="mt-4">
-            <div className="bg-gradient-to-r from-amber-50 to-amber-100 p-3 rounded-md border border-amber-200">
-              <div className="flex items-center text-sm">
-                <Zap className="h-4 w-4 text-amber-500 mr-2" />
-                <span className="font-medium text-amber-800">Limited Time Offer</span>
-              </div>
-              <div className="text-xs text-amber-700 mt-1">
-                Special promotion ends in 12:35:47
-              </div>
             </div>
           </div>
 
@@ -353,6 +453,26 @@ const ProductDetail = () => {
                   </label>
                 </div>
               </RadioGroup>
+
+              <div className="mt-3 text-xs flex items-start">
+                <Gift className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
+                <div>
+                  <div className="flex items-center">
+                    <span className="font-medium mr-2">Gift Wrapping</span>
+                    <span className="text-green-500">+$2.99</span>
+                  </div>
+                  <p className="text-gray-500 mt-0.5">Add beautiful packaging with a personalized message</p>
+                  <Button 
+                    variant={giftWrap ? "default" : "outline"} 
+                    size="sm" 
+                    className={`mt-1.5 text-xs px-2 py-0 h-7 ${giftWrap ? "bg-green-500 hover:bg-green-600" : ""}`}
+                    onClick={toggleGiftWrap}
+                  >
+                    {giftWrap ? <Check className="h-3 w-3 mr-1" /> : null}
+                    {giftWrap ? "Gift Wrap Added" : "Add Gift Wrap"}
+                  </Button>
+                </div>
+              </div>
             </div>
           )}
           
@@ -361,8 +481,53 @@ const ProductDetail = () => {
             <div>
               <span className="text-gray-700">Buyer Protection: </span>
               <span className="text-blue-500">{product.shipping.returns}</span>
+              <button
+                className="ml-2 text-blue-500 underline text-xs"
+                onClick={() => setShowWarrantyOptions(!showWarrantyOptions)}
+              >
+                Warranty Options
+              </button>
             </div>
           </div>
+
+          {showWarrantyOptions && (
+            <div className="mt-2 ml-6 bg-gray-50 p-3 rounded-md text-sm">
+              <div className="mb-2 font-medium text-gray-700 flex items-center">
+                <Shield className="h-4 w-4 mr-1.5 text-blue-500" />
+                Extended Warranty Options:
+              </div>
+              <RadioGroup 
+                value={selectedWarranty} 
+                onValueChange={setSelectedWarranty}
+                className="space-y-2"
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="none" id="warranty-none" />
+                  <label htmlFor="warranty-none" className="flex-1">
+                    <div className="font-medium">No additional warranty</div>
+                    <div className="text-xs text-gray-500">Includes standard {product.warranty[0].duration} manufacturer warranty</div>
+                  </label>
+                </div>
+                
+                {product.warranty.slice(1).map((option, index) => (
+                  <div key={index} className="flex items-center space-x-2">
+                    <RadioGroupItem value={option.name.toLowerCase()} id={`warranty-${option.name.toLowerCase()}`} />
+                    <label htmlFor={`warranty-${option.name.toLowerCase()}`} className="flex-1">
+                      <div className="font-medium">{option.name} Protection Plan</div>
+                      <div className="text-xs text-gray-500">{option.duration} coverage • +${option.price}</div>
+                    </label>
+                  </div>
+                ))}
+              </RadioGroup>
+              
+              <div className="mt-3 text-xs bg-blue-50 p-2 rounded border border-blue-100">
+                <div className="flex items-start">
+                  <Info className="h-3.5 w-3.5 text-blue-500 mr-1.5 mt-0.5" />
+                  <span className="text-blue-700">Extended warranty covers accidental damage, water damage, and provides priority replacement service.</span>
+                </div>
+              </div>
+            </div>
+          )}
 
           <div className="mt-3 flex items-center justify-between">
             <button
@@ -407,7 +572,10 @@ const ProductDetail = () => {
 
           {showPaymentOptions && (
             <div className="mt-3 bg-gray-50 p-3 rounded-md">
-              <div className="text-sm font-medium mb-2">Accepted Payment Methods:</div>
+              <div className="text-sm font-medium mb-2 flex items-center">
+                <CreditCard className="h-4 w-4 mr-1.5 text-gray-700" />
+                Accepted Payment Methods:
+              </div>
               <div className="grid grid-cols-2 gap-y-2 text-xs">
                 {product.payments.map((method, index) => (
                   <div key={index} className="flex items-center">
@@ -415,6 +583,13 @@ const ProductDetail = () => {
                     <span>{method}</span>
                   </div>
                 ))}
+              </div>
+              
+              <div className="mt-3 bg-purple-50 p-2 rounded border border-purple-100">
+                <div className="text-xs font-medium text-purple-700 flex items-center">
+                  <AlertCircle className="h-3.5 w-3.5 mr-1" />
+                  Buy now, pay later options available at checkout
+                </div>
               </div>
             </div>
           )}
@@ -441,13 +616,13 @@ const ProductDetail = () => {
                 {product.variants.map((variant) => (
                   <div 
                     key={variant.name}
-                    className={`border rounded-md p-2 text-xs text-center cursor-pointer transition-all ${selectedColor === variant.name ? 'border-red-500 bg-red-50' : 'border-gray-300'}`}
+                    className={`border rounded-md p-2 text-xs text-center cursor-pointer transition-all ${selectedColor === variant.name ? 'border-purple-500 bg-purple-50' : 'border-gray-300'}`}
                     onClick={() => setSelectedColor(variant.name)}
                   >
                     <div className="w-full h-12 bg-gray-200 rounded mb-1 overflow-hidden">
                       <img src={variant.image} alt={variant.name} className="w-full h-full object-cover" />
                     </div>
-                    <div className={selectedColor === variant.name ? 'text-red-500 font-medium' : ''}>
+                    <div className={selectedColor === variant.name ? 'text-purple-500 font-medium' : ''}>
                       {variant.name}
                     </div>
                     <div className="text-xs mt-0.5">
@@ -488,10 +663,58 @@ const ProductDetail = () => {
                 </div>
               </div>
 
+              <div className="mt-2">
+                <div className="flex justify-between text-xs mb-1">
+                  <span className="text-red-500 font-medium">Selling Fast!</span>
+                  <span className="text-gray-500">{currentVariant?.stock || 0} left</span>
+                </div>
+                <Progress value={stockPercentage} className="h-1.5" indicatorClassName="bg-gradient-to-r from-red-500 to-orange-400" />
+              </div>
+
               <div className="text-xs text-gray-500 mt-4 bg-yellow-50 p-2 rounded border border-yellow-100 flex items-start">
                 <Crown className="h-4 w-4 text-yellow-500 mr-2 flex-shrink-0" />
                 <div>
                   <span className="font-medium text-yellow-700">PRO TIP:</span> This item is selling fast! {currentVariant?.stock} people purchased in the last 24 hours.
+                </div>
+              </div>
+              
+              <div className="mt-4 p-3 bg-gray-50 rounded-md">
+                <div className="text-sm font-medium mb-2">Order Summary:</div>
+                <div className="space-y-1.5 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Price ({quantity} x ${formatPrice(currentPrice)})</span>
+                    <span>${formatPrice(currentPrice * quantity)}</span>
+                  </div>
+                  
+                  {warrantyPrice > 0 && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">
+                        {warrantyOption?.name} Warranty ({warrantyOption?.duration})
+                      </span>
+                      <span>+${formatPrice(warrantyPrice)}</span>
+                    </div>
+                  )}
+                  
+                  {giftWrap && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Gift Wrapping</span>
+                      <span>+$2.99</span>
+                    </div>
+                  )}
+                  
+                  {isExpressSelected && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Express Shipping</span>
+                      <span>+${formatPrice(product.shipping.express)}</span>
+                    </div>
+                  )}
+                  
+                  <Separator className="my-2" />
+                  
+                  <div className="flex justify-between font-medium">
+                    <span>Total:</span>
+                    <span className="text-purple-600">${formatPrice(totalPrice)}</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -508,23 +731,33 @@ const ProductDetail = () => {
         </div>
           
         <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-3 flex items-center z-20">
-          <Button variant="ghost" size="sm" className="flex flex-col items-center h-16 mr-2 px-3" onClick={() => window.open('/cart', '_blank')}>
-            <ShoppingCart className="h-6 w-6 mb-1" />
-            <span className="text-xs">Cart</span>
-          </Button>
-          <div className="flex-1 flex space-x-2">
+          <div className="w-full flex space-x-3 items-center">
             <Button 
               variant="outline" 
-              className="flex-1 bg-white text-red-500 border-red-500 hover:bg-red-50"
-              onClick={addToCart}
+              size="sm" 
+              className="h-14 flex-col items-center flex"
+              onClick={askQuestion}
             >
-              Add to Cart
+              <MessageCircle className="h-5 w-5 mb-1" />
+              <span className="text-xs">Chat</span>
             </Button>
+            
             <Button 
-              className="flex-1 bg-red-500 hover:bg-red-600 text-white"
+              variant="outline" 
+              size="sm" 
+              className="h-14 flex-col items-center flex"
+              onClick={toggleFavorite}
+            >
+              <Heart className={`h-5 w-5 mb-1 ${isFavorite ? "fill-red-500 text-red-500" : ""}`} />
+              <span className="text-xs">Save</span>
+            </Button>
+            
+            <Button 
+              className="flex-1 h-14 bg-purple-600 hover:bg-purple-700 text-white"
               onClick={buyNow}
             >
-              Buy Now
+              <Rocket className="mr-2 h-5 w-5" />
+              Buy Now - ${formatPrice(totalPrice)}
             </Button>
           </div>
         </div>
