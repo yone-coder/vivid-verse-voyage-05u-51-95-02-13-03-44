@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { ArrowLeft, Share, Heart, MessageCircle, Truck, Shield, Award, Percent, ThumbsUp, Zap, Star, Sparkles, ArrowRight, Crown, Clock, Gift, Check, Info, CreditCard, AlertCircle, Bookmark, Box, Tag, Download, Users, Rocket } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -630,41 +629,47 @@ const ProductDetail = () => {
               {showPaymentOptions ? "Hide" : "View All"}
             </Button>
           </div>
-          
+      
           <div className="mt-1 flex flex-wrap gap-1">
-            <div className="w-8 h-5 bg-gray-200 rounded"></div>
-            <div className="w-8 h-5 bg-gray-200 rounded"></div>
-            <div className="w-8 h-5 bg-gray-200 rounded"></div>
+            {/* Updated payment icons to match the ModernBuyButton */}
+            {/* Visa Card */}
+            <div className="w-8 h-5 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
+              <img 
+                src="/lovable-uploads/f3efe2eb-c3db-48bd-abc7-c65456fdc028.png" 
+                alt="Visa" 
+                className="h-3.5 w-6 object-contain"
+              />
+            </div>
+            
+            {/* Mastercard */}
+            <div className="w-8 h-5 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="12">
+                <circle fill="#EA001B" cx="8" cy="12" r="5"/>
+                <circle fill="#F79E1B" cx="16" cy="12" r="5"/>
+                <path fill="#FF5F00" d="M12 7.5v9a5 5 0 0 0 0-9z"/>
+              </svg>
+            </div>
+            
+            {/* Venmo */}
+            <div className="w-8 h-5 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
+              <img 
+                src="/lovable-uploads/dd1cad7b-c3b6-43a6-9bc6-deb38a120604.png" 
+                alt="Venmo" 
+                className="h-3.5 w-6 object-contain"
+              />
+            </div>
+            
             {showPaymentOptions && (
               <>
-                <div className="w-8 h-5 bg-gray-200 rounded"></div>
-                <div className="w-8 h-5 bg-gray-200 rounded"></div>
-                <div className="w-8 h-5 bg-gray-200 rounded"></div>
-              </>
-            )}
-          </div>
-          
-          {showPaymentOptions && (
-            <div className="mt-2 text-xs text-gray-600">
-              Buy Now, Pay Later options available at checkout with Klarna and Afterpay.
-            </div>
-          )}
-        </div>
-      </div>
-      
-      <div className="mb-20" ref={tabsRef}>
-        <ProductTabs 
-          product={product} 
-          activeTab={activeTab} 
-          setActiveTab={setActiveTab} 
-          isScrolled={isScrolled} 
-        />
-      </div>
-      
-      {/* Replace the original fixed bottom buy button with our new ModernBuyButton component */}
-      <ModernBuyButton />
-    </div>
-  );
-};
-
-export default ProductDetail;
+                {/* PayPal */}
+                <div className="w-8 h-5 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="12">
+                    <path fill="#253B80" d="M7 7h2c1.4 0 1.9 1 1.9 1.5 0 1.8-2 1.8-2.5 1.8H7.3L7 7z"/>
+                    <path fill="#179BD7" d="M19 7.8C18.7 5.8 16.9 5 14.7 5H9.2c-.3 0-.5.2-.6.5l-1.7 11c0 .2.1.4.4.4h2.9l.7-4.7v.3c.1-.3.3-.5.6-.5h1.3c2.5 0 4.4-1 5-3.9V8c-.1-.2-.1-.2-.1-.2H19z"/>
+                    <path fill="#253B80" d="M8.3 11.5l-.3 2.1-.2 1h-3c-.2 0-.4-.2-.3-.4L6.1 5.9c.1-.3.3-.5.6-.5h5.5c1.5 0 2.6.3 3.2 1 .3.3.5.7.6 1.1.1.3.1.7.1 1.1-1-.6-2-.8-3.3-.8L8.3 11.5z"/>
+                  </svg>
+                </div>
+                
+                {/* Apple Pay */}
+                <div className="w-8 h-5 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="12">
