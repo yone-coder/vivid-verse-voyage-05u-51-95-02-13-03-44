@@ -14,6 +14,7 @@ import { Progress } from "@/components/ui/progress";
 import LiveActivityNotifications from "@/components/LiveActivityNotifications";
 import LiveStockUpdates from "@/components/LiveStockUpdates";
 import LivePurchaseBanner from "@/components/LivePurchaseBanner";
+import { useElementHeight } from "@/hooks/use-element-height";
 
 const ProductDetail = () => {
   const [activeTab, setActiveTab] = useState("description");
@@ -34,6 +35,8 @@ const ProductDetail = () => {
   const [showCartAnimation, setShowCartAnimation] = useState(false);
   const headerRef = useRef<HTMLDivElement>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
+  const footerRef = useRef<HTMLDivElement>(null);
+  const footerHeight = useElementHeight(footerRef);
   const isMobile = useIsMobile();
 
   const product = {
@@ -355,7 +358,7 @@ const ProductDetail = () => {
         </div>
       )}
       
-      <div className={`flex-1 ${isScrolled ? 'pt-14' : ''}`}>
+      <div className={`flex-1 ${isScrolled ? 'pt-14' : ''}`} style={{ paddingBottom: `${footerHeight + 16}px` }}>
         <div className="bg-white p-4 mb-2">
           <div className="flex items-center mb-1">
             <Badge variant="outline" className="text-xs bg-red-50 text-red-500 border-red-200">Flash Deal</Badge>
@@ -647,74 +650,74 @@ const ProductDetail = () => {
             </div>
           )}
         </div>
-        
-        <div className="fixed bottom-0 left-0 right-0 z-30">
-          <div className="bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.1)] p-3 flex flex-col">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-baseline">
-                <span className="text-lg font-bold text-purple-600">${formatPrice(totalPrice)}</span>
-                {(warrantyPrice > 0 || giftWrap || isExpressSelected) && (
-                  <div className="ml-2 text-xs text-gray-500 flex items-center">
-                    <Info className="h-3 w-3 mr-1" />
-                    <span>Includes add-ons</span>
-                  </div>
-                )}
-              </div>
-              
-              <div className="flex items-center">
-                <div className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full flex items-center mr-2">
-                  <Shield className="h-3 w-3 mr-1" />
-                  <span>Secure Checkout</span>
-                </div>
-                
-                <Button 
-                  variant="outline" 
-                  size="icon" 
-                  className="rounded-full h-8 w-8 bg-white"
-                  onClick={askQuestion}
-                >
-                  <MessageCircle className="h-4 w-4 text-gray-600" />
-                </Button>
-              </div>
-            </div>
-            
-            <div className="flex gap-2 w-full relative">
-              <Button
-                variant="outline"
-                className="flex-1 border-purple-300 hover:bg-purple-50 text-purple-700 relative overflow-hidden"
-                onClick={addToCart}
-              >
-                <ShoppingCart className="h-4 w-4 mr-2" />
-                Add to Cart
-                {showCartAnimation && (
-                  <div className="absolute inset-0 bg-purple-200 animate-[pulse_0.5s_ease-in-out]"></div>
-                )}
-              </Button>
-              
-              <Button
-                className="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-lg transition-transform hover:scale-[1.02] duration-200"
-                onClick={buyNow}
-              >
-                <Zap className="h-4 w-4 mr-2" />
-                Buy Now
-              </Button>
-            </div>
-          </div>
-          
-          <div className="bg-gray-50 px-3 py-1 text-xs text-center text-gray-500 flex items-center justify-center">
-            <Shield className="h-3 w-3 mr-1 text-green-600" />
-            Secure payment • 30-day money back guarantee • 24/7 customer support
-          </div>
-        </div>
       </div>
       
-      <div className="mb-28" ref={tabsRef}>
+      <div className="mb-4" ref={tabsRef}>
         <ProductTabs 
           product={product} 
           activeTab={activeTab} 
           setActiveTab={setActiveTab} 
           isScrolled={isScrolled} 
         />
+      </div>
+      
+      <div className="fixed bottom-0 left-0 right-0 z-30" ref={footerRef}>
+        <div className="bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.1)] p-3 flex flex-col">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-baseline">
+              <span className="text-lg font-bold text-purple-600">${formatPrice(totalPrice)}</span>
+              {(warrantyPrice > 0 || giftWrap || isExpressSelected) && (
+                <div className="ml-2 text-xs text-gray-500 flex items-center">
+                  <Info className="h-3 w-3 mr-1" />
+                  <span>Includes add-ons</span>
+                </div>
+              )}
+            </div>
+            
+            <div className="flex items-center">
+              <div className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full flex items-center mr-2">
+                <Shield className="h-3 w-3 mr-1" />
+                <span>Secure Checkout</span>
+              </div>
+              
+              <Button 
+                variant="outline" 
+                size="icon" 
+                className="rounded-full h-8 w-8 bg-white"
+                onClick={askQuestion}
+              >
+                <MessageCircle className="h-4 w-4 text-gray-600" />
+              </Button>
+            </div>
+          </div>
+          
+          <div className="flex gap-2 w-full relative">
+            <Button
+              variant="outline"
+              className="flex-1 border-purple-300 hover:bg-purple-50 text-purple-700 relative overflow-hidden"
+              onClick={addToCart}
+            >
+              <ShoppingCart className="h-4 w-4 mr-2" />
+              Add to Cart
+              {showCartAnimation && (
+                <div className="absolute inset-0 bg-purple-200 animate-[pulse_0.5s_ease-in-out]"></div>
+              )}
+            </Button>
+            
+            <Button
+              className="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-lg transition-transform hover:scale-[1.02] duration-200"
+              onClick={buyNow}
+            >
+              <Zap className="h-4 w-4 mr-2" />
+              Buy Now
+            </Button>
+          </div>
+        </div>
+        
+        <div className="bg-gray-50 px-3 py-1 text-xs text-center text-gray-500 flex items-center justify-center">
+          <Shield className="h-3 w-3 mr-1 text-green-600" />
+          Secure payment • 30-day money back guarantee • 24/7 customer support
+        </div>
       </div>
       
       <LiveActivityNotifications />
