@@ -16,8 +16,10 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const [currentIndex, setCurrentIndex] = useState(0);
 
   // Custom handler to work with the Carousel component's API
-  const handleApiChange = (api: { selectedScrollSnap: () => number }) => {
-    setCurrentIndex(api.selectedScrollSnap());
+  const handleApiChange = (api: any) => {
+    if (api) {
+      setCurrentIndex(api.selectedScrollSnap());
+    }
   };
 
   return (
@@ -27,7 +29,11 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
         opts={{
           loop: true,
         }}
-        onScrollSnapChange={handleApiChange}
+        setApi={(api) => {
+          if (api) {
+            api.on("select", () => handleApiChange(api));
+          }
+        }}
       >
         <CarouselContent className="h-full">
           {images.map((image, index) => (
