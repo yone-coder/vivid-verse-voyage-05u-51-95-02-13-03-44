@@ -6,7 +6,7 @@ const ModernBuyButton = () => {
   const [isHovering, setIsHovering] = useState(false);
   const [variantOpen, setVariantOpen] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState('Red');
-  const [timeLeft, setTimeLeft] = useState({ hours: 3, minutes: 20, seconds: 45 });
+  const [timeLeft, setTimeLeft] = useState({ minutes: 180, seconds: 0, milliseconds: 0 });
   const [itemsInCart, setItemsInCart] = useState(0);
   const [showAddedAnimation, setShowAddedAnimation] = useState(false);
   const [showSocialProof, setShowSocialProof] = useState(true);
@@ -23,28 +23,31 @@ const ModernBuyButton = () => {
   const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
+    // More precise timer with milliseconds
     const timer = setInterval(() => {
       setTimeLeft(prev => {
-        if (prev.seconds > 0) {
-          return { ...prev, seconds: prev.seconds - 1 };
+        const newMilliseconds = prev.milliseconds > 0 ? prev.milliseconds - 10 : 990;
+        
+        if (prev.milliseconds > 0) {
+          return { ...prev, milliseconds: newMilliseconds };
+        } else if (prev.seconds > 0) {
+          return { ...prev, seconds: prev.seconds - 1, milliseconds: newMilliseconds };
         } else if (prev.minutes > 0) {
-          return { ...prev, minutes: prev.minutes - 1, seconds: 59 };
-        } else if (prev.hours > 0) {
-          return { ...prev, hours: prev.hours - 1, minutes: 59, seconds: 59 };
+          return { ...prev, minutes: prev.minutes - 1, seconds: 59, milliseconds: newMilliseconds };
         }
         return prev;
       });
-    }, 1000);
+    }, 10); // Update every 10ms for smooth millisecond animation
     
     return () => clearInterval(timer);
   }, []);
 
   useEffect(() => {
-    if (timeLeft.seconds === 0) {
+    if (timeLeft.milliseconds === 990) {
       setHighlightStock(true);
-      setTimeout(() => setHighlightStock(false), 1000);
+      setTimeout(() => setHighlightStock(false), 500);
     }
-  }, [timeLeft.seconds]);
+  }, [timeLeft.milliseconds]);
 
   useEffect(() => {
     const socialProofTimer = setInterval(() => {
@@ -145,6 +148,11 @@ const ModernBuyButton = () => {
     }
   };
 
+  // Format time display with leading zeros
+  const formatTime = (value: number, digits: number = 2) => {
+    return value.toString().padStart(digits, '0');
+  };
+
   const variants = ['Red', 'Blue', 'Black', 'Green'];
   const variantColors = {
     'Red': 'bg-red-500',
@@ -164,6 +172,10 @@ const ModernBuyButton = () => {
   const currentPrice = (basePrice + priceIncrement).toFixed(2);
   const totalPrice = (parseFloat(currentPrice) * quantity).toFixed(2);
   const discountPercentage = Math.round(((79.99 - parseFloat(currentPrice)) / 79.99) * 100);
+
+  // Is timer running low?
+  const isTimeLow = timeLeft.minutes < 30;
+  const isTimeCritical = timeLeft.minutes < 5;
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 font-sans">
@@ -338,9 +350,28 @@ const ModernBuyButton = () => {
             </div>
             
             <div className="relative">
-              <div className={`flex items-center text-xs font-medium ${timeLeft.minutes < 30 ? 'text-red-500' : 'text-gray-600'}`}>
-                <Clock size={10} className={`mr-1 ${timeLeft.minutes < 30 ? 'animate-pulse' : ''}`} />
-                {`${timeLeft.hours}h ${timeLeft.minutes}m`}
+              {/* Enhanced animated countdown timer */}
+              <div 
+                className={`flex items-center justify-center text-xs font-medium 
+                          ${isTimeCritical ? 'text-red-600 font-bold' : isTimeLow ? 'text-red-500' : 'text-gray-600'}`}
+              >
+                <Clock 
+                  size={10} 
+                  className={`mr-1 ${isTimeLow ? 'animate-pulse' : ''}`} 
+                />
+                <div className="flex items-center space-x-0.5">
+                  <span className={`${isTimeLow ? 'bg-red-50' : 'bg-gray-50'} px-1 py-0.5 rounded`}>
+                    {formatTime(timeLeft.minutes)}
+                  </span>
+                  <span>:</span>
+                  <span className={`${isTimeLow ? 'bg-red-50' : 'bg-gray-50'} px-1 py-0.5 rounded ${timeLeft.seconds < 10 && isTimeLow ? 'animate-pulse' : ''}`}>
+                    {formatTime(timeLeft.seconds)}
+                  </span>
+                  <span>:</span>
+                  <span className={`${isTimeLow ? 'bg-red-50' : 'bg-gray-50'} px-1 py-0.5 rounded text-[0.6rem] w-7 text-center`}>
+                    {formatTime(Math.floor(timeLeft.milliseconds / 10), 2)}
+                  </span>
+                </div>
               </div>
               <span className={`text-xs text-red-500 font-medium ${highlightStock ? 'animate-bounce' : ''}`}>
                 {stockRemaining <= 1 ? 'Last one!' : `Only ${stockRemaining} left!`}
