@@ -268,6 +268,13 @@ const ProductDetail = () => {
 
   const currentStock = currentVariant ? currentVariant.stock : 0;
   const stockPercentage = Math.min(100, Math.max(5, (currentStock / 300) * 100));
+  
+  const discountPercentage = Math.round((1 - currentPrice / originalPrice) * 100);
+  
+  const urgencyPercentage = Math.min(100, Math.max(10, 100 - stockPercentage));
+  const isLowStock = currentStock < 50;
+  const isCriticalStock = currentStock < 20;
+  const estimatedSellOut = Math.max(1, Math.floor(currentStock / 10));
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
@@ -312,41 +319,8 @@ const ProductDetail = () => {
           ))}
         </div>
       </div>
-
-      {isScrolled && (
-        <div className="fixed top-0 left-0 right-0 bg-white z-30 shadow-sm">
-          <div className="flex items-center h-14 px-4">
-            <Link to="/" className="mr-auto">
-              <Button variant="ghost" size="icon" className="rounded-full">
-                <ArrowLeft className="h-5 w-5" />
-              </Button>
-            </Link>
-            <div className="mr-auto ml-2 font-medium truncate max-w-[200px]">
-              {product.name}
-            </div>
-            <div className="flex gap-2">
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="rounded-full"
-                onClick={toggleFavorite}
-              >
-                <Heart className={`h-5 w-5 ${isFavorite ? "fill-red-500 text-red-500" : ""}`} />
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="rounded-full"
-                onClick={handleShare}
-              >
-                <Share className="h-5 w-5" />
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
       
-      <div className={`flex-1 ${isScrolled ? 'pt-14' : ''}`}>
+      <div className="flex-1">
         <div className="bg-white p-4 mb-2">
           <div className="flex items-center mb-1">
             <Badge variant="outline" className="text-xs bg-red-50 text-red-500 border-red-200">Flash Deal</Badge>
@@ -732,39 +706,97 @@ const ProductDetail = () => {
         
         <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-3 z-20">
           <Button 
-            className="w-full h-14 bg-purple-600 hover:bg-purple-700 text-white relative overflow-hidden"
             onClick={buyNow}
+            className="w-full bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-700 hover:to-purple-900 text-white relative overflow-hidden rounded-xl shadow-lg h-16 group"
           >
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="flex flex-col items-center">
-                <div className="flex items-center justify-between w-full px-4 mb-1.5">
+            <div className="absolute inset-0 w-full h-full">
+              <div className="absolute inset-0 bg-white/10 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              
+              <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 rounded-full bg-white/20 animate-ping ${isCriticalStock ? 'opacity-100' : 'opacity-0'}`}></div>
+              
+              <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 animate-pulse opacity-50"></div>
+              </div>
+              
+              <div className="absolute bottom-0 left-0 right-0 h-1.5">
+                <Progress 
+                  value={urgencyPercentage} 
+                  className="h-full rounded-none"
+                  indicatorClassName="bg-red-500/60"
+                />
+              </div>
+            </div>
+            
+            <div className="relative z-10 w-full px-4">
+              <div className="flex flex-col">
+                <div className="flex items-center justify-between w-full">
                   <div className="flex items-center">
-                    <Rocket className="h-5 w-5 mr-2" />
-                    <span className="font-bold text-base">Buy Now</span>
+                    <Rocket className="h-5 w-5 mr-1.5 animate-pulse" />
+                    <span className="font-extrabold text-lg tracking-wide">BUY NOW</span>
+                    {discountPercentage >= 20 && (
+                      <span className="ml-2 text-xs bg-red-500 text-white px-1.5 py-0.5 rounded-md animate-pulse">
+                        SAVE {discountPercentage}%
+                      </span>
+                    )}
                   </div>
-                  <div className="font-bold">${formatPrice(totalPrice)}</div>
-                </div>
-                <div className="w-full px-4">
-                  <Progress 
-                    value={Math.min(100, currentStock ? (100 - (currentStock / 300) * 100) : 95)} 
-                    className="h-1 w-full"
-                    indicatorClassName="bg-white/30"
-                  />
-                </div>
-                <div className="flex justify-between w-full px-4 mt-1">
-                  <div className="text-xs opacity-90">
-                    {quantity}x {selectedColor}
+                  <div className="flex items-baseline">
+                    <span className="font-bold text-lg">${formatPrice(totalPrice)}</span>
+                    {warrantyPrice > 0 && (
+                      <span className="text-xs ml-1 opacity-80">+warranty</span>
+                    )}
                   </div>
-                  <div className="text-xs opacity-90">
-                    {currentStock > 50 ? `${currentStock} left` : `Only ${currentStock} left!`}
+                </div>
+                
+                <div className="flex items-center justify-between text-xs mt-0.5 text-white/90">
+                  <div className="flex items-center">
+                    <span className="font-medium mr-1.5">{quantity}x</span>
+                    <span className="truncate max-w-[100px]">{selectedColor}</span>
+                    {giftWrap && (
+                      <Gift className="h-3 w-3 ml-1.5" />
+                    )}
+                  </div>
+                  
+                  <div className="flex items-center">
+                    {isLowStock && (
+                      <div className="flex items-center animate-pulse">
+                        <Clock className="h-3 w-3 mr-1" />
+                        <span className="font-medium">
+                          {isCriticalStock ? 'Selling out fast!' : `${estimatedSellOut} day${estimatedSellOut !== 1 ? 's' : ''} left!`}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-center gap-2 mt-1">
+                  <div className="flex items-center bg-white/20 rounded-full px-1.5 py-0.5 text-xs">
+                    <Shield className="h-2.5 w-2.5 mr-0.5" />
+                    <span>Secure</span>
+                  </div>
+                  <div className="flex items-center bg-white/20 rounded-full px-1.5 py-0.5 text-xs">
+                    <Truck className="h-2.5 w-2.5 mr-0.5" />
+                    <span>{isExpressSelected ? 'Express' : 'Free'}</span>
+                  </div>
+                  <div className="flex items-center bg-white/20 rounded-full px-1.5 py-0.5 text-xs">
+                    <Award className="h-2.5 w-2.5 mr-0.5" />
+                    <span>Top Rated</span>
                   </div>
                 </div>
               </div>
             </div>
           </Button>
+          
+          <div className="flex items-center justify-center mt-2 gap-1">
+            {[...Array(5)].map((_, index) => (
+              <div 
+                key={index} 
+                className={`w-1.5 h-1.5 rounded-full ${index < Math.ceil(urgencyPercentage/20) ? 'bg-red-500' : 'bg-gray-300'}`}
+              ></div>
+            ))}
+          </div>
         </div>
         
-        <div className="h-16"></div>
+        <div className="h-20"></div>
       </div>
     </div>
   );
