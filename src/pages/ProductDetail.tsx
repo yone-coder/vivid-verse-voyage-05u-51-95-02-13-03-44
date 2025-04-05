@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { ArrowLeft, Share, Heart, MessageCircle, Truck, Shield, Award, Percent, ThumbsUp, Zap, Star, Sparkles, ArrowRight, Crown, Clock, Gift, Check, Info, CreditCard, AlertCircle, Bookmark, Box, Tag, Download, Users, Rocket } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -673,3 +674,44 @@ const ProductDetail = () => {
                 {/* Apple Pay */}
                 <div className="w-8 h-5 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="12">
+                    <path d="M19.665 17.082c-.37.9-.54 1.3-1.01 2.09-.66 1.12-1.6 2.52-2.76 2.53-1.04.01-1.3-.68-2.72-.67-1.42 0-1.72.67-2.76.66-1.16-.01-2.05-1.27-2.71-2.39-1.86-3.05-2.05-6.64-.9-8.53.82-1.35 2.12-2.14 3.33-2.14 1.24 0 2.01.68 3.03.68.98 0 1.58-.68 3-.68 1.07 0 2.2.59 3 1.57-2.66 1.63-2.22 5.89.5 7.48zm-4.17-12.97c-1.2.1-2.61 1.21-3.08 2.72-.42 1.35.37 2.95 1.11 3.77.87.79 2.1 1.08 2.81.25-.69-1.24-1.2-2.54-1.07-4.21.12-1.46.8-2.22 1.74-2.81-.45-.23-.95-.37-1.51-.37-.11 0-.11 0 0 .65z" fill="#000"/>
+                  </svg>
+                </div>
+                
+                {/* Google Pay */}
+                <div className="w-8 h-5 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="12">
+                    <path d="M16.46 6.66V4.89H16v7.25h.46V8.81h2.71v3.33h.46V4.89h-.46v1.77h-2.71z" fill="#3C4043"/>
+                    <path d="M13.51 9.2V8.88h2.39v-.48h-2.39V8.07h2.54v-.72h-3v3.3h3.08v-.72h-2.62V9.2z" fill="#3C4043"/>
+                    <path d="M12.13 10.35c-.32.26-.75.4-1.19.4-.94 0-1.66-.77-1.66-1.72s.72-1.72 1.66-1.72c.45 0 .88.14 1.2.4l.29-.33c-.42-.32-.96-.5-1.5-.5-1.19 0-2.12.93-2.12 2.14S9.81 11.17 11 11.17c.54 0 1.08-.17 1.49-.5l-.36-.32z" fill="#3C4043"/>
+                    <path d="M6.82 11.45c1.37 0 2.17-.69 2.17-1.96v-3.2h-.88v3.2c0 .82-.45 1.23-1.29 1.23s-1.29-.41-1.29-1.23v-3.2h-.88v3.2c0 1.27.8 1.96 2.17 1.96z" fill="#3C4043"/>
+                  </svg>
+                </div>
+              </>
+            )}
+          </div>
+          
+          {showPaymentOptions && (
+            <div className="mt-2 text-xs text-gray-600">
+              Buy Now, Pay Later options available at checkout with Klarna and Afterpay.
+            </div>
+          )}
+        </div>
+      </div>
+      
+      <div className="mb-20" ref={tabsRef}>
+        <ProductTabs 
+          product={product} 
+          activeTab={activeTab} 
+          setActiveTab={setActiveTab} 
+          isScrolled={isScrolled} 
+        />
+      </div>
+      
+      {/* Replace the original fixed bottom buy button with our new ModernBuyButton component */}
+      <ModernBuyButton />
+    </div>
+  );
+};
+
+export default ProductDetail;
