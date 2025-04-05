@@ -25,10 +25,8 @@ const ModernBuyButton = () => {
   const [heartCount, setHeartCount] = useState(432);
   const [isHearted, setIsHearted] = useState(false);
 
-  // New state for social proof messages
   const [currentSocialProofMessage, setCurrentSocialProofMessage] = useState('');
 
-  // Array of diverse social proof messages
   const socialProofMessages = [
     "15 people bought this in the last hour!",
     "Someone from New York just purchased this.",
@@ -85,12 +83,10 @@ const ModernBuyButton = () => {
 
   useEffect(() => {
     const socialProofTimer = setInterval(() => {
-      // Randomly select a new social proof message
       const randomMessage = socialProofMessages[Math.floor(Math.random() * socialProofMessages.length)];
       setCurrentSocialProofMessage(randomMessage);
-    }, 5000); // Change message every 5 seconds
+    }, 5000);
     
-    // Initial message
     setCurrentSocialProofMessage(socialProofMessages[0]);
     
     return () => clearInterval(socialProofTimer);
@@ -489,7 +485,6 @@ const ModernBuyButton = () => {
         <div className="bg-gray-50 py-0.5 px-4 flex items-center justify-between border-t border-gray-200">
           <div className="flex items-center space-x-1">
             <div className="flex space-x-1">
-              {/* Visa Card */}
               <div className="w-6 h-4 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
                 <img 
                   src="/lovable-uploads/f3efe2eb-c3db-48bd-abc7-c65456fdc028.png" 
@@ -497,7 +492,6 @@ const ModernBuyButton = () => {
                   className="h-3 w-5 object-contain"
                 />
               </div>
-              {/* Mastercard */}
               <div className="w-6 h-4 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="10">
                   <circle fill="#EA001B" cx="8" cy="12" r="5"/>
@@ -505,7 +499,6 @@ const ModernBuyButton = () => {
                   <path fill="#FF5F00" d="M12 7.5v9a5 5 0 0 0 0-9z"/>
                 </svg>
               </div>
-              {/* Venmo - Updated with new image */}
               <div className="w-6 h-4 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
                 <img 
                   src="/lovable-uploads/dd1cad7b-c3b6-43a6-9bc6-deb38a120604.png" 
@@ -513,7 +506,6 @@ const ModernBuyButton = () => {
                   className="h-3 w-5 object-contain"
                 />
               </div>
-              {/* PayPal */}
               <div className="w-6 h-4 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="10">
                   <path fill="#253B80" d="M7 7h2c1.4 0 1.9 1 1.9 1.5 0 1.8-2 1.8-2.5 1.8H7.3L7 7z"/>
