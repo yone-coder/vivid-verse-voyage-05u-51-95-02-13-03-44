@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { ShoppingCart, Clock, Check, ChevronDown, Star, Info, TrendingUp, Heart, ShieldCheck, ArrowRight, AlertTriangle, Plus, Minus } from 'lucide-react';
 
@@ -330,7 +331,6 @@ const ModernBuyButton = () => {
             
             <div className="relative">
               <div className="flex items-center space-x-1">
-                <Clock size={14} className="text-red-500 animate-pulse" />
                 <div className="countdown-container">
                   <div className="countdown-unit">
                     <div className="countdown-value">{formatTime(timeLeft.minutes)}</div>
