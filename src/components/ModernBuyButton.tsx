@@ -140,9 +140,9 @@ const ModernBuyButton = () => {
   };
 
   const features = [
-    { icon: <ShieldCheck size={14} />, text: "Guaranteed quality" },
-    { icon: <TrendingUp size={14} />, text: "Trending now" },
-    { icon: <Heart size={14} />, text: "Customer favorite" }
+    { icon: <ShieldCheck size={12} />, text: "Guaranteed quality" },
+    { icon: <TrendingUp size={12} />, text: "Trending now" },
+    { icon: <Heart size={12} />, text: "Customer favorite" }
   ];
 
   const stockPercentage = (stockRemaining / 10) * 100;
@@ -153,14 +153,14 @@ const ModernBuyButton = () => {
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 font-aliexpress">
       <div 
-        className={`absolute -top-12 left-4 bg-white shadow-lg rounded-lg px-3 py-2 flex items-center space-x-2 
+        className={`absolute -top-10 left-4 bg-white shadow-lg rounded-lg px-2 py-1 flex items-center space-x-2 
                    transition-all duration-500 ${showSocialProof ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}
         style={{ animation: showSocialProof ? 'none' : 'fadeSlideIn 0.5s ease-out' }}
       >
         <div className="flex -space-x-1 animate-pulse">
-          <div className="w-5 h-5 rounded-full bg-gray-300 border-2 border-white"></div>
-          <div className="w-5 h-5 rounded-full bg-gray-400 border-2 border-white"></div>
-          <div className="w-5 h-5 rounded-full bg-gray-500 border-2 border-white"></div>
+          <div className="w-4 h-4 rounded-full bg-gray-300 border-2 border-white"></div>
+          <div className="w-4 h-4 rounded-full bg-gray-400 border-2 border-white"></div>
+          <div className="w-4 h-4 rounded-full bg-gray-500 border-2 border-white"></div>
         </div>
         <p className="text-xs font-medium text-gray-700">
           {showSocialProof ? 
@@ -177,9 +177,9 @@ const ModernBuyButton = () => {
       </div>
       
       {showPriceIncrease && (
-        <div className="absolute -top-20 right-4 bg-amber-50 border border-amber-200 shadow-lg rounded-lg px-3 py-2 flex items-center space-x-2"
+        <div className="absolute -top-16 right-4 bg-amber-50 border border-amber-200 shadow-lg rounded-lg px-2 py-1 flex items-center space-x-2"
              style={{ animation: 'slideDown 0.3s ease-out' }}>
-          <TrendingUp className="text-amber-500" size={16} />
+          <TrendingUp className="text-amber-500" size={14} />
           <p className="text-xs font-medium text-amber-800">
             Price increased due to high demand!
           </p>
@@ -205,10 +205,10 @@ const ModernBuyButton = () => {
           setVariantOpen(false);
         }}
       >
-        <div className={`bg-red-50 py-1 px-4 border-t border-red-100 flex items-center justify-between 
+        <div className={`bg-red-50 py-0.5 px-3 border-t border-red-100 flex items-center justify-between 
                       ${stockRemaining <= 3 ? 'animate-pulse' : ''}`}>
           <div className="flex items-center">
-            <AlertTriangle size={14} className="text-red-500 mr-1" />
+            <AlertTriangle size={12} className="text-red-500 mr-1" />
             <span className="text-xs font-bold text-red-700">
               {stockRemaining <= 1 ? 'Last one available!' : `Only ${stockRemaining} left in stock!`}
             </span>
@@ -218,7 +218,7 @@ const ModernBuyButton = () => {
           </div>
         </div>
         
-        <div className="h-1 w-full bg-gray-200">
+        <div className="h-0.5 w-full bg-gray-200">
           <div 
             className={`h-full ${stockRemaining <= 2 ? 'bg-red-500' : stockRemaining <= 5 ? 'bg-amber-500' : 'bg-green-500'}`}
             style={{ width: `${stockPercentage}%`, transition: 'width 0.5s ease-in-out' }}
@@ -227,12 +227,12 @@ const ModernBuyButton = () => {
         
         {isHovering && (
           <div 
-            className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-3 py-2 rounded-lg"
+            className="absolute bottom-full mb-1 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-2 py-1 rounded-lg"
             style={{ animation: 'fadeIn 0.3s ease-in-out' }}
           >
             <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-black rotate-45"></div>
             <span className="inline-flex items-center">
-              <Clock size={12} className="mr-1 animate-pulse text-red-400" />
+              <Clock size={10} className="mr-1 animate-pulse text-red-400" />
               Hurry! Almost gone!
             </span>
           </div>
@@ -240,30 +240,30 @@ const ModernBuyButton = () => {
         
         {variantOpen && (
           <div 
-            className="absolute bottom-full mb-2 left-4 bg-white shadow-xl rounded-lg overflow-hidden w-32"
+            className="absolute bottom-full mb-1 left-4 bg-white shadow-xl rounded-lg overflow-hidden w-32"
             style={{ animation: 'slideDown 0.2s ease-out' }}
           >
             {variants.map((variant, index) => (
               <div 
                 key={variant}
-                className="px-3 py-2 hover:bg-gray-100 cursor-pointer flex items-center space-x-2 transition-all duration-200 hover:translate-x-1"
+                className="px-2 py-1.5 hover:bg-gray-100 cursor-pointer flex items-center space-x-2 transition-all duration-200 hover:translate-x-1"
                 onClick={() => handleVariantChange(variant)}
                 style={{ animation: `fadeIn 0.3s ease-out ${index * 0.05}s` }}
               >
-                <div className={`w-4 h-4 rounded-full ${variantColors[variant]}`}></div>
-                <span className="text-sm">{variant}</span>
+                <div className={`w-3 h-3 rounded-full ${variantColors[variant]}`}></div>
+                <span className="text-xs">{variant}</span>
                 {selectedVariant === variant && 
-                  <Check size={14} className="ml-auto text-green-500 animate-pulse" />
+                  <Check size={12} className="ml-auto text-green-500 animate-pulse" />
                 }
               </div>
             ))}
           </div>
         )}
         
-        <div className="flex flex-col px-4 py-3">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gray-100 rounded-md flex items-center justify-center relative overflow-hidden">
+        <div className="flex flex-col px-3 py-2">
+          <div className="flex items-center justify-between mb-1">
+            <div className="flex items-center space-x-2">
+              <div className="w-6 h-6 bg-gray-100 rounded-md flex items-center justify-center relative overflow-hidden">
                 <div 
                   className={`absolute inset-1 rounded ${variantColors[selectedVariant]}`}
                   style={{ animation: isHovering ? 'pulse 2s infinite' : 'none' }}
@@ -272,7 +272,7 @@ const ModernBuyButton = () => {
               
               <div>
                 <div className="flex items-center">
-                  <span className={`font-bold text-base ${animatePrice ? 'animate-bounce text-red-500' : ''}`}>
+                  <span className={`font-bold text-sm ${animatePrice ? 'animate-bounce text-red-500' : ''}`}>
                     ${currentPrice}
                   </span>
                   <span className={`text-xs text-gray-500 line-through ml-1 ${pulseDiscount ? 'animate-pulse' : ''}`}>
@@ -297,7 +297,7 @@ const ModernBuyButton = () => {
                         key={star} 
                         fill={i < 4 ? "#FFD700" : "none"} 
                         color="#FFD700" 
-                        size={10}
+                        size={8}
                         className={i === showFeature % 5 ? "animate-ping" : ""}
                       />
                     ))}
@@ -309,7 +309,7 @@ const ModernBuyButton = () => {
             
             <div className="relative">
               <div className={`flex items-center text-xs font-medium ${timeLeft.minutes < 30 ? 'text-red-500' : 'text-gray-600'}`}>
-                <Clock size={12} className={`mr-1 ${timeLeft.minutes < 30 ? 'animate-pulse' : ''}`} />
+                <Clock size={10} className={`mr-1 ${timeLeft.minutes < 30 ? 'animate-pulse' : ''}`} />
                 {`${timeLeft.hours}h ${timeLeft.minutes}m`}
               </div>
               <span className={`text-xs text-red-500 font-medium ${highlightStock ? 'animate-bounce' : ''}`}>
@@ -317,7 +317,7 @@ const ModernBuyButton = () => {
               </span>
               {itemsInCart > 0 && (
                 <div 
-                  className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold shadow-md"
+                  className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs font-bold shadow-md"
                   style={{ animation: 'pulse 1s infinite' }}
                 >
                   {itemsInCart}
@@ -328,16 +328,16 @@ const ModernBuyButton = () => {
           
           <div className="flex items-center space-x-2 justify-between">
             <div 
-              className="flex items-center space-x-1 cursor-pointer bg-gray-100 px-3 py-2 rounded-lg hover:bg-gray-200 transition-all duration-300" 
+              className="flex items-center space-x-1 cursor-pointer bg-gray-100 px-2 py-1 rounded-lg hover:bg-gray-200 transition-all duration-300" 
               onClick={(e) => {
                 e.stopPropagation();
                 setVariantOpen(!variantOpen);
               }}
             >
-              <div className={`w-3 h-3 rounded-full ${variantColors[selectedVariant]}`} />
+              <div className={`w-2 h-2 rounded-full ${variantColors[selectedVariant]}`} />
               <span className="text-xs">{selectedVariant}</span>
               <ChevronDown 
-                size={12} 
+                size={10} 
                 className={`transform transition-transform duration-300 ${variantOpen ? 'rotate-180' : ''}`} 
               />
             </div>
@@ -346,7 +346,7 @@ const ModernBuyButton = () => {
               onClick={handleBuyNow}
               onMouseEnter={() => setButtonHover(true)}
               onMouseLeave={() => setButtonHover(false)}
-              className={`bg-gradient-to-r from-red-500 to-pink-600 text-white font-bold py-2 px-6 rounded-lg flex-grow flex items-center justify-center space-x-2 transition-all duration-300 
+              className={`bg-gradient-to-r from-red-500 to-pink-600 text-white font-bold py-1.5 px-4 rounded-lg flex-grow flex items-center justify-center space-x-1 transition-all duration-300 
                          ${buttonHover ? 'shadow-lg scale-105' : 'shadow-md'} 
                          ${shakeButton ? 'animate-shake' : ''}`}
               aria-label="Buy Now"
@@ -355,29 +355,29 @@ const ModernBuyButton = () => {
                 backgroundPosition: buttonHover ? 'right center' : 'left center'
               }}
             >
-              <ShoppingCart size={18} className={buttonHover ? 'animate-bounce' : ''} />
-              <span>{buttonHover ? 'Buy Now!' : 'Buy Now'}</span>
-              {buttonHover && <ArrowRight size={16} className="ml-1 animate-pulse" />}
+              <ShoppingCart size={14} className={buttonHover ? 'animate-bounce' : ''} />
+              <span className="text-sm">{buttonHover ? 'Buy Now!' : 'Buy Now'}</span>
+              {buttonHover && <ArrowRight size={12} className="ml-1 animate-pulse" />}
             </button>
           </div>
           
-          <div className="mt-2 text-xs text-gray-600 flex items-center justify-center animate-fadeIn">
+          <div className="mt-1 text-xs text-gray-600 flex items-center justify-center animate-fadeIn">
             {features[showFeature].icon}
-            <span className="ml-1 animate-fadeIn">{features[showFeature].text}</span>
+            <span className="ml-1 text-[10px] animate-fadeIn">{features[showFeature].text}</span>
           </div>
         </div>
         
-        <div className="bg-gray-50 py-1 px-4 flex items-center justify-between border-t border-gray-200">
-          <div className="flex items-center space-x-2">
+        <div className="bg-gray-50 py-0.5 px-4 flex items-center justify-between border-t border-gray-200">
+          <div className="flex items-center space-x-1">
             <div className="flex space-x-1">
-              <div className="w-6 h-4 bg-blue-600 rounded hover:animate-pulse"></div>
-              <div className="w-6 h-4 bg-yellow-400 rounded hover:animate-pulse"></div>
-              <div className="w-6 h-4 bg-gray-800 rounded hover:animate-pulse"></div>
+              <div className="w-5 h-3 bg-blue-600 rounded hover:animate-pulse"></div>
+              <div className="w-5 h-3 bg-yellow-400 rounded hover:animate-pulse"></div>
+              <div className="w-5 h-3 bg-gray-800 rounded hover:animate-pulse"></div>
             </div>
-            <span className="text-xs text-gray-500">Secure payment</span>
+            <span className="text-[10px] text-gray-500">Secure payment</span>
           </div>
-          <div className="text-xs text-gray-500 flex items-center group transition-all duration-300">
-            <Info size={10} className="mr-1 group-hover:animate-spin" />
+          <div className="text-[10px] text-gray-500 flex items-center group transition-all duration-300">
+            <Info size={8} className="mr-1 group-hover:animate-spin" />
             <span className="group-hover:font-bold">30-day returns</span>
           </div>
         </div>
