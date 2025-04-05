@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { ArrowLeft, Share, Heart, ShoppingCart, MessageCircle, Truck, Shield, Award, Percent, ThumbsUp, Zap, Star, Sparkles, ArrowRight, Crown, Clock, Gift, Check, Info, CreditCard, AlertCircle, Bookmark, Box, Tag, Download, Users, Rocket } from "lucide-react";
+import { ArrowLeft, Share, Heart, ShoppingCart, MessageCircle, Truck, Shield, Award, Percent, ThumbsUp, Zap, Star, Sparkles, ArrowRight, Crown, Clock, Gift, Check, Info, CreditCard, AlertCircle, Bookmark, Box, Tag, Download, Users, Rocket, ChevronDown, Camera, Ticket, Lock, Headphones, ArrowUpRight, CheckCircle, BadgePercent, ShoppingBag, Calendar, Flame, BarChart3, Eye, Lightning, Wifi, MapPin, Megaphone, DollarSign } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -28,6 +28,11 @@ const ProductDetail = () => {
   const [showWarrantyOptions, setShowWarrantyOptions] = useState(false);
   const [selectedWarranty, setSelectedWarranty] = useState("none");
   const [maxQuantityReached, setMaxQuantityReached] = useState(false);
+  const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("card");
+  const [showQuickShipping, setShowQuickShipping] = useState(false);
+  const [bundleDiscount, setBundleDiscount] = useState(false);
+  const [showBuyerReviews, setShowBuyerReviews] = useState(false);
   const headerRef = useRef<HTMLDivElement>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
@@ -214,6 +219,7 @@ const ProductDetail = () => {
   };
 
   const buyNow = () => {
+    setIsCheckoutModalOpen(true);
     toast({
       title: "Proceeding to checkout",
       description: `Processing order for ${quantity} x ${product.name} (${selectedColor})`,
@@ -255,6 +261,35 @@ const ProductDetail = () => {
     });
   };
 
+  const toggleBundleDiscount = () => {
+    setBundleDiscount(!bundleDiscount);
+    if (!bundleDiscount) {
+      toast({
+        title: "Bundle discount applied",
+        description: "You've saved 15% by adding accessories to your purchase!",
+        variant: "success"
+      });
+    } else {
+      toast({
+        title: "Bundle discount removed",
+        description: "Accessories removed from your purchase",
+      });
+    }
+  };
+
+  const toggleQuickShipping = () => {
+    setShowQuickShipping(!showQuickShipping);
+    if (!showQuickShipping) {
+      setIsExpressSelected(true);
+      toast({
+        title: "Quick shipping enabled",
+        description: "Your order will arrive within 48 hours with priority handling",
+      });
+    } else {
+      setIsExpressSelected(false);
+    }
+  };
+
   const currentVariant = product.variants.find(v => v.name === selectedColor);
   const currentPrice = currentVariant ? currentVariant.price : product.discountPrice;
   const originalPrice = currentVariant ? Math.round(currentVariant.price * 1.6 * 100) / 100 : product.price;
@@ -262,12 +297,19 @@ const ProductDetail = () => {
   const warrantyOption = product.warranty.find(w => w.name.toLowerCase() === selectedWarranty);
   const warrantyPrice = warrantyOption ? warrantyOption.price : 0;
   
-  const totalPrice = (currentPrice * quantity) + warrantyPrice + (giftWrap ? 2.99 : 0) + (isExpressSelected ? product.shipping.express : 0);
+  let totalPrice = (currentPrice * quantity) + warrantyPrice + (giftWrap ? 2.99 : 0) + (isExpressSelected ? product.shipping.express : 0);
+  
+  if (bundleDiscount) {
+    totalPrice += 19.99;
+    totalPrice = totalPrice * 0.85;
+  }
   
   const formatPrice = (price: number) => price.toFixed(2);
 
   const currentStock = currentVariant ? currentVariant.stock : 0;
   const stockPercentage = Math.min(100, Math.max(5, (currentStock / 300) * 100));
+
+  const salesData = [65, 80, 45, 70, 90, 65];
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
@@ -336,12 +378,6 @@ const ProductDetail = () => {
       
       <div className={`flex-1 ${isScrolled ? 'pt-14' : ''}`}>
         <div className="bg-white p-4 mb-2">
-          <div className="flex items-center mb-1">
-            <Badge variant="outline" className="text-xs bg-red-50 text-red-500 border-red-200">Flash Deal</Badge>
-            <Badge variant="outline" className="text-xs bg-orange-50 text-orange-500 border-orange-200 ml-2">Top Seller</Badge>
-            <Badge variant="outline" className="text-xs bg-green-50 text-green-500 border-green-200 ml-2">Free Shipping</Badge>
-          </div>
-          
           <div className="flex items-baseline">
             <span className="text-xl font-bold text-red-500">${formatPrice(currentPrice)}</span>
             <span className="ml-2 text-sm line-through text-gray-500">${formatPrice(originalPrice)}</span>
@@ -718,41 +754,246 @@ const ProductDetail = () => {
           />
         </div>
         
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-3 z-20">
-          <Button 
-            className="w-full h-14 bg-purple-600 hover:bg-purple-700 text-white relative overflow-hidden"
-            onClick={buyNow}
-          >
-            <div className="absolute inset-0 flex items-center justify-center">
+        <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-gray-900 to-gray-800 border-t border-gray-700 p-3 z-20">
+          <div className="flex flex-col space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex flex-col">
+                <div className="text-xs text-gray-300">Final Price:</div>
+                <div className="flex items-baseline">
+                  <span className="text-xl font-bold text-white">${formatPrice(totalPrice)}</span>
+                  {bundleDiscount && (
+                    <span className="ml-2 text-xs bg-green-500 text-white px-1 py-0.5 rounded">SAVE 15%</span>
+                  )}
+                </div>
+                <div className="flex items-center mt-1">
+                  <Eye className="h-3 w-3 text-gray-400 mr-1" />
+                  <span className="text-xs text-gray-400">{Math.floor(Math.random() * 30) + 10} viewing now</span>
+                </div>
+              </div>
+              
+              <Button 
+                variant="neon" 
+                size="pill"
+                className="relative"
+                onClick={buyNow}
+              >
+                <Rocket className="h-5 w-5 mr-1" />
+                <span>Buy Now</span>
+              </Button>
+            </div>
+            
+            <div className="grid grid-cols-4 gap-2">
+              <Button 
+                variant="glass" 
+                className="h-auto py-2 flex flex-col items-center text-xs" 
+                onClick={addToCart}
+              >
+                <ShoppingCart className="h-4 w-4 mb-1" />
+                Add to Cart
+              </Button>
+              
+              <Button 
+                variant={bundleDiscount ? "gradient" : "glass"} 
+                className="h-auto py-2 flex flex-col items-center text-xs"
+                onClick={toggleBundleDiscount}
+              >
+                <BadgePercent className="h-4 w-4 mb-1" />
+                Bundle Deal
+              </Button>
+              
+              <Button 
+                variant={showQuickShipping ? "gradient" : "glass"} 
+                className="h-auto py-2 flex flex-col items-center text-xs"
+                onClick={toggleQuickShipping}
+              >
+                <Lightning className="h-4 w-4 mb-1" />
+                Express
+              </Button>
+              
+              <Button 
+                variant="glass" 
+                className="h-auto py-2 flex flex-col items-center text-xs"
+                onClick={toggleFavorite}
+              >
+                <Heart className={`h-4 w-4 mb-1 ${isFavorite ? "fill-red-500 text-red-500" : ""}`} />
+                Wishlist
+              </Button>
+            </div>
+            
+            <div className="grid grid-cols-3 gap-2 px-1">
               <div className="flex flex-col items-center">
-                <div className="flex items-center justify-between w-full px-4 mb-1.5">
-                  <div className="flex items-center">
-                    <Rocket className="h-5 w-5 mr-2" />
-                    <span className="font-bold text-base">Buy Now</span>
-                  </div>
-                  <div className="font-bold">${formatPrice(totalPrice)}</div>
+                <div className="text-[10px] text-gray-400">Stock Status</div>
+                <div className="flex items-center">
+                  <div className="h-1.5 w-1.5 bg-green-500 rounded-full mr-1"></div>
+                  <div className="text-xs text-white">{currentStock} Available</div>
                 </div>
-                <div className="w-full px-4">
-                  <Progress 
-                    value={Math.min(100, currentStock ? (100 - (currentStock / 300) * 100) : 95)} 
-                    className="h-1 w-full"
-                    indicatorClassName="bg-white/30"
-                  />
+              </div>
+              
+              <div className="flex flex-col items-center">
+                <div className="text-[10px] text-gray-400">Guarantee</div>
+                <div className="flex items-center">
+                  <Shield className="h-3 w-3 text-purple-400 mr-1" />
+                  <div className="text-xs text-white">30-Day</div>
                 </div>
-                <div className="flex justify-between w-full px-4 mt-1">
-                  <div className="text-xs opacity-90">
-                    {quantity}x {selectedColor}
-                  </div>
-                  <div className="text-xs opacity-90">
-                    {currentStock > 50 ? `${currentStock} left` : `Only ${currentStock} left!`}
-                  </div>
+              </div>
+              
+              <div className="flex flex-col items-center">
+                <div className="text-[10px] text-gray-400">Delivery</div>
+                <div className="flex items-center">
+                  <Truck className="h-3 w-3 text-blue-400 mr-1" />
+                  <div className="text-xs text-white">{isExpressSelected ? "2 Days" : "7 Days"}</div>
                 </div>
               </div>
             </div>
-          </Button>
+            
+            <div className="px-2">
+              <div className="flex items-center justify-between mb-1">
+                <div className="text-xs text-gray-300 flex items-center">
+                  <BarChart3 className="h-3 w-3 mr-1" />
+                  Sales Trend
+                </div>
+                <div className="text-xs text-purple-300">+23% this week</div>
+              </div>
+              <div className="flex items-end h-5 gap-1">
+                {salesData.map((value, index) => (
+                  <div 
+                    key={index}
+                    className="flex-1 bg-gradient-to-t from-purple-600 to-purple-400 rounded-sm"
+                    style={{ height: `${value}%` }}
+                  ></div>
+                ))}
+              </div>
+            </div>
+          </div>
+          
+          {isCheckoutModalOpen && (
+            <div className="bg-gray-800 mt-3 p-3 rounded-lg border border-gray-700 text-white">
+              <div className="text-sm font-medium mb-2 flex items-center">
+                <ShoppingBag className="h-4 w-4 mr-2 text-purple-400" />
+                Order Summary
+                <Button variant="ghost" size="sm" className="ml-auto h-6 w-6 p-0" onClick={() => setIsCheckoutModalOpen(false)}>
+                  <ChevronDown className="h-4 w-4 text-gray-400" />
+                </Button>
+              </div>
+              
+              <div className="space-y-2 text-xs">
+                <div className="flex justify-between">
+                  <div className="flex items-center">
+                    <div className="w-6 h-6 bg-gray-700 rounded-md mr-2"></div>
+                    <span>{quantity}x {selectedColor}</span>
+                  </div>
+                  <span>${formatPrice(currentPrice * quantity)}</span>
+                </div>
+                
+                {warrantyPrice > 0 && (
+                  <div className="flex justify-between">
+                    <div className="flex items-center">
+                      <Shield className="h-4 w-4 text-blue-400 mr-2" />
+                      <span>{warrantyOption?.name} Warranty</span>
+                    </div>
+                    <span>+${formatPrice(warrantyPrice)}</span>
+                  </div>
+                )}
+                
+                {giftWrap && (
+                  <div className="flex justify-between">
+                    <div className="flex items-center">
+                      <Gift className="h-4 w-4 text-pink-400 mr-2" />
+                      <span>Gift Wrapping</span>
+                    </div>
+                    <span>+$2.99</span>
+                  </div>
+                )}
+                
+                {isExpressSelected && (
+                  <div className="flex justify-between">
+                    <div className="flex items-center">
+                      <Lightning className="h-4 w-4 text-yellow-400 mr-2" />
+                      <span>Express Shipping</span>
+                    </div>
+                    <span>+${formatPrice(product.shipping.express)}</span>
+                  </div>
+                )}
+                
+                {bundleDiscount && (
+                  <>
+                    <div className="flex justify-between">
+                      <div className="flex items-center">
+                        <Headphones className="h-4 w-4 text-gray-400 mr-2" />
+                        <span>Accessories Bundle</span>
+                      </div>
+                      <span>+$19.99</span>
+                    </div>
+                    <div className="flex justify-between text-green-400">
+                      <span>Bundle Discount (15%)</span>
+                      <span>-${formatPrice((currentPrice * quantity + warrantyPrice + (giftWrap ? 2.99 : 0) + (isExpressSelected ? product.shipping.express : 0) + 19.99) * 0.15)}</span>
+                    </div>
+                  </>
+                )}
+                
+                <div className="pt-2 border-t border-gray-700 flex justify-between font-medium">
+                  <span>Total:</span>
+                  <span className="text-purple-300">${formatPrice(totalPrice)}</span>
+                </div>
+                
+                <div className="flex justify-between pt-1 text-[10px] text-gray-400">
+                  <span>Estimated delivery:</span>
+                  <span>{isExpressSelected ? "Apr 7 - Apr 9" : "Apr 12 - Apr 19"}</span>
+                </div>
+              </div>
+              
+              <div className="mt-3">
+                <div className="text-xs text-gray-300 mb-2">Payment Method:</div>
+                <div className="flex space-x-2">
+                  <Button 
+                    variant={paymentMethod === "card" ? "gradient" : "glass"} 
+                    size="sm"
+                    className="text-xs flex-1"
+                    onClick={() => setPaymentMethod("card")}
+                  >
+                    <CreditCard className="h-3.5 w-3.5 mr-1" />
+                    Card
+                  </Button>
+                  <Button 
+                    variant={paymentMethod === "paypal" ? "gradient" : "glass"} 
+                    size="sm"
+                    className="text-xs flex-1"
+                    onClick={() => setPaymentMethod("paypal")}
+                  >
+                    <DollarSign className="h-3.5 w-3.5 mr-1" />
+                    PayPal
+                  </Button>
+                  <Button 
+                    variant={paymentMethod === "apple" ? "gradient" : "glass"} 
+                    size="sm"
+                    className="text-xs flex-1"
+                    onClick={() => setPaymentMethod("apple")}
+                  >
+                    <span className="mr-1">⌘</span>
+                    Pay
+                  </Button>
+                </div>
+              </div>
+              
+              <Button 
+                variant="neon" 
+                className="w-full mt-3 gap-2"
+                size="lg"
+              >
+                <Lock className="h-4 w-4" />
+                Complete Purchase
+                <ArrowUpRight className="h-3.5 w-3.5" />
+              </Button>
+              
+              <div className="flex items-center justify-center mt-2 text-[10px] text-gray-400">
+                <Shield className="h-3 w-3 mr-1" />
+                Secure payment processing by Stripe
+              </div>
+            </div>
+          )}
         </div>
         
-        <div className="h-16"></div>
+        <div className="h-36"></div>
       </div>
     </div>
   );

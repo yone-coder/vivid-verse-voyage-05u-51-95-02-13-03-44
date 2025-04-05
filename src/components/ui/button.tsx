@@ -22,6 +22,9 @@ const buttonVariants = cva(
         purple: "bg-purple-600 text-white hover:bg-purple-700",
         success: "bg-green-600 text-white hover:bg-green-700",
         warning: "bg-amber-500 text-white hover:bg-amber-600",
+        gradient: "bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:from-purple-700 hover:to-indigo-700 shadow-lg",
+        glass: "bg-white/20 backdrop-blur-lg border border-white/30 text-white hover:bg-white/30",
+        neon: "bg-purple-600 text-white shadow-[0_0_15px_rgba(139,92,246,0.5)] hover:shadow-[0_0_25px_rgba(139,92,246,0.7)] hover:bg-purple-700 transition-all duration-300",
       },
       size: {
         default: "h-10 px-4 py-2",
@@ -29,6 +32,7 @@ const buttonVariants = cva(
         lg: "h-11 rounded-md px-8",
         xl: "h-12 rounded-md px-10 text-base",
         icon: "h-10 w-10",
+        pill: "h-11 rounded-full px-8",
       },
     },
     defaultVariants: {
