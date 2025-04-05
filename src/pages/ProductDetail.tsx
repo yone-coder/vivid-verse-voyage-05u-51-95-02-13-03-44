@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { ArrowLeft, Share, Heart, ShoppingCart, MessageCircle, Truck, Shield, Award, Percent, ThumbsUp, Zap, Star, Sparkles, ArrowRight, Crown, Clock, Gift, Check, Info, CreditCard, AlertCircle, Bookmark, Box, Tag, Download, Users, Rocket } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -12,6 +11,9 @@ import { Separator } from "@/components/ui/separator";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
+import LiveActivityNotifications from "@/components/LiveActivityNotifications";
+import LiveStockUpdates from "@/components/LiveStockUpdates";
+import LivePurchaseBanner from "@/components/LivePurchaseBanner";
 
 const ProductDetail = () => {
   const [activeTab, setActiveTab] = useState("description");
@@ -276,6 +278,8 @@ const ProductDetail = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
+      <LivePurchaseBanner productName={product.name} />
+      
       <div ref={headerRef} className="relative w-full">
         <ProductImageGallery images={product.images} />
         
@@ -468,15 +472,10 @@ const ProductDetail = () => {
         </div>
         
         <div className="mt-2 mb-2 p-4 bg-white">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-sm font-medium text-gray-700">Stock Status:</span>
-            <span className="text-xs text-gray-500">{currentStock} units available</span>
-          </div>
-          <Progress value={stockPercentage} className="h-1.5" />
-          <div className="mt-1 text-xs text-orange-600 flex items-center">
-            <AlertCircle className="h-3.5 w-3.5 mr-1" />
-            {product.stock.selling_fast ? "Selling fast! 56 people purchased in the last 24 hours" : "Low in stock"}
-          </div>
+          <LiveStockUpdates 
+            initialStock={currentVariant ? currentVariant.stock : 200}
+            highDemand={product.stock.selling_fast}
+          />
           
           <div className="mt-4 flex items-center justify-between">
             <span className="text-sm font-medium text-gray-700">Quantity:</span>
@@ -649,7 +648,6 @@ const ProductDetail = () => {
           )}
         </div>
         
-        {/* Redesigned Floating Section */}
         <div className="fixed bottom-0 left-0 right-0 z-30">
           <div className="bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.1)] p-3 flex flex-col">
             <div className="flex items-center justify-between mb-2">
@@ -718,6 +716,8 @@ const ProductDetail = () => {
           isScrolled={isScrolled} 
         />
       </div>
+      
+      <LiveActivityNotifications />
     </div>
   );
 };
