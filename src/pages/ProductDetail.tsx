@@ -335,7 +335,7 @@ const ProductDetail = () => {
       )}
       
       <div className={`flex-1 ${isScrolled ? 'pt-14' : ''}`}>
-        <div className="bg-white p-4 mb-2">
+        <div className="bg-white p-4 mb-1">
           <div className="flex items-baseline">
             <span className="text-xl font-bold text-red-500">${formatPrice(currentPrice)}</span>
             <span className="ml-2 text-sm line-through text-gray-500">${formatPrice(originalPrice)}</span>
@@ -577,7 +577,7 @@ const ProductDetail = () => {
           )}
         </div>
         
-        <div className="bg-white p-4 mb-2">
+        <div className="bg-white p-4 mb-1">
           <div className="flex items-center justify-between mb-1">
             <div className="text-sm text-gray-700 font-medium">Select Variant</div>
             <div 
