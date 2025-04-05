@@ -33,21 +33,21 @@ const ModernBuyButton = () => {
     "32 people are currently viewing this item.",
     "Back in stock! Limited quantity available.",
     "Hot right now! Selling 5x faster than usual.",
-    "Only 2 left in stock — selling fast!",
-    "Deal ends in 01:42:35 — don't miss out!",
+    "Only 2 left in stock - selling fast!",
+    "Deal ends in 01:42:35 - don't miss out!",
     "Your size is almost gone!",
     "Next restock expected in 2 weeks.",
     "This item was sold out last week. Get it while you can!",
     "Rated 4.9/5 by 870 customers.",
-    "Exactly what I needed!" – James T.",
+    "\"Exactly what I needed!\" - James T.",
     "Over 3,000 people love this product.",
     "Top-rated in its category.",
-    "Fast shipping and great quality!" – Verified Buyer",
-    "You've been looking at this for a while… ready to grab it?",
+    "\"Fast shipping and great quality!\" - Verified Buyer",
+    "You've been looking at this for a while... ready to grab it?",
     "This item completes your vibe. Just sayin'.",
-    "Seen on TikTok – going viral now!",
+    "Seen on TikTok - going viral now!",
     "Buy now and get a surprise bonus!",
-    "Cart's waiting… but this product won't!"
+    "Cart's waiting... but this product won't!"
   ];
 
   useEffect(() => {
