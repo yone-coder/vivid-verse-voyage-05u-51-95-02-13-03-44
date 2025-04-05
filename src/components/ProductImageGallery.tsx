@@ -15,15 +15,19 @@ interface ProductImageGalleryProps {
 const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const handleSelectChange = (index: number) => {
-    setCurrentIndex(index);
+  // Custom handler to work with the Carousel component's API
+  const handleApiChange = (api: { selectedScrollSnap: () => number }) => {
+    setCurrentIndex(api.selectedScrollSnap());
   };
 
   return (
     <div className="relative w-full aspect-square bg-gray-100">
       <Carousel
         className="w-full h-full"
-        onSelect={handleSelectChange}
+        opts={{
+          loop: true,
+        }}
+        onScrollSnapChange={handleApiChange}
       >
         <CarouselContent className="h-full">
           {images.map((image, index) => (

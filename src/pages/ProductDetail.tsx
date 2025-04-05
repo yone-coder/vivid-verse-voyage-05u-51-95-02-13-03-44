@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect, useRef } from "react";
-import { ArrowLeft, Share, Heart, ShoppingCart, MessageCircle, TruckDelivery, Shield, Award, Percent, ThumbsUp } from "lucide-react";
+import { ArrowLeft, Share, Heart, ShoppingCart, MessageCircle, Truck, Shield, Award, Percent, ThumbsUp } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -20,7 +19,6 @@ const ProductDetail = () => {
   const headerRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
 
-  // Mock product data
   const product = {
     id: "nebula-pro-2025",
     name: "Galaxy Nebula Projector Pro 2025",
@@ -63,17 +61,14 @@ const ProductDetail = () => {
     ]
   };
 
-  // Increment quantity
   const incrementQuantity = () => {
     setQuantity(prev => Math.min(prev + 1, 10));
   };
 
-  // Decrement quantity
   const decrementQuantity = () => {
     setQuantity(prev => Math.max(prev - 1, 1));
   };
 
-  // Handle scroll to detect when to show sticky header
   useEffect(() => {
     const handleScroll = () => {
       if (headerRef.current) {
@@ -146,11 +141,9 @@ const ProductDetail = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
-      {/* Header section with gallery */}
       <div ref={headerRef} className="relative w-full">
         <ProductImageGallery images={product.images} />
         
-        {/* Overlay buttons on gallery */}
         <div className="absolute top-4 left-4 right-4 flex justify-between z-10">
           <Link to="/">
             <Button variant="outline" size="icon" className="rounded-full bg-white/70 backdrop-blur-sm hover:bg-white/90">
@@ -178,7 +171,6 @@ const ProductDetail = () => {
         </div>
       </div>
 
-      {/* Sticky header that appears when scrolled */}
       {isScrolled && (
         <div className="fixed top-0 left-0 right-0 bg-white z-30 shadow-sm">
           <div className="flex items-center h-14 px-4">
@@ -212,9 +204,7 @@ const ProductDetail = () => {
         </div>
       )}
       
-      {/* Product info and tabs */}
       <div className={`flex-1 ${isScrolled ? 'pt-14' : ''}`}>
-        {/* Basic product info */}
         <div className="bg-white p-4 mb-2">
           <div className="flex items-center mb-1">
             <Badge variant="outline" className="text-xs bg-red-50 text-red-500 border-red-200">Flash Deal</Badge>
@@ -244,7 +234,6 @@ const ProductDetail = () => {
             <span className="text-gray-500">{product.sold}+ Sold</span>
           </div>
           
-          {/* Coupons */}
           <div className="mt-3 bg-red-50 p-2.5 rounded-md">
             <div className="text-sm font-medium text-gray-700 mb-1.5">Available Coupons:</div>
             <div className="flex flex-wrap gap-2">
@@ -265,9 +254,8 @@ const ProductDetail = () => {
             </div>
           </div>
 
-          {/* Shipping info */}
           <div className="mt-3 flex items-center text-sm">
-            <TruckDelivery className="h-4 w-4 text-gray-600 mr-2" />
+            <Truck className="h-4 w-4 text-gray-600 mr-2" />
             <div>
               <span className="text-gray-700">Shipping: </span>
               <span className="font-medium">{product.shipping.free ? "Free Shipping" : `$${product.shipping.express}`}</span>
@@ -284,7 +272,6 @@ const ProductDetail = () => {
           </div>
         </div>
         
-        {/* Variant selector */}
         <div className="bg-white p-4 mb-2">
           <div 
             className="flex justify-between items-center"
@@ -345,7 +332,6 @@ const ProductDetail = () => {
           )}
         </div>
         
-        {/* Shop info */}
         <div className="bg-white p-4 mb-2">
           <div className="flex items-center">
             <div className="w-10 h-10 bg-gray-200 rounded-full mr-3"></div>
@@ -376,7 +362,6 @@ const ProductDetail = () => {
           </div>
         </div>
         
-        {/* Recommended Bundle */}
         <div className="bg-white p-4 mb-2">
           <div className="flex items-center justify-between mb-3">
             <div className="font-medium">Frequently Bought Together</div>
@@ -403,7 +388,6 @@ const ProductDetail = () => {
           </Button>
         </div>
         
-        {/* Guarantee badges */}
         <div className="bg-white p-4 mb-2 flex justify-between text-xs text-gray-500">
           <div className="flex flex-col items-center">
             <Shield className="h-5 w-5 mb-1 text-gray-700" />
@@ -414,7 +398,7 @@ const ProductDetail = () => {
             <span>Top Quality</span>
           </div>
           <div className="flex flex-col items-center">
-            <TruckDelivery className="h-5 w-5 mb-1 text-gray-700" />
+            <Truck className="h-5 w-5 mb-1 text-gray-700" />
             <span>Fast Shipping</span>
           </div>
           <div className="flex flex-col items-center">
@@ -423,7 +407,6 @@ const ProductDetail = () => {
           </div>
         </div>
         
-        {/* Quick actions */}
         <div className="bg-white p-4 mb-2 flex justify-between">
           <Button variant="ghost" size="sm" className="flex flex-col items-center h-auto py-2 flex-1" onClick={askQuestion}>
             <MessageCircle className="h-5 w-5 mb-1" />
@@ -441,7 +424,6 @@ const ProductDetail = () => {
           </Button>
         </div>
         
-        {/* Tabs for product details */}
         <ProductTabs 
           product={product} 
           activeTab={activeTab}
@@ -449,7 +431,6 @@ const ProductDetail = () => {
           isScrolled={isScrolled}
         />
           
-        {/* Add to cart sticky footer */}
         <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-3 flex items-center z-20">
           <Button variant="ghost" size="sm" className="flex flex-col items-center h-16 mr-2 px-3" onClick={() => window.open('/cart', '_blank')}>
             <ShoppingCart className="h-6 w-6 mb-1" />
@@ -472,7 +453,6 @@ const ProductDetail = () => {
           </div>
         </div>
         
-        {/* Extra padding at bottom to account for fixed footer */}
         <div className="h-16"></div>
       </div>
     </div>
