@@ -80,7 +80,8 @@ const ModernBuyButton = () => {
     const priceInterval = setInterval(() => {
       // Random chance to increase price due to demand
       if (stockRemaining <= 5 && Math.random() > 0.5) {
-        const newIncrement = priceIncrement + (Math.random() * 2).toFixed(2) * 1;
+        // Fix: Convert to number properly before adding
+        const newIncrement = priceIncrement + parseFloat((Math.random() * 2).toFixed(2));
         setPriceIncrement(newIncrement);
         setAnimatePrice(true);
         setShowPriceIncrease(true);
@@ -136,7 +137,7 @@ const ModernBuyButton = () => {
     }, 1500);
   };
 
-  const handleVariantChange = (variant) => {
+  const handleVariantChange = (variant: string) => {
     setSelectedVariant(variant);
     setVariantOpen(false);
   };
@@ -160,6 +161,8 @@ const ModernBuyButton = () => {
   
   // Current price with any increments
   const currentPrice = (basePrice + priceIncrement).toFixed(2);
+  // Fix: Ensure we're calculating with numbers
+  const discountPercentage = Math.round(((79.99 - parseFloat(currentPrice)) / 79.99) * 100);
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50">
@@ -300,7 +303,7 @@ const ModernBuyButton = () => {
                     $79.99
                   </span>
                   <span className={`text-xs text-red-500 ml-1 ${pulseDiscount ? 'animate-ping' : ''}`}>
-                    -{Math.round(((79.99 - currentPrice) / 79.99) * 100)}%
+                    -{discountPercentage}%
                   </span>
                   
                   {priceIncrement > 0 && (
@@ -408,45 +411,47 @@ const ModernBuyButton = () => {
         </div>
       </div>
       
-      {/* CSS Keyframes definitions */}
-      <style jsx>{`
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        
-        @keyframes fadeSlideIn {
-          from { opacity: 0; transform: translateY(-10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        
-        @keyframes slideDown {
-          from { opacity: 0; transform: translateY(-10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        
-        @keyframes pulse {
-          0% { opacity: 1; }
-          50% { opacity: 0.6; }
-          100% { opacity: 1; }
-        }
-        
-        @keyframes animate-shake {
-          0% { transform: translateX(0); }
-          25% { transform: translateX(-3px); }
-          50% { transform: translateX(3px); }
-          75% { transform: translateX(-3px); }
-          100% { transform: translateX(0); }
-        }
-        
-        .animate-shake {
-          animation: animate-shake 0.4s ease-in-out;
-        }
-        
-        .animate-fadeIn {
-          animation: fadeIn 0.5s ease-in-out;
-        }
-      `}</style>
+      {/* CSS Keyframes definitions - Fixed property issue */}
+      <style>
+        {`
+          @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          
+          @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+          
+          @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+          
+          @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+          }
+          
+          @keyframes animate-shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-3px); }
+            50% { transform: translateX(3px); }
+            75% { transform: translateX(-3px); }
+            100% { transform: translateX(0); }
+          }
+          
+          .animate-shake {
+            animation: animate-shake 0.4s ease-in-out;
+          }
+          
+          .animate-fadeIn {
+            animation: fadeIn 0.5s ease-in-out;
+          }
+        `}
+      </style>
     </div>
   );
 };
