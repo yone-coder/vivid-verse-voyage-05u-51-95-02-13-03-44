@@ -1,5 +1,6 @@
+
 import React, { useState, useEffect } from 'react';
-import { ShoppingCart, Clock, Check, ChevronDown, Star, Info, TrendingUp, Heart, ShieldCheck, ArrowRight, AlertTriangle, Plus, Minus, Eye, MapPin, Users, Zap, Award, ThumbsUp } from 'lucide-react';
+import { ShoppingCart, Clock, Check, ChevronDown, Star, Info, TrendingUp, Heart, ShieldCheck, ArrowRight, AlertTriangle, Plus, Minus } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 
 const ModernBuyButton = () => {
@@ -24,31 +25,6 @@ const ModernBuyButton = () => {
   const [stockProgressAnimation, setStockProgressAnimation] = useState(false);
   const [heartCount, setHeartCount] = useState(432);
   const [isHearted, setIsHearted] = useState(false);
-  const [currentNotification, setCurrentNotification] = useState(0);
-  const [fadeNotification, setFadeNotification] = useState(false);
-
-  const socialProofNotifications = [
-    { icon: <Users size={12} className="text-blue-500" />, text: "15 people bought this in the last hour!" },
-    { icon: <MapPin size={12} className="text-red-500" />, text: "Someone from New York just purchased this." },
-    { icon: <Eye size={12} className="text-purple-500" />, text: "32 people are currently viewing this item." },
-    { icon: <Zap size={12} className="text-amber-500" />, text: "Back in stock! Limited quantity available." },
-    { icon: <TrendingUp size={12} className="text-green-500" />, text: "Hot right now! Selling 5x faster than usual." },
-    { icon: <AlertTriangle size={12} className="text-orange-500" />, text: "Only 2 left in stock — selling fast!" },
-    { icon: <Clock size={12} className="text-red-500" />, text: "Deal ends soon — don't miss out!" },
-    { icon: <AlertTriangle size={12} className="text-rose-500" />, text: "Your size is almost gone!" },
-    { icon: <Clock size={12} className="text-gray-500" />, text: "Next restock expected in 2 weeks." },
-    { icon: <Zap size={12} className="text-yellow-500" />, text: "This item was sold out last week. Get it while you can!" },
-    { icon: <Star size={12} className="text-amber-500" />, text: "Rated 4.9/5 by 870 customers." },
-    { icon: <ThumbsUp size={12} className="text-blue-500" />, text: ""Exactly what I needed!" – James T." },
-    { icon: <Users size={12} className="text-indigo-500" />, text: "Over 3,000 people love this product." },
-    { icon: <Award size={12} className="text-teal-500" />, text: "Top-rated in its category." },
-    { icon: <Check size={12} className="text-emerald-500" />, text: ""Fast shipping and great quality!" – Verified Buyer" },
-    { icon: <Eye size={12} className="text-slate-500" />, text: "You've been looking at this for a while… ready to grab it?" },
-    { icon: <ShieldCheck size={12} className="text-blue-500" />, text: "This item completes your vibe. Just sayin'." },
-    { icon: <TrendingUp size={12} className="text-pink-500" />, text: "Seen on TikTok – going viral now!" },
-    { icon: <Gift size={12} className="text-purple-500" />, text: "Buy now and get a surprise bonus!" },
-    { icon: <ShoppingCart size={12} className="text-gray-500" />, text: "Cart's waiting… but this product won't!" }
-  ];
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -88,21 +64,11 @@ const ModernBuyButton = () => {
 
   useEffect(() => {
     const socialProofTimer = setInterval(() => {
-      setFadeNotification(true);
-      
-      setTimeout(() => {
-        let newIndex;
-        do {
-          newIndex = Math.floor(Math.random() * socialProofNotifications.length);
-        } while (newIndex === currentNotification && socialProofNotifications.length > 1);
-        
-        setCurrentNotification(newIndex);
-        setFadeNotification(false);
-      }, 500);
+      setShowSocialProof(prev => !prev);
     }, 5000);
     
     return () => clearInterval(socialProofTimer);
-  }, [currentNotification]);
+  }, []);
 
   useEffect(() => {
     const discountInterval = setInterval(() => {
@@ -253,8 +219,8 @@ const ModernBuyButton = () => {
     <div className="fixed bottom-0 left-0 right-0 z-50 font-sans">
       <div 
         className={`absolute -top-10 left-4 bg-white shadow-lg rounded-lg px-2 py-1 flex items-center space-x-2 
-                   transition-all duration-500 ${fadeNotification ? 'opacity-0 translate-y-2' : 'opacity-100 translate-y-0'}`}
-        style={{ animation: fadeNotification ? 'fadeSlideOut 0.5s ease-out' : 'fadeSlideIn 0.5s ease-out' }}
+                   transition-all duration-500 ${showSocialProof ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}
+        style={{ animation: showSocialProof ? 'none' : 'fadeSlideIn 0.5s ease-out' }}
       >
         <div className="flex -space-x-1 animate-pulse">
           <div className="w-4 h-4 rounded-full bg-gray-300 border-2 border-white"></div>
@@ -262,11 +228,16 @@ const ModernBuyButton = () => {
           <div className="w-4 h-4 rounded-full bg-gray-500 border-2 border-white"></div>
         </div>
         <p className="text-xs font-medium text-gray-700">
-          <span className="inline-flex items-center gap-1">
-            <span className="animate-pulse text-blue-500 mr-1">•</span>
-            {socialProofNotifications[currentNotification].icon}
-            {socialProofNotifications[currentNotification].text}
-          </span>
+          {showSocialProof ? 
+            <span className="inline-flex items-center">
+              <span className="animate-pulse text-red-500 mr-1">•</span>
+              15 people bought this recently
+            </span> : 
+            <span className="inline-flex items-center">
+              <span className="animate-pulse text-yellow-500 mr-1">★</span>
+              Highly rated product: 4.8/5
+            </span>
+          }
         </p>
       </div>
       
@@ -547,19 +518,9 @@ const ModernBuyButton = () => {
             to { opacity: 1; }
           }
           
-          @keyframes fadeOut {
-            from { opacity: 1; }
-            to { opacity: 0; }
-          }
-          
           @keyframes fadeSlideIn {
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
-          }
-          
-          @keyframes fadeSlideOut {
-            from { opacity: 1; transform: translateY(0); }
-            to { opacity: 0; transform: translateY(-10px); }
           }
           
           @keyframes slideDown {
