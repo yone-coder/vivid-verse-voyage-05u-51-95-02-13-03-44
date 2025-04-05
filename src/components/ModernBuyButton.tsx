@@ -1,5 +1,6 @@
+
 import React, { useState, useEffect } from 'react';
-import { ShoppingCart, Clock, Check, ChevronDown, Star, Info, TrendingUp, Heart, ShieldCheck, ArrowRight, AlertTriangle } from 'lucide-react';
+import { ShoppingCart, Clock, Check, ChevronDown, Star, Info, TrendingUp, Heart, ShieldCheck, ArrowRight, AlertTriangle, Plus, Minus } from 'lucide-react';
 
 const ModernBuyButton = () => {
   const [isHovering, setIsHovering] = useState(false);
@@ -19,6 +20,7 @@ const ModernBuyButton = () => {
   const [basePrice, setBasePrice] = useState(49.99);
   const [priceIncrement, setPriceIncrement] = useState(0);
   const [showPriceIncrease, setShowPriceIncrease] = useState(false);
+  const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -116,9 +118,9 @@ const ModernBuyButton = () => {
 
   const handleBuyNow = () => {
     setShowAddedAnimation(true);
-    setItemsInCart(prev => prev + 1);
-    if (stockRemaining > 0) {
-      setStockRemaining(prev => prev - 1);
+    setItemsInCart(prev => prev + quantity);
+    if (stockRemaining >= quantity) {
+      setStockRemaining(prev => prev - quantity);
     }
     
     setTimeout(() => {
@@ -129,6 +131,18 @@ const ModernBuyButton = () => {
   const handleVariantChange = (variant: string) => {
     setSelectedVariant(variant);
     setVariantOpen(false);
+  };
+
+  const incrementQuantity = () => {
+    if (quantity < stockRemaining && quantity < 10) {
+      setQuantity(prev => prev + 1);
+    }
+  };
+
+  const decrementQuantity = () => {
+    if (quantity > 1) {
+      setQuantity(prev => prev - 1);
+    }
   };
 
   const variants = ['Red', 'Blue', 'Black', 'Green'];
@@ -148,10 +162,11 @@ const ModernBuyButton = () => {
   const stockPercentage = (stockRemaining / 10) * 100;
   
   const currentPrice = (basePrice + priceIncrement).toFixed(2);
+  const totalPrice = (parseFloat(currentPrice) * quantity).toFixed(2);
   const discountPercentage = Math.round(((79.99 - parseFloat(currentPrice)) / 79.99) * 100);
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 font-aliexpress">
+    <div className="fixed bottom-0 left-0 right-0 z-50 font-sans">
       <div 
         className={`absolute -top-10 left-4 bg-white shadow-lg rounded-lg px-2 py-1 flex items-center space-x-2 
                    transition-all duration-500 ${showSocialProof ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}
@@ -260,7 +275,7 @@ const ModernBuyButton = () => {
           </div>
         )}
         
-        <div className="flex flex-col px-3 py-2">
+        <div className="flex flex-col px-3 py-1.5">
           <div className="flex items-center justify-between mb-1">
             <div className="flex items-center space-x-2">
               <div className="w-6 h-6 bg-gray-100 rounded-md flex items-center justify-center relative overflow-hidden">
@@ -282,15 +297,26 @@ const ModernBuyButton = () => {
                     -{discountPercentage}%
                   </span>
                   
-                  {priceIncrement > 0 && (
-                    <div className="ml-2 flex items-center text-xs text-amber-600">
-                      <TrendingUp size={10} className="mr-1" />
-                      <span>+${priceIncrement.toFixed(2)}</span>
-                    </div>
-                  )}
+                  <div className="ml-auto flex items-center text-xs bg-gray-100 rounded overflow-hidden">
+                    <button 
+                      onClick={decrementQuantity} 
+                      className="px-1 py-0.5 text-gray-500 hover:bg-gray-200 flex items-center justify-center"
+                      disabled={quantity <= 1}
+                    >
+                      <Minus size={10} />
+                    </button>
+                    <span className="px-1 font-medium">{quantity}</span>
+                    <button 
+                      onClick={incrementQuantity} 
+                      className="px-1 py-0.5 text-gray-500 hover:bg-gray-200 flex items-center justify-center"
+                      disabled={quantity >= stockRemaining || quantity >= 10}
+                    >
+                      <Plus size={10} />
+                    </button>
+                  </div>
                 </div>
                 
-                <div className="flex items-center">
+                <div className="flex items-center justify-between">
                   <div className="flex">
                     {[1, 2, 3, 4, 5].map((star, i) => (
                       <Star 
@@ -301,8 +327,12 @@ const ModernBuyButton = () => {
                         className={i === showFeature % 5 ? "animate-ping" : ""}
                       />
                     ))}
+                    <span className="text-xs text-gray-500 ml-1">1.2K</span>
                   </div>
-                  <span className="text-xs text-gray-500 ml-1">1.2K</span>
+                  
+                  <div className="text-xs font-semibold text-red-500">
+                    Total: ${totalPrice}
+                  </div>
                 </div>
               </div>
             </div>
@@ -361,7 +391,7 @@ const ModernBuyButton = () => {
             </button>
           </div>
           
-          <div className="mt-1 text-xs text-gray-600 flex items-center justify-center animate-fadeIn">
+          <div className="mt-0.5 text-xs text-gray-600 flex items-center justify-center animate-fadeIn">
             {features[showFeature].icon}
             <span className="ml-1 text-[10px] animate-fadeIn">{features[showFeature].text}</span>
           </div>
