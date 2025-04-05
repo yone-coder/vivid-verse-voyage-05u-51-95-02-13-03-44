@@ -650,7 +650,7 @@ const ProductDetail = () => {
         </div>
       </div>
       
-      <div className="mb-[152px]" ref={tabsRef}>
+      <div className="mb-[100px]" ref={tabsRef}>
         <ProductTabs 
           product={product} 
           activeTab={activeTab} 
@@ -660,100 +660,70 @@ const ProductDetail = () => {
       </div>
       
       <div className="fixed bottom-0 left-0 right-0 z-30">
-        <div className="bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.1)] p-3">
-          <div className="flex flex-col mb-3">
-            <div className="flex justify-between items-center">
-              <div className="flex flex-col">
-                <div className="flex items-baseline">
-                  <span className="text-2xl font-bold text-purple-600">${formatPrice(totalPrice)}</span>
-                  {originalPrice > currentPrice && (
-                    <span className="ml-2 text-sm line-through text-gray-500">${formatPrice(originalPrice * quantity)}</span>
-                  )}
-                </div>
-                <div className="flex items-center text-xs text-green-600 font-medium">
+        <div className="bg-white shadow-[0_-1px_4px_rgba(0,0,0,0.1)] px-3 py-2.5">
+          <div className="flex items-center justify-between">
+            <div className="flex flex-col">
+              <div className="flex items-baseline">
+                <span className="text-lg font-bold text-purple-600">${formatPrice(totalPrice)}</span>
+                {originalPrice > currentPrice && (
+                  <span className="ml-1.5 text-xs line-through text-gray-500">${formatPrice(originalPrice * quantity)}</span>
+                )}
+                <span className="ml-1.5 text-xs px-1 py-0.5 bg-red-100 text-red-500 rounded">
                   {Math.round((1 - currentPrice / originalPrice) * 100)}% OFF
-                  <span className="mx-1 text-gray-300">•</span>
-                  <div className="text-gray-500">
-                    {currentStock} in stock
-                  </div>
-                </div>
-              </div>
-              
-              <div className="flex items-center">
-                <div className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full flex items-center">
-                  <Shield className="h-3 w-3 mr-1" />
-                  <span>Secure Checkout</span>
-                </div>
-              </div>
-            </div>
-            
-            {(warrantyPrice > 0 || giftWrap || isExpressSelected) && (
-              <div className="flex items-center mt-1 text-xs text-gray-600">
-                <Info className="h-3 w-3 mr-1" />
-                <span>
-                  Price includes: 
-                  {warrantyPrice > 0 ? ` ${warrantyOption?.name} warranty` : ''}
-                  {warrantyPrice > 0 && (giftWrap || isExpressSelected) ? ',' : ''}
-                  {giftWrap ? ' gift wrapping' : ''}
-                  {(warrantyPrice > 0 || giftWrap) && isExpressSelected ? ',' : ''}
-                  {isExpressSelected ? ' express shipping' : ''}
                 </span>
               </div>
-            )}
-          </div>
-          
-          <div className={`flex ${isMobile ? 'flex-col gap-2' : 'items-center justify-between'}`}>
-            <div className={`flex ${isMobile ? 'justify-between w-full' : 'items-center'}`}>
-              <div className="flex items-center">
-                <div className="flex border border-gray-300 rounded-md overflow-hidden">
-                  <Button 
-                    onClick={decrementQuantity} 
-                    variant="ghost" 
-                    className={`${isMobile ? 'h-10 px-4' : 'h-9 px-3'} rounded-none`}
-                    disabled={quantity <= 1}
-                  >
-                    -
-                  </Button>
-                  <div className="w-10 text-center flex items-center justify-center">
-                    {quantity}
-                  </div>
-                  <Button 
-                    onClick={incrementQuantity} 
-                    variant="ghost" 
-                    className={`${isMobile ? 'h-10 px-4' : 'h-9 px-3'} rounded-none`}
-                    disabled={quantity >= 10}
-                  >
-                    +
-                  </Button>
-                </div>
-              </div>
               
-              {!isMobile && (
-                <div className="mx-4 text-sm text-gray-600">
-                  <Badge variant="outline" className="ml-2 bg-blue-50 text-blue-600 border-blue-100">
-                    {selectedColor}
-                  </Badge>
+              {(warrantyPrice > 0 || giftWrap || isExpressSelected) && (
+                <div className="flex items-center mt-0.5 text-[10px] text-gray-500">
+                  <Info className="h-2.5 w-2.5 mr-0.5" />
+                  <span className="truncate max-w-[150px]">
+                    {`${warrantyPrice > 0 ? `${warrantyOption?.name} warranty` : ''}${warrantyPrice > 0 && (giftWrap || isExpressSelected) ? ', ' : ''}${giftWrap ? 'gift wrap' : ''}${(warrantyPrice > 0 || giftWrap) && isExpressSelected ? ', ' : ''}${isExpressSelected ? 'express' : ''}`}
+                  </span>
                 </div>
               )}
             </div>
             
-            <div className={`flex ${isMobile ? 'w-full' : 'ml-4'} ${isMobile ? 'gap-2' : 'gap-3'}`}>
-              <Button 
-                onClick={addToCart} 
-                variant="outline" 
-                className={`${isMobile ? 'flex-1' : 'w-[120px]'} h-12 border-purple-200`}
-              >
-                <ShoppingCart className="mr-1 h-5 w-5" />
-                <span>Add to Cart</span>
-              </Button>
-              <Button 
-                onClick={buyNow} 
-                variant="purple" 
-                className={`${isMobile ? 'flex-1' : 'w-[120px]'} h-12`}
-              >
-                <Zap className="mr-1 h-5 w-5" />
-                <span>Buy Now</span>
-              </Button>
+            <div className="flex items-center gap-2">
+              <div className="flex items-center h-10 border border-gray-300 rounded-md overflow-hidden">
+                <Button 
+                  onClick={decrementQuantity} 
+                  variant="ghost" 
+                  className="h-full px-2 rounded-none"
+                  disabled={quantity <= 1}
+                >
+                  <span className="text-sm">-</span>
+                </Button>
+                <div className="w-8 text-center flex items-center justify-center text-sm">
+                  {quantity}
+                </div>
+                <Button 
+                  onClick={incrementQuantity} 
+                  variant="ghost" 
+                  className="h-full px-2 rounded-none"
+                  disabled={quantity >= 10}
+                >
+                  <span className="text-sm">+</span>
+                </Button>
+              </div>
+              
+              <div className="flex gap-2">
+                <Button 
+                  onClick={addToCart} 
+                  variant="outline" 
+                  className="h-10 px-3 border-purple-200"
+                >
+                  <ShoppingCart className="h-4 w-4" />
+                  {!isMobile && <span className="ml-1 text-sm">Add</span>}
+                </Button>
+                <Button 
+                  onClick={buyNow} 
+                  variant="purple" 
+                  className="h-10"
+                >
+                  <Zap className="h-4 w-4" />
+                  <span className="ml-1 text-sm">Buy Now</span>
+                </Button>
+              </div>
             </div>
           </div>
         </div>
