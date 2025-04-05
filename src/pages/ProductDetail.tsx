@@ -563,7 +563,7 @@ const ProductDetail = () => {
                 </div>
                 {giftWrap && (
                   <div className="mt-2 text-xs text-gray-600">
-                    Your item will be gift wrapped with a customized message card for $2.99
+                    Your item will be gift wrapped with a personalized message card for $2.99
                   </div>
                 )}
               </div>
@@ -660,7 +660,7 @@ const ProductDetail = () => {
       </div>
       
       <div className="fixed bottom-0 left-0 right-0 z-30">
-        <div className="bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.1)] p-3">
+        <div className="bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.1)] p-4">
           <div className="flex items-center justify-between">
             <div className="flex flex-col">
               <div className="flex items-baseline">
@@ -682,45 +682,43 @@ const ProductDetail = () => {
               </div>
             </div>
             
-            <div className="flex gap-1.5">
-              <div className="flex gap-1">
-                <Button 
-                  variant="chip" 
-                  size="xs"
-                  className="animate-pulse" 
-                  onClick={() => {
-                    toast({
-                      title: "Coupon applied!",
-                      description: "FLASH25 - 25% off today only",
-                    });
-                  }}
-                >
-                  <Tag className="h-3 w-3" />
-                  FLASH25
-                </Button>
-                
-                <Button 
-                  variant="minimal" 
-                  size="icon" 
-                  className="h-7 w-7 rounded-full"
-                  onClick={toggleFavorite}
-                >
-                  <Heart className={`h-4 w-4 ${isFavorite ? "fill-red-500 text-red-500" : ""}`} />
-                </Button>
-              </div>
+            <div className="flex gap-2">
+              <Button 
+                variant="chip" 
+                size="xs"
+                className="animate-pulse" 
+                onClick={() => {
+                  toast({
+                    title: "Coupon applied!",
+                    description: "FLASH25 - 25% off today only",
+                  });
+                }}
+              >
+                <Tag className="h-3 w-3" />
+                FLASH25
+              </Button>
+              
+              <Button 
+                variant="minimal" 
+                size="icon" 
+                className="h-8 w-8 rounded-full"
+                onClick={toggleFavorite}
+              >
+                <Heart className={`h-4 w-4 ${isFavorite ? "fill-red-500 text-red-500" : ""}`} />
+              </Button>
               
               <Button 
                 variant="outline"
-                size="xs" 
+                size="sm" 
                 className="rounded-full border-purple-200 text-purple-700 hover:bg-purple-50 hover:text-purple-800 hover:border-purple-300"
                 onClick={addToCart}
               >
-                <ShoppingCart className="h-3.5 w-3.5" />
+                <ShoppingCart className="h-4 w-4" />
                 Add to Cart
               </Button>
               <Button 
                 variant="purple"
-                size="xs" 
+                size="sm" 
                 className="rounded-full"
                 onClick={buyNow}
               >
