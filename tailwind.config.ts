@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 import { fontFamily } from "tailwindcss/defaultTheme";
 
@@ -71,7 +70,23 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       fontFamily: {
-        sans: ["var(--font-geist-sans)", ...fontFamily.sans],
+        sans: [
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'Helvetica Neue',
+          'Helvetica',
+          'Arial',
+          'sans-serif',
+          ...fontFamily.sans
+        ],
+        aliexpress: [
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'Helvetica Neue',
+          'Helvetica',
+          'Arial',
+          'sans-serif'
+        ],
         mono: ["var(--font-geist-mono)", ...fontFamily.mono],
       },
       keyframes: {

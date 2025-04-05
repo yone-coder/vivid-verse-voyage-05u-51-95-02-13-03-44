@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { ShoppingCart, Clock, Check, ChevronDown, Star, Info, TrendingUp, Heart, ShieldCheck, ArrowRight, AlertTriangle } from 'lucide-react';
 
@@ -21,7 +20,6 @@ const ModernBuyButton = () => {
   const [priceIncrement, setPriceIncrement] = useState(0);
   const [showPriceIncrease, setShowPriceIncrease] = useState(false);
 
-  // Countdown timer effect
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft(prev => {
@@ -39,7 +37,6 @@ const ModernBuyButton = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Timer highlight effect
   useEffect(() => {
     if (timeLeft.seconds === 0) {
       setHighlightStock(true);
@@ -47,7 +44,6 @@ const ModernBuyButton = () => {
     }
   }, [timeLeft.seconds]);
 
-  // Social proof rotation effect
   useEffect(() => {
     const socialProofTimer = setInterval(() => {
       setShowSocialProof(prev => !prev);
@@ -56,7 +52,6 @@ const ModernBuyButton = () => {
     return () => clearInterval(socialProofTimer);
   }, []);
 
-  // Pulse discount animation
   useEffect(() => {
     const discountInterval = setInterval(() => {
       setPulseDiscount(true);
@@ -66,7 +61,6 @@ const ModernBuyButton = () => {
     return () => clearInterval(discountInterval);
   }, []);
 
-  // Feature highlight animation
   useEffect(() => {
     const featureInterval = setInterval(() => {
       setShowFeature(prev => (prev + 1) % 3);
@@ -75,12 +69,9 @@ const ModernBuyButton = () => {
     return () => clearInterval(featureInterval);
   }, []);
 
-  // Price animation effect - Enhanced with price increase based on low stock
   useEffect(() => {
     const priceInterval = setInterval(() => {
-      // Random chance to increase price due to demand
       if (stockRemaining <= 5 && Math.random() > 0.5) {
-        // Fix: Convert to number properly before adding
         const newIncrement = priceIncrement + parseFloat((Math.random() * 2).toFixed(2));
         setPriceIncrement(newIncrement);
         setAnimatePrice(true);
@@ -100,7 +91,6 @@ const ModernBuyButton = () => {
     return () => clearInterval(priceInterval);
   }, [priceIncrement, stockRemaining]);
 
-  // Button shake animation
   useEffect(() => {
     const shakeInterval = setInterval(() => {
       if (!isHovering) {
@@ -112,7 +102,6 @@ const ModernBuyButton = () => {
     return () => clearInterval(shakeInterval);
   }, [isHovering]);
 
-  // Stock decreasing simulation
   useEffect(() => {
     const stockInterval = setInterval(() => {
       if (Math.random() > 0.7 && stockRemaining > 1) {
@@ -156,17 +145,13 @@ const ModernBuyButton = () => {
     { icon: <Heart size={14} />, text: "Customer favorite" }
   ];
 
-  // Calculate stock percentage for progress bar
   const stockPercentage = (stockRemaining / 10) * 100;
   
-  // Current price with any increments
   const currentPrice = (basePrice + priceIncrement).toFixed(2);
-  // Fix: Ensure we're calculating with numbers
   const discountPercentage = Math.round(((79.99 - parseFloat(currentPrice)) / 79.99) * 100);
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50">
-      {/* Social Proof Toast with enhanced animation */}
+    <div className="fixed bottom-0 left-0 right-0 z-50 font-aliexpress">
       <div 
         className={`absolute -top-12 left-4 bg-white shadow-lg rounded-lg px-3 py-2 flex items-center space-x-2 
                    transition-all duration-500 ${showSocialProof ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}
@@ -191,7 +176,6 @@ const ModernBuyButton = () => {
         </p>
       </div>
       
-      {/* Price increase notification */}
       {showPriceIncrease && (
         <div className="absolute -top-20 right-4 bg-amber-50 border border-amber-200 shadow-lg rounded-lg px-3 py-2 flex items-center space-x-2"
              style={{ animation: 'slideDown 0.3s ease-out' }}>
@@ -202,7 +186,6 @@ const ModernBuyButton = () => {
         </div>
       )}
       
-      {/* Added to Cart Animation - Enhanced */}
       {showAddedAnimation && (
         <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
           <div className="animate-ping bg-green-500 p-4 rounded-full">
@@ -214,7 +197,6 @@ const ModernBuyButton = () => {
         </div>
       )}
       
-      {/* Main Button Container */}
       <div 
         className={`relative bg-white shadow-lg border-t border-gray-200 ${highlightStock ? 'animate-pulse' : ''}`}
         onMouseEnter={() => setIsHovering(true)}
@@ -223,7 +205,6 @@ const ModernBuyButton = () => {
           setVariantOpen(false);
         }}
       >
-        {/* Stock Warning Banner */}
         <div className={`bg-red-50 py-1 px-4 border-t border-red-100 flex items-center justify-between 
                       ${stockRemaining <= 3 ? 'animate-pulse' : ''}`}>
           <div className="flex items-center">
@@ -237,7 +218,6 @@ const ModernBuyButton = () => {
           </div>
         </div>
         
-        {/* Stock Progress Bar */}
         <div className="h-1 w-full bg-gray-200">
           <div 
             className={`h-full ${stockRemaining <= 2 ? 'bg-red-500' : stockRemaining <= 5 ? 'bg-amber-500' : 'bg-green-500'}`}
@@ -245,7 +225,6 @@ const ModernBuyButton = () => {
           ></div>
         </div>
         
-        {/* Tooltip with animation */}
         {isHovering && (
           <div 
             className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-black text-white text-xs px-3 py-2 rounded-lg"
@@ -259,7 +238,6 @@ const ModernBuyButton = () => {
           </div>
         )}
         
-        {/* Variant Selector with animations */}
         {variantOpen && (
           <div 
             className="absolute bottom-full mb-2 left-4 bg-white shadow-xl rounded-lg overflow-hidden w-32"
@@ -282,9 +260,7 @@ const ModernBuyButton = () => {
           </div>
         )}
         
-        {/* Main Button Row - Reorganized with animations */}
         <div className="flex flex-col px-4 py-3">
-          {/* Row 1: Product Info & Price */}
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-gray-100 rounded-md flex items-center justify-center relative overflow-hidden">
@@ -331,7 +307,6 @@ const ModernBuyButton = () => {
               </div>
             </div>
             
-            {/* Cart Badge and Timer */}
             <div className="relative">
               <div className={`flex items-center text-xs font-medium ${timeLeft.minutes < 30 ? 'text-red-500' : 'text-gray-600'}`}>
                 <Clock size={12} className={`mr-1 ${timeLeft.minutes < 30 ? 'animate-pulse' : ''}`} />
@@ -351,7 +326,6 @@ const ModernBuyButton = () => {
             </div>
           </div>
           
-          {/* Row 2: Buy Button & Variant Selector */}
           <div className="flex items-center space-x-2 justify-between">
             <div 
               className="flex items-center space-x-1 cursor-pointer bg-gray-100 px-3 py-2 rounded-lg hover:bg-gray-200 transition-all duration-300" 
@@ -387,14 +361,12 @@ const ModernBuyButton = () => {
             </button>
           </div>
           
-          {/* Feature highlight */}
           <div className="mt-2 text-xs text-gray-600 flex items-center justify-center animate-fadeIn">
             {features[showFeature].icon}
             <span className="ml-1 animate-fadeIn">{features[showFeature].text}</span>
           </div>
         </div>
         
-        {/* Payment Methods Slim Bar with animations */}
         <div className="bg-gray-50 py-1 px-4 flex items-center justify-between border-t border-gray-200">
           <div className="flex items-center space-x-2">
             <div className="flex space-x-1">
@@ -411,7 +383,6 @@ const ModernBuyButton = () => {
         </div>
       </div>
       
-      {/* CSS Keyframes definitions - Fixed property issue */}
       <style>
         {`
           @keyframes fadeIn {
