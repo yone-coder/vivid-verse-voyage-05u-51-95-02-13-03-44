@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { ShoppingCart, Clock, Check, ChevronDown, Star, Info, TrendingUp, Heart, ShieldCheck, ArrowRight, AlertTriangle, Plus, Minus } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
@@ -484,6 +485,14 @@ const ModernBuyButton = () => {
                   <path fill="#FF5F00" d="M12 7.5v9a5 5 0 0 0 0-9z"/>
                 </svg>
               </div>
+              {/* Venmo - Updated with new image */}
+              <div className="w-6 h-4 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
+                <img 
+                  src="/lovable-uploads/dd1cad7b-c3b6-43a6-9bc6-deb38a120604.png" 
+                  alt="Venmo" 
+                  className="h-3 w-5 object-contain"
+                />
+              </div>
               {/* PayPal */}
               <div className="w-6 h-4 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="10">
@@ -491,14 +500,6 @@ const ModernBuyButton = () => {
                   <path fill="#179BD7" d="M19 7.8C18.7 5.8 16.9 5 14.7 5H9.2c-.3 0-.5.2-.6.5l-1.7 11c0 .2.1.4.4.4h2.9l.7-4.7v.3c.1-.3.3-.5.6-.5h1.3c2.5 0 4.4-1 5-3.9V8c-.1-.2-.1-.2-.1-.2H19z"/>
                   <path fill="#253B80" d="M8.3 11.5l-.3 2.1-.2 1h-3c-.2 0-.4-.2-.3-.4L6.1 5.9c.1-.3.3-.5.6-.5h5.5c1.5 0 2.6.3 3.2 1 .3.3.5.7.6 1.1.1.3.1.7.1 1.1-1-.6-2-.8-3.3-.8L8.3 11.5z"/>
                 </svg>
-              </div>
-              {/* Venmo */}
-              <div className="w-6 h-4 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
-                <img 
-                  src="/lovable-uploads/4dbaee7c-2ac5-4a1b-9f9b-121275273e79.png" 
-                  alt="Venmo" 
-                  className="h-3 w-5 object-contain"
-                />
               </div>
             </div>
             <span className="text-[10px] text-gray-500">Secure payment</span>
