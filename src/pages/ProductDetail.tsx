@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { ArrowLeft, Share, Heart, MessageCircle, Truck, Shield, Award, Percent, ThumbsUp, Zap, Star, Sparkles, ArrowRight, Crown, Clock, Gift, Check, Info, CreditCard, AlertCircle, Bookmark, Box, Tag, Download, Users, Rocket } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -16,7 +15,7 @@ import LiveActivityNotifications from "@/components/LiveActivityNotifications";
 import LiveStockUpdates from "@/components/LiveStockUpdates";
 import LivePurchaseBanner from "@/components/LivePurchaseBanner";
 import { Switch } from "@/components/ui/switch";
-import ModernBuyButton from "@/components/ModernBuyButton";
+import CustomBuyButton from "@/components/CustomBuyButton";
 
 const ProductDetail = () => {
   const [activeTab, setActiveTab] = useState("description");
@@ -661,8 +660,12 @@ const ProductDetail = () => {
         />
       </div>
       
-      {/* Replace the original fixed bottom buy button with our new ModernBuyButton component */}
-      <ModernBuyButton />
+      <CustomBuyButton 
+        product={product}
+        selectedColor={selectedColor}
+        quantity={quantity}
+        totalPrice={totalPrice}
+      />
     </div>
   );
 };
