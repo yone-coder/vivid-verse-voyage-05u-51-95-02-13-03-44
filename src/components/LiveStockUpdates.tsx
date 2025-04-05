@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Progress } from "@/components/ui/progress";
-import { AlertTriangle, Clock, Users, TrendingUp } from "lucide-react";
+import { AlertTriangle, Clock } from "lucide-react";
 
 interface LiveStockUpdatesProps {
   initialStock: number;
@@ -16,7 +16,6 @@ const LiveStockUpdates: React.FC<LiveStockUpdatesProps> = ({
   const [lastUpdate, setLastUpdate] = useState(new Date());
   const [recentPurchases, setRecentPurchases] = useState(0);
   const [isUpdating, setIsUpdating] = useState(false);
-  const [activeViewers, setActiveViewers] = useState(Math.floor(Math.random() * 15) + 8);
   
   // Calculate stock percentage
   const stockPercentage = Math.min(100, Math.max(5, (currentStock / 300) * 100));
@@ -38,16 +37,7 @@ const LiveStockUpdates: React.FC<LiveStockUpdatesProps> = ({
       }
     }, 15000); // Check every 15 seconds
     
-    // Simulate viewers count fluctuation
-    const viewersInterval = setInterval(() => {
-      const change = Math.floor(Math.random() * 3) - 1; // -1, 0, or 1
-      setActiveViewers(prev => Math.max(5, Math.min(30, prev + change)));
-    }, 8000);
-    
-    return () => {
-      clearInterval(stockInterval);
-      clearInterval(viewersInterval);
-    }
+    return () => clearInterval(stockInterval);
   }, []);
 
   return (
@@ -73,31 +63,22 @@ const LiveStockUpdates: React.FC<LiveStockUpdatesProps> = ({
       
       <Progress value={stockPercentage} className="h-1.5" />
       
-      <div className="flex justify-between mt-2">
-        <div className="flex items-center text-xs text-gray-600">
-          <Clock className="h-3.5 w-3.5 mr-1 text-gray-500" />
-          <span>Updated {Math.floor((new Date().getTime() - lastUpdate.getTime()) / 60000)} mins ago</span>
+      <div className="flex justify-between mt-2 text-xs">
+        <div className="text-gray-600">
+          Last updated {Math.floor((new Date().getTime() - lastUpdate.getTime()) / 60000)} mins ago
         </div>
         {recentPurchases > 0 && (
-          <div className="font-medium text-xs text-red-600 flex items-center">
-            <TrendingUp className="h-3.5 w-3.5 mr-1" />
-            {recentPurchases} sold recently
+          <div className="font-medium text-red-600">
+            {recentPurchases} sold in last hour
           </div>
         )}
       </div>
       
-      <div className="flex justify-between items-center mt-2">
-        <div className="text-xs flex items-center text-blue-600">
-          <Users className="h-3.5 w-3.5 mr-1 text-blue-500" />
-          <span>{activeViewers} people viewing now</span>
+      {highDemand && (
+        <div className="mt-2 text-xs text-center bg-white/60 rounded py-1 font-medium text-red-600">
+          High demand product - may sell out soon!
         </div>
-        
-        {highDemand && (
-          <div className="text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-medium">
-            High demand
-          </div>
-        )}
-      </div>
+      )}
     </div>
   );
 };
