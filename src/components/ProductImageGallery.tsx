@@ -374,6 +374,11 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
 
   const constrainedOffset = constrainDragOffset();
 
+  // Function to determine if carousel should be draggable
+  const shouldEnableDrag = useCallback(() => {
+    return zoomLevel === 1;
+  }, [zoomLevel]);
+
   return (
     <div 
       ref={containerRef}
@@ -401,7 +406,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
           className="w-full h-full"
           opts={{
             loop: true,
-            draggable: zoomLevel === 1,
+            // Fix: The 'draggable' property is removed from opts and handled by the Carousel component itself
           }}
           setApi={onApiChange}
         >
@@ -602,3 +607,4 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
 };
 
 export default ProductImageGallery;
+
