@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { ArrowLeft, Share, Heart, ShoppingCart, MessageCircle, Truck, Shield, Award, Percent, ThumbsUp, Zap, Star, Sparkles, ArrowRight, Crown, Clock, Gift, Check, Info, CreditCard, AlertCircle, Bookmark, Box, Tag, Download, Users, Rocket } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -14,6 +15,7 @@ import { Progress } from "@/components/ui/progress";
 import LiveActivityNotifications from "@/components/LiveActivityNotifications";
 import LiveStockUpdates from "@/components/LiveStockUpdates";
 import LivePurchaseBanner from "@/components/LivePurchaseBanner";
+import { Switch } from "@/components/ui/switch";
 
 const ProductDetail = () => {
   const [activeTab, setActiveTab] = useState("description");
@@ -712,7 +714,7 @@ const ProductDetail = () => {
             </div>
           </div>
           
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center justify-between">
             <div className="flex items-center">
               <div className="flex border border-gray-300 rounded-md overflow-hidden">
                 <Button 
@@ -720,3 +722,56 @@ const ProductDetail = () => {
                   variant="ghost" 
                   className="h-7 px-2 py-0 rounded-none border-r border-gray-300"
                   disabled={quantity <= 1}
+                >
+                  -
+                </Button>
+                <div className="w-8 text-xs text-center py-1">{quantity}</div>
+                <Button 
+                  onClick={incrementQuantity} 
+                  variant="ghost" 
+                  className="h-7 px-2 py-0 rounded-none border-l border-gray-300"
+                  disabled={quantity >= 10}
+                >
+                  +
+                </Button>
+              </div>
+              
+              <div className="flex gap-1 ml-2">
+                <Badge variant="outline" className="border-purple-200 bg-purple-50 text-purple-700 text-xs">
+                  {selectedColor}
+                </Badge>
+                {warrantyPrice > 0 && (
+                  <Badge variant="outline" className="border-blue-200 bg-blue-50 text-blue-700 text-xs">
+                    {warrantyOption?.name}
+                  </Badge>
+                )}
+              </div>
+            </div>
+            
+            <div className="flex gap-2">
+              <Button 
+                variant="outline"
+                size="sm" 
+                className={`rounded-full border-purple-200 text-purple-700 hover:bg-purple-50 hover:text-purple-800 hover:border-purple-300 ${showCartAnimation ? 'animate-wiggle' : ''}`}
+                onClick={addToCart}
+              >
+                <ShoppingCart className="h-4 w-4" />
+                Cart
+              </Button>
+              <Button 
+                variant="purple"
+                size="sm" 
+                className="rounded-full"
+                onClick={buyNow}
+              >
+                Buy Now
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ProductDetail;
