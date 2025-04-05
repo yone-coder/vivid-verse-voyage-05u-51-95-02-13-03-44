@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { ShoppingCart, Clock, Check, ChevronDown, Star, Info, TrendingUp, Heart, ShieldCheck, ArrowRight, AlertTriangle, Plus, Minus } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
@@ -470,7 +471,11 @@ const ModernBuyButton = () => {
             <div className="flex space-x-1">
               {/* Visa Card */}
               <div className="w-6 h-4 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
-                <span className="font-bold text-[8px] text-blue-800">VISA</span>
+                <img 
+                  src="/lovable-uploads/f3efe2eb-c3db-48bd-abc7-c65456fdc028.png" 
+                  alt="Visa" 
+                  className="h-3 w-5 object-contain"
+                />
               </div>
               {/* Mastercard */}
               <div className="w-6 h-4 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
@@ -492,7 +497,7 @@ const ModernBuyButton = () => {
               <div className="w-6 h-4 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="10">
                   <rect fill="#008CFF" width="24" height="24" rx="2"/>
-                  <text x="12" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white" text-anchor="middle">V</text>
+                  <text x="12" y="15" fontFamily="Arial, sans-serif" fontSize="14" fontWeight="bold" fill="white" textAnchor="middle">V</text>
                 </svg>
               </div>
             </div>
