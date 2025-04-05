@@ -9,8 +9,6 @@ import {
   Share2,
   Heart,
   RotateCw,
-  Maximize2,
-  Minimize2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -24,7 +22,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
   const [zoomScale, setZoomScale] = useState(1);
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [rotation, setRotation] = useState(0);
   const galleryRef = useRef<HTMLDivElement>(null);
@@ -62,25 +59,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     setIsZoomed(false);
     setZoomScale(1);
     setRotation(0);
-  };
-
-  // Handle fullscreen toggle
-  const toggleFullscreen = () => {
-    if (!isFullscreen) {
-      if (galleryRef.current && galleryRef.current.requestFullscreen) {
-        galleryRef.current.requestFullscreen().catch(err => {
-          toast.error("Couldn't enter fullscreen mode");
-        });
-      }
-      setIsFullscreen(true);
-    } else {
-      if (document.exitFullscreen) {
-        document.exitFullscreen().catch(err => {
-          toast.error("Couldn't exit fullscreen mode");
-        });
-      }
-      setIsFullscreen(false);
-    }
   };
 
   // Handle image download
@@ -183,16 +161,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
           >
             <RotateCw className="h-4 w-4" />
           </Button>
-          
-          <Button 
-            variant="outline" 
-            size="icon" 
-            className="rounded-full bg-white/30 backdrop-blur-sm border-transparent hover:bg-white/50"
-            onClick={toggleFullscreen}
-            title={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
-          >
-            {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
-          </Button>
         </div>
         
         {/* Social actions */}
@@ -254,13 +222,13 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
       </div>
       
       {/* Thumbnails with reduced top margin */}
-      <div className="mt-2 px-2">
-        <div className="flex gap-2 overflow-x-auto no-scrollbar py-1">
+      <div className="mt-1 px-2"> {/* Reduced from mt-2 to mt-1 */}
+        <div className="flex gap-1 overflow-x-auto no-scrollbar py-1"> {/* Reduced gap from 2 to 1 */}
           {images.map((image, index) => (
             <button
               key={index}
               className={cn(
-                "w-16 h-16 rounded-md overflow-hidden flex-shrink-0 border-2 transition-all",
+                "w-14 h-14 rounded-md overflow-hidden flex-shrink-0 border-2 transition-all", /* Reduced from w-16 h-16 to w-14 h-14 */
                 currentIndex === index 
                   ? "border-primary" 
                   : "border-transparent hover:border-primary/50"
@@ -278,8 +246,8 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
       </div>
       
       {/* Image caption or description - revealed on hover */}
-      <div className="mt-2 px-2 text-center opacity-0 group-hover:opacity-100 transition-opacity">
-        <p className="text-sm text-muted-foreground">
+      <div className="mt-1 px-2 text-center opacity-0 group-hover:opacity-100 transition-opacity"> {/* Reduced from mt-2 to mt-1 */}
+        <p className="text-xs text-muted-foreground"> {/* Reduced from text-sm to text-xs */}
           Click to zoom • Use arrow buttons to navigate • Press heart to favorite
         </p>
       </div>
