@@ -699,7 +699,8 @@ const ProductDetail = () => {
         </div>
       </div>
       
-      <div className="mb-20" ref={tabsRef}>
+      {/* Increase the bottom margin to accommodate the ModernBuyButton */}
+      <div className="mb-32" ref={tabsRef}>
         <ProductTabs 
           product={product} 
           activeTab={activeTab} 
@@ -708,7 +709,7 @@ const ProductDetail = () => {
         />
       </div>
       
-      {/* Replace the original fixed bottom buy button with our new ModernBuyButton component */}
+      {/* ModernBuyButton component */}
       <ModernBuyButton />
     </div>
   );
