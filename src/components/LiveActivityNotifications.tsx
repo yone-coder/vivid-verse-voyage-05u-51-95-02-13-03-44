@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ShoppingCart, Users, Star, Clock, Award, ThumbsUp, Check, ChevronRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface Notification {
   id: string;
@@ -51,6 +52,7 @@ const LiveActivityNotifications = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [activeVisitors, setActiveVisitors] = useState<number>(0);
   const [showVisitorBadge, setShowVisitorBadge] = useState<boolean>(false);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     // Initial setup
@@ -112,8 +114,11 @@ const LiveActivityNotifications = () => {
     }
   };
 
+  const position = isMobile ? "bottom-20 left-2" : "bottom-36 left-4";
+  const maxWidth = isMobile ? "max-w-[200px]" : "max-w-[250px]";
+
   return (
-    <div className="fixed z-20 bottom-36 left-4 flex flex-col space-y-2 pointer-events-none max-w-[250px]">
+    <div className={`fixed z-20 ${position} flex flex-col space-y-2 pointer-events-none ${maxWidth}`}>
       {/* Active visitors badge */}
       <div className="flex items-center justify-start">
         <motion.div 
@@ -138,7 +143,7 @@ const LiveActivityNotifications = () => {
         {notifications.map((notification) => (
           <motion.div
             key={notification.id}
-            className={`rounded-lg shadow-md border px-3 py-2 ${getBackgroundForType(notification.type)} border-gray-100 backdrop-blur-sm max-w-[250px]`}
+            className={`rounded-lg shadow-md border px-3 py-2 ${getBackgroundForType(notification.type)} border-gray-100 backdrop-blur-sm w-full`}
             initial={{ opacity: 0, x: -50, y: 0 }}
             animate={{ opacity: 1, x: 0, y: 0 }}
             exit={{ opacity: 0, x: -50 }}
