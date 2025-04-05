@@ -1,12 +1,12 @@
 
 import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ShoppingCart, Users, Star, Clock, Award, ThumbsUp, Check, ChevronRight } from "lucide-react";
+import { ShoppingCart, Users, Star, Clock, Award, ThumbsUp, Check, ChevronRight, AlertTriangle, Gift, TrendingUp, Heart, Eye } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 interface Notification {
   id: string;
-  type: "purchase" | "cart" | "viewing" | "review";
+  type: "purchase" | "cart" | "viewing" | "review" | "scarcity" | "rating" | "testimonial" | "unique";
   message: string;
   timestamp: number;
   location?: string;
@@ -14,27 +14,100 @@ interface Notification {
 
 // Demo data - in a real app this would come from a backend API
 const generateRandomNotification = (): Notification => {
-  const types = ["purchase", "cart", "viewing", "review"] as const;
+  const types = ["purchase", "cart", "viewing", "review", "scarcity", "rating", "testimonial", "unique"] as const;
   const type = types[Math.floor(Math.random() * types.length)];
-  const names = ["Alex", "Jamie", "Taylor", "Jordan", "Casey", "Riley", "Sam", "Morgan", "Avery"];
-  const locations = ["New York", "Los Angeles", "Chicago", "Dallas", "Miami", "Seattle", "Boston", "London", "Paris"];
+  const names = ["Alex", "Jamie", "Taylor", "Jordan", "Casey", "Riley", "Sam", "Morgan", "Avery", "Quinn", "Blake", "Harper"];
+  const locations = ["New York", "Los Angeles", "Chicago", "Dallas", "Miami", "Seattle", "Boston", "London", "Paris", "Tokyo", "Berlin", "Sydney"];
   const name = names[Math.floor(Math.random() * names.length)];
   const location = locations[Math.floor(Math.random() * locations.length)];
+  
+  // Social proof messages
+  const socialProofMessages = [
+    `${name} just purchased this item`,
+    `${name} from ${location} just purchased this`,
+    `15 people bought this in the last hour!`,
+    `Someone from ${location} just purchased this.`,
+    `Back in stock! Limited quantity available.`,
+    `Hot right now! Selling 5x faster than usual.`
+  ];
+  
+  // Scarcity messages
+  const scarcityMessages = [
+    `Only 2 left in stock — selling fast!`,
+    `Deal ends soon — don't miss out!`,
+    `This size is almost gone!`,
+    `Next restock expected in 2 weeks.`,
+    `This item was sold out last week. Get it while you can!`
+  ];
+  
+  // Viewing messages
+  const viewingMessages = [
+    `${name} is viewing this right now`,
+    `32 people are currently viewing this item.`,
+    `You've been looking at this for a while… ready to grab it?`,
+    `This item is trending right now!`,
+    `High demand! Many people are looking at this.`
+  ];
+  
+  // Review messages
+  const reviewMessages = [
+    `${name} left a ${Math.floor(Math.random() * 2) + 4}-star review`,
+    `"Exactly what I needed!" – ${name} T.`,
+    `Over 3,000 people love this product.`,
+    `Top-rated in its category.`,
+    `"Fast shipping and great quality!" – Verified Buyer`
+  ];
+  
+  // Rating messages
+  const ratingMessages = [
+    `Rated 4.9/5 by 870 customers.`,
+    `Customers rate this 4.8 out of 5 stars!`,
+    `95% of customers recommend this product.`,
+    `Our best-rated item this month!`
+  ];
+  
+  // Testimonial messages
+  const testimonialMessages = [
+    `"Love it, totally worth it!" - ${name} from ${location}`,
+    `"Perfect gift idea!" - Recent Customer`,
+    `"Exceeded my expectations!" - Verified Purchase`,
+    `"Will definitely buy again!" - Loyal Customer`
+  ];
+  
+  // Unique/fun messages
+  const uniqueMessages = [
+    `This item completes your vibe. Just sayin'.`,
+    `Seen on TikTok – going viral now!`,
+    `Buy now and get a surprise bonus!`,
+    `Cart's waiting… but this product won't!`,
+    `This pairs perfectly with your previous purchases.`
+  ];
   
   let message = "";
   switch (type) {
     case "purchase":
-      message = `${name} just purchased this item`;
+      message = socialProofMessages[Math.floor(Math.random() * socialProofMessages.length)];
       break;
     case "cart":
       message = `${name} added this to their cart`;
       break;
     case "viewing":
-      message = `${name} is viewing this right now`;
+      message = viewingMessages[Math.floor(Math.random() * viewingMessages.length)];
       break;
     case "review":
-      const rating = Math.floor(Math.random() * 2) + 4; // 4 or 5 stars
-      message = `${name} left a ${rating}-star review`;
+      message = reviewMessages[Math.floor(Math.random() * reviewMessages.length)];
+      break;
+    case "scarcity":
+      message = scarcityMessages[Math.floor(Math.random() * scarcityMessages.length)];
+      break;
+    case "rating":
+      message = ratingMessages[Math.floor(Math.random() * ratingMessages.length)];
+      break;
+    case "testimonial":
+      message = testimonialMessages[Math.floor(Math.random() * testimonialMessages.length)];
+      break;
+    case "unique":
+      message = uniqueMessages[Math.floor(Math.random() * uniqueMessages.length)];
       break;
   }
   
@@ -43,7 +116,7 @@ const generateRandomNotification = (): Notification => {
     type,
     message,
     timestamp: Date.now(),
-    location: type !== "viewing" ? location : undefined
+    location: ["purchase", "review", "testimonial"].includes(type) ? location : undefined
   };
 };
 
@@ -93,9 +166,17 @@ const LiveActivityNotifications = () => {
       case "cart":
         return <ShoppingCart className="w-3.5 h-3.5 text-blue-500" />;
       case "viewing":
-        return <Clock className="w-3.5 h-3.5 text-amber-500" />;
+        return <Eye className="w-3.5 h-3.5 text-amber-500" />;
       case "review":
         return <Star className="w-3.5 h-3.5 text-yellow-500" />;
+      case "scarcity":
+        return <AlertTriangle className="w-3.5 h-3.5 text-red-500" />;
+      case "rating":
+        return <Award className="w-3.5 h-3.5 text-purple-500" />;
+      case "testimonial":
+        return <ThumbsUp className="w-3.5 h-3.5 text-cyan-500" />;
+      case "unique":
+        return <Gift className="w-3.5 h-3.5 text-pink-500" />;
     }
   };
 
@@ -109,6 +190,14 @@ const LiveActivityNotifications = () => {
         return "bg-amber-50";
       case "review":
         return "bg-yellow-50";
+      case "scarcity":
+        return "bg-red-50";
+      case "rating":
+        return "bg-purple-50";
+      case "testimonial":
+        return "bg-cyan-50";
+      case "unique":
+        return "bg-pink-50";
     }
   };
 
@@ -150,7 +239,7 @@ const LiveActivityNotifications = () => {
               </div>
               <div className="flex-1 text-xs text-gray-700">
                 <p className="font-medium">{notification.message}</p>
-                {notification.location && (
+                {notification.location && !notification.message.includes(notification.location) && (
                   <p className="text-xs text-gray-500 mt-0.5">
                     from {notification.location}
                   </p>
