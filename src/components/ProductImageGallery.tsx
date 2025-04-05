@@ -15,11 +15,15 @@ interface ProductImageGalleryProps {
 const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  const handleSelectChange = (index: number) => {
+    setCurrentIndex(index);
+  };
+
   return (
     <div className="relative w-full aspect-square bg-gray-100">
       <Carousel
         className="w-full h-full"
-        onSelect={(index) => setCurrentIndex(index)}
+        onSelect={handleSelectChange}
       >
         <CarouselContent className="h-full">
           {images.map((image, index) => (
