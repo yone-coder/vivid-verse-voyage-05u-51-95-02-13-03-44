@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Carousel,
@@ -20,7 +19,7 @@ import {
   Play,
   Pause,
   RotateCw,
-  Flip2,
+  FlipHorizontal,
   Sun,
   Moon,
   SlidersHorizontal,
@@ -57,7 +56,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const [autoScrollEnabled, setAutoScrollEnabled] = useState(false);
   const [autoScrollInterval, setAutoScrollInterval] = useState<NodeJS.Timeout | null>(null);
   const [isFavorite, setIsFavorite] = useState(false);
-  const [isRotated, setIsRotated] = useState(0); // 0, 90, 180, 270 degrees
+  const [isRotated, setIsRotated] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [brightness, setBrightness] = useState(100);
   const [showAdvancedControls, setShowAdvancedControls] = useState(false);
@@ -70,7 +69,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isMobile = useIsMobile();
 
-  // Preload images for smoother navigation
   useEffect(() => {
     const preloadImages = async () => {
       const preloaded = await Promise.all(
@@ -79,7 +77,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             const img = new Image();
             img.src = src;
             img.onload = () => resolve(src);
-            img.onerror = () => resolve(src); // Still resolve on error to not block
+            img.onerror = () => resolve(src);
           });
         })
       );
@@ -89,7 +87,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     preloadImages();
   }, [images]);
 
-  // Set up the carousel API
   const onApiChange = useCallback((api: CarouselApi | null) => {
     if (!api) return;
     
@@ -98,7 +95,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     
     api.on("select", () => {
       setCurrentIndex(api.selectedScrollSnap());
-      // Reset zoom when changing images
       setZoomLevel(1);
       setDragOffset({ x: 0, y: 0 });
       setIsRotated(0);
@@ -107,7 +103,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     });
   }, []);
 
-  // Handle fullscreen
   const toggleFullscreen = useCallback(() => {
     if (!containerRef.current) return;
     
@@ -123,12 +118,10 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
       setIsFullscreen(false);
     }
     
-    // Reset zoom when toggling fullscreen
     setZoomLevel(1);
     setDragOffset({ x: 0, y: 0 });
   }, [isFullscreen]);
 
-  // Listen for fullscreen change events
   useEffect(() => {
     const handleFullscreenChange = () => {
       setIsFullscreen(!!document.fullscreenElement);
@@ -147,14 +140,12 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     };
   }, []);
 
-  // Handle zoom
   const handleZoom = useCallback((zoomIn: boolean) => {
     setZoomLevel(prevZoom => {
       const newZoom = zoomIn
         ? Math.min(prevZoom + 0.5, 3)
         : Math.max(prevZoom - 0.5, 1);
       
-      // Reset drag offset when zooming out to 1
       if (newZoom === 1) {
         setDragOffset({ x: 0, y: 0 });
       }
@@ -163,7 +154,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     });
   }, []);
 
-  // Handle image dragging when zoomed
   const handleMouseDown = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     if (zoomLevel > 1) {
       setIsDragging(true);
@@ -183,9 +173,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     setIsDragging(false);
   }, []);
 
-  // Handle touch events for mobile dragging when zoomed
-  const touchStartPosition = useRef<{ x: number, y: number } | null>(null);
-  
   const handleTouchStart = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
     if (zoomLevel > 1 && e.touches.length === 1) {
       touchStartPosition.current = {
@@ -216,7 +203,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     touchStartPosition.current = null;
   }, []);
 
-  // Handle download image
   const handleDownload = useCallback(() => {
     if (images.length <= currentIndex) return;
     
@@ -234,7 +220,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     });
   }, [currentIndex, images]);
 
-  // Handle share image
   const handleShare = useCallback(() => {
     if (images.length <= currentIndex) return;
     
@@ -256,7 +241,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     }
   }, [currentIndex, images]);
 
-  // Handle favorite toggle
   const toggleFavorite = useCallback(() => {
     setIsFavorite(prev => !prev);
     toast({
@@ -268,14 +252,12 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     });
   }, [isFavorite]);
 
-  // Handle thumbnail click
   const handleThumbnailClick = useCallback((index: number) => {
     if (api) {
       api.scrollTo(index);
     }
   }, [api]);
 
-  // Navigation functions
   const handlePrevious = useCallback(() => {
     if (api) api.scrollPrev();
   }, [api]);
@@ -284,22 +266,18 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     if (api) api.scrollNext();
   }, [api]);
 
-  // Rotation handling
   const handleRotate = useCallback(() => {
     setIsRotated(prev => (prev + 90) % 360);
   }, []);
 
-  // Flip handling
   const handleFlip = useCallback(() => {
     setIsFlipped(prev => !prev);
   }, []);
 
-  // Brightness handling
   const handleBrightnessChange = useCallback((value: number[]) => {
     setBrightness(value[0]);
   }, []);
 
-  // Toggle cinema mode
   const toggleCinemaMode = useCallback(() => {
     setIsCinemaMode(prev => !prev);
     if (!isCinemaMode) {
@@ -315,17 +293,14 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     }
   }, [isCinemaMode]);
 
-  // Toggle grid overlay
   const toggleGrid = useCallback(() => {
     setShowGrid(prev => !prev);
   }, []);
 
-  // Toggle image info
   const toggleInfo = useCallback(() => {
     setShowInfo(prev => !prev);
   }, []);
 
-  // Auto-hide controls on inactivity
   useEffect(() => {
     const handleMouseMove = () => {
       setShowControls(true);
@@ -350,7 +325,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     };
   }, [isFullscreen]);
 
-  // Handle keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!isFullscreen) return;
@@ -413,7 +387,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     toggleCinemaMode
   ]);
 
-  // Auto scroll setup
   useEffect(() => {
     if (autoScrollEnabled && api) {
       const interval = setInterval(() => {
@@ -437,7 +410,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     };
   }, [autoScrollEnabled, api]);
 
-  // Toggle auto scroll
   const toggleAutoScroll = useCallback(() => {
     setAutoScrollEnabled(prev => !prev);
     toast({
@@ -449,7 +421,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     });
   }, [autoScrollEnabled]);
 
-  // Calculate constrained drag offset for zoom
   const constrainDragOffset = useCallback(() => {
     if (!imageRef.current || !containerRef.current) return dragOffset;
     
@@ -469,12 +440,10 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
 
   const constrainedOffset = constrainDragOffset();
 
-  // Function to determine if carousel should be draggable
   const shouldEnableDrag = useCallback(() => {
     return zoomLevel === 1;
   }, [zoomLevel]);
 
-  // Reset all image modifications
   const resetImage = useCallback(() => {
     setZoomLevel(1);
     setDragOffset({ x: 0, y: 0 });
@@ -497,7 +466,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
         isCinemaMode && "bg-black"
       )}
     >
-      {/* Main image carousel */}
       <div 
         className={cn(
           "relative w-full aspect-square bg-gray-100 rounded-lg overflow-hidden",
@@ -561,7 +529,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             ))}
           </CarouselContent>
           
-          {/* Custom navigation arrows */}
           {showControls && (
             <div className="absolute inset-0 flex items-center justify-between pointer-events-none p-4">
               <button 
@@ -581,14 +548,12 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             </div>
           )}
           
-          {/* Image counter indicator */}
           {showControls && (
             <div className="absolute bottom-3 left-3 bg-black/50 text-white text-xs px-2 py-1 rounded-full">
               {currentIndex + 1}/{images.length}
             </div>
           )}
           
-          {/* Image info overlay */}
           {showInfo && showControls && (
             <div className="absolute bottom-12 left-3 bg-black/70 text-white text-xs p-3 rounded-md max-w-xs">
               <h4 className="font-medium mb-1">Image Information</h4>
@@ -600,7 +565,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             </div>
           )}
           
-          {/* Fullscreen close button */}
           {isFullscreen && showControls && (
             <Button
               variant="outline"
@@ -613,14 +577,12 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             </Button>
           )}
           
-          {/* Zoom level indicator */}
           {zoomLevel > 1 && showControls && (
             <div className="absolute bottom-3 right-3 bg-black/50 text-white text-xs px-2 py-1 rounded-full">
               {Math.round(zoomLevel * 100)}%
             </div>
           )}
           
-          {/* Bottom controls bar */}
           {showControls && (
             <div className={cn(
               "absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/60 to-transparent",
@@ -703,7 +665,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                         onClick={handleFlip}
                         aria-label="Flip image"
                       >
-                        <Flip2 size={16} />
+                        <FlipHorizontal size={16} />
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>Flip Horizontally</TooltipContent>
@@ -874,7 +836,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             </div>
           )}
           
-          {/* Brightness control */}
           {showAdvancedControls && showControls && (
             <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 bg-black/70 text-white p-2 rounded-md flex items-center gap-2 w-64">
               <Sun size={14} />
@@ -890,7 +851,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             </div>
           )}
           
-          {/* Advanced Instructions (only visible in fullscreen) */}
           {isFullscreen && showControls && (
             <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-black/70 text-white text-xs px-4 py-2 rounded-full flex gap-3">
               <span>⬅️ ➡️ Navigate</span>
@@ -905,7 +865,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
         </Carousel>
       </div>
       
-      {/* Thumbnail gallery (not shown in fullscreen) */}
       {!isFullscreen && (
         <div className="flex gap-2 overflow-x-auto pb-2 px-1 scrollbar-none">
           {images.map((image, index) => (
@@ -934,7 +893,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
         </div>
       )}
       
-      {/* Auto-scroll toggle (not shown in fullscreen) */}
       {!isFullscreen && images.length > 1 && (
         <div className="flex items-center justify-end">
           <Button
