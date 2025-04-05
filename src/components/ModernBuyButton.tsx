@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { ShoppingCart, Clock, Check, ChevronDown, Star, Info, TrendingUp, Heart, ShieldCheck, ArrowRight, AlertTriangle, Plus, Minus } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
@@ -495,10 +494,11 @@ const ModernBuyButton = () => {
               </div>
               {/* Venmo */}
               <div className="w-6 h-4 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="10">
-                  <rect fill="#008CFF" width="24" height="24" rx="2"/>
-                  <text x="12" y="15" fontFamily="Arial, sans-serif" fontSize="14" fontWeight="bold" fill="white" textAnchor="middle">V</text>
-                </svg>
+                <img 
+                  src="/lovable-uploads/4dbaee7c-2ac5-4a1b-9f9b-121275273e79.png" 
+                  alt="Venmo" 
+                  className="h-3 w-5 object-contain"
+                />
               </div>
             </div>
             <span className="text-[10px] text-gray-500">Secure payment</span>
