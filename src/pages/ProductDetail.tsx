@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { ArrowLeft, Share, Heart, MessageCircle, Truck, Shield, Award, Percent, ThumbsUp, Zap, Star, Sparkles, ArrowRight, Crown, Clock, Gift, Check, Info, CreditCard, AlertCircle, Bookmark, Box, Tag, Download, Users, Rocket } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -699,8 +698,8 @@ const ProductDetail = () => {
         </div>
       </div>
       
-      {/* Increase the bottom margin to accommodate the ModernBuyButton */}
-      <div className="mb-32" ref={tabsRef}>
+      {/* Increase the bottom margin substantially to accommodate the ModernBuyButton */}
+      <div className="mb-44" ref={tabsRef}>
         <ProductTabs 
           product={product} 
           activeTab={activeTab} 
