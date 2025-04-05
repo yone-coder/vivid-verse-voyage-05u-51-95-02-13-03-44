@@ -112,7 +112,7 @@ const ProductDetail = () => {
       reserved: 56,
       selling_fast: true
     },
-    badges: ["Best Seller", "New Model", "Top Rated", "Official Store"]
+    badges: []
   };
 
   const incrementQuantity = () => {
@@ -298,18 +298,6 @@ const ProductDetail = () => {
               <Share className="h-5 w-5" />
             </Button>
           </div>
-        </div>
-
-        <div className="absolute bottom-4 left-4 flex flex-wrap gap-1.5">
-          {product.badges.map((badge, index) => (
-            <Badge 
-              key={index} 
-              variant="outline" 
-              className="text-xs text-white border-white/30 bg-black/50 backdrop-blur-sm"
-            >
-              {badge}
-            </Badge>
-          ))}
         </div>
       </div>
 
