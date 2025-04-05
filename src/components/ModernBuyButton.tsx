@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { ShoppingCart, Clock, Check, ChevronDown, Star, Info, TrendingUp, Heart, ShieldCheck, ArrowRight, AlertTriangle, Plus, Minus } from 'lucide-react';
 
@@ -6,7 +5,7 @@ const ModernBuyButton = () => {
   const [isHovering, setIsHovering] = useState(false);
   const [variantOpen, setVariantOpen] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState('Red');
-  const [timeLeft, setTimeLeft] = useState({ hours: 3, minutes: 20, seconds: 45 });
+  const [timeLeft, setTimeLeft] = useState({ minutes: 3, seconds: 20, milliseconds: 0 });
   const [itemsInCart, setItemsInCart] = useState(0);
   const [showAddedAnimation, setShowAddedAnimation] = useState(false);
   const [showSocialProof, setShowSocialProof] = useState(true);
@@ -25,26 +24,38 @@ const ModernBuyButton = () => {
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft(prev => {
-        if (prev.seconds > 0) {
-          return { ...prev, seconds: prev.seconds - 1 };
-        } else if (prev.minutes > 0) {
-          return { ...prev, minutes: prev.minutes - 1, seconds: 59 };
-        } else if (prev.hours > 0) {
-          return { ...prev, hours: prev.hours - 1, minutes: 59, seconds: 59 };
+        const newMilliseconds = prev.milliseconds - 10;
+        
+        if (newMilliseconds < 0) {
+          const newSeconds = prev.seconds - 1;
+          
+          if (newSeconds < 0) {
+            const newMinutes = prev.minutes - 1;
+            
+            if (newMinutes < 0) {
+              clearInterval(timer);
+              return { minutes: 0, seconds: 0, milliseconds: 0 };
+            }
+            
+            return { minutes: newMinutes, seconds: 59, milliseconds: 990 };
+          }
+          
+          return { ...prev, seconds: newSeconds, milliseconds: 990 };
         }
-        return prev;
+        
+        return { ...prev, milliseconds: newMilliseconds };
       });
-    }, 1000);
+    }, 10);
     
     return () => clearInterval(timer);
   }, []);
 
   useEffect(() => {
-    if (timeLeft.seconds === 0) {
+    if (timeLeft.seconds === 0 && timeLeft.milliseconds === 0) {
       setHighlightStock(true);
       setTimeout(() => setHighlightStock(false), 1000);
     }
-  }, [timeLeft.seconds]);
+  }, [timeLeft.seconds, timeLeft.milliseconds]);
 
   useEffect(() => {
     const socialProofTimer = setInterval(() => {
@@ -164,6 +175,10 @@ const ModernBuyButton = () => {
   const currentPrice = (basePrice + priceIncrement).toFixed(2);
   const totalPrice = (parseFloat(currentPrice) * quantity).toFixed(2);
   const discountPercentage = Math.round(((79.99 - parseFloat(currentPrice)) / 79.99) * 100);
+
+  const formatMilliseconds = (ms) => {
+    return Math.floor(ms / 100);
+  };
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 font-sans">
@@ -314,9 +329,15 @@ const ModernBuyButton = () => {
             </div>
             
             <div className="relative">
-              <div className={`flex items-center text-xs font-medium ${timeLeft.minutes < 30 ? 'text-red-500' : 'text-gray-600'}`}>
-                <Clock size={10} className={`mr-1 ${timeLeft.minutes < 30 ? 'animate-pulse' : ''}`} />
-                {`${timeLeft.hours}h ${timeLeft.minutes}m`}
+              <div className="flex items-center text-xs font-medium text-red-500">
+                <Clock size={10} className="mr-1 animate-pulse" />
+                <div className="flex items-center">
+                  <span className="countdown-number">{timeLeft.minutes.toString().padStart(2, '0')}</span>
+                  <span className="mx-0.5">:</span>
+                  <span className="countdown-number">{timeLeft.seconds.toString().padStart(2, '0')}</span>
+                  <span className="mx-0.5">:</span>
+                  <span className="countdown-number">{formatMilliseconds(timeLeft.milliseconds)}</span>
+                </div>
               </div>
               <span className={`text-xs text-red-500 font-medium ${highlightStock ? 'animate-bounce' : ''}`}>
                 {stockRemaining <= 1 ? 'Last one!' : `Only ${stockRemaining} left!`}
@@ -450,6 +471,13 @@ const ModernBuyButton = () => {
           
           .animate-fadeIn {
             animation: fadeIn 0.5s ease-in-out;
+          }
+
+          .countdown-number {
+            display: inline-block;
+            font-weight: bold;
+            min-width: 1.2em;
+            text-align: center;
           }
         `}
       </style>
