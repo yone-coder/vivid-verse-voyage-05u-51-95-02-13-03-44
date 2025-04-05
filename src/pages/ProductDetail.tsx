@@ -118,7 +118,7 @@ const ProductDetail = () => {
       reserved: 56,
       selling_fast: true
     },
-    badges: ["Best Seller", "New Model", "Top Rated", "Official Store"]
+    badges: []
   };
 
   const incrementQuantity = () => {
@@ -309,18 +309,6 @@ const ProductDetail = () => {
               <Share className="h-5 w-5" />
             </Button>
           </div>
-        </div>
-
-        <div className="absolute bottom-4 left-4 flex flex-wrap gap-1.5">
-          {product.badges.map((badge, index) => (
-            <Badge 
-              key={index} 
-              variant="outline" 
-              className="text-xs text-white border-white/30 bg-black/50 backdrop-blur-sm"
-            >
-              {badge}
-            </Badge>
-          ))}
         </div>
       </div>
 
@@ -631,8 +619,6 @@ const ProductDetail = () => {
           </div>
       
           <div className="mt-1 flex flex-wrap gap-1">
-            {/* Updated payment icons to match the ModernBuyButton */}
-            {/* Visa Card */}
             <div className="w-8 h-5 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
               <img 
                 src="/lovable-uploads/f3efe2eb-c3db-48bd-abc7-c65456fdc028.png" 
@@ -641,7 +627,6 @@ const ProductDetail = () => {
               />
             </div>
             
-            {/* Mastercard */}
             <div className="w-8 h-5 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="12">
                 <circle fill="#EA001B" cx="8" cy="12" r="5"/>
@@ -650,7 +635,6 @@ const ProductDetail = () => {
               </svg>
             </div>
             
-            {/* Venmo */}
             <div className="w-8 h-5 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
               <img 
                 src="/lovable-uploads/dd1cad7b-c3b6-43a6-9bc6-deb38a120604.png" 
@@ -661,7 +645,6 @@ const ProductDetail = () => {
             
             {showPaymentOptions && (
               <>
-                {/* PayPal */}
                 <div className="w-8 h-5 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="12">
                     <path fill="#253B80" d="M7 7h2c1.4 0 1.9 1 1.9 1.5 0 1.8-2 1.8-2.5 1.8H7.3L7 7z"/>
@@ -670,14 +653,12 @@ const ProductDetail = () => {
                   </svg>
                 </div>
                 
-                {/* Apple Pay */}
                 <div className="w-8 h-5 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="12">
                     <path d="M19.665 17.082c-.37.9-.54 1.3-1.01 2.09-.66 1.12-1.6 2.52-2.76 2.53-1.04.01-1.3-.68-2.72-.67-1.42 0-1.72.67-2.76.66-1.16-.01-2.05-1.27-2.71-2.39-1.86-3.05-2.05-6.64-.9-8.53.82-1.35 2.12-2.14 3.33-2.14 1.24 0 2.01.68 3.03.68.98 0 1.58-.68 3-.68 1.07 0 2.2.59 3 1.57-2.66 1.63-2.22 5.89.5 7.48zm-4.17-12.97c-1.2.1-2.61 1.21-3.08 2.72-.42 1.35.37 2.95 1.11 3.77.87.79 2.1 1.08 2.81.25-.69-1.24-1.2-2.54-1.07-4.21.12-1.46.8-2.22 1.74-2.81-.45-.23-.95-.37-1.51-.37-.11 0-.11 0 0 .65z" fill="#000"/>
                   </svg>
                 </div>
                 
-                {/* Google Pay */}
                 <div className="w-8 h-5 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="12">
                     <path d="M16.46 6.66V4.89H16v7.25h.46V8.81h2.71v3.33h.46V4.89h-.46v1.77h-2.71z" fill="#3C4043"/>
@@ -698,7 +679,6 @@ const ProductDetail = () => {
         </div>
       </div>
       
-      {/* Increase the bottom margin substantially to accommodate the ModernBuyButton */}
       <div className="mb-44" ref={tabsRef}>
         <ProductTabs 
           product={product} 
@@ -708,7 +688,6 @@ const ProductDetail = () => {
         />
       </div>
       
-      {/* ModernBuyButton component */}
       <ModernBuyButton />
     </div>
   );
