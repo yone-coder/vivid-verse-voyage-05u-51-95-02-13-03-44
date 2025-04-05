@@ -11,7 +11,6 @@ import { Separator } from "@/components/ui/separator";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 const ProductDetail = () => {
   const [activeTab, setActiveTab] = useState("description");
@@ -141,9 +140,10 @@ const ProductDetail = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (tabsRef.current) {
+      if (headerRef.current && tabsRef.current) {
+        const headerBottom = headerRef.current.getBoundingClientRect().bottom;
         const tabsTop = tabsRef.current.getBoundingClientRect().top;
-        setIsScrolled(tabsTop <= 0);
+        setIsScrolled(headerBottom < 0 || tabsTop <= 0);
       }
     };
 
@@ -268,53 +268,38 @@ const ProductDetail = () => {
 
   const currentStock = currentVariant ? currentVariant.stock : 0;
   const stockPercentage = Math.min(100, Math.max(5, (currentStock / 300) * 100));
-  
-  const discountPercentage = Math.round((1 - currentPrice / originalPrice) * 100);
-  
-  const urgencyPercentage = Math.min(100, Math.max(10, 100 - stockPercentage));
-  const isLowStock = currentStock < 50;
-  const isCriticalStock = currentStock < 20;
-  const estimatedSellOut = Math.max(1, Math.floor(currentStock / 10));
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
-      <div ref={tabsRef} className="sticky top-0 z-20 bg-white shadow-sm border-b border-gray-200">
-        <div className="flex items-center justify-between p-2 px-4">
+      <div ref={headerRef} className="relative w-full">
+        <ProductImageGallery images={product.images} />
+        
+        <div className="absolute top-4 left-4 right-4 flex justify-between z-10">
           <Link to="/">
-            <Button variant="ghost" size="icon" className="rounded-full">
+            <Button variant="outline" size="icon" className="rounded-full bg-white/70 backdrop-blur-sm hover:bg-white/90">
               <ArrowLeft className="h-5 w-5" />
             </Button>
           </Link>
-          <div className="flex items-center space-x-2">
+          <div className="flex gap-2">
             <Button 
-              variant="ghost" 
+              variant="outline" 
               size="icon" 
-              className="rounded-full"
+              className="rounded-full bg-white/70 backdrop-blur-sm hover:bg-white/90"
               onClick={toggleFavorite}
             >
               <Heart className={`h-5 w-5 ${isFavorite ? "fill-red-500 text-red-500" : ""}`} />
             </Button>
             <Button 
-              variant="ghost" 
+              variant="outline" 
               size="icon" 
-              className="rounded-full"
+              className="rounded-full bg-white/70 backdrop-blur-sm hover:bg-white/90"
               onClick={handleShare}
             >
               <Share className="h-5 w-5" />
             </Button>
           </div>
         </div>
-        <ProductTabs 
-          product={product} 
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          isScrolled={isScrolled}
-        />
-      </div>
-      
-      <div className="relative">
-        <ProductImageGallery images={product.images} />
-        
+
         <div className="absolute bottom-4 left-4 flex flex-wrap gap-1.5">
           {product.badges.map((badge, index) => (
             <Badge 
@@ -327,8 +312,41 @@ const ProductDetail = () => {
           ))}
         </div>
       </div>
+
+      {isScrolled && (
+        <div className="fixed top-0 left-0 right-0 bg-white z-30 shadow-sm">
+          <div className="flex items-center h-14 px-4">
+            <Link to="/" className="mr-auto">
+              <Button variant="ghost" size="icon" className="rounded-full">
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+            </Link>
+            <div className="mr-auto ml-2 font-medium truncate max-w-[200px]">
+              {product.name}
+            </div>
+            <div className="flex gap-2">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="rounded-full"
+                onClick={toggleFavorite}
+              >
+                <Heart className={`h-5 w-5 ${isFavorite ? "fill-red-500 text-red-500" : ""}`} />
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="rounded-full"
+                onClick={handleShare}
+              >
+                <Share className="h-5 w-5" />
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
       
-      <div className="flex-1">
+      <div className={`flex-1 ${isScrolled ? 'pt-14' : ''}`}>
         <div className="bg-white p-4 mb-2">
           <div className="flex items-center mb-1">
             <Badge variant="outline" className="text-xs bg-red-50 text-red-500 border-red-200">Flash Deal</Badge>
@@ -337,9 +355,9 @@ const ProductDetail = () => {
           </div>
           
           <div className="flex items-baseline">
-            <span className="text-2xl font-bold text-orange-500">${formatPrice(currentPrice)}</span>
+            <span className="text-xl font-bold text-red-500">${formatPrice(currentPrice)}</span>
             <span className="ml-2 text-sm line-through text-gray-500">${formatPrice(originalPrice)}</span>
-            <span className="ml-2 text-xs px-1.5 py-0.5 bg-orange-100 text-orange-600 rounded-sm">
+            <span className="ml-2 text-xs px-1.5 py-0.5 bg-red-100 text-red-500 rounded">
               {Math.round((1 - currentPrice / originalPrice) * 100)}% OFF
             </span>
           </div>
@@ -703,97 +721,51 @@ const ProductDetail = () => {
           )}
         </div>
 
-        <div className="h-[100px]"></div>
-      </div>
-
-      <div className="fixed bottom-0 left-0 right-0 z-30">
-        <div className="bg-orange-50 text-orange-800 py-1.5 px-4 text-xs flex items-center justify-between border-t border-orange-100">
-          <div className="flex items-center">
-            <Clock className="h-3.5 w-3.5 mr-1.5 text-orange-500" />
-            <span>Flash Sale ends in: </span>
-            <div className="ml-2 flex gap-1">
-              <span className="bg-orange-500 text-white px-1.5 py-0.5 rounded">{timeLeft.hours.toString().padStart(2, '0')}</span>
-              <span>:</span>
-              <span className="bg-orange-500 text-white px-1.5 py-0.5 rounded">{timeLeft.minutes.toString().padStart(2, '0')}</span>
-              <span>:</span>
-              <span className="bg-orange-500 text-white px-1.5 py-0.5 rounded">{timeLeft.seconds.toString().padStart(2, '0')}</span>
-            </div>
-          </div>
-          {isLowStock && (
-            <div className="flex items-center text-red-500 font-medium">
-              <div className="w-2 h-2 bg-red-500 rounded-full mr-1.5 animate-pulse"></div>
-              {currentStock} left
-            </div>
-          )}
+        <div ref={tabsRef} className="sticky top-0 z-20 bg-white shadow-sm">
+          <ProductTabs 
+            product={product} 
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            isScrolled={isScrolled}
+          />
         </div>
         
-        <div className="bg-white border-t border-gray-200 flex items-stretch shadow-lg">
-          <div className="flex flex-col items-center justify-center py-2 px-3 border-r border-gray-200 text-xs">
-            <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center mb-1">
-              <ShoppingCart className="h-4 w-4 text-gray-600" />
-            </div>
-            <span className="text-gray-700">Store</span>
-          </div>
-          
-          <div className="flex flex-col items-center justify-center py-2 px-3 border-r border-gray-200 text-xs">
-            <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center mb-1">
-              <MessageCircle className="h-4 w-4 text-gray-600" />
-            </div>
-            <span className="text-gray-700">Chat</span>
-          </div>
-          
-          <button 
-            className="flex-1 bg-orange-50 text-orange-600 font-bold flex items-center justify-center"
-            onClick={addToCart}
-          >
-            <ShoppingCart className="h-4 w-4 mr-1" />
-            Add to Cart
-          </button>
-          
-          <button 
-            className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold flex items-center justify-center relative overflow-hidden"
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-3 z-20">
+          <Button 
+            className="w-full h-14 bg-purple-600 hover:bg-purple-700 text-white relative overflow-hidden"
             onClick={buyNow}
           >
-            <div className="absolute inset-0 bg-white/10 animate-pulse opacity-0 hover:opacity-100 transition-opacity"></div>
-            
-            <div className="absolute bottom-0 left-0 right-0 h-1">
-              <Progress 
-                value={urgencyPercentage} 
-                className="h-full rounded-none"
-                indicatorClassName="bg-white/30"
-              />
-            </div>
-            
-            {discountPercentage >= 25 && (
-              <div className="absolute -top-1 -right-1 bg-red-500 text-white text-[8px] px-1 py-0.5 rounded-bl-md rotate-12 animate-pulse font-normal">
-                SALE
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="flex flex-col items-center">
+                <div className="flex items-center justify-between w-full px-4 mb-1.5">
+                  <div className="flex items-center">
+                    <Rocket className="h-5 w-5 mr-2" />
+                    <span className="font-bold text-base">Buy Now</span>
+                  </div>
+                  <div className="font-bold">${formatPrice(totalPrice)}</div>
+                </div>
+                <div className="w-full px-4">
+                  <Progress 
+                    value={Math.min(100, currentStock ? (100 - (currentStock / 300) * 100) : 95)} 
+                    className="h-1 w-full"
+                    indicatorClassName="bg-white/30"
+                  />
+                </div>
+                <div className="flex justify-between w-full px-4 mt-1">
+                  <div className="text-xs opacity-90">
+                    {quantity}x {selectedColor}
+                  </div>
+                  <div className="text-xs opacity-90">
+                    {currentStock > 50 ? `${currentStock} left` : `Only ${currentStock} left!`}
+                  </div>
+                </div>
               </div>
-            )}
-            
-            <div className="flex flex-col items-center">
-              <span className="text-sm">Buy Now</span>
-              <span className="text-xs">Only ${formatPrice(currentPrice)}</span>
             </div>
-          </button>
+          </Button>
         </div>
         
-        <div className="bg-white px-3 py-1.5 border-t border-gray-100 flex items-center justify-between text-[10px] text-gray-500">
-          <div className="flex items-center">
-            <Shield className="h-3 w-3 mr-1 text-green-500" />
-            <span>90-Day Buyer Protection</span>
-          </div>
-          <div className="flex items-center">
-            <Award className="h-3 w-3 mr-1 text-orange-500" />
-            <span>Authentic Product</span>
-          </div>
-          <div className="flex items-center">
-            <Truck className="h-3 w-3 mr-1 text-blue-500" />
-            <span>{product.shipping.free ? "Free Shipping" : "Fast Delivery"}</span>
-          </div>
-        </div>
+        <div className="h-16"></div>
       </div>
-      
-      <div className="h-20"></div>
     </div>
   );
 };
