@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { ShoppingCart, Clock, Check, ChevronDown, Star, Info, TrendingUp, Heart, ShieldCheck, ArrowRight, AlertTriangle, Plus, Minus } from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
 
 const ModernBuyButton = () => {
   const [isHovering, setIsHovering] = useState(false);
@@ -16,11 +17,12 @@ const ModernBuyButton = () => {
   const [buttonHover, setButtonHover] = useState(false);
   const [showFeature, setShowFeature] = useState(0);
   const [shakeButton, setShakeButton] = useState(false);
-  const [stockRemaining, setStockRemaining] = useState(4);
+  const [stockRemaining, setStockRemaining] = useState(100);
   const [basePrice, setBasePrice] = useState(49.99);
   const [priceIncrement, setPriceIncrement] = useState(0);
   const [showPriceIncrease, setShowPriceIncrease] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  const [stockProgressAnimation, setStockProgressAnimation] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -85,8 +87,10 @@ const ModernBuyButton = () => {
 
   useEffect(() => {
     const priceInterval = setInterval(() => {
-      if (stockRemaining <= 5 && Math.random() > 0.5) {
-        const newIncrement = priceIncrement + parseFloat((Math.random() * 2).toFixed(2));
+      if (stockRemaining <= 70 && Math.random() > 0.5) {
+        // Increase price more aggressively as stock decreases
+        const increaseFactor = (100 - stockRemaining) / 100;
+        const newIncrement = priceIncrement + parseFloat((Math.random() * 2 * increaseFactor).toFixed(2));
         setPriceIncrement(newIncrement);
         setAnimatePrice(true);
         setShowPriceIncrease(true);
@@ -118,12 +122,28 @@ const ModernBuyButton = () => {
 
   useEffect(() => {
     const stockInterval = setInterval(() => {
-      if (Math.random() > 0.7 && stockRemaining > 1) {
-        setStockRemaining(prev => prev - 1);
+      if (Math.random() > 0.6 && stockRemaining > 1) {
+        // Reduce stock
+        const reduction = Math.floor(Math.random() * 3) + 1;
+        setStockRemaining(prev => Math.max(1, prev - reduction));
+        
+        // Animate progress bar
+        setStockProgressAnimation(true);
+        setTimeout(() => setStockProgressAnimation(false), 1000);
+        
+        // Highlight stock change
         setHighlightStock(true);
         setTimeout(() => setHighlightStock(false), 1000);
+        
+        // Increase price when stock drops
+        if (stockRemaining < 50) {
+          const priceIncrease = parseFloat((Math.random() * 0.5).toFixed(2));
+          setPriceIncrement(prev => prev + priceIncrease);
+          setAnimatePrice(true);
+          setTimeout(() => setAnimatePrice(false), 1000);
+        }
       }
-    }, 30000);
+    }, 10000);
     
     return () => clearInterval(stockInterval);
   }, [stockRemaining]);
@@ -133,6 +153,8 @@ const ModernBuyButton = () => {
     setItemsInCart(prev => prev + quantity);
     if (stockRemaining >= quantity) {
       setStockRemaining(prev => prev - quantity);
+      setStockProgressAnimation(true);
+      setTimeout(() => setStockProgressAnimation(false), 1000);
     }
     
     setTimeout(() => {
@@ -171,7 +193,7 @@ const ModernBuyButton = () => {
     { icon: <Heart size={12} />, text: "Customer favorite" }
   ];
 
-  const stockPercentage = (stockRemaining / 10) * 100;
+  const stockPercentage = (stockRemaining / 100) * 100;
   
   const currentPrice = (basePrice + priceIncrement).toFixed(2);
   const totalPrice = (parseFloat(currentPrice) * quantity).toFixed(2);
@@ -248,14 +270,14 @@ const ModernBuyButton = () => {
             </span>
           </div>
           <div className="text-xs text-red-600">
-            {stockRemaining <= 2 && "Prices may increase!"}
+            {stockRemaining <= 20 && "Prices may increase!"}
           </div>
         </div>
         
         <div className="h-0.5 w-full bg-gray-200">
           <div 
-            className={`h-full ${stockRemaining <= 2 ? 'bg-red-500' : stockRemaining <= 5 ? 'bg-amber-500' : 'bg-green-500'}`}
-            style={{ width: `${stockPercentage}%`, transition: 'width 0.5s ease-in-out' }}
+            className={`h-full ${stockRemaining <= 10 ? 'bg-red-500' : stockRemaining <= 30 ? 'bg-amber-500' : 'bg-green-500'} ${stockProgressAnimation ? 'transition-all duration-1000 ease-in-out' : ''}`}
+            style={{ width: `${stockPercentage}%` }}
           ></div>
         </div>
         
@@ -266,7 +288,6 @@ const ModernBuyButton = () => {
           >
             <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-black rotate-45"></div>
             <span className="inline-flex items-center">
-              <Clock size={10} className="mr-1 animate-pulse text-red-400" />
               Hurry! Almost gone!
             </span>
           </div>
