@@ -356,7 +356,7 @@ const ProductDetail = () => {
         </div>
       )}
       
-      <div className={`flex-1 ${isScrolled ? 'pt-14' : ''} pb-[152px]`}>
+      <div className={`flex-1 ${isScrolled ? 'pt-14' : ''} pb-[100px]`}>
         <div className="bg-white p-4 mb-2">
           <div className="flex items-center mb-1">
             <Badge variant="outline" className="text-xs bg-red-50 text-red-500 border-red-200">Flash Deal</Badge>
@@ -660,46 +660,37 @@ const ProductDetail = () => {
       </div>
       
       <div className="fixed bottom-0 left-0 right-0 z-30">
-        <div className="bg-white shadow-[0_-1px_4px_rgba(0,0,0,0.1)] px-3 py-2.5">
+        <div className="bg-white shadow-[0_-1px_3px_rgba(0,0,0,0.1)] py-2 px-3">
           <div className="flex items-center justify-between">
-            <div className="flex flex-col">
+            <div className="flex flex-col justify-center">
               <div className="flex items-baseline">
                 <span className="text-lg font-bold text-purple-600">${formatPrice(totalPrice)}</span>
                 {originalPrice > currentPrice && (
                   <span className="ml-1.5 text-xs line-through text-gray-500">${formatPrice(originalPrice * quantity)}</span>
                 )}
-                <span className="ml-1.5 text-xs px-1 py-0.5 bg-red-100 text-red-500 rounded">
+                <span className="ml-1.5 text-xs px-1 py-0.5 bg-red-100 text-red-500 rounded-sm">
                   {Math.round((1 - currentPrice / originalPrice) * 100)}% OFF
                 </span>
               </div>
-              
-              {(warrantyPrice > 0 || giftWrap || isExpressSelected) && (
-                <div className="flex items-center mt-0.5 text-[10px] text-gray-500">
-                  <Info className="h-2.5 w-2.5 mr-0.5" />
-                  <span className="truncate max-w-[150px]">
-                    {`${warrantyPrice > 0 ? `${warrantyOption?.name} warranty` : ''}${warrantyPrice > 0 && (giftWrap || isExpressSelected) ? ', ' : ''}${giftWrap ? 'gift wrap' : ''}${(warrantyPrice > 0 || giftWrap) && isExpressSelected ? ', ' : ''}${isExpressSelected ? 'express' : ''}`}
-                  </span>
-                </div>
-              )}
             </div>
             
             <div className="flex items-center gap-2">
-              <div className="flex items-center h-10 border border-gray-300 rounded-md overflow-hidden">
+              <div className="flex items-center h-9 border border-gray-200 rounded-md overflow-hidden">
                 <Button 
                   onClick={decrementQuantity} 
                   variant="ghost" 
-                  className="h-full px-2 rounded-none"
+                  size="sm"
+                  className="h-full w-8 p-0 rounded-none"
                   disabled={quantity <= 1}
                 >
                   <span className="text-sm">-</span>
                 </Button>
-                <div className="w-8 text-center flex items-center justify-center text-sm">
-                  {quantity}
-                </div>
+                <div className="w-8 text-center text-sm">{quantity}</div>
                 <Button 
                   onClick={incrementQuantity} 
                   variant="ghost" 
-                  className="h-full px-2 rounded-none"
+                  size="sm"
+                  className="h-full w-8 p-0 rounded-none"
                   disabled={quantity >= 10}
                 >
                   <span className="text-sm">+</span>
@@ -710,18 +701,19 @@ const ProductDetail = () => {
                 <Button 
                   onClick={addToCart} 
                   variant="outline" 
-                  className="h-10 px-3 border-purple-200"
+                  size="sm"
+                  className="h-9 px-3 border-purple-200"
                 >
                   <ShoppingCart className="h-4 w-4" />
-                  {!isMobile && <span className="ml-1 text-sm">Add</span>}
+                  {!isMobile && <span className="ml-1 text-xs">Add</span>}
                 </Button>
                 <Button 
                   onClick={buyNow} 
                   variant="purple" 
-                  className="h-10"
+                  size="sm"
+                  className="h-9"
                 >
-                  <Zap className="h-4 w-4" />
-                  <span className="ml-1 text-sm">Buy Now</span>
+                  <span className="text-xs">Buy Now</span>
                 </Button>
               </div>
             </div>
