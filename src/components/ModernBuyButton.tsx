@@ -296,19 +296,43 @@ const ModernBuyButton = () => {
                   <span className={`text-xs text-red-500 ml-1 ${pulseDiscount ? 'animate-ping' : ''}`}>
                     -{discountPercentage}%
                   </span>
+                  
+                  <div className="ml-auto flex items-center text-xs bg-gray-100 rounded overflow-hidden">
+                    <button 
+                      onClick={decrementQuantity} 
+                      className="px-1 py-0.5 text-gray-500 hover:bg-gray-200 flex items-center justify-center"
+                      disabled={quantity <= 1}
+                    >
+                      <Minus size={10} />
+                    </button>
+                    <span className="px-1 font-medium">{quantity}</span>
+                    <button 
+                      onClick={incrementQuantity} 
+                      className="px-1 py-0.5 text-gray-500 hover:bg-gray-200 flex items-center justify-center"
+                      disabled={quantity >= stockRemaining || quantity >= 10}
+                    >
+                      <Plus size={10} />
+                    </button>
+                  </div>
                 </div>
                 
-                <div className="flex">
-                  {[1, 2, 3, 4, 5].map((star, i) => (
-                    <Star 
-                      key={star} 
-                      fill={i < 4 ? "#FFD700" : "none"} 
-                      color="#FFD700" 
-                      size={8}
-                      className={i === showFeature % 5 ? "animate-ping" : ""}
-                    />
-                  ))}
-                  <span className="text-xs text-gray-500 ml-1">1.2K</span>
+                <div className="flex items-center justify-between">
+                  <div className="flex">
+                    {[1, 2, 3, 4, 5].map((star, i) => (
+                      <Star 
+                        key={star} 
+                        fill={i < 4 ? "#FFD700" : "none"} 
+                        color="#FFD700" 
+                        size={8}
+                        className={i === showFeature % 5 ? "animate-ping" : ""}
+                      />
+                    ))}
+                    <span className="text-xs text-gray-500 ml-1">1.2K</span>
+                  </div>
+                  
+                  <div className="text-xs font-semibold text-red-500">
+                    Total: ${totalPrice}
+                  </div>
                 </div>
               </div>
             </div>
@@ -329,35 +353,6 @@ const ModernBuyButton = () => {
                   {itemsInCart}
                 </div>
               )}
-            </div>
-          </div>
-          
-          <div className="flex items-center mt-0.5 mb-0.5 justify-between">
-            <div className="flex items-center text-xs text-gray-600 animate-fadeIn">
-              {features[showFeature].icon}
-              <span className="ml-1 text-[10px] animate-fadeIn">{features[showFeature].text}</span>
-            </div>
-            
-            <div className="text-xs font-semibold text-red-500 mx-2">
-              Total: ${totalPrice}
-            </div>
-            
-            <div className="flex items-center text-xs bg-gray-100 rounded overflow-hidden">
-              <button 
-                onClick={decrementQuantity} 
-                className="px-1 py-0.5 text-gray-500 hover:bg-gray-200 flex items-center justify-center"
-                disabled={quantity <= 1}
-              >
-                <Minus size={10} />
-              </button>
-              <span className="px-1 font-medium">{quantity}</span>
-              <button 
-                onClick={incrementQuantity} 
-                className="px-1 py-0.5 text-gray-500 hover:bg-gray-200 flex items-center justify-center"
-                disabled={quantity >= stockRemaining || quantity >= 10}
-              >
-                <Plus size={10} />
-              </button>
             </div>
           </div>
           
@@ -394,6 +389,11 @@ const ModernBuyButton = () => {
               <span className="text-sm">{buttonHover ? 'Buy Now!' : 'Buy Now'}</span>
               {buttonHover && <ArrowRight size={12} className="ml-1 animate-pulse" />}
             </button>
+          </div>
+          
+          <div className="mt-0.5 text-xs text-gray-600 flex items-center justify-center animate-fadeIn">
+            {features[showFeature].icon}
+            <span className="ml-1 text-[10px] animate-fadeIn">{features[showFeature].text}</span>
           </div>
         </div>
         
