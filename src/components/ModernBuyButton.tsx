@@ -176,8 +176,12 @@ const ModernBuyButton = () => {
   const totalPrice = (parseFloat(currentPrice) * quantity).toFixed(2);
   const discountPercentage = Math.round(((79.99 - parseFloat(currentPrice)) / 79.99) * 100);
 
+  const formatTime = (value) => {
+    return value.toString().padStart(2, '0');
+  };
+
   const formatMilliseconds = (ms) => {
-    return Math.floor(ms / 100);
+    return Math.floor(ms / 10).toString().padStart(2, '0');
   };
 
   return (
@@ -329,17 +333,25 @@ const ModernBuyButton = () => {
             </div>
             
             <div className="relative">
-              <div className="flex items-center text-xs font-medium text-red-500">
-                <Clock size={10} className="mr-1 animate-pulse" />
-                <div className="flex items-center">
-                  <span className="countdown-number">{timeLeft.minutes.toString().padStart(2, '0')}</span>
-                  <span className="mx-0.5">:</span>
-                  <span className="countdown-number">{timeLeft.seconds.toString().padStart(2, '0')}</span>
-                  <span className="mx-0.5">:</span>
-                  <span className="countdown-number">{formatMilliseconds(timeLeft.milliseconds)}</span>
+              <div className="flex items-center space-x-1">
+                <Clock size={14} className="text-red-500 animate-pulse" />
+                <div className="countdown-container">
+                  <div className="countdown-unit">
+                    <div className="countdown-value">{formatTime(timeLeft.minutes)}</div>
+                    <div className="countdown-label">min</div>
+                  </div>
+                  <div className="countdown-separator">:</div>
+                  <div className="countdown-unit">
+                    <div className="countdown-value">{formatTime(timeLeft.seconds)}</div>
+                    <div className="countdown-label">sec</div>
+                  </div>
+                  <div className="countdown-separator">:</div>
+                  <div className="countdown-unit">
+                    <div className="countdown-value milliseconds">{formatMilliseconds(timeLeft.milliseconds)}</div>
+                  </div>
                 </div>
               </div>
-              <span className={`text-xs text-red-500 font-medium ${highlightStock ? 'animate-bounce' : ''}`}>
+              <span className={`text-xs text-red-500 font-medium mt-0.5 block ${highlightStock ? 'animate-bounce' : ''}`}>
                 {stockRemaining <= 1 ? 'Last one!' : `Only ${stockRemaining} left!`}
               </span>
               {itemsInCart > 0 && (
@@ -473,11 +485,47 @@ const ModernBuyButton = () => {
             animation: fadeIn 0.5s ease-in-out;
           }
 
-          .countdown-number {
-            display: inline-block;
+          .countdown-container {
+            display: flex;
+            align-items: center;
+            background: rgba(254, 226, 226, 0.4);
+            border-radius: 4px;
+            padding: 2px 4px;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+          }
+
+          .countdown-unit {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+          }
+
+          .countdown-value {
+            font-family: monospace;
             font-weight: bold;
-            min-width: 1.2em;
+            font-size: 12px;
+            color: #ef4444;
+            min-width: 18px;
             text-align: center;
+          }
+
+          .countdown-value.milliseconds {
+            font-size: 10px;
+            color: #ef4444;
+            width: 16px;
+          }
+
+          .countdown-label {
+            font-size: 8px;
+            color: #6b7280;
+            text-transform: uppercase;
+          }
+
+          .countdown-separator {
+            color: #ef4444;
+            font-weight: bold;
+            margin: 0 1px;
+            font-size: 12px;
           }
         `}
       </style>
