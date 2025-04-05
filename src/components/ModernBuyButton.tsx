@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { ShoppingCart, Clock, Check, ChevronDown, Star, Info, TrendingUp, Heart, ShieldCheck, ArrowRight, AlertTriangle, Plus, Minus } from 'lucide-react';
 
@@ -348,6 +349,7 @@ const ModernBuyButton = () => {
                   <div className="countdown-separator">:</div>
                   <div className="countdown-unit">
                     <div className="countdown-value milliseconds">{formatMilliseconds(timeLeft.milliseconds)}</div>
+                    <div className="countdown-label">mil</div>
                   </div>
                 </div>
               </div>
