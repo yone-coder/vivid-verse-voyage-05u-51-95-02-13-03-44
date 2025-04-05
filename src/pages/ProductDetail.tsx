@@ -367,9 +367,9 @@ const ProductDetail = () => {
           <div className="flex items-baseline">
             <span className="text-xl font-bold text-red-500">${formatPrice(currentPrice)}</span>
             <span className="ml-2 text-sm line-through text-gray-500">${formatPrice(originalPrice)}</span>
-            <span className="ml-2 text-xs px-1.5 py-0.5 bg-red-100 text-red-500 rounded">
+            <Badge variant="outline" className="ml-2 text-xs border-red-200 bg-red-50 text-red-500 py-0 h-4">
               {Math.round((1 - currentPrice / originalPrice) * 100)}% OFF
-            </span>
+            </Badge>
           </div>
           
           <h1 className="text-lg font-medium mt-2">{product.name}</h1>
@@ -663,25 +663,64 @@ const ProductDetail = () => {
         <div className="bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.1)] p-3">
           <div className="flex items-center justify-between">
             <div className="flex flex-col">
-              <div className="text-lg font-bold text-purple-600">${formatPrice(totalPrice)}</div>
-              <div className="text-xs text-green-600 font-medium">
-                {Math.round((1 - currentPrice / originalPrice) * 100)}% OFF
+              <div className="flex items-baseline">
+                <span className="text-lg font-bold text-purple-600">${formatPrice(totalPrice)}</span>
+                <span className="ml-1.5 text-xs line-through text-gray-500">${formatPrice(originalPrice)}</span>
+                <Badge variant="outline" className="ml-1.5 text-xs border-red-200 bg-red-50 text-red-500 py-0 h-4">
+                  {Math.round((1 - currentPrice / originalPrice) * 100)}% OFF
+                </Badge>
+              </div>
+              <div className="flex items-center text-xs mt-0.5 text-gray-600">
+                <Truck className="h-3 w-3 mr-1" />
+                <span>{product.shipping.free ? "Free Shipping" : "Standard Shipping"}</span>
+                {currentStock < 50 && (
+                  <>
+                    <span className="mx-1">•</span>
+                    <span className="text-amber-600 font-medium">Only {currentStock} left</span>
+                  </>
+                )}
               </div>
             </div>
             
-            <div className="flex gap-2">
+            <div className="flex gap-1.5">
+              <div className="flex gap-1">
+                <Button 
+                  variant="chip" 
+                  size="xs"
+                  className="animate-pulse" 
+                  onClick={() => {
+                    toast({
+                      title: "Coupon applied!",
+                      description: "FLASH25 - 25% off today only",
+                    });
+                  }}
+                >
+                  <Tag className="h-3 w-3" />
+                  FLASH25
+                </Button>
+                
+                <Button 
+                  variant="minimal" 
+                  size="icon" 
+                  className="h-7 w-7 rounded-full"
+                  onClick={toggleFavorite}
+                >
+                  <Heart className={`h-4 w-4 ${isFavorite ? "fill-red-500 text-red-500" : ""}`} />
+                </Button>
+              </div>
+              
               <Button 
                 variant="outline"
-                size="sm" 
-                className={`rounded-full border-purple-200 text-purple-700 hover:bg-purple-50 hover:text-purple-800 hover:border-purple-300 ${showCartAnimation ? 'animate-wiggle' : ''}`}
+                size="xs" 
+                className="rounded-full border-purple-200 text-purple-700 hover:bg-purple-50 hover:text-purple-800 hover:border-purple-300"
                 onClick={addToCart}
               >
-                <ShoppingCart className="h-4 w-4" />
-                Cart
+                <ShoppingCart className="h-3.5 w-3.5" />
+                Add to Cart
               </Button>
               <Button 
                 variant="purple"
-                size="sm" 
+                size="xs" 
                 className="rounded-full"
                 onClick={buyNow}
               >

@@ -22,6 +22,8 @@ const buttonVariants = cva(
         purple: "bg-purple-600 text-white hover:bg-purple-700",
         success: "bg-green-600 text-white hover:bg-green-700",
         warning: "bg-amber-500 text-white hover:bg-amber-600",
+        minimal: "bg-transparent hover:bg-gray-100 text-gray-700 border border-gray-200",
+        chip: "h-7 text-xs rounded-full border border-gray-200 bg-white hover:bg-gray-50 px-2.5",
       },
       size: {
         default: "h-10 px-4 py-2",
@@ -29,6 +31,7 @@ const buttonVariants = cva(
         lg: "h-11 rounded-md px-8",
         xl: "h-12 rounded-md px-10 text-base",
         icon: "h-10 w-10",
+        xs: "h-7 text-xs rounded-md px-2.5 py-1",
       },
     },
     defaultVariants: {
