@@ -522,7 +522,7 @@ const ProductDetail = () => {
               
               <div className="mt-3 text-xs bg-blue-50 p-2 rounded border border-blue-100">
                 <div className="flex items-start">
-                  <Info className="h-3.5 w-3.5 text-blue-500 mr-1.5 mt-0.5" />
+                  <Info className="h-3.5 w-3.5 text-blue-500 mr-1" />
                   <span className="text-blue-700">Extended warranty covers accidental damage, water damage, and provides priority replacement service.</span>
                 </div>
               </div>
@@ -721,4 +721,53 @@ const ProductDetail = () => {
           )}
         </div>
 
-        <div ref={tabsRef} className="sticky
+        <div ref={tabsRef} className="sticky top-0 z-20 bg-white shadow-sm">
+          <ProductTabs 
+            product={product} 
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            isScrolled={isScrolled}
+          />
+        </div>
+        
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-3 z-20">
+          <Button 
+            className="w-full h-14 bg-purple-600 hover:bg-purple-700 text-white relative overflow-hidden"
+            onClick={buyNow}
+          >
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="flex flex-col items-center">
+                <div className="flex items-center justify-between w-full px-4 mb-1.5">
+                  <div className="flex items-center">
+                    <Rocket className="h-5 w-5 mr-2" />
+                    <span className="font-bold text-base">Buy Now</span>
+                  </div>
+                  <div className="font-bold">${formatPrice(totalPrice)}</div>
+                </div>
+                <div className="w-full px-4">
+                  <Progress 
+                    value={Math.min(100, currentStock ? (100 - (currentStock / 300) * 100) : 95)} 
+                    className="h-1 w-full"
+                    indicatorClassName="bg-white/30"
+                  />
+                </div>
+                <div className="flex justify-between w-full px-4 mt-1">
+                  <div className="text-xs opacity-90">
+                    {quantity}x {selectedColor}
+                  </div>
+                  <div className="text-xs opacity-90">
+                    {currentStock > 50 ? `${currentStock} left` : `Only ${currentStock} left!`}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Button>
+        </div>
+        
+        <div className="h-16"></div>
+      </div>
+    </div>
+  );
+};
+
+export default ProductDetail;
