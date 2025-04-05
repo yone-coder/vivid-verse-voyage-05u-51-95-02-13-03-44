@@ -336,225 +336,379 @@ const ProductDetail = () => {
       
       <div className={`flex-1 ${isScrolled ? 'pt-14' : ''}`}>
         <div className="bg-white p-4 mb-2">
+          <div className="flex items-center mb-1">
+            <Badge variant="outline" className="text-xs bg-red-50 text-red-500 border-red-200">Flash Deal</Badge>
+            <Badge variant="outline" className="text-xs bg-orange-50 text-orange-500 border-orange-200 ml-2">Top Seller</Badge>
+            <Badge variant="outline" className="text-xs bg-green-50 text-green-500 border-green-200 ml-2">Free Shipping</Badge>
+          </div>
+          
           <div className="flex items-baseline">
             <span className="text-xl font-bold text-red-500">${formatPrice(currentPrice)}</span>
             <span className="ml-2 text-sm line-through text-gray-500">${formatPrice(originalPrice)}</span>
             <span className="ml-2 text-xs px-1.5 py-0.5 bg-red-100 text-red-500 rounded">
               {Math.round((1 - currentPrice / originalPrice) * 100)}% OFF
             </span>
-            <div className="ml-auto flex items-center">
-              <div className="text-xs px-2 py-0.5 bg-amber-50 text-amber-600 rounded-full border border-amber-200 flex items-center">
-                <Award className="h-3 w-3 mr-1" />
-                <span>Best Value</span>
-              </div>
-            </div>
           </div>
           
           <h1 className="text-lg font-medium mt-2">{product.name}</h1>
           
-          <div className="flex justify-between items-center mt-2">
-            <div className="flex items-center text-sm">
-              <div className="flex text-amber-400">
-                {'★'.repeat(Math.floor(product.rating))}
-                {product.rating % 1 !== 0 && '☆'}
-                {'☆'.repeat(5 - Math.ceil(product.rating))}
-                <span className="ml-1 text-black">{product.rating}</span>
-              </div>
-              <span className="mx-2 text-gray-300">|</span>
-              <span className="text-gray-500">{product.reviewCount} Reviews</span>
-              <span className="mx-2 text-gray-300">|</span>
-              <span className="text-gray-500">{product.sold}+ Sold</span>
+          <div className="flex items-center mt-2 text-sm">
+            <div className="flex text-amber-400">
+              {'★'.repeat(Math.floor(product.rating))}
+              {product.rating % 1 !== 0 && '☆'}
+              {'☆'.repeat(5 - Math.ceil(product.rating))}
+              <span className="ml-1 text-black">{product.rating}</span>
             </div>
-            
-            <div className="flex items-center space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-7 text-xs bg-purple-50 text-purple-600 border-purple-200 hover:bg-purple-100"
-                onClick={askQuestion}
-              >
-                <MessageCircle className="h-3 w-3 mr-1" />
-                Q&A
-              </Button>
-              
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-7 text-xs bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100"
-                onClick={handleShare}
-              >
-                <Share className="h-3 w-3 mr-1" />
-                Share
-              </Button>
-            </div>
+            <span className="mx-2 text-gray-300">|</span>
+            <span className="text-gray-500">{product.reviewCount} Reviews</span>
+            <span className="mx-2 text-gray-300">|</span>
+            <span className="text-gray-500">{product.sold}+ Sold</span>
           </div>
 
-          <div className="grid grid-cols-2 gap-2 mt-3">
-            <div className="bg-gradient-to-r from-purple-50 to-indigo-100 p-2.5 rounded-md border border-purple-200">
-              <div className="flex items-center text-xs">
-                <Zap className="h-3.5 w-3.5 text-purple-500 mr-1.5" />
+          <div className="mt-4">
+            <div className="bg-gradient-to-r from-purple-50 to-indigo-100 p-3 rounded-md border border-purple-200">
+              <div className="flex items-center text-sm">
+                <Zap className="h-4 w-4 text-purple-500 mr-2" />
                 <span className="font-medium text-purple-800">Limited Time Offer</span>
               </div>
               <div className="text-xs text-purple-700 mt-1 flex items-center">
-                <Clock className="h-3 w-3 mr-1" />
-                <span>Ends in:</span>
-                <div className="ml-1.5 flex gap-1">
-                  <span className="bg-purple-800 text-white px-1 py-0.5 rounded text-[10px]">{timeLeft.hours.toString().padStart(2, '0')}</span>
+                <Clock className="h-3.5 w-3.5 mr-1.5" />
+                <span>Deal ends in:</span>
+                <div className="ml-2 flex gap-1">
+                  <span className="bg-purple-800 text-white px-1.5 py-0.5 rounded">{timeLeft.hours.toString().padStart(2, '0')}</span>
                   <span className="text-purple-800">:</span>
-                  <span className="bg-purple-800 text-white px-1 py-0.5 rounded text-[10px]">{timeLeft.minutes.toString().padStart(2, '0')}</span>
+                  <span className="bg-purple-800 text-white px-1.5 py-0.5 rounded">{timeLeft.minutes.toString().padStart(2, '0')}</span>
                   <span className="text-purple-800">:</span>
-                  <span className="bg-purple-800 text-white px-1 py-0.5 rounded text-[10px]">{timeLeft.seconds.toString().padStart(2, '0')}</span>
+                  <span className="bg-purple-800 text-white px-1.5 py-0.5 rounded">{timeLeft.seconds.toString().padStart(2, '0')}</span>
                 </div>
-              </div>
-            </div>
-            
-            <div className="bg-gradient-to-r from-blue-50 to-cyan-100 p-2.5 rounded-md border border-blue-200">
-              <div className="flex items-center text-xs">
-                <ThumbsUp className="h-3.5 w-3.5 text-blue-500 mr-1.5" />
-                <span className="font-medium text-blue-800">Customer Favorite</span>
-              </div>
-              <div className="text-xs text-blue-700 mt-1 flex items-center">
-                <Users className="h-3 w-3 mr-1" />
-                <span>97% positive feedback</span>
               </div>
             </div>
           </div>
           
-          <div className="flex items-center justify-between mt-3">
-            <div className="flex-1 bg-red-50 p-2 rounded-md mr-1 h-16">
-              <div className="text-xs font-medium text-gray-700 mb-1 flex items-center">
-                <Percent className="h-3.5 w-3.5 mr-1 text-red-500" />
-                Available Coupons:
-              </div>
-              <div className="flex flex-wrap gap-1.5">
-                {product.coupons.map((coupon, index) => (
-                  <div 
-                    key={index} 
-                    className="flex items-center overflow-hidden rounded border border-red-300 group hover:border-red-500 cursor-pointer transition-colors"
-                    onClick={() => applyCoupon(coupon.code)}
-                  >
-                    <div className="bg-red-500 text-white px-1.5 py-0.5 text-[10px] font-medium group-hover:bg-red-600 transition-colors">
-                      {coupon.code}
-                    </div>
-                    <div className="px-1.5 py-0.5 text-[10px] text-red-600 bg-white">
-                      {coupon.discount}
-                    </div>
-                  </div>
-                ))}
-              </div>
+          <div className="mt-3 bg-red-50 p-2.5 rounded-md">
+            <div className="text-sm font-medium text-gray-700 mb-1.5 flex items-center">
+              <Percent className="h-4 w-4 mr-1 text-red-500" />
+              Available Coupons:
             </div>
-            
-            <div className="flex-1 bg-green-50 p-2 rounded-md ml-1 h-16">
-              <div className="text-xs font-medium text-gray-700 mb-1 flex items-center">
-                <Truck className="h-3.5 w-3.5 mr-1 text-green-500" />
-                Shipping & Returns:
-              </div>
-              <div className="text-xs flex flex-col">
-                <span className="text-green-700">• {product.shipping.free ? "Free Standard Shipping" : `$${product.shipping.express} shipping`}</span>
-                <span className="text-green-700">• {product.shipping.returns}</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-3">
-            <div className="text-xs font-medium mb-1.5">Select Variant:</div>
-            <div className="grid grid-cols-3 gap-1.5">
-              {product.variants.slice(0, 3).map((variant) => (
+            <div className="flex flex-wrap gap-2">
+              {product.coupons.map((coupon, index) => (
                 <div 
-                  key={variant.name}
-                  className={`border rounded-md p-1.5 text-xs text-center cursor-pointer transition-all ${selectedColor === variant.name ? 'border-purple-500 bg-purple-50' : 'border-gray-300'}`}
-                  onClick={() => setSelectedColor(variant.name)}
+                  key={index} 
+                  className="flex items-center overflow-hidden rounded border border-red-300 group hover:border-red-500 cursor-pointer transition-colors"
+                  onClick={() => applyCoupon(coupon.code)}
                 >
-                  <div className="w-full h-10 bg-gray-200 rounded mb-1 overflow-hidden">
-                    <img src={variant.image} alt={variant.name} className="w-full h-full object-cover" />
+                  <div className="bg-red-500 text-white px-2 py-1 text-xs font-medium group-hover:bg-red-600 transition-colors">
+                    {coupon.code}
                   </div>
-                  <div className={selectedColor === variant.name ? 'text-purple-500 font-medium text-[11px]' : 'text-[11px]'}>
-                    {variant.name}
-                  </div>
-                  <div className="text-[10px] mt-0.5">
-                    ${variant.price}
+                  <div className="px-2 py-1 text-xs text-red-600 bg-white">
+                    {coupon.discount}
                   </div>
                 </div>
               ))}
             </div>
-            
-            <div className="flex items-center justify-between mt-2.5">
-              <div>
-                <div className="text-xs font-medium mb-1">Quantity:</div>
-                <div className="flex items-center">
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="h-7 w-7 p-0 rounded-l-md rounded-r-none text-xs"
-                    onClick={decrementQuantity}
-                    disabled={quantity <= 1}
-                  >
-                    <span>-</span>
-                  </Button>
-                  <div className="h-7 px-3 flex items-center justify-center border-t border-b border-gray-300 text-sm">
-                    {quantity}
+          </div>
+
+          <div className="mt-3 flex items-center text-sm">
+            <Truck className="h-4 w-4 text-gray-600 mr-2" />
+            <div>
+              <span className="text-gray-700">Shipping: </span>
+              <span className="font-medium">{product.shipping.free ? "Free Shipping" : `$${product.shipping.express}`}</span>
+              <span className="text-gray-500 ml-2">{isExpressSelected ? product.shipping.expressEstimated : product.shipping.estimated}</span>
+              <button 
+                className="ml-2 text-blue-500 underline text-xs"
+                onClick={() => setShowDeliveryOptions(!showDeliveryOptions)}
+              >
+                Options
+              </button>
+            </div>
+          </div>
+
+          {showDeliveryOptions && (
+            <div className="mt-2 ml-6 bg-gray-50 p-3 rounded-md text-sm">
+              <RadioGroup defaultValue={isExpressSelected ? "express" : "standard"} onValueChange={(value) => setIsExpressSelected(value === "express")}>
+                <div className="flex items-center space-x-2 mb-2">
+                  <RadioGroupItem value="standard" id="standard" />
+                  <label htmlFor="standard" className="flex-1">
+                    <div className="font-medium">Standard Shipping</div>
+                    <div className="text-xs text-gray-500">Free • {product.shipping.estimated}</div>
+                  </label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="express" id="express" />
+                  <label htmlFor="express" className="flex-1">
+                    <div className="font-medium">Express Shipping</div>
+                    <div className="text-xs text-gray-500">${product.shipping.express} • {product.shipping.expressEstimated}</div>
+                  </label>
+                </div>
+              </RadioGroup>
+
+              <div className="mt-3 text-xs flex items-start">
+                <Gift className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
+                <div>
+                  <div className="flex items-center">
+                    <span className="font-medium mr-2">Gift Wrapping</span>
+                    <span className="text-green-500">+$2.99</span>
                   </div>
+                  <p className="text-gray-500 mt-0.5">Add beautiful packaging with a personalized message</p>
                   <Button 
-                    variant="outline" 
+                    variant={giftWrap ? "default" : "outline"} 
                     size="sm" 
-                    className="h-7 w-7 p-0 rounded-r-md rounded-l-none text-xs"
-                    onClick={incrementQuantity}
-                    disabled={quantity >= 10}
+                    className={`mt-1.5 text-xs px-2 py-0 h-7 ${giftWrap ? "bg-green-500 hover:bg-green-600" : ""}`}
+                    onClick={toggleGiftWrap}
                   >
-                    <span>+</span>
+                    {giftWrap ? <Check className="h-3 w-3 mr-1" /> : null}
+                    {giftWrap ? "Gift Wrap Added" : "Add Gift Wrap"}
                   </Button>
                 </div>
               </div>
+            </div>
+          )}
+          
+          <div className="flex items-center text-sm mt-1.5">
+            <Shield className="h-4 w-4 text-gray-600 mr-2" />
+            <div>
+              <span className="text-gray-700">Buyer Protection: </span>
+              <span className="text-blue-500">{product.shipping.returns}</span>
+              <button
+                className="ml-2 text-blue-500 underline text-xs"
+                onClick={() => setShowWarrantyOptions(!showWarrantyOptions)}
+              >
+                Warranty Options
+              </button>
+            </div>
+          </div>
+
+          {showWarrantyOptions && (
+            <div className="mt-2 ml-6 bg-gray-50 p-3 rounded-md text-sm">
+              <div className="mb-2 font-medium text-gray-700 flex items-center">
+                <Shield className="h-4 w-4 mr-1.5 text-blue-500" />
+                Extended Warranty Options:
+              </div>
+              <RadioGroup 
+                value={selectedWarranty} 
+                onValueChange={setSelectedWarranty}
+                className="space-y-2"
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="none" id="warranty-none" />
+                  <label htmlFor="warranty-none" className="flex-1">
+                    <div className="font-medium">No additional warranty</div>
+                    <div className="text-xs text-gray-500">Includes standard {product.warranty[0].duration} manufacturer warranty</div>
+                  </label>
+                </div>
+                
+                {product.warranty.slice(1).map((option, index) => (
+                  <div key={index} className="flex items-center space-x-2">
+                    <RadioGroupItem value={option.name.toLowerCase()} id={`warranty-${option.name.toLowerCase()}`} />
+                    <label htmlFor={`warranty-${option.name.toLowerCase()}`} className="flex-1">
+                      <div className="font-medium">{option.name} Protection Plan</div>
+                      <div className="text-xs text-gray-500">{option.duration} coverage • +${option.price}</div>
+                    </label>
+                  </div>
+                ))}
+              </RadioGroup>
               
-              <div className="flex-1 ml-3">
-                <div className="flex justify-between text-xs mb-0.5">
+              <div className="mt-3 text-xs bg-blue-50 p-2 rounded border border-blue-100">
+                <div className="flex items-start">
+                  <Info className="h-3.5 w-3.5 text-blue-500 mr-1" />
+                  <span className="text-blue-700">Extended warranty covers accidental damage, water damage, and provides priority replacement service.</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="mt-3 flex items-center justify-between">
+            <button
+              onClick={() => setShowPaymentOptions(!showPaymentOptions)}
+              className="text-sm text-blue-500 flex items-center"
+            >
+              Payment Options
+              <ArrowRight className="h-3 w-3 ml-1" />
+            </button>
+            <button
+              onClick={() => setShowMoreFeatures(!showMoreFeatures)}
+              className="text-sm text-blue-500 flex items-center"
+            >
+              Product Features
+              <ArrowRight className="h-3 w-3 ml-1" />
+            </button>
+          </div>
+
+          {showMoreFeatures && (
+            <div className="mt-3 bg-gray-50 p-3 rounded-md">
+              <div className="text-sm font-medium mb-2 flex items-center">
+                <Sparkles className="h-4 w-4 mr-1 text-blue-500" />
+                Key Features:
+              </div>
+              <ul className="grid grid-cols-2 gap-2 text-xs">
+                {product.features.map((feature, index) => (
+                  <li key={index} className="flex items-start">
+                    <Star className="h-3 w-3 text-amber-500 mr-1 mt-0.5 flex-shrink-0" />
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+              <Button 
+                variant="ghost" 
+                className="w-full mt-2 text-xs h-8" 
+                onClick={scrollToTabs}
+              >
+                View Full Specifications
+              </Button>
+            </div>
+          )}
+
+          {showPaymentOptions && (
+            <div className="mt-3 bg-gray-50 p-3 rounded-md">
+              <div className="text-sm font-medium mb-2 flex items-center">
+                <CreditCard className="h-4 w-4 mr-1.5 text-gray-700" />
+                Accepted Payment Methods:
+              </div>
+              <div className="grid grid-cols-2 gap-y-2 text-xs">
+                {product.payments.map((method, index) => (
+                  <div key={index} className="flex items-center">
+                    <div className="w-4 h-4 bg-gray-300 rounded mr-2"></div>
+                    <span>{method}</span>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="mt-3 bg-purple-50 p-2 rounded border border-purple-100">
+                <div className="text-xs font-medium text-purple-700 flex items-center">
+                  <AlertCircle className="h-3.5 w-3.5 mr-1" />
+                  Buy now, pay later options available at checkout
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+        
+        <div className="bg-white p-4 mb-2">
+          <div className="flex items-center justify-between mb-1">
+            <div className="text-sm text-gray-700 font-medium">Select Variant</div>
+            <div 
+              className="text-xs text-blue-500 cursor-pointer"
+              onClick={toggleVariants}
+            >
+              {showVariants ? "Hide" : "Show"} Options
+            </div>
+          </div>
+          
+          {showVariants && (
+            <div className="mt-2">
+              <div className="text-sm font-medium mb-2 flex items-center">
+                <div className="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
+                Color Option:
+              </div>
+              <div className="grid grid-cols-3 gap-2 mb-3">
+                {product.variants.map((variant) => (
+                  <div 
+                    key={variant.name}
+                    className={`border rounded-md p-2 text-xs text-center cursor-pointer transition-all ${selectedColor === variant.name ? 'border-purple-500 bg-purple-50' : 'border-gray-300'}`}
+                    onClick={() => setSelectedColor(variant.name)}
+                  >
+                    <div className="w-full h-12 bg-gray-200 rounded mb-1 overflow-hidden">
+                      <img src={variant.image} alt={variant.name} className="w-full h-full object-cover" />
+                    </div>
+                    <div className={selectedColor === variant.name ? 'text-purple-500 font-medium' : ''}>
+                      {variant.name}
+                    </div>
+                    <div className="text-xs mt-0.5">
+                      ${variant.price}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="text-sm font-medium mt-3 mb-2 flex items-center">
+                <div className="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
+                Quantity:
+              </div>
+              <div className="flex items-center">
+                <Button 
+                  variant="outline" 
+                  size="icon" 
+                  className="h-9 w-9 rounded-l-md rounded-r-none"
+                  onClick={decrementQuantity}
+                  disabled={quantity <= 1}
+                >
+                  <span className="text-lg">-</span>
+                </Button>
+                <div className="h-9 px-4 flex items-center justify-center border-t border-b border-gray-300 text-base">
+                  {quantity}
+                </div>
+                <Button 
+                  variant="outline" 
+                  size="icon" 
+                  className="h-9 w-9 rounded-r-md rounded-l-none"
+                  onClick={incrementQuantity}
+                  disabled={quantity >= 10}
+                >
+                  <span className="text-lg">+</span>
+                </Button>
+                <div className="ml-3 text-sm text-gray-500">
+                  {currentVariant?.stock || 0} available
+                </div>
+              </div>
+
+              <div className="mt-2">
+                <div className="flex justify-between text-xs mb-1">
                   <span className="text-red-500 font-medium">Selling Fast!</span>
                   <span className="text-gray-500">{currentVariant?.stock || 0} left</span>
                 </div>
                 <Progress value={stockPercentage} className="h-1.5" indicatorClassName="bg-gradient-to-r from-red-500 to-orange-400" />
               </div>
-            </div>
-          </div>
 
-          <div className="mt-3 grid grid-cols-2 gap-2">
-            <Button 
-              variant="outline"
-              className="h-10 border-purple-500 text-purple-600 hover:bg-purple-50"
-              onClick={addToCart}
-            >
-              <ShoppingCart className="h-4 w-4 mr-1" />
-              Add to Cart
-            </Button>
-            
-            <Button 
-              className="h-10 bg-purple-600 hover:bg-purple-700 text-white"
-              onClick={buyNow}
-            >
-              <Zap className="h-4 w-4 mr-1" />
-              Buy Now
-            </Button>
-          </div>
-
-          <div className="mt-3 flex flex-wrap gap-1.5 justify-between text-xs text-gray-500">
-            <div className="flex items-center">
-              <Shield className="h-3 w-3 mr-1 text-blue-500" />
-              <span>Secure Payment</span>
+              <div className="text-xs text-gray-500 mt-4 bg-yellow-50 p-2 rounded border border-yellow-100 flex items-start">
+                <Crown className="h-4 w-4 text-yellow-500 mr-2 flex-shrink-0" />
+                <div>
+                  <span className="font-medium text-yellow-700">PRO TIP:</span> This item is selling fast! {currentVariant?.stock} people purchased in the last 24 hours.
+                </div>
+              </div>
+              
+              <div className="mt-4 p-3 bg-gray-50 rounded-md">
+                <div className="text-sm font-medium mb-2">Order Summary:</div>
+                <div className="space-y-1.5 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Price ({quantity} x ${formatPrice(currentPrice)})</span>
+                    <span>${formatPrice(currentPrice * quantity)}</span>
+                  </div>
+                  
+                  {warrantyPrice > 0 && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">
+                        {warrantyOption?.name} Warranty ({warrantyOption?.duration})
+                      </span>
+                      <span>+${formatPrice(warrantyPrice)}</span>
+                    </div>
+                  )}
+                  
+                  {giftWrap && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Gift Wrapping</span>
+                      <span>+$2.99</span>
+                    </div>
+                  )}
+                  
+                  {isExpressSelected && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Express Shipping</span>
+                      <span>+${formatPrice(product.shipping.express)}</span>
+                    </div>
+                  )}
+                  
+                  <Separator className="my-2" />
+                  
+                  <div className="flex justify-between font-medium">
+                    <span>Total:</span>
+                    <span className="text-purple-600">${formatPrice(totalPrice)}</span>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="flex items-center">
-              <Box className="h-3 w-3 mr-1 text-blue-500" />
-              <span>Free Returns</span>
-            </div>
-            <div className="flex items-center">
-              <Tag className="h-3 w-3 mr-1 text-blue-500" />
-              <span>Authentic Product</span>
-            </div>
-            <div className="flex items-center">
-              <Download className="h-3 w-3 mr-1 text-blue-500" />
-              <span>App Control</span>
-            </div>
-          </div>
+          )}
         </div>
-        
+
         <div ref={tabsRef} className="sticky top-0 z-20 bg-white shadow-sm">
           <ProductTabs 
             product={product} 
