@@ -409,7 +409,7 @@ const ProductDetail = () => {
         </div>
       )}
       
-      <div className={`flex-1 ${isScrolled ? 'pt-14' : ''}`} style={{ paddingBottom: `${footerHeight}px` }}>
+      <div className="flex-1" style={{ paddingBottom: `${footerHeight}px` }}>
         <div className="bg-white p-4 mb-2">
           <div className="flex items-center mb-1">
             <Badge variant="outline" className="text-xs bg-red-50 text-red-500 border-red-200">Flash Deal</Badge>
@@ -725,8 +725,101 @@ const ProductDetail = () => {
                 {originalPrice > currentPrice && (
                   <span className="ml-2 text-xs line-through text-gray-500">${formatPrice(originalPrice)}</span>
                 )}
+                {(warrantyPrice > 0 || giftWrap || isExpressSelected) && (
+                  <div className="ml-2 text-xs text-gray-500 flex items-center">
+                    <Info className="h-3 w-3 mr-1" />
+                    <span>Includes add-ons</span>
+                  </div>
+                )}
               </div>
               <div className="flex items-center mt-0.5">
                 <div className="text-xs text-green-600 font-medium">
                   {Math.round((1 - currentPrice / originalPrice) * 100)}% OFF
                 </div>
+                <span className="mx-1 text-gray-300">•</span>
+                <div className="text-xs text-gray-500">
+                  {currentStock} in stock
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <div className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full flex items-center mr-1">
+                <Shield className="h-3 w-3 mr-1" />
+                <span>Secure Checkout</span>
+              </div>
+              
+              <div className="flex">
+                <Button 
+                  variant="outline" 
+                  size="icon" 
+                  className="rounded-full h-8 w-8 bg-white"
+                  onClick={toggleFavorite}
+                >
+                  <Heart className={`h-4 w-4 ${isFavorite ? "fill-red-500 text-red-500" : "text-gray-600"}`} />
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="icon" 
+                  className="rounded-full h-8 w-8 bg-white ml-1"
+                  onClick={askQuestion}
+                >
+                  <MessageCircle className="h-4 w-4 text-gray-600" />
+                </Button>
+              </div>
+            </div>
+          </div>
+          
+          {/* Mobile adjustments */}
+          <div className="flex flex-wrap gap-2 mb-2">
+            {isMobile && selectedWarranty !== "none" && (
+              <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
+                {warrantyOption?.name} Warranty
+              </Badge>
+            )}
+            {isMobile && isExpressSelected && (
+              <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                Express Shipping
+              </Badge>
+            )}
+            {isMobile && giftWrap && (
+              <Badge variant="outline" className="bg-pink-50 text-pink-700 border-pink-200">
+                <Gift className="h-3 w-3 mr-1" />
+                Gift Wrap
+              </Badge>
+            )}
+          </div>
+          
+          {/* Action buttons */}
+          <div className="grid grid-cols-2 gap-2">
+            <div className="relative">
+              <Button 
+                variant="outline"
+                className="w-full bg-white border-purple-200 text-purple-600 hover:bg-purple-50 hover:text-purple-700 font-medium relative overflow-hidden"
+                onClick={addToCart}
+              >
+                <ShoppingCart className="mr-1.5" />
+                Add to Cart
+                {showCartAnimation && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-purple-600 text-white animate-pulse">
+                    <Check className="mr-1" />
+                    Added!
+                  </div>
+                )}
+              </Button>
+            </div>
+            <Button 
+              variant="purple"
+              className="w-full font-medium"
+              onClick={buyNow}
+            >
+              Buy Now
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ProductDetail;
