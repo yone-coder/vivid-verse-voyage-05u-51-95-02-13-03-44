@@ -283,7 +283,8 @@ const ModernBuyButton = () => {
         
         <div className="h-0.5 w-full bg-gray-200">
           <div 
-            className={`h-full ${stockRemaining <= 10 ? 'bg-red-500' : stockRemaining <= 30 ? 'bg-amber-500' : 'bg-green-500'} ${stockProgressAnimation ? 'transition-all duration-1000 ease-in-out' : ''}`}
+            className={`h-full ${stockRemaining <= 10 ? 'bg-red-500' : stockRemaining <= 30 ? 'bg-amber-500' : 'bg-green-500'} 
+                      ${stockProgressAnimation ? 'animate-pulse' : ''}`}
             style={{ width: `${stockPercentage}%` }}
           ></div>
         </div>

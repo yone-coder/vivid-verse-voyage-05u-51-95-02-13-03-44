@@ -16,6 +16,7 @@ const LiveStockUpdates: React.FC<LiveStockUpdatesProps> = ({
   const [lastUpdate, setLastUpdate] = useState(new Date());
   const [recentPurchases, setRecentPurchases] = useState(0);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [pulseProgress, setPulseProgress] = useState(false);
   
   // Calculate stock percentage
   const stockPercentage = Math.min(100, Math.max(5, (currentStock / 300) * 100));
@@ -34,6 +35,10 @@ const LiveStockUpdates: React.FC<LiveStockUpdatesProps> = ({
         // Flash update animation
         setIsUpdating(true);
         setTimeout(() => setIsUpdating(false), 1000);
+        
+        // Pulse progress bar
+        setPulseProgress(true);
+        setTimeout(() => setPulseProgress(false), 1000);
       }
     }, 15000); // Check every 15 seconds
     
@@ -61,7 +66,11 @@ const LiveStockUpdates: React.FC<LiveStockUpdatesProps> = ({
         </span>
       </div>
       
-      <Progress value={stockPercentage} className="h-1.5" />
+      <Progress 
+        value={stockPercentage} 
+        className="h-1.5" 
+        indicatorClassName={pulseProgress ? "animate-pulse" : ""}
+      />
       
       <div className="flex justify-between mt-2 text-xs">
         <div className="text-gray-600">
