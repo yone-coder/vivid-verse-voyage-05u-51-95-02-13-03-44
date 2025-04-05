@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { ShoppingCart, Clock, Check, ChevronDown, Star, Info, TrendingUp, Heart, ShieldCheck, ArrowRight, AlertTriangle, Plus, Minus } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
@@ -23,6 +22,8 @@ const ModernBuyButton = () => {
   const [showPriceIncrease, setShowPriceIncrease] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [stockProgressAnimation, setStockProgressAnimation] = useState(false);
+  const [heartCount, setHeartCount] = useState(432);
+  const [isHearted, setIsHearted] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -88,7 +89,6 @@ const ModernBuyButton = () => {
   useEffect(() => {
     const priceInterval = setInterval(() => {
       if (stockRemaining <= 70 && Math.random() > 0.5) {
-        // Increase price more aggressively as stock decreases
         const increaseFactor = (100 - stockRemaining) / 100;
         const newIncrement = priceIncrement + parseFloat((Math.random() * 2 * increaseFactor).toFixed(2));
         setPriceIncrement(newIncrement);
@@ -123,19 +123,15 @@ const ModernBuyButton = () => {
   useEffect(() => {
     const stockInterval = setInterval(() => {
       if (Math.random() > 0.6 && stockRemaining > 1) {
-        // Reduce stock
         const reduction = Math.floor(Math.random() * 3) + 1;
         setStockRemaining(prev => Math.max(1, prev - reduction));
         
-        // Animate progress bar
         setStockProgressAnimation(true);
         setTimeout(() => setStockProgressAnimation(false), 1000);
         
-        // Highlight stock change
         setHighlightStock(true);
         setTimeout(() => setHighlightStock(false), 1000);
         
-        // Increase price when stock drops
         if (stockRemaining < 50) {
           const priceIncrease = parseFloat((Math.random() * 0.5).toFixed(2));
           setPriceIncrement(prev => prev + priceIncrease);
@@ -177,6 +173,17 @@ const ModernBuyButton = () => {
     if (quantity > 1) {
       setQuantity(prev => prev - 1);
     }
+  };
+
+  const toggleHeart = () => {
+    if (isHearted) {
+      setHeartCount(prev => prev - 1);
+    } else {
+      setHeartCount(prev => prev + 1);
+      setButtonHover(true);
+      setTimeout(() => setButtonHover(false), 300);
+    }
+    setIsHearted(!isHearted);
   };
 
   const variants = ['Red', 'Blue', 'Black', 'Green'];
@@ -349,6 +356,17 @@ const ModernBuyButton = () => {
                 </div>
               </div>
             </div>
+            
+            <button 
+              onClick={toggleHeart}
+              className="flex flex-col items-center justify-center mr-2"
+            >
+              <Heart 
+                className={`transition-all duration-300 ${isHearted ? 'text-red-500 fill-red-500 scale-110' : 'text-gray-400'}`}
+                size={16}
+              />
+              <span className="text-xs text-gray-500 mt-0.5">{heartCount}</span>
+            </button>
             
             <div className="relative">
               <div className="flex items-center space-x-1">
