@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { ArrowLeft, Share, Heart, MessageCircle, Truck, Shield, Award, Percent, ThumbsUp, Zap, Star, Sparkles, ArrowRight, Crown, Clock, Gift, Check, Info, CreditCard, AlertCircle, Bookmark, Box, Tag, Download, Users, Rocket } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -343,7 +344,7 @@ const ProductDetail = () => {
       )}
       
       <div className={`flex-1 ${isScrolled ? 'pt-10' : ''}`}>
-        <div className="bg-white p-3 mb-1">
+        <div className="bg-white p-3 mb-0">
           <div className="flex items-center mb-0.5">
             <Badge variant="outline" className="text-xs bg-red-50 text-red-500 border-red-200">Flash Deal</Badge>
             <Badge variant="outline" className="text-xs bg-orange-50 text-orange-500 border-orange-200 ml-1">Top Seller</Badge>
@@ -676,7 +677,7 @@ const ProductDetail = () => {
         </div>
       </div>
       
-      <div className="mt-1" ref={tabsRef}>
+      <div ref={tabsRef}>
         <ProductTabs 
           product={product} 
           activeTab={activeTab} 
