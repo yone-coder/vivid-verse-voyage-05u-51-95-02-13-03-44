@@ -15,6 +15,12 @@ import {
   ChevronLeft,
   ChevronRight,
   GalleryHorizontal,
+  Download,
+  Copy,
+  ZoomIn,
+  Eye,
+  ArrowUpToLine,
+  Check,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
@@ -26,6 +32,12 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface ProductImageGalleryProps {
   images: string[];
@@ -45,10 +57,15 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const [preloadedImages, setPreloadedImages] = useState<string[]>([]);
   const [autoScrollEnabled, setAutoScrollEnabled] = useState(false);
   const [autoScrollInterval, setAutoScrollInterval] = useState<NodeJS.Timeout | null>(null);
+  const [thumbnailViewMode, setThumbnailViewMode] = useState<"row" | "grid">("row");
+  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+  const [isFullscreenMode, setIsFullscreenMode] = useState(false);
+  const [hoveredThumbnail, setHoveredThumbnail] = useState<number | null>(null);
   
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
   const touchStartPosition = useRef<TouchPosition | null>(null);
+  const fullscreenRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
 
   useEffect(() => {
@@ -114,6 +131,61 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const handleFlip = useCallback(() => {
     setIsFlipped(prev => !prev);
   }, []);
+
+  const downloadImage = useCallback((index: number) => {
+    const image = images[index];
+    const link = document.createElement('a');
+    link.href = image;
+    link.download = `product-image-${index + 1}.jpg`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    toast({
+      title: "Image downloaded",
+      description: `Image ${index + 1} has been downloaded`,
+      duration: 2000,
+    });
+  }, [images]);
+
+  const copyImageUrl = useCallback((index: number) => {
+    const image = images[index];
+    navigator.clipboard.writeText(image);
+    
+    setCopiedIndex(index);
+    setTimeout(() => setCopiedIndex(null), 2000);
+    
+    toast({
+      title: "Image URL copied",
+      description: "Image URL has been copied to clipboard",
+      duration: 2000,
+    });
+  }, [images]);
+
+  const toggleThumbnailViewMode = useCallback(() => {
+    setThumbnailViewMode(prev => prev === "row" ? "grid" : "row");
+  }, []);
+
+  const toggleFullscreen = useCallback(() => {
+    setIsFullscreenMode(prev => !prev);
+    
+    if (!isFullscreenMode) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+  }, [isFullscreenMode]);
+
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isFullscreenMode) {
+        toggleFullscreen();
+      }
+    };
+    
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, [isFullscreenMode, toggleFullscreen]);
 
   useEffect(() => {
     if (autoScrollEnabled && api) {
@@ -191,6 +263,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                       transition: "transform 0.2s ease-out",
                     }}
                     draggable={false}
+                    onClick={toggleFullscreen}
                   />
                 </div>
               </CarouselItem>
@@ -261,6 +334,19 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                   </TooltipTrigger>
                   <TooltipContent>{autoScrollEnabled ? "Disable Auto-scroll" : "Enable Auto-scroll"}</TooltipContent>
                 </Tooltip>
+                
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={toggleFullscreen}
+                      className="bg-black/50 backdrop-blur-sm p-1.5 rounded-lg text-white hover:bg-black/60 transition-colors"
+                      aria-label="View fullscreen"
+                    >
+                      <ZoomIn size={16} />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>Fullscreen View</TooltipContent>
+                </Tooltip>
               </TooltipProvider>
             </div>
           </div>
@@ -291,31 +377,164 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
         </Carousel>
       </div>
       
-      <div className="flex gap-2 overflow-x-auto pb-1 px-1 scrollbar-none">
+      <div className="flex items-center justify-between mb-1">
+        <p className="text-xs text-gray-500 ml-1">
+          {images.length} Images
+        </p>
+        <button 
+          onClick={toggleThumbnailViewMode}
+          className="flex items-center text-xs text-blue-600 hover:text-blue-800"
+        >
+          <GalleryHorizontal className="h-3.5 w-3.5 mr-1" />
+          {thumbnailViewMode === "row" ? "Grid View" : "Row View"}
+        </button>
+      </div>
+      
+      <div 
+        className={cn(
+          "transition-all duration-300",
+          thumbnailViewMode === "row" 
+            ? "flex gap-2 overflow-x-auto pb-1 px-1 scrollbar-none" 
+            : "grid grid-cols-4 gap-2 pb-1 px-1"
+        )}
+      >
         {images.map((image, index) => (
-          <button
+          <div
             key={index}
-            onClick={() => handleThumbnailClick(index)}
             className={cn(
-              "w-14 h-14 overflow-hidden rounded-md border-2 flex-shrink-0 transition-all relative",
+              "relative overflow-hidden rounded-md border-2 flex-shrink-0 transition-all",
+              thumbnailViewMode === "row" ? "w-14 h-14" : "aspect-square",
               currentIndex === index 
                 ? "border-primary ring-2 ring-primary/20" 
-                : "border-transparent hover:border-gray-300"
+                : "border-transparent hover:border-gray-300",
+              "group cursor-pointer",
             )}
-            aria-label={`View image ${index + 1}`}
-            aria-current={currentIndex === index}
+            onClick={() => handleThumbnailClick(index)}
+            onMouseEnter={() => setHoveredThumbnail(index)}
+            onMouseLeave={() => setHoveredThumbnail(null)}
           >
             <img 
               src={image} 
               alt={`Thumbnail ${index + 1}`} 
               className="w-full h-full object-cover"
             />
+            
             {currentIndex === index && (
               <div className="absolute inset-0 bg-primary/10"></div>
             )}
-          </button>
+            
+            {hoveredThumbnail === index && (
+              <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="h-6 w-6 rounded-full bg-white/80 hover:bg-white"
+                    >
+                      <Eye className="h-3 w-3 text-gray-800" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="center" className="w-40">
+                    <DropdownMenuItem onClick={(e) => {
+                      e.stopPropagation();
+                      handleThumbnailClick(index);
+                    }}>
+                      <Eye className="h-4 w-4 mr-2" /> View
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={(e) => {
+                      e.stopPropagation();
+                      downloadImage(index);
+                    }}>
+                      <Download className="h-4 w-4 mr-2" /> Download
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={(e) => {
+                      e.stopPropagation();
+                      copyImageUrl(index);
+                    }}>
+                      {copiedIndex === index ? (
+                        <Check className="h-4 w-4 mr-2 text-green-600" />
+                      ) : (
+                        <Copy className="h-4 w-4 mr-2" />
+                      )}
+                      {copiedIndex === index ? "Copied!" : "Copy URL"}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={(e) => {
+                      e.stopPropagation();
+                      toggleFullscreen();
+                      handleThumbnailClick(index);
+                    }}>
+                      <ZoomIn className="h-4 w-4 mr-2" /> Fullscreen
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            )}
+            
+            <span className="absolute bottom-0.5 right-0.5 text-[10px] bg-black/40 text-white px-1 rounded">
+              {index + 1}
+            </span>
+          </div>
         ))}
       </div>
+      
+      {isFullscreenMode && (
+        <div 
+          ref={fullscreenRef}
+          className="fixed inset-0 bg-black z-50 flex items-center justify-center animate-fade-in"
+          onClick={toggleFullscreen}
+        >
+          <button 
+            className="absolute top-4 right-4 text-white bg-black/50 p-2 rounded-full hover:bg-black/70 transition-colors"
+            onClick={toggleFullscreen}
+          >
+            <ArrowUpToLine className="h-5 w-5" />
+          </button>
+          
+          <img 
+            src={images[currentIndex]} 
+            alt={`Product fullscreen image ${currentIndex + 1}`} 
+            className="max-w-[90%] max-h-[90%] object-contain"
+            style={{ 
+              transform: `
+                rotate(${isRotated}deg)
+                ${isFlipped ? 'scaleX(-1)' : ''}
+              `,
+            }}
+            onClick={(e) => e.stopPropagation()}
+          />
+          
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4">
+            <Button 
+              variant="outline" 
+              size="icon" 
+              className="rounded-full bg-white/20 hover:bg-white/40"
+              onClick={(e) => {
+                e.stopPropagation();
+                handlePrevious();
+              }}
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </Button>
+            
+            <div className="bg-white/20 backdrop-blur-sm text-white px-3 py-1.5 rounded-lg">
+              {currentIndex + 1} / {images.length}
+            </div>
+            
+            <Button 
+              variant="outline" 
+              size="icon" 
+              className="rounded-full bg-white/20 hover:bg-white/40"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleNext();
+              }}
+            >
+              <ChevronRight className="h-5 w-5" />
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
