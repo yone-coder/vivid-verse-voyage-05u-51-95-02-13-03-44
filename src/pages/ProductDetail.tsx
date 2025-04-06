@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { ArrowLeft, Share, Heart, MessageCircle, Truck, Shield, Award, Percent, ThumbsUp, Zap, Star, Sparkles, ArrowRight, Crown, Clock, Gift, Check, Info, CreditCard, AlertCircle, Bookmark, Box, Tag, Download, Users, Rocket, Copy, Scissors, BadgePercent, TicketPercent } from "lucide-react";
+import { ArrowLeft, Share, Heart, MessageCircle, Truck, Shield, Award, Percent, ThumbsUp, Zap, Star, Sparkles, ArrowRight, Crown, Clock, Gift, Check, Info, CreditCard, AlertCircle, Bookmark, Box, Tag, Download, Users, Rocket, Copy, Scissors, BadgePercent, TicketPercent, BookmarkPlus, BellRing, ShieldCheck, CircleDollarSign } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -15,7 +15,7 @@ import LiveActivityNotifications from "@/components/LiveActivityNotifications";
 import LiveStockUpdates from "@/components/LiveStockUpdates";
 import { Switch } from "@/components/ui/switch";
 import ModernBuyButton from "@/components/ModernBuyButton";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { HoverCard, HoverCardContent, HoverCardTrigger, HoverCardWithDuration } from "@/components/ui/hover-card";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Card } from "@/components/ui/card";
 
@@ -36,6 +36,10 @@ const ProductDetail = () => {
   const [selectedWarranty, setSelectedWarranty] = useState("none");
   const [maxQuantityReached, setMaxQuantityReached] = useState(false);
   const [showCartAnimation, setShowCartAnimation] = useState(false);
+  const [showPerkInfo, setShowPerkInfo] = useState(false);
+  const [isNotifyActive, setIsNotifyActive] = useState(false);
+  const [showPriceHistory, setShowPriceHistory] = useState(false);
+  const [earlyAccessActivated, setEarlyAccessActivated] = useState(false);
   const headerRef = useRef<HTMLDivElement>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
@@ -275,6 +279,26 @@ const ProductDetail = () => {
     });
   };
 
+  const handlePriceAlert = () => {
+    setIsNotifyActive(!isNotifyActive);
+    toast({
+      title: isNotifyActive ? "Price alert removed" : "Price alert set",
+      description: isNotifyActive 
+        ? "You will no longer receive notifications for price drops" 
+        : "We'll notify you when this product's price drops",
+    });
+  };
+
+  const handleEarlyAccess = () => {
+    setEarlyAccessActivated(!earlyAccessActivated);
+    toast({
+      title: earlyAccessActivated ? "Early access deactivated" : "Early access activated!",
+      description: earlyAccessActivated
+        ? "You'll no longer get early access to new products"
+        : "You'll now get early access to new products in this category",
+    });
+  };
+
   const currentVariant = product.variants.find(v => v.name === selectedColor);
   const currentPrice = currentVariant ? currentVariant.price : product.discountPrice;
   const originalPrice = currentVariant ? Math.round(currentVariant.price * 1.6 * 100) / 100 : product.price;
@@ -386,140 +410,169 @@ const ProductDetail = () => {
           </div>
 
           <div className="mt-4">
-            <div className="bg-gradient-to-r from-purple-50 to-indigo-100 p-3 rounded-md border border-purple-200">
-              <div className="flex items-center text-sm">
-                <Zap className="h-4 w-4 text-purple-500 mr-2" />
-                <span className="font-medium text-purple-800">Limited Time Offer</span>
-              </div>
-              <div className="text-xs text-purple-700 mt-1 flex items-center">
-                <Clock className="h-3.5 w-3.5 mr-1.5" />
-                <span>Deal ends in:</span>
-                <div className="ml-2 flex gap-1">
-                  <span className="bg-purple-800 text-white px-1.5 py-0.5 rounded">{timeLeft.hours.toString().padStart(2, '0')}</span>
-                  <span className="text-purple-800">:</span>
-                  <span className="bg-purple-800 text-white px-1.5 py-0.5 rounded">{timeLeft.minutes.toString().padStart(2, '0')}</span>
-                  <span className="text-purple-800">:</span>
-                  <span className="bg-purple-800 text-white px-1.5 py-0.5 rounded">{timeLeft.seconds.toString().padStart(2, '0')}</span>
+            <div className="bg-gradient-to-r from-purple-50 to-indigo-100 p-2.5 rounded-md border border-purple-200 relative overflow-hidden shadow-sm">
+              <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-purple-400/30 to-violet-300/10 rounded-full -translate-x-4 -translate-y-10 blur-md"></div>
+              <div className="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-tr from-indigo-300/20 to-purple-400/10 rounded-full translate-x-2 translate-y-6 blur-md"></div>
+              
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <div className="relative mr-2">
+                    <div className="absolute inset-0 bg-purple-600 rounded-full animate-ping opacity-30"></div>
+                    <Zap className="h-4 w-4 text-purple-600 relative z-10" />
+                  </div>
+                  <span className="font-medium text-purple-900">Limited Time Offer</span>
                 </div>
-              </div>
-            </div>
-          </div>
-          
-          <div className="mt-3 bg-gradient-to-r from-red-50 to-orange-50 p-3 rounded-md border border-red-100 shadow-sm">
-            <div className="text-sm font-medium text-gray-700 mb-2 flex items-center justify-between">
-              <div className="flex items-center">
-                <BadgePercent className="h-4 w-4 mr-1.5 text-red-500" />
-                <span>Available Coupons:</span>
+                
+                <div className="flex space-x-1">
+                  <HoverCardWithDuration openDelay={300} closeDelay={100}>
+                    <HoverCardTrigger asChild>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className={`h-6 w-6 p-0 rounded-full ${earlyAccessActivated ? "bg-purple-200" : "bg-white/60"}`}
+                        onClick={handleEarlyAccess}
+                      >
+                        <BookmarkPlus className={`h-3.5 w-3.5 ${earlyAccessActivated ? "text-purple-700" : "text-gray-500"}`} />
+                      </Button>
+                    </HoverCardTrigger>
+                    <HoverCardContent className="w-60 p-3">
+                      <div className="font-medium mb-1 text-sm">Early Access</div>
+                      <p className="text-xs text-muted-foreground">
+                        {earlyAccessActivated
+                          ? "You have early access to new releases in this category"
+                          : "Get early access to new releases in this category"}
+                      </p>
+                    </HoverCardContent>
+                  </HoverCardWithDuration>
+                  
+                  <HoverCardWithDuration openDelay={300} closeDelay={100}>
+                    <HoverCardTrigger asChild>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className={`h-6 w-6 p-0 rounded-full ${isNotifyActive ? "bg-purple-200" : "bg-white/60"}`}
+                        onClick={handlePriceAlert}
+                      >
+                        <BellRing className={`h-3.5 w-3.5 ${isNotifyActive ? "text-purple-700" : "text-gray-500"}`} />
+                      </Button>
+                    </HoverCardTrigger>
+                    <HoverCardContent className="w-60 p-3">
+                      <div className="font-medium mb-1 text-sm">Price Drop Alert</div>
+                      <p className="text-xs text-muted-foreground">
+                        {isNotifyActive 
+                          ? "You will be notified when this product's price drops"
+                          : "Get notified when this product's price drops"}
+                      </p>
+                    </HoverCardContent>
+                  </HoverCardWithDuration>
+                </div>
               </div>
               
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="ghost" size="sm" className="h-6 w-6 p-0 rounded-full">
-                    <Info className="h-3.5 w-3.5 text-gray-500" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="top" className="text-xs max-w-[200px]">
-                  Apply coupons at checkout or copy the code
-                </TooltipContent>
-              </Tooltip>
-            </div>
-            
-            <div className="grid grid-cols-1 gap-2">
-              {product.coupons.map((coupon, index) => (
-                <div key={index} className="group relative">
-                  <div className="flex overflow-hidden rounded-md border border-dashed border-red-300 hover:border-red-500 transition-colors bg-white">
-                    <div className="relative flex items-center justify-center bg-gradient-to-br from-red-500 to-red-600 text-white px-3 py-2.5">
-                      <div className="absolute right-0 top-0 bottom-0 w-2">
-                        <div className="absolute top-0 bottom-0 -right-1 w-2">
-                          <div className="absolute top-0 h-2 w-2 rounded-full bg-white translate-x-1/2 -translate-y-1/2"></div>
-                          {[...Array(6)].map((_, i) => (
-                            <div key={i} className="absolute w-2 h-2 rounded-full bg-white translate-x-1/2" style={{ top: `${(i+1) * 16.66}%` }}></div>
-                          ))}
-                          <div className="absolute bottom-0 h-2 w-2 rounded-full bg-white translate-x-1/2 translate-y-1/2"></div>
-                        </div>
-                      </div>
-                      <div className="text-xs font-bold tracking-wider">
-                        {coupon.code}
-                      </div>
-                    </div>
-                    
-                    <div className="flex flex-1 items-center justify-between px-3">
-                      <div>
-                        <div className="text-xs font-medium text-red-600">
-                          {coupon.discount}
-                        </div>
-                        {index === 2 && (
-                          <div className="text-[10px] text-gray-500 mt-0.5 flex items-center">
-                            <Clock className="h-2.5 w-2.5 mr-0.5" />
-                            Expires in 4h 23m
-                          </div>
-                        )}
-                      </div>
-                      
-                      <div className="flex gap-1 items-center">
-                        <HoverCard openDelay={300} closeDelay={100}>
-                          <HoverCardTrigger asChild>
-                            <Button 
-                              variant="ghost" 
-                              size="sm"
-                              className="h-7 w-7 p-0 rounded-full hover:bg-gray-100"
-                              onClick={() => copyCouponToClipboard(coupon.code)}
-                            >
-                              <Copy className="h-3.5 w-3.5 text-gray-500" />
-                            </Button>
-                          </HoverCardTrigger>
-                          <HoverCardContent className="w-auto p-2 text-xs">
-                            Copy code
-                          </HoverCardContent>
-                        </HoverCard>
-                        
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          className="h-7 bg-red-50 hover:bg-red-100 text-red-600 text-xs px-2"
-                          onClick={() => applyCoupon(coupon.code)}
-                        >
-                          Apply
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-
-                  {index === 0 && (
-                    <Badge 
-                      variant="outline" 
-                      className="absolute -top-2 -right-2 text-[10px] py-0 px-1.5 bg-yellow-100 text-yellow-800 border-yellow-200"
-                    >
-                      POPULAR
-                    </Badge>
-                  )}
+              <div className="flex items-center justify-between mt-1.5 mb-0.5">
+                <div className="flex items-center space-x-1">
+                  <Clock className="h-3.5 w-3.5 text-purple-700" />
+                  <span className="text-xs text-purple-800 font-medium">Deal ends in:</span>
                 </div>
-              ))}
-            </div>
-
-            <div className="mt-2 flex gap-1 items-center justify-center pt-1">
+                
+                <HoverCardWithDuration openDelay={300} closeDelay={100}>
+                  <HoverCardTrigger asChild>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="h-5 px-1 py-0 text-[10px] text-purple-800 hover:bg-purple-200 hover:text-purple-900"
+                      onClick={() => setShowPriceHistory(!showPriceHistory)}
+                    >
+                      {showPriceHistory ? "Hide history" : "Price history"}
+                    </Button>
+                  </HoverCardTrigger>
+                  <HoverCardContent className="w-64 p-3">
+                    <div className="flex justify-between items-center mb-2">
+                      <div className="font-medium text-sm">Price History</div>
+                      <div className="text-xs text-muted-foreground">Last 30 days</div>
+                    </div>
+                    <div className="h-24 w-full bg-slate-50 rounded-md flex items-end p-1 space-x-[2px]">
+                      {[7,5,6,8,9,8,7,5,6,4,5,7,8,9,10,9,8,7,6,5,6,7,5,4,3,5,7,8,6,5].map((value, i) => (
+                        <div 
+                          key={i} 
+                          className="flex-1 bg-purple-200 rounded-sm" 
+                          style={{ height: `${value * 10}%` }} 
+                        />
+                      ))}
+                    </div>
+                    <div className="flex justify-between items-center mt-2">
+                      <div className="text-xs text-green-700">Lowest: $19.99</div>
+                      <div className="text-xs text-red-700">Highest: $39.99</div>
+                    </div>
+                  </HoverCardContent>
+                </HoverCardWithDuration>
+              </div>
+              
+              <div className="flex items-center gap-1.5">
+                <div className="flex items-center justify-center">
+                  <div className="bg-purple-700 text-white font-mono rounded px-1.5 py-0.5 min-w-[32px] text-center">
+                    <span className="text-sm">{timeLeft.hours.toString().padStart(2, '0')}</span>
+                  </div>
+                  <span className="text-purple-900 mx-0.5">:</span>
+                  <div className="bg-purple-700 text-white font-mono rounded px-1.5 py-0.5 min-w-[32px] text-center">
+                    <span className="text-sm">{timeLeft.minutes.toString().padStart(2, '0')}</span>
+                  </div>
+                  <span className="text-purple-900 mx-0.5">:</span>
+                  <div className="bg-purple-700 text-white font-mono rounded px-1.5 py-0.5 min-w-[32px] text-center">
+                    <span className="text-sm">{timeLeft.seconds.toString().padStart(2, '0')}</span>
+                  </div>
+                </div>
+                
+                <div className="flex-1 pl-2">
+                  <div className="flex flex-wrap gap-1">
+                    <Badge variant="outline" className="bg-white/60 text-[10px] py-0 h-4 flex items-center border-purple-200 text-purple-800">
+                      <CircleDollarSign className="h-2.5 w-2.5 mr-0.5" />
+                      30-DAY LOW
+                    </Badge>
+                    <Badge variant="outline" className="bg-white/60 text-[10px] py-0 h-4 flex items-center border-purple-200 text-purple-800">
+                      <ShieldCheck className="h-2.5 w-2.5 mr-0.5" />
+                      GUARANTEED
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+              
+              {showPerkInfo && (
+                <div className="mt-1.5 grid grid-cols-2 gap-1 text-[10px] bg-white/40 rounded p-1 animate-fade-in">
+                  <div className="flex items-center">
+                    <div className="h-3 w-3 rounded-full bg-purple-100 flex items-center justify-center mr-1">
+                      <Check className="h-2 w-2 text-purple-700" />
+                    </div>
+                    <span className="text-purple-900">Free fast shipping</span>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="h-3 w-3 rounded-full bg-purple-100 flex items-center justify-center mr-1">
+                      <Check className="h-2 w-2 text-purple-700" />
+                    </div>
+                    <span className="text-purple-900">30-day returns</span>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="h-3 w-3 rounded-full bg-purple-100 flex items-center justify-center mr-1">
+                      <Check className="h-2 w-2 text-purple-700" />
+                    </div>
+                    <span className="text-purple-900">2-year warranty</span>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="h-3 w-3 rounded-full bg-purple-100 flex items-center justify-center mr-1">
+                      <Check className="h-2 w-2 text-purple-700" />
+                    </div>
+                    <span className="text-purple-900">Price match</span>
+                  </div>
+                </div>
+              )}
+              
               <Button 
-                variant="ghost" 
-                size="sm" 
-                className="text-[10px] h-5 px-2 text-blue-600 hover:bg-blue-50"
-                onClick={() => toast({
-                  title: "All coupons",
-                  description: "View all available coupons for this product"
-                })}
+                variant="link"
+                size="sm"
+                className="text-[10px] p-0 h-5 text-purple-700 hover:text-purple-900 w-full text-center mt-0.5"
+                onClick={() => setShowPerkInfo(!showPerkInfo)}
               >
-                View all 5 coupons
-              </Button>
-              <Separator orientation="vertical" className="h-3" />
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="text-[10px] h-5 px-2 text-blue-600 hover:bg-blue-50"
-                onClick={() => toast({
-                  title: "Referral program",
-                  description: "Share with friends to get $10 off"
-                })}
-              >
-                Get $10 referral code
+                {showPerkInfo ? "Show less" : "Show offer details"}
+                <ChevronDown className={`h-3 w-3 ml-0.5 transition-transform ${showPerkInfo ? "rotate-180" : ""}`} />
               </Button>
             </div>
           </div>
