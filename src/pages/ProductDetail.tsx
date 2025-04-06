@@ -485,10 +485,8 @@ const ProductDetail = () => {
                     </Button>
                   </HoverCardTrigger>
                   <HoverCardContent className="w-64 p-3">
-                    <div className="flex justify-between items-center mb-2">
-                      <div className="font-medium text-sm">Price History</div>
-                      <div className="text-xs text-muted-foreground">Last 30 days</div>
-                    </div>
+                    <div className="font-medium mb-1 text-sm">Price History</div>
+                    <p className="text-xs text-muted-foreground">Last 30 days</p>
                     <div className="h-24 w-full bg-slate-50 rounded-md flex items-end p-1 space-x-[2px]">
                       {[7,5,6,8,9,8,7,5,6,4,5,7,8,9,10,9,8,7,6,5,6,7,5,4,3,5,7,8,6,5].map((value, i) => (
                         <div 
@@ -576,7 +574,6 @@ const ProductDetail = () => {
             </div>
           </div>
           
-          {/* Restored Coupons Section */}
           <div className="mt-3 bg-gradient-to-r from-red-50 to-orange-50 p-3 rounded-md border border-red-100 shadow-sm">
             <div className="text-sm font-medium text-gray-700 mb-2 flex items-center justify-between">
               <div className="flex items-center">
@@ -673,3 +670,16 @@ const ProductDetail = () => {
               <Button 
                 variant="ghost" 
                 size="sm"
+                className="text-xs text-red-500 hover:text-red-700 hover:bg-red-50"
+              >
+                View more coupons
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ProductDetail;
