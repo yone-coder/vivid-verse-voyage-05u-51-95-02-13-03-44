@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Carousel,
@@ -196,22 +195,20 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             ))}
           </CarouselContent>
           
-          {/* Navigation buttons at bottom right */}
           <div className="absolute bottom-4 right-4 flex items-center gap-2 bg-black/50 backdrop-blur-sm p-1.5 rounded-lg z-10">
             <button 
               onClick={handlePrevious}
               className="text-white hover:text-gray-200 transition-colors focus:outline-none"
               aria-label="Previous image"
             >
-              &lt;
+              <ChevronLeft size={16} />
             </button>
-            <div className="w-px h-4 bg-white/30"></div>
             <button 
               onClick={handleNext}
               className="text-white hover:text-gray-200 transition-colors focus:outline-none" 
               aria-label="Next image"
             >
-              &gt;
+              <ChevronRight size={16} />
             </button>
           </div>
           
