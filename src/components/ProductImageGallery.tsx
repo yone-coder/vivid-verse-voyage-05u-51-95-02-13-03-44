@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Carousel,
@@ -216,10 +215,79 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
           <div className="absolute bottom-3 left-3 bg-black/50 text-white text-xs px-2 py-1 rounded-full">
             {currentIndex + 1}/{images.length}
           </div>
+          
+          <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex items-center justify-center gap-2 bg-black/50 backdrop-blur-sm p-2 rounded-full">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-8 w-8 rounded-full bg-white/80 text-gray-700 border-gray-200 hover:bg-white"
+                    onClick={handleRotate}
+                    aria-label="Rotate image"
+                  >
+                    <RotateCw size={16} />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Rotate 90°</TooltipContent>
+              </Tooltip>
+              
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-8 w-8 rounded-full bg-white/80 text-gray-700 border-gray-200 hover:bg-white"
+                    onClick={handleFlip}
+                    aria-label="Flip image"
+                  >
+                    <FlipHorizontal size={16} />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Flip Horizontally</TooltipContent>
+              </Tooltip>
+              
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className={cn(
+                      "h-8 w-8 rounded-full bg-white/80 border-gray-200 hover:bg-white",
+                      isFavorite ? "text-red-500" : "text-gray-700"
+                    )}
+                    onClick={toggleFavorite}
+                    aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+                  >
+                    <Heart size={16} className={isFavorite ? "fill-red-500" : ""} />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>{isFavorite ? "Remove from Favorites" : "Add to Favorites"}</TooltipContent>
+              </Tooltip>
+              
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className={cn(
+                      "h-8 w-8 rounded-full bg-white/80 border-gray-200 hover:bg-white",
+                      autoScrollEnabled ? "text-green-600" : "text-gray-700"
+                    )}
+                    onClick={toggleAutoScroll}
+                    aria-label={autoScrollEnabled ? "Disable auto-scroll" : "Enable auto-scroll"}
+                  >
+                    {autoScrollEnabled ? <Pause size={16} /> : <Play size={16} />}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>{autoScrollEnabled ? "Disable Auto-scroll" : "Enable Auto-scroll"}</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
         </Carousel>
       </div>
       
-      {/* Thumbnails */}
       <div className="flex gap-2 overflow-x-auto pb-2 px-1 scrollbar-none">
         {images.map((image, index) => (
           <button
@@ -244,79 +312,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             )}
           </button>
         ))}
-      </div>
-      
-      {/* Simplified Controls - Single Horizontal Line */}
-      <div className="flex items-center justify-center gap-2">
-        <TooltipProvider>
-          <div className="flex items-center justify-center gap-2 bg-black/5 backdrop-blur-sm p-1 rounded-full">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="h-8 w-8 rounded-full bg-white text-gray-700 border-gray-200 hover:bg-gray-100"
-                  onClick={handleRotate}
-                  aria-label="Rotate image"
-                >
-                  <RotateCw size={16} />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Rotate 90°</TooltipContent>
-            </Tooltip>
-            
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="h-8 w-8 rounded-full bg-white text-gray-700 border-gray-200 hover:bg-gray-100"
-                  onClick={handleFlip}
-                  aria-label="Flip image"
-                >
-                  <FlipHorizontal size={16} />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Flip Horizontally</TooltipContent>
-            </Tooltip>
-            
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className={cn(
-                    "h-8 w-8 rounded-full bg-white border-gray-200 hover:bg-gray-100",
-                    isFavorite ? "text-red-500" : "text-gray-700"
-                  )}
-                  onClick={toggleFavorite}
-                  aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
-                >
-                  <Heart size={16} className={isFavorite ? "fill-red-500" : ""} />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>{isFavorite ? "Remove from Favorites" : "Add to Favorites"}</TooltipContent>
-            </Tooltip>
-            
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className={cn(
-                    "h-8 w-8 rounded-full bg-white border-gray-200 hover:bg-gray-100",
-                    autoScrollEnabled ? "text-green-600" : "text-gray-700"
-                  )}
-                  onClick={toggleAutoScroll}
-                  aria-label={autoScrollEnabled ? "Disable auto-scroll" : "Enable auto-scroll"}
-                >
-                  {autoScrollEnabled ? <Pause size={16} /> : <Play size={16} />}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>{autoScrollEnabled ? "Disable Auto-scroll" : "Enable Auto-scroll"}</TooltipContent>
-            </Tooltip>
-          </div>
-        </TooltipProvider>
       </div>
     </div>
   );
