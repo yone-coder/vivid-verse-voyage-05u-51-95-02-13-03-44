@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { ArrowLeft, Share, Heart, MessageCircle, Truck, Shield, Award, Percent, ThumbsUp, Zap, Star, Sparkles, ArrowRight, Crown, Clock, Gift, Check, Info, CreditCard, AlertCircle, Bookmark, Box, Tag, Download, Users, Rocket } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -13,7 +14,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Progress } from "@/components/ui/progress";
 import LiveActivityNotifications from "@/components/LiveActivityNotifications";
 import LiveStockUpdates from "@/components/LiveStockUpdates";
-import LivePurchaseBanner from "@/components/LivePurchaseBanner";
 import { Switch } from "@/components/ui/switch";
 import ModernBuyButton from "@/components/ModernBuyButton";
 
@@ -280,7 +280,7 @@ const ProductDetail = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
-      <LivePurchaseBanner productName={product.name} />
+      {/* LivePurchaseBanner component removed from here */}
       
       <div ref={headerRef} className="relative w-full">
         <ProductImageGallery images={product.images} />
