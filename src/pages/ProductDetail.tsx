@@ -576,279 +576,100 @@ const ProductDetail = () => {
             </div>
           </div>
           
-          <div className="mt-4 relative">
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-medium text-gray-700">Select Color:</span>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="h-7 px-2 text-xs text-blue-600"
-                onClick={toggleVariants}
-              >
-                {showVariants ? "Hide Options" : "Show All Options"}
-              </Button>
+          {/* Restored Coupons Section */}
+          <div className="mt-3 bg-gradient-to-r from-red-50 to-orange-50 p-3 rounded-md border border-red-100 shadow-sm">
+            <div className="text-sm font-medium text-gray-700 mb-2 flex items-center justify-between">
+              <div className="flex items-center">
+                <BadgePercent className="h-4 w-4 mr-1.5 text-red-500" />
+                <span>Available Coupons:</span>
+              </div>
+              
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="sm" className="h-6 w-6 p-0 rounded-full">
+                    <Info className="h-3.5 w-3.5 text-gray-500" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="top" className="text-xs max-w-[200px]">
+                  Apply coupons at checkout or copy the code
+                </TooltipContent>
+              </Tooltip>
             </div>
             
-            <div className={`grid grid-cols-3 gap-2 transition-all duration-300 ${showVariants ? 'max-h-[500px] opacity-100' : 'max-h-12 opacity-40 overflow-hidden'}`}>
-              {product.variants.map((variant) => (
-                <div 
-                  key={variant.name} 
-                  className={`border rounded-md p-2 cursor-pointer transition-colors hover:border-blue-500 ${selectedColor === variant.name ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}`}
-                  onClick={() => setSelectedColor(variant.name)}
-                >
-                  <div className="flex items-center justify-between mb-1">
-                    <div className="w-6 h-6 bg-gray-200 rounded overflow-hidden">
-                      <img src={variant.image} alt={variant.name} className="w-full h-full object-cover" />
+            <div className="grid grid-cols-1 gap-2">
+              {product.coupons.map((coupon, index) => (
+                <div key={index} className="group relative">
+                  <div className="flex overflow-hidden rounded-md border border-dashed border-red-300 hover:border-red-500 transition-colors bg-white">
+                    <div className="relative flex items-center justify-center bg-gradient-to-br from-red-500 to-red-600 text-white px-3 py-2.5">
+                      <div className="absolute right-0 top-0 bottom-0 w-2">
+                        <div className="absolute top-0 bottom-0 -right-1 w-2">
+                          <div className="absolute top-0 h-2 w-2 rounded-full bg-white translate-x-1/2 -translate-y-1/2"></div>
+                          {[...Array(6)].map((_, i) => (
+                            <div key={i} className="absolute w-2 h-2 rounded-full bg-white translate-x-1/2" style={{ top: `${(i+1) * 16.66}%` }}></div>
+                          ))}
+                          <div className="absolute bottom-0 h-2 w-2 rounded-full bg-white translate-x-1/2 translate-y-1/2"></div>
+                        </div>
+                      </div>
+                      <div className="text-xs font-bold tracking-wider">
+                        {coupon.code}
+                      </div>
                     </div>
-                    {selectedColor === variant.name && <Check className="h-4 w-4 text-blue-500" />}
+                    
+                    <div className="flex flex-1 items-center justify-between px-3">
+                      <div>
+                        <div className="text-xs font-medium text-red-600">
+                          {coupon.discount}
+                        </div>
+                        {index === 2 && (
+                          <div className="text-[10px] text-gray-500 mt-0.5 flex items-center">
+                            <Clock className="h-2.5 w-2.5 mr-0.5" />
+                            Expires in 4h 23m
+                          </div>
+                        )}
+                      </div>
+                      
+                      <div className="flex gap-1 items-center">
+                        <HoverCard openDelay={300} closeDelay={100}>
+                          <HoverCardTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              className="h-7 w-7 p-0 rounded-full hover:bg-gray-100"
+                              onClick={() => copyCouponToClipboard(coupon.code)}
+                            >
+                              <Copy className="h-3.5 w-3.5 text-gray-500" />
+                            </Button>
+                          </HoverCardTrigger>
+                          <HoverCardContent className="w-auto p-2 text-xs">
+                            Copy code
+                          </HoverCardContent>
+                        </HoverCard>
+                        
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="h-7 bg-red-50 hover:bg-red-100 text-red-600 text-xs px-2"
+                          onClick={() => applyCoupon(coupon.code)}
+                        >
+                          Apply
+                        </Button>
+                      </div>
+                    </div>
                   </div>
-                  <div className="text-xs font-medium truncate">{variant.name}</div>
-                  <div className="text-xs text-gray-500">${formatPrice(variant.price)}</div>
+
+                  {index === 0 && (
+                    <Badge 
+                      variant="outline" 
+                      className="absolute -top-2 -right-2 text-[10px] py-0 px-1.5 bg-yellow-100 text-yellow-800 border-yellow-200"
+                    >
+                      POPULAR
+                    </Badge>
+                  )}
                 </div>
               ))}
             </div>
-            
-            {!showVariants && (
-              <div className="absolute top-8 left-0 right-0 flex items-center justify-center">
-                <Badge className="bg-blue-100 text-blue-700 border border-blue-200">
-                  {selectedColor}
-                </Badge>
-              </div>
-            )}
-          </div>
-        </div>
-        
-        <div className="mt-2 mb-2 p-4 bg-white">
-          <LiveStockUpdates 
-            initialStock={currentVariant ? currentVariant.stock : 200}
-            highDemand={product.stock.selling_fast}
-          />
-          
-          <div className="mt-4 flex items-center justify-between">
-            <span className="text-sm font-medium text-gray-700">Quantity:</span>
-            <div className="flex items-center border border-gray-300 rounded-md overflow-hidden">
-              <Button 
-                onClick={decrementQuantity} 
-                variant="ghost" 
-                className="h-8 px-3 rounded-none border-r border-gray-300"
-                disabled={quantity <= 1}
-              >
-                -
-              </Button>
-              <div className="w-10 text-center">{quantity}</div>
-              <Button 
-                onClick={incrementQuantity} 
-                variant="ghost" 
-                className="h-8 px-3 rounded-none border-l border-gray-300"
-                disabled={quantity >= 10}
-              >
-                +
-              </Button>
-            </div>
-          </div>
-          
-          <div className="mt-4 flex items-center justify-between">
-            <span className="text-sm font-medium text-gray-700">Shipping:</span>
-            <div className="flex flex-col items-end">
-              <div className="flex items-center">
-                <Truck className="h-4 w-4 text-green-600 mr-1" />
-                <span className="text-sm text-green-600 font-medium">
-                  {product.shipping.free ? "Free Standard Shipping" : "Standard Shipping"}
-                </span>
-              </div>
-              <div className="text-xs text-gray-500 mt-0.5">
-                Estimated delivery: {product.shipping.estimated}
-              </div>
-            </div>
-          </div>
-          
-          <div className="mt-2 flex justify-end">
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="h-7 px-2 text-xs text-blue-600"
-              onClick={() => setShowDeliveryOptions(!showDeliveryOptions)}
-            >
-              {showDeliveryOptions ? "Hide Options" : "More Delivery Options"}
-            </Button>
-          </div>
-          
-          {showDeliveryOptions && (
-            <div className="mt-1 p-3 bg-gray-50 rounded-md border border-gray-200">
-              <RadioGroup 
-                value={isExpressSelected ? "express" : "standard"}
-                onValueChange={(value) => setIsExpressSelected(value === "express")}
-              >
-                <div className="flex items-start space-x-2 mb-2">
-                  <RadioGroupItem value="standard" id="standard" className="mt-1" />
-                  <label htmlFor="standard" className="text-sm cursor-pointer flex-1">
-                    <div className="font-medium">Standard Shipping (Free)</div>
-                    <div className="text-xs text-gray-500">Estimated delivery: {product.shipping.estimated}</div>
-                  </label>
-                </div>
-                
-                <div className="flex items-start space-x-2">
-                  <RadioGroupItem value="express" id="express" className="mt-1" />
-                  <label htmlFor="express" className="text-sm cursor-pointer flex-1">
-                    <div className="font-medium">Express Shipping (${product.shipping.express})</div>
-                    <div className="text-xs text-gray-500">Estimated delivery: {product.shipping.expressEstimated}</div>
-                  </label>
-                </div>
-              </RadioGroup>
-              
-              <div className="mt-3 pt-3 border-t border-gray-200">
-                <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center">
-                    <Gift className="h-4 w-4 mr-1.5 text-purple-600" />
-                    <span className="font-medium">Gift Wrapping</span>
-                  </div>
-                  <Switch 
-                    checked={giftWrap} 
-                    onCheckedChange={toggleGiftWrap}
-                  />
-                </div>
-                {giftWrap && (
-                  <div className="mt-2 text-xs text-gray-600">
-                    Your item will be gift wrapped with a customized message card for $2.99
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-          
-          <div className="mt-4 flex items-center justify-between">
-            <span className="text-sm font-medium text-gray-700">Warranty:</span>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="h-7 px-2 text-xs text-blue-600"
-              onClick={() => setShowWarrantyOptions(!showWarrantyOptions)}
-            >
-              {selectedWarranty === "none" ? "Add Warranty" : `${warrantyOption?.name} (${warrantyOption?.duration})`}
-            </Button>
-          </div>
-          
-          {showWarrantyOptions && (
-            <div className="mt-2 p-3 bg-gray-50 rounded-md border border-gray-200">
-              <RadioGroup 
-                value={selectedWarranty}
-                onValueChange={setSelectedWarranty}
-              >
-                <div className="flex items-start space-x-2 mb-2">
-                  <RadioGroupItem value="none" id="none" className="mt-1" />
-                  <label htmlFor="none" className="text-sm cursor-pointer flex-1">
-                    <div className="font-medium">No additional warranty</div>
-                    <div className="text-xs text-gray-500">Product includes manufacturer's warranty</div>
-                  </label>
-                </div>
-                
-                {product.warranty.map((option) => (
-                  <div key={option.name.toLowerCase()} className="flex items-start space-x-2 mb-2">
-                    <RadioGroupItem value={option.name.toLowerCase()} id={option.name.toLowerCase()} className="mt-1" />
-                    <label htmlFor={option.name.toLowerCase()} className="text-sm cursor-pointer flex-1">
-                      <div className="font-medium">
-                        {option.name} ({option.duration}){option.price > 0 ? ` - $${formatPrice(option.price)}` : " - Included"}
-                      </div>
-                      <div className="text-xs text-gray-500">
-                        {option.name === "Standard" 
-                          ? "Basic coverage for manufacturing defects" 
-                          : option.name === "Extended" 
-                            ? "Extended coverage including wear and tear" 
-                            : "Premium coverage with accidental damage protection"}
-                      </div>
-                    </label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </div>
-          )}
-          
-          <div className="mt-4 flex items-center justify-between text-sm font-medium">
-            <span className="text-gray-700">Payment Options:</span>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="h-7 px-2 text-xs text-blue-600"
-              onClick={() => setShowPaymentOptions(!showPaymentOptions)}
-            >
-              {showPaymentOptions ? "Hide" : "View All"}
-            </Button>
-          </div>
-      
-          <div className="mt-1 flex flex-wrap gap-1">
-            <div className="w-8 h-5 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
-              <img 
-                src="/lovable-uploads/f3efe2eb-c3db-48bd-abc7-c65456fdc028.png" 
-                alt="Visa" 
-                className="h-3.5 w-6 object-contain"
-              />
-            </div>
-            
-            <div className="w-8 h-5 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="12">
-                <circle fill="#EA001B" cx="8" cy="12" r="5"/>
-                <circle fill="#F79E1B" cx="16" cy="12" r="5"/>
-                <path fill="#FF5F00" d="M12 7.5v9a5 5 0 0 0 0-9z"/>
-              </svg>
-            </div>
-            
-            <div className="w-8 h-5 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
-              <img 
-                src="/lovable-uploads/dd1cad7b-c3b6-43a6-9bc6-deb38a120604.png" 
-                alt="Venmo" 
-                className="h-3.5 w-6 object-contain"
-              />
-            </div>
-            
-            {showPaymentOptions && (
-              <>
-                <div className="w-8 h-5 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="12">
-                    <path fill="#253B80" d="M7 7h2c1.4 0 1.9 1 1.9 1.5 0 1.8-2 1.8-2.5 1.8H7.3L7 7z"/>
-                    <path fill="#179BD7" d="M19 7.8C18.7 5.8 16.9 5 14.7 5H9.2c-.3 0-.5.2-.6.5l-1.7 11c0 .2.1.4.4.4h2.9l.7-4.7v.3c.1-.3.3-.5.6-.5h1.3c2.5 0 4.4-1 5-3.9V8c-.1-.2-.1-.2-.1-.2H19z"/>
-                    <path fill="#253B80" d="M8.3 11.5l-.3 2.1-.2 1h-3c-.2 0-.4-.2-.3-.4L6.1 5.9c.1-.3.3-.5.6-.5h5.5c1.5 0 2.6.3 3.2 1 .3.3.5.7.6 1.1.1.3.1.7.1 1.1-1-.6-2-.8-3.3-.8L8.3 11.5z"/>
-                  </svg>
-                </div>
-                
-                <div className="w-8 h-5 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="12">
-                    <path d="M19.665 17.082c-.37.9-.54 1.3-1.01 2.09-.66 1.12-1.6 2.52-2.76 2.53-1.04.01-1.3-.68-2.72-.67-1.42 0-1.72.67-2.76.66-1.16-.01-2.05-1.27-2.71-2.39-1.86-3.05-2.05-6.64-.9-8.53.82-1.35 2.12-2.14 3.33-2.14 1.24 0 2.01.68 3.03.68.98 0 1.58-.68 3-.68 1.07 0 2.2.59 3 1.57-2.66 1.63-2.22 5.89.5 7.48zm-4.17-12.97c-1.2.1-2.61 1.21-3.08 2.72-.42 1.35.37 2.95 1.11 3.77.87.79 2.1 1.08 2.81.25-.69-1.24-1.2-2.54-1.07-4.21.12-1.46.8-2.22 1.74-2.81-.45-.23-.95-.37-1.51-.37-.11 0-.11 0 0 .65z" fill="#000"/>
-                  </svg>
-                </div>
-                
-                <div className="w-8 h-5 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="12">
-                    <path d="M16.46 6.66V4.89H16v7.25h.46V8.81h2.71v3.33h.46V4.89h-.46v1.77h-2.71z" fill="#3C4043"/>
-                    <path d="M13.51 9.2V8.88h2.39v-.48h-2.39V8.07h2.54v-.72h-3v3.3h3.08v-.72h-2.62V9.2z" fill="#3C4043"/>
-                    <path d="M12.13 10.35c-.32.26-.75.4-1.19.4-.94 0-1.66-.77-1.66-1.72s.72-1.72 1.66-1.72c.45 0 .88.14 1.2.4l.29-.33c-.42-.32-.96-.5-1.5-.5-1.19 0-2.12.93-2.12 2.14S9.81 11.17 11 11.17c.54 0 1.08-.17 1.49-.5l-.36-.32z" fill="#3C4043"/>
-                    <path d="M6.82 11.45c1.37 0 2.17-.69 2.17-1.96v-3.2h-.88v3.2c0 .82-.45 1.23-1.29 1.23s-1.29-.41-1.29-1.23v-3.2h-.88v3.2c0 1.27.8 1.96 2.17 1.96z" fill="#3C4043"/>
-                  </svg>
-                </div>
-              </>
-            )}
-          </div>
-          
-          {showPaymentOptions && (
-            <div className="mt-2 text-xs text-gray-600">
-              Buy Now, Pay Later options available at checkout with Klarna and Afterpay.
-            </div>
-          )}
-        </div>
-      </div>
-      
-      <div ref={tabsRef} className="relative">
-        <ProductTabs 
-          product={product} 
-          activeTab={activeTab} 
-          setActiveTab={setActiveTab} 
-          isScrolled={isScrolled} 
-          headerHeight={isScrolled ? 40 : 0}
-        />
-      </div>
-      
-      <ModernBuyButton />
-    </div>
-  );
-};
 
-export default ProductDetail;
+            <div className="mt-2 flex gap-1 items-center justify-center pt-1">
+              <Button 
+                variant="ghost" 
+                size="sm"
