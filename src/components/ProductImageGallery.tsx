@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Carousel,
@@ -6,13 +7,13 @@ import {
   CarouselApi,
 } from "@/components/ui/carousel";
 import { 
-  ChevronLeft, 
-  ChevronRight, 
   Heart, 
   Play,
   Pause,
   RotateCw,
-  FlipHorizontal
+  FlipHorizontal,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
@@ -195,20 +196,22 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             ))}
           </CarouselContent>
           
-          <div className="absolute inset-0 flex items-center justify-between pointer-events-none p-4">
+          {/* Navigation buttons at bottom right */}
+          <div className="absolute bottom-4 right-4 flex items-center gap-2 bg-black/50 backdrop-blur-sm p-1.5 rounded-lg z-10">
             <button 
               onClick={handlePrevious}
-              className="bg-black/50 text-white rounded-full p-2 hover:bg-black/70 transition-colors pointer-events-auto focus:outline-none focus:ring-2 focus:ring-white/50"
+              className="text-white hover:text-gray-200 transition-colors focus:outline-none"
               aria-label="Previous image"
             >
-              <ChevronLeft size={isMobile ? 16 : 20} />
+              &lt;
             </button>
+            <div className="w-px h-4 bg-white/30"></div>
             <button 
               onClick={handleNext}
-              className="bg-black/50 text-white rounded-full p-2 hover:bg-black/70 transition-colors pointer-events-auto focus:outline-none focus:ring-2 focus:ring-white/50" 
+              className="text-white hover:text-gray-200 transition-colors focus:outline-none" 
               aria-label="Next image"
             >
-              <ChevronRight size={isMobile ? 16 : 20} />
+              &gt;
             </button>
           </div>
           
