@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import ProductImageGallery from "@/components/ProductImageGallery";
 import ProductTabs from "@/components/ProductTabs";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "@/components/ui/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -134,7 +134,8 @@ const ProductDetail = () => {
         setMaxQuantityReached(true);
         toast({
           title: "Maximum quantity reached",
-          description: "You've reached the maximum allowed quantity for this item."
+          description: "You've reached the maximum allowed quantity for this item.",
+          variant: "destructive"
         });
       }
     }
@@ -575,6 +576,7 @@ const ProductDetail = () => {
             </div>
           </div>
           
+          {/* Restored Coupons Section */}
           <div className="mt-3 bg-gradient-to-r from-red-50 to-orange-50 p-3 rounded-md border border-red-100 shadow-sm">
             <div className="text-sm font-medium text-gray-700 mb-2 flex items-center justify-between">
               <div className="flex items-center">
@@ -671,16 +673,3 @@ const ProductDetail = () => {
               <Button 
                 variant="ghost" 
                 size="sm"
-                className="text-xs text-red-600 hover:bg-red-50"
-              >
-                See all coupons
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default ProductDetail;
