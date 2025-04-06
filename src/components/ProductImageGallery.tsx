@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Carousel,
@@ -212,7 +213,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             </button>
           </div>
           
-          <div className="absolute bottom-3 left-3 bg-black/50 text-white text-xs px-2 py-1 rounded-full">
+          <div className="absolute bottom-4 left-4 bg-black/50 backdrop-blur-sm text-white px-2 py-1.5 rounded-lg text-xs">
             {currentIndex + 1}/{images.length}
           </div>
           
