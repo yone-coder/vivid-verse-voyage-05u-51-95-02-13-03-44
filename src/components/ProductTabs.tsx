@@ -45,7 +45,7 @@ const ProductTabs: React.FC<ProductTabsProps> = ({
       onValueChange={setActiveTab}
       className="w-full"
     >
-      <div className={`bg-white sticky z-20 top-0`}>
+      <div className={`bg-white sticky z-20 top-14`}>
         <ScrollArea className="w-full" orientation="horizontal">
           <TabsList className="w-full h-12 bg-white px-0 justify-start">
             <TabsTrigger 
