@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { ShoppingCart, Clock, Check, ChevronDown, Star, Info, TrendingUp, Heart, ShieldCheck, ArrowRight, AlertTriangle, Plus, Minus } from 'lucide-react';
+import { ShoppingCart, Clock, Check, ChevronDown, Star, Info, TrendingUp, Heart, ShieldCheck, ArrowRight, AlertTriangle, Plus, Minus, Truck, Gift, RefreshCw, Share2, Lock, Zap } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
+import { useProduct } from '@/hooks/useProduct';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { toast } from "sonner";
 
-const ModernBuyButton = () => {
+const ModernBuyButton = ({ productId }: { productId?: string }) => {
   const [isHovering, setIsHovering] = useState(false);
   const [variantOpen, setVariantOpen] = useState(false);
   const [selectedVariant, setSelectedVariant] = useState('Red');
@@ -24,8 +27,12 @@ const ModernBuyButton = () => {
   const [stockProgressAnimation, setStockProgressAnimation] = useState(false);
   const [heartCount, setHeartCount] = useState(432);
   const [isHearted, setIsHearted] = useState(false);
-
-  const [currentSocialProofMessage, setCurrentSocialProofMessage] = useState('');
+  const [activeFeature, setActiveFeature] = useState(0);
+  const [showTooltip, setShowTooltip] = useState('');
+  const [deliveryOptions, setDeliveryOptions] = useState(false);
+  const [showInstantBuy, setShowInstantBuy] = useState(false);
+  const [paymentExpanded, setPaymentExpanded] = useState(false);
+  const { data: product } = useProduct(productId || '');
 
   const socialProofMessages = [
     "15 people bought this in the last hour!",
@@ -108,7 +115,7 @@ const ModernBuyButton = () => {
 
   useEffect(() => {
     const featureInterval = setInterval(() => {
-      setShowFeature(prev => (prev + 1) % 3);
+      setActiveFeature(prev => (prev + 1) % 5);
     }, 3000);
     
     return () => clearInterval(featureInterval);
@@ -181,6 +188,11 @@ const ModernBuyButton = () => {
       setTimeout(() => setStockProgressAnimation(false), 1000);
     }
     
+    toast.success("Item added to cart!", { 
+      description: `${quantity} x ${selectedVariant} variant added`,
+      duration: 3000
+    });
+    
     setTimeout(() => {
       setShowAddedAnimation(false);
     }, 1500);
@@ -225,7 +237,14 @@ const ModernBuyButton = () => {
   const features = [
     { icon: <ShieldCheck size={12} />, text: "Guaranteed quality" },
     { icon: <TrendingUp size={12} />, text: "Trending now" },
-    { icon: <Heart size={12} />, text: "Customer favorite" }
+    { icon: <Heart size={12} />, text: "Customer favorite" },
+    { icon: <Truck size={12} />, text: "Free shipping" },
+    { icon: <Lock size={12} />, text: "Secure checkout" }
+  ];
+
+  const deliveryFeatures = [
+    { icon: <Truck size={12} />, text: "Standard (3-5 days)" },
+    { icon: <Zap size={12} />, text: "Express (1-2 days)" }
   ];
 
   const stockPercentage = (stockRemaining / 100) * 100;
@@ -240,6 +259,22 @@ const ModernBuyButton = () => {
 
   const formatMilliseconds = (ms) => {
     return Math.floor(ms / 10).toString().padStart(2, '0');
+  };
+
+  const shareProduct = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: 'Check out this product',
+        text: 'I found this amazing product you might like!',
+        url: window.location.href,
+      })
+      .then(() => toast.success("Shared successfully!"))
+      .catch((error) => console.log('Error sharing', error));
+    } else {
+      navigator.clipboard.writeText(window.location.href)
+        .then(() => toast.success("Link copied to clipboard!"))
+        .catch(() => toast.error("Failed to copy link"));
+    }
   };
 
   return (
@@ -289,6 +324,8 @@ const ModernBuyButton = () => {
         onMouseLeave={() => {
           setIsHovering(false);
           setVariantOpen(false);
+          setDeliveryOptions(false);
+          setPaymentExpanded(false);
         }}
       >
         <div className="bg-red-50 py-0.5 px-3 border-t border-red-100 flex items-center justify-between">
@@ -344,6 +381,25 @@ const ModernBuyButton = () => {
           </div>
         )}
         
+        {deliveryOptions && (
+          <div 
+            className="absolute bottom-full mb-1 left-20 bg-white shadow-xl rounded-lg overflow-hidden w-40 z-10"
+            style={{ animation: 'slideDown 0.2s ease-out' }}
+          >
+            {deliveryFeatures.map((option, index) => (
+              <div 
+                key={index}
+                className="px-2 py-1.5 hover:bg-gray-100 cursor-pointer flex items-center space-x-2 transition-all duration-200 hover:translate-x-1"
+              >
+                {option.icon}
+                <span className="text-xs">{option.text}</span>
+                {index === 0 && <Check size={12} className="ml-auto text-green-500" />}
+                {index === 1 && <span className="text-xs text-orange-500 ml-auto">+$4.99</span>}
+              </div>
+            ))}
+          </div>
+        )}
+        
         <div className="flex flex-col px-3 py-1.5 bg-white">
           <div className="flex items-center justify-between mb-1">
             <div className="flex items-center space-x-2">
@@ -364,6 +420,18 @@ const ModernBuyButton = () => {
                   <span className="text-xs text-red-500 ml-1">
                     -{discountPercentage}%
                   </span>
+                  <TooltipProvider delayDuration={300}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button className="ml-1" onClick={() => setShowPriceIncrease(true)}>
+                          <Info size={10} className="text-gray-400" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="top" className="text-xs">
+                        <p>Dynamic pricing based on demand</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </div>
                 
                 <div className="flex">
@@ -380,16 +448,26 @@ const ModernBuyButton = () => {
               </div>
             </div>
             
-            <button 
-              onClick={toggleHeart}
-              className="flex flex-col items-center justify-center mr-2"
-            >
-              <Heart 
-                className={`transition-all duration-300 ${isHearted ? 'text-red-500 fill-red-500 scale-110' : 'text-gray-400'}`}
-                size={16}
-              />
-              <span className="text-xs text-gray-500 mt-0.5">{heartCount}</span>
-            </button>
+            <div className="flex items-center space-x-2">
+              <button 
+                onClick={shareProduct}
+                className="flex flex-col items-center justify-center"
+                aria-label="Share product"
+              >
+                <Share2 className="text-gray-400 hover:text-gray-600" size={14} />
+              </button>
+              
+              <button 
+                onClick={toggleHeart}
+                className="flex flex-col items-center justify-center"
+              >
+                <Heart 
+                  className={`transition-all duration-300 ${isHearted ? 'text-red-500 fill-red-500 scale-110' : 'text-gray-400'}`}
+                  size={16}
+                />
+                <span className="text-xs text-gray-500 mt-0.5">{heartCount}</span>
+              </button>
+            </div>
             
             <div className="relative">
               <div className="flex items-center space-x-1">
@@ -425,8 +503,8 @@ const ModernBuyButton = () => {
           
           <div className="flex items-center mt-0.5 mb-0.5 justify-between">
             <div className="flex items-center text-xs text-gray-600">
-              {features[showFeature].icon}
-              <span className="ml-1 text-[10px]">{features[showFeature].text}</span>
+              {features[activeFeature].icon}
+              <span className="ml-1 text-[10px]">{features[activeFeature].text}</span>
             </div>
             
             <div className="text-xs font-semibold text-red-500 mx-2">
@@ -453,25 +531,50 @@ const ModernBuyButton = () => {
           </div>
           
           <div className="flex items-center space-x-2 justify-between">
-            <div 
-              className="flex items-center space-x-1 cursor-pointer bg-gray-100 px-2 py-1 rounded-lg hover:bg-gray-200 transition-all duration-300" 
-              onClick={(e) => {
-                e.stopPropagation();
-                setVariantOpen(!variantOpen);
-              }}
-            >
-              <div className={`w-2 h-2 rounded-full ${variantColors[selectedVariant]}`} />
-              <span className="text-xs">{selectedVariant}</span>
-              <ChevronDown 
-                size={10} 
-                className={`transform transition-transform duration-300 ${variantOpen ? 'rotate-180' : ''}`} 
-              />
+            <div className="flex space-x-2">
+              <div 
+                className="flex items-center space-x-1 cursor-pointer bg-gray-100 px-2 py-1 rounded-lg hover:bg-gray-200 transition-all duration-300" 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setVariantOpen(!variantOpen);
+                  setDeliveryOptions(false);
+                }}
+              >
+                <div className={`w-2 h-2 rounded-full ${variantColors[selectedVariant]}`} />
+                <span className="text-xs">{selectedVariant}</span>
+                <ChevronDown 
+                  size={10} 
+                  className={`transform transition-transform duration-300 ${variantOpen ? 'rotate-180' : ''}`} 
+                />
+              </div>
+              
+              <div 
+                className="flex items-center space-x-1 cursor-pointer bg-gray-100 px-2 py-1 rounded-lg hover:bg-gray-200 transition-all duration-300" 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setDeliveryOptions(!deliveryOptions);
+                  setVariantOpen(false);
+                }}
+              >
+                <Truck size={12} className="text-gray-500" />
+                <span className="text-xs">Delivery</span>
+                <ChevronDown 
+                  size={10} 
+                  className={`transform transition-transform duration-300 ${deliveryOptions ? 'rotate-180' : ''}`} 
+                />
+              </div>
             </div>
             
             <button
               onClick={handleBuyNow}
-              onMouseEnter={() => setButtonHover(true)}
-              onMouseLeave={() => setButtonHover(false)}
+              onMouseEnter={() => {
+                setButtonHover(true);
+                setTimeout(() => setShowInstantBuy(true), 300);
+              }}
+              onMouseLeave={() => {
+                setButtonHover(false); 
+                setTimeout(() => setShowInstantBuy(false), 500);
+              }}
               className={`bg-gradient-to-r from-red-500 to-pink-600 text-white font-bold py-1.5 px-4 rounded-lg flex-grow flex items-center justify-center space-x-1 transition-all duration-300 
                          ${buttonHover ? 'shadow-lg scale-105' : 'shadow-md'}`}
               aria-label="Buy Now"
@@ -484,6 +587,17 @@ const ModernBuyButton = () => {
               <span className="text-sm">{buttonHover ? 'Buy Now!' : 'Buy Now'}</span>
               {buttonHover && <ArrowRight size={12} className="ml-1" />}
             </button>
+            
+            {showInstantBuy && (
+              <button
+                onClick={handleInstantBuy}
+                className="absolute right-0 -top-10 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold py-1.5 px-4 rounded-lg flex items-center justify-center space-x-1 transition-all duration-300 shadow-lg border border-amber-600 animate-fade-in"
+                style={{animation: "fadeIn 0.3s ease-out"}}
+              >
+                <Zap size={14} />
+                <span className="text-sm">Express Checkout</span>
+              </button>
+            )}
           </div>
         </div>
         
@@ -521,9 +635,31 @@ const ModernBuyButton = () => {
             </div>
             <span className="text-[10px] text-gray-500">Secure payment</span>
           </div>
-          <div className="text-[10px] text-gray-500 flex items-center group transition-all duration-300">
-            <Info size={8} className="mr-1" />
-            <span>30-day returns</span>
+          
+          <div className="flex items-center space-x-2">
+            <div 
+              className="text-[10px] text-gray-500 flex items-center group transition-all duration-300 cursor-pointer"
+              onClick={() => {
+                toast.info("Free 30-day returns on all orders!", { 
+                  description: "No questions asked return policy" 
+                });
+              }}
+            >
+              <RefreshCw size={8} className="mr-1" />
+              <span>30-day returns</span>
+            </div>
+            
+            <div 
+              className="text-[10px] text-gray-500 flex items-center group transition-all duration-300 cursor-pointer"
+              onClick={() => {
+                toast.info("Gift wrapping available", { 
+                  description: "Add a personal touch to your gift" 
+                });
+              }}
+            >
+              <Gift size={8} className="mr-1" />
+              <span>Gift options</span>
+            </div>
           </div>
         </div>
       </div>
