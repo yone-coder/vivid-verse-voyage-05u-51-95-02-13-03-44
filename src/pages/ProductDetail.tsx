@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { ArrowLeft, Share, Heart, MessageCircle, Truck, Shield, Award, Percent, ThumbsUp, Zap, Star, Sparkles, ArrowRight, Crown, Clock, Gift, Check, Info, CreditCard, AlertCircle, Bookmark, Box, Tag, Download, Users, Rocket, Copy, Scissors, BadgePercent, TicketPercent } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -713,4 +714,20 @@ const ProductDetail = () => {
           
           <div className="mt-4 flex items-center justify-between text-sm font-medium">
             <span className="text-gray-700">Payment Options:</span>
-            <
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="h-7 px-2 text-xs text-blue-600"
+              onClick={() => setShowPaymentOptions(!showPaymentOptions)}
+            >
+              {showPaymentOptions ? "Hide Options" : "View Options"}
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ProductDetail;
+
