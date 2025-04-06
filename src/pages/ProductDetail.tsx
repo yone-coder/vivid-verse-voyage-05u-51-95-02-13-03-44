@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { ArrowLeft, Share, Heart, MessageCircle, Truck, Shield, Award, Percent, ThumbsUp, Zap, Star, Sparkles, ArrowRight, Crown, Clock, Gift, Check, Info, CreditCard, AlertCircle, Bookmark, Box, Tag, Download, Users, Rocket } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -279,7 +280,7 @@ const ProductDetail = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
-      <div ref={headerRef} className="relative w-full max-h-[35vh] overflow-hidden">
+      <div ref={headerRef} className="relative w-full bg-white">
         <ProductImageGallery images={product.images} />
         
         <div className="absolute top-2 left-2 right-2 flex justify-between z-10">

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Carousel,
@@ -12,7 +13,8 @@ import {
   RotateCw,
   FlipHorizontal,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  GalleryHorizontal,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
@@ -160,7 +162,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   return (
     <div 
       ref={containerRef}
-      className="flex flex-col gap-4 relative"
+      className="flex flex-col gap-3"
     >
       <div 
         className="relative w-full aspect-square bg-gray-100 rounded-lg overflow-hidden"
@@ -195,7 +197,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             ))}
           </CarouselContent>
           
-          <div className="absolute bottom-4 left-0 right-0 flex items-center justify-between px-4">
+          <div className="absolute bottom-4 left-0 right-0 flex items-center justify-between px-4 z-10">
             <div className="bg-black/50 backdrop-blur-sm text-white px-2 py-1.5 rounded-lg text-xs">
               {currentIndex + 1}/{images.length}
             </div>
@@ -261,34 +263,41 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                 </Tooltip>
               </TooltipProvider>
             </div>
-            
-            <div className="flex items-center gap-2">
-              <button 
-                onClick={handlePrevious}
-                className="bg-black/50 backdrop-blur-sm p-1.5 rounded-lg text-white hover:bg-black/60 transition-colors"
-                aria-label="Previous image"
-              >
-                <ChevronLeft size={16} />
-              </button>
-              <button 
-                onClick={handleNext}
-                className="bg-black/50 backdrop-blur-sm p-1.5 rounded-lg text-white hover:bg-black/60 transition-colors"
-                aria-label="Next image"
-              >
-                <ChevronRight size={16} />
-              </button>
-            </div>
+          </div>
+
+          <div className="absolute left-2 top-1/2 -translate-y-1/2 z-10">
+            <Button
+              variant="outline"
+              size="icon"
+              className="rounded-full bg-white/70 backdrop-blur-sm hover:bg-white/90 w-8 h-8"
+              onClick={handlePrevious}
+              aria-label="Previous image"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+          </div>
+          
+          <div className="absolute right-2 top-1/2 -translate-y-1/2 z-10">
+            <Button
+              variant="outline"
+              size="icon"
+              className="rounded-full bg-white/70 backdrop-blur-sm hover:bg-white/90 w-8 h-8"
+              onClick={handleNext}
+              aria-label="Next image"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
           </div>
         </Carousel>
       </div>
       
-      <div className="flex gap-2 overflow-x-auto pb-2 px-1 scrollbar-none">
+      <div className="flex gap-2 overflow-x-auto pb-1 px-1 scrollbar-none">
         {images.map((image, index) => (
           <button
             key={index}
             onClick={() => handleThumbnailClick(index)}
             className={cn(
-              "w-16 h-16 overflow-hidden rounded-md border-2 flex-shrink-0 transition-all relative",
+              "w-14 h-14 overflow-hidden rounded-md border-2 flex-shrink-0 transition-all relative",
               currentIndex === index 
                 ? "border-primary ring-2 ring-primary/20" 
                 : "border-transparent hover:border-gray-300"
