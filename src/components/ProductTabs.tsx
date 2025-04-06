@@ -31,13 +31,15 @@ interface ProductTabsProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   isScrolled: boolean;
+  headerHeight: number;
 }
 
 const ProductTabs: React.FC<ProductTabsProps> = ({
   product,
   activeTab,
   setActiveTab,
-  isScrolled
+  isScrolled,
+  headerHeight
 }) => {
   return (
     <Tabs 
@@ -45,7 +47,7 @@ const ProductTabs: React.FC<ProductTabsProps> = ({
       onValueChange={setActiveTab}
       className="w-full"
     >
-      <div className={`bg-white sticky z-20 top-14`}>
+      <div className={`bg-white sticky z-20`} style={{ top: `${headerHeight}px` }}>
         <ScrollArea className="w-full" orientation="horizontal">
           <TabsList className="w-full h-12 bg-white px-0 justify-start">
             <TabsTrigger 
