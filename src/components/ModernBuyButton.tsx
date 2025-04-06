@@ -13,6 +13,7 @@ const ModernBuyButton = ({ productId }: { productId?: string }) => {
   const [itemsInCart, setItemsInCart] = useState(0);
   const [showAddedAnimation, setShowAddedAnimation] = useState(false);
   const [showSocialProof, setShowSocialProof] = useState(true);
+  const [currentSocialProofMessage, setCurrentSocialProofMessage] = useState('');
   const [pulseDiscount, setPulseDiscount] = useState(false);
   const [highlightStock, setHighlightStock] = useState(false);
   const [animatePrice, setAnimatePrice] = useState(false);
@@ -194,6 +195,26 @@ const ModernBuyButton = ({ productId }: { productId?: string }) => {
     });
     
     setTimeout(() => {
+      setShowAddedAnimation(false);
+    }, 1500);
+  };
+
+  const handleInstantBuy = () => {
+    setShowAddedAnimation(true);
+    setItemsInCart(prev => prev + quantity);
+    if (stockRemaining >= quantity) {
+      setStockRemaining(prev => prev - quantity);
+    }
+    
+    toast.success("Express checkout initiated!", {
+      description: `Processing ${quantity} x ${selectedVariant} for immediate purchase`,
+      duration: 3000
+    });
+    
+    setTimeout(() => {
+      toast.info("Redirecting to payment...", {
+        description: "You'll be redirected to complete your purchase"
+      });
       setShowAddedAnimation(false);
     }, 1500);
   };
