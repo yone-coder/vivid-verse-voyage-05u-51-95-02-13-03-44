@@ -21,6 +21,18 @@ import {
   Eye,
   ArrowUpToLine,
   Check,
+  Share2,
+  Maximize,
+  CropSquare,
+  ImagePlus,
+  Image as ImageIcon,
+  PanelRight,
+  X,
+  Undo2,
+  Filter,
+  Paintbrush,
+  BadgeInfo,
+  View,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
@@ -38,6 +50,17 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  HoverCard,
+  HoverCardTrigger,
+  HoverCardContent,
+} from "@/components/ui/hover-card";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ProductImageGalleryProps {
   images: string[];
@@ -49,6 +72,7 @@ interface TouchPosition {
 }
 
 const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => {
+  // Core state
   const [currentIndex, setCurrentIndex] = useState(0);
   const [api, setApi] = useState<CarouselApi | null>(null);
   const [isRotated, setIsRotated] = useState(0);
@@ -61,6 +85,17 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [isFullscreenMode, setIsFullscreenMode] = useState(false);
   const [hoveredThumbnail, setHoveredThumbnail] = useState<number | null>(null);
+  
+  // Enhanced features state
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const [showCompareMode, setShowCompareMode] = useState(false);
+  const [compareIndex, setCompareIndex] = useState(0);
+  const [showImageInfo, setShowImageInfo] = useState(false);
+  const [viewHistory, setViewHistory] = useState<number[]>([0]);
+  const [imageFilter, setImageFilter] = useState<string>("none");
+  const [showOtherColors, setShowOtherColors] = useState<boolean>(false);
+  const [showAllControls, setShowAllControls] = useState<boolean>(false);
+  const [viewMode, setViewMode] = useState<"default" | "immersive">("default");
   
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
@@ -93,12 +128,88 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     setCurrentIndex(api.selectedScrollSnap());
     
     api.on("select", () => {
-      setCurrentIndex(api.selectedScrollSnap());
+      const index = api.selectedScrollSnap();
+      setCurrentIndex(index);
       setIsRotated(0);
       setIsFlipped(false);
+      setZoomLevel(1);
+      
+      // Add to view history for undo feature
+      setViewHistory(prev => [...prev, index]);
     });
   }, []);
 
+  // Enhanced functions
+  const undoLastView = useCallback(() => {
+    if (viewHistory.length > 1) {
+      const newHistory = [...viewHistory];
+      newHistory.pop(); // Remove current view
+      const lastIndex = newHistory[newHistory.length - 1];
+      
+      if (api) {
+        api.scrollTo(lastIndex);
+      }
+      
+      setViewHistory(newHistory);
+    }
+  }, [api, viewHistory]);
+
+  const applyFilter = useCallback((filter: string) => {
+    setImageFilter(filter);
+    
+    toast({
+      title: "Filter Applied",
+      description: `Image filter: ${filter}`,
+      duration: 2000,
+    });
+  }, []);
+
+  const resetEnhancements = useCallback(() => {
+    setIsRotated(0);
+    setIsFlipped(false);
+    setZoomLevel(1);
+    setImageFilter("none");
+    
+    toast({
+      title: "Image Reset",
+      description: "All image modifications have been reset",
+      duration: 2000,
+    });
+  }, []);
+
+  const shareImage = useCallback((index: number) => {
+    const image = images[index];
+    if (navigator.share) {
+      navigator.share({
+        title: "Check out this product image",
+        text: "I found this amazing product image!",
+        url: image,
+      }).catch(console.error);
+    } else {
+      navigator.clipboard.writeText(image);
+      toast({
+        title: "Image URL Copied",
+        description: "Image link copied to clipboard for sharing",
+        duration: 2000,
+      });
+    }
+  }, [images]);
+
+  const toggleCompareMode = useCallback(() => {
+    setShowCompareMode(prev => !prev);
+  }, []);
+
+  const toggleImmersiveView = useCallback(() => {
+    setViewMode(prev => prev === "default" ? "immersive" : "default");
+    
+    toast({
+      title: viewMode === "default" ? "Immersive View" : "Default View",
+      description: viewMode === "default" ? "Showing image without distractions" : "Showing standard gallery view",
+      duration: 2000,
+    });
+  }, [viewMode]);
+
+  // Core functions
   const toggleFavorite = useCallback(() => {
     setIsFavorite(prev => !prev);
     toast({
@@ -221,16 +332,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     });
   }, [autoScrollEnabled]);
 
-  const resetImage = useCallback(() => {
-    setIsRotated(0);
-    setIsFlipped(false);
-    toast({
-      title: "Image reset",
-      description: "All image modifications have been reset",
-      duration: 2000,
-    });
-  }, []);
-
   return (
     <div 
       ref={containerRef}
@@ -259,8 +360,15 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                       transform: `
                         rotate(${isRotated}deg)
                         ${isFlipped ? 'scaleX(-1)' : ''}
+                        scale(${zoomLevel})
                       `,
                       transition: "transform 0.2s ease-out",
+                      filter: imageFilter !== "none" ? 
+                        imageFilter === "grayscale" ? "grayscale(1)" : 
+                        imageFilter === "sepia" ? "sepia(0.7)" : 
+                        imageFilter === "brightness" ? "brightness(1.2)" :
+                        imageFilter === "contrast" ? "contrast(1.2)" : "none"
+                        : "none"
                     }}
                     draggable={false}
                     onClick={toggleFullscreen}
@@ -270,124 +378,303 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             ))}
           </CarouselContent>
           
-          <div className="absolute bottom-4 left-0 right-0 flex items-center justify-between px-4 z-10">
-            <div className="bg-black/50 backdrop-blur-sm text-white px-2 py-1.5 rounded-lg text-xs">
-              {currentIndex + 1}/{images.length}
+          <div className={cn(
+            "absolute bottom-4 left-0 right-0 flex items-center justify-between px-4 z-10",
+            viewMode === "immersive" && "opacity-0 hover:opacity-100 transition-opacity"
+          )}>
+            <div className="bg-black/50 backdrop-blur-sm text-white px-2 py-1.5 rounded-lg text-xs flex items-center gap-1.5">
+              <span>{currentIndex + 1}/{images.length}</span>
+              {viewHistory.length > 1 && (
+                <button onClick={undoLastView} className="p-0.5 hover:bg-white/10 rounded">
+                  <Undo2 size={12} />
+                </button>
+              )}
             </div>
             
-            <div className="flex items-center gap-2">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button
-                      onClick={handleRotate}
-                      className="bg-black/50 backdrop-blur-sm p-1.5 rounded-lg text-white hover:bg-black/60 transition-colors"
-                      aria-label="Rotate image"
-                    >
-                      <RotateCw size={16} />
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent>Rotate 90°</TooltipContent>
-                </Tooltip>
-                
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button
-                      onClick={handleFlip}
-                      className="bg-black/50 backdrop-blur-sm p-1.5 rounded-lg text-white hover:bg-black/60 transition-colors"
-                      aria-label="Flip image"
-                    >
-                      <FlipHorizontal size={16} />
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent>Flip Horizontally</TooltipContent>
-                </Tooltip>
-                
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button
-                      onClick={toggleFavorite}
-                      className={cn(
-                        "bg-black/50 backdrop-blur-sm p-1.5 rounded-lg text-white hover:bg-black/60 transition-colors",
-                        isFavorite && "text-red-500"
-                      )}
-                      aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
-                    >
-                      <Heart size={16} className={isFavorite ? "fill-red-500" : ""} />
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent>{isFavorite ? "Remove from Favorites" : "Add to Favorites"}</TooltipContent>
-                </Tooltip>
-                
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button
-                      onClick={toggleAutoScroll}
-                      className={cn(
-                        "bg-black/50 backdrop-blur-sm p-1.5 rounded-lg text-white hover:bg-black/60 transition-colors",
-                        autoScrollEnabled && "text-green-500"
-                      )}
-                      aria-label={autoScrollEnabled ? "Disable auto-scroll" : "Enable auto-scroll"}
-                    >
-                      {autoScrollEnabled ? <Pause size={16} /> : <Play size={16} />}
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent>{autoScrollEnabled ? "Disable Auto-scroll" : "Enable Auto-scroll"}</TooltipContent>
-                </Tooltip>
-                
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button
-                      onClick={toggleFullscreen}
-                      className="bg-black/50 backdrop-blur-sm p-1.5 rounded-lg text-white hover:bg-black/60 transition-colors"
-                      aria-label="View fullscreen"
-                    >
-                      <ZoomIn size={16} />
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent>Fullscreen View</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+            <div className="flex items-center gap-1.5">
+              {!showAllControls ? (
+                <>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={handleRotate}
+                          className="bg-black/50 backdrop-blur-sm p-1.5 rounded-lg text-white hover:bg-black/60 transition-colors"
+                        >
+                          <RotateCw size={16} />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>Rotate 90°</TooltipContent>
+                    </Tooltip>
+                    
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={toggleFavorite}
+                          className={cn(
+                            "bg-black/50 backdrop-blur-sm p-1.5 rounded-lg text-white hover:bg-black/60 transition-colors",
+                            isFavorite && "text-red-500"
+                          )}
+                        >
+                          <Heart size={16} className={isFavorite ? "fill-red-500" : ""} />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>{isFavorite ? "Remove from Favorites" : "Add to Favorites"}</TooltipContent>
+                    </Tooltip>
+                    
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={() => setShowAllControls(true)}
+                          className="bg-black/50 backdrop-blur-sm p-1.5 rounded-lg text-white hover:bg-black/60 transition-colors"
+                        >
+                          <PanelRight size={16} />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>More Options</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </>
+              ) : (
+                <div className="flex items-center gap-1.5 bg-black/60 backdrop-blur-md p-1 rounded-lg">
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={handleRotate}
+                          className="p-1 rounded-md text-white hover:bg-white/10 transition-colors"
+                        >
+                          <RotateCw size={14} />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>Rotate 90°</TooltipContent>
+                    </Tooltip>
+                    
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={handleFlip}
+                          className="p-1 rounded-md text-white hover:bg-white/10 transition-colors"
+                        >
+                          <FlipHorizontal size={14} />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>Flip Horizontally</TooltipContent>
+                    </Tooltip>
+                    
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={toggleFavorite}
+                          className={cn(
+                            "p-1 rounded-md text-white hover:bg-white/10 transition-colors",
+                            isFavorite && "text-red-500"
+                          )}
+                        >
+                          <Heart size={14} className={isFavorite ? "fill-red-500" : ""} />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>{isFavorite ? "Remove from Favorites" : "Add to Favorites"}</TooltipContent>
+                    </Tooltip>
+                    
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={toggleAutoScroll}
+                          className={cn(
+                            "p-1 rounded-md text-white hover:bg-white/10 transition-colors",
+                            autoScrollEnabled && "text-green-500"
+                          )}
+                        >
+                          {autoScrollEnabled ? <Pause size={14} /> : <Play size={14} />}
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>{autoScrollEnabled ? "Disable Auto-scroll" : "Enable Auto-scroll"}</TooltipContent>
+                    </Tooltip>
+                    
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <button className="p-1 rounded-md text-white hover:bg-white/10 transition-colors">
+                          <Filter size={14} />
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-40 p-2">
+                        <p className="text-xs font-medium mb-2">Image Filters</p>
+                        <div className="flex flex-col gap-1">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className={cn("justify-start h-7", imageFilter === "none" && "bg-accent")} 
+                            onClick={() => applyFilter("none")}
+                          >
+                            Normal
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className={cn("justify-start h-7", imageFilter === "grayscale" && "bg-accent")} 
+                            onClick={() => applyFilter("grayscale")}
+                          >
+                            Grayscale
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className={cn("justify-start h-7", imageFilter === "sepia" && "bg-accent")} 
+                            onClick={() => applyFilter("sepia")}
+                          >
+                            Sepia
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className={cn("justify-start h-7", imageFilter === "brightness" && "bg-accent")} 
+                            onClick={() => applyFilter("brightness")}
+                          >
+                            Brighten
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className={cn("justify-start h-7", imageFilter === "contrast" && "bg-accent")} 
+                            onClick={() => applyFilter("contrast")}
+                          >
+                            Enhance Contrast
+                          </Button>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                    
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={resetEnhancements}
+                          className="p-1 rounded-md text-white hover:bg-white/10 transition-colors"
+                        >
+                          <Undo2 size={14} />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>Reset All</TooltipContent>
+                    </Tooltip>
+                    
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={() => setZoomLevel(prev => prev < 2 ? prev + 0.25 : 1)}
+                          className="p-1 rounded-md text-white hover:bg-white/10 transition-colors"
+                        >
+                          <ZoomIn size={14} />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>Zoom {zoomLevel >= 2 ? "Reset" : "In"}</TooltipContent>
+                    </Tooltip>
+                    
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={() => shareImage(currentIndex)}
+                          className="p-1 rounded-md text-white hover:bg-white/10 transition-colors"
+                        >
+                          <Share2 size={14} />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>Share Image</TooltipContent>
+                    </Tooltip>
+                    
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={() => setShowAllControls(false)}
+                          className="p-1 rounded-md text-white hover:bg-white/10 transition-colors"
+                        >
+                          <X size={14} />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>Hide Controls</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
+              )}
             </div>
           </div>
 
-          <div className="absolute left-2 top-1/2 -translate-y-1/2 z-10">
+          <div className={cn(
+            "absolute left-2 top-1/2 -translate-y-1/2 z-10",
+            viewMode === "immersive" && "opacity-0 hover:opacity-100 transition-opacity"
+          )}>
             <Button
               variant="outline"
               size="icon"
               className="rounded-full bg-white/70 backdrop-blur-sm hover:bg-white/90 w-8 h-8"
               onClick={handlePrevious}
-              aria-label="Previous image"
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
           </div>
           
-          <div className="absolute right-2 top-1/2 -translate-y-1/2 z-10">
+          <div className={cn(
+            "absolute right-2 top-1/2 -translate-y-1/2 z-10",
+            viewMode === "immersive" && "opacity-0 hover:opacity-100 transition-opacity"
+          )}>
             <Button
               variant="outline"
               size="icon"
               className="rounded-full bg-white/70 backdrop-blur-sm hover:bg-white/90 w-8 h-8"
               onClick={handleNext}
-              aria-label="Next image"
             >
               <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+          
+          <div className={cn(
+            "absolute top-4 right-4",
+            viewMode === "immersive" && "opacity-0 hover:opacity-100 transition-opacity"
+          )}>
+            <Button
+              variant="outline"
+              size="icon"
+              className="rounded-full bg-white/70 backdrop-blur-sm hover:bg-white/90 w-7 h-7"
+              onClick={toggleImmersiveView}
+            >
+              {viewMode === "default" ? <Maximize size={13} /> : <CropSquare size={13} />}
             </Button>
           </div>
         </Carousel>
       </div>
       
       <div className="flex items-center justify-between mb-1">
-        <p className="text-xs text-gray-500 ml-1">
-          {images.length} Images
-        </p>
-        <button 
-          onClick={toggleThumbnailViewMode}
-          className="flex items-center text-xs text-blue-600 hover:text-blue-800"
-        >
-          <GalleryHorizontal className="h-3.5 w-3.5 mr-1" />
-          {thumbnailViewMode === "row" ? "Grid View" : "Row View"}
-        </button>
+        <div className="flex items-center gap-1">
+          <p className="text-xs text-gray-500 ml-1">
+            {images.length} Images
+          </p>
+          {viewHistory.length > 1 && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-6 px-1.5 text-xs text-blue-600"
+              onClick={undoLastView}
+            >
+              <Undo2 size={12} className="mr-1" />
+              Undo
+            </Button>
+          )}
+        </div>
+        <div className="flex items-center gap-1">
+          <button 
+            onClick={toggleImmersiveView}
+            className="flex items-center text-xs text-gray-600 hover:text-blue-600 px-1.5 py-1"
+          >
+            {viewMode === "default" ? <Maximize size={12} className="mr-1" /> : <CropSquare size={12} className="mr-1" />}
+            {viewMode === "default" ? "Focus" : "Normal"}
+          </button>
+          <button 
+            onClick={toggleThumbnailViewMode}
+            className="flex items-center text-xs text-gray-600 hover:text-blue-600 px-1.5 py-1"
+          >
+            <GalleryHorizontal className="h-3.5 w-3.5 mr-1" />
+            {thumbnailViewMode === "row" ? "Grid" : "Row"}
+          </button>
+        </div>
       </div>
       
       <div 
@@ -425,14 +712,33 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             
             {hoveredThumbnail === index && (
               <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
+                <HoverCard>
+                  <HoverCardTrigger asChild>
                     <Button 
                       variant="ghost" 
                       size="icon" 
                       className="h-6 w-6 rounded-full bg-white/80 hover:bg-white"
                     >
                       <Eye className="h-3 w-3 text-gray-800" />
+                    </Button>
+                  </HoverCardTrigger>
+                  <HoverCardContent className="p-0 w-auto">
+                    <img 
+                      src={image} 
+                      alt={`Preview ${index + 1}`} 
+                      className="max-w-[200px] max-h-[200px] object-contain"
+                    />
+                  </HoverCardContent>
+                </HoverCard>
+                
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="h-6 w-6 rounded-full bg-white/80 hover:bg-white ml-1"
+                    >
+                      <View className="h-3 w-3 text-gray-800" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="center" className="w-40">
@@ -465,6 +771,12 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                       handleThumbnailClick(index);
                     }}>
                       <ZoomIn className="h-4 w-4 mr-2" /> Fullscreen
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={(e) => {
+                      e.stopPropagation();
+                      shareImage(index);
+                    }}>
+                      <Share2 className="h-4 w-4 mr-2" /> Share
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -499,39 +811,155 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
               transform: `
                 rotate(${isRotated}deg)
                 ${isFlipped ? 'scaleX(-1)' : ''}
+                scale(${zoomLevel})
               `,
+              filter: imageFilter !== "none" ? 
+                imageFilter === "grayscale" ? "grayscale(1)" : 
+                imageFilter === "sepia" ? "sepia(0.7)" : 
+                imageFilter === "brightness" ? "brightness(1.2)" :
+                imageFilter === "contrast" ? "contrast(1.2)" : "none"
+                : "none"
             }}
             onClick={(e) => e.stopPropagation()}
           />
           
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4">
-            <Button 
-              variant="outline" 
-              size="icon" 
-              className="rounded-full bg-white/20 hover:bg-white/40"
-              onClick={(e) => {
-                e.stopPropagation();
-                handlePrevious();
-              }}
-            >
-              <ChevronLeft className="h-5 w-5" />
-            </Button>
-            
-            <div className="bg-white/20 backdrop-blur-sm text-white px-3 py-1.5 rounded-lg">
-              {currentIndex + 1} / {images.length}
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4">
+            <div className="flex items-center gap-2">
+              <Button 
+                variant="outline" 
+                size="icon" 
+                className="rounded-full bg-white/20 hover:bg-white/40"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePrevious();
+                }}
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </Button>
+              
+              <div className="bg-white/20 backdrop-blur-sm text-white px-3 py-1.5 rounded-lg">
+                {currentIndex + 1} / {images.length}
+              </div>
+              
+              <Button 
+                variant="outline" 
+                size="icon" 
+                className="rounded-full bg-white/20 hover:bg-white/40"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleNext();
+                }}
+              >
+                <ChevronRight className="h-5 w-5" />
+              </Button>
             </div>
             
-            <Button 
-              variant="outline" 
-              size="icon" 
-              className="rounded-full bg-white/20 hover:bg-white/40"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleNext();
-              }}
-            >
-              <ChevronRight className="h-5 w-5" />
-            </Button>
+            <div className="flex items-center gap-2 bg-black/40 backdrop-blur-sm rounded-full p-1.5">
+              <Button
+                variant="ghost" 
+                size="icon"
+                className="h-8 w-8 rounded-full hover:bg-white/10"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleRotate();
+                }}
+              >
+                <RotateCw className="h-4 w-4" />
+              </Button>
+              
+              <Button
+                variant="ghost" 
+                size="icon"
+                className="h-8 w-8 rounded-full hover:bg-white/10"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleFlip();
+                }}
+              >
+                <FlipHorizontal className="h-4 w-4" />
+              </Button>
+              
+              <Button
+                variant="ghost" 
+                size="icon"
+                className="h-8 w-8 rounded-full hover:bg-white/10"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setZoomLevel(prev => prev < 2 ? prev + 0.25 : 1);
+                }}
+              >
+                <ZoomIn className="h-4 w-4" />
+              </Button>
+              
+              <Button
+                variant="ghost" 
+                size="icon"
+                className="h-8 w-8 rounded-full hover:bg-white/10"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  resetEnhancements();
+                }}
+              >
+                <Undo2 className="h-4 w-4" />
+              </Button>
+              
+              <Popover>
+                <PopoverTrigger asChild onClick={(e) => e.stopPropagation()}>
+                  <Button
+                    variant="ghost" 
+                    size="icon"
+                    className="h-8 w-8 rounded-full hover:bg-white/10"
+                  >
+                    <Filter className="h-4 w-4" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="bg-black/90 border-gray-800 text-white" onClick={(e) => e.stopPropagation()}>
+                  <p className="text-xs font-medium mb-2">Image Filters</p>
+                  <div className="grid grid-cols-2 gap-1">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className={cn("justify-start h-7 text-white hover:bg-white/10", imageFilter === "none" && "bg-white/20")} 
+                      onClick={() => applyFilter("none")}
+                    >
+                      Normal
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className={cn("justify-start h-7 text-white hover:bg-white/10", imageFilter === "grayscale" && "bg-white/20")} 
+                      onClick={() => applyFilter("grayscale")}
+                    >
+                      Grayscale
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className={cn("justify-start h-7 text-white hover:bg-white/10", imageFilter === "sepia" && "bg-white/20")} 
+                      onClick={() => applyFilter("sepia")}
+                    >
+                      Sepia
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className={cn("justify-start h-7 text-white hover:bg-white/10", imageFilter === "brightness" && "bg-white/20")} 
+                      onClick={() => applyFilter("brightness")}
+                    >
+                      Brighten
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className={cn("justify-start h-7 text-white hover:bg-white/10", imageFilter === "contrast" && "bg-white/20")} 
+                      onClick={() => applyFilter("contrast")}
+                    >
+                      Enhance
+                    </Button>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </div>
           </div>
         </div>
       )}
