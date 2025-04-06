@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Carousel,
@@ -196,95 +195,89 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             ))}
           </CarouselContent>
           
-          <div className="absolute bottom-4 right-4 flex items-center gap-2 bg-black/50 backdrop-blur-sm p-1.5 rounded-lg z-10">
-            <button 
-              onClick={handlePrevious}
-              className="text-white hover:text-gray-200 transition-colors focus:outline-none"
-              aria-label="Previous image"
-            >
-              <ChevronLeft size={16} />
-            </button>
-            <button 
-              onClick={handleNext}
-              className="text-white hover:text-gray-200 transition-colors focus:outline-none" 
-              aria-label="Next image"
-            >
-              <ChevronRight size={16} />
-            </button>
-          </div>
-          
-          <div className="absolute bottom-4 left-4 bg-black/50 backdrop-blur-sm text-white px-2 py-1.5 rounded-lg text-xs">
-            {currentIndex + 1}/{images.length}
-          </div>
-          
-          <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex items-center justify-center gap-2 bg-black/50 backdrop-blur-sm p-2 rounded-full">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="h-8 w-8 rounded-full bg-white/80 text-gray-700 border-gray-200 hover:bg-white"
-                    onClick={handleRotate}
-                    aria-label="Rotate image"
-                  >
-                    <RotateCw size={16} />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Rotate 90°</TooltipContent>
-              </Tooltip>
-              
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="h-8 w-8 rounded-full bg-white/80 text-gray-700 border-gray-200 hover:bg-white"
-                    onClick={handleFlip}
-                    aria-label="Flip image"
-                  >
-                    <FlipHorizontal size={16} />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Flip Horizontally</TooltipContent>
-              </Tooltip>
-              
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className={cn(
-                      "h-8 w-8 rounded-full bg-white/80 border-gray-200 hover:bg-white",
-                      isFavorite ? "text-red-500" : "text-gray-700"
-                    )}
-                    onClick={toggleFavorite}
-                    aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
-                  >
-                    <Heart size={16} className={isFavorite ? "fill-red-500" : ""} />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>{isFavorite ? "Remove from Favorites" : "Add to Favorites"}</TooltipContent>
-              </Tooltip>
-              
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className={cn(
-                      "h-8 w-8 rounded-full bg-white/80 border-gray-200 hover:bg-white",
-                      autoScrollEnabled ? "text-green-600" : "text-gray-700"
-                    )}
-                    onClick={toggleAutoScroll}
-                    aria-label={autoScrollEnabled ? "Disable auto-scroll" : "Enable auto-scroll"}
-                  >
-                    {autoScrollEnabled ? <Pause size={16} /> : <Play size={16} />}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>{autoScrollEnabled ? "Disable Auto-scroll" : "Enable Auto-scroll"}</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+          <div className="absolute bottom-4 left-0 right-0 flex items-center justify-between px-4">
+            <div className="bg-black/50 backdrop-blur-sm text-white px-2 py-1.5 rounded-lg text-xs">
+              {currentIndex + 1}/{images.length}
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={handleRotate}
+                      className="bg-black/50 backdrop-blur-sm p-1.5 rounded-lg text-white hover:bg-black/60 transition-colors"
+                      aria-label="Rotate image"
+                    >
+                      <RotateCw size={16} />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>Rotate 90°</TooltipContent>
+                </Tooltip>
+                
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={handleFlip}
+                      className="bg-black/50 backdrop-blur-sm p-1.5 rounded-lg text-white hover:bg-black/60 transition-colors"
+                      aria-label="Flip image"
+                    >
+                      <FlipHorizontal size={16} />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>Flip Horizontally</TooltipContent>
+                </Tooltip>
+                
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={toggleFavorite}
+                      className={cn(
+                        "bg-black/50 backdrop-blur-sm p-1.5 rounded-lg text-white hover:bg-black/60 transition-colors",
+                        isFavorite && "text-red-500"
+                      )}
+                      aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+                    >
+                      <Heart size={16} className={isFavorite ? "fill-red-500" : ""} />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>{isFavorite ? "Remove from Favorites" : "Add to Favorites"}</TooltipContent>
+                </Tooltip>
+                
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={toggleAutoScroll}
+                      className={cn(
+                        "bg-black/50 backdrop-blur-sm p-1.5 rounded-lg text-white hover:bg-black/60 transition-colors",
+                        autoScrollEnabled && "text-green-500"
+                      )}
+                      aria-label={autoScrollEnabled ? "Disable auto-scroll" : "Enable auto-scroll"}
+                    >
+                      {autoScrollEnabled ? <Pause size={16} /> : <Play size={16} />}
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>{autoScrollEnabled ? "Disable Auto-scroll" : "Enable Auto-scroll"}</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <button 
+                onClick={handlePrevious}
+                className="bg-black/50 backdrop-blur-sm p-1.5 rounded-lg text-white hover:bg-black/60 transition-colors"
+                aria-label="Previous image"
+              >
+                <ChevronLeft size={16} />
+              </button>
+              <button 
+                onClick={handleNext}
+                className="bg-black/50 backdrop-blur-sm p-1.5 rounded-lg text-white hover:bg-black/60 transition-colors"
+                aria-label="Next image"
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
           </div>
         </Carousel>
       </div>
