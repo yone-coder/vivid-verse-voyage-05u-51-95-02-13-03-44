@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { ArrowLeft, Share, Heart, MessageCircle, Truck, Shield, Award, Percent, ThumbsUp, Zap, Star, Sparkles, ArrowRight, Crown, Clock, Gift, Check, Info, CreditCard, AlertCircle, Bookmark, Box, Tag, Download, Users, Rocket } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -677,12 +676,13 @@ const ProductDetail = () => {
         </div>
       </div>
       
-      <div ref={tabsRef}>
+      <div ref={tabsRef} className="relative">
         <ProductTabs 
           product={product} 
           activeTab={activeTab} 
           setActiveTab={setActiveTab} 
           isScrolled={isScrolled} 
+          headerHeight={isScrolled ? 40 : 0}
         />
       </div>
       
