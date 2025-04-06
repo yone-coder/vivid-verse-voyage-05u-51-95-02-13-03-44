@@ -49,52 +49,52 @@ const ProductTabs: React.FC<ProductTabsProps> = ({
     >
       <div className={`bg-white sticky z-20`} style={{ top: `${headerHeight}px` }}>
         <ScrollArea className="w-full" orientation="horizontal">
-          <TabsList className="w-full h-12 bg-white px-0 justify-start">
+          <TabsList className="w-full h-10 bg-white px-0 justify-start">
             <TabsTrigger 
               value="description" 
-              className="flex-1 data-[state=active]:border-b-2 data-[state=active]:border-red-500 data-[state=active]:rounded-none rounded-none"
+              className="flex-1 data-[state=active]:border-b-2 data-[state=active]:border-red-500 data-[state=active]:rounded-none rounded-none text-sm"
             >
               Description
             </TabsTrigger>
             <TabsTrigger 
               value="specs" 
-              className="flex-1 data-[state=active]:border-b-2 data-[state=active]:border-red-500 data-[state=active]:rounded-none rounded-none"
+              className="flex-1 data-[state=active]:border-b-2 data-[state=active]:border-red-500 data-[state=active]:rounded-none rounded-none text-sm"
             >
               Specs
             </TabsTrigger>
             <TabsTrigger 
               value="reviews" 
-              className="flex-1 data-[state=active]:border-b-2 data-[state=active]:border-red-500 data-[state=active]:rounded-none rounded-none"
+              className="flex-1 data-[state=active]:border-b-2 data-[state=active]:border-red-500 data-[state=active]:rounded-none rounded-none text-sm"
             >
               Reviews
             </TabsTrigger>
             <TabsTrigger 
               value="qa" 
-              className="flex-1 data-[state=active]:border-b-2 data-[state=active]:border-red-500 data-[state=active]:rounded-none rounded-none"
+              className="flex-1 data-[state=active]:border-b-2 data-[state=active]:border-red-500 data-[state=active]:rounded-none rounded-none text-sm"
             >
               Q&A
             </TabsTrigger>
             <TabsTrigger 
               value="video" 
-              className="flex-1 data-[state=active]:border-b-2 data-[state=active]:border-red-500 data-[state=active]:rounded-none rounded-none"
+              className="flex-1 data-[state=active]:border-b-2 data-[state=active]:border-red-500 data-[state=active]:rounded-none rounded-none text-sm"
             >
               Videos
             </TabsTrigger>
             <TabsTrigger 
               value="guides" 
-              className="flex-1 data-[state=active]:border-b-2 data-[state=active]:border-red-500 data-[state=active]:rounded-none rounded-none"
+              className="flex-1 data-[state=active]:border-b-2 data-[state=active]:border-red-500 data-[state=active]:rounded-none rounded-none text-sm"
             >
               Guides
             </TabsTrigger>
             <TabsTrigger 
               value="community" 
-              className="flex-1 data-[state=active]:border-b-2 data-[state=active]:border-red-500 data-[state=active]:rounded-none rounded-none"
+              className="flex-1 data-[state=active]:border-b-2 data-[state=active]:border-red-500 data-[state=active]:rounded-none rounded-none text-sm"
             >
               Community
             </TabsTrigger>
             <TabsTrigger 
               value="accessories" 
-              className="flex-1 data-[state=active]:border-b-2 data-[state=active]:border-red-500 data-[state=active]:rounded-none rounded-none"
+              className="flex-1 data-[state=active]:border-b-2 data-[state=active]:border-red-500 data-[state=active]:rounded-none rounded-none text-sm"
             >
               Accessories
             </TabsTrigger>
