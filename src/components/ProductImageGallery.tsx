@@ -801,7 +801,13 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                         variant="ghost"
                         size="sm"
                         className="justify-start text-sm h-8 px-2 w-full"
-                        onClick={(e) => handleMenuAction(e, () => copyImageUrl(index))}
+                        onClick={(e) => {
+                          handleMenuAction(e, () => {
+                            copyImageUrl(index);
+                            setCopiedIndex(index);
+                            setTimeout(() => setCopiedIndex(null), 2000);
+                          });
+                        }}
                       >
                         {copiedIndex === index ? (
                           <Check className="h-4 w-4 mr-2 text-green-600" />
