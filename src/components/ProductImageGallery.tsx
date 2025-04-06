@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Carousel,
@@ -23,7 +22,7 @@ import {
   Check,
   Share2,
   Maximize,
-  CropSquare,
+  Square,
   ImagePlus,
   Image as ImageIcon,
   PanelRight,
@@ -139,7 +138,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     });
   }, []);
 
-  // Enhanced functions
   const undoLastView = useCallback(() => {
     if (viewHistory.length > 1) {
       const newHistory = [...viewHistory];
@@ -209,7 +207,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     });
   }, [viewMode]);
 
-  // Core functions
   const toggleFavorite = useCallback(() => {
     setIsFavorite(prev => !prev);
     toast({
@@ -636,7 +633,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
               className="rounded-full bg-white/70 backdrop-blur-sm hover:bg-white/90 w-7 h-7"
               onClick={toggleImmersiveView}
             >
-              {viewMode === "default" ? <Maximize size={13} /> : <CropSquare size={13} />}
+              {viewMode === "default" ? <Maximize size={13} /> : <Square size={13} />}
             </Button>
           </div>
         </Carousel>
@@ -664,7 +661,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             onClick={toggleImmersiveView}
             className="flex items-center text-xs text-gray-600 hover:text-blue-600 px-1.5 py-1"
           >
-            {viewMode === "default" ? <Maximize size={12} className="mr-1" /> : <CropSquare size={12} className="mr-1" />}
+            {viewMode === "default" ? <Maximize size={12} className="mr-1" /> : <Square size={12} className="mr-1" />}
             {viewMode === "default" ? "Focus" : "Normal"}
           </button>
           <button 
