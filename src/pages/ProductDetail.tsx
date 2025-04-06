@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
-import { ArrowLeft, Share, Heart, MessageCircle, Truck, Shield, Award, Percent, ThumbsUp, Zap, Star, Sparkles, ArrowRight, Crown, Clock, Gift, Check, Info, CreditCard, AlertCircle, Bookmark, Box, Tag, Download, Users, Rocket, Copy, Scissors, BadgePercent, TicketPercent, BookmarkPlus, BellRing, ShieldCheck, CircleDollarSign, ChevronDown } from "lucide-react";
+import { ArrowLeft, Share, Heart, MessageCircle, Truck, Shield, Award, Percent, ThumbsUp, Zap, Star, Sparkles, ArrowRight, Crown, Clock, Gift, Check, Info, CreditCard, AlertCircle, Bookmark, Box, Tag, Download, Users, Rocket, Copy, Scissors, BadgePercent, TicketPercent, BookmarkPlus, BellRing, ShieldCheck, CircleDollarSign, ChevronDown, Search, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import ProductImageGallery from "@/components/ProductImageGallery";
 import ProductTabs from "@/components/ProductTabs";
 import { toast } from "@/components/ui/use-toast";
@@ -323,6 +324,16 @@ const ProductDetail = () => {
               <ArrowLeft className="h-4 w-4" />
             </Button>
           </Link>
+          <div className="flex-1 mx-3 relative">
+            <div className="relative w-full max-w-[200px] md:max-w-[300px] mx-auto">
+              <Input 
+                type="text" 
+                placeholder="Search products..." 
+                className="h-8 pl-8 pr-3 bg-white/70 backdrop-blur-sm hover:bg-white/90 text-xs rounded-full border-gray-200 focus-visible:ring-1"
+              />
+              <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-gray-500" />
+            </div>
+          </div>
           <div className="flex gap-1">
             <Button 
               variant="outline" 
@@ -347,15 +358,20 @@ const ProductDetail = () => {
       {isScrolled && (
         <div className="fixed top-0 left-0 right-0 bg-white z-30 shadow-sm">
           <div className="flex items-center h-10 px-3">
-            <Link to="/" className="mr-auto">
+            <Link to="/" className="mr-2">
               <Button variant="ghost" size="sm" className="rounded-full h-8 w-8 p-0">
                 <ArrowLeft className="h-4 w-4" />
               </Button>
             </Link>
-            <div className="mr-auto ml-1 font-medium truncate max-w-[200px] text-sm">
-              {product.name}
+            <div className="flex-1 relative">
+              <Input 
+                type="text" 
+                placeholder="Search products..." 
+                className="h-7 pl-8 pr-3 text-xs"
+              />
+              <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-gray-500" />
             </div>
-            <div className="flex gap-1">
+            <div className="flex gap-1 ml-2">
               <Button 
                 variant="ghost" 
                 size="sm" 
@@ -485,10 +501,7 @@ const ProductDetail = () => {
                     </Button>
                   </HoverCardTrigger>
                   <HoverCardContent className="w-64 p-3">
-                    <div className="flex justify-between items-center mb-2">
-                      <div className="font-medium text-sm">Price History</div>
-                      <div className="text-xs text-muted-foreground">Last 30 days</div>
-                    </div>
+                    <div className="font-medium mb-1 text-sm">Price History</div>
                     <div className="h-24 w-full bg-slate-50 rounded-md flex items-end p-1 space-x-[2px]">
                       {[7,5,6,8,9,8,7,5,6,4,5,7,8,9,10,9,8,7,6,5,6,7,5,4,3,5,7,8,6,5].map((value, i) => (
                         <div 
