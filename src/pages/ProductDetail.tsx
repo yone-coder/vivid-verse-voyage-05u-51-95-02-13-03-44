@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useRef } from "react";
-import { ArrowLeft, Share, Heart, MessageCircle, Truck, Shield, Award, Percent, ThumbsUp, Zap, Star, Sparkles, ArrowRight, Crown, Clock, Gift, Check, Info, CreditCard, AlertCircle, Bookmark, Box, Tag, Download, Users, Rocket } from "lucide-react";
+import { ArrowLeft, Share, Heart, MessageCircle, Truck, Shield, Award, Percent, ThumbsUp, Zap, Star, Sparkles, ArrowRight, Crown, Clock, Gift, Check, Info, CreditCard, AlertCircle, Bookmark, Box, Tag, Download, Users, Rocket, LifeBuoy, Store, TrendingUp, User, History, Map, BarChart4, Headphones, ShoppingCart, HelpCircle, ArrowDownCircle, EyeOff, Flame } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -16,6 +16,42 @@ import LiveActivityNotifications from "@/components/LiveActivityNotifications";
 import LiveStockUpdates from "@/components/LiveStockUpdates";
 import { Switch } from "@/components/ui/switch";
 import ModernBuyButton from "@/components/ModernBuyButton";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 const ProductDetail = () => {
   const [activeTab, setActiveTab] = useState("description");
@@ -34,6 +70,29 @@ const ProductDetail = () => {
   const [selectedWarranty, setSelectedWarranty] = useState("none");
   const [maxQuantityReached, setMaxQuantityReached] = useState(false);
   const [showCartAnimation, setShowCartAnimation] = useState(false);
+  const [recentViewers, setRecentViewers] = useState(18);
+  const [peopleWithInCart, setPeopleWithInCart] = useState(7);
+  const [showPriceAlert, setShowPriceAlert] = useState(false);
+  const [emailForAlert, setEmailForAlert] = useState("");
+  const [showReviews, setShowReviews] = useState(false);
+  const [showQnA, setShowQnA] = useState(false);
+  const [selectedFrequency, setSelectedFrequency] = useState("one-time");
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("card");
+  const [hasBundle, setHasBundle] = useState(false);
+  const [showRelatedItems, setShowRelatedItems] = useState(true);
+  const [showFrequentlyBought, setShowFrequentlyBought] = useState(true);
+  const [latitude, setLatitude] = useState<number | null>(null);
+  const [longitude, setLongitude] = useState<number | null>(null);
+  const [estimatedDelivery, setEstimatedDelivery] = useState("");
+  const [isWatchingPrice, setIsWatchingPrice] = useState(false);
+  const [isWatchingStock, setIsWatchingStock] = useState(false);
+  const [showSizeGuide, setShowSizeGuide] = useState(false);
+  const [isComparingProducts, setIsComparingProducts] = useState(false);
+  const [customerPhotos, setCustomerPhotos] = useState(["/placeholder.svg", "/placeholder.svg", "/placeholder.svg"]);
+  const [wishlistCount, setWishlistCount] = useState(156);
+  const [question, setQuestion] = useState("");
+  const [showFinancing, setShowFinancing] = useState(false);
+  
   const headerRef = useRef<HTMLDivElement>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
@@ -121,6 +180,57 @@ const ProductDetail = () => {
     badges: []
   };
 
+  // Simulate increasing viewers
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRecentViewers(prev => {
+        const change = Math.random() > 0.7 ? 1 : 0;
+        return prev + change;
+      });
+    }, 15000);
+    
+    return () => clearInterval(interval);
+  }, []);
+  
+  // Simulate fluctuating cart count
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPeopleWithInCart(prev => {
+        const change = Math.random() > 0.5 ? 1 : -1;
+        return Math.max(3, Math.min(12, prev + change));
+      });
+    }, 45000);
+    
+    return () => clearInterval(interval);
+  }, []);
+
+  // Get location for delivery estimation
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLatitude(position.coords.latitude);
+          setLongitude(position.coords.longitude);
+          
+          // Simulate delivery estimation based on location
+          const randomDays = Math.floor(Math.random() * 5) + 3;
+          const deliveryDate = new Date();
+          deliveryDate.setDate(deliveryDate.getDate() + randomDays);
+          
+          setEstimatedDelivery(deliveryDate.toLocaleDateString('en-US', { 
+            weekday: 'short', 
+            month: 'short', 
+            day: 'numeric' 
+          }));
+        },
+        () => {
+          // Fallback if location access is denied
+          setEstimatedDelivery("7-10 business days");
+        }
+      );
+    }
+  }, []);
+
   const incrementQuantity = () => {
     if (quantity < 10) {
       setQuantity(prev => prev + 1);
@@ -206,6 +316,7 @@ const ProductDetail = () => {
 
   const toggleFavorite = () => {
     setIsFavorite(!isFavorite);
+    setWishlistCount(prev => isFavorite ? prev - 1 : prev + 1);
     toast({
       title: isFavorite ? "Removed from favorites" : "Added to favorites",
       description: isFavorite ? "Item removed from your wishlist" : "Item added to your wishlist",
@@ -215,6 +326,7 @@ const ProductDetail = () => {
   const addToCart = () => {
     setShowCartAnimation(true);
     setTimeout(() => setShowCartAnimation(false), 1000);
+    setPeopleWithInCart(prev => prev + 1);
     
     toast({
       title: "Added to cart",
@@ -241,10 +353,21 @@ const ProductDetail = () => {
   };
 
   const askQuestion = () => {
+    if (!question.trim()) {
+      toast({
+        title: "Question required",
+        description: "Please enter your question before submitting",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     toast({
-      title: "Question form",
-      description: "A form would open to ask a question about this product",
+      title: "Question submitted",
+      description: "Your question has been sent to the seller. You'll be notified when they respond.",
     });
+    setQuestion("");
+    setShowQnA(false);
   };
 
   const scrollToTabs = () => {
@@ -264,6 +387,46 @@ const ProductDetail = () => {
     });
   };
 
+  const togglePriceAlert = () => {
+    setIsWatchingPrice(prev => !prev);
+    if (!isWatchingPrice) {
+      setShowPriceAlert(true);
+    } else {
+      toast({
+        title: "Price alert removed",
+        description: "You will no longer receive price drop notifications for this item",
+      });
+    }
+  };
+  
+  const setPriceAlert = () => {
+    if (!emailForAlert && !isWatchingPrice) {
+      toast({
+        title: "Email required",
+        description: "Please enter your email to receive price drop alerts",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    setIsWatchingPrice(true);
+    setShowPriceAlert(false);
+    toast({
+      title: "Price alert set",
+      description: "We'll notify you when this product's price drops",
+    });
+  };
+
+  const toggleStockAlert = () => {
+    setIsWatchingStock(prev => !prev);
+    toast({
+      title: isWatchingStock ? "Stock alert removed" : "Stock alert set",
+      description: isWatchingStock 
+        ? "You will no longer receive stock notifications" 
+        : "We'll notify you when stock runs low",
+    });
+  };
+
   const currentVariant = product.variants.find(v => v.name === selectedColor);
   const currentPrice = currentVariant ? currentVariant.price : product.discountPrice;
   const originalPrice = currentVariant ? Math.round(currentVariant.price * 1.6 * 100) / 100 : product.price;
@@ -271,12 +434,24 @@ const ProductDetail = () => {
   const warrantyOption = product.warranty.find(w => w.name.toLowerCase() === selectedWarranty);
   const warrantyPrice = warrantyOption ? warrantyOption.price : 0;
   
-  const totalPrice = (currentPrice * quantity) + warrantyPrice + (giftWrap ? 2.99 : 0) + (isExpressSelected ? product.shipping.express : 0);
+  // Calculate subscription discount
+  const subscriptionDiscount = selectedFrequency === "one-time" ? 0 : 0.15;
+  const subscriptionPrice = currentPrice * (1 - subscriptionDiscount);
+  
+  // Calculate total based on all options
+  const totalPrice = ((selectedFrequency === "subscription" ? subscriptionPrice : currentPrice) * quantity) + 
+    warrantyPrice + (giftWrap ? 2.99 : 0) + (isExpressSelected ? product.shipping.express : 0) +
+    (hasBundle ? 15.99 : 0);
   
   const formatPrice = (price: number) => price.toFixed(2);
 
   const currentStock = currentVariant ? currentVariant.stock : 0;
   const stockPercentage = Math.min(100, Math.max(5, (currentStock / 300) * 100));
+  
+  // Calculate estimated savings
+  const estimatedSavings = (originalPrice - currentPrice) * quantity;
+  const subscriptionSavings = selectedFrequency === "subscription" ? currentPrice * quantity * subscriptionDiscount : 0;
+  const totalSavings = estimatedSavings + subscriptionSavings;
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
@@ -307,6 +482,25 @@ const ProductDetail = () => {
               <Share className="h-4 w-4" />
             </Button>
           </div>
+        </div>
+        
+        <div className="absolute bottom-2 left-2">
+          <HoverCard>
+            <HoverCardTrigger asChild>
+              <Button variant="outline" size="sm" className="rounded-full bg-white/70 backdrop-blur-sm hover:bg-white/90">
+                <Users className="h-4 w-4 text-blue-500 mr-1" />
+                <span className="text-xs">{recentViewers}</span>
+              </Button>
+            </HoverCardTrigger>
+            <HoverCardContent className="w-60">
+              <div className="text-sm font-medium">
+                {recentViewers} people viewing this right now
+              </div>
+              <div className="text-xs text-gray-500 mt-1">
+                This item is in high demand
+              </div>
+            </HoverCardContent>
+          </HoverCard>
         </div>
       </div>
 
@@ -345,10 +539,12 @@ const ProductDetail = () => {
       
       <div className={`flex-1 ${isScrolled ? 'pt-10' : ''}`}>
         <div className="bg-white p-3 mb-0">
-          <div className="flex items-center mb-0.5">
+          <div className="flex items-center mb-0.5 gap-1 flex-wrap">
             <Badge variant="outline" className="text-xs bg-red-50 text-red-500 border-red-200">Flash Deal</Badge>
-            <Badge variant="outline" className="text-xs bg-orange-50 text-orange-500 border-orange-200 ml-1">Top Seller</Badge>
-            <Badge variant="outline" className="text-xs bg-green-50 text-green-500 border-green-200 ml-1">Free Shipping</Badge>
+            <Badge variant="outline" className="text-xs bg-orange-50 text-orange-500 border-orange-200">Top Seller</Badge>
+            <Badge variant="outline" className="text-xs bg-green-50 text-green-500 border-green-200">Free Shipping</Badge>
+            <Badge variant="outline" className="text-xs bg-purple-50 text-purple-500 border-purple-200">Best Rated</Badge>
+            <Badge variant="outline" className="text-xs bg-blue-50 text-blue-500 border-blue-200">Trending</Badge>
           </div>
           
           <div className="flex items-baseline">
@@ -357,21 +553,50 @@ const ProductDetail = () => {
             <span className="ml-2 text-xs px-1.5 py-0.5 bg-red-100 text-red-500 rounded">
               {Math.round((1 - currentPrice / originalPrice) * 100)}% OFF
             </span>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="ml-2 h-6 w-6 p-0 rounded-full"
+                    onClick={togglePriceAlert}
+                  >
+                    <Bell className={`h-3.5 w-3.5 ${isWatchingPrice ? "fill-blue-100 text-blue-500" : ""}`} />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{isWatchingPrice ? "Remove price alert" : "Set price drop alert"}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
           
           <h1 className="text-lg font-medium mt-1">{product.name}</h1>
           
           <div className="flex items-center mt-1 text-sm">
-            <div className="flex text-amber-400">
+            <button className="flex text-amber-400" onClick={() => {
+              setActiveTab("reviews");
+              tabsRef.current?.scrollIntoView({ behavior: 'smooth' });
+            }}>
               {'★'.repeat(Math.floor(product.rating))}
               {product.rating % 1 !== 0 && '☆'}
               {'☆'.repeat(5 - Math.ceil(product.rating))}
               <span className="ml-1 text-black">{product.rating}</span>
-            </div>
+            </button>
             <span className="mx-2 text-gray-300">|</span>
-            <span className="text-gray-500">{product.reviewCount} Reviews</span>
+            <button className="text-gray-500 hover:text-gray-700 transition-colors" onClick={() => {
+              setActiveTab("reviews");
+              tabsRef.current?.scrollIntoView({ behavior: 'smooth' });
+            }}>
+              {product.reviewCount} Reviews
+            </button>
             <span className="mx-2 text-gray-300">|</span>
             <span className="text-gray-500">{product.sold}+ Sold</span>
+            <span className="ml-auto text-xs text-green-600 flex items-center">
+              <ShoppingCart className="h-3.5 w-3.5 mr-1 stroke-2" />
+              {peopleWithInCart} in carts
+            </span>
           </div>
 
           <div className="mt-4">
@@ -394,30 +619,81 @@ const ProductDetail = () => {
             </div>
           </div>
           
-          <div className="mt-3 bg-red-50 p-2.5 rounded-md">
-            <div className="text-sm font-medium text-gray-700 mb-1.5 flex items-center">
-              <Percent className="h-4 w-4 mr-1 text-red-500" />
-              Available Coupons:
+          <div className="mt-3 flex flex-wrap">
+            <div className="bg-red-50 p-2.5 rounded-md w-full mb-2">
+              <div className="text-sm font-medium text-gray-700 mb-1.5 flex items-center">
+                <Percent className="h-4 w-4 mr-1 text-red-500" />
+                Available Coupons:
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {product.coupons.map((coupon, index) => (
+                  <div 
+                    key={index} 
+                    className="flex items-center overflow-hidden rounded border border-red-300 group hover:border-red-500 cursor-pointer transition-colors"
+                    onClick={() => applyCoupon(coupon.code)}
+                  >
+                    <div className="bg-red-500 text-white px-2 py-1 text-xs font-medium group-hover:bg-red-600 transition-colors">
+                      {coupon.code}
+                    </div>
+                    <div className="px-2 py-1 text-xs text-red-600 bg-white">
+                      {coupon.discount}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className="flex flex-wrap gap-2">
-              {product.coupons.map((coupon, index) => (
-                <div 
-                  key={index} 
-                  className="flex items-center overflow-hidden rounded border border-red-300 group hover:border-red-500 cursor-pointer transition-colors"
-                  onClick={() => applyCoupon(coupon.code)}
+            
+            <div className="w-full mb-3">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm font-medium text-gray-700">Purchase Options:</span>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-2">
+                <div
+                  className={`border rounded-md p-2.5 cursor-pointer transition ${
+                    selectedFrequency === "one-time" ? "border-blue-500 bg-blue-50" : "border-gray-200"
+                  }`}
+                  onClick={() => setSelectedFrequency("one-time")}
                 >
-                  <div className="bg-red-500 text-white px-2 py-1 text-xs font-medium group-hover:bg-red-600 transition-colors">
-                    {coupon.code}
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-sm font-medium">One-time purchase</span>
+                    {selectedFrequency === "one-time" && <Check className="h-4 w-4 text-blue-500" />}
                   </div>
-                  <div className="px-2 py-1 text-xs text-red-600 bg-white">
-                    {coupon.discount}
-                  </div>
+                  <div className="text-sm font-semibold text-gray-800">${formatPrice(currentPrice)}</div>
                 </div>
-              ))}
+                
+                <div
+                  className={`border rounded-md p-2.5 cursor-pointer transition ${
+                    selectedFrequency === "subscription" ? "border-blue-500 bg-blue-50" : "border-gray-200"
+                  }`}
+                  onClick={() => setSelectedFrequency("subscription")}
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center">
+                      <span className="text-sm font-medium">Subscribe & Save</span>
+                      <Badge className="ml-1 bg-green-100 text-green-700 border-0 h-5 text-xs">15% OFF</Badge>
+                    </div>
+                    {selectedFrequency === "subscription" && <Check className="h-4 w-4 text-blue-500" />}
+                  </div>
+                  <div className="text-sm font-semibold text-green-700">${formatPrice(subscriptionPrice)}</div>
+                </div>
+              </div>
+              
+              {selectedFrequency === "subscription" && (
+                <div className="mt-2 p-2 bg-blue-50 rounded-md border border-blue-200 text-xs text-blue-700">
+                  <div className="font-medium mb-1">Subscription Benefits:</div>
+                  <ul className="list-disc pl-4 space-y-0.5">
+                    <li>Save 15% on every order</li>
+                    <li>Free shipping on all deliveries</li>
+                    <li>Modify or cancel anytime</li>
+                    <li>Get priority customer support</li>
+                  </ul>
+                </div>
+              )}
             </div>
           </div>
           
-          <div className="mt-4 relative">
+          <div className="mt-2 relative">
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm font-medium text-gray-700">Select Color:</span>
               <Button 
@@ -460,220 +736,359 @@ const ProductDetail = () => {
         </div>
         
         <div className="mt-2 mb-2 p-4 bg-white">
-          <LiveStockUpdates 
-            initialStock={currentVariant ? currentVariant.stock : 200}
-            highDemand={product.stock.selling_fast}
-          />
-          
-          <div className="mt-4 flex items-center justify-between">
-            <span className="text-sm font-medium text-gray-700">Quantity:</span>
-            <div className="flex items-center border border-gray-300 rounded-md overflow-hidden">
-              <Button 
-                onClick={decrementQuantity} 
-                variant="ghost" 
-                className="h-8 px-3 rounded-none border-r border-gray-300"
-                disabled={quantity <= 1}
-              >
-                -
-              </Button>
-              <div className="w-10 text-center">{quantity}</div>
-              <Button 
-                onClick={incrementQuantity} 
-                variant="ghost" 
-                className="h-8 px-3 rounded-none border-l border-gray-300"
-                disabled={quantity >= 10}
-              >
-                +
-              </Button>
-            </div>
-          </div>
-          
-          <div className="mt-4 flex items-center justify-between">
-            <span className="text-sm font-medium text-gray-700">Shipping:</span>
-            <div className="flex flex-col items-end">
+          <div className="mb-4">
+            <div className="flex justify-between items-center mb-2">
               <div className="flex items-center">
-                <Truck className="h-4 w-4 text-green-600 mr-1" />
-                <span className="text-sm text-green-600 font-medium">
-                  {product.shipping.free ? "Free Standard Shipping" : "Standard Shipping"}
-                </span>
+                <AlertCircle className="h-4 w-4 text-amber-500 mr-1.5" />
+                <span className="text-sm font-medium text-gray-700">Limited Stock</span>
               </div>
-              <div className="text-xs text-gray-500 mt-0.5">
-                Estimated delivery: {product.shipping.estimated}
-              </div>
-            </div>
-          </div>
-          
-          <div className="mt-2 flex justify-end">
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="h-7 px-2 text-xs text-blue-600"
-              onClick={() => setShowDeliveryOptions(!showDeliveryOptions)}
-            >
-              {showDeliveryOptions ? "Hide Options" : "More Delivery Options"}
-            </Button>
-          </div>
-          
-          {showDeliveryOptions && (
-            <div className="mt-1 p-3 bg-gray-50 rounded-md border border-gray-200">
-              <RadioGroup 
-                value={isExpressSelected ? "express" : "standard"}
-                onValueChange={(value) => setIsExpressSelected(value === "express")}
-              >
-                <div className="flex items-start space-x-2 mb-2">
-                  <RadioGroupItem value="standard" id="standard" className="mt-1" />
-                  <label htmlFor="standard" className="text-sm cursor-pointer flex-1">
-                    <div className="font-medium">Standard Shipping (Free)</div>
-                    <div className="text-xs text-gray-500">Estimated delivery: {product.shipping.estimated}</div>
-                  </label>
-                </div>
-                
-                <div className="flex items-start space-x-2">
-                  <RadioGroupItem value="express" id="express" className="mt-1" />
-                  <label htmlFor="express" className="text-sm cursor-pointer flex-1">
-                    <div className="font-medium">Express Shipping (${product.shipping.express})</div>
-                    <div className="text-xs text-gray-500">Estimated delivery: {product.shipping.expressEstimated}</div>
-                  </label>
-                </div>
-              </RadioGroup>
-              
-              <div className="mt-3 pt-3 border-t border-gray-200">
-                <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center">
-                    <Gift className="h-4 w-4 mr-1.5 text-purple-600" />
-                    <span className="font-medium">Gift Wrapping</span>
-                  </div>
-                  <Switch 
-                    checked={giftWrap} 
-                    onCheckedChange={toggleGiftWrap}
-                  />
-                </div>
-                {giftWrap && (
-                  <div className="mt-2 text-xs text-gray-600">
-                    Your item will be gift wrapped with a customized message card for $2.99
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-          
-          <div className="mt-4 flex items-center justify-between">
-            <span className="text-sm font-medium text-gray-700">Warranty:</span>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="h-7 px-2 text-xs text-blue-600"
-              onClick={() => setShowWarrantyOptions(!showWarrantyOptions)}
-            >
-              {selectedWarranty === "none" ? "Add Warranty" : `${warrantyOption?.name} (${warrantyOption?.duration})`}
-            </Button>
-          </div>
-          
-          {showWarrantyOptions && (
-            <div className="mt-2 p-3 bg-gray-50 rounded-md border border-gray-200">
-              <RadioGroup 
-                value={selectedWarranty}
-                onValueChange={setSelectedWarranty}
-              >
-                <div className="flex items-start space-x-2 mb-2">
-                  <RadioGroupItem value="none" id="none" className="mt-1" />
-                  <label htmlFor="none" className="text-sm cursor-pointer flex-1">
-                    <div className="font-medium">No additional warranty</div>
-                    <div className="text-xs text-gray-500">Product includes manufacturer's warranty</div>
-                  </label>
-                </div>
-                
-                {product.warranty.map((option) => (
-                  <div key={option.name.toLowerCase()} className="flex items-start space-x-2 mb-2">
-                    <RadioGroupItem value={option.name.toLowerCase()} id={option.name.toLowerCase()} className="mt-1" />
-                    <label htmlFor={option.name.toLowerCase()} className="text-sm cursor-pointer flex-1">
-                      <div className="font-medium">
-                        {option.name} ({option.duration}){option.price > 0 ? ` - $${formatPrice(option.price)}` : " - Included"}
-                      </div>
-                      <div className="text-xs text-gray-500">
-                        {option.name === "Standard" 
-                          ? "Basic coverage for manufacturing defects" 
-                          : option.name === "Extended" 
-                            ? "Extended coverage including wear and tear" 
-                            : "Premium coverage with accidental damage protection"}
-                      </div>
-                    </label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </div>
-          )}
-          
-          <div className="mt-4 flex items-center justify-between text-sm font-medium">
-            <span className="text-gray-700">Payment Options:</span>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="h-7 px-2 text-xs text-blue-600"
-              onClick={() => setShowPaymentOptions(!showPaymentOptions)}
-            >
-              {showPaymentOptions ? "Hide" : "View All"}
-            </Button>
-          </div>
-      
-          <div className="mt-1 flex flex-wrap gap-1">
-            <div className="w-8 h-5 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
-              <img 
-                src="/lovable-uploads/f3efe2eb-c3db-48bd-abc7-c65456fdc028.png" 
-                alt="Visa" 
-                className="h-3.5 w-6 object-contain"
-              />
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="h-6 w-6 p-0 rounded-full"
+                      onClick={toggleStockAlert}
+                    >
+                      <Bell className={`h-3.5 w-3.5 ${isWatchingStock ? "fill-amber-100 text-amber-500" : ""}`} />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{isWatchingStock ? "Remove stock alert" : "Notify me when stock is low"}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
             
-            <div className="w-8 h-5 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="12">
-                <circle fill="#EA001B" cx="8" cy="12" r="5"/>
-                <circle fill="#F79E1B" cx="16" cy="12" r="5"/>
-                <path fill="#FF5F00" d="M12 7.5v9a5 5 0 0 0 0-9z"/>
-              </svg>
+            <LiveStockUpdates 
+              initialStock={currentVariant ? currentVariant.stock : 200}
+              highDemand={product.stock.selling_fast}
+            />
+          </div>
+          
+          <div className="mb-4">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-gray-700">Quantity:</span>
+              <div className="flex items-center border border-gray-300 rounded-md overflow-hidden">
+                <Button 
+                  onClick={decrementQuantity} 
+                  variant="ghost" 
+                  className="h-8 px-3 rounded-none border-r border-gray-300"
+                  disabled={quantity <= 1}
+                >
+                  -
+                </Button>
+                <div className="w-10 text-center">{quantity}</div>
+                <Button 
+                  onClick={incrementQuantity} 
+                  variant="ghost" 
+                  className="h-8 px-3 rounded-none border-l border-gray-300"
+                  disabled={quantity >= 10}
+                >
+                  +
+                </Button>
+              </div>
             </div>
             
-            <div className="w-8 h-5 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
-              <img 
-                src="/lovable-uploads/dd1cad7b-c3b6-43a6-9bc6-deb38a120604.png" 
-                alt="Venmo" 
-                className="h-3.5 w-6 object-contain"
-              />
-            </div>
-            
-            {showPaymentOptions && (
-              <>
-                <div className="w-8 h-5 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="12">
-                    <path fill="#253B80" d="M7 7h2c1.4 0 1.9 1 1.9 1.5 0 1.8-2 1.8-2.5 1.8H7.3L7 7z"/>
-                    <path fill="#179BD7" d="M19 7.8C18.7 5.8 16.9 5 14.7 5H9.2c-.3 0-.5.2-.6.5l-1.7 11c0 .2.1.4.4.4h2.9l.7-4.7v.3c.1-.3.3-.5.6-.5h1.3c2.5 0 4.4-1 5-3.9V8c-.1-.2-.1-.2-.1-.2H19z"/>
-                    <path fill="#253B80" d="M8.3 11.5l-.3 2.1-.2 1h-3c-.2 0-.4-.2-.3-.4L6.1 5.9c.1-.3.3-.5.6-.5h5.5c1.5 0 2.6.3 3.2 1 .3.3.5.7.6 1.1.1.3.1.7.1 1.1-1-.6-2-.8-3.3-.8L8.3 11.5z"/>
-                  </svg>
-                </div>
-                
-                <div className="w-8 h-5 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="12">
-                    <path d="M19.665 17.082c-.37.9-.54 1.3-1.01 2.09-.66 1.12-1.6 2.52-2.76 2.53-1.04.01-1.3-.68-2.72-.67-1.42 0-1.72.67-2.76.66-1.16-.01-2.05-1.27-2.71-2.39-1.86-3.05-2.05-6.64-.9-8.53.82-1.35 2.12-2.14 3.33-2.14 1.24 0 2.01.68 3.03.68.98 0 1.58-.68 3-.68 1.07 0 2.2.59 3 1.57-2.66 1.63-2.22 5.89.5 7.48zm-4.17-12.97c-1.2.1-2.61 1.21-3.08 2.72-.42 1.35.37 2.95 1.11 3.77.87.79 2.1 1.08 2.81.25-.69-1.24-1.2-2.54-1.07-4.21.12-1.46.8-2.22 1.74-2.81-.45-.23-.95-.37-1.51-.37-.11 0-.11 0 0 .65z" fill="#000"/>
-                  </svg>
-                </div>
-                
-                <div className="w-8 h-5 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="12">
-                    <path d="M16.46 6.66V4.89H16v7.25h.46V8.81h2.71v3.33h.46V4.89h-.46v1.77h-2.71z" fill="#3C4043"/>
-                    <path d="M13.51 9.2V8.88h2.39v-.48h-2.39V8.07h2.54v-.72h-3v3.3h3.08v-.72h-2.62V9.2z" fill="#3C4043"/>
-                    <path d="M12.13 10.35c-.32.26-.75.4-1.19.4-.94 0-1.66-.77-1.66-1.72s.72-1.72 1.66-1.72c.45 0 .88.14 1.2.4l.29-.33c-.42-.32-.96-.5-1.5-.5-1.19 0-2.12.93-2.12 2.14S9.81 11.17 11 11.17c.54 0 1.08-.17 1.49-.5l-.36-.32z" fill="#3C4043"/>
-                    <path d="M6.82 11.45c1.37 0 2.17-.69 2.17-1.96v-3.2h-.88v3.2c0 .82-.45 1.23-1.29 1.23s-1.29-.41-1.29-1.23v-3.2h-.88v3.2c0 1.27.8 1.96 2.17 1.96z" fill="#3C4043"/>
-                  </svg>
-                </div>
-              </>
+            {maxQuantityReached && (
+              <div className="mt-1 text-xs text-red-500 flex items-center">
+                <AlertCircle className="h-3 w-3 mr-1" />
+                Maximum quantity per order is 10 items
+              </div>
             )}
           </div>
           
-          {showPaymentOptions && (
-            <div className="mt-2 text-xs text-gray-600">
-              Buy Now, Pay Later options available at checkout with Klarna and Afterpay.
+          <div className="flex flex-col gap-1.5 mb-4">
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="shipping" className="border-none">
+                <AccordionTrigger className="py-1.5 text-sm">
+                  <div className="flex items-center">
+                    <Truck className="h-4 w-4 text-green-600 mr-2" />
+                    <span className="font-medium">Shipping</span>
+                    {estimatedDelivery && (
+                      <Badge variant="outline" className="ml-2 text-xs bg-green-50 text-green-600 border-green-200">
+                        Est: {estimatedDelivery}
+                      </Badge>
+                    )}
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <RadioGroup 
+                    value={isExpressSelected ? "express" : "standard"}
+                    onValueChange={(value) => setIsExpressSelected(value === "express")}
+                  >
+                    <div className="flex items-start space-x-2 mb-2">
+                      <RadioGroupItem value="standard" id="standard" className="mt-1" />
+                      <label htmlFor="standard" className="text-sm cursor-pointer flex-1">
+                        <div className="font-medium">Standard Shipping (Free)</div>
+                        <div className="text-xs text-gray-500">Estimated delivery: {product.shipping.estimated}</div>
+                      </label>
+                    </div>
+                    
+                    <div className="flex items-start space-x-2">
+                      <RadioGroupItem value="express" id="express" className="mt-1" />
+                      <label htmlFor="express" className="text-sm cursor-pointer flex-1">
+                        <div className="font-medium">Express Shipping (${product.shipping.express})</div>
+                        <div className="text-xs text-gray-500">Estimated delivery: {product.shipping.expressEstimated}</div>
+                      </label>
+                    </div>
+                  </RadioGroup>
+                  
+                  <div className="mt-3 pt-3 border-t border-gray-200">
+                    <div className="flex items-center justify-between text-sm">
+                      <div className="flex items-center">
+                        <Gift className="h-4 w-4 mr-1.5 text-purple-600" />
+                        <span className="font-medium">Gift Wrapping</span>
+                      </div>
+                      <Switch 
+                        checked={giftWrap} 
+                        onCheckedChange={toggleGiftWrap}
+                      />
+                    </div>
+                    {giftWrap && (
+                      <div className="mt-2 text-xs text-gray-600">
+                        Your item will be gift wrapped with a customized message card for $2.99
+                      </div>
+                    )}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="warranty" className="border-t border-dashed">
+                <AccordionTrigger className="py-1.5 text-sm">
+                  <div className="flex items-center">
+                    <Shield className="h-4 w-4 text-blue-600 mr-2" />
+                    <span className="font-medium">Warranty</span>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <RadioGroup 
+                    value={selectedWarranty}
+                    onValueChange={setSelectedWarranty}
+                  >
+                    <div className="flex items-start space-x-2 mb-2">
+                      <RadioGroupItem value="none" id="none" className="mt-1" />
+                      <label htmlFor="none" className="text-sm cursor-pointer flex-1">
+                        <div className="font-medium">No additional warranty</div>
+                        <div className="text-xs text-gray-500">Product includes manufacturer's warranty</div>
+                      </label>
+                    </div>
+                    
+                    {product.warranty.map((option) => (
+                      <div key={option.name.toLowerCase()} className="flex items-start space-x-2 mb-2">
+                        <RadioGroupItem value={option.name.toLowerCase()} id={option.name.toLowerCase()} className="mt-1" />
+                        <label htmlFor={option.name.toLowerCase()} className="text-sm cursor-pointer flex-1">
+                          <div className="font-medium">
+                            {option.name} ({option.duration}){option.price > 0 ? ` - $${formatPrice(option.price)}` : " - Included"}
+                          </div>
+                          <div className="text-xs text-gray-500">
+                            {option.name === "Standard" 
+                              ? "Basic coverage for manufacturing defects" 
+                              : option.name === "Extended" 
+                                ? "Extended coverage including wear and tear" 
+                                : "Premium coverage with accidental damage protection"}
+                          </div>
+                        </label>
+                      </div>
+                    ))}
+                  </RadioGroup>
+                </AccordionContent>
+              </AccordionItem>
+              
+              <AccordionItem value="bundle" className="border-t border-dashed">
+                <AccordionTrigger className="py-1.5 text-sm">
+                  <div className="flex items-center">
+                    <Box className="h-4 w-4 text-orange-500 mr-2" />
+                    <span className="font-medium">Bundle & Save</span>
+                    <Badge className="ml-2 bg-orange-100 text-orange-600 border-0">Save 20%</Badge>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="flex items-start space-x-3 mb-3">
+                    <div className="w-14 h-14 bg-gray-100 rounded flex-shrink-0">
+                      <img src="/placeholder.svg" alt="Bundle item" className="w-full h-full object-cover rounded" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="text-sm font-medium">Complete Projection Bundle</div>
+                      <div className="text-xs text-gray-500 mt-0.5">Includes projector, bluetooth speaker, and projection screen</div>
+                      <div className="mt-1">
+                        <span className="text-sm font-semibold text-red-500">$15.99</span>
+                        <span className="text-xs line-through text-gray-500 ml-1">$19.99</span>
+                      </div>
+                    </div>
+                    <Switch 
+                      checked={hasBundle} 
+                      onCheckedChange={setHasBundle}
+                    />
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+              
+              <AccordionItem value="payment" className="border-t border-dashed">
+                <AccordionTrigger className="py-1.5 text-sm">
+                  <div className="flex items-center">
+                    <CreditCard className="h-4 w-4 text-gray-700 mr-2" />
+                    <span className="font-medium">Payment Options</span>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="space-y-2">
+                    <div 
+                      className={`flex items-center p-2 border rounded-md cursor-pointer ${selectedPaymentMethod === "card" ? "border-blue-500 bg-blue-50" : "border-gray-200"}`}
+                      onClick={() => setSelectedPaymentMethod("card")}
+                    >
+                      <div className="flex items-center space-x-2 flex-1">
+                        <CreditCard className="h-4 w-4" />
+                        <span className="text-sm">Credit/Debit Card</span>
+                      </div>
+                      {selectedPaymentMethod === "card" && <Check className="h-4 w-4 text-blue-500" />}
+                    </div>
+                    
+                    <div 
+                      className={`flex items-center p-2 border rounded-md cursor-pointer ${selectedPaymentMethod === "paypal" ? "border-blue-500 bg-blue-50" : "border-gray-200"}`}
+                      onClick={() => setSelectedPaymentMethod("paypal")}
+                    >
+                      <div className="flex items-center space-x-2 flex-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16">
+                          <path fill="#253B80" d="M7 7h2c1.4 0 1.9 1 1.9 1.5 0 1.8-2 1.8-2.5 1.8H7.3L7 7z"/>
+                          <path fill="#179BD7" d="M19 7.8C18.7 5.8 16.9 5 14.7 5H9.2c-.3 0-.5.2-.6.5l-1.7 11c0 .2.1.4.4.4h2.9l.7-4.7v.3c.1-.3.3-.5.6-.5h1.3c2.5 0 4.4-1 5-3.9V8c-.1-.2-.1-.2-.1-.2H19z"/>
+                          <path fill="#253B80" d="M8.3 11.5l-.3 2.1-.2 1h-3c-.2 0-.4-.2-.3-.4L6.1 5.9c.1-.3.3-.5.6-.5h5.5c1.5 0 2.6.3 3.2 1 .3.3.5.7.6 1.1.1.3.1.7.1 1.1-1-.6-2-.8-3.3-.8L8.3 11.5z"/>
+                        </svg>
+                        <span className="text-sm">PayPal</span>
+                      </div>
+                      {selectedPaymentMethod === "paypal" && <Check className="h-4 w-4 text-blue-500" />}
+                    </div>
+
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="text-xs text-blue-600 flex items-center w-full justify-center"
+                      onClick={() => setShowFinancing(true)}
+                    >
+                      <Tag className="h-3.5 w-3.5 mr-1.5" />
+                      View financing options
+                    </Button>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
+          
+          <div className="mt-2 border-t border-dashed pt-3">
+            <div className="flex justify-between text-sm mb-2">
+              <span className="text-gray-700">Subtotal:</span>
+              <span className="font-medium">${formatPrice((selectedFrequency === "subscription" ? subscriptionPrice : currentPrice) * quantity)}</span>
             </div>
-          )}
+            
+            {hasBundle && (
+              <div className="flex justify-between text-sm mb-2">
+                <span className="text-gray-700">Bundle:</span>
+                <span className="font-medium">$15.99</span>
+              </div>
+            )}
+            
+            {isExpressSelected && (
+              <div className="flex justify-between text-sm mb-2">
+                <span className="text-gray-700">Express Shipping:</span>
+                <span className="font-medium">${formatPrice(product.shipping.express)}</span>
+              </div>
+            )}
+            
+            {giftWrap && (
+              <div className="flex justify-between text-sm mb-2">
+                <span className="text-gray-700">Gift Wrapping:</span>
+                <span className="font-medium">$2.99</span>
+              </div>
+            )}
+            
+            {selectedWarranty !== "none" && warrantyOption && (
+              <div className="flex justify-between text-sm mb-2">
+                <span className="text-gray-700">{warrantyOption.name} Warranty:</span>
+                <span className="font-medium">${formatPrice(warrantyOption.price)}</span>
+              </div>
+            )}
+            
+            <div className="flex justify-between font-medium text-base mt-2 border-t border-gray-100 pt-2">
+              <span className="text-gray-800">Total:</span>
+              <span className="text-blue-700">${formatPrice(totalPrice)}</span>
+            </div>
+            
+            <div className="flex justify-end text-xs text-green-600 mt-1">
+              You save: ${formatPrice(totalSavings)} ({Math.round((totalSavings / (originalPrice * quantity)) * 100)}% off)
+            </div>
+          </div>
+          
+          <div className="flex gap-3 mt-4">
+            <Button 
+              variant="outline" 
+              className="flex-1 border-blue-300 hover:bg-blue-50 hover:text-blue-700 transition-colors"
+              onClick={addToCart}
+            >
+              <ShoppingCart className="h-4 w-4 mr-2" />
+              Add to Cart
+            </Button>
+            <ModernBuyButton className="flex-1" onClick={buyNow}>
+              Buy Now
+            </ModernBuyButton>
+          </div>
+          
+          <div className="mt-4 flex flex-col gap-2">
+            <div className="flex items-center justify-center text-xs text-gray-500">
+              <Shield className="h-3.5 w-3.5 mr-1.5 text-gray-400" />
+              <span>Secure Transaction</span>
+              <span className="mx-1.5">•</span>
+              <LifeBuoy className="h-3.5 w-3.5 mr-1.5 text-gray-400" />
+              <span>24/7 Support</span>
+              <span className="mx-1.5">•</span>
+              <ArrowDownCircle className="h-3.5 w-3.5 mr-1.5 text-gray-400" />
+              <span>Easy Returns</span>
+            </div>
+            
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="text-xs text-blue-600"
+              onClick={() => setShowQnA(true)}
+            >
+              <MessageCircle className="h-3.5 w-3.5 mr-1.5" />
+              Ask a question about this product
+            </Button>
+          </div>
+        </div>
+        
+        <div className="mt-0 mb-2 p-3 bg-white">
+          <div className="text-sm font-medium mb-2">Customer Photos</div>
+          <div className="flex gap-2 overflow-x-auto pb-2">
+            {customerPhotos.map((photo, i) => (
+              <div key={i} className="w-20 h-20 rounded-md overflow-hidden flex-shrink-0 border border-gray-200">
+                <img src={photo} alt={`Customer photo ${i+1}`} className="w-full h-full object-cover" />
+              </div>
+            ))}
+            <div className="w-20 h-20 rounded-md flex-shrink-0 border border-dashed border-gray-300 flex items-center justify-center bg-gray-50 text-gray-400">
+              <div className="flex flex-col items-center">
+                <ArrowUpRightFromCircle className="h-5 w-5" />
+                <span className="text-xs mt-1">View all</span>
+              </div>
+            </div>
+          </div>
+          
+          <div className="flex gap-2 mt-3 text-xs">
+            <Badge variant="outline" className="text-xs bg-gray-50 text-gray-600 border-gray-200 flex items-center">
+              <ThumbsUp className="h-3 w-3 mr-1.5" />
+              <span>{wishlistCount} wishlisted</span>
+            </Badge>
+            
+            <Badge variant="outline" className="text-xs bg-gray-50 text-gray-600 border-gray-200 flex items-center">
+              <TrendingUp className="h-3 w-3 mr-1.5" />
+              <span>Top 5% in category</span>
+            </Badge>
+            
+            <Badge variant="outline" className="text-xs bg-gray-50 text-gray-600 border-gray-200 flex items-center">
+              <Flame className="h-3 w-3 mr-1.5 text-red-500" />
+              <span>Hot item</span>
+            </Badge>
+          </div>
         </div>
       </div>
       
@@ -687,7 +1102,159 @@ const ProductDetail = () => {
         />
       </div>
       
-      <ModernBuyButton />
+      <Dialog open={showPriceAlert} onOpenChange={setShowPriceAlert}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Set Price Alert</DialogTitle>
+            <DialogDescription>
+              We'll notify you when the price of this item drops below the current price.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label htmlFor="email" className="text-right text-sm">
+                Email
+              </label>
+              <input
+                id="email"
+                value={emailForAlert}
+                onChange={(e) => setEmailForAlert(e.target.value)}
+                className="col-span-3 h-9 rounded-md border border-gray-300 px-3"
+                placeholder="your@email.com"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowPriceAlert(false)}>Cancel</Button>
+            <Button onClick={setPriceAlert}>Set Alert</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
+      <Dialog open={showQnA} onOpenChange={setShowQnA}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Ask a Question</DialogTitle>
+            <DialogDescription>
+              Our support team or the seller will respond to your question shortly.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <textarea
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
+              className="min-h-[100px] w-full rounded-md border border-gray-300 p-3"
+              placeholder="Type your question about this product here..."
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowQnA(false)}>Cancel</Button>
+            <Button onClick={askQuestion}>Submit Question</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
+      <Dialog open={showSizeGuide} onOpenChange={setShowSizeGuide}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Size Guide</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <div className="rounded-lg border">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b">
+                    <th className="p-2 text-left">Dimension</th>
+                    <th className="p-2 text-left">Specification</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {product.specs.map((spec, index) => (
+                    <tr key={index} className={index !== product.specs.length - 1 ? "border-b" : ""}>
+                      <td className="p-2 text-gray-700">{spec.name}</td>
+                      <td className="p-2">{spec.value}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+      
+      <Dialog open={showFinancing} onOpenChange={setShowFinancing}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Financing Options</DialogTitle>
+            <DialogDescription>
+              Pay over time with these flexible payment options.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4 space-y-4">
+            <div className="border rounded-lg p-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                      <path d="M4 5h16v14H4V5z" stroke="#0077FF" strokeWidth="2" />
+                      <path d="M8 10h8M8 14h4" stroke="#0077FF" strokeWidth="2" />
+                    </svg>
+                  </div>
+                  <div className="ml-3">
+                    <div className="text-sm font-medium">Afterpay</div>
+                    <div className="text-xs text-gray-500">4 interest-free payments</div>
+                  </div>
+                </div>
+                <div className="text-sm">
+                  <div className="font-medium">${formatPrice(totalPrice / 4)}</div>
+                  <div className="text-xs text-gray-500">every 2 weeks</div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="border rounded-lg p-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                      <path d="M12 5v14M5 12h14" stroke="#5D3FD3" strokeWidth="2" />
+                    </svg>
+                  </div>
+                  <div className="ml-3">
+                    <div className="text-sm font-medium">Klarna</div>
+                    <div className="text-xs text-gray-500">3 interest-free payments</div>
+                  </div>
+                </div>
+                <div className="text-sm">
+                  <div className="font-medium">${formatPrice(totalPrice / 3)}</div>
+                  <div className="text-xs text-gray-500">every month</div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="border rounded-lg p-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <div className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                      <circle cx="12" cy="12" r="9" stroke="#FF9900" strokeWidth="2" />
+                      <path d="M12 8v8" stroke="#FF9900" strokeWidth="2" />
+                    </svg>
+                  </div>
+                  <div className="ml-3">
+                    <div className="text-sm font-medium">Shop Pay</div>
+                    <div className="text-xs text-gray-500">6 weekly payments</div>
+                  </div>
+                </div>
+                <div className="text-sm">
+                  <div className="font-medium">${formatPrice(totalPrice / 6)}</div>
+                  <div className="text-xs text-gray-500">every week</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
