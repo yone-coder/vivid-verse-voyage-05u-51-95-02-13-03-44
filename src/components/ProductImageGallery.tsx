@@ -102,6 +102,8 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const fullscreenRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
 
+  const [openedThumbnailMenu, setOpenedThumbnailMenu] = useState<number | null>(null);
+
   useEffect(() => {
     const preloadImages = async () => {
       const preloaded = await Promise.all(
@@ -283,6 +285,20 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
       document.body.style.overflow = '';
     }
   }, [isFullscreenMode]);
+
+  const handleThumbnailMenuToggle = useCallback((index: number, isOpen: boolean) => {
+    if (isOpen) {
+      setOpenedThumbnailMenu(index);
+    } else if (openedThumbnailMenu === index) {
+      setOpenedThumbnailMenu(null);
+    }
+  }, [openedThumbnailMenu]);
+
+  const handleMenuAction = useCallback((e: React.MouseEvent, action: () => void) => {
+    e.stopPropagation(); // Prevent thumbnail click
+    e.preventDefault(); // Prevent default behavior
+    action();
+  }, []);
 
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
@@ -728,55 +744,76 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                   </HoverCardContent>
                 </HoverCard>
                 
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
+                <Popover>
+                  <PopoverTrigger asChild>
                     <Button 
                       variant="ghost" 
                       size="icon" 
                       className="h-6 w-6 rounded-full bg-white/80 hover:bg-white ml-1"
+                      onClick={(e) => e.stopPropagation()}
                     >
                       <View className="h-3 w-3 text-gray-800" />
                     </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="center" className="w-40">
-                    <DropdownMenuItem onClick={(e) => {
-                      e.stopPropagation();
-                      handleThumbnailClick(index);
-                    }}>
-                      <Eye className="h-4 w-4 mr-2" /> View
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={(e) => {
-                      e.stopPropagation();
-                      downloadImage(index);
-                    }}>
-                      <Download className="h-4 w-4 mr-2" /> Download
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={(e) => {
-                      e.stopPropagation();
-                      copyImageUrl(index);
-                    }}>
-                      {copiedIndex === index ? (
-                        <Check className="h-4 w-4 mr-2 text-green-600" />
-                      ) : (
-                        <Copy className="h-4 w-4 mr-2" />
-                      )}
-                      {copiedIndex === index ? "Copied!" : "Copy URL"}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={(e) => {
-                      e.stopPropagation();
-                      toggleFullscreen();
-                      handleThumbnailClick(index);
-                    }}>
-                      <ZoomIn className="h-4 w-4 mr-2" /> Fullscreen
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={(e) => {
-                      e.stopPropagation();
-                      shareImage(index);
-                    }}>
-                      <Share2 className="h-4 w-4 mr-2" /> Share
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                  </PopoverTrigger>
+                  <PopoverContent 
+                    className="w-40 p-1" 
+                    align="center" 
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className="flex flex-col gap-0.5 py-1">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="justify-start text-sm h-8 px-2 w-full"
+                        onClick={(e) => handleMenuAction(e, () => handleThumbnailClick(index))}
+                      >
+                        <Eye className="h-4 w-4 mr-2" /> View
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="justify-start text-sm h-8 px-2 w-full"
+                        onClick={(e) => handleMenuAction(e, () => downloadImage(index))}
+                      >
+                        <Download className="h-4 w-4 mr-2" /> Download
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="justify-start text-sm h-8 px-2 w-full"
+                        onClick={(e) => handleMenuAction(e, () => copyImageUrl(index))}
+                      >
+                        {copiedIndex === index ? (
+                          <Check className="h-4 w-4 mr-2 text-green-600" />
+                        ) : (
+                          <Copy className="h-4 w-4 mr-2" />
+                        )}
+                        {copiedIndex === index ? "Copied!" : "Copy URL"}
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="justify-start text-sm h-8 px-2 w-full"
+                        onClick={(e) => {
+                          handleMenuAction(e, () => {
+                            toggleFullscreen();
+                            handleThumbnailClick(index);
+                          });
+                        }}
+                      >
+                        <ZoomIn className="h-4 w-4 mr-2" /> Fullscreen
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="justify-start text-sm h-8 px-2 w-full"
+                        onClick={(e) => handleMenuAction(e, () => shareImage(index))}
+                      >
+                        <Share2 className="h-4 w-4 mr-2" /> Share
+                      </Button>
+                    </div>
+                  </PopoverContent>
+                </Popover>
               </div>
             )}
             
