@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Carousel,
@@ -196,17 +197,17 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
           </CarouselContent>
           
           <div className="absolute bottom-4 left-0 right-0 flex items-center justify-between px-4">
-            <div className="bg-black/50 backdrop-blur-sm text-white px-2 py-1.5 rounded-lg text-xs">
+            <div className="bg-black/50 backdrop-blur-sm text-white px-2 py-1.5 rounded-lg text-xs w-16 flex items-center justify-center">
               {currentIndex + 1}/{images.length}
             </div>
             
-            <div className="flex items-center gap-2">
+            <div className="flex items-center space-x-3">
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <button
                       onClick={handleRotate}
-                      className="bg-black/50 backdrop-blur-sm p-1.5 rounded-lg text-white hover:bg-black/60 transition-colors"
+                      className="bg-black/50 backdrop-blur-sm p-1.5 rounded-lg text-white hover:bg-black/60 transition-colors w-8 h-8 flex items-center justify-center"
                       aria-label="Rotate image"
                     >
                       <RotateCw size={16} />
@@ -219,7 +220,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                   <TooltipTrigger asChild>
                     <button
                       onClick={handleFlip}
-                      className="bg-black/50 backdrop-blur-sm p-1.5 rounded-lg text-white hover:bg-black/60 transition-colors"
+                      className="bg-black/50 backdrop-blur-sm p-1.5 rounded-lg text-white hover:bg-black/60 transition-colors w-8 h-8 flex items-center justify-center"
                       aria-label="Flip image"
                     >
                       <FlipHorizontal size={16} />
@@ -233,7 +234,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                     <button
                       onClick={toggleFavorite}
                       className={cn(
-                        "bg-black/50 backdrop-blur-sm p-1.5 rounded-lg text-white hover:bg-black/60 transition-colors",
+                        "bg-black/50 backdrop-blur-sm p-1.5 rounded-lg text-white hover:bg-black/60 transition-colors w-8 h-8 flex items-center justify-center",
                         isFavorite && "text-red-500"
                       )}
                       aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
@@ -249,7 +250,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                     <button
                       onClick={toggleAutoScroll}
                       className={cn(
-                        "bg-black/50 backdrop-blur-sm p-1.5 rounded-lg text-white hover:bg-black/60 transition-colors",
+                        "bg-black/50 backdrop-blur-sm p-1.5 rounded-lg text-white hover:bg-black/60 transition-colors w-8 h-8 flex items-center justify-center",
                         autoScrollEnabled && "text-green-500"
                       )}
                       aria-label={autoScrollEnabled ? "Disable auto-scroll" : "Enable auto-scroll"}
@@ -262,17 +263,17 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
               </TooltipProvider>
             </div>
             
-            <div className="flex items-center gap-2">
+            <div className="flex items-center space-x-3">
               <button 
                 onClick={handlePrevious}
-                className="bg-black/50 backdrop-blur-sm p-1.5 rounded-lg text-white hover:bg-black/60 transition-colors"
+                className="bg-black/50 backdrop-blur-sm p-1.5 rounded-lg text-white hover:bg-black/60 transition-colors w-8 h-8 flex items-center justify-center"
                 aria-label="Previous image"
               >
                 <ChevronLeft size={16} />
               </button>
               <button 
                 onClick={handleNext}
-                className="bg-black/50 backdrop-blur-sm p-1.5 rounded-lg text-white hover:bg-black/60 transition-colors"
+                className="bg-black/50 backdrop-blur-sm p-1.5 rounded-lg text-white hover:bg-black/60 transition-colors w-8 h-8 flex items-center justify-center"
                 aria-label="Next image"
               >
                 <ChevronRight size={16} />
