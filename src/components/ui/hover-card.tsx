@@ -25,4 +25,20 @@ const HoverCardContent = React.forwardRef<
 ))
 HoverCardContent.displayName = HoverCardPrimitive.Content.displayName
 
-export { HoverCard, HoverCardTrigger, HoverCardContent }
+// Export with a custom duration option for advanced use cases
+const HoverCardWithDuration = ({ 
+  children, 
+  openDelay = 700, 
+  closeDelay = 300,
+  ...props 
+}: { 
+  children: React.ReactNode;
+  openDelay?: number;
+  closeDelay?: number;
+} & React.ComponentPropsWithoutRef<typeof HoverCardPrimitive.Root>) => (
+  <HoverCard openDelay={openDelay} closeDelay={closeDelay} {...props}>
+    {children}
+  </HoverCard>
+)
+
+export { HoverCard, HoverCardTrigger, HoverCardContent, HoverCardWithDuration }
