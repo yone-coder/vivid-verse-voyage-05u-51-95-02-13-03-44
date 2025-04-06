@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { ArrowLeft, Share, Heart, MessageCircle, Truck, Shield, Award, Percent, ThumbsUp, Zap, Star, Sparkles, ArrowRight, Crown, Clock, Gift, Check, Info, CreditCard, AlertCircle, Bookmark, Box, Tag, Download, Users, Rocket } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -282,31 +281,31 @@ const ProductDetail = () => {
     <div className="flex flex-col min-h-screen bg-gray-50">
       {/* LivePurchaseBanner component removed from here */}
       
-      <div ref={headerRef} className="relative w-full">
+      <div ref={headerRef} className="relative w-full max-h-[35vh] overflow-hidden">
         <ProductImageGallery images={product.images} />
         
-        <div className="absolute top-4 left-4 right-4 flex justify-between z-10">
+        <div className="absolute top-2 left-2 right-2 flex justify-between z-10">
           <Link to="/">
-            <Button variant="outline" size="icon" className="rounded-full bg-white/70 backdrop-blur-sm hover:bg-white/90">
-              <ArrowLeft className="h-5 w-5" />
+            <Button variant="outline" size="sm" className="rounded-full bg-white/70 backdrop-blur-sm hover:bg-white/90">
+              <ArrowLeft className="h-4 w-4" />
             </Button>
           </Link>
-          <div className="flex gap-2">
+          <div className="flex gap-1">
             <Button 
               variant="outline" 
-              size="icon" 
+              size="sm" 
               className="rounded-full bg-white/70 backdrop-blur-sm hover:bg-white/90"
               onClick={toggleFavorite}
             >
-              <Heart className={`h-5 w-5 ${isFavorite ? "fill-red-500 text-red-500" : ""}`} />
+              <Heart className={`h-4 w-4 ${isFavorite ? "fill-red-500 text-red-500" : ""}`} />
             </Button>
             <Button 
               variant="outline" 
-              size="icon" 
+              size="sm" 
               className="rounded-full bg-white/70 backdrop-blur-sm hover:bg-white/90"
               onClick={handleShare}
             >
-              <Share className="h-5 w-5" />
+              <Share className="h-4 w-4" />
             </Button>
           </div>
         </div>
@@ -314,43 +313,43 @@ const ProductDetail = () => {
 
       {isScrolled && (
         <div className="fixed top-0 left-0 right-0 bg-white z-30 shadow-sm">
-          <div className="flex items-center h-14 px-4">
+          <div className="flex items-center h-10 px-3">
             <Link to="/" className="mr-auto">
-              <Button variant="ghost" size="icon" className="rounded-full">
-                <ArrowLeft className="h-5 w-5" />
+              <Button variant="ghost" size="sm" className="rounded-full h-8 w-8 p-0">
+                <ArrowLeft className="h-4 w-4" />
               </Button>
             </Link>
-            <div className="mr-auto ml-2 font-medium truncate max-w-[200px]">
+            <div className="mr-auto ml-1 font-medium truncate max-w-[200px] text-sm">
               {product.name}
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-1">
               <Button 
                 variant="ghost" 
-                size="icon" 
-                className="rounded-full"
+                size="sm" 
+                className="rounded-full h-8 w-8 p-0"
                 onClick={toggleFavorite}
               >
-                <Heart className={`h-5 w-5 ${isFavorite ? "fill-red-500 text-red-500" : ""}`} />
+                <Heart className={`h-4 w-4 ${isFavorite ? "fill-red-500 text-red-500" : ""}`} />
               </Button>
               <Button 
                 variant="ghost" 
-                size="icon" 
-                className="rounded-full"
+                size="sm" 
+                className="rounded-full h-8 w-8 p-0"
                 onClick={handleShare}
               >
-                <Share className="h-5 w-5" />
+                <Share className="h-4 w-4" />
               </Button>
             </div>
           </div>
         </div>
       )}
       
-      <div className={`flex-1 ${isScrolled ? 'pt-14' : ''}`}>
-        <div className="bg-white p-4 mb-2">
-          <div className="flex items-center mb-1">
+      <div className={`flex-1 ${isScrolled ? 'pt-10' : ''}`}>
+        <div className="bg-white p-3 mb-1">
+          <div className="flex items-center mb-0.5">
             <Badge variant="outline" className="text-xs bg-red-50 text-red-500 border-red-200">Flash Deal</Badge>
-            <Badge variant="outline" className="text-xs bg-orange-50 text-orange-500 border-orange-200 ml-2">Top Seller</Badge>
-            <Badge variant="outline" className="text-xs bg-green-50 text-green-500 border-green-200 ml-2">Free Shipping</Badge>
+            <Badge variant="outline" className="text-xs bg-orange-50 text-orange-500 border-orange-200 ml-1">Top Seller</Badge>
+            <Badge variant="outline" className="text-xs bg-green-50 text-green-500 border-green-200 ml-1">Free Shipping</Badge>
           </div>
           
           <div className="flex items-baseline">
@@ -361,9 +360,9 @@ const ProductDetail = () => {
             </span>
           </div>
           
-          <h1 className="text-lg font-medium mt-2">{product.name}</h1>
+          <h1 className="text-lg font-medium mt-1">{product.name}</h1>
           
-          <div className="flex items-center mt-2 text-sm">
+          <div className="flex items-center mt-1 text-sm">
             <div className="flex text-amber-400">
               {'★'.repeat(Math.floor(product.rating))}
               {product.rating % 1 !== 0 && '☆'}
@@ -679,7 +678,7 @@ const ProductDetail = () => {
         </div>
       </div>
       
-      <div className="mb-44" ref={tabsRef}>
+      <div className="mb-40" ref={tabsRef}>
         <ProductTabs 
           product={product} 
           activeTab={activeTab} 
