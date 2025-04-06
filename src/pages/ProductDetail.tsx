@@ -279,8 +279,6 @@ const ProductDetail = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
-      {/* LivePurchaseBanner component removed from here */}
-      
       <div ref={headerRef} className="relative w-full max-h-[35vh] overflow-hidden">
         <ProductImageGallery images={product.images} />
         
@@ -678,7 +676,7 @@ const ProductDetail = () => {
         </div>
       </div>
       
-      <div className="mb-40" ref={tabsRef}>
+      <div className="mt-1" ref={tabsRef}>
         <ProductTabs 
           product={product} 
           activeTab={activeTab} 
