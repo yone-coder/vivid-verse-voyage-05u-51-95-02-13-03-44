@@ -199,7 +199,7 @@ const ModernBuyButton = ({ productId }: { productId?: string }) => {
         
         for (let i = 0; i < 15; i++) {
           addConfettiEffect(Math.random() * 300, 100, 
-            ['#FF6B6B', '#FFD166', '#06D6A0', '#118AB2'][Math.floor(Math.random() * 4)], 
+            ['#FFD700', '#FF6B6B', '#4CAF50', '#2196F3'][Math.floor(Math.random() * 4)], 
             Math.random() * 360, 
             Math.random() * 2 + 1);
         }
@@ -737,4 +737,420 @@ const ModernBuyButton = ({ productId }: { productId?: string }) => {
             height: `${Math.random() * 10 + 5}px`,
             backgroundColor: confetti.color,
             borderRadius: Math.random() > 0.5 ? '50%' : '0%',
-            opacity:
+            opacity: 0.7,
+            transform: `rotate(${confetti.angle}deg)`,
+            animation: `fall-confetti ${confetti.speed}s linear forwards`
+          }}
+        />
+      ))}
+
+      {particleEffects.map((particle, i) => (
+        <div 
+          key={i}
+          className="absolute pointer-events-none z-20"
+          style={{
+            left: `${particle.x}px`,
+            top: `${particle.y}px`,
+            width: `${particle.size}px`,
+            height: `${particle.size}px`,
+            backgroundColor: particle.color,
+            borderRadius: '50%',
+            opacity: 0.8,
+            filter: 'blur(1px)',
+            animation: `particle-float ${particle.duration}s ease-out forwards`
+          }}
+        />
+      ))}
+
+      {bubbleEffects.map((bubble, i) => (
+        <div 
+          key={i}
+          className="absolute pointer-events-none z-20"
+          style={{
+            left: `${bubble.x}px`,
+            bottom: `${bubble.y}px`,
+            width: `${bubble.size}px`,
+            height: `${bubble.size}px`,
+            border: '1px solid rgba(255, 255, 255, 0.8)',
+            borderRadius: '50%',
+            opacity: 0.6,
+            background: 'radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2))',
+            animation: `float-bubble ${bubble.duration}s ease-out forwards`
+          }}
+        />
+      ))}
+
+      {floatingHearts.map((heart) => (
+        <div 
+          key={heart.id}
+          className="absolute pointer-events-none z-20 text-red-500"
+          style={{
+            right: '20px',
+            bottom: '100px',
+            transform: `translateX(${heart.x}px)`,
+            animation: 'float-heart 1.5s ease-out forwards'
+          }}
+        >
+          <Heart 
+            size={16} 
+            fill="currentColor" 
+            style={{
+              animation: 'heart-pulse 0.5s ease-out infinite alternate'
+            }}
+          />
+        </div>
+      ))}
+
+      <div 
+        className={`bg-white border-t shadow-lg p-3 ${bounceButton ? 'animate-bounce-once' : ''} ${rainbowBorder ? 'rainbow-border' : ''}`}
+        style={{
+          transform: `${jitterEffect ? 'translate(-1px, 1px)' : ''}`,
+          filter: colorCycle ? `hue-rotate(${hueRotate}deg)` : 'none',
+          transition: 'transform 0.1s, filter 0.5s'
+        }}
+        onMouseMove={handleMouseMove}
+      >
+        <div className="flex justify-between items-center mb-2">
+          <div>
+            <div className="text-xs text-gray-500 flex items-center">
+              <Clock className={`h-3 w-3 mr-1 ${rotateIcons ? 'animate-spin-slow' : ''}`} /> 
+              Flash sale ends in: 
+              <span className={`ml-1 font-mono ${highlightStock ? 'text-red-500' : ''}`}>
+                {formatTime(timeLeft.minutes)}:{formatTime(timeLeft.seconds)}
+                <span className="text-xs opacity-70">.{formatMilliseconds(timeLeft.milliseconds)}</span>
+              </span>
+            </div>
+          
+            <div 
+              className={`flex items-baseline mt-0.5 ${animatePrice ? 'animate-bounce-price' : ''}`}
+              style={{
+                transform: `${pulse3D ? 'perspective(200px) translateZ(10px)' : ''}`,
+                transition: 'transform 0.3s'
+              }}
+            >
+              <span className="text-lg font-bold text-red-600">
+                ${currentPrice}
+              </span>
+              <span className="ml-1 text-xs line-through text-gray-500">${(parseFloat(currentPrice) * 1.4).toFixed(2)}</span>
+              <span 
+                className={`ml-1 text-xs px-1 bg-red-100 text-red-600 rounded ${pulseDiscount ? 'animate-pulse' : ''}`}
+              >
+                {discountPercentage}% OFF
+              </span>
+            </div>
+          </div>
+          
+          <div 
+            className={`flex items-center rounded-full px-2 py-0.5 bg-gray-100 ${stockProgressAnimation ? 'animate-pulse' : ''}`}
+            style={{
+              transform: `${swingEffect ? 'rotate(-2deg)' : ''}`,
+              transition: 'transform 0.3s ease-in-out'
+            }}
+          >
+            <ShieldCheck className="h-3 w-3 text-green-600 mr-1" />
+            <span className={`text-xs ${highlightStock ? 'text-red-600 font-bold' : 'text-gray-700'}`}>
+              {stockRemaining} left
+            </span>
+          </div>
+        </div>
+        
+        <div className="mb-3">
+          <Progress 
+            value={stockPercentage} 
+            className={`h-1.5 ${stockProgressAnimation ? 'animate-pulse' : ''}`}
+            style={{
+              transform: `${waveEffect ? 'scaleY(1.5)' : ''}`,
+              transition: 'transform 0.2s'
+            }}
+          />
+        </div>
+        
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex space-x-1">
+            {variants.map(variant => (
+              <div
+                key={variant}
+                className={`w-7 h-7 rounded-full cursor-pointer flex items-center justify-center border-2 transition-transform
+                ${selectedVariant === variant 
+                  ? 'border-blue-500 scale-110' 
+                  : 'border-gray-200'} 
+                ${variantChangeAnimation && selectedVariant === variant ? 'animate-pop' : ''}
+                ${variantColors[variant as keyof typeof variantColors]}
+                `}
+                onClick={() => handleVariantChange(variant)}
+                style={{
+                  transform: `${flipEffect && selectedVariant === variant ? 'rotateY(180deg)' : ''}`,
+                  transition: 'transform 0.3s'
+                }}
+              >
+                {selectedVariant === variant && (
+                  <Check className="h-4 w-4 text-white" />
+                )}
+              </div>
+            ))}
+          </div>
+          
+          <div className="flex items-center border rounded-full overflow-hidden">
+            <button 
+              onClick={decrementQuantity} 
+              className="px-2 py-0.5 bg-gray-100 hover:bg-gray-200 border-r"
+              style={{
+                transform: `${compressEffect ? 'scale(0.95)' : ''}`,
+                transition: 'transform 0.2s'
+              }}
+            >
+              <Minus size={14} />
+            </button>
+            <div 
+              className={`w-8 text-center ${wiggleQuantity ? 'animate-wiggle' : ''}`}
+              style={{
+                transform: `${popEffect ? 'scale(1.2)' : ''}`,
+                transition: 'transform 0.15s'
+              }}
+            >
+              {quantity}
+            </div>
+            <button 
+              onClick={incrementQuantity} 
+              className="px-2 py-0.5 bg-gray-100 hover:bg-gray-200 border-l"
+              style={{
+                transform: `${popEffect ? 'scale(1.1)' : ''}`,
+                transition: 'transform 0.15s'
+              }}
+            >
+              <Plus size={14} />
+            </button>
+          </div>
+        </div>
+        
+        <div className="flex space-x-2 mb-3">
+          <button
+            onClick={handleBuyNow}
+            className={`flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-2 rounded-md flex items-center justify-center transition-transform ${showAddedAnimation ? 'animate-scale-bounce' : ''} ${shakeButton ? 'animate-shake' : ''}`}
+            style={{
+              boxShadow: glowEffect ? '0 0 20px rgba(239, 68, 68, 0.6)' : 'none',
+              transform: `${danceEffect ? 'translateY(-2px)' : ''} ${twistEffect ? 'rotate(2deg)' : ''}`,
+              transition: 'transform 0.3s, box-shadow 0.3s'
+            }}
+            onMouseEnter={() => setIsHovering(true)}
+            onMouseLeave={() => setIsHovering(false)}
+          >
+            <ShoppingCart className={`h-4 w-4 mr-1 ${showAddedAnimation ? 'animate-wiggle-cart' : ''}`} />
+            <span>Add to Cart</span>
+            {itemsInCart > 0 && (
+              <div className="ml-1 text-xs bg-white text-red-600 rounded-full w-4 h-4 flex items-center justify-center">
+                {itemsInCart}
+              </div>
+            )}
+          </button>
+          
+          <button
+            onClick={handleInstantBuy}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md flex items-center justify-center transition-all"
+            style={{
+              transform: `${bounceButton ? 'scale(1.05)' : ''}`,
+              transition: 'transform 0.15s'
+            }}
+          >
+            <Zap className={`h-4 w-4 ${sparkleEffect ? 'animate-pulse' : ''}`} />
+          </button>
+          
+          <button
+            onClick={toggleHeart}
+            className={`border px-3 py-2 rounded-md flex items-center justify-center transition-colors ${isHearted ? 'border-red-200 bg-red-50' : 'border-gray-200 hover:bg-gray-50'}`}
+            style={{
+              transform: `${buttonHover ? 'scale(1.1)' : ''} ${pulse3D ? 'perspective(200px) translateZ(10px)' : ''}`,
+              transition: 'transform 0.15s'
+            }}
+          >
+            <Heart className={`h-4 w-4 ${isHearted ? 'text-red-500 fill-red-500' : 'text-gray-500'}`} />
+          </button>
+          
+          <button
+            onClick={shareProduct}
+            className="border border-gray-200 hover:bg-gray-50 px-3 py-2 rounded-md flex items-center justify-center transition-colors"
+          >
+            <Share2 
+              className="h-4 w-4 text-gray-500" 
+              style={{
+                transform: `${rotateIcons ? 'rotate(180deg)' : 'rotate(0deg)'}`,
+                transition: 'transform 0.3s ease-in-out'
+              }} 
+            />
+          </button>
+        </div>
+        
+        <div 
+          className="grid grid-cols-5 gap-1" 
+          style={{
+            transform: `${rotateIcons ? 'translateY(-2px)' : 'translateY(0)'}`,
+            transition: 'transform 0.2s'
+          }}
+        >
+          {features.map((feature, index) => (
+            <div 
+              key={index}
+              className={`flex flex-col items-center justify-center p-1 rounded ${activeFeature === index ? 'bg-blue-50' : 'bg-gray-50'}`}
+              style={{
+                transform: `${activeFeature === index ? 'scale(1.05)' : 'scale(1)'}`,
+                transition: 'transform 0.3s, background-color 0.3s'
+              }}
+            >
+              <div 
+                className={`h-5 w-5 rounded-full flex items-center justify-center ${activeFeature === index ? 'bg-blue-100 text-blue-600' : 'bg-gray-200 text-gray-600'}`}
+                style={{
+                  transform: `${rotateIcons && activeFeature === index ? 'rotate(360deg)' : 'rotate(0deg)'}`,
+                  transition: 'transform 0.5s, background-color 0.3s, color 0.3s'
+                }}
+              >
+                {feature.icon}
+              </div>
+              <div className="text-[10px] text-center mt-0.5 text-gray-600">{feature.text}</div>
+            </div>
+          ))}
+        </div>
+
+        <style jsx>{`
+          @keyframes float-heart {
+            0% { transform: translateY(0) translateX(0); opacity: 1; }
+            100% { transform: translateY(-80px) translateX(0); opacity: 0; }
+          }
+          
+          @keyframes heart-pulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.3); }
+          }
+          
+          @keyframes fall-confetti {
+            0% { transform: translateY(0) rotate(0); opacity: 0.7; }
+            100% { transform: translateY(-100px) rotate(720deg); opacity: 0; }
+          }
+          
+          @keyframes particle-float {
+            0% { transform: translateY(0) scale(1); opacity: 0.8; }
+            100% { transform: translateY(-50px) scale(0); opacity: 0; }
+          }
+          
+          @keyframes float-bubble {
+            0% { transform: translateY(0) translateX(0) scale(1); opacity: 0.6; }
+            100% { transform: translateY(-100px) translateX(${Math.random() * 40 - 20}px) scale(1.5); opacity: 0; }
+          }
+          
+          @keyframes bounce-once {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+          }
+          
+          @keyframes wiggle-cart {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-3px); }
+            75% { transform: translateX(3px); }
+          }
+          
+          @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-2px); }
+            40% { transform: translateX(2px); }
+            60% { transform: translateX(-1px); }
+            80% { transform: translateX(1px); }
+          }
+          
+          @keyframes bounce-price {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-2px); }
+          }
+          
+          @keyframes wiggle {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-2px); }
+            75% { transform: translateX(2px); }
+          }
+          
+          @keyframes scale-bounce {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+          }
+          
+          @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1.1); }
+          }
+          
+          @keyframes fade-out {
+            0% { opacity: 0.5; }
+            100% { opacity: 0; }
+          }
+          
+          @keyframes twinkle {
+            0% { opacity: 0.3; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1.2); }
+          }
+          
+          @keyframes spin-slow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+          
+          .rainbow-border {
+            border-image: linear-gradient(45deg, #ff0000, #ff9a00, #d0de21, #4fdc4a, #3fdad8, #2fc9e2, #1c7fee, #5f15f2, #ba0cf8, #fb07d9) 1;
+            animation: border-animation 2s linear infinite;
+          }
+          
+          @keyframes border-animation {
+            0% { border-image: linear-gradient(45deg, #ff0000, #ff9a00, #d0de21, #4fdc4a, #3fdad8, #2fc9e2, #1c7fee, #5f15f2, #ba0cf8, #fb07d9) 1; }
+            20% { border-image: linear-gradient(45deg, #fb07d9, #ff0000, #ff9a00, #d0de21, #4fdc4a, #3fdad8, #2fc9e2, #1c7fee, #5f15f2, #ba0cf8) 1; }
+            40% { border-image: linear-gradient(45deg, #ba0cf8, #fb07d9, #ff0000, #ff9a00, #d0de21, #4fdc4a, #3fdad8, #2fc9e2, #1c7fee, #5f15f2) 1; }
+            60% { border-image: linear-gradient(45deg, #5f15f2, #ba0cf8, #fb07d9, #ff0000, #ff9a00, #d0de21, #4fdc4a, #3fdad8, #2fc9e2, #1c7fee) 1; }
+            80% { border-image: linear-gradient(45deg, #1c7fee, #5f15f2, #ba0cf8, #fb07d9, #ff0000, #ff9a00, #d0de21, #4fdc4a, #3fdad8, #2fc9e2) 1; }
+            100% { border-image: linear-gradient(45deg, #ff0000, #ff9a00, #d0de21, #4fdc4a, #3fdad8, #2fc9e2, #1c7fee, #5f15f2, #ba0cf8, #fb07d9) 1; }
+          }
+          
+          .slide-left {
+            animation: slide-in-left 0.5s ease-out;
+          }
+          
+          @keyframes slide-in-left {
+            0% { transform: translateX(-20px); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+          }
+          
+          .slide-right {
+            animation: slide-in-right 0.5s ease-out;
+          }
+          
+          @keyframes slide-in-right {
+            0% { transform: translateX(20px); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+          }
+          
+          .slide-top {
+            animation: slide-in-top 0.5s ease-out;
+          }
+          
+          @keyframes slide-in-top {
+            0% { transform: translateY(-20px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+          }
+          
+          .slide-bottom {
+            animation: slide-in-bottom 0.5s ease-out;
+          }
+          
+          @keyframes slide-in-bottom {
+            0% { transform: translateY(20px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+          }
+          
+          @keyframes slideDown {
+            0% { transform: translateY(-20px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+          }
+        `}</style>
+      </div>
+    </div>
+  );
+};
+
+export default ModernBuyButton;
