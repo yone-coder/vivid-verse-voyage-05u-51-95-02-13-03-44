@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Star, ThumbsUp, MessageSquare, HelpCircle } from "lucide-react";
+import { Star } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 
 interface ProductRatingsProps {
@@ -73,26 +73,19 @@ const ProductRatings: React.FC<ProductRatingsProps> = ({
         <div className="flex flex-wrap gap-3 mt-4 text-sm text-gray-600">
           {verifiedPurchases && (
             <div className="flex items-center">
-              <ThumbsUp className="w-4 h-4 mr-1.5 text-green-500" />
+              <Star className="w-4 h-4 mr-1.5 text-green-500" fill="#10B981" />
               <span>{verifiedPurchases} verified purchases</span>
             </div>
           )}
           
           {helpfulVotes && (
             <div className="flex items-center">
-              <MessageSquare className="w-4 h-4 mr-1.5 text-blue-500" />
+              <Star className="w-4 h-4 mr-1.5 text-blue-500" fill="#3B82F6" />
               <span>{helpfulVotes} helpful votes</span>
             </div>
           )}
         </div>
       )}
-      
-      <div className="mt-4 text-center">
-        <button className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center mx-auto">
-          <HelpCircle className="w-4 h-4 mr-1" />
-          Have questions about this product?
-        </button>
-      </div>
     </div>
   );
 };

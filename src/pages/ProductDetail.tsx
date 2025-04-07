@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -282,6 +281,15 @@ const ProductDetail = () => {
   
   const currentStock = currentVariant ? currentVariant.stock : 0;
   
+  // Sample ratings distribution for the ProductRatings component
+  const ratingsDistribution = {
+    5: 1852,
+    4: 453,
+    3: 127,
+    2: 64,
+    1: 47
+  };
+  
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <div ref={headerRef} className="relative w-full bg-white">
@@ -340,11 +348,11 @@ const ProductDetail = () => {
           <h1 className="text-lg font-medium mt-1">{product.name}</h1>
           
           <ProductRatings 
-            rating={product.rating}
-            reviewCount={product.reviewCount}
-            soldCount={product.sold}
-            comparisonMode={comparisonMode}
-            toggleComparisonMode={toggleComparisonMode}
+            averageRating={product.rating}
+            totalReviews={product.reviewCount}
+            ratingsDistribution={ratingsDistribution}
+            verifiedPurchases={1523}
+            helpfulVotes={782}
           />
 
           <div className="mt-4">
