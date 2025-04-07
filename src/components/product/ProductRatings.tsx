@@ -1,5 +1,6 @@
 
 import React from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -14,15 +15,13 @@ interface ProductRatingsProps {
   reviewCount: number;
   soldCount: number;
   productId?: string;
-  onSalesTabClick?: () => void;
 }
 
 const ProductRatings: React.FC<ProductRatingsProps> = ({
   rating,
   reviewCount,
   soldCount,
-  productId = "nebula-pro-2025",
-  onSalesTabClick
+  productId = "nebula-pro-2025"
 }) => {
   const formatNumber = (num: number): string => {
     if (!num && num !== 0) return "0"; // Handle undefined/null values
@@ -106,14 +105,10 @@ const ProductRatings: React.FC<ProductRatingsProps> = ({
         
         <span className="mx-2 text-gray-300">|</span>
         
-        <Button 
-          variant="link" 
-          className="flex items-center text-sm text-gray-500 hover:text-gray-700 p-0 h-5"
-          onClick={onSalesTabClick}
-        >
+        <Link to={`/product/${productId}/sales`} className="flex items-center text-sm text-gray-500 hover:text-gray-700">
           <span>{formatNumber(soldCount)}+ Sold</span>
           <ExternalLink className="ml-1 h-3 w-3" />
-        </Button>
+        </Link>
       </div>
     </div>
   );
