@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { ArrowLeft, Share, Heart, MessageCircle, Truck, Shield, Award, Percent, ThumbsUp, Zap, Star, Sparkles, ArrowRight, Crown, Clock, Gift, Check, Info, CreditCard, AlertCircle, Bookmark, Box, Tag, Download, Users, Rocket, Copy, Scissors, BadgePercent, TicketPercent, BookmarkPlus, BellRing, ShieldCheck, CircleDollarSign, ChevronDown, Search, X } from "lucide-react";
+import { ArrowLeft, Share, Heart, MessageCircle, Truck, Shield, Award, Percent, ThumbsUp, Zap, Star, Sparkles, ArrowRight, Crown, Clock, Gift, Check, Info, CreditCard, AlertCircle, Bookmark, Box, Tag, Download, Users, Rocket, Copy, Scissors, BadgePercent, TicketPercent, BookmarkPlus, BellRing, ShieldCheck, CircleDollarSign, ChevronDown, Search, X, Fire, TrendingUp, Eye, BarChart2, Headphones, Camera, Video, UserPlus, Settings, AlertCircle as AlertCircleIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,6 +19,7 @@ import ModernBuyButton from "@/components/ModernBuyButton";
 import { HoverCard, HoverCardContent, HoverCardTrigger, HoverCardWithDuration } from "@/components/ui/hover-card";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Card } from "@/components/ui/card";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 const ProductDetail = () => {
   const [activeTab, setActiveTab] = useState("description");
@@ -41,6 +42,10 @@ const ProductDetail = () => {
   const [isNotifyActive, setIsNotifyActive] = useState(false);
   const [showPriceHistory, setShowPriceHistory] = useState(false);
   const [earlyAccessActivated, setEarlyAccessActivated] = useState(false);
+  const [showTrendingIndicator, setShowTrendingIndicator] = useState(true);
+  const [activeViewers, setActiveViewers] = useState(32);
+  const [quickViewMode, setQuickViewMode] = useState<'overview'|'specs'|'reviews'>('overview');
+  const [showAugmentedView, setShowAugmentedView] = useState(false);
   const headerRef = useRef<HTMLDivElement>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
@@ -191,6 +196,17 @@ const ProductDetail = () => {
     }, 1000);
     
     return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveViewers(prev => {
+        const change = Math.floor(Math.random() * 5) - 2; // -2 to +2
+        return Math.max(15, Math.min(50, prev + change));
+      });
+    }, 5000);
+    
+    return () => clearInterval(interval);
   }, []);
 
   const handleShare = () => {
@@ -395,21 +411,137 @@ const ProductDetail = () => {
       
       <div className={`flex-1 ${isScrolled ? 'pt-10' : ''}`}>
         <div className="bg-white p-3 mb-0">
-          <div className="flex items-center mb-0.5">
-            <Badge variant="outline" className="text-xs bg-red-50 text-red-500 border-red-200">Flash Deal</Badge>
-            <Badge variant="outline" className="text-xs bg-orange-50 text-orange-500 border-orange-200 ml-1">Top Seller</Badge>
-            <Badge variant="outline" className="text-xs bg-green-50 text-green-500 border-green-200 ml-1">Free Shipping</Badge>
+          <div className="flex items-center mb-0.5 flex-wrap gap-1">
+            <Badge variant="outline" className="text-xs bg-red-50 text-red-500 border-red-200 flex items-center gap-1">
+              <Fire className="h-3 w-3" /> Flash Deal
+            </Badge>
+            <Badge variant="outline" className="text-xs bg-orange-50 text-orange-500 border-orange-200 flex items-center gap-1">
+              <TrendingUp className="h-3 w-3" /> Top Seller
+            </Badge>
+            <Badge variant="outline" className="text-xs bg-green-50 text-green-500 border-green-200 flex items-center gap-1">
+              <Truck className="h-3 w-3" /> Free Shipping
+            </Badge>
+            <Badge variant="outline" className="text-xs bg-blue-50 text-blue-500 border-blue-200 flex items-center gap-1">
+              <ShieldCheck className="h-3 w-3" /> Verified
+            </Badge>
+            
+            <div className="ml-auto flex items-center">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="ghost" size="sm" className="h-6 w-6 p-0 rounded-full">
+                    <Eye className="h-3.5 w-3.5 text-gray-500" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-2 text-xs" side="top">
+                  <div className="flex items-center space-x-1">
+                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                    <span>{activeViewers} people viewing now</span>
+                  </div>
+                </PopoverContent>
+              </Popover>
+              
+              <HoverCardWithDuration openDelay={300} closeDelay={100}>
+                <HoverCardTrigger asChild>
+                  <Button variant="ghost" size="sm" className="h-6 w-6 p-0 rounded-full">
+                    <BarChart2 className="h-3.5 w-3.5 text-gray-500" />
+                  </Button>
+                </HoverCardTrigger>
+                <HoverCardContent className="w-auto p-3">
+                  <div className="space-y-1.5">
+                    <div className="font-medium text-xs">Sales Performance</div>
+                    <div className="flex items-center justify-between text-xs">
+                      <span>Daily</span>
+                      <span className="font-semibold text-green-600">+24%</span>
+                    </div>
+                    <Progress value={76} className="h-1" />
+                    <div className="flex items-center justify-between text-xs">
+                      <span>Weekly</span>
+                      <span className="font-semibold text-green-600">+47%</span>
+                    </div>
+                    <Progress value={92} className="h-1" />
+                  </div>
+                </HoverCardContent>
+              </HoverCardWithDuration>
+            </div>
           </div>
           
-          <div className="flex items-baseline">
-            <span className="text-xl font-bold text-red-500">${formatPrice(currentPrice)}</span>
-            <span className="ml-2 text-sm line-through text-gray-500">${formatPrice(originalPrice)}</span>
-            <span className="ml-2 text-xs px-1.5 py-0.5 bg-red-100 text-red-500 rounded">
-              {Math.round((1 - currentPrice / originalPrice) * 100)}% OFF
-            </span>
+          <div className="flex items-center gap-2">
+            <div className="flex-1">
+              <div className="flex items-baseline">
+                <span className="text-xl font-bold text-red-500">${formatPrice(currentPrice)}</span>
+                <span className="ml-2 text-sm line-through text-gray-500">${formatPrice(originalPrice)}</span>
+                <span className="ml-2 text-xs px-1.5 py-0.5 bg-red-100 text-red-500 rounded flex items-center gap-0.5">
+                  <Percent className="h-3 w-3" />
+                  {Math.round((1 - currentPrice / originalPrice) * 100)}% OFF
+                </span>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-1.5">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="h-7 w-7 p-0 rounded-full hover:bg-gray-100" 
+                onClick={handleShare}
+              >
+                <Share className="h-4 w-4 text-gray-700" />
+              </Button>
+              
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className={`h-7 w-7 p-0 rounded-full hover:bg-gray-100 ${isFavorite ? 'bg-red-50' : ''}`} 
+                onClick={toggleFavorite}
+              >
+                <Heart className={`h-4 w-4 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-700'}`} />
+              </Button>
+              
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="ghost" size="sm" className="h-7 w-7 p-0 rounded-full hover:bg-gray-100">
+                    <Settings className="h-4 w-4 text-gray-700" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-48" side="bottom" align="end">
+                  <div className="grid gap-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs">AR Preview</span>
+                      <Switch 
+                        checked={showAugmentedView} 
+                        onCheckedChange={setShowAugmentedView} 
+                        size="sm" 
+                      />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs">Price Alerts</span>
+                      <Switch 
+                        checked={isNotifyActive} 
+                        onCheckedChange={handlePriceAlert} 
+                        size="sm" 
+                      />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs">Trending Badge</span>
+                      <Switch 
+                        checked={showTrendingIndicator} 
+                        onCheckedChange={setShowTrendingIndicator}
+                        size="sm"
+                      />
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </div>
           </div>
           
-          <h1 className="text-lg font-medium mt-1">{product.name}</h1>
+          <h1 className="text-lg font-medium mt-1 flex items-center">
+            {product.name}
+            {showTrendingIndicator && (
+              <Badge variant="outline" className="ml-2 text-[9px] py-0 px-1 h-4 bg-orange-50 text-orange-600 border-orange-200">
+                <Fire className="h-2.5 w-2.5 mr-0.5" /> Trending
+              </Badge>
+            )}
+          </h1>
           
           <div className="flex items-center mt-1 text-sm">
             <div className="flex text-amber-400">
@@ -419,270 +551,148 @@ const ProductDetail = () => {
               <span className="ml-1 text-black">{product.rating}</span>
             </div>
             <span className="mx-2 text-gray-300">|</span>
-            <span className="text-gray-500">{product.reviewCount} Reviews</span>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="link" className="p-0 h-auto text-gray-500 text-sm">
+                  {product.reviewCount} Reviews
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent className="bg-white p-2 shadow-lg rounded-md border text-xs" side="bottom">
+                <div className="space-y-1 w-48">
+                  <div className="flex items-center">
+                    <span className="text-xs">5★</span>
+                    <Progress value={85} className="h-1.5 mx-2 flex-1" />
+                    <span className="text-xs">85%</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-xs">4★</span>
+                    <Progress value={12} className="h-1.5 mx-2 flex-1" />
+                    <span className="text-xs">12%</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-xs">3★</span>
+                    <Progress value={2} className="h-1.5 mx-2 flex-1" />
+                    <span className="text-xs">2%</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-xs">2★</span>
+                    <Progress value={1} className="h-1.5 mx-2 flex-1" />
+                    <span className="text-xs">1%</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="text-xs">1★</span>
+                    <Progress value={0} className="h-1.5 mx-2 flex-1" />
+                    <span className="text-xs">0%</span>
+                  </div>
+                </div>
+              </TooltipContent>
+            </Tooltip>
             <span className="mx-2 text-gray-300">|</span>
-            <span className="text-gray-500">{product.sold}+ Sold</span>
-          </div>
-
-          <div className="mt-4">
-            <div className="bg-gradient-to-r from-purple-50 to-indigo-100 p-2.5 rounded-md border border-purple-200 relative overflow-hidden shadow-sm">
-              <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-purple-400/30 to-violet-300/10 rounded-full -translate-x-4 -translate-y-10 blur-md"></div>
-              <div className="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-tr from-indigo-300/20 to-purple-400/10 rounded-full translate-x-2 translate-y-6 blur-md"></div>
-              
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <div className="relative mr-2">
-                    <div className="absolute inset-0 bg-purple-600 rounded-full animate-ping opacity-30"></div>
-                    <Zap className="h-4 w-4 text-purple-600 relative z-10" />
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="link" className="p-0 h-auto text-gray-500 text-sm">
+                  {product.sold}+ Sold
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="p-2 w-48">
+                <div className="space-y-1.5 text-xs">
+                  <div className="font-medium">Sales History</div>
+                  <div className="grid grid-cols-7 gap-1 text-center">
+                    {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
+                      <div key={day} className="text-[9px] text-gray-500">{day}</div>
+                    ))}
+                    {[45, 67, 32, 89, 120, 103, 75].map((value, i) => (
+                      <div 
+                        key={i}
+                        className="bg-blue-100 rounded-sm h-6 relative"
+                        style={{ height: `${Math.max(10, (value / 120) * 24)}px` }}
+                      ></div>
+                    ))}
                   </div>
-                  <span className="font-medium text-purple-900">Limited Time Offer</span>
                 </div>
-                
-                <div className="flex space-x-1">
-                  <HoverCardWithDuration openDelay={300} closeDelay={100}>
-                    <HoverCardTrigger asChild>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        className={`h-6 w-6 p-0 rounded-full ${earlyAccessActivated ? "bg-purple-200" : "bg-white/60"}`}
-                        onClick={handleEarlyAccess}
-                      >
-                        <BookmarkPlus className={`h-3.5 w-3.5 ${earlyAccessActivated ? "text-purple-700" : "text-gray-500"}`} />
-                      </Button>
-                    </HoverCardTrigger>
-                    <HoverCardContent className="w-60 p-3">
-                      <div className="font-medium mb-1 text-sm">Early Access</div>
-                      <p className="text-xs text-muted-foreground">
-                        {earlyAccessActivated
-                          ? "You have early access to new releases in this category"
-                          : "Get early access to new releases in this category"}
-                      </p>
-                    </HoverCardContent>
-                  </HoverCardWithDuration>
-                  
-                  <HoverCardWithDuration openDelay={300} closeDelay={100}>
-                    <HoverCardTrigger asChild>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        className={`h-6 w-6 p-0 rounded-full ${isNotifyActive ? "bg-purple-200" : "bg-white/60"}`}
-                        onClick={handlePriceAlert}
-                      >
-                        <BellRing className={`h-3.5 w-3.5 ${isNotifyActive ? "text-purple-700" : "text-gray-500"}`} />
-                      </Button>
-                    </HoverCardTrigger>
-                    <HoverCardContent className="w-60 p-3">
-                      <div className="font-medium mb-1 text-sm">Price Drop Alert</div>
-                      <p className="text-xs text-muted-foreground">
-                        {isNotifyActive 
-                          ? "You will be notified when this product's price drops"
-                          : "Get notified when this product's price drops"}
-                      </p>
-                    </HoverCardContent>
-                  </HoverCardWithDuration>
-                </div>
+              </TooltipContent>
+            </Tooltip>
+            
+            <div className="ml-auto flex space-x-2">
+              <div className="flex gap-1">
+                <Button 
+                  variant={quickViewMode === 'overview' ? 'secondary' : 'outline'} 
+                  size="sm" 
+                  className="h-5 text-xs px-2 py-0 rounded-sm" 
+                  onClick={() => setQuickViewMode('overview')}
+                >
+                  Overview
+                </Button>
+                <Button 
+                  variant={quickViewMode === 'specs' ? 'secondary' : 'outline'} 
+                  size="sm" 
+                  className="h-5 text-xs px-2 py-0 rounded-sm"
+                  onClick={() => setQuickViewMode('specs')}
+                >
+                  Specs
+                </Button>
+                <Button 
+                  variant={quickViewMode === 'reviews' ? 'secondary' : 'outline'} 
+                  size="sm" 
+                  className="h-5 text-xs px-2 py-0 rounded-sm"
+                  onClick={() => setQuickViewMode('reviews')}
+                >
+                  Reviews
+                </Button>
               </div>
-              
-              <div className="flex items-center justify-between mt-1.5 mb-0.5">
-                <div className="flex items-center space-x-1">
-                  <Clock className="h-3.5 w-3.5 text-purple-700" />
-                  <span className="text-xs text-purple-800 font-medium">Deal ends in:</span>
-                </div>
-                
-                <HoverCardWithDuration openDelay={300} closeDelay={100}>
-                  <HoverCardTrigger asChild>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className="h-5 px-1 py-0 text-[10px] text-purple-800 hover:bg-purple-200 hover:text-purple-900"
-                      onClick={() => setShowPriceHistory(!showPriceHistory)}
-                    >
-                      {showPriceHistory ? "Hide history" : "Price history"}
-                    </Button>
-                  </HoverCardTrigger>
-                  <HoverCardContent className="w-64 p-3">
-                    <div className="font-medium mb-1 text-sm">Price History</div>
-                    <div className="h-24 w-full bg-slate-50 rounded-md flex items-end p-1 space-x-[2px]">
-                      {[7,5,6,8,9,8,7,5,6,4,5,7,8,9,10,9,8,7,6,5,6,7,5,4,3,5,7,8,6,5].map((value, i) => (
-                        <div 
-                          key={i} 
-                          className="flex-1 bg-purple-200 rounded-sm" 
-                          style={{ height: `${value * 10}%` }} 
-                        />
-                      ))}
-                    </div>
-                    <div className="flex justify-between items-center mt-2">
-                      <div className="text-xs text-green-700">Lowest: $19.99</div>
-                      <div className="text-xs text-red-700">Highest: $39.99</div>
-                    </div>
-                  </HoverCardContent>
-                </HoverCardWithDuration>
-              </div>
-              
-              <div className="flex items-center gap-1.5">
-                <div className="flex items-center justify-center">
-                  <div className="bg-purple-700 text-white font-mono rounded px-1.5 py-0.5 min-w-[32px] text-center">
-                    <span className="text-sm">{timeLeft.hours.toString().padStart(2, '0')}</span>
-                  </div>
-                  <span className="text-purple-900 mx-0.5">:</span>
-                  <div className="bg-purple-700 text-white font-mono rounded px-1.5 py-0.5 min-w-[32px] text-center">
-                    <span className="text-sm">{timeLeft.minutes.toString().padStart(2, '0')}</span>
-                  </div>
-                  <span className="text-purple-900 mx-0.5">:</span>
-                  <div className="bg-purple-700 text-white font-mono rounded px-1.5 py-0.5 min-w-[32px] text-center">
-                    <span className="text-sm">{timeLeft.seconds.toString().padStart(2, '0')}</span>
-                  </div>
-                </div>
-                
-                <div className="flex-1 pl-2">
-                  <div className="flex flex-wrap gap-1">
-                    <Badge variant="outline" className="bg-white/60 text-[10px] py-0 h-4 flex items-center border-purple-200 text-purple-800">
-                      <CircleDollarSign className="h-2.5 w-2.5 mr-0.5" />
-                      30-DAY LOW
-                    </Badge>
-                    <Badge variant="outline" className="bg-white/60 text-[10px] py-0 h-4 flex items-center border-purple-200 text-purple-800">
-                      <ShieldCheck className="h-2.5 w-2.5 mr-0.5" />
-                      GUARANTEED
-                    </Badge>
-                  </div>
-                </div>
-              </div>
-              
-              {showPerkInfo && (
-                <div className="mt-1.5 grid grid-cols-2 gap-1 text-[10px] bg-white/40 rounded p-1 animate-fade-in">
-                  <div className="flex items-center">
-                    <div className="h-3 w-3 rounded-full bg-purple-100 flex items-center justify-center mr-1">
-                      <Check className="h-2 w-2 text-purple-700" />
-                    </div>
-                    <span className="text-purple-900">Free fast shipping</span>
-                  </div>
-                  <div className="flex items-center">
-                    <div className="h-3 w-3 rounded-full bg-purple-100 flex items-center justify-center mr-1">
-                      <Check className="h-2 w-2 text-purple-700" />
-                    </div>
-                    <span className="text-purple-900">30-day returns</span>
-                  </div>
-                  <div className="flex items-center">
-                    <div className="h-3 w-3 rounded-full bg-purple-100 flex items-center justify-center mr-1">
-                      <Check className="h-2 w-2 text-purple-700" />
-                    </div>
-                    <span className="text-purple-900">2-year warranty</span>
-                  </div>
-                  <div className="flex items-center">
-                    <div className="h-3 w-3 rounded-full bg-purple-100 flex items-center justify-center mr-1">
-                      <Check className="h-2 w-2 text-purple-700" />
-                    </div>
-                    <span className="text-purple-900">Price match</span>
-                  </div>
-                </div>
-              )}
-              
-              <Button 
-                variant="link"
-                size="sm"
-                className="text-[10px] p-0 h-5 text-purple-700 hover:text-purple-900 w-full text-center mt-0.5"
-                onClick={() => setShowPerkInfo(!showPerkInfo)}
-              >
-                {showPerkInfo ? "Show less" : "Show offer details"}
-                <ChevronDown className={`h-3 w-3 ml-0.5 transition-transform ${showPerkInfo ? "rotate-180" : ""}`} />
-              </Button>
             </div>
           </div>
           
-          {/* Coupons Section */}
-          <div className="mt-3 bg-gradient-to-r from-red-50 to-orange-50 p-3 rounded-md border border-red-100 shadow-sm">
-            <div className="text-sm font-medium text-gray-700 mb-2 flex items-center justify-between">
-              <div className="flex items-center">
-                <BadgePercent className="h-4 w-4 mr-1.5 text-red-500" />
-                <span>Available Coupons:</span>
-              </div>
-              
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="ghost" size="sm" className="h-6 w-6 p-0 rounded-full">
-                    <Info className="h-3.5 w-3.5 text-gray-500" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="top" className="text-xs max-w-[200px]">
-                  Apply coupons at checkout or copy the code
-                </TooltipContent>
-              </Tooltip>
+          {quickViewMode === 'overview' && (
+            <div className="mt-1.5 text-sm text-gray-600 border-t border-gray-100 pt-1.5">
+              <p className="line-clamp-2">{product.description}</p>
             </div>
-            
-            <div className="grid grid-cols-1 gap-2">
-              {product.coupons.map((coupon, index) => (
-                <div key={index} className="group relative">
-                  <div className="flex overflow-hidden rounded-md border border-dashed border-red-300 hover:border-red-500 transition-colors bg-white">
-                    <div className="relative flex items-center justify-center bg-gradient-to-br from-red-500 to-red-600 text-white px-3 py-2.5">
-                      <div className="absolute right-0 top-0 bottom-0 w-2">
-                        <div className="absolute top-0 bottom-0 -right-1 w-2">
-                          <div className="absolute top-0 h-2 w-2 rounded-full bg-white translate-x-1/2 -translate-y-1/2"></div>
-                          {[...Array(6)].map((_, i) => (
-                            <div key={i} className="absolute w-2 h-2 rounded-full bg-white translate-x-1/2" style={{ top: `${(i+1) * 16.66}%` }}></div>
-                          ))}
-                          <div className="absolute bottom-0 h-2 w-2 rounded-full bg-white translate-x-1/2 translate-y-1/2"></div>
-                        </div>
-                      </div>
-                      <div className="text-xs font-bold tracking-wider">
-                        {coupon.code}
-                      </div>
-                    </div>
-                    
-                    <div className="flex flex-1 items-center justify-between px-3">
-                      <div>
-                        <div className="text-xs font-medium text-red-600">
-                          {coupon.discount}
-                        </div>
-                        {index === 2 && (
-                          <div className="text-[10px] text-gray-500 mt-0.5 flex items-center">
-                            <Clock className="h-2.5 w-2.5 mr-0.5" />
-                            Expires in 4h 23m
-                          </div>
-                        )}
-                      </div>
-                      
-                      <div className="flex gap-1 items-center">
-                        <HoverCard openDelay={300} closeDelay={100}>
-                          <HoverCardTrigger asChild>
-                            <Button 
-                              variant="ghost" 
-                              size="sm"
-                              className="h-7 w-7 p-0 rounded-full hover:bg-gray-100"
-                              onClick={() => copyCouponToClipboard(coupon.code)}
-                            >
-                              <Copy className="h-3.5 w-3.5 text-gray-500" />
-                            </Button>
-                          </HoverCardTrigger>
-                          <HoverCardContent className="w-auto p-2 text-xs">
-                            Copy code
-                          </HoverCardContent>
-                        </HoverCard>
-                        
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          className="h-7 bg-red-50 hover:bg-red-100 text-red-600 text-xs px-2"
-                          onClick={() => applyCoupon(coupon.code)}
-                        >
-                          Apply
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-
-                  {index === 0 && (
-                    <Badge 
-                      variant="outline" 
-                      className="absolute -top-2 -right-2 text-[10px] py-0 px-1.5 bg-yellow-100 text-yellow-800 border-yellow-200"
-                    >
-                      POPULAR
-                    </Badge>
-                  )}
+          )}
+          
+          {quickViewMode === 'specs' && (
+            <div className="mt-1.5 text-xs text-gray-700 border-t border-gray-100 pt-1.5 grid grid-cols-2 gap-x-4 gap-y-1">
+              {product.specs.slice(0, 6).map((spec, i) => (
+                <div key={i} className="flex justify-between">
+                  <span className="text-gray-500">{spec.name}:</span>
+                  <span className="font-medium">{spec.value}</span>
                 </div>
               ))}
             </div>
-          </div>
+          )}
           
+          {quickViewMode === 'reviews' && (
+            <div className="mt-1.5 text-xs border-t border-gray-100 pt-1.5">
+              <div className="flex items-start gap-1.5 pb-1 border-b border-gray-100">
+                <div className="bg-gray-100 rounded-full w-6 h-6 flex items-center justify-center text-xs font-medium text-gray-600">
+                  JD
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center justify-between">
+                    <div className="text-[11px] font-medium">John D.</div>
+                    <div className="text-amber-400 text-[10px]">★★★★★</div>
+                  </div>
+                  <p className="text-[10px] text-gray-600 line-clamp-2">
+                    Absolutely love this product! The projection quality is impressive and the app integration works flawlessly.
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start gap-1.5 pt-1">
+                <div className="bg-gray-100 rounded-full w-6 h-6 flex items-center justify-center text-xs font-medium text-gray-600">
+                  SM
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center justify-between">
+                    <div className="text-[11px] font-medium">Sarah M.</div>
+                    <div className="text-amber-400 text-[10px]">★★★★☆</div>
+                  </div>
+                  <p className="text-[10px] text-gray-600 line-clamp-2">
+                    Great for movie nights! Battery life could be better but overall very satisfied with the purchase.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="mt-4 relative">
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm font-medium text-gray-700">Select Color:</span>
