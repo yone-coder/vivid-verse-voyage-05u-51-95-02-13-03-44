@@ -1,50 +1,60 @@
+
 import React, { useState, useEffect, useRef } from "react";
-import { ArrowLeft, Share, Heart, MessageCircle, Truck, Shield, Award, Percent, ThumbsUp, Zap, Star, Sparkles, ArrowRight, Crown, Clock, Gift, Check, Info, CreditCard, AlertCircle, Bookmark, Box, Tag, Download, Users, Rocket, Copy, Scissors, BadgePercent, TicketPercent, BookmarkPlus, BellRing, ShieldCheck, CircleDollarSign, ChevronDown, Search, X } from "lucide-react";
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
 import ProductTabs from "@/components/ProductTabs";
-import { toast } from "@/components/ui/use-toast";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Progress } from "@/components/ui/progress";
-import LiveActivityNotifications from "@/components/LiveActivityNotifications";
 import LiveStockUpdates from "@/components/LiveStockUpdates";
-import { Switch } from "@/components/ui/switch";
 import ModernBuyButton from "@/components/ModernBuyButton";
-import { HoverCard, HoverCardContent, HoverCardTrigger, HoverCardWithDuration } from "@/components/ui/hover-card";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Card } from "@/components/ui/card";
+import RelatedProducts from "@/components/RelatedProducts";
+import { useProductAnalytics } from "@/hooks/useProduct";
+import { useToast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
+
+// Product Components
+import ProductHeader from "@/components/product/ProductHeader";
+import ProductBadges from "@/components/product/ProductBadges";
+import ProductViewModeSelector from "@/components/product/ProductViewModeSelector";
+import ProductPriceDisplay from "@/components/product/ProductPriceDisplay";
+import ProductLiveData from "@/components/product/ProductLiveData";
+import ProductRatings from "@/components/product/ProductRatings";
+import ProductLimitedTimeOffer from "@/components/product/ProductLimitedTimeOffer";
+import ProductCoupons from "@/components/product/ProductCoupons";
+import ProductColorVariants from "@/components/product/ProductColorVariants";
+import ProductQuantitySelector from "@/components/product/ProductQuantitySelector";
+import ProductShipping from "@/components/product/ProductShipping";
+import ProductWarranty from "@/components/product/ProductWarranty";
+import ProductPaymentOptions from "@/components/product/ProductPaymentOptions";
+import ProductActionsRow from "@/components/product/ProductActionsRow";
+
+export type ViewMode = "modern" | "detailed" | "compact";
 
 const ProductDetail = () => {
+  // State variables
   const [activeTab, setActiveTab] = useState("description");
   const [isScrolled, setIsScrolled] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [isFavorite, setIsFavorite] = useState(false);
   const [showVariants, setShowVariants] = useState(true);
   const [selectedColor, setSelectedColor] = useState("Blue Galaxy");
-  const [showPaymentOptions, setShowPaymentOptions] = useState(false);
-  const [showDeliveryOptions, setShowDeliveryOptions] = useState(false);
+  const [showPriceHistory, setShowPriceHistory] = useState(false);
   const [isExpressSelected, setIsExpressSelected] = useState(false);
-  const [showMoreFeatures, setShowMoreFeatures] = useState(false);
   const [timeLeft, setTimeLeft] = useState({ hours: 12, minutes: 35, seconds: 47 });
   const [giftWrap, setGiftWrap] = useState(false);
-  const [showWarrantyOptions, setShowWarrantyOptions] = useState(false);
   const [selectedWarranty, setSelectedWarranty] = useState("none");
   const [maxQuantityReached, setMaxQuantityReached] = useState(false);
-  const [showCartAnimation, setShowCartAnimation] = useState(false);
-  const [showPerkInfo, setShowPerkInfo] = useState(false);
-  const [isNotifyActive, setIsNotifyActive] = useState(false);
-  const [showPriceHistory, setShowPriceHistory] = useState(false);
-  const [earlyAccessActivated, setEarlyAccessActivated] = useState(false);
+  const [comparisonMode, setComparisonMode] = useState(false);
+  const [showLiveData, setShowLiveData] = useState(true);
+  const [viewMode, setViewMode] = useState<ViewMode>("modern");
+  
+  // Refs and hooks
   const headerRef = useRef<HTMLDivElement>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
-
+  const { toast } = useToast();
+  const { id } = useParams<{ id: string }>();
+  const { data: analytics, isLoading: analyticsLoading } = useProductAnalytics(id || "nebula-pro-2025");
+  
+  // Product data (could be fetched from an API in a real app)
   const product = {
     id: "nebula-pro-2025",
     name: "Galaxy Nebula Projector Pro 2025",
@@ -128,6 +138,7 @@ const ProductDetail = () => {
     badges: []
   };
 
+  // Event handlers
   const incrementQuantity = () => {
     if (quantity < 10) {
       setQuantity(prev => prev + 1);
@@ -151,6 +162,72 @@ const ProductDetail = () => {
     }
   };
 
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: product.name,
+        text: `Check out this ${product.name}!`,
+        url: window.location.href,
+      }).catch((error) => {
+        console.log('Error sharing:', error);
+      });
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      toast({
+        title: "Link copied!",
+        description: "Product link copied to clipboard",
+      });
+    }
+  };
+
+  const toggleFavorite = () => {
+    setIsFavorite(!isFavorite);
+    toast({
+      title: isFavorite ? "Removed from favorites" : "Added to favorites",
+      description: isFavorite ? "Item removed from your wishlist" : "Item added to your wishlist",
+    });
+  };
+
+  const addToCart = () => {
+    toast({
+      title: "Added to cart",
+      description: `${quantity} x ${product.name} (${selectedColor}) added to your cart`,
+    });
+  };
+
+  const buyNow = () => {
+    toast({
+      title: "Proceeding to checkout",
+      description: `Processing order for ${quantity} x ${product.name} (${selectedColor})`,
+    });
+  };
+
+  const scrollToTabs = () => {
+    if (tabsRef.current) {
+      tabsRef.current.scrollIntoView({ behavior: 'smooth' });
+      setActiveTab("description");
+    }
+  };
+
+  const toggleComparisonMode = () => {
+    setComparisonMode(!comparisonMode);
+    toast({
+      title: !comparisonMode ? "Comparison mode activated" : "Comparison mode deactivated",
+      description: !comparisonMode 
+        ? "You can now add products to compare" 
+        : "Comparison mode has been turned off"
+    });
+  };
+
+  const handleViewModeChange = (mode: ViewMode) => {
+    setViewMode(mode);
+    toast({
+      title: "View mode changed",
+      description: `Switched to ${mode} view`
+    });
+  };
+  
+  // Effects
   useEffect(() => {
     const handleScroll = () => {
       if (headerRef.current && tabsRef.current) {
@@ -193,112 +270,7 @@ const ProductDetail = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: product.name,
-        text: `Check out this ${product.name}!`,
-        url: window.location.href,
-      }).catch((error) => {
-        console.log('Error sharing:', error);
-      });
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-      toast({
-        title: "Link copied!",
-        description: "Product link copied to clipboard",
-      });
-    }
-  };
-
-  const toggleFavorite = () => {
-    setIsFavorite(!isFavorite);
-    toast({
-      title: isFavorite ? "Removed from favorites" : "Added to favorites",
-      description: isFavorite ? "Item removed from your wishlist" : "Item added to your wishlist",
-    });
-  };
-
-  const addToCart = () => {
-    setShowCartAnimation(true);
-    setTimeout(() => setShowCartAnimation(false), 1000);
-    
-    toast({
-      title: "Added to cart",
-      description: `${quantity} x ${product.name} (${selectedColor}) added to your cart`,
-    });
-  };
-
-  const buyNow = () => {
-    toast({
-      title: "Proceeding to checkout",
-      description: `Processing order for ${quantity} x ${product.name} (${selectedColor})`,
-    });
-  };
-
-  const toggleVariants = () => {
-    setShowVariants(!showVariants);
-  };
-
-  const applyCoupon = (code: string) => {
-    toast({
-      title: "Coupon applied!",
-      description: `${code} discount has been applied to your order`,
-    });
-  };
-
-  const askQuestion = () => {
-    toast({
-      title: "Question form",
-      description: "A form would open to ask a question about this product",
-    });
-  };
-
-  const scrollToTabs = () => {
-    if (tabsRef.current) {
-      tabsRef.current.scrollIntoView({ behavior: 'smooth' });
-      setActiveTab("description");
-    }
-  };
-
-  const toggleGiftWrap = () => {
-    setGiftWrap(!giftWrap);
-    toast({
-      title: !giftWrap ? "Gift wrapping added" : "Gift wrapping removed",
-      description: !giftWrap 
-        ? "Your item will be gift wrapped with a personalized message" 
-        : "Gift wrapping has been removed from your order"
-    });
-  };
-
-  const copyCouponToClipboard = (coupon: string) => {
-    navigator.clipboard.writeText(coupon);
-    toast({
-      title: "Coupon copied!",
-      description: `${coupon} has been copied to your clipboard`,
-    });
-  };
-
-  const handlePriceAlert = () => {
-    setIsNotifyActive(!isNotifyActive);
-    toast({
-      title: isNotifyActive ? "Price alert removed" : "Price alert set",
-      description: isNotifyActive 
-        ? "You will no longer receive notifications for price drops" 
-        : "We'll notify you when this product's price drops",
-    });
-  };
-
-  const handleEarlyAccess = () => {
-    setEarlyAccessActivated(!earlyAccessActivated);
-    toast({
-      title: earlyAccessActivated ? "Early access deactivated" : "Early access activated!",
-      description: earlyAccessActivated
-        ? "You'll no longer get early access to new products"
-        : "You'll now get early access to new products in this category",
-    });
-  };
-
+  // Derived data
   const currentVariant = product.variants.find(v => v.name === selectedColor);
   const currentPrice = currentVariant ? currentVariant.price : product.discountPrice;
   const originalPrice = currentVariant ? Math.round(currentVariant.price * 1.6 * 100) / 100 : product.price;
@@ -308,638 +280,130 @@ const ProductDetail = () => {
   
   const totalPrice = (currentPrice * quantity) + warrantyPrice + (giftWrap ? 2.99 : 0) + (isExpressSelected ? product.shipping.express : 0);
   
-  const formatPrice = (price: number) => price.toFixed(2);
-
   const currentStock = currentVariant ? currentVariant.stock : 0;
-  const stockPercentage = Math.min(100, Math.max(5, (currentStock / 300) * 100));
-
+  
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <div ref={headerRef} className="relative w-full bg-white">
         <ProductImageGallery images={product.images} />
         
-        <div className="absolute top-2 left-2 right-2 flex justify-between z-10">
-          <Link to="/">
-            <Button variant="outline" size="sm" className="rounded-full bg-white/70 backdrop-blur-sm hover:bg-white/90">
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-          </Link>
-          <div className="flex-1 mx-3 relative">
-            <div className="relative w-full max-w-[200px] md:max-w-[300px] mx-auto">
-              <Input 
-                type="text" 
-                placeholder="Search products..." 
-                className="h-8 pl-8 pr-3 bg-white/70 backdrop-blur-sm hover:bg-white/90 text-xs rounded-full border-gray-200 focus-visible:ring-1"
-              />
-              <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-gray-500" />
-            </div>
-          </div>
-          <div className="flex gap-1">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="rounded-full bg-white/70 backdrop-blur-sm hover:bg-white/90"
-              onClick={toggleFavorite}
-            >
-              <Heart className={`h-4 w-4 ${isFavorite ? "fill-red-500 text-red-500" : ""}`} />
-            </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="rounded-full bg-white/70 backdrop-blur-sm hover:bg-white/90"
-              onClick={handleShare}
-            >
-              <Share className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
+        <ProductHeader 
+          isFavorite={isFavorite}
+          toggleFavorite={toggleFavorite}
+          handleShare={handleShare}
+        />
       </div>
 
       {isScrolled && (
-        <div className="fixed top-0 left-0 right-0 bg-white z-30 shadow-sm">
-          <div className="flex items-center h-10 px-3">
-            <Link to="/" className="mr-2">
-              <Button variant="ghost" size="sm" className="rounded-full h-8 w-8 p-0">
-                <ArrowLeft className="h-4 w-4" />
-              </Button>
-            </Link>
-            <div className="flex-1 relative">
-              <Input 
-                type="text" 
-                placeholder="Search products..." 
-                className="h-7 pl-8 pr-3 text-xs"
-              />
-              <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-gray-500" />
-            </div>
-            <div className="flex gap-1 ml-2">
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="rounded-full h-8 w-8 p-0"
-                onClick={toggleFavorite}
-              >
-                <Heart className={`h-4 w-4 ${isFavorite ? "fill-red-500 text-red-500" : ""}`} />
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="rounded-full h-8 w-8 p-0"
-                onClick={handleShare}
-              >
-                <Share className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        </div>
+        <ProductHeader 
+          isFavorite={isFavorite}
+          toggleFavorite={toggleFavorite}
+          handleShare={handleShare}
+          isScrolled={true}
+        />
       )}
       
       <div className={`flex-1 ${isScrolled ? 'pt-10' : ''}`}>
         <div className="bg-white p-3 mb-0">
-          <div className="flex items-center mb-0.5">
-            <Badge variant="outline" className="text-xs bg-red-50 text-red-500 border-red-200">Flash Deal</Badge>
-            <Badge variant="outline" className="text-xs bg-orange-50 text-orange-500 border-orange-200 ml-1">Top Seller</Badge>
-            <Badge variant="outline" className="text-xs bg-green-50 text-green-500 border-green-200 ml-1">Free Shipping</Badge>
+          <div className="flex items-center justify-between mb-0.5">
+            <ProductBadges 
+              hasFreeShipping={product.shipping.free}
+              isTopSeller={true}
+              isFlashDeal={true}
+              isTrending={analytics?.trending}
+            />
+            
+            <div className="flex items-center gap-1">
+              <ProductViewModeSelector
+                viewMode={viewMode}
+                onChangeViewMode={handleViewModeChange}
+              />
+            </div>
           </div>
           
-          <div className="flex items-baseline">
-            <span className="text-xl font-bold text-red-500">${formatPrice(currentPrice)}</span>
-            <span className="ml-2 text-sm line-through text-gray-500">${formatPrice(originalPrice)}</span>
-            <span className="ml-2 text-xs px-1.5 py-0.5 bg-red-100 text-red-500 rounded">
-              {Math.round((1 - currentPrice / originalPrice) * 100)}% OFF
-            </span>
+          <div className="flex items-center justify-between">
+            <ProductPriceDisplay 
+              currentPrice={currentPrice}
+              originalPrice={originalPrice}
+              showPriceHistory={showPriceHistory}
+              onTogglePriceHistory={() => setShowPriceHistory(!showPriceHistory)}
+            />
+            
+            {showLiveData && analytics && (
+              <ProductLiveData 
+                analytics={analytics}
+                onClose={() => setShowLiveData(false)}
+              />
+            )}
           </div>
           
           <h1 className="text-lg font-medium mt-1">{product.name}</h1>
           
-          <div className="flex items-center mt-1 text-sm">
-            <div className="flex text-amber-400">
-              {'★'.repeat(Math.floor(product.rating))}
-              {product.rating % 1 !== 0 && '☆'}
-              {'☆'.repeat(5 - Math.ceil(product.rating))}
-              <span className="ml-1 text-black">{product.rating}</span>
-            </div>
-            <span className="mx-2 text-gray-300">|</span>
-            <span className="text-gray-500">{product.reviewCount} Reviews</span>
-            <span className="mx-2 text-gray-300">|</span>
-            <span className="text-gray-500">{product.sold}+ Sold</span>
-          </div>
+          <ProductRatings 
+            rating={product.rating}
+            reviewCount={product.reviewCount}
+            soldCount={product.sold}
+            comparisonMode={comparisonMode}
+            toggleComparisonMode={toggleComparisonMode}
+          />
 
           <div className="mt-4">
-            <div className="bg-gradient-to-r from-purple-50 to-indigo-100 p-2.5 rounded-md border border-purple-200 relative overflow-hidden shadow-sm">
-              <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-purple-400/30 to-violet-300/10 rounded-full -translate-x-4 -translate-y-10 blur-md"></div>
-              <div className="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-tr from-indigo-300/20 to-purple-400/10 rounded-full translate-x-2 translate-y-6 blur-md"></div>
-              
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <div className="relative mr-2">
-                    <div className="absolute inset-0 bg-purple-600 rounded-full animate-ping opacity-30"></div>
-                    <Zap className="h-4 w-4 text-purple-600 relative z-10" />
-                  </div>
-                  <span className="font-medium text-purple-900">Limited Time Offer</span>
-                </div>
-                
-                <div className="flex space-x-1">
-                  <HoverCardWithDuration openDelay={300} closeDelay={100}>
-                    <HoverCardTrigger asChild>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        className={`h-6 w-6 p-0 rounded-full ${earlyAccessActivated ? "bg-purple-200" : "bg-white/60"}`}
-                        onClick={handleEarlyAccess}
-                      >
-                        <BookmarkPlus className={`h-3.5 w-3.5 ${earlyAccessActivated ? "text-purple-700" : "text-gray-500"}`} />
-                      </Button>
-                    </HoverCardTrigger>
-                    <HoverCardContent className="w-60 p-3">
-                      <div className="font-medium mb-1 text-sm">Early Access</div>
-                      <p className="text-xs text-muted-foreground">
-                        {earlyAccessActivated
-                          ? "You have early access to new releases in this category"
-                          : "Get early access to new releases in this category"}
-                      </p>
-                    </HoverCardContent>
-                  </HoverCardWithDuration>
-                  
-                  <HoverCardWithDuration openDelay={300} closeDelay={100}>
-                    <HoverCardTrigger asChild>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        className={`h-6 w-6 p-0 rounded-full ${isNotifyActive ? "bg-purple-200" : "bg-white/60"}`}
-                        onClick={handlePriceAlert}
-                      >
-                        <BellRing className={`h-3.5 w-3.5 ${isNotifyActive ? "text-purple-700" : "text-gray-500"}`} />
-                      </Button>
-                    </HoverCardTrigger>
-                    <HoverCardContent className="w-60 p-3">
-                      <div className="font-medium mb-1 text-sm">Price Drop Alert</div>
-                      <p className="text-xs text-muted-foreground">
-                        {isNotifyActive 
-                          ? "You will be notified when this product's price drops"
-                          : "Get notified when this product's price drops"}
-                      </p>
-                    </HoverCardContent>
-                  </HoverCardWithDuration>
-                </div>
-              </div>
-              
-              <div className="flex items-center justify-between mt-1.5 mb-0.5">
-                <div className="flex items-center space-x-1">
-                  <Clock className="h-3.5 w-3.5 text-purple-700" />
-                  <span className="text-xs text-purple-800 font-medium">Deal ends in:</span>
-                </div>
-                
-                <HoverCardWithDuration openDelay={300} closeDelay={100}>
-                  <HoverCardTrigger asChild>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className="h-5 px-1 py-0 text-[10px] text-purple-800 hover:bg-purple-200 hover:text-purple-900"
-                      onClick={() => setShowPriceHistory(!showPriceHistory)}
-                    >
-                      {showPriceHistory ? "Hide history" : "Price history"}
-                    </Button>
-                  </HoverCardTrigger>
-                  <HoverCardContent className="w-64 p-3">
-                    <div className="font-medium mb-1 text-sm">Price History</div>
-                    <div className="h-24 w-full bg-slate-50 rounded-md flex items-end p-1 space-x-[2px]">
-                      {[7,5,6,8,9,8,7,5,6,4,5,7,8,9,10,9,8,7,6,5,6,7,5,4,3,5,7,8,6,5].map((value, i) => (
-                        <div 
-                          key={i} 
-                          className="flex-1 bg-purple-200 rounded-sm" 
-                          style={{ height: `${value * 10}%` }} 
-                        />
-                      ))}
-                    </div>
-                    <div className="flex justify-between items-center mt-2">
-                      <div className="text-xs text-green-700">Lowest: $19.99</div>
-                      <div className="text-xs text-red-700">Highest: $39.99</div>
-                    </div>
-                  </HoverCardContent>
-                </HoverCardWithDuration>
-              </div>
-              
-              <div className="flex items-center gap-1.5">
-                <div className="flex items-center justify-center">
-                  <div className="bg-purple-700 text-white font-mono rounded px-1.5 py-0.5 min-w-[32px] text-center">
-                    <span className="text-sm">{timeLeft.hours.toString().padStart(2, '0')}</span>
-                  </div>
-                  <span className="text-purple-900 mx-0.5">:</span>
-                  <div className="bg-purple-700 text-white font-mono rounded px-1.5 py-0.5 min-w-[32px] text-center">
-                    <span className="text-sm">{timeLeft.minutes.toString().padStart(2, '0')}</span>
-                  </div>
-                  <span className="text-purple-900 mx-0.5">:</span>
-                  <div className="bg-purple-700 text-white font-mono rounded px-1.5 py-0.5 min-w-[32px] text-center">
-                    <span className="text-sm">{timeLeft.seconds.toString().padStart(2, '0')}</span>
-                  </div>
-                </div>
-                
-                <div className="flex-1 pl-2">
-                  <div className="flex flex-wrap gap-1">
-                    <Badge variant="outline" className="bg-white/60 text-[10px] py-0 h-4 flex items-center border-purple-200 text-purple-800">
-                      <CircleDollarSign className="h-2.5 w-2.5 mr-0.5" />
-                      30-DAY LOW
-                    </Badge>
-                    <Badge variant="outline" className="bg-white/60 text-[10px] py-0 h-4 flex items-center border-purple-200 text-purple-800">
-                      <ShieldCheck className="h-2.5 w-2.5 mr-0.5" />
-                      GUARANTEED
-                    </Badge>
-                  </div>
-                </div>
-              </div>
-              
-              {showPerkInfo && (
-                <div className="mt-1.5 grid grid-cols-2 gap-1 text-[10px] bg-white/40 rounded p-1 animate-fade-in">
-                  <div className="flex items-center">
-                    <div className="h-3 w-3 rounded-full bg-purple-100 flex items-center justify-center mr-1">
-                      <Check className="h-2 w-2 text-purple-700" />
-                    </div>
-                    <span className="text-purple-900">Free fast shipping</span>
-                  </div>
-                  <div className="flex items-center">
-                    <div className="h-3 w-3 rounded-full bg-purple-100 flex items-center justify-center mr-1">
-                      <Check className="h-2 w-2 text-purple-700" />
-                    </div>
-                    <span className="text-purple-900">30-day returns</span>
-                  </div>
-                  <div className="flex items-center">
-                    <div className="h-3 w-3 rounded-full bg-purple-100 flex items-center justify-center mr-1">
-                      <Check className="h-2 w-2 text-purple-700" />
-                    </div>
-                    <span className="text-purple-900">2-year warranty</span>
-                  </div>
-                  <div className="flex items-center">
-                    <div className="h-3 w-3 rounded-full bg-purple-100 flex items-center justify-center mr-1">
-                      <Check className="h-2 w-2 text-purple-700" />
-                    </div>
-                    <span className="text-purple-900">Price match</span>
-                  </div>
-                </div>
-              )}
-              
-              <Button 
-                variant="link"
-                size="sm"
-                className="text-[10px] p-0 h-5 text-purple-700 hover:text-purple-900 w-full text-center mt-0.5"
-                onClick={() => setShowPerkInfo(!showPerkInfo)}
-              >
-                {showPerkInfo ? "Show less" : "Show offer details"}
-                <ChevronDown className={`h-3 w-3 ml-0.5 transition-transform ${showPerkInfo ? "rotate-180" : ""}`} />
-              </Button>
-            </div>
+            <ProductLimitedTimeOffer timeLeft={timeLeft} />
           </div>
           
-          {/* Coupons Section */}
-          <div className="mt-3 bg-gradient-to-r from-red-50 to-orange-50 p-3 rounded-md border border-red-100 shadow-sm">
-            <div className="text-sm font-medium text-gray-700 mb-2 flex items-center justify-between">
-              <div className="flex items-center">
-                <BadgePercent className="h-4 w-4 mr-1.5 text-red-500" />
-                <span>Available Coupons:</span>
-              </div>
-              
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant="ghost" size="sm" className="h-6 w-6 p-0 rounded-full">
-                    <Info className="h-3.5 w-3.5 text-gray-500" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="top" className="text-xs max-w-[200px]">
-                  Apply coupons at checkout or copy the code
-                </TooltipContent>
-              </Tooltip>
-            </div>
-            
-            <div className="grid grid-cols-1 gap-2">
-              {product.coupons.map((coupon, index) => (
-                <div key={index} className="group relative">
-                  <div className="flex overflow-hidden rounded-md border border-dashed border-red-300 hover:border-red-500 transition-colors bg-white">
-                    <div className="relative flex items-center justify-center bg-gradient-to-br from-red-500 to-red-600 text-white px-3 py-2.5">
-                      <div className="absolute right-0 top-0 bottom-0 w-2">
-                        <div className="absolute top-0 bottom-0 -right-1 w-2">
-                          <div className="absolute top-0 h-2 w-2 rounded-full bg-white translate-x-1/2 -translate-y-1/2"></div>
-                          {[...Array(6)].map((_, i) => (
-                            <div key={i} className="absolute w-2 h-2 rounded-full bg-white translate-x-1/2" style={{ top: `${(i+1) * 16.66}%` }}></div>
-                          ))}
-                          <div className="absolute bottom-0 h-2 w-2 rounded-full bg-white translate-x-1/2 translate-y-1/2"></div>
-                        </div>
-                      </div>
-                      <div className="text-xs font-bold tracking-wider">
-                        {coupon.code}
-                      </div>
-                    </div>
-                    
-                    <div className="flex flex-1 items-center justify-between px-3">
-                      <div>
-                        <div className="text-xs font-medium text-red-600">
-                          {coupon.discount}
-                        </div>
-                        {index === 2 && (
-                          <div className="text-[10px] text-gray-500 mt-0.5 flex items-center">
-                            <Clock className="h-2.5 w-2.5 mr-0.5" />
-                            Expires in 4h 23m
-                          </div>
-                        )}
-                      </div>
-                      
-                      <div className="flex gap-1 items-center">
-                        <HoverCard openDelay={300} closeDelay={100}>
-                          <HoverCardTrigger asChild>
-                            <Button 
-                              variant="ghost" 
-                              size="sm"
-                              className="h-7 w-7 p-0 rounded-full hover:bg-gray-100"
-                              onClick={() => copyCouponToClipboard(coupon.code)}
-                            >
-                              <Copy className="h-3.5 w-3.5 text-gray-500" />
-                            </Button>
-                          </HoverCardTrigger>
-                          <HoverCardContent className="w-auto p-2 text-xs">
-                            Copy code
-                          </HoverCardContent>
-                        </HoverCard>
-                        
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          className="h-7 bg-red-50 hover:bg-red-100 text-red-600 text-xs px-2"
-                          onClick={() => applyCoupon(coupon.code)}
-                        >
-                          Apply
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-
-                  {index === 0 && (
-                    <Badge 
-                      variant="outline" 
-                      className="absolute -top-2 -right-2 text-[10px] py-0 px-1.5 bg-yellow-100 text-yellow-800 border-yellow-200"
-                    >
-                      POPULAR
-                    </Badge>
-                  )}
-                </div>
-              ))}
-            </div>
+          <div className="mt-3">
+            <ProductCoupons coupons={product.coupons} />
           </div>
           
-          <div className="mt-4 relative">
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-medium text-gray-700">Select Color:</span>
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="h-7 px-2 text-xs text-blue-600"
-                onClick={toggleVariants}
-              >
-                {showVariants ? "Hide Options" : "Show All Options"}
-              </Button>
-            </div>
-            
-            <div className={`grid grid-cols-3 gap-2 transition-all duration-300 ${showVariants ? 'max-h-[500px] opacity-100' : 'max-h-12 opacity-40 overflow-hidden'}`}>
-              {product.variants.map((variant) => (
-                <div 
-                  key={variant.name} 
-                  className={`border rounded-md p-2 cursor-pointer transition-colors hover:border-blue-500 ${selectedColor === variant.name ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}`}
-                  onClick={() => setSelectedColor(variant.name)}
-                >
-                  <div className="flex items-center justify-between mb-1">
-                    <div className="w-6 h-6 bg-gray-200 rounded overflow-hidden">
-                      <img src={variant.image} alt={variant.name} className="w-full h-full object-cover" />
-                    </div>
-                    {selectedColor === variant.name && <Check className="h-4 w-4 text-blue-500" />}
-                  </div>
-                  <div className="text-xs font-medium truncate">{variant.name}</div>
-                  <div className="text-xs text-gray-500">${formatPrice(variant.price)}</div>
-                </div>
-              ))}
-            </div>
-            
-            {!showVariants && (
-              <div className="absolute top-8 left-0 right-0 flex items-center justify-center">
-                <Badge className="bg-blue-100 text-blue-700 border border-blue-200">
-                  {selectedColor}
-                </Badge>
-              </div>
-            )}
+          <div className="mt-4">
+            <ProductColorVariants 
+              variants={product.variants}
+              selectedColor={selectedColor}
+              onColorChange={setSelectedColor}
+            />
           </div>
         </div>
         
         <div className="mt-2 mb-2 p-4 bg-white">
           <LiveStockUpdates 
-            initialStock={currentVariant ? currentVariant.stock : 200}
+            initialStock={currentStock}
             highDemand={product.stock.selling_fast}
           />
           
-          <div className="mt-4 flex items-center justify-between">
-            <span className="text-sm font-medium text-gray-700">Quantity:</span>
-            <div className="flex items-center border border-gray-300 rounded-md overflow-hidden">
-              <Button 
-                onClick={decrementQuantity} 
-                variant="ghost" 
-                className="h-8 px-3 rounded-none border-r border-gray-300"
-                disabled={quantity <= 1}
-              >
-                -
-              </Button>
-              <div className="w-10 text-center">{quantity}</div>
-              <Button 
-                onClick={incrementQuantity} 
-                variant="ghost" 
-                className="h-8 px-3 rounded-none border-l border-gray-300"
-                disabled={quantity >= 10}
-              >
-                +
-              </Button>
-            </div>
+          <div className="mt-4">
+            <ProductQuantitySelector 
+              quantity={quantity}
+              onIncrement={incrementQuantity}
+              onDecrement={decrementQuantity}
+            />
           </div>
           
-          <div className="mt-4 flex items-center justify-between">
-            <span className="text-sm font-medium text-gray-700">Shipping:</span>
-            <div className="flex flex-col items-end">
-              <div className="flex items-center">
-                <Truck className="h-4 w-4 text-green-600 mr-1" />
-                <span className="text-sm text-green-600 font-medium">
-                  {product.shipping.free ? "Free Standard Shipping" : "Standard Shipping"}
-                </span>
-              </div>
-              <div className="text-xs text-gray-500 mt-0.5">
-                Estimated delivery: {product.shipping.estimated}
-              </div>
-            </div>
+          <div className="mt-4">
+            <ProductShipping
+              shippingInfo={product.shipping}
+              isExpressSelected={isExpressSelected}
+              onExpressChange={setIsExpressSelected}
+              giftWrap={giftWrap}
+              onGiftWrapChange={setGiftWrap}
+            />
           </div>
           
-          <div className="mt-2 flex justify-end">
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="h-7 px-2 text-xs text-blue-600"
-              onClick={() => setShowDeliveryOptions(!showDeliveryOptions)}
-            >
-              {showDeliveryOptions ? "Hide Options" : "More Delivery Options"}
-            </Button>
+          <div className="mt-4">
+            <ProductWarranty
+              warrantyOptions={product.warranty}
+              selectedWarranty={selectedWarranty}
+              onWarrantyChange={setSelectedWarranty}
+            />
           </div>
           
-          {showDeliveryOptions && (
-            <div className="mt-1 p-3 bg-gray-50 rounded-md border border-gray-200">
-              <RadioGroup 
-                value={isExpressSelected ? "express" : "standard"}
-                onValueChange={(value) => setIsExpressSelected(value === "express")}
-              >
-                <div className="flex items-start space-x-2 mb-2">
-                  <RadioGroupItem value="standard" id="standard" className="mt-1" />
-                  <label htmlFor="standard" className="text-sm cursor-pointer flex-1">
-                    <div className="font-medium">Standard Shipping (Free)</div>
-                    <div className="text-xs text-gray-500">Estimated delivery: {product.shipping.estimated}</div>
-                  </label>
-                </div>
-                
-                <div className="flex items-start space-x-2">
-                  <RadioGroupItem value="express" id="express" className="mt-1" />
-                  <label htmlFor="express" className="text-sm cursor-pointer flex-1">
-                    <div className="font-medium">Express Shipping (${product.shipping.express})</div>
-                    <div className="text-xs text-gray-500">Estimated delivery: {product.shipping.expressEstimated}</div>
-                  </label>
-                </div>
-              </RadioGroup>
-              
-              <div className="mt-3 pt-3 border-t border-gray-200">
-                <div className="flex items-center justify-between text-sm">
-                  <div className="flex items-center">
-                    <Gift className="h-4 w-4 mr-1.5 text-purple-600" />
-                    <span className="font-medium">Gift Wrapping</span>
-                  </div>
-                  <Switch 
-                    checked={giftWrap} 
-                    onCheckedChange={toggleGiftWrap}
-                  />
-                </div>
-                {giftWrap && (
-                  <div className="mt-2 text-xs text-gray-600">
-                    Your item will be gift wrapped with a customized message card for $2.99
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-          
-          <div className="mt-4 flex items-center justify-between">
-            <span className="text-sm font-medium text-gray-700">Warranty:</span>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="h-7 px-2 text-xs text-blue-600"
-              onClick={() => setShowWarrantyOptions(!showWarrantyOptions)}
-            >
-              {selectedWarranty === "none" ? "Add Warranty" : `${warrantyOption?.name} (${warrantyOption?.duration})`}
-            </Button>
+          <div className="mt-4">
+            <ProductPaymentOptions paymentOptions={product.payments} />
           </div>
           
-          {showWarrantyOptions && (
-            <div className="mt-2 p-3 bg-gray-50 rounded-md border border-gray-200">
-              <RadioGroup 
-                value={selectedWarranty}
-                onValueChange={setSelectedWarranty}
-              >
-                <div className="flex items-start space-x-2 mb-2">
-                  <RadioGroupItem value="none" id="none" className="mt-1" />
-                  <label htmlFor="none" className="text-sm cursor-pointer flex-1">
-                    <div className="font-medium">No additional warranty</div>
-                    <div className="text-xs text-gray-500">Product includes manufacturer's warranty</div>
-                  </label>
-                </div>
-                
-                {product.warranty.map((option) => (
-                  <div key={option.name.toLowerCase()} className="flex items-start space-x-2 mb-2">
-                    <RadioGroupItem value={option.name.toLowerCase()} id={option.name.toLowerCase()} className="mt-1" />
-                    <label htmlFor={option.name.toLowerCase()} className="text-sm cursor-pointer flex-1">
-                      <div className="font-medium">
-                        {option.name} ({option.duration}){option.price > 0 ? ` - $${formatPrice(option.price)}` : " - Included"}
-                      </div>
-                      <div className="text-xs text-gray-500">
-                        {option.name === "Standard" 
-                          ? "Basic coverage for manufacturing defects" 
-                          : option.name === "Extended" 
-                            ? "Extended coverage including wear and tear" 
-                            : "Premium coverage with accidental damage protection"}
-                      </div>
-                    </label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </div>
-          )}
-          
-          <div className="mt-4 flex items-center justify-between text-sm font-medium">
-            <span className="text-gray-700">Payment Options:</span>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="h-7 px-2 text-xs text-blue-600"
-              onClick={() => setShowPaymentOptions(!showPaymentOptions)}
-            >
-              {showPaymentOptions ? "Hide" : "View All"}
-            </Button>
-          </div>
-      
-          <div className="mt-1 flex flex-wrap gap-1">
-            <div className="w-8 h-5 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
-              <img 
-                src="/lovable-uploads/f3efe2eb-c3db-48bd-abc7-c65456fdc028.png" 
-                alt="Visa" 
-                className="h-3.5 w-6 object-contain"
-              />
-            </div>
-            
-            <div className="w-8 h-5 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="12">
-                <circle fill="#EA001B" cx="8" cy="12" r="5"/>
-                <circle fill="#F79E1B" cx="16" cy="12" r="5"/>
-                <path fill="#FF5F00" d="M12 7.5v9a5 5 0 0 0 0-9z"/>
-              </svg>
-            </div>
-            
-            <div className="w-8 h-5 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
-              <img 
-                src="/lovable-uploads/dd1cad7b-c3b6-43a6-9bc6-deb38a120604.png" 
-                alt="Venmo" 
-                className="h-3.5 w-6 object-contain"
-              />
-            </div>
-            
-            {showPaymentOptions && (
-              <>
-                <div className="w-8 h-5 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="12">
-                    <path fill="#253B80" d="M7 7h2c1.4 0 1.9 1 1.9 1.5 0 1.8-2 1.8-2.5 1.8H7.3L7 7z"/>
-                    <path fill="#179BD7" d="M19 7.8C18.7 5.8 16.9 5 14.7 5H9.2c-.3 0-.5.2-.6.5l-1.7 11c0 .2.1.4.4.4h2.9l.7-4.7v.3c.1-.3.3-.5.6-.5h1.3c2.5 0 4.4-1 5-3.9V8c-.1-.2-.1-.2-.1-.2H19z"/>
-                    <path fill="#253B80" d="M8.3 11.5l-.3 2.1-.2 1h-3c-.2 0-.4-.2-.3-.4L6.1 5.9c.1-.3.3-.5.6-.5h5.5c1.5 0 2.6.3 3.2 1 .3.3.5.7.6 1.1.1.3.1.7.1 1.1-1-.6-2-.8-3.3-.8L8.3 11.5z"/>
-                  </svg>
-                </div>
-                
-                <div className="w-8 h-5 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="12">
-                    <path d="M19.665 17.082c-.37.9-.54 1.3-1.01 2.09-.66 1.12-1.6 2.52-2.76 2.53-1.04.01-1.3-.68-2.72-.67-1.42 0-1.72.67-2.76.66-1.16-.01-2.05-1.27-2.71-2.39-1.86-3.05-2.05-6.64-.9-8.53.82-1.35 2.12-2.14 3.33-2.14 1.24 0 2.01.68 3.03.68.98 0 1.58-.68 3-.68 1.07 0 2.2.59 3 1.57-2.66 1.63-2.22 5.89.5 7.48zm-4.17-12.97c-1.2.1-2.61 1.21-3.08 2.72-.42 1.35.37 2.95 1.11 3.77.87.79 2.1 1.08 2.81.25-.69-1.24-1.2-2.54-1.07-4.21.12-1.46.8-2.22 1.74-2.81-.45-.23-.95-.37-1.51-.37-.11 0-.11 0 0 .65z" fill="#000"/>
-                  </svg>
-                </div>
-                
-                <div className="w-8 h-5 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="12">
-                    <path d="M16.46 6.66V4.89H16v7.25h.46V8.81h2.71v3.33h.46V4.89h-.46v1.77h-2.71z" fill="#3C4043"/>
-                    <path d="M13.51 9.2V8.88h2.39v-.48h-2.39V8.07h2.54v-.72h-3v3.3h3.08v-.72h-2.62V9.2z" fill="#3C4043"/>
-                    <path d="M12.13 10.35c-.32.26-.75.4-1.19.4-.94 0-1.66-.77-1.66-1.72s.72-1.72 1.66-1.72c.45 0 .88.14 1.2.4l.29-.33c-.42-.32-.96-.5-1.5-.5-1.19 0-2.12.93-2.12 2.14S9.81 11.17 11 11.17c.54 0 1.08-.17 1.49-.5l-.36-.32z" fill="#3C4043"/>
-                    <path d="M6.82 11.45c1.37 0 2.17-.69 2.17-1.96v-3.2h-.88v3.2c0 .82-.45 1.23-1.29 1.23s-1.29-.41-1.29-1.23v-3.2h-.88v3.2c0 1.27.8 1.96 2.17 1.96z" fill="#3C4043"/>
-                  </svg>
-                </div>
-              </>
-            )}
-          </div>
-          
-          {showPaymentOptions && (
-            <div className="mt-2 text-xs text-gray-600">
-              Buy Now, Pay Later options available at checkout with Klarna and Afterpay.
-            </div>
-          )}
+          <ProductActionsRow 
+            addToCart={addToCart}
+            buyNow={buyNow}
+          />
         </div>
       </div>
       
@@ -952,6 +416,8 @@ const ProductDetail = () => {
           headerHeight={isScrolled ? 40 : 0}
         />
       </div>
+      
+      <RelatedProducts currentProductId={product.id} limit={4} />
       
       <ModernBuyButton />
     </div>
