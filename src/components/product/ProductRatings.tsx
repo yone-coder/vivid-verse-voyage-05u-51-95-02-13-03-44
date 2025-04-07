@@ -1,15 +1,14 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, BarChart } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import {
   HoverCardWithDuration,
   HoverCardTrigger,
   HoverCardContent
 } from "@/components/ui/hover-card";
-import { Badge } from "@/components/ui/badge";
-import { PurchaseHistoryModal } from "./PurchaseHistoryModal";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { PurchaseHistoryModal } from "./PurchaseHistoryModal";
 
 interface ProductRatingsProps {
   rating: number;
@@ -26,8 +25,6 @@ const ProductRatings: React.FC<ProductRatingsProps> = ({
   comparisonMode,
   toggleComparisonMode
 }) => {
-  const [showHistoryModal, setShowHistoryModal] = useState(false);
-  
   const formatNumber = (num: number): string => {
     if (num >= 1000000) return `${(num / 1000000).toFixed(1)}m`;
     if (num >= 1000) return `${(num / 1000).toFixed(1)}k`;
@@ -115,7 +112,6 @@ const ProductRatings: React.FC<ProductRatingsProps> = ({
               <DialogTrigger asChild>
                 <Button variant="link" className="h-5 p-0 text-sm text-gray-700 flex items-center group">
                   <span>{formatNumber(soldCount)}+ Sold</span>
-                  <BarChart className="ml-1 h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity text-blue-600" />
                 </Button>
               </DialogTrigger>
               <PurchaseHistoryModal soldCount={soldCount} />
