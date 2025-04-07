@@ -7,7 +7,6 @@ import {
   HoverCardTrigger,
   HoverCardContent
 } from "@/components/ui/hover-card";
-import { Badge } from "@/components/ui/badge";
 
 interface ProductRatingsProps {
   rating: number;
