@@ -15,28 +15,19 @@ interface ProductRatingsProps {
   reviewCount: number;
   soldCount: number;
   productId?: string;
-  onTabChange?: (tab: string) => void;
 }
 
 const ProductRatings: React.FC<ProductRatingsProps> = ({
   rating,
   reviewCount,
   soldCount,
-  productId = "nebula-pro-2025",
-  onTabChange
+  productId = "nebula-pro-2025"
 }) => {
   const formatNumber = (num: number): string => {
     if (!num && num !== 0) return "0"; // Handle undefined/null values
     if (num >= 1000000) return `${(num / 1000000).toFixed(1)}m`;
     if (num >= 1000) return `${(num / 1000).toFixed(1)}k`;
     return num.toString();
-  };
-
-  const handleSoldClick = (e: React.MouseEvent) => {
-    if (onTabChange) {
-      e.preventDefault();
-      onTabChange("sales");
-    }
   };
 
   return (
@@ -114,21 +105,10 @@ const ProductRatings: React.FC<ProductRatingsProps> = ({
         
         <span className="mx-2 text-gray-300">|</span>
         
-        {onTabChange ? (
-          <Button 
-            variant="link" 
-            className="flex items-center text-sm text-gray-500 hover:text-gray-700 p-0 h-auto"
-            onClick={handleSoldClick}
-          >
-            <span>{formatNumber(soldCount)}+ Sold</span>
-            <ExternalLink className="ml-1 h-3 w-3" />
-          </Button>
-        ) : (
-          <Link to={`/product/${productId}/sales`} className="flex items-center text-sm text-gray-500 hover:text-gray-700">
-            <span>{formatNumber(soldCount)}+ Sold</span>
-            <ExternalLink className="ml-1 h-3 w-3" />
-          </Link>
-        )}
+        <Link to={`/product/${productId}/sales`} className="flex items-center text-sm text-gray-500 hover:text-gray-700">
+          <span>{formatNumber(soldCount)}+ Sold</span>
+          <ExternalLink className="ml-1 h-3 w-3" />
+        </Link>
       </div>
     </div>
   );
