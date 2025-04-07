@@ -37,39 +37,6 @@ const ProductRatings: React.FC<ProductRatingsProps> = ({
   return (
     <>
       <div className="flex flex-col gap-2 mt-1">
-        {/* Product Badges */}
-        <div className="flex items-center gap-2 flex-wrap">
-          <Badge variant="outline" className="bg-red-50 text-red-500 border-red-200 rounded-full py-1 px-3">
-            Flash Deal
-          </Badge>
-          <Badge variant="outline" className="bg-orange-50 text-orange-500 border-orange-200 rounded-full py-1 px-3">
-            Top Seller
-          </Badge>
-          <Badge variant="outline" className="bg-green-50 text-green-500 border-green-200 rounded-full py-1 px-3">
-            Free Shipping
-          </Badge>
-          <Badge variant="outline" className="bg-purple-50 text-purple-600 border-purple-200 flex items-center rounded-full py-1 px-3">
-            <svg className="w-3 h-3 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
-              <polyline points="17 6 23 6 23 12" />
-            </svg>
-            Trending
-          </Badge>
-        </div>
-        
-        {/* Price */}
-        <div className="flex items-baseline">
-          <span className="text-2xl font-bold text-red-500">$24.99</span>
-          <span className="ml-2 text-sm line-through text-gray-500">$39.98</span>
-          <span className="ml-2 text-xs px-2 py-0.5 bg-red-100 text-red-500 rounded-md font-medium">
-            37% OFF
-          </span>
-        </div>
-        
-        {/* Product Name */}
-        <h1 className="text-xl font-medium">Galaxy Nebula Projector Pro 2025</h1>
-        
-        {/* Ratings & Reviews */}
         <div className="flex items-center text-sm">
           <div className="flex items-center">
             <div className="flex text-amber-400">
