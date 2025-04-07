@@ -1,8 +1,7 @@
 
-import React, { useState } from "react";
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { History } from "lucide-react";
-import { PriceHistoryModal } from "./PriceHistoryModal";
 
 interface ProductPriceDisplayProps {
   currentPrice: number;
@@ -38,8 +37,6 @@ const ProductPriceDisplay: React.FC<ProductPriceDisplayProps> = ({
           <History className="h-3 w-3 text-gray-500" />
         </Button>
       )}
-      
-      {showPriceHistory && <PriceHistoryModal />}
     </div>
   );
 };
