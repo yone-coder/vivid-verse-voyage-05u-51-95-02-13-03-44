@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
-import ProductTabsExtended from "@/components/ProductTabsExtended";
+import ProductTabs from "@/components/ProductTabs";
 import LiveStockUpdates from "@/components/LiveStockUpdates";
 import ModernBuyButton from "@/components/ModernBuyButton";
 import RelatedProducts from "@/components/RelatedProducts";
@@ -417,7 +417,7 @@ const ProductDetail = () => {
       </div>
       
       <div ref={tabsRef} className="relative">
-        <ProductTabsExtended 
+        <ProductTabs 
           product={product} 
           activeTab={activeTab} 
           setActiveTab={setActiveTab} 
