@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { ArrowLeft, Share, Heart, MessageCircle, Truck, Shield, Award, Percent, ThumbsUp, Zap, Star, Sparkles, ArrowRight, Crown, Clock, Gift, Check, Info, CreditCard, AlertCircle, Bookmark, Box, Tag, Download, Users, Rocket, Copy, Scissors, BadgePercent, TicketPercent, BookmarkPlus, BellRing, ShieldCheck, CircleDollarSign, ChevronDown, Search, X, Fire, TrendingUp, Eye, BarChart2, Headphones, Camera, Video, UserPlus, Settings, AlertCircle as AlertCircleIcon } from "lucide-react";
+import { ArrowLeft, Share, Heart, MessageCircle, Truck, Shield, Award, Percent, ThumbsUp, Zap, Star, Sparkles, ArrowRight, Crown, Clock, Gift, Check, Info, CreditCard, AlertCircle, Bookmark, Box, Tag, Download, Users, Rocket, Copy, Scissors, BadgePercent, TicketPercent, BookmarkPlus, BellRing, ShieldCheck, CircleDollarSign, ChevronDown, Search, X, Flame, TrendingUp, Eye, BarChart2, Headphones, Camera, Video, UserPlus, Settings, AlertCircle as AlertCircleIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -413,7 +413,7 @@ const ProductDetail = () => {
         <div className="bg-white p-3 mb-0">
           <div className="flex items-center mb-0.5 flex-wrap gap-1">
             <Badge variant="outline" className="text-xs bg-red-50 text-red-500 border-red-200 flex items-center gap-1">
-              <Fire className="h-3 w-3" /> Flash Deal
+              <Flame className="h-3 w-3" /> Flash Deal
             </Badge>
             <Badge variant="outline" className="text-xs bg-orange-50 text-orange-500 border-orange-200 flex items-center gap-1">
               <TrendingUp className="h-3 w-3" /> Top Seller
@@ -509,15 +509,15 @@ const ProductDetail = () => {
                       <Switch 
                         checked={showAugmentedView} 
                         onCheckedChange={setShowAugmentedView} 
-                        size="sm" 
+                        className="scale-75"
                       />
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-xs">Price Alerts</span>
                       <Switch 
                         checked={isNotifyActive} 
-                        onCheckedChange={handlePriceAlert} 
-                        size="sm" 
+                        onCheckedChange={handlePriceAlert}
+                        className="scale-75" 
                       />
                     </div>
                     <div className="flex items-center justify-between">
@@ -525,7 +525,7 @@ const ProductDetail = () => {
                       <Switch 
                         checked={showTrendingIndicator} 
                         onCheckedChange={setShowTrendingIndicator}
-                        size="sm"
+                        className="scale-75"
                       />
                     </div>
                   </div>
@@ -538,7 +538,7 @@ const ProductDetail = () => {
             {product.name}
             {showTrendingIndicator && (
               <Badge variant="outline" className="ml-2 text-[9px] py-0 px-1 h-4 bg-orange-50 text-orange-600 border-orange-200">
-                <Fire className="h-2.5 w-2.5 mr-0.5" /> Trending
+                <Flame className="h-2.5 w-2.5 mr-0.5" /> Trending
               </Badge>
             )}
           </h1>
