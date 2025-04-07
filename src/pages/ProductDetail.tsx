@@ -130,7 +130,31 @@ const ProductDetail = () => {
       reserved: 56,
       selling_fast: true
     },
-    badges: []
+    badges: [],
+    sales: {
+      monthly: [
+        { month: "Jan", sales: 345 },
+        { month: "Feb", sales: 420 },
+        { month: "Mar", sales: 510 },
+        { month: "Apr", sales: 590 },
+        { month: "May", sales: 670 },
+        { month: "Jun", sales: 620 },
+        { month: "Jul", sales: 700 },
+        { month: "Aug", sales: 750 },
+        { month: "Sep", sales: 800 },
+        { month: "Oct", sales: 880 },
+        { month: "Nov", sales: 950 },
+        { month: "Dec", sales: 1100 },
+      ],
+      topCountries: [
+        { country: "United States", percentage: 35 },
+        { country: "United Kingdom", percentage: 20 },
+        { country: "Canada", percentage: 12 },
+        { country: "Germany", percentage: 10 },
+        { country: "Australia", percentage: 8 },
+        { country: "Others", percentage: 15 },
+      ]
+    }
   };
 
   // Event handlers
@@ -195,6 +219,13 @@ const ProductDetail = () => {
       title: "Proceeding to checkout",
       description: `Processing order for ${quantity} x ${product.name} (${selectedColor})`,
     });
+  };
+
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+    if (tabsRef.current) {
+      tabsRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   const scrollToTabs = () => {
@@ -322,6 +353,7 @@ const ProductDetail = () => {
             reviewCount={product.reviewCount}
             soldCount={product.sold}
             productId={product.id}
+            onTabChange={handleTabChange}
           />
 
           <div className="mt-4">
