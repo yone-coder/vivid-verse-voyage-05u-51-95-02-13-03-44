@@ -6,17 +6,39 @@ import LivePurchaseBanner from "@/components/LivePurchaseBanner";
 import LiveStockUpdates from "@/components/LiveStockUpdates";
 import ModernBuyButton from "@/components/ModernBuyButton";
 import ProductImageGallery from "@/components/ProductImageGallery";
+import ProductBadges from "@/components/product/ProductBadges";
 import { useProduct } from "@/hooks/useProduct";
 import {
   Star,
   TrendingUp,
   Clock,
-  Fire,
+  AlertTriangle,
   Tag,
   Truck,
   ShoppingBag,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+
+// Interface for our placeholder/fallback product data
+interface PlaceholderProduct {
+  id: string;
+  name: string;
+  price: number;
+  originalPrice: number;
+  discount: number;
+  rating: number;
+  reviews: number;
+  sold: string;
+  stock: number;
+  description: string;
+  features: string[];
+  specifications: { name: string; value: string }[];
+  images: string[];
+  isTrending: boolean;
+  isTopSeller: boolean;
+  isFlashDeal: boolean;
+  freeShipping: boolean;
+}
 
 const ProductDetail = () => {
   const { id, slug } = useParams();
@@ -24,7 +46,7 @@ const ProductDetail = () => {
   const { data: product, isLoading, error } = useProduct(productId);
 
   // Placeholder product data for demo
-  const productData = {
+  const productData: PlaceholderProduct = {
     id: "1",
     name: "Galaxy Nebula Projector Pro 2025",
     price: 24.99,
@@ -62,7 +84,22 @@ const ProductDetail = () => {
     freeShipping: true,
   };
 
-  const productInfo = product || productData;
+  // Combine real data with placeholder data for any missing fields
+  const productInfo = product 
+    ? {
+        ...productData,
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        description: product.description,
+        originalPrice: product.discount_price ? product.price : productData.originalPrice,
+        discount: product.discount_price ? Math.round(((product.price - product.discount_price) / product.price) * 100) : productData.discount,
+        // Map product_images to image URLs
+        images: product.product_images?.length 
+          ? product.product_images.map(img => img.src) 
+          : productData.images,
+      }
+    : productData;
 
   if (isLoading) {
     return <div className="p-12 text-center">Loading product...</div>;
@@ -87,7 +124,7 @@ const ProductDetail = () => {
           <div className="flex flex-wrap gap-2 mb-3">
             {productInfo.isFlashDeal && (
               <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">
-                <Fire className="h-3.5 w-3.5 mr-1 text-red-600" /> Flash Deal
+                <AlertTriangle className="h-3.5 w-3.5 mr-1 text-red-600" /> Flash Deal
               </Badge>
             )}
             {productInfo.isTopSeller && (
