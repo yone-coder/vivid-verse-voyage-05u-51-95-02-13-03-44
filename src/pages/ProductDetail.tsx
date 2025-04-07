@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { ArrowLeft, Share, Heart, MessageCircle, Truck, Shield, Award, Percent, ThumbsUp, Zap, Star, Sparkles, ArrowRight, Crown, Clock, Gift, Check, Info, CreditCard, AlertCircle, Bookmark, Box, Tag, Download, Users, Rocket, Copy, Scissors, BadgePercent, TicketPercent, BookmarkPlus, BellRing, ShieldCheck, CircleDollarSign, ChevronDown, Search, X, Flame, TrendingUp, Eye, BarChart, LineChart, History, ChevronRight, Gauge } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -702,4 +703,26 @@ const ProductDetail = () => {
                   <span className="font-medium text-purple-900">Limited Time Offer</span>
                 </div>
                 
-                <div className="flex space-x-1
+                <div className="flex space-x-1">
+                  <div className="bg-purple-900/90 text-white text-xs px-1.5 py-1 rounded">
+                    <span className="font-medium">{timeLeft.hours.toString().padStart(2, '0')}</span>
+                  </div>
+                  <span className="text-purple-900 font-medium">:</span>
+                  <div className="bg-purple-900/90 text-white text-xs px-1.5 py-1 rounded">
+                    <span className="font-medium">{timeLeft.minutes.toString().padStart(2, '0')}</span>
+                  </div>
+                  <span className="text-purple-900 font-medium">:</span>
+                  <div className="bg-purple-900/90 text-white text-xs px-1.5 py-1 rounded">
+                    <span className="font-medium">{timeLeft.seconds.toString().padStart(2, '0')}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ProductDetail;
