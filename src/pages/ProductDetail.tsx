@@ -213,7 +213,14 @@ const ProductDetail = () => {
         : "Comparison mode has been turned off"
     });
   };
-  
+
+  const handleSalesTabClick = () => {
+    setActiveTab("sales");
+    if (tabsRef.current) {
+      tabsRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   // Effects
   useEffect(() => {
     const handleScroll = () => {
@@ -322,6 +329,7 @@ const ProductDetail = () => {
             reviewCount={product.reviewCount}
             soldCount={product.sold}
             productId={product.id}
+            onSalesTabClick={handleSalesTabClick}
           />
 
           <div className="mt-4">
