@@ -321,6 +321,7 @@ const ProductDetail = () => {
             rating={product.rating}
             reviewCount={product.reviewCount}
             soldCount={product.sold}
+            productId={product.id}
           />
 
           <div className="mt-4">
