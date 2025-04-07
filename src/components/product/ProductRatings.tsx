@@ -2,6 +2,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import {
   HoverCardWithDuration,
   HoverCardTrigger,
