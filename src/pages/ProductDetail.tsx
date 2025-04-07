@@ -305,8 +305,6 @@ const ProductDetail = () => {
             <ProductPriceDisplay 
               currentPrice={currentPrice}
               originalPrice={originalPrice}
-              showPriceHistory={showPriceHistory}
-              onTogglePriceHistory={() => setShowPriceHistory(!showPriceHistory)}
             />
             
             {showLiveData && analytics && (
