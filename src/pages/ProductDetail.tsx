@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -392,6 +391,8 @@ const ProductDetail = () => {
           headerHeight={isScrolled ? 40 : 0}
         />
       </div>
+      
+      <div className="pb-32"></div>
       
       <ModernBuyButton />
     </div>
