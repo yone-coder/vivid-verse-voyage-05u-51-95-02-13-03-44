@@ -375,10 +375,6 @@ const ProductDetail = () => {
             <ProductPaymentOptions paymentOptions={product.payments} />
           </div>
           
-          <ProductActionsRow 
-            addToCart={addToCart}
-            buyNow={buyNow}
-          />
         </div>
       </div>
       
