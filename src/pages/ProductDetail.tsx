@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -12,6 +13,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 // Product Components
 import ProductHeader from "@/components/product/ProductHeader";
 import ProductBadges from "@/components/product/ProductBadges";
+import ProductViewModeSelector from "@/components/product/ProductViewModeSelector";
 import ProductPriceDisplay from "@/components/product/ProductPriceDisplay";
 import ProductLiveData from "@/components/product/ProductLiveData";
 import ProductRatings from "@/components/product/ProductRatings";
@@ -23,6 +25,8 @@ import ProductShipping from "@/components/product/ProductShipping";
 import ProductWarranty from "@/components/product/ProductWarranty";
 import ProductPaymentOptions from "@/components/product/ProductPaymentOptions";
 import ProductActionsRow from "@/components/product/ProductActionsRow";
+
+export type ViewMode = "modern" | "detailed" | "compact";
 
 const ProductDetail = () => {
   // State variables
@@ -40,6 +44,7 @@ const ProductDetail = () => {
   const [maxQuantityReached, setMaxQuantityReached] = useState(false);
   const [comparisonMode, setComparisonMode] = useState(false);
   const [showLiveData, setShowLiveData] = useState(true);
+  const [viewMode, setViewMode] = useState<ViewMode>("modern");
   
   // Refs and hooks
   const headerRef = useRef<HTMLDivElement>(null);
@@ -213,6 +218,14 @@ const ProductDetail = () => {
         : "Comparison mode has been turned off"
     });
   };
+
+  const handleViewModeChange = (mode: ViewMode) => {
+    setViewMode(mode);
+    toast({
+      title: "View mode changed",
+      description: `Switched to ${mode} view`
+    });
+  };
   
   // Effects
   useEffect(() => {
@@ -299,6 +312,13 @@ const ProductDetail = () => {
               isFlashDeal={true}
               isTrending={analytics?.trending}
             />
+            
+            <div className="flex items-center gap-1">
+              <ProductViewModeSelector
+                viewMode={viewMode}
+                onChangeViewMode={handleViewModeChange}
+              />
+            </div>
           </div>
           
           <div className="flex items-center justify-between">
@@ -323,6 +343,8 @@ const ProductDetail = () => {
             rating={product.rating}
             reviewCount={product.reviewCount}
             soldCount={product.sold}
+            comparisonMode={comparisonMode}
+            toggleComparisonMode={toggleComparisonMode}
           />
 
           <div className="mt-4">
