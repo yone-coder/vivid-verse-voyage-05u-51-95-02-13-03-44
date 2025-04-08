@@ -392,7 +392,7 @@ const ProductDetail = () => {
         />
       </div>
       
-      <div className="pb-32"></div>
+      <div className="pb-44"></div>
       
       <ModernBuyButton />
     </div>
