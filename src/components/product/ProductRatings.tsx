@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { ChevronRight } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import {
   HoverCardWithDuration,
   HoverCardTrigger,
@@ -12,25 +12,22 @@ interface ProductRatingsProps {
   rating: number;
   reviewCount: number;
   soldCount: number;
-  comparisonMode: boolean;
-  toggleComparisonMode: () => void;
 }
 
 const ProductRatings: React.FC<ProductRatingsProps> = ({
   rating,
   reviewCount,
-  soldCount,
-  comparisonMode,
-  toggleComparisonMode
+  soldCount
 }) => {
   const formatNumber = (num: number): string => {
+    if (!num && num !== 0) return "0"; // Handle undefined/null values
     if (num >= 1000000) return `${(num / 1000000).toFixed(1)}m`;
     if (num >= 1000) return `${(num / 1000).toFixed(1)}k`;
     return num.toString();
   };
 
   return (
-    <div className="flex items-center mt-1 text-sm justify-between">
+    <div className="flex items-center mt-1 text-sm">
       <div className="flex items-center">
         <div className="flex text-amber-400">
           {'★'.repeat(Math.floor(rating))}
@@ -137,16 +134,6 @@ const ProductRatings: React.FC<ProductRatingsProps> = ({
           </HoverCardContent>
         </HoverCardWithDuration>
       </div>
-      
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={toggleComparisonMode}
-        className="h-6 text-xs border-gray-200"
-      >
-        <ChevronRight className={`h-3.5 w-3.5 mr-1 transition-transform ${comparisonMode ? "rotate-90" : ""}`} />
-        Compare
-      </Button>
     </div>
   );
 };
