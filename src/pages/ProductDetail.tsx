@@ -1,10 +1,10 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
 import ProductTabs from "@/components/ProductTabs";
 import LiveStockUpdates from "@/components/LiveStockUpdates";
 import ModernBuyButton from "@/components/ModernBuyButton";
-import RelatedProducts from "@/components/RelatedProducts";
 import { useProductAnalytics } from "@/hooks/useProduct";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -392,8 +392,6 @@ const ProductDetail = () => {
           headerHeight={isScrolled ? 40 : 0}
         />
       </div>
-      
-      <RelatedProducts currentProductId={product.id} limit={4} />
       
       <ModernBuyButton />
     </div>
