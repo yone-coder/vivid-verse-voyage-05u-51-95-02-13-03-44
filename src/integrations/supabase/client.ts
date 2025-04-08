@@ -6,38 +6,20 @@ import type { Database } from './types';
 const SUPABASE_URL = "https://wkfzhcszhgewkvwukzes.supabase.co";
 const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndrZnpoY3N6aGdld2t2d3VremVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzg3MDE1NzksImV4cCI6MjA1NDI3NzU3OX0.TzSh8M9NOTnsmVaNxquif4xzSxWaVZp9sePHcjrgCVI";
 
+// Import the supabase client like this:
+// import { supabase } from "@/integrations/supabase/client";
+
 export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
-// Product types to match the database schema
-export interface Product {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  discount_price: number | null;
-  created_at: string;
-  updated_at: string;
-  product_images?: ProductImage[];
-}
-
-export interface ProductImage {
-  id: string;
-  product_id: string;
-  src: string;
-  alt: string;
-  created_at: string;
-  updated_at: string;
-}
-
-// Fetch a single product by ID
-export async function fetchProductById(id: string): Promise<Product | null> {
-  const { data: product, error } = await supabase
+// Add a helper function to fetch product data
+export const fetchProductById = async (productId: string) => {
+  const { data, error } = await supabase
     .from('products')
     .select(`
       *,
       product_images(*)
     `)
-    .eq('id', id)
+    .eq('id', productId)
     .single();
   
   if (error) {
@@ -45,23 +27,22 @@ export async function fetchProductById(id: string): Promise<Product | null> {
     return null;
   }
   
-  return product as unknown as Product;
-}
+  return data;
+};
 
-// Fetch all products
-export async function fetchAllProducts(): Promise<Product[]> {
-  const { data: products, error } = await supabase
+// Add a helper function to fetch all products
+export const fetchAllProducts = async () => {
+  const { data, error } = await supabase
     .from('products')
     .select(`
       *,
       product_images(*)
-    `)
-    .order('created_at', { ascending: false });
+    `);
   
   if (error) {
     console.error('Error fetching products:', error);
     return [];
   }
   
-  return products as unknown as Product[];
-}
+  return data;
+};

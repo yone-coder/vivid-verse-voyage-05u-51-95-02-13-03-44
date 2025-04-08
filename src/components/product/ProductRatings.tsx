@@ -1,6 +1,5 @@
 
 import React from "react";
-import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -8,35 +7,23 @@ import {
   HoverCardTrigger,
   HoverCardContent
 } from "@/components/ui/hover-card";
-import { ExternalLink } from "lucide-react";
 
 interface ProductRatingsProps {
   rating: number;
   reviewCount: number;
   soldCount: number;
-  productId?: string;
-  onTabChange?: (tab: string) => void;
 }
 
 const ProductRatings: React.FC<ProductRatingsProps> = ({
   rating,
   reviewCount,
-  soldCount,
-  productId = "nebula-pro-2025",
-  onTabChange
+  soldCount
 }) => {
   const formatNumber = (num: number): string => {
     if (!num && num !== 0) return "0"; // Handle undefined/null values
     if (num >= 1000000) return `${(num / 1000000).toFixed(1)}m`;
     if (num >= 1000) return `${(num / 1000).toFixed(1)}k`;
     return num.toString();
-  };
-
-  const handleSoldClick = (e: React.MouseEvent) => {
-    if (onTabChange) {
-      e.preventDefault();
-      onTabChange("sales");
-    }
   };
 
   return (
@@ -114,21 +101,38 @@ const ProductRatings: React.FC<ProductRatingsProps> = ({
         
         <span className="mx-2 text-gray-300">|</span>
         
-        {onTabChange ? (
-          <Button 
-            variant="link" 
-            className="flex items-center text-sm text-gray-500 hover:text-gray-700 p-0 h-auto"
-            onClick={handleSoldClick}
-          >
-            <span>{formatNumber(soldCount)}+ Sold</span>
-            <ExternalLink className="ml-1 h-3 w-3" />
-          </Button>
-        ) : (
-          <Link to={`/product/${productId}/sales`} className="flex items-center text-sm text-gray-500 hover:text-gray-700">
-            <span>{formatNumber(soldCount)}+ Sold</span>
-            <ExternalLink className="ml-1 h-3 w-3" />
-          </Link>
-        )}
+        <HoverCardWithDuration openDelay={300} closeDelay={100}>
+          <HoverCardTrigger asChild>
+            <Button variant="link" className="h-5 p-0 text-sm text-gray-500">
+              {formatNumber(soldCount)}+ Sold
+            </Button>
+          </HoverCardTrigger>
+          <HoverCardContent className="w-56 p-2">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-medium">Sales History</span>
+                <Badge variant="outline" className="text-[10px] py-0 font-normal">Last 30 days</Badge>
+              </div>
+              <div className="h-20 w-full bg-slate-50 rounded flex items-end p-1 space-x-[2px]">
+                {[12,18,15,22,24,19,17,20,22,27,29,24,20,25,28,30,32,26,24,22,28,33,38,42,45,41,39,35,32,30].map((value, i) => (
+                    <div 
+                      key={i} 
+                      className="flex-1 bg-blue-200 rounded-sm" 
+                      style={{ height: `${Math.min(100, value * 2)}%` }} 
+                    />
+                ))}
+              </div>
+              <div className="flex justify-between items-center text-xs text-gray-500">
+                <div>
+                  <span className="font-medium text-green-600">+140%</span> vs last month
+                </div>
+                <div className="text-xs">
+                  <span className="font-medium">{soldCount}</span> total sales
+                </div>
+              </div>
+            </div>
+          </HoverCardContent>
+        </HoverCardWithDuration>
       </div>
     </div>
   );
