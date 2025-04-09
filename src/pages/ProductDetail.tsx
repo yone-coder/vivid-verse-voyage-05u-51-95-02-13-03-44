@@ -12,7 +12,6 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import ProductHeader from "@/components/product/ProductHeader";
 import ProductBadges from "@/components/product/ProductBadges";
 import ProductPriceDisplay from "@/components/product/ProductPriceDisplay";
-import ProductLiveData from "@/components/product/ProductLiveData";
 import ProductRatings from "@/components/product/ProductRatings";
 import ProductLimitedTimeOffer from "@/components/product/ProductLimitedTimeOffer";
 import ProductCoupons from "@/components/product/ProductCoupons";
@@ -353,12 +352,6 @@ const ProductDetail = () => {
               originalPrice={originalPrice}
             />
             
-            {showLiveData && analytics && (
-              <ProductLiveData 
-                analytics={analytics}
-                onClose={() => setShowLiveData(false)}
-              />
-            )}
           </div>
           
           <h1 className="text-lg font-medium mt-1">{product.name}</h1>

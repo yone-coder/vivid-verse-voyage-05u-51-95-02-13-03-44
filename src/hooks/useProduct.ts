@@ -1,6 +1,6 @@
 
 import { useQuery } from "@tanstack/react-query";
-import { fetchProductById } from "@/integrations/supabase/client";
+import { supabase } from "@/integrations/supabase/client";
 
 export interface ProductAnalytics {
   viewCount: number;
@@ -12,7 +12,20 @@ export interface ProductAnalytics {
 export function useProduct(productId: string) {
   return useQuery({
     queryKey: ['product', productId],
-    queryFn: () => fetchProductById(productId),
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*, product_images(*)')
+        .eq('id', productId)
+        .single();
+        
+      if (error) {
+        console.error('Error fetching product:', error);
+        throw new Error('Failed to fetch product');
+      }
+      
+      return data;
+    },
     enabled: !!productId,
   });
 }
