@@ -59,14 +59,6 @@ export default function MainLayout() {
       {isProductPage ? (
         <>
           <main className="flex-grow relative">
-            <Header 
-              isProductHeader 
-              isFavorite={isFavorite} 
-              toggleFavorite={toggleFavorite} 
-              handleShare={handleShare}
-              isSearchOpen={isSearchOpen}
-              setIsSearchOpen={setIsSearchOpen}
-            />
             <Outlet />
           </main>
         </>

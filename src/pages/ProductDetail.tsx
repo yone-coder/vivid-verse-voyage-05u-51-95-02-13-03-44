@@ -39,6 +39,7 @@ const ProductDetail = () => {
   const [maxQuantityReached, setMaxQuantityReached] = useState(false);
   const [comparisonMode, setComparisonMode] = useState(false);
   const [showLiveData, setShowLiveData] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
   
   // Refs and hooks
   const headerRef = useRef<HTMLDivElement>(null);
@@ -131,14 +132,21 @@ const ProductDetail = () => {
         : "Comparison mode has been turned off"
     });
   };
-  
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    toast({
+      title: "Search submitted",
+      description: `Searching for: ${searchQuery}`,
+    });
+  };
+
   // Effects
   useEffect(() => {
     const handleScroll = () => {
-      if (headerRef.current && tabsRef.current) {
+      if (headerRef.current) {
         const headerBottom = headerRef.current.getBoundingClientRect().bottom;
-        const tabsTop = tabsRef.current.getBoundingClientRect().top;
-        setIsScrolled(headerBottom < 0 || tabsTop <= 0);
+        setIsScrolled(headerBottom < 0);
       }
     };
 
@@ -286,18 +294,37 @@ const ProductDetail = () => {
   
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
-      {/* Gallery Section - No top padding to eliminate white space */}
+      {/* Gallery Section with Header Overlay */}
       <div ref={headerRef} className="relative w-full">
+        {/* Header overlay - positioned absolutely on top of the image */}
+        <div className="absolute top-0 left-0 right-0 z-10">
+          <ProductHeader 
+            isFavorite={isFavorite}
+            toggleFavorite={toggleFavorite}
+            handleShare={handleShare}
+            isScrolled={false}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            handleSearch={handleSearch}
+          />
+        </div>
+        
         <ProductImageGallery images={productImages.length > 0 ? productImages : ["/placeholder.svg"]} />
       </div>
 
+      {/* Fixed header when scrolled */}
       {isScrolled && (
-        <ProductHeader 
-          isFavorite={isFavorite}
-          toggleFavorite={toggleFavorite}
-          handleShare={handleShare}
-          isScrolled={true}
-        />
+        <div className="fixed top-0 left-0 right-0 bg-orange-500 z-30 shadow-sm">
+          <ProductHeader 
+            isFavorite={isFavorite}
+            toggleFavorite={toggleFavorite}
+            handleShare={handleShare}
+            isScrolled={true}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            handleSearch={handleSearch}
+          />
+        </div>
       )}
       
       <div className={`flex-1 ${isScrolled ? 'pt-10' : ''}`}>
