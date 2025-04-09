@@ -2,7 +2,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchAllProducts } from "@/integrations/supabase/client";
 import HeroBanner from "@/components/home/HeroBanner";
-import FeaturedCategories from "@/components/home/FeaturedCategories";
+import SpaceSavingCategories from "@/components/home/SpaceSavingCategories";
 import FlashDeals from "@/components/home/FlashDeals";
 import SuperDealsSection from "@/components/home/SuperDealsSection";
 import ProductGrid from "@/components/home/ProductGrid";
@@ -48,9 +48,9 @@ export default function Index() {
         <BenefitsBanner />
       </div>
       
-      {/* Featured Categories - shown in a compact grid on mobile */}
+      {/* Featured Categories - replaced with SpaceSavingCategories */}
       <div className="bg-white mb-1">
-        <FeaturedCategories />
+        <SpaceSavingCategories />
       </div>
       
       {/* Flash Deals Section */}
