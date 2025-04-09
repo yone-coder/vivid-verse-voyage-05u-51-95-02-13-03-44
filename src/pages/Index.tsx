@@ -15,7 +15,7 @@ import NewArrivals from "@/components/home/NewArrivals";
 import Newsletter from "@/components/home/Newsletter";
 import PopularSearches from "@/components/home/PopularSearches";
 import RecentlyViewed from "@/components/home/RecentlyViewed";
-import SpaceSavingCategories from "@/components/home/SpaceSavingCategories";
+import BenefitsBanner from "@/components/home/BenefitsBanner";
 
 export default function Index() {
   const { data: products, isLoading } = useQuery({
@@ -43,9 +43,9 @@ export default function Index() {
         <HeroBanner />
       </div>
       
-      {/* Space Saving Categories - replacing Benefits Banner */}
+      {/* Benefits Banner with improved layout */}
       <div className="mb-1 bg-white">
-        <SpaceSavingCategories />
+        <BenefitsBanner />
       </div>
       
       {/* Featured Categories - shown in a compact grid on mobile */}
