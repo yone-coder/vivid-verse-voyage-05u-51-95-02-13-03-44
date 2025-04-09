@@ -15,7 +15,6 @@ export default function MainLayout() {
   const { toast } = useToast();
   const [isFavorite, setIsFavorite] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [cartCount, setCartCount] = useState(2);
   
   const toggleFavorite = () => {
     setIsFavorite(!isFavorite);
@@ -65,13 +64,11 @@ export default function MainLayout() {
           handleShare={handleShare}
           isSearchOpen={isSearchOpen}
           setIsSearchOpen={setIsSearchOpen}
-          cartCount={cartCount}
         />
       ) : (
         <Header 
           isSearchOpen={isSearchOpen}
           setIsSearchOpen={setIsSearchOpen}
-          cartCount={cartCount}
         />
       )}
       <main className="flex-grow pb-20">

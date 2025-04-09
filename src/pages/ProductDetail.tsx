@@ -39,7 +39,6 @@ const ProductDetail = () => {
   const [maxQuantityReached, setMaxQuantityReached] = useState(false);
   const [comparisonMode, setComparisonMode] = useState(false);
   const [showLiveData, setShowLiveData] = useState(true);
-  const [cartCount, setCartCount] = useState(2);
   
   // Refs and hooks
   const headerRef = useRef<HTMLDivElement>(null);
@@ -103,7 +102,6 @@ const ProductDetail = () => {
   };
 
   const addToCart = () => {
-    setCartCount(prev => prev + quantity);
     toast({
       title: "Added to cart",
       description: `${quantity} x ${product?.name || "Product"} (${selectedColor}) added to your cart`,
@@ -137,9 +135,10 @@ const ProductDetail = () => {
   // Effects
   useEffect(() => {
     const handleScroll = () => {
-      if (headerRef.current) {
+      if (headerRef.current && tabsRef.current) {
         const headerBottom = headerRef.current.getBoundingClientRect().bottom;
-        setIsScrolled(headerBottom < 0);
+        const tabsTop = tabsRef.current.getBoundingClientRect().top;
+        setIsScrolled(headerBottom < 0 || tabsTop <= 0);
       }
     };
 
@@ -294,33 +293,19 @@ const ProductDetail = () => {
           isFavorite={isFavorite}
           toggleFavorite={toggleFavorite}
           handleShare={handleShare}
-          cartCount={cartCount}
         />
       </div>
 
       {isScrolled && (
-        <div className="fixed top-0 left-0 right-0 z-10">
-          <ProductHeader 
-            isFavorite={isFavorite}
-            toggleFavorite={toggleFavorite}
-            handleShare={handleShare}
-            isScrolled={true}
-            cartCount={cartCount}
-          />
-          
-          <div ref={tabsRef} className="bg-white shadow-sm">
-            <ProductTabs 
-              product={productForTabs}
-              activeTab={activeTab} 
-              setActiveTab={setActiveTab} 
-              isScrolled={true} 
-              headerHeight={0}
-            />
-          </div>
-        </div>
+        <ProductHeader 
+          isFavorite={isFavorite}
+          toggleFavorite={toggleFavorite}
+          handleShare={handleShare}
+          isScrolled={true}
+        />
       )}
       
-      <div className={`flex-1 ${isScrolled ? 'pt-14' : ''}`}>
+      <div className={`flex-1 ${isScrolled ? 'pt-10' : ''}`}>
         <div className="bg-white p-3 mb-0">
           <div className="flex items-center justify-between mb-0.5">
             <ProductBadges 
@@ -408,19 +393,19 @@ const ProductDetail = () => {
         </div>
       </div>
       
-      {!isScrolled && (
-        <div ref={tabsRef} className="bg-white shadow-sm">
-          <ProductTabs 
-            product={productForTabs}
-            activeTab={activeTab} 
-            setActiveTab={setActiveTab} 
-            isScrolled={false} 
-            headerHeight={0}
-          />
-        </div>
-      )}
+      <div ref={tabsRef} className="relative">
+        <ProductTabs 
+          product={productForTabs}
+          activeTab={activeTab} 
+          setActiveTab={setActiveTab} 
+          isScrolled={isScrolled} 
+          headerHeight={isScrolled ? 40 : 0}
+        />
+      </div>
       
-      <ModernBuyButton productId={product.id} />
+      <div className="pb-44"></div>
+      
+      <ModernBuyButton />
     </div>
   );
 };
