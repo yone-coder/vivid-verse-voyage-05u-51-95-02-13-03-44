@@ -152,19 +152,19 @@ const SuperDeals = () => {
         </div>
       </div>
 
-      {/* Scroll container with proper padding effect */}
-      <div className="relative">
+      {/* Scroll container with reduced padding effect */}
+      <div className="relative px-4">
         <div 
           className="overflow-x-auto scrollbar-hide scroll-smooth snap-x snap-mandatory"
           style={{ 
-            scrollPaddingLeft: '1rem',
+            scrollPaddingLeft: '0.5rem', // Reduced from 1rem
             scrollbarWidth: 'none', 
             msOverflowStyle: 'none',
             WebkitOverflowScrolling: 'touch'
           }}
           ref={scrollContainerRef}
         >
-          <div className="flex pl-4">
+          <div className="flex">
             {/* Actual content columns */}
             {groupedDeals.map((column, colIndex) => (
               <div 
@@ -186,3 +186,4 @@ const SuperDeals = () => {
 };
 
 export default SuperDeals;
+
