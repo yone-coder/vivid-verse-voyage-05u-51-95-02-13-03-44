@@ -1,6 +1,11 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { fetchProductById } from "@/integrations/supabase/client";
+import { Tables } from "@/integrations/supabase/types";
+
+export type ProductWithImages = Tables<"products"> & {
+  product_images: Tables<"product_images">[];
+};
 
 export interface ProductAnalytics {
   viewCount: number;
