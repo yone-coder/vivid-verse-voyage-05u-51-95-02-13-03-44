@@ -396,17 +396,13 @@ const ProductDetail = () => {
         </div>
       </div>
       
-      <div ref={tabsRef} className="relative">
-        <ProductTabs 
-          product={productForTabs}
-          activeTab={activeTab} 
-          setActiveTab={setActiveTab} 
-          isScrolled={isScrolled} 
-          headerHeight={isScrolled ? 60 : 0}
-        />
-      </div>
-      
-      <div className="pb-44"></div>
+      <ProductTabs 
+        product={productForTabs}
+        activeTab={activeTab} 
+        setActiveTab={setActiveTab} 
+        isScrolled={isScrolled} 
+        headerHeight={isScrolled ? 60 : 0}
+      />
       
       <ModernBuyButton productId={product.id} />
     </div>
