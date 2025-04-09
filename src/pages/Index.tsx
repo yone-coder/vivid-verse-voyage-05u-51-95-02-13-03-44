@@ -8,15 +8,18 @@ import SuperDealsSection from "@/components/home/SuperDealsSection";
 import ProductGrid from "@/components/home/ProductGrid";
 import TopBrands from "@/components/home/TopBrands";
 import ProductRecommendations from "@/components/home/ProductRecommendations";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function Index() {
   const { data: products, isLoading } = useQuery({
     queryKey: ['products'],
     queryFn: fetchAllProducts,
   });
+  
+  const isMobile = useIsMobile();
 
   return (
-    <main className="flex-grow pb-20 md:pb-0">
+    <div className="flex-grow pb-20 md:pb-0">
       {/* Hero Banner Carousel */}
       <div className="mb-1">
         <HeroBanner />
@@ -51,6 +54,9 @@ export default function Index() {
       <div className="bg-white pb-16 md:pb-6">
         <ProductGrid products={products} isLoading={isLoading} />
       </div>
-    </main>
+      
+      {/* Extra bottom padding for mobile to account for fixed navigation */}
+      {isMobile && <div className="h-16"></div>}
+    </div>
   );
 }

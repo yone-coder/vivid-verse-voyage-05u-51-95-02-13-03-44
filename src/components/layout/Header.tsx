@@ -4,7 +4,7 @@ import { Search, User, ShoppingCart, Heart, Menu, Camera, MessageCircle, Home, P
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Separator } from "@/components/ui/separator";
 
 const categories = [
@@ -23,9 +23,22 @@ export function Header() {
   const isMobile = useIsMobile();
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  
+  // Wait for the mobile detection to stabilize
+  useEffect(() => {
+    if (isMobile !== undefined) {
+      setIsLoaded(true);
+    }
+  }, [isMobile]);
+  
+  // Don't render anything until we're sure about mobile status
+  if (!isLoaded) {
+    return null;
+  }
   
   return (
-    <header className="sticky top-0 z-40 w-full">
+    <header className="sticky top-0 z-40 w-full bg-white">
       {/* Mobile search expanded view */}
       {(isSearchFocused || showSearch) && isMobile ? (
         <div className="py-3 px-3 flex items-center gap-2 bg-orange-500">
@@ -97,18 +110,18 @@ export function Header() {
           )}
 
           {/* Main Header */}
-          <div className={`${isMobile ? 'bg-orange-500 py-2' : 'bg-white py-3 shadow-sm'} px-2`}>
+          <div className={`${isMobile ? 'bg-white py-2 border-b' : 'bg-white py-3 shadow-sm'} px-2`}>
             <div className="container mx-auto px-2 max-w-7xl">
               <div className="flex items-center gap-2">
                 {/* Menu button (mobile) */}
                 {isMobile && (
-                  <Button variant="ghost" size="sm" className="rounded-full p-1.5 text-white">
+                  <Button variant="ghost" size="sm" className="rounded-full p-1.5 text-gray-700">
                     <Menu className="h-5 w-5" />
                   </Button>
                 )}
                 
                 {/* Logo */}
-                <Link to="/" className={`text-xl font-bold ${isMobile ? 'text-white' : 'text-orange-600'} flex-shrink-0 mr-4`}>
+                <Link to="/" className="text-xl font-bold text-orange-600 flex-shrink-0 mr-4">
                   AliMarket
                 </Link>
                 
@@ -125,7 +138,7 @@ export function Header() {
                 {/* Search */}
                 {isMobile ? (
                   <div 
-                    className="flex-1 bg-white rounded-full h-9 flex items-center px-3 shadow-sm"
+                    className="flex-1 bg-gray-100 rounded-full h-9 flex items-center px-3 shadow-sm"
                     onClick={() => setShowSearch(true)}
                   >
                     <Search className="h-4 w-4 text-gray-400 mr-2" />
@@ -179,10 +192,10 @@ export function Header() {
                     </Link>
                   )}
                   
-                  <Link to="/cart" className={`flex flex-col items-center text-xs py-1 px-2 ${isMobile ? 'text-white' : ''}`}>
+                  <Link to="/cart" className="flex flex-col items-center text-xs py-1 px-2 text-gray-700">
                     <div className="relative">
                       <ShoppingCart className="h-5 w-5 mb-0.5" />
-                      <span className="absolute -top-1 -right-1 bg-white text-orange-500 text-[9px] rounded-full h-4 w-4 flex items-center justify-center font-medium">3</span>
+                      <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[9px] rounded-full h-4 w-4 flex items-center justify-center font-medium">3</span>
                     </div>
                     <span className="hidden md:inline text-[10px]">Cart</span>
                   </Link>
