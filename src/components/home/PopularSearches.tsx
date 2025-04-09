@@ -54,16 +54,11 @@ export default function PopularSearches() {
             View All
           </Link>
         </div>
-      </div>
-
-      <div className="-mx-4 px-4">
+        
         <ScrollArea className="w-full">
           <div className="space-y-2">
             {rows.map((row, rowIndex) => (
               <div key={`row-${rowIndex}`} className="flex gap-2">
-                {/* Add left padding spacer for the first row item */}
-                {rowIndex === 0 && <div className="flex-none w-3"></div>}
-                
                 {row.map((item) => (
                   <Link 
                     key={item.id}
@@ -76,18 +71,13 @@ export default function PopularSearches() {
                     </span>
                   </Link>
                 ))}
-                
-                {/* Add right padding spacer for the last row item */}
-                {rowIndex === 0 && <div className="flex-none w-3"></div>}
               </div>
             ))}
           </div>
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
-      </div>
-      
-      <div className="container mx-auto px-3 mt-3">
-        <div className="grid grid-cols-2 gap-2">
+        
+        <div className="mt-3 grid grid-cols-2 gap-2">
           <div className="bg-orange-50 rounded-md p-2 flex items-center justify-between">
             <div className="flex items-center gap-1">
               <ArrowUp className="h-3 w-3 text-orange-500" />
