@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, ShoppingCart, Heart, Share, ArrowLeft, Menu } from "lucide-react";
+import { Search, ShoppingCart, Heart, Share, Camera, ArrowLeft, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -27,7 +27,7 @@ const ProductHeader: React.FC = () => {
     if (navigator.share) {
       navigator.share({
         title: "Check out this product!",
-        text: "I found this amazing product on mimaht!",
+        text: "I found this amazing product on AliMarket!",
         url: window.location.href,
       }).catch((error) => {
         console.log('Error sharing:', error);
@@ -52,7 +52,7 @@ const ProductHeader: React.FC = () => {
 
   if (isSearchExpanded && isMobile) {
     return (
-      <div className="fixed top-0 left-0 right-0 bg-gradient-to-r from-purple-600 to-pink-500 z-50 shadow-sm">
+      <div className="fixed top-0 left-0 right-0 bg-[#FF4747] z-50 shadow-sm">
         <div className="flex items-center h-12 px-3 py-2">
           <Button 
             variant="ghost" 
@@ -70,6 +70,7 @@ const ProductHeader: React.FC = () => {
               autoFocus
             />
             <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-gray-500" />
+            <Camera className="absolute right-2 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-gray-500" />
           </div>
         </div>
       </div>
@@ -78,41 +79,37 @@ const ProductHeader: React.FC = () => {
 
   if (isScrolled) {
     return (
-      <div className="fixed top-0 left-0 right-0 bg-gradient-to-r from-purple-600 to-pink-500 z-50 shadow-sm">
+      <div className="fixed top-0 left-0 right-0 bg-[#FF4747] z-50 shadow-sm">
         <div className="flex items-center h-12 px-2">
           <Link to="/" className="mr-1">
-            <Button variant="ghost" size="sm" className="rounded-full h-8 w-8 p-0 text-white hover:bg-white/10">
+            <Button variant="ghost" size="sm" className="rounded-full h-8 w-8 p-0 text-white hover:bg-[#E43E3E]">
               <ArrowLeft className="h-4 w-4" />
             </Button>
           </Link>
-          
-          <Link to="/" className="text-lg font-bold text-white mr-auto">
-            mimaht
-          </Link>
-          
           {isMobile ? (
             <div 
-              className="w-8 h-8 flex items-center justify-center rounded-full bg-white/10 mr-2"
+              className="flex-1 bg-[#E43E3E] rounded-full h-8 flex items-center px-3"
               onClick={() => setIsSearchExpanded(true)}
             >
-              <Search className="h-4 w-4 text-white" />
+              <Search className="h-3.5 w-3.5 text-white/70 mr-2" />
+              <div className="text-xs text-white/70">Search products...</div>
             </div>
           ) : (
-            <div className="flex-1 max-w-xs relative mx-2">
+            <div className="flex-1 relative mx-2">
               <Input 
                 type="text" 
                 placeholder="Search products..." 
-                className="h-8 pl-8 pr-3 text-xs rounded-full border-0 bg-white/10 text-white placeholder:text-white/70 focus-visible:ring-white/20"
+                className="h-8 pl-8 pr-3 text-xs rounded-full border-0 focus-visible:ring-0"
               />
-              <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-white/70" />
+              <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-gray-500" />
+              <Camera className="absolute right-2 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-gray-500" />
             </div>
           )}
-          
           <div className="flex gap-1">
             <Button 
               variant="ghost" 
               size="sm" 
-              className="rounded-full h-8 w-8 p-0 text-white hover:bg-white/10"
+              className="rounded-full h-8 w-8 p-0 text-white hover:bg-[#E43E3E]"
               onClick={toggleFavorite}
             >
               <Heart className={`h-4 w-4 ${isFavorite ? "fill-white" : ""}`} />
@@ -120,7 +117,7 @@ const ProductHeader: React.FC = () => {
             <Button 
               variant="ghost" 
               size="sm" 
-              className="rounded-full h-8 w-8 p-0 text-white hover:bg-white/10"
+              className="rounded-full h-8 w-8 p-0 text-white hover:bg-[#E43E3E]"
               onClick={handleShare}
             >
               <Share className="h-4 w-4" />
@@ -129,11 +126,11 @@ const ProductHeader: React.FC = () => {
               <Button 
                 variant="ghost" 
                 size="sm" 
-                className="rounded-full h-8 w-8 p-0 text-white hover:bg-white/10"
+                className="rounded-full h-8 w-8 p-0 text-white hover:bg-[#E43E3E]"
               >
                 <div className="relative">
                   <ShoppingCart className="h-4 w-4" />
-                  <span className="absolute -top-1 -right-1 bg-yellow-400 text-purple-700 text-[8px] rounded-full h-3.5 w-3.5 flex items-center justify-center font-medium">3</span>
+                  <span className="absolute -top-1 -right-1 bg-yellow-400 text-[#FF4747] text-[8px] rounded-full h-3.5 w-3.5 flex items-center justify-center font-medium">3</span>
                 </div>
               </Button>
             </Link>
@@ -156,23 +153,18 @@ const ProductHeader: React.FC = () => {
         </Button>
         
         {!isMobile && (
-          <Link to="/" className="text-lg font-bold text-white mx-4">
-            mimaht
-          </Link>
-        )}
-        
-        {!isMobile && (
-          <div className="flex-1 max-w-xs relative">
+          <div className="flex-1 max-w-md mx-auto relative">
             <Input 
               type="text" 
               placeholder="Search products..." 
-              className="h-8 pl-8 pr-3 bg-black/30 backdrop-blur-sm text-white text-xs rounded-full border-0 placeholder:text-white/60"
+              className="h-8 pl-8 pr-8 bg-black/30 backdrop-blur-sm text-white text-xs rounded-full border-0 placeholder:text-white/60"
             />
             <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-white/60" />
+            <Camera className="absolute right-2 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-white/60" />
           </div>
         )}
         
-        <div className="flex gap-2 ml-auto">
+        <div className="flex gap-2">
           <Button 
             variant="outline" 
             size="sm" 
