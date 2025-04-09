@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -25,6 +26,7 @@ const ProductDetail = () => {
   // State variables
   const [activeTab, setActiveTab] = useState("description");
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isHeaderVisible, setIsHeaderVisible] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [isFavorite, setIsFavorite] = useState(false);
   const [showVariants, setShowVariants] = useState(true);
@@ -42,6 +44,7 @@ const ProductDetail = () => {
   // Refs and hooks
   const headerRef = useRef<HTMLDivElement>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
+  const lastScrollTop = useRef(0);
   const isMobile = useIsMobile();
   const { toast } = useToast();
   const { id } = useParams<{ id: string }>();
@@ -151,7 +154,19 @@ const ProductDetail = () => {
     const handleScroll = () => {
       if (headerRef.current) {
         const headerBottom = headerRef.current.getBoundingClientRect().bottom;
+        const currentScrollTop = window.scrollY;
+        
+        // Check if scrolled past header
         setIsScrolled(headerBottom < 0);
+        
+        // Show header when scrolling down past the overlay or scrolling up
+        if (currentScrollTop > lastScrollTop.current || headerBottom < 0) {
+          setIsHeaderVisible(true);
+        } else {
+          setIsHeaderVisible(false);
+        }
+        
+        lastScrollTop.current = currentScrollTop;
       }
     };
 
@@ -319,20 +334,18 @@ const ProductDetail = () => {
       </div>
 
       {/* Fixed header when scrolled */}
-      {isScrolled && (
-        <div className="fixed top-0 left-0 right-0 z-30">
-          <ProductHeader 
-            isFavorite={isFavorite}
-            toggleFavorite={toggleFavorite}
-            handleShare={handleShare}
-            handleCartClick={handleCartClick}
-            isScrolled={true}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            handleSearch={handleSearch}
-          />
-        </div>
-      )}
+      <div className={`fixed top-0 left-0 right-0 z-30 transition-transform duration-300 ${isHeaderVisible && isScrolled ? 'translate-y-0' : '-translate-y-full'}`}>
+        <ProductHeader 
+          isFavorite={isFavorite}
+          toggleFavorite={toggleFavorite}
+          handleShare={handleShare}
+          handleCartClick={handleCartClick}
+          isScrolled={true}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          handleSearch={handleSearch}
+        />
+      </div>
       
       <div className={`flex-1 ${isScrolled ? 'pt-10' : ''}`}>
         <div className="bg-white p-3 mb-0">
