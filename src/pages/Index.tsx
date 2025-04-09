@@ -1,6 +1,6 @@
 
 import { useQuery } from "@tanstack/react-query";
-import { fetchAllProducts } from "@/integrations/supabase/client";
+import { fetchAllProducts, fetchProductsByCategory, fetchFeaturedProducts } from "@/integrations/supabase/client";
 import HeroBanner from "@/components/home/HeroBanner";
 import FeaturedCategories from "@/components/home/FeaturedCategories";
 import FlashDeals from "@/components/home/FlashDeals";
@@ -16,11 +16,24 @@ import Newsletter from "@/components/home/Newsletter";
 import PopularSearches from "@/components/home/PopularSearches";
 import RecentlyViewed from "@/components/home/RecentlyViewed";
 import BenefitsBanner from "@/components/home/BenefitsBanner";
+import LiveActivityFeed from "@/components/home/LiveActivityFeed";
+import DailyDeals from "@/components/home/DailyDeals";
+import LocalRecommendations from "@/components/home/LocalRecommendations";
 
 export default function Index() {
   const { data: products, isLoading } = useQuery({
     queryKey: ['products'],
     queryFn: fetchAllProducts,
+  });
+  
+  const { data: featuredProducts } = useQuery({
+    queryKey: ['featured-products'],
+    queryFn: fetchFeaturedProducts,
+  });
+  
+  const { data: electronicsProducts } = useQuery({
+    queryKey: ['electronics-products'],
+    queryFn: () => fetchProductsByCategory('electronics'),
   });
   
   const isMobile = useIsMobile();
@@ -38,6 +51,9 @@ export default function Index() {
 
   return (
     <div className="flex-grow pb-20 md:pb-0">
+      {/* Live Activity Notifications */}
+      <LiveActivityFeed />
+      
       {/* Hero Banner Carousel */}
       <div className="mb-1">
         <HeroBanner />
@@ -58,6 +74,11 @@ export default function Index() {
         <FlashDeals />
       </div>
       
+      {/* Daily Deals - New Feature */}
+      <div className="mb-1">
+        <DailyDeals />
+      </div>
+      
       {/* Enhanced Popular Searches */}
       <div className="mb-1 bg-white">
         <PopularSearches />
@@ -66,6 +87,11 @@ export default function Index() {
       {/* Super Deals */}
       <div className="mb-1">
         <SuperDealsSection />
+      </div>
+      
+      {/* Local Recommendations - New Feature */}
+      <div className="mb-1 bg-white">
+        <LocalRecommendations />
       </div>
       
       {/* New Arrivals - New Feature */}

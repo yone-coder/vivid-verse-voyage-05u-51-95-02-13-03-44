@@ -13,6 +13,7 @@ interface ProductHeaderProps {
   searchQuery?: string;
   setSearchQuery?: (query: string) => void;
   handleSearch?: (e: React.FormEvent) => void;
+  notificationCount?: number;
 }
 
 const ProductHeader: React.FC<ProductHeaderProps> = ({
@@ -22,7 +23,8 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
   isScrolled = false,
   searchQuery = "",
   setSearchQuery = () => {},
-  handleSearch = () => {}
+  handleSearch = () => {},
+  notificationCount = 0
 }) => {
   if (isScrolled) {
     return (
@@ -47,10 +49,15 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
             <Button 
               variant="ghost" 
               size="sm" 
-              className="rounded-full h-7 w-7 p-0 hover:bg-gray-100"
+              className="rounded-full h-7 w-7 p-0 hover:bg-gray-100 relative"
               onClick={toggleFavorite}
             >
               <Heart className={`h-3.5 w-3.5 ${isFavorite ? "fill-red-500 text-red-500" : ""}`} />
+              {notificationCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[8px] rounded-full h-3 w-3 flex items-center justify-center">
+                  {notificationCount > 9 ? '9+' : notificationCount}
+                </span>
+              )}
             </Button>
             <Button 
               variant="ghost" 
@@ -95,10 +102,15 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
         <Button 
           variant="outline" 
           size="sm" 
-          className="rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/40 border-0 text-white h-7 w-7 p-0"
+          className="rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/40 border-0 text-white h-7 w-7 p-0 relative"
           onClick={toggleFavorite}
         >
           <Heart className={`h-3.5 w-3.5 ${isFavorite ? "fill-white text-white" : ""}`} />
+          {notificationCount > 0 && (
+            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[8px] rounded-full h-3 w-3 flex items-center justify-center">
+              {notificationCount > 9 ? '9+' : notificationCount}
+            </span>
+          )}
         </Button>
         <Button 
           variant="outline" 

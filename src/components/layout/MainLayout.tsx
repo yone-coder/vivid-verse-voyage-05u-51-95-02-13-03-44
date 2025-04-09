@@ -15,9 +15,16 @@ export default function MainLayout() {
   const { toast } = useToast();
   const [isFavorite, setIsFavorite] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [wishlistCount, setWishlistCount] = useState(3); // Demo count for wishlist items
   
   const toggleFavorite = () => {
     setIsFavorite(!isFavorite);
+    if (!isFavorite) {
+      setWishlistCount(prev => prev + 1);
+    } else {
+      setWishlistCount(prev => Math.max(0, prev - 1));
+    }
+    
     toast({
       title: !isFavorite ? "Added to Wishlist" : "Removed from Wishlist",
       description: !isFavorite ? "This item has been added to your wishlist" : "This item has been removed from your wishlist",
@@ -64,11 +71,13 @@ export default function MainLayout() {
           handleShare={handleShare}
           isSearchOpen={isSearchOpen}
           setIsSearchOpen={setIsSearchOpen}
+          notificationCount={wishlistCount}
         />
       ) : (
         <Header 
           isSearchOpen={isSearchOpen}
           setIsSearchOpen={setIsSearchOpen}
+          notificationCount={wishlistCount}
         />
       )}
       <main className="flex-grow pb-20">

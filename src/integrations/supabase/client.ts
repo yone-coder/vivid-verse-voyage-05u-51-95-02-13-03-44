@@ -48,3 +48,45 @@ export const fetchProductById = async (productId: string) => {
   
   return product;
 };
+
+/**
+ * Fetch featured products
+ * @returns An array of featured products
+ */
+export const fetchFeaturedProducts = async () => {
+  // In a real app, you would have a featured flag in your products table
+  // For now, we'll just return some of the products
+  const { data: products, error } = await supabase
+    .from('products')
+    .select('*, product_images(*)')
+    .limit(6);
+    
+  if (error) {
+    console.error('Error fetching featured products:', error);
+    throw new Error('Failed to fetch featured products');
+  }
+  
+  return products;
+};
+
+/**
+ * Fetch products by category
+ * @param category The category to filter by
+ * @returns An array of products in the specified category
+ */
+export const fetchProductsByCategory = async (category: string) => {
+  // In a real app, you would have a category field in your products table
+  // For now, we'll just return all products
+  const { data: products, error } = await supabase
+    .from('products')
+    .select('*, product_images(*)')
+    .order('created_at', { ascending: false })
+    .limit(8);
+    
+  if (error) {
+    console.error('Error fetching products by category:', error);
+    throw new Error('Failed to fetch products by category');
+  }
+  
+  return products;
+};
