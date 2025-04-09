@@ -69,7 +69,6 @@ const LiveStockUpdates: React.FC<LiveStockUpdatesProps> = ({
       <Progress 
         value={stockPercentage} 
         className="h-1.5" 
-        indicatorClassName={pulseProgress ? "animate-pulse" : ""}
       />
       
       <div className="flex justify-between mt-2 text-xs">
