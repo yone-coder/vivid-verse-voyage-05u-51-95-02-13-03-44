@@ -26,10 +26,10 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
 }) => {
   if (isScrolled) {
     return (
-      <div className="fixed top-0 left-0 right-0 bg-orange-500 z-30 shadow-sm">
+      <div className="w-full z-30">
         <div className="flex items-center h-10 px-2">
           <Link to="/" className="mr-1">
-            <Button variant="ghost" size="sm" className="rounded-full h-7 w-7 p-0 text-white hover:bg-orange-600">
+            <Button variant="ghost" size="sm" className="rounded-full h-7 w-7 p-0 text-black hover:bg-gray-100">
               <ArrowLeft className="h-3.5 w-3.5" />
             </Button>
           </Link>
@@ -37,7 +37,7 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
             <Input 
               type="text" 
               placeholder="Search products..." 
-              className="h-7 pl-7 pr-3 text-[10px] rounded-full border-0"
+              className="h-7 pl-7 pr-3 text-[10px] rounded-full border-gray-200"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -47,15 +47,15 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
             <Button 
               variant="ghost" 
               size="sm" 
-              className="rounded-full h-7 w-7 p-0 text-white hover:bg-orange-600"
+              className="rounded-full h-7 w-7 p-0 hover:bg-gray-100"
               onClick={toggleFavorite}
             >
-              <Heart className={`h-3.5 w-3.5 ${isFavorite ? "fill-white" : ""}`} />
+              <Heart className={`h-3.5 w-3.5 ${isFavorite ? "fill-red-500 text-red-500" : ""}`} />
             </Button>
             <Button 
               variant="ghost" 
               size="sm" 
-              className="rounded-full h-7 w-7 p-0 text-white hover:bg-orange-600"
+              className="rounded-full h-7 w-7 p-0 hover:bg-gray-100"
               onClick={handleShare}
             >
               <Share className="h-3.5 w-3.5" />
@@ -67,7 +67,7 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
   }
 
   return (
-    <div className="absolute top-2 left-0 right-0 flex justify-between z-10 px-2">
+    <div className="w-full flex justify-between z-10 px-2 py-3">
       <Link to="/">
         <Button variant="outline" size="sm" className="rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/40 border-0 text-white h-7 w-7 p-0">
           <ArrowLeft className="h-3.5 w-3.5" />

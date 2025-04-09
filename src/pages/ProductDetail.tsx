@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -38,6 +39,7 @@ const ProductDetail = () => {
   const [maxQuantityReached, setMaxQuantityReached] = useState(false);
   const [comparisonMode, setComparisonMode] = useState(false);
   const [showLiveData, setShowLiveData] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
   
   // Refs and hooks
   const headerRef = useRef<HTMLDivElement>(null);
@@ -100,6 +102,16 @@ const ProductDetail = () => {
     });
   };
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery) {
+      toast({
+        title: "Search initiated",
+        description: `Searching for: ${searchQuery}`,
+      });
+    }
+  };
+
   const addToCart = () => {
     toast({
       title: "Added to cart",
@@ -134,10 +146,9 @@ const ProductDetail = () => {
   // Effects
   useEffect(() => {
     const handleScroll = () => {
-      if (headerRef.current && tabsRef.current) {
-        const headerBottom = headerRef.current.getBoundingClientRect().bottom;
-        const tabsTop = tabsRef.current.getBoundingClientRect().top;
-        setIsScrolled(headerBottom < 0 || tabsTop <= 0);
+      if (headerRef.current) {
+        const scrollPosition = window.scrollY;
+        setIsScrolled(scrollPosition > 50);
       }
     };
 
@@ -285,20 +296,25 @@ const ProductDetail = () => {
   
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
-      <div ref={headerRef} className="relative w-full bg-white">
+      <div ref={headerRef} className="relative w-full">
+        {/* Header Overlay */}
+        <div className={`absolute top-0 left-0 right-0 z-30 transition-all duration-300 ${isScrolled ? 'bg-white shadow-sm' : 'bg-transparent'}`}>
+          <ProductHeader 
+            isFavorite={isFavorite}
+            toggleFavorite={toggleFavorite}
+            handleShare={handleShare}
+            isScrolled={isScrolled}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            handleSearch={handleSearch}
+          />
+        </div>
+        
+        {/* Product Gallery - Full-width and height */}
         <ProductImageGallery images={productImages.length > 0 ? productImages : ["/placeholder.svg"]} />
       </div>
 
-      {isScrolled && (
-        <ProductHeader 
-          isFavorite={isFavorite}
-          toggleFavorite={toggleFavorite}
-          handleShare={handleShare}
-          isScrolled={true}
-        />
-      )}
-      
-      <div className={`flex-1 ${isScrolled ? 'pt-10' : ''}`}>
+      <div className={`flex-1`}>
         <div className="bg-white p-3 mb-0">
           <div className="flex items-center justify-between mb-0.5">
             <ProductBadges 
