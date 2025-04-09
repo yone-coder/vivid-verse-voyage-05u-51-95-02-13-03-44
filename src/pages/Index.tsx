@@ -22,6 +22,9 @@ export default function Index() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
+      {/* Header */}
+      <Header />
+      
       {/* Main Content */}
       <main className="flex-grow pb-20 md:pb-0">
         {/* Hero Banner Carousel */}
