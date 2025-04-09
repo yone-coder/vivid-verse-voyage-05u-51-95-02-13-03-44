@@ -21,6 +21,13 @@ const badgeVariants = cva(
         info: "border-transparent bg-blue-500 text-white hover:bg-blue-600",
         orange: "border-transparent bg-orange-500 text-white hover:bg-orange-600",
         red: "border-transparent bg-red-500 text-white hover:bg-red-600",
+        // AliExpress-specific badge styles
+        aliPrice: "border-transparent bg-red-600 text-white font-bold hover:bg-red-700",
+        aliNew: "border-transparent bg-green-600 text-white font-bold hover:bg-green-700",
+        aliHot: "border-transparent bg-orange-600 text-white font-bold hover:bg-orange-700",
+        aliDiscount: "border-transparent bg-yellow-600 text-white font-bold hover:bg-yellow-700",
+        aliShipping: "border-transparent bg-blue-600 text-white font-bold hover:bg-blue-700",
+        aliSuper: "border-transparent bg-gradient-to-r from-red-500 to-orange-500 text-white font-bold",
       },
     },
     defaultVariants: {
