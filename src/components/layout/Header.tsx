@@ -17,19 +17,17 @@ import {
   Smartphone,
   Laptop,
   Shirt,
-  HardHat,
-  Bookmark,
-  Award,
-  Gamepad,
+  Home,
+  ShoppingBag,
+  Gift,
+  Gamepad2 as Gamepad,
   Truck,
   Zap,
   Package,
   Percent,
   ShieldCheck,
-  Gift,
   CheckSquare,
   AlertCircle,
-  MessageCircle,
   X,
   QrCode,
   ChevronRight,
@@ -39,7 +37,6 @@ import {
   LogOut,
   Settings,
   UserCircle,
-  ShoppingBag,
   HelpCircle,
   Headphones,
   Clock,
@@ -48,8 +45,7 @@ import {
   UserPlus,
   Calendar,
   BarChart,
-  SendHorizonal,
-  Home,
+  SendHorizontal as SendHorizonal,
   Mic
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -57,10 +53,8 @@ import { Input } from "@/components/ui/input";
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from "@/components/ui/sheet";
 import {
   Menubar,
@@ -77,7 +71,6 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useTheme } from "@/components/theme-provider";
@@ -162,7 +155,7 @@ const Header = ({ isProductHeader, isFavorite, toggleFavorite, handleShare }: { 
     {
       id: 1,
       name: "Women's Fashion",
-      icon: <Shirt className="h-5 w-5" />,
+      icon: <Shirt className="h-4 w-4" />,
       subcategories: [
         "Dresses", "Tops", "Bottoms", "Lingerie", "Sleepwear", 
         "Sets", "Accessories", "Shoes", "Bags"
@@ -171,7 +164,7 @@ const Header = ({ isProductHeader, isFavorite, toggleFavorite, handleShare }: { 
     {
       id: 2,
       name: "Men's Fashion",
-      icon: <Shirt className="h-5 w-5" />,
+      icon: <Shirt className="h-4 w-4" />,
       subcategories: [
         "Tops", "Bottoms", "Underwear", "Socks", "Suits", 
         "Sleepwear", "Accessories", "Shoes"
@@ -179,8 +172,8 @@ const Header = ({ isProductHeader, isFavorite, toggleFavorite, handleShare }: { 
     },
     {
       id: 3,
-      name: "Phones & Telecommunications",
-      icon: <Smartphone className="h-5 w-5" />,
+      name: "Phones & Telecom",
+      icon: <Smartphone className="h-4 w-4" />,
       subcategories: [
         "Mobile Phones", "Accessories", "Cases & Covers", "Chargers", 
         "Cables", "Screen Protectors", "Power Banks"
@@ -189,7 +182,7 @@ const Header = ({ isProductHeader, isFavorite, toggleFavorite, handleShare }: { 
     {
       id: 4,
       name: "Computer & Office",
-      icon: <Laptop className="h-5 w-5" />,
+      icon: <Laptop className="h-4 w-4" />,
       subcategories: [
         "Laptops", "Gaming PCs", "Components", "Peripherals", 
         "Networking", "Office Equipment", "Software"
@@ -198,7 +191,7 @@ const Header = ({ isProductHeader, isFavorite, toggleFavorite, handleShare }: { 
     {
       id: 5,
       name: "Consumer Electronics",
-      icon: <Zap className="h-5 w-5" />,
+      icon: <Zap className="h-4 w-4" />,
       subcategories: [
         "TVs", "Home Audio", "Cameras", "Gaming", 
         "Smart Devices", "Wearables"
@@ -207,7 +200,7 @@ const Header = ({ isProductHeader, isFavorite, toggleFavorite, handleShare }: { 
     {
       id: 6,
       name: "Jewelry & Watches",
-      icon: <Clock className="h-5 w-5" />,
+      icon: <Clock className="h-4 w-4" />,
       subcategories: [
         "Fine Jewelry", "Wedding Jewelry", "Men's Watches", 
         "Women's Watches", "Fashion Jewelry"
@@ -216,7 +209,7 @@ const Header = ({ isProductHeader, isFavorite, toggleFavorite, handleShare }: { 
     {
       id: 7,
       name: "Home, Pet & Appliances",
-      icon: <Home className="h-5 w-5" />,
+      icon: <Home className="h-4 w-4" />,
       subcategories: [
         "Kitchen", "Home Decor", "Textiles", "Pet Supplies", 
         "Major Appliances", "Small Appliances"
@@ -225,7 +218,7 @@ const Header = ({ isProductHeader, isFavorite, toggleFavorite, handleShare }: { 
     {
       id: 8,
       name: "Bags & Shoes",
-      icon: <ShoppingBag className="h-5 w-5" />,
+      icon: <ShoppingBag className="h-4 w-4" />,
       subcategories: [
         "Women's Bags", "Men's Bags", "Women's Shoes", 
         "Men's Shoes", "Wallets", "Luggage"
@@ -234,7 +227,7 @@ const Header = ({ isProductHeader, isFavorite, toggleFavorite, handleShare }: { 
     {
       id: 9,
       name: "Toys, Kids & Babies",
-      icon: <Gift className="h-5 w-5" />,
+      icon: <Gift className="h-4 w-4" />,
       subcategories: [
         "Baby Clothing", "Toys", "Remote Control", 
         "Educational", "Baby Care", "Children's Clothing"
@@ -243,7 +236,7 @@ const Header = ({ isProductHeader, isFavorite, toggleFavorite, handleShare }: { 
     {
       id: 10,
       name: "Sports & Outdoors",
-      icon: <Gamepad className="h-5 w-5" />,
+      icon: <Gamepad className="h-4 w-4" />,
       subcategories: [
         "Sports Clothing", "Cycling", "Fishing", "Camping", 
         "Fitness Equipment", "Team Sports"
@@ -253,31 +246,95 @@ const Header = ({ isProductHeader, isFavorite, toggleFavorite, handleShare }: { 
 
   if (isProductHeader) {
     return (
-      <div className="sticky top-0 left-0 right-0 bg-white z-40">
-        <div className={`relative h-[var(--header-height)] w-full border-b ${isScrolled ? 'shadow-md' : ''}`}>
-          <div className={`fixed top-0 left-0 right-0 h-[var(--header-height)] bg-white z-30 ${isScrolled ? 'shadow-md' : ''}`}>
-            <div className="container h-full">
+      <div className="sticky top-0 left-0 right-0 bg-white/95 backdrop-blur-sm z-40">
+        <div className={`relative h-[52px] w-full ${isScrolled ? 'shadow-sm' : ''}`}>
+          <div className={`fixed top-0 left-0 right-0 h-[52px] bg-white/95 backdrop-blur-sm z-30 ${isScrolled ? 'shadow-sm' : ''}`}>
+            <div className="container h-full max-w-screen-2xl">
               <div className="flex items-center justify-between h-full px-2">
-                <Link to="/" className="mr-2">
-                  <Button variant="ghost" size="icon" className="rounded-full">
-                    <ArrowLeft className="h-5 w-5" />
+                <Link to="/" className="mr-1">
+                  <Button variant="ghost" size="icon" className="rounded-full h-8 w-8">
+                    <ArrowLeft className="h-4 w-4" />
                   </Button>
                 </Link>
-                <div className="flex-1 relative">
+                <div className="flex-1 relative max-w-xl mx-auto">
                   <Input 
                     type="text" 
                     placeholder="Search products..." 
-                    className="h-9 pl-9 pr-3 rounded-full border-gray-200" 
+                    className="h-8 pl-8 pr-3 rounded-full border-gray-200 text-xs" 
                   />
-                  <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
+                  <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3 w-3 text-gray-500" />
                 </div>
-                <div className="flex items-center gap-2 ml-2">
-                  <Button variant="ghost" size="icon" className="rounded-full" onClick={toggleFavorite}>
-                    <Heart className={`h-5 w-5 ${isFavorite ? "fill-red-500 text-red-500" : ""}`} />
+                <div className="flex items-center gap-1 ml-1">
+                  <Button variant="ghost" size="icon" className="rounded-full h-8 w-8" onClick={toggleFavorite}>
+                    <Heart className={`h-4 w-4 ${isFavorite ? "fill-red-500 text-red-500" : ""}`} />
                   </Button>
-                  <Button variant="ghost" size="icon" className="rounded-full" onClick={handleShare}>
-                    <Share className="h-5 w-5" />
+                  <Button variant="ghost" size="icon" className="rounded-full h-8 w-8" onClick={handleShare}>
+                    <Share className="h-4 w-4" />
                   </Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" className="rounded-full h-8 w-8">
+                        <div className="relative">
+                          <ShoppingCart className="h-4 w-4" />
+                          <span className="absolute -top-0.5 -right-0.5 bg-orange-500 text-white text-[8px] rounded-full h-3 w-3 flex items-center justify-center">
+                            2
+                          </span>
+                        </div>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-72">
+                      <div className="p-3 border-b">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-medium">Cart (2)</span>
+                          <Button variant="link" size="sm" className="h-auto p-0 text-[10px] text-orange-500">
+                            View All
+                          </Button>
+                        </div>
+                      </div>
+                      <div className="max-h-60 overflow-auto">
+                        <div className="p-2 border-b hover:bg-gray-50">
+                          <div className="flex">
+                            <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf0c?w=80&h=80&fit=crop" className="w-12 h-12 object-cover rounded mr-2" alt="Watch" />
+                            <div className="flex-1">
+                              <p className="text-xs font-medium truncate">Luxury Watch with Leather Strap</p>
+                              <p className="text-[10px] text-gray-500">1 × $129.99</p>
+                              <div className="flex justify-between items-center mt-1">
+                                <p className="text-xs font-medium text-orange-500">$129.99</p>
+                                <Button variant="ghost" size="sm" className="h-5 w-5 p-0">
+                                  <X className="h-3 w-3" />
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="p-2 border-b hover:bg-gray-50">
+                          <div className="flex">
+                            <img src="https://images.unsplash.com/photo-1505740420928-5e0e321c5d08?w=80&h=80&fit=crop" className="w-12 h-12 object-cover rounded mr-2" alt="Headphones" />
+                            <div className="flex-1">
+                              <p className="text-xs font-medium truncate">Wireless Noise Cancelling Headphones</p>
+                              <p className="text-[10px] text-gray-500">1 × $89.99</p>
+                              <div className="flex justify-between items-center mt-1">
+                                <p className="text-xs font-medium text-orange-500">$89.99</p>
+                                <Button variant="ghost" size="sm" className="h-5 w-5 p-0">
+                                  <X className="h-3 w-3" />
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="p-3 border-b">
+                        <div className="flex justify-between items-center text-xs">
+                          <span>Total:</span>
+                          <span className="font-medium text-orange-500">$219.98</span>
+                        </div>
+                      </div>
+                      <div className="p-2 flex gap-2">
+                        <Button variant="outline" size="sm" className="flex-1 h-7 text-xs">View Cart</Button>
+                        <Button variant="default" size="sm" className="flex-1 h-7 text-xs bg-orange-500 hover:bg-orange-600">Checkout</Button>
+                      </div>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
               </div>
             </div>
@@ -291,21 +348,21 @@ const Header = ({ isProductHeader, isFavorite, toggleFavorite, handleShare }: { 
     <div className="sticky top-0 left-0 right-0 bg-white z-40">
       {/* Top Promo Banner */}
       {showTopPromoBanner && (
-        <div className="bg-orange-500 text-white text-xs py-1 px-4">
-          <div className="container mx-auto flex justify-between items-center">
+        <div className="bg-gradient-to-r from-orange-500 to-orange-400 text-white text-[10px] py-0.5 px-2">
+          <div className="container mx-auto flex justify-between items-center max-w-screen-2xl">
             <div className="flex items-center space-x-4">
-              <span>Welcome to AliExpress-style Store • Free shipping on orders over $50</span>
-              <div className="hidden md:flex items-center space-x-4">
+              <span className="text-white/90">Flash Sale: 24hrs only • Extra 10% off with code <span className="font-semibold bg-white/20 px-1 rounded">EXTRA10</span></span>
+              <div className="hidden md:flex items-center space-x-3 text-[9px]">
                 <span className="flex items-center">
-                  <MapPin className="h-3 w-3 mr-1" />
-                  Ship to: USA
+                  <MapPin className="h-2 w-2 mr-0.5" />
+                  USA
                 </span>
                 <span className="flex items-center">
-                  <Globe className="h-3 w-3 mr-1" />
+                  <Globe className="h-2 w-2 mr-0.5" />
                   {language}
                 </span>
                 <span className="flex items-center">
-                  <DollarSign className="h-3 w-3 mr-1" />
+                  <DollarSign className="h-2 w-2 mr-0.5" />
                   {currency}
                 </span>
               </div>
@@ -313,10 +370,10 @@ const Header = ({ isProductHeader, isFavorite, toggleFavorite, handleShare }: { 
             <Button 
               variant="ghost" 
               size="icon" 
-              className="h-5 w-5 text-white hover:bg-orange-600 p-0" 
+              className="h-4 w-4 text-white hover:bg-orange-600/20 p-0" 
               onClick={() => setShowTopPromoBanner(false)}
             >
-              <X className="h-3 w-3" />
+              <X className="h-2 w-2" />
             </Button>
           </div>
         </div>
@@ -324,72 +381,72 @@ const Header = ({ isProductHeader, isFavorite, toggleFavorite, handleShare }: { 
 
       {/* Main Header */}
       <div className="bg-white border-b">
-        <div className="container mx-auto py-2">
+        <div className="container mx-auto py-1 max-w-screen-2xl">
           {/* Top Nav - Desktop */}
-          <div className="hidden md:flex justify-between items-center text-xs text-gray-500 mb-2">
-            <div className="flex items-center space-x-4">
-              <Link to="/" className="hover:text-orange-500">Sell on AliExpress</Link>
-              <div className="h-3 border-r border-gray-300"></div>
+          <div className="hidden md:flex justify-between items-center text-[9px] text-gray-500 mb-1">
+            <div className="flex items-center space-x-3">
+              <Link to="/" className="hover:text-orange-500">Sell on AliShop</Link>
+              <div className="h-2.5 border-r border-gray-200"></div>
               <Link to="/" className="hover:text-orange-500">Help</Link>
-              <div className="h-3 border-r border-gray-300"></div>
+              <div className="h-2.5 border-r border-gray-200"></div>
               <Link to="/" className="hover:text-orange-500">Buyer Protection</Link>
-              <div className="h-3 border-r border-gray-300"></div>
+              <div className="h-2.5 border-r border-gray-200"></div>
               <Link to="/" className="hover:text-orange-500">App</Link>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="h-auto py-0 px-2 text-xs font-normal">
-                    <UserCircle className="h-3 w-3 mr-1" />
+                  <Button variant="ghost" size="sm" className="h-auto py-0 px-1.5 text-[9px] font-normal">
+                    <UserCircle className="h-2.5 w-2.5 mr-0.5" />
                     Account
-                    <ChevronDown className="h-3 w-3 ml-1" />
+                    <ChevronDown className="h-2.5 w-2.5 ml-0.5" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-60">
-                  <div className="p-4 border-b">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium">Welcome</span>
+                <DropdownMenuContent align="end" className="w-56">
+                  <div className="p-3 border-b">
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-xs font-medium">Welcome</span>
                       <div className="flex space-x-1">
-                        <Button variant="outline" size="sm" className="h-7 text-xs">Sign In</Button>
-                        <Button variant="default" size="sm" className="h-7 text-xs bg-orange-500 hover:bg-orange-600">Register</Button>
+                        <Button variant="outline" size="sm" className="h-6 text-[10px]">Sign In</Button>
+                        <Button variant="default" size="sm" className="h-6 text-[10px] bg-orange-500 hover:bg-orange-600">Register</Button>
                       </div>
                     </div>
-                    <p className="text-xs text-gray-500">Sign in for a personalized experience</p>
+                    <p className="text-[10px] text-gray-500">Sign in for a personalized experience</p>
                   </div>
-                  <div className="py-2">
-                    <DropdownMenuItem>
-                      <UserCircle className="mr-2 h-4 w-4" />
+                  <div className="py-1.5">
+                    <DropdownMenuItem className="text-xs py-1.5">
+                      <UserCircle className="mr-2 h-3 w-3" />
                       My Account
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <Package className="mr-2 h-4 w-4" />
+                    <DropdownMenuItem className="text-xs py-1.5">
+                      <Package className="mr-2 h-3 w-3" />
                       My Orders
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>
-                      <Heart className="mr-2 h-4 w-4" />
+                    <DropdownMenuItem className="text-xs py-1.5">
+                      <Heart className="mr-2 h-3 w-3" />
                       My Wishlist
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <Gift className="mr-2 h-4 w-4" />
+                    <DropdownMenuItem className="text-xs py-1.5">
+                      <Gift className="mr-2 h-3 w-3" />
                       My Coupons
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <MessageCircle className="mr-2 h-4 w-4" />
+                    <DropdownMenuItem className="text-xs py-1.5">
+                      <MessageSquare className="mr-2 h-3 w-3" />
                       Messages
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>
-                      <Settings className="mr-2 h-4 w-4" />
+                    <DropdownMenuItem className="text-xs py-1.5">
+                      <Settings className="mr-2 h-3 w-3" />
                       Settings
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <HelpCircle className="mr-2 h-4 w-4" />
+                    <DropdownMenuItem className="text-xs py-1.5">
+                      <HelpCircle className="mr-2 h-3 w-3" />
                       Help Center
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>
-                      <LogOut className="mr-2 h-4 w-4" />
+                    <DropdownMenuItem className="text-xs py-1.5">
+                      <LogOut className="mr-2 h-3 w-3" />
                       Sign Out
                     </DropdownMenuItem>
                   </div>
@@ -397,61 +454,49 @@ const Header = ({ isProductHeader, isFavorite, toggleFavorite, handleShare }: { 
               </DropdownMenu>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="h-auto py-0 px-2 text-xs font-normal">
-                    <Bell className="h-3 w-3 mr-1" />
-                    Notifications
-                    <Badge className="ml-1 bg-orange-500 text-[10px] h-4 min-w-4">3</Badge>
+                  <Button variant="ghost" size="sm" className="h-auto py-0 px-1.5 text-[9px] font-normal">
+                    <Bell className="h-2.5 w-2.5 mr-0.5" />
+                    Alerts
+                    <Badge className="ml-0.5 bg-orange-500 text-[8px] h-3 min-w-3">3</Badge>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-80">
-                  <div className="p-4 border-b">
+                <DropdownMenuContent align="end" className="w-72">
+                  <div className="p-3 border-b">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">Notifications</span>
-                      <Button variant="ghost" size="sm" className="h-auto py-0 px-1 text-xs">
+                      <span className="text-xs font-medium">Notifications</span>
+                      <Button variant="ghost" size="sm" className="h-auto py-0 px-1 text-[10px]">
                         Mark all as read
                       </Button>
                     </div>
                   </div>
-                  <div className="max-h-[400px] overflow-auto">
-                    <div className="p-3 border-b hover:bg-gray-50 cursor-pointer">
+                  <div className="max-h-[300px] overflow-auto">
+                    <div className="p-2.5 border-b hover:bg-gray-50 cursor-pointer">
                       <div className="flex">
-                        <div className="rounded-md bg-orange-100 p-2 mr-3">
-                          <Zap className="h-5 w-5 text-orange-500" />
+                        <div className="rounded-md bg-orange-100 p-1.5 mr-2">
+                          <Zap className="h-3.5 w-3.5 text-orange-500" />
                         </div>
                         <div>
-                          <p className="text-sm font-medium">Flash Sale Alert!</p>
-                          <p className="text-xs text-gray-500 mt-1">50% off on selected items for the next 2 hours!</p>
-                          <p className="text-xs text-gray-400 mt-2">2 hours ago</p>
+                          <p className="text-xs font-medium">Flash Sale Alert!</p>
+                          <p className="text-[10px] text-gray-500 mt-0.5">50% off on selected items for the next 2 hours!</p>
+                          <p className="text-[9px] text-gray-400 mt-1">2 hours ago</p>
                         </div>
                       </div>
                     </div>
-                    <div className="p-3 border-b hover:bg-gray-50 cursor-pointer">
+                    <div className="p-2.5 border-b hover:bg-gray-50 cursor-pointer">
                       <div className="flex">
-                        <div className="rounded-md bg-blue-100 p-2 mr-3">
-                          <Package className="h-5 w-5 text-blue-500" />
+                        <div className="rounded-md bg-blue-100 p-1.5 mr-2">
+                          <Package className="h-3.5 w-3.5 text-blue-500" />
                         </div>
                         <div>
-                          <p className="text-sm font-medium">Order Shipped</p>
-                          <p className="text-xs text-gray-500 mt-1">Your order #235789 has been shipped and is on its way!</p>
-                          <p className="text-xs text-gray-400 mt-2">Yesterday</p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="p-3 border-b hover:bg-gray-50 cursor-pointer">
-                      <div className="flex">
-                        <div className="rounded-md bg-green-100 p-2 mr-3">
-                          <Percent className="h-5 w-5 text-green-500" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium">New Coupon</p>
-                          <p className="text-xs text-gray-500 mt-1">You've received a $10 coupon! Use it before it expires.</p>
-                          <p className="text-xs text-gray-400 mt-2">3 days ago</p>
+                          <p className="text-xs font-medium">Order Shipped</p>
+                          <p className="text-[10px] text-gray-500 mt-0.5">Your order #235789 has been shipped!</p>
+                          <p className="text-[9px] text-gray-400 mt-1">Yesterday</p>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div className="p-3 text-center">
-                    <Button variant="ghost" size="sm" className="text-xs text-orange-500">
+                  <div className="p-2 text-center">
+                    <Button variant="ghost" size="sm" className="text-[10px] text-orange-500">
                       View All Notifications
                     </Button>
                   </div>
@@ -459,46 +504,46 @@ const Header = ({ isProductHeader, isFavorite, toggleFavorite, handleShare }: { 
               </DropdownMenu>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="h-auto py-0 px-2 text-xs font-normal">
-                    <ShoppingCart className="h-3 w-3 mr-1" />
+                  <Button variant="ghost" size="sm" className="h-auto py-0 px-1.5 text-[9px] font-normal">
+                    <ShoppingCart className="h-2.5 w-2.5 mr-0.5" />
                     Cart
-                    <Badge className="ml-1 bg-orange-500 text-[10px] h-4 min-w-4">2</Badge>
+                    <Badge className="ml-0.5 bg-orange-500 text-[8px] h-3 min-w-3">2</Badge>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-80">
-                  <div className="p-4 border-b">
+                <DropdownMenuContent align="end" className="w-72">
+                  <div className="p-3 border-b">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">Shopping Cart (2)</span>
-                      <Button variant="ghost" size="sm" className="h-auto py-0 px-1 text-xs">
+                      <span className="text-xs font-medium">Shopping Cart (2)</span>
+                      <Button variant="ghost" size="sm" className="h-auto py-0 px-1 text-[10px]">
                         View All
                       </Button>
                     </div>
                   </div>
-                  <div className="max-h-[300px] overflow-auto">
-                    <div className="p-3 border-b hover:bg-gray-50">
+                  <div className="max-h-[200px] overflow-auto">
+                    <div className="p-2 border-b hover:bg-gray-50">
                       <div className="flex">
-                        <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf0c?w=80&h=80&fit=crop" className="w-16 h-16 object-cover rounded mr-3" alt="Watch" />
+                        <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf0c?w=80&h=80&fit=crop" className="w-12 h-12 object-cover rounded mr-2" alt="Watch" />
                         <div className="flex-1">
-                          <p className="text-sm font-medium truncate">Luxury Watch with Leather Strap</p>
-                          <p className="text-xs text-gray-500 mt-1">1 × $129.99</p>
-                          <div className="flex justify-between items-center mt-2">
-                            <p className="text-sm font-medium text-orange-500">$129.99</p>
-                            <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                          <p className="text-xs font-medium truncate">Luxury Watch with Leather Strap</p>
+                          <p className="text-[10px] text-gray-500 mt-0.5">1 × $129.99</p>
+                          <div className="flex justify-between items-center mt-1">
+                            <p className="text-xs font-medium text-orange-500">$129.99</p>
+                            <Button variant="ghost" size="sm" className="h-5 w-5 p-0">
                               <X className="h-3 w-3" />
                             </Button>
                           </div>
                         </div>
                       </div>
                     </div>
-                    <div className="p-3 border-b hover:bg-gray-50">
+                    <div className="p-2 border-b hover:bg-gray-50">
                       <div className="flex">
-                        <img src="https://images.unsplash.com/photo-1505740420928-5e0e321c5d08?w=80&h=80&fit=crop" className="w-16 h-16 object-cover rounded mr-3" alt="Headphones" />
+                        <img src="https://images.unsplash.com/photo-1505740420928-5e0e321c5d08?w=80&h=80&fit=crop" className="w-12 h-12 object-cover rounded mr-2" alt="Headphones" />
                         <div className="flex-1">
-                          <p className="text-sm font-medium truncate">Wireless Noise Cancelling Headphones</p>
-                          <p className="text-xs text-gray-500 mt-1">1 × $89.99</p>
-                          <div className="flex justify-between items-center mt-2">
-                            <p className="text-sm font-medium text-orange-500">$89.99</p>
-                            <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                          <p className="text-xs font-medium truncate">Wireless Noise Cancelling Headphones</p>
+                          <p className="text-[10px] text-gray-500 mt-0.5">1 × $89.99</p>
+                          <div className="flex justify-between items-center mt-1">
+                            <p className="text-xs font-medium text-orange-500">$89.99</p>
+                            <Button variant="ghost" size="sm" className="h-5 w-5 p-0">
                               <X className="h-3 w-3" />
                             </Button>
                           </div>
@@ -506,128 +551,54 @@ const Header = ({ isProductHeader, isFavorite, toggleFavorite, handleShare }: { 
                       </div>
                     </div>
                   </div>
-                  <div className="p-3 border-b">
-                    <div className="flex justify-between items-center text-sm">
+                  <div className="p-2 border-b">
+                    <div className="flex justify-between items-center text-xs">
                       <span>Subtotal:</span>
                       <span className="font-medium">$219.98</span>
                     </div>
-                    <div className="flex justify-between items-center text-sm mt-2">
+                    <div className="flex justify-between items-center text-xs mt-1">
                       <span>Shipping:</span>
                       <span className="font-medium">$5.99</span>
                     </div>
-                    <div className="flex justify-between items-center text-sm font-medium mt-2">
+                    <div className="flex justify-between items-center text-xs font-medium mt-1">
                       <span>Total:</span>
                       <span className="text-orange-500">$225.97</span>
                     </div>
                   </div>
-                  <div className="p-3 flex gap-2">
-                    <Button variant="outline" size="sm" className="flex-1">View Cart</Button>
-                    <Button variant="default" size="sm" className="flex-1 bg-orange-500 hover:bg-orange-600">Checkout</Button>
+                  <div className="p-2 flex gap-2">
+                    <Button variant="outline" size="sm" className="flex-1 h-7 text-[10px]">View Cart</Button>
+                    <Button variant="default" size="sm" className="flex-1 h-7 text-[10px] bg-orange-500 hover:bg-orange-600">Checkout</Button>
                   </div>
                 </DropdownMenuContent>
               </DropdownMenu>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="h-auto py-0 px-2 text-xs font-normal">
-                    <MessageCircle className="h-3 w-3 mr-1" />
-                    Messages
-                    <Badge className="ml-1 bg-orange-500 text-[10px] h-4 min-w-4">5</Badge>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-80">
-                  <div className="p-4 border-b">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">Messages</span>
-                      <Button variant="ghost" size="sm" className="h-auto py-0 px-1 text-xs">
-                        Mark all as read
-                      </Button>
-                    </div>
-                  </div>
-                  <div className="max-h-[300px] overflow-auto">
-                    <div className="p-3 border-b hover:bg-gray-50 cursor-pointer">
-                      <div className="flex">
-                        <div className="relative">
-                          <Avatar className="h-10 w-10">
-                            <AvatarImage src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&h=300&fit=crop" />
-                            <AvatarFallback>VS</AvatarFallback>
-                          </Avatar>
-                          <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 border-2 border-white"></div>
-                        </div>
-                        <div className="ml-3 flex-1">
-                          <div className="flex justify-between">
-                            <p className="text-sm font-medium">Electronic Store</p>
-                            <p className="text-xs text-gray-400">5m</p>
-                          </div>
-                          <p className="text-xs text-gray-500 truncate mt-1">Do you have any questions about your order?</p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="p-3 border-b hover:bg-gray-50 cursor-pointer">
-                      <div className="flex">
-                        <div className="relative">
-                          <Avatar className="h-10 w-10">
-                            <AvatarImage src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=300&h=300&fit=crop" />
-                            <AvatarFallback>TS</AvatarFallback>
-                          </Avatar>
-                          <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-gray-300 border-2 border-white"></div>
-                        </div>
-                        <div className="ml-3 flex-1">
-                          <div className="flex justify-between">
-                            <p className="text-sm font-medium">Trendy Shop</p>
-                            <p className="text-xs text-gray-400">2h</p>
-                          </div>
-                          <p className="text-xs text-gray-500 truncate mt-1">Your order has been shipped. Track your package here!</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="p-3">
-                    <div className="flex items-center border rounded-lg p-2">
-                      <Input placeholder="Type a message..." className="border-0 text-sm p-0 h-auto focus-visible:ring-0" />
-                      <Button size="sm" className="bg-orange-500 hover:bg-orange-600 h-8 px-3 ml-2">
-                        <SendHorizonal className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                  <div className="p-3 text-center border-t">
-                    <Button variant="ghost" size="sm" className="text-xs text-orange-500">
-                      View All Messages
-                    </Button>
-                  </div>
-                </DropdownMenuContent>
-              </DropdownMenu>
-              <Button variant="ghost" size="sm" className="h-auto py-0 px-2 text-xs font-normal">
-                <Headphones className="h-3 w-3 mr-1" />
-                Customer Service
+              <Button variant="ghost" size="sm" className="h-auto py-0 px-1.5 text-[9px] font-normal">
+                <Headphones className="h-2.5 w-2.5 mr-0.5" />
+                Support
               </Button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="h-auto py-0 px-2 text-xs font-normal">
+                  <Button variant="ghost" size="sm" className="h-auto py-0 px-1.5 text-[9px] font-normal">
                     {theme === "dark" ? (
                       <>
-                        <Moon className="h-3 w-3 mr-1" />
-                        Dark Mode
+                        <Moon className="h-2.5 w-2.5 mr-0.5" />
+                        Dark
                       </>
                     ) : (
                       <>
-                        <Sun className="h-3 w-3 mr-1" />
-                        Light Mode
+                        <Sun className="h-2.5 w-2.5 mr-0.5" />
+                        Light
                       </>
                     )}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => setTheme("light")}>
-                    <Sun className="mr-2 h-4 w-4" />
+                  <DropdownMenuItem onClick={() => setTheme("light")} className="text-xs py-1.5">
+                    <Sun className="mr-2 h-3 w-3" />
                     Light
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setTheme("dark")}>
-                    <Moon className="mr-2 h-4 w-4" />
+                  <DropdownMenuItem onClick={() => setTheme("dark")} className="text-xs py-1.5">
+                    <Moon className="mr-2 h-3 w-3" />
                     Dark
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setTheme("system")}>
-                    <Laptop className="mr-2 h-4 w-4" />
-                    System
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -635,41 +606,37 @@ const Header = ({ isProductHeader, isFavorite, toggleFavorite, handleShare }: { 
           </div>
 
           {/* Main Header Row */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between py-0.5">
             {/* Logo */}
-            <Link to="/" className="flex-shrink-0 text-2xl font-bold text-orange-500 mr-4">
-              AliShop
+            <Link to="/" className="flex-shrink-0 text-lg font-bold text-orange-500 mr-1 flex items-center">
+              <ShoppingBag className="h-4 w-4 mr-1" />
+              <span className="hidden xs:inline">AliShop</span>
             </Link>
 
             {/* Categories Button - Mobile */}
             <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="md:hidden">
-                  <Menu className="h-5 w-5" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="left" className="w-[280px] sm:w-[350px] overflow-auto">
+              <SheetContent side="left" className="w-[260px] sm:w-[300px] overflow-auto p-3">
                 <SheetHeader className="text-left">
-                  <SheetTitle>Categories</SheetTitle>
+                  <SheetTitle className="text-base">Categories</SheetTitle>
                 </SheetHeader>
-                <div className="mt-4 space-y-2">
+                <div className="mt-2 space-y-1">
                   {megaMenuCategories.map((category) => (
-                    <div key={category.id} className="py-2 border-b">
-                      <div className="flex items-center justify-between mb-2">
+                    <div key={category.id} className="py-1.5 border-b">
+                      <div className="flex items-center justify-between mb-1">
                         <div className="flex items-center">
                           {category.icon}
-                          <span className="ml-2 font-medium">{category.name}</span>
+                          <span className="ml-2 font-medium text-xs">{category.name}</span>
                         </div>
-                        <ChevronRight className="h-4 w-4 text-gray-400" />
+                        <ChevronRight className="h-3 w-3 text-gray-400" />
                       </div>
-                      <div className="pl-7 space-y-1">
-                        {category.subcategories.slice(0, 5).map((sub, idx) => (
-                          <Link key={idx} to="/" className="block text-sm py-1 text-gray-600 hover:text-orange-500">
+                      <div className="pl-6 space-y-0.5">
+                        {category.subcategories.slice(0, 3).map((sub, idx) => (
+                          <Link key={idx} to="/" className="block text-[10px] py-0.5 text-gray-600 hover:text-orange-500">
                             {sub}
                           </Link>
                         ))}
-                        {category.subcategories.length > 5 && (
-                          <Link to="/" className="block text-sm py-1 text-orange-500">
+                        {category.subcategories.length > 3 && (
+                          <Link to="/" className="block text-[10px] py-0.5 text-orange-500">
                             View more...
                           </Link>
                         )}
@@ -678,6 +645,9 @@ const Header = ({ isProductHeader, isFavorite, toggleFavorite, handleShare }: { 
                   ))}
                 </div>
               </SheetContent>
+              <Button variant="ghost" size="icon" className="md:hidden h-7 w-7">
+                <Menu className="h-4 w-4" />
+              </Button>
             </Sheet>
 
             {/* Categories - Desktop */}
@@ -685,20 +655,20 @@ const Header = ({ isProductHeader, isFavorite, toggleFavorite, handleShare }: { 
               <NavigationMenu>
                 <NavigationMenuList>
                   <NavigationMenuItem>
-                    <NavigationMenuTrigger className="bg-orange-50 text-orange-500 hover:bg-orange-100 hover:text-orange-600 focus:bg-orange-100 h-10 px-4">
-                      <Menu className="h-4 w-4 mr-2" />
+                    <NavigationMenuTrigger className="bg-orange-50 text-orange-500 hover:bg-orange-100 hover:text-orange-600 focus:bg-orange-100 h-8 px-3 text-xs">
+                      <Menu className="h-3 w-3 mr-1.5" />
                       Categories
                     </NavigationMenuTrigger>
-                    <NavigationMenuContent className="w-[500px] md:w-[600px] lg:w-[700px]">
-                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 p-4">
+                    <NavigationMenuContent className="w-[400px] md:w-[500px] lg:w-[600px]">
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-2 p-3">
                         {megaMenuCategories.map((category) => (
                           <div key={category.id} className="group">
                             <Link 
                               to="/"
-                              className="flex items-center p-2 rounded-md hover:bg-orange-50 group-hover:text-orange-500"
+                              className="flex items-center p-1.5 rounded-md hover:bg-orange-50 group-hover:text-orange-500"
                             >
                               {category.icon}
-                              <span className="ml-2 text-sm font-medium">{category.name}</span>
+                              <span className="ml-1.5 text-xs">{category.name}</span>
                             </Link>
                           </div>
                         ))}
@@ -710,90 +680,89 @@ const Header = ({ isProductHeader, isFavorite, toggleFavorite, handleShare }: { 
             </div>
 
             {/* Search Bar */}
-            <div className="flex-1 max-w-3xl mx-4 relative hidden md:block">
+            <div className="flex-1 max-w-2xl mx-2 relative hidden md:block">
               <form onSubmit={handleSearchSubmit} className="relative">
                 <Input 
                   type="text" 
                   placeholder="Search products..." 
-                  className="h-10 pl-10 pr-20 rounded-[3px] border-orange-500 focus-visible:ring-orange-500"
+                  className="h-8 pl-8 pr-16 rounded border-orange-500 focus-visible:ring-orange-500 text-xs"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                  <Search className="h-4 w-4 text-gray-400" />
+                <div className="absolute inset-y-0 left-0 flex items-center pl-2.5 pointer-events-none">
+                  <Search className="h-3 w-3 text-gray-400" />
                 </div>
-                <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                  <Button type="submit" className="h-[85%] bg-orange-500 hover:bg-orange-600 rounded-none rounded-r-[3px] px-4">
+                <div className="absolute inset-y-0 right-0 flex items-center pr-2">
+                  <Button type="submit" className="h-[80%] bg-orange-500 hover:bg-orange-600 rounded-none rounded-r px-3 text-xs">
                     Search
                   </Button>
                 </div>
               </form>
-              <div className="mt-1.5 flex items-center space-x-2 text-xs text-gray-500">
+              <div className="mt-1 flex items-center space-x-2 text-[9px] text-gray-500">
                 <Link to="/" className="hover:text-orange-500">phones</Link>
                 <Link to="/" className="hover:text-orange-500">laptops</Link>
                 <Link to="/" className="hover:text-orange-500">beauty</Link>
                 <Link to="/" className="hover:text-orange-500">jewelry</Link>
-                <Link to="/" className="hover:text-orange-500">watches</Link>
               </div>
             </div>
 
             {/* Mobile Search Icon */}
             <div className="md:hidden">
-              <Button variant="ghost" size="icon" onClick={handleSearchIconClick}>
-                <Search className="h-5 w-5" />
+              <Button variant="ghost" size="icon" onClick={handleSearchIconClick} className="h-7 w-7">
+                <Search className="h-4 w-4" />
               </Button>
             </div>
 
             {/* Call to Actions */}
-            <div className="flex items-center space-x-1 ml-2">
-              <Button variant="ghost" size="icon" className="hidden md:flex">
-                <Heart className="h-5 w-5" />
+            <div className="flex items-center space-x-0.5 ml-0.5">
+              <Button variant="ghost" size="icon" className="hidden sm:flex h-7 w-7">
+                <Heart className="h-4 w-4" />
               </Button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon">
+                  <Button variant="ghost" size="icon" className="h-7 w-7">
                     <div className="relative">
-                      <ShoppingCart className="h-5 w-5" />
-                      <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] rounded-full h-4 w-4 flex items-center justify-center">
+                      <ShoppingCart className="h-4 w-4" />
+                      <span className="absolute -top-0.5 -right-0.5 bg-orange-500 text-white text-[8px] rounded-full h-3 w-3 flex items-center justify-center">
                         2
                       </span>
                     </div>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-80">
-                  <div className="p-4 border-b">
+                <DropdownMenuContent align="end" className="w-72">
+                  <div className="p-3 border-b">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">Shopping Cart (2)</span>
-                      <Button variant="ghost" size="sm" className="h-auto py-0 px-1 text-xs">
+                      <span className="text-xs font-medium">Shopping Cart (2)</span>
+                      <Button variant="ghost" size="sm" className="h-auto py-0 px-1 text-[10px]">
                         View All
                       </Button>
                     </div>
                   </div>
-                  <div className="max-h-[300px] overflow-auto">
-                    <div className="p-3 border-b hover:bg-gray-50">
+                  <div className="max-h-[200px] overflow-auto">
+                    <div className="p-2 border-b hover:bg-gray-50">
                       <div className="flex">
-                        <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf0c?w=80&h=80&fit=crop" className="w-16 h-16 object-cover rounded mr-3" alt="Watch" />
+                        <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf0c?w=80&h=80&fit=crop" className="w-12 h-12 object-cover rounded mr-2" alt="Watch" />
                         <div className="flex-1">
-                          <p className="text-sm font-medium truncate">Luxury Watch with Leather Strap</p>
-                          <p className="text-xs text-gray-500 mt-1">1 × $129.99</p>
-                          <div className="flex justify-between items-center mt-2">
-                            <p className="text-sm font-medium text-orange-500">$129.99</p>
-                            <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                          <p className="text-xs font-medium truncate">Luxury Watch with Leather Strap</p>
+                          <p className="text-[10px] text-gray-500 mt-0.5">1 × $129.99</p>
+                          <div className="flex justify-between items-center mt-1">
+                            <p className="text-xs font-medium text-orange-500">$129.99</p>
+                            <Button variant="ghost" size="sm" className="h-5 w-5 p-0">
                               <X className="h-3 w-3" />
                             </Button>
                           </div>
                         </div>
                       </div>
                     </div>
-                    <div className="p-3 border-b hover:bg-gray-50">
+                    <div className="p-2 border-b hover:bg-gray-50">
                       <div className="flex">
-                        <img src="https://images.unsplash.com/photo-1505740420928-5e0e321c5d08?w=80&h=80&fit=crop" className="w-16 h-16 object-cover rounded mr-3" alt="Headphones" />
+                        <img src="https://images.unsplash.com/photo-1505740420928-5e0e321c5d08?w=80&h=80&fit=crop" className="w-12 h-12 object-cover rounded mr-2" alt="Headphones" />
                         <div className="flex-1">
-                          <p className="text-sm font-medium truncate">Wireless Noise Cancelling Headphones</p>
-                          <p className="text-xs text-gray-500 mt-1">1 × $89.99</p>
-                          <div className="flex justify-between items-center mt-2">
-                            <p className="text-sm font-medium text-orange-500">$89.99</p>
-                            <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                          <p className="text-xs font-medium truncate">Wireless Noise Cancelling Headphones</p>
+                          <p className="text-[10px] text-gray-500 mt-0.5">1 × $89.99</p>
+                          <div className="flex justify-between items-center mt-1">
+                            <p className="text-xs font-medium text-orange-500">$89.99</p>
+                            <Button variant="ghost" size="sm" className="h-5 w-5 p-0">
                               <X className="h-3 w-3" />
                             </Button>
                           </div>
@@ -801,27 +770,19 @@ const Header = ({ isProductHeader, isFavorite, toggleFavorite, handleShare }: { 
                       </div>
                     </div>
                   </div>
-                  <div className="p-3 border-b">
-                    <div className="flex justify-between items-center text-sm">
-                      <span>Subtotal:</span>
-                      <span className="font-medium">$219.98</span>
-                    </div>
-                    <div className="flex justify-between items-center text-sm mt-2">
-                      <span>Shipping:</span>
-                      <span className="font-medium">$5.99</span>
-                    </div>
-                    <div className="flex justify-between items-center text-sm font-medium mt-2">
+                  <div className="p-2 border-b">
+                    <div className="flex justify-between items-center text-xs">
                       <span>Total:</span>
-                      <span className="text-orange-500">$225.97</span>
+                      <span className="font-medium text-orange-500">$219.98</span>
                     </div>
                   </div>
-                  <div className="p-3 flex gap-2">
-                    <Button variant="outline" size="sm" className="flex-1">View Cart</Button>
-                    <Button variant="default" size="sm" className="flex-1 bg-orange-500 hover:bg-orange-600">Checkout</Button>
+                  <div className="p-2 flex gap-2">
+                    <Button variant="outline" size="sm" className="flex-1 h-7 text-[10px]">Cart</Button>
+                    <Button variant="default" size="sm" className="flex-1 h-7 text-[10px] bg-orange-500 hover:bg-orange-600">Checkout</Button>
                   </div>
                 </DropdownMenuContent>
               </DropdownMenu>
-              <Avatar className="h-8 w-8 ml-1">
+              <Avatar className="h-6 w-6 ml-0.5">
                 <AvatarImage src="https://github.com/shadcn.png" />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
@@ -832,26 +793,25 @@ const Header = ({ isProductHeader, isFavorite, toggleFavorite, handleShare }: { 
 
       {/* Categories Navigation - Desktop */}
       <div className="hidden md:block bg-white border-b">
-        <div className="container mx-auto">
-          <div className="flex items-center space-x-8 py-1 overflow-x-auto whitespace-nowrap text-sm font-medium">
-            <Link to="/" className="text-orange-500 flex items-center px-1 py-2 hover:text-orange-600">
-              <Home className="h-4 w-4 mr-1" />
+        <div className="container mx-auto max-w-screen-2xl">
+          <div className="flex items-center space-x-6 py-0.5 overflow-x-auto whitespace-nowrap text-[10px] font-medium">
+            <Link to="/" className="text-orange-500 flex items-center px-1 py-1.5 hover:text-orange-600">
+              <Home className="h-3 w-3 mr-0.5" />
               Home
             </Link>
-            <Link to="/" className="text-gray-700 px-1 py-2 hover:text-orange-500">Super Deals</Link>
-            <Link to="/" className="text-gray-700 px-1 py-2 hover:text-orange-500">Featured</Link>
-            <Link to="/" className="text-gray-700 px-1 py-2 hover:text-orange-500">New Arrivals</Link>
-            <div className="flex items-center text-gray-700 px-1 py-2 hover:text-orange-500 cursor-pointer">
+            <Link to="/" className="text-gray-700 px-1 py-1.5 hover:text-orange-500">Super Deals</Link>
+            <Link to="/" className="text-gray-700 px-1 py-1.5 hover:text-orange-500">Featured</Link>
+            <Link to="/" className="text-gray-700 px-1 py-1.5 hover:text-orange-500">New Arrivals</Link>
+            <div className="flex items-center text-gray-700 px-1 py-1.5 hover:text-orange-500 cursor-pointer">
               Flash Deals
-              <Badge className="ml-1 bg-red-500 text-white text-[10px]">HOT</Badge>
+              <Badge className="ml-1 bg-red-500 text-white text-[8px]">HOT</Badge>
             </div>
-            <Link to="/" className="text-gray-700 px-1 py-2 hover:text-orange-500">Top Rated</Link>
-            <Link to="/" className="text-gray-700 px-1 py-2 hover:text-orange-500">Best Sellers</Link>
-            <Link to="/" className="text-gray-700 px-1 py-2 hover:text-orange-500">Free Shipping</Link>
-            <Link to="/" className="text-gray-700 px-1 py-2 hover:text-orange-500">Clearance</Link>
-            <Link to="/" className="text-gray-700 px-1 py-2 hover:text-orange-500">Outlet</Link>
-            <Link to="/" className="text-gray-700 px-1 py-2 hover:text-orange-500">
-              <Percent className="h-4 w-4 mr-1 inline" />
+            <Link to="/" className="text-gray-700 px-1 py-1.5 hover:text-orange-500">Top Rated</Link>
+            <Link to="/" className="text-gray-700 px-1 py-1.5 hover:text-orange-500">Best Sellers</Link>
+            <Link to="/" className="text-gray-700 px-1 py-1.5 hover:text-orange-500">Free Shipping</Link>
+            <Link to="/" className="text-gray-700 px-1 py-1.5 hover:text-orange-500">Clearance</Link>
+            <Link to="/" className="text-gray-700 px-1 py-1.5 hover:text-orange-500">
+              <Percent className="h-3 w-3 mr-0.5 inline" />
               Promotions
             </Link>
           </div>
@@ -861,133 +821,81 @@ const Header = ({ isProductHeader, isFavorite, toggleFavorite, handleShare }: { 
       {/* Search Modal */}
       {isMounted && (
         <div
-          className={`fixed top-0 left-0 w-full h-full bg-white z-50 ${isSearchModalOpen ? 'block' : 'hidden'}`}
+          className={`fixed top-0 left-0 w-full h-full bg-white/95 backdrop-blur-sm z-50 ${isSearchModalOpen ? 'block' : 'hidden'}`}
         >
-          <div className="container h-full">
-            <div className="flex items-center justify-between h-14 px-2 border-b">
-              <Button variant="ghost" size="icon" onClick={() => setIsSearchModalOpen(false)}>
-                <X className="h-5 w-5" />
+          <div className="container h-full max-w-screen-2xl">
+            <div className="flex items-center justify-between h-12 px-2 border-b">
+              <Button variant="ghost" size="icon" onClick={() => setIsSearchModalOpen(false)} className="h-7 w-7">
+                <X className="h-4 w-4" />
               </Button>
               <form onSubmit={handleSearchSubmit} className="flex-1 mx-2">
                 <div className="relative">
                   <Input
                     type="text"
                     placeholder="Search products..."
-                    className="h-10 pl-10 pr-10 rounded-full border-gray-200"
+                    className="h-8 pl-8 pr-8 rounded-full border-gray-200 text-xs"
                     ref={searchInputRef}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
-                  <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                    <Search className="h-4 w-4 text-gray-400" />
+                  <div className="absolute inset-y-0 left-0 flex items-center pl-2.5 pointer-events-none">
+                    <Search className="h-3 w-3 text-gray-400" />
                   </div>
                   <Button 
                     type="button" 
                     variant="ghost" 
                     size="icon" 
-                    className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8"
+                    className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6"
                   >
-                    <Mic className="h-4 w-4 text-gray-400" />
+                    <Mic className="h-3 w-3 text-gray-400" />
                   </Button>
                 </div>
               </form>
-              <Button type="submit" className="bg-orange-500 hover:bg-orange-600 h-8 px-3 rounded-full">
+              <Button type="submit" className="bg-orange-500 hover:bg-orange-600 h-7 px-2.5 rounded-full text-xs">
                 Search
               </Button>
             </div>
-            <div className="p-4">
-              <div className="mb-6">
-                <h3 className="text-base font-medium mb-3">Recent Searches</h3>
-                <div className="flex items-center gap-2 flex-wrap">
-                  <Button variant="outline" size="sm" className="rounded-full text-xs h-8">
+            <div className="p-3">
+              <div className="mb-4">
+                <h3 className="text-xs font-medium mb-2">Recent Searches</h3>
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <Button variant="outline" size="sm" className="rounded-full text-[10px] h-6 py-0">
                     Iphone 14
                   </Button>
-                  <Button variant="outline" size="sm" className="rounded-full text-xs h-8">
+                  <Button variant="outline" size="sm" className="rounded-full text-[10px] h-6 py-0">
                     Samsung S23
                   </Button>
-                  <Button variant="outline" size="sm" className="rounded-full text-xs h-8">
+                  <Button variant="outline" size="sm" className="rounded-full text-[10px] h-6 py-0">
                     Macbook Pro
                   </Button>
-                  <Button variant="outline" size="sm" className="rounded-full text-xs h-8">
-                    Airpods
-                  </Button>
-                  <Button variant="outline" size="sm" className="rounded-full text-xs h-8">
-                    Mechanical Keyboard
-                  </Button>
                 </div>
               </div>
-              <div className="mb-6">
-                <h3 className="text-base font-medium mb-3">Popular Categories</h3>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  {megaMenuCategories.slice(0, 8).map((category) => (
-                    <Button key={category.id} variant="outline" className="justify-start h-auto py-2">
-                      {category.icon}
-                      <span className="ml-2 text-xs">{category.name}</span>
-                    </Button>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-base font-medium">Trending Products</h3>
-                  <Button variant="ghost" size="sm" className="text-orange-500 h-7 px-2 text-xs">View All</Button>
-                </div>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+              <div className="mb-4">
+                <h3 className="text-xs font-medium mb-2">Trending Products</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                   <div className="flex flex-col items-center">
                     <div className="relative">
                       <img
                         src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=200"
                         alt="Product"
-                        className="rounded-md w-full h-32 object-cover"
+                        className="rounded-md w-full h-24 object-cover"
                       />
-                      <Button variant="secondary" size="icon" className="absolute top-2 right-2 rounded-full h-6 w-6 bg-white/80 hover:bg-white">
-                        <Clock className="h-3 w-3" />
-                      </Button>
+                      <Badge className="absolute bottom-1 left-1 bg-orange-500 text-[8px] px-1.5">-20%</Badge>
                     </div>
-                    <p className="text-xs mt-2 text-center">Macbook Pro 16 inch</p>
-                    <p className="text-xs text-orange-500 font-medium">$1,999.00</p>
-                  </div>
-                  <div className="flex flex-col items-center">
-                    <div className="relative">
-                      <img
-                        src="https://images.unsplash.com/photo-1589492447136-64efb5147a5f?w=200"
-                        alt="Product"
-                        className="rounded-md w-full h-32 object-cover"
-                      />
-                      <Button variant="secondary" size="icon" className="absolute top-2 right-2 rounded-full h-6 w-6 bg-white/80 hover:bg-white">
-                        <Undo className="h-3 w-3" />
-                      </Button>
-                    </div>
-                    <p className="text-xs mt-2 text-center">Iphone 14 Pro Max</p>
-                    <p className="text-xs text-orange-500 font-medium">$1,099.00</p>
+                    <p className="text-[10px] mt-1 text-center truncate w-full">Macbook Pro 16"</p>
+                    <p className="text-[10px] text-orange-500 font-medium">$1,999.00</p>
                   </div>
                   <div className="flex flex-col items-center">
                     <div className="relative">
                       <img
                         src="https://images.unsplash.com/photo-1505740420928-5e0e321c5d08?w=200"
                         alt="Product"
-                        className="rounded-md w-full h-32 object-cover"
+                        className="rounded-md w-full h-24 object-cover"
                       />
-                      <Button variant="secondary" size="icon" className="absolute top-2 right-2 rounded-full h-6 w-6 bg-white/80 hover:bg-white">
-                        <MapPin className="h-3 w-3" />
-                      </Button>
+                      <Badge className="absolute bottom-1 left-1 bg-green-500 text-[8px] px-1.5">NEW</Badge>
                     </div>
-                    <p className="text-xs mt-2 text-center">Sony Headphones</p>
-                    <p className="text-xs text-orange-500 font-medium">$299.00</p>
-                  </div>
-                  <div className="flex flex-col items-center">
-                    <div className="relative">
-                      <img
-                        src="https://images.unsplash.com/photo-1523275335684-37898b6baf0c?w=200"
-                        alt="Product"
-                        className="rounded-md w-full h-32 object-cover"
-                      />
-                      <Button variant="secondary" size="icon" className="absolute top-2 right-2 rounded-full h-6 w-6 bg-white/80 hover:bg-white">
-                        <DollarSign className="h-3 w-3" />
-                      </Button>
-                    </div>
-                    <p className="text-xs mt-2 text-center">Rolex Watch</p>
-                    <p className="text-xs text-orange-500 font-medium">$4,999.00</p>
+                    <p className="text-[10px] mt-1 text-center truncate w-full">Noise Cancelling Headphones</p>
+                    <p className="text-[10px] text-orange-500 font-medium">$299.00</p>
                   </div>
                 </div>
               </div>

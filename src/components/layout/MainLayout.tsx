@@ -45,10 +45,10 @@ export default function MainLayout() {
     }
   };
   
-  // Use the css variable approach for header height
+  // Use the css variable approach for header height - using reduced height
   const headerHeightStyle = `
     :root {
-      --header-height: ${isMobile ? '67px' : '152px'};
+      --header-height: ${isMobile ? '52px' : '115px'};
     }
   `;
   
