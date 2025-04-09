@@ -1,6 +1,6 @@
 
 import React, { useRef } from 'react';
-import { ChevronRight, Tv, Smartphone, Coffee, Headphones, Watch, Speaker } from 'lucide-react';
+import { ChevronRight, Tv, Smartphone, Coffee, Headphones, Watch, Speaker, Star } from 'lucide-react';
 
 const SuperDeals = () => {
   const scrollContainerRef = useRef(null);
@@ -144,13 +144,14 @@ const SuperDeals = () => {
 
   return (
     <div className="w-full bg-white">
-      {/* Header */}
-      <div className="px-4 py-2">
-        <div className="flex justify-between items-center mb-2">
-          <div className="flex items-center gap-1.5">
+      {/* Header with enhanced styling and reduced bottom padding */}
+      <div className="px-4 py-1.5">
+        <div className="flex justify-between items-center mb-0.5">
+          <div className="flex items-center gap-1">
+            <Star className="h-3.5 w-3.5 text-orange-500" strokeWidth={2.5} fill="#FEF7CD" />
             <h2 className="text-sm font-medium">Super Deals</h2>
           </div>
-          <button className="flex items-center text-orange-500 hover:text-orange-600 transition-colors text-xs ml-auto">
+          <button className="flex items-center text-orange-500 hover:text-orange-600 transition-colors text-xs">
             More <ChevronRight size={16} />
           </button>
         </div>
