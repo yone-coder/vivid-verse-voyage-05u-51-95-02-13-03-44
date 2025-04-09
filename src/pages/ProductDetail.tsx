@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -296,21 +295,17 @@ const ProductDetail = () => {
   
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
-      <div ref={headerRef} className="relative w-full">
-        {/* Header Overlay */}
-        <div className={`absolute top-0 left-0 right-0 z-30 transition-all duration-300 ${isScrolled ? 'bg-white shadow-sm' : 'bg-transparent'}`}>
-          <ProductHeader 
-            isFavorite={isFavorite}
-            toggleFavorite={toggleFavorite}
-            handleShare={handleShare}
-            isScrolled={isScrolled}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            handleSearch={handleSearch}
-          />
-        </div>
-        
-        {/* Product Gallery - Full-width and height */}
+      <ProductHeader 
+        isFavorite={isFavorite}
+        toggleFavorite={toggleFavorite}
+        handleShare={handleShare}
+        isScrolled={isScrolled}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        handleSearch={handleSearch}
+      />
+      
+      <div className="w-full pt-0 mt-0">
         <ProductImageGallery images={productImages.length > 0 ? productImages : ["/placeholder.svg"]} />
       </div>
 
