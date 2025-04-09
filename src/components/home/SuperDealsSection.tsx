@@ -147,8 +147,10 @@ const SuperDeals = () => {
       {/* Header */}
       <div className="px-4 py-2">
         <div className="flex justify-between items-center mb-2">
-          <h2 className="text-xl font-bold text-gray-800">Super Deals</h2>
-          <button className="flex items-center text-orange-500 hover:text-orange-600 transition-colors text-sm">
+          <div className="flex items-center gap-1.5">
+            <h2 className="text-sm font-medium">Super Deals</h2>
+          </div>
+          <button className="flex items-center text-orange-500 hover:text-orange-600 transition-colors text-xs ml-auto">
             More <ChevronRight size={16} />
           </button>
         </div>
