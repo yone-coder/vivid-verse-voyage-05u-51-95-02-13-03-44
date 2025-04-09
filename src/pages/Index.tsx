@@ -70,7 +70,7 @@ export default function Index() {
       
       {/* New Arrivals - New Feature */}
       <div className="bg-white mb-1">
-        <NewArrivals products={products?.slice(0, 4)} />
+        <NewArrivals products={products?.slice(0, 4) || []} />
       </div>
       
       {/* Top Brands */}
@@ -80,12 +80,12 @@ export default function Index() {
       
       {/* Trending Products - Enhanced */}
       <div className="mb-1">
-        <TrendingProducts products={products?.slice(0, 6)} />
+        <TrendingProducts products={products?.slice(0, 6) || []} />
       </div>
       
       {/* Recommended Products */}
       <div className="bg-white mb-1">
-        <ProductRecommendations products={products} />
+        <ProductRecommendations products={products || []} />
       </div>
       
       {/* Recently Viewed */}
@@ -100,7 +100,7 @@ export default function Index() {
       
       {/* All Products Grid with Filters */}
       <div className="bg-white pb-16 md:pb-6">
-        <ProductGrid products={products} isLoading={isLoading} />
+        <ProductGrid products={products || []} isLoading={isLoading} />
       </div>
       
       {/* Extra bottom padding for mobile to account for fixed navigation */}
