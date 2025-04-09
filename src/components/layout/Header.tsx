@@ -123,7 +123,7 @@ const Header = ({
       <div className="sticky top-0 left-0 right-0 z-40">
         <div className={`h-[44px] w-full transition-all duration-200 ${isScrolled ? 'bg-white shadow-sm' : 'bg-transparent'}`}>
           {isScrolled ? (
-            // Scrolled Product Header
+            // Scrolled Product Header with search bar instead of title
             <div className="flex items-center justify-between h-full px-3">
               <Button variant="ghost" size="icon" className="h-8 w-8 p-0" asChild>
                 <Link to="/">
@@ -131,8 +131,17 @@ const Header = ({
                 </Link>
               </Button>
               
-              <div className="flex-1 mx-2 max-w-[200px]">
-                <div className="text-xs font-medium truncate text-center">Product Details</div>
+              <div className="flex-1 mx-2">
+                <form onSubmit={handleSearchSubmit} className="relative">
+                  <Input
+                    type="text"
+                    placeholder="Search products..."
+                    className="h-7 pl-7 pr-3 text-[10px] rounded-full"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                  <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3 w-3 text-gray-500" />
+                </form>
               </div>
               
               <div className="flex items-center space-x-1">
@@ -160,6 +169,25 @@ const Header = ({
                   <ArrowLeft className="h-4 w-4" />
                 </Link>
               </Button>
+              
+              <div className="flex-1 mx-3 relative hidden md:block">
+                <div className="relative w-full max-w-[300px] mx-auto">
+                  <Input 
+                    type="text" 
+                    placeholder="Search products..." 
+                    className="h-7 pl-7 pr-7 bg-black/30 backdrop-blur-sm hover:bg-black/40 text-[10px] rounded-full border-0 text-white placeholder:text-gray-300"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyUp={(e) => {
+                      if (e.key === 'Enter') {
+                        handleSearchSubmit(e as unknown as React.FormEvent);
+                      }
+                    }}
+                  />
+                  <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3 w-3 text-gray-300" />
+                  <Camera className="absolute right-2 top-1/2 transform -translate-y-1/2 h-3 w-3 text-gray-300" />
+                </div>
+              </div>
               
               <div className="flex gap-1">
                 <Button 

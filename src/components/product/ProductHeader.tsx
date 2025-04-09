@@ -10,13 +10,19 @@ interface ProductHeaderProps {
   toggleFavorite: () => void;
   handleShare: () => void;
   isScrolled?: boolean;
+  searchQuery?: string;
+  setSearchQuery?: (query: string) => void;
+  handleSearch?: (e: React.FormEvent) => void;
 }
 
 const ProductHeader: React.FC<ProductHeaderProps> = ({
   isFavorite,
   toggleFavorite,
   handleShare,
-  isScrolled = false
+  isScrolled = false,
+  searchQuery = "",
+  setSearchQuery = () => {},
+  handleSearch = () => {}
 }) => {
   if (isScrolled) {
     return (
@@ -27,14 +33,16 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
               <ArrowLeft className="h-3.5 w-3.5" />
             </Button>
           </Link>
-          <div className="flex-1 relative">
+          <form className="flex-1 relative" onSubmit={handleSearch}>
             <Input 
               type="text" 
               placeholder="Search products..." 
               className="h-7 pl-7 pr-3 text-[10px] rounded-full border-0"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
             <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3 w-3 text-gray-500" />
-          </div>
+          </form>
           <div className="flex gap-1 ml-1">
             <Button 
               variant="ghost" 
@@ -71,6 +79,13 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
             type="text" 
             placeholder="Search products..." 
             className="h-7 pl-7 pr-7 bg-black/30 backdrop-blur-sm hover:bg-black/40 text-[10px] rounded-full border-0 text-white placeholder:text-gray-300"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyUp={(e) => {
+              if (e.key === 'Enter') {
+                handleSearch(e as unknown as React.FormEvent);
+              }
+            }}
           />
           <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3 w-3 text-gray-300" />
           <Camera className="absolute right-2 top-1/2 transform -translate-y-1/2 h-3 w-3 text-gray-300" />
