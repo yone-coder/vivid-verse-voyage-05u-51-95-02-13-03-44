@@ -24,7 +24,7 @@ export const ProductCard = ({ product }) => {
     Math.round(((product.price - product.discount_price) / product.price) * 100);
   
   return (
-    <Card className="overflow-hidden transition-all hover:shadow-md group">
+    <Card className="overflow-hidden transition-all hover:shadow-md group h-full">
       <Link to={`/product/${product.id}`} className="block">
         <div className="relative aspect-square overflow-hidden bg-gray-100">
           <img 
@@ -47,7 +47,7 @@ export const ProductCard = ({ product }) => {
           </Button>
         </div>
       </Link>
-      <CardContent className="p-3">
+      <CardContent className="p-2">
         <Link to={`/product/${product.id}`} className="block">
           <div className="flex items-center gap-1 mb-1">
             <div className="flex text-amber-400 text-xs">
@@ -60,26 +60,26 @@ export const ProductCard = ({ product }) => {
             <span className="text-xs text-gray-500">(42)</span>
           </div>
           
-          <h3 className="font-medium text-sm line-clamp-2 mb-1 hover:text-red-500 transition-colors">
+          <h3 className="font-medium text-xs line-clamp-1 mb-1 hover:text-red-500 transition-colors">
             {product.name}
           </h3>
           <div className="flex items-baseline gap-2">
             {product.discount_price ? (
               <>
-                <span className="text-red-500 font-semibold">${product.discount_price.toFixed(2)}</span>
-                <span className="text-gray-400 text-xs line-through">${product.price.toFixed(2)}</span>
+                <span className="text-red-500 font-semibold text-xs">${product.discount_price.toFixed(2)}</span>
+                <span className="text-gray-400 text-[10px] line-through">${product.price.toFixed(2)}</span>
               </>
             ) : (
-              <span className="font-semibold">${product.price.toFixed(2)}</span>
+              <span className="font-semibold text-xs">${product.price.toFixed(2)}</span>
             )}
           </div>
           
-          <p className="text-xs text-gray-500 mt-1">Free Shipping</p>
+          <p className="text-[10px] text-gray-500 mt-0.5">Free Shipping</p>
         </Link>
       </CardContent>
-      <CardFooter className="p-3 pt-0">
-        <Button size="sm" variant="outline" className="w-full gap-1 text-xs">
-          <ShoppingCart className="h-3.5 w-3.5" /> Add to Cart
+      <CardFooter className="p-2 pt-0">
+        <Button size="sm" variant="outline" className="w-full gap-1 text-xs h-7">
+          <ShoppingCart className="h-3 w-3" /> Add
         </Button>
       </CardFooter>
     </Card>
@@ -88,14 +88,14 @@ export const ProductCard = ({ product }) => {
 
 // Create a ProductSkeleton component for loading state
 export const ProductSkeleton = () => (
-  <div className="overflow-hidden rounded-md border">
+  <div className="overflow-hidden rounded-md border h-full">
     <Skeleton className="aspect-square w-full" />
-    <div className="p-3">
+    <div className="p-2">
       <Skeleton className="h-3 w-24 mb-2" />
-      <Skeleton className="h-4 w-full mb-2" />
-      <Skeleton className="h-4 w-2/3 mb-2" />
-      <Skeleton className="h-3 w-1/3 mb-3" />
-      <Skeleton className="h-8 w-full" />
+      <Skeleton className="h-3 w-full mb-2" />
+      <Skeleton className="h-3 w-2/3 mb-2" />
+      <Skeleton className="h-3 w-1/3 mb-2" />
+      <Skeleton className="h-7 w-full" />
     </div>
   </div>
 );

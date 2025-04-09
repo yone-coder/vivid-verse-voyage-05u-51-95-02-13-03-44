@@ -26,7 +26,7 @@ export default function NewArrivals({ products }) {
         
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
           {products.map(product => (
-            <div key={product.id} className="relative">
+            <div key={product.id} className="relative h-full">
               <ProductCard product={product} />
               <div className="absolute top-2 right-2 z-10 bg-green-600 h-5 w-5 rounded-full flex items-center justify-center">
                 <CirclePlus className="h-3.5 w-3.5 text-white" />

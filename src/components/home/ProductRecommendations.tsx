@@ -40,7 +40,9 @@ export default function ProductRecommendations({ products }) {
             <TabsContent key={category.id} value={category.id} className="mt-0">
               <div className={`grid grid-cols-2 ${isMobile ? 'md:grid-cols-3' : 'md:grid-cols-4 lg:grid-cols-5'} gap-2`}>
                 {products?.slice(0, isMobile ? 6 : 10).map(product => (
-                  <ProductCard key={product.id} product={product} />
+                  <div key={product.id} className="h-full">
+                    <ProductCard key={product.id} product={product} />
+                  </div>
                 ))}
               </div>
             </TabsContent>

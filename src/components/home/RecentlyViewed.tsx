@@ -67,7 +67,9 @@ export default function RecentlyViewed() {
         
         <div className={`grid ${isMobile ? 'grid-cols-3' : 'grid-cols-6'} gap-2`}>
           {products.map(product => (
-            <ProductCard key={product.id} product={product} />
+            <div key={product.id} className="h-full">
+              <ProductCard key={product.id} product={product} />
+            </div>
           ))}
         </div>
       </div>

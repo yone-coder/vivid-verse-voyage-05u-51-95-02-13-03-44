@@ -27,7 +27,7 @@ export default function TrendingProducts({ products }) {
         
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
           {products.map(product => (
-            <div key={product.id} className="relative">
+            <div key={product.id} className="relative h-full">
               <ProductCard product={product} />
               <div className="absolute top-1 left-1 z-10">
                 <div className="flex items-center bg-orange-600 text-white text-[10px] px-1.5 py-0.5 rounded-sm">
