@@ -1,20 +1,23 @@
 
 import { Link } from "react-router-dom";
-import { Search, User, ShoppingCart, Heart, Menu, Bell, Camera, MessageCircle, Scan, Home, Package, Gift, Percent, ArrowLeft } from "lucide-react";
+import { Search, User, ShoppingCart, Heart, Menu, Camera, MessageCircle, Home, Package, Gift, Percent, ArrowLeft, ChevronDown, X, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useState } from "react";
+import { Separator } from "@/components/ui/separator";
 
 const categories = [
-  { name: "All Categories", subcategories: ["Featured", "Popular", "New Arrivals"] },
   { name: "Women's Fashion", subcategories: ["Dresses", "Tops", "Bottoms", "Accessories"] },
   { name: "Men's Fashion", subcategories: ["Shirts", "Pants", "Outerwear", "Shoes"] },
   { name: "Electronics", subcategories: ["Smartphones", "Laptops", "Audio", "Cameras"] },
   { name: "Home & Garden", subcategories: ["Kitchen", "Furniture", "Decor", "Outdoor"] },
   { name: "Beauty", subcategories: ["Skincare", "Makeup", "Fragrance", "Hair Care"] },
-  { name: "Sports", subcategories: ["Fitness", "Outdoor Recreation", "Team Sports", "Water Sports"] }
+  { name: "Sports", subcategories: ["Fitness", "Outdoor Recreation", "Team Sports"] },
+  { name: "Toys & Kids", subcategories: ["Toys", "Baby Products", "Children's Clothing"] }
 ];
+
+const countries = ["United States", "United Kingdom", "Canada", "Australia", "Germany", "France"];
 
 export function Header() {
   const isMobile = useIsMobile();
@@ -22,7 +25,7 @@ export function Header() {
   const [showSearch, setShowSearch] = useState(false);
   
   return (
-    <header className="bg-white sticky top-0 z-40 shadow-sm">
+    <header className="sticky top-0 z-40 w-full">
       {/* Mobile search expanded view */}
       {(isSearchFocused || showSearch) && isMobile ? (
         <div className="py-3 px-3 flex items-center gap-2 bg-orange-500">
@@ -56,28 +59,46 @@ export function Header() {
         </div>
       ) : (
         <>
-          {/* Top promotion banner (desktop only) */}
-          <div className="bg-gradient-to-r from-orange-500 to-red-500 py-1.5 text-xs text-white text-center hidden md:block">
-            <div className="container mx-auto px-4 max-w-full">
-              <div className="flex justify-between items-center">
-                <div className="flex-1 text-left">
-                  <Link to="#" className="hover:underline">Get the app</Link>
-                </div>
-                <div className="flex-1 text-center font-bold">
-                  <span>Deals up to 70% OFF</span>
-                </div>
-                <div className="flex-1 flex justify-end items-center space-x-4">
-                  <Link to="#" className="hover:underline">EN</Link>
-                  <span>|</span>
-                  <Link to="#" className="hover:underline">USD</Link>
+          {/* Top bar with country selector, language, help, etc. */}
+          {!isMobile && (
+            <div className="bg-gray-100 text-xs py-1">
+              <div className="container mx-auto px-4 max-w-7xl">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center space-x-3">
+                    <div className="flex items-center">
+                      <span className="text-gray-600">Ship to:</span>
+                      <button className="flex items-center ml-1 text-gray-800 hover:text-orange-500">
+                        <span>United States</span>
+                        <ChevronDown className="h-3 w-3 ml-0.5" />
+                      </button>
+                    </div>
+                    <Separator orientation="vertical" className="h-3" />
+                    <button className="flex items-center text-gray-800 hover:text-orange-500">
+                      <span>English</span>
+                      <ChevronDown className="h-3 w-3 ml-0.5" />
+                    </button>
+                    <Separator orientation="vertical" className="h-3" />
+                    <button className="flex items-center text-gray-800 hover:text-orange-500">
+                      <span>USD</span>
+                      <ChevronDown className="h-3 w-3 ml-0.5" />
+                    </button>
+                  </div>
+                  
+                  <div className="flex items-center space-x-3">
+                    <Link to="/help" className="text-gray-800 hover:text-orange-500">Help</Link>
+                    <Separator orientation="vertical" className="h-3" />
+                    <Link to="/wishlist" className="text-gray-800 hover:text-orange-500">Wishlist</Link>
+                    <Separator orientation="vertical" className="h-3" />
+                    <Link to="/account" className="text-gray-800 hover:text-orange-500">Account</Link>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Main Header */}
-          <div className={`${isMobile ? 'bg-orange-500 py-2' : 'bg-white py-3'} px-2`}>
-            <div className="max-w-full mx-auto">
+          <div className={`${isMobile ? 'bg-orange-500 py-2' : 'bg-white py-3 shadow-sm'} px-2`}>
+            <div className="container mx-auto px-2 max-w-7xl">
               <div className="flex items-center gap-2">
                 {/* Menu button (mobile) */}
                 {isMobile && (
@@ -87,9 +108,19 @@ export function Header() {
                 )}
                 
                 {/* Logo */}
-                <Link to="/" className={`text-xl font-bold ${isMobile ? 'text-white' : 'text-orange-600'} flex-shrink-0`}>
+                <Link to="/" className={`text-xl font-bold ${isMobile ? 'text-white' : 'text-orange-600'} flex-shrink-0 mr-4`}>
                   AliMarket
                 </Link>
+                
+                {/* Categories dropdown - desktop only */}
+                {!isMobile && (
+                  <div className="relative mr-4 hidden md:block">
+                    <Button variant="outline" className="text-gray-700 border-gray-300 flex items-center gap-1 h-10 bg-white">
+                      <span>Categories</span>
+                      <ChevronDown className="h-4 w-4" />
+                    </Button>
+                  </div>
+                )}
                 
                 {/* Search */}
                 {isMobile ? (
@@ -125,20 +156,21 @@ export function Header() {
                 {/* User actions */}
                 <div className="flex items-center gap-1 md:gap-3">
                   {!isMobile && (
-                    <Button variant="ghost" size="sm" className="hidden md:flex items-center rounded-full h-9 w-9 p-0">
-                      <MessageCircle className="h-5 w-5" />
+                    <Button variant="ghost" size="sm" className="hidden md:flex flex-col items-center rounded-full h-12 w-12 p-0">
+                      <Bell className="h-5 w-5 mb-0.5" />
+                      <span className="text-[10px]">Notifications</span>
                     </Button>
                   )}
                   
                   {!isMobile && (
-                    <Link to="/account" className="hidden md:flex flex-col items-center justify-center text-xs p-1">
-                      <User className="h-5 w-5 mb-0.5" />
-                      <span className="text-[10px]">Account</span>
+                    <Link to="/messages" className="hidden md:flex flex-col items-center text-xs py-1 px-2">
+                      <MessageCircle className="h-5 w-5 mb-0.5" />
+                      <span className="text-[10px]">Messages</span>
                     </Link>
                   )}
                   
                   {!isMobile && (
-                    <Link to="/wishlist" className="flex flex-col items-center justify-center text-xs p-1">
+                    <Link to="/wishlist" className="flex flex-col items-center text-xs py-1 px-2">
                       <div className="relative">
                         <Heart className="h-5 w-5 mb-0.5" />
                         <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[9px] rounded-full h-4 w-4 flex items-center justify-center font-medium">5</span>
@@ -147,13 +179,20 @@ export function Header() {
                     </Link>
                   )}
                   
-                  <Link to="/cart" className={`flex flex-col items-center justify-center text-xs p-1 ${isMobile ? 'text-white' : ''}`}>
+                  <Link to="/cart" className={`flex flex-col items-center text-xs py-1 px-2 ${isMobile ? 'text-white' : ''}`}>
                     <div className="relative">
                       <ShoppingCart className="h-5 w-5 mb-0.5" />
                       <span className="absolute -top-1 -right-1 bg-white text-orange-500 text-[9px] rounded-full h-4 w-4 flex items-center justify-center font-medium">3</span>
                     </div>
                     <span className="hidden md:inline text-[10px]">Cart</span>
                   </Link>
+                  
+                  {!isMobile && (
+                    <Link to="/account" className="flex flex-col items-center text-xs py-1 px-2">
+                      <User className="h-5 w-5 mb-0.5" />
+                      <span className="text-[10px]">Account</span>
+                    </Link>
+                  )}
                 </div>
               </div>
             </div>
@@ -161,11 +200,15 @@ export function Header() {
 
           {/* Category navigation (desktop) */}
           {!isMobile && (
-            <div className="bg-white py-1 hidden md:block border-t border-b">
-              <div className="container mx-auto px-4 max-w-full">
-                <div className="flex gap-6 overflow-x-auto pb-1 text-sm">
+            <div className="bg-white py-2 hidden md:block border-t">
+              <div className="container mx-auto px-4 max-w-7xl">
+                <div className="flex gap-6 overflow-x-auto text-sm">
+                  <Link to="/discount" className="whitespace-nowrap text-red-500 font-medium flex items-center">
+                    <Percent className="h-4 w-4 mr-1" />
+                    Flash Deals
+                  </Link>
                   {categories.map((category) => (
-                    <Link to="#" key={category.name} className="whitespace-nowrap hover:text-orange-500 transition-colors py-1">
+                    <Link to={`/category/${category.name.toLowerCase().replace(/\s+/g, '-')}`} key={category.name} className="whitespace-nowrap hover:text-orange-500 transition-colors">
                       {category.name}
                     </Link>
                   ))}
