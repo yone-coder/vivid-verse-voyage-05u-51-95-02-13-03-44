@@ -58,16 +58,15 @@ export default function MainLayout() {
       <style dangerouslySetInnerHTML={{ __html: headerHeightStyle }} />
       {isProductPage ? (
         <>
-          <Header 
-            isProductHeader 
-            isFavorite={isFavorite} 
-            toggleFavorite={toggleFavorite} 
-            handleShare={handleShare}
-            isSearchOpen={isSearchOpen}
-            setIsSearchOpen={setIsSearchOpen}
-            // Removed the className prop as it doesn't exist on the Header component
-          />
-          <main className="flex-grow">
+          <main className="flex-grow relative">
+            <Header 
+              isProductHeader 
+              isFavorite={isFavorite} 
+              toggleFavorite={toggleFavorite} 
+              handleShare={handleShare}
+              isSearchOpen={isSearchOpen}
+              setIsSearchOpen={setIsSearchOpen}
+            />
             <Outlet />
           </main>
         </>
