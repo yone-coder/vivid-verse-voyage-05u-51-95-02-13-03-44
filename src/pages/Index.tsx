@@ -1,7 +1,6 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { fetchAllProducts } from "@/integrations/supabase/client";
-import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import HeroBanner from "@/components/home/HeroBanner";
 import FeaturedCategories from "@/components/home/FeaturedCategories";
@@ -22,9 +21,6 @@ export default function Index() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      {/* Header */}
-      <Header />
-      
       {/* Main Content */}
       <main className="flex-grow pb-20 md:pb-0">
         {/* Hero Banner Carousel */}
