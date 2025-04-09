@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Mail, MessageSquareCheck } from "lucide-react";
+import { Mail, MessageSquare, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -31,7 +31,6 @@ export default function Newsletter() {
       toast({
         title: "Success!",
         description: "You've been subscribed to our newsletter",
-        icon: <MessageSquareCheck className="h-5 w-5 text-green-500" />
       });
       setEmail("");
       setIsSubmitting(false);
