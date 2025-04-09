@@ -1,10 +1,11 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
 import ProductTabs from "@/components/ProductTabs";
 import LiveStockUpdates from "@/components/LiveStockUpdates";
 import ModernBuyButton from "@/components/ModernBuyButton";
-import { useProductAnalytics } from "@/hooks/useProduct";
+import { useProduct, useProductAnalytics } from "@/hooks/useProduct";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -21,7 +22,6 @@ import ProductQuantitySelector from "@/components/product/ProductQuantitySelecto
 import ProductShipping from "@/components/product/ProductShipping";
 import ProductWarranty from "@/components/product/ProductWarranty";
 import ProductPaymentOptions from "@/components/product/ProductPaymentOptions";
-import ProductActionsRow from "@/components/product/ProductActionsRow";
 
 const ProductDetail = () => {
   // State variables
@@ -46,92 +46,11 @@ const ProductDetail = () => {
   const isMobile = useIsMobile();
   const { toast } = useToast();
   const { id } = useParams<{ id: string }>();
-  const { data: analytics, isLoading: analyticsLoading } = useProductAnalytics(id || "nebula-pro-2025");
   
-  // Product data (could be fetched from an API in a real app)
-  const product = {
-    id: "nebula-pro-2025",
-    name: "Galaxy Nebula Projector Pro 2025",
-    price: 39.99,
-    discountPrice: 24.99,
-    rating: 4.8,
-    reviewCount: 2543,
-    sold: 5000,
-    description: "Transform your room into a mesmerizing galaxy with our advanced nebula projector. Features 16.7 million colors, remote control, and 10 projection modes.",
-    images: [
-      "/placeholder.svg",
-      "/placeholder.svg",
-      "/placeholder.svg",
-      "/placeholder.svg",
-    ],
-    specs: [
-      { name: "Projection Area", value: "15-30 sq meters" },
-      { name: "Light Source", value: "LED" },
-      { name: "Colors", value: "16.7 million" },
-      { name: "Control", value: "Remote & App" },
-      { name: "Connectivity", value: "Bluetooth, WiFi" },
-      { name: "Power", value: "DC 5V, 2A" },
-      { name: "Battery Life", value: "Up to 6 hours" },
-      { name: "Projection Modes", value: "10 modes" },
-      { name: "Timer Settings", value: "30min, 1h, 2h, 4h, 8h" },
-      { name: "Warranty", value: "12 months" },
-      { name: "Package Contents", value: "Projector, Remote, USB Cable, Manual" },
-      { name: "Dimensions", value: "15 x 15 x 10 cm" },
-      { name: "Weight", value: "450g" },
-    ],
-    variants: [
-      { name: "Blue Galaxy", price: 24.99, stock: 256, image: "/placeholder.svg" },
-      { name: "Aurora Borealis", price: 27.99, stock: 124, image: "/placeholder.svg" },
-      { name: "Cosmic Universe", price: 29.99, stock: 78, image: "/placeholder.svg" },
-      { name: "Starry Night", price: 24.99, stock: 216, image: "/placeholder.svg" },
-      { name: "Deep Space", price: 26.99, stock: 113, image: "/placeholder.svg" },
-      { name: "Nebula Cloud", price: 25.99, stock: 167, image: "/placeholder.svg" },
-    ],
-    shipping: {
-      free: true,
-      express: 4.99,
-      estimated: "7-14 days",
-      expressEstimated: "3-5 days",
-      returns: "30-day free returns"
-    },
-    coupons: [
-      { code: "GALAXY10", discount: "10% off" },
-      { code: "NEWUSER5", discount: "$5 off for new users" },
-      { code: "FLASH25", discount: "25% off today only" }
-    ],
-    features: [
-      "16.7 million vibrant colors",
-      "Remote and mobile app control",
-      "10 projection modes",
-      "Built-in Bluetooth speaker",
-      "USB rechargeable",
-      "Auto timer function",
-      "360° rotation stand",
-      "Music reactive modes",
-      "IP65 water resistant",
-      "Child-safe certified"
-    ],
-    payments: [
-      "Credit/Debit Cards",
-      "PayPal",
-      "Apple Pay",
-      "Google Pay",
-      "Afterpay - Buy Now Pay Later",
-      "Klarna - 4 interest-free payments"
-    ],
-    warranty: [
-      { name: "Standard", duration: "1 year", price: 0 },
-      { name: "Extended", duration: "2 years", price: 4.99 },
-      { name: "Premium", duration: "3 years", price: 9.99 }
-    ],
-    stock: {
-      total: 1204,
-      reserved: 56,
-      selling_fast: true
-    },
-    badges: []
-  };
-
+  // Use real product data from Supabase
+  const { data: product, isLoading } = useProduct(id || "");
+  const { data: analytics, isLoading: analyticsLoading } = useProductAnalytics(id || "");
+  
   // Event handlers
   const incrementQuantity = () => {
     if (quantity < 10) {
@@ -159,8 +78,8 @@ const ProductDetail = () => {
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({
-        title: product.name,
-        text: `Check out this ${product.name}!`,
+        title: product?.name || "Product",
+        text: `Check out this ${product?.name || "product"}!`,
         url: window.location.href,
       }).catch((error) => {
         console.log('Error sharing:', error);
@@ -185,14 +104,14 @@ const ProductDetail = () => {
   const addToCart = () => {
     toast({
       title: "Added to cart",
-      description: `${quantity} x ${product.name} (${selectedColor}) added to your cart`,
+      description: `${quantity} x ${product?.name || "Product"} (${selectedColor}) added to your cart`,
     });
   };
 
   const buyNow = () => {
     toast({
       title: "Proceeding to checkout",
-      description: `Processing order for ${quantity} x ${product.name} (${selectedColor})`,
+      description: `Processing order for ${quantity} x ${product?.name || "Product"} (${selectedColor})`,
     });
   };
 
@@ -256,22 +175,119 @@ const ProductDetail = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Derived data
-  const currentVariant = product.variants.find(v => v.name === selectedColor);
-  const currentPrice = currentVariant ? currentVariant.price : product.discountPrice;
-  const originalPrice = currentVariant ? Math.round(currentVariant.price * 1.6 * 100) / 100 : product.price;
+  // Show loading state while product data is being fetched
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
+
+  // Handle case where product is not found
+  if (!product) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen">
+        <h1 className="text-2xl font-bold mb-4">Product Not Found</h1>
+        <p className="text-gray-500">The product you're looking for doesn't exist or has been removed.</p>
+      </div>
+    );
+  }
   
-  const warrantyOption = product.warranty.find(w => w.name.toLowerCase() === selectedWarranty);
+  // Format product data for display
+  const productImages = product.product_images.map(img => img.src);
+  const currentPrice = product.discount_price || product.price;
+  const originalPrice = product.price;
+  
+  // Mock data for tabs
+  const productForTabs = {
+    id: product.id,
+    name: product.name,
+    price: product.price,
+    discountPrice: product.discount_price,
+    rating: 4.8,
+    reviewCount: 2543,
+    sold: 5000,
+    description: product.description,
+    images: productImages,
+    specs: [
+      { name: "Projection Area", value: "15-30 sq meters" },
+      { name: "Light Source", value: "LED" },
+      { name: "Colors", value: "16.7 million" },
+      { name: "Control", value: "Remote & App" },
+      { name: "Connectivity", value: "Bluetooth, WiFi" },
+      { name: "Power", value: "DC 5V, 2A" },
+      { name: "Battery Life", value: "Up to 6 hours" },
+      { name: "Projection Modes", value: "10 modes" },
+      { name: "Timer Settings", value: "30min, 1h, 2h, 4h, 8h" },
+      { name: "Warranty", value: "12 months" },
+      { name: "Package Contents", value: "Projector, Remote, USB Cable, Manual" },
+      { name: "Dimensions", value: "15 x 15 x 10 cm" },
+      { name: "Weight", value: "450g" },
+    ],
+    variants: [
+      { name: "Blue Galaxy", price: currentPrice, stock: 256, image: productImages[0] || "/placeholder.svg" },
+      { name: "Aurora Borealis", price: currentPrice, stock: 124, image: productImages[1] || "/placeholder.svg" },
+      { name: "Cosmic Universe", price: currentPrice, stock: 78, image: productImages[2] || "/placeholder.svg" },
+      { name: "Starry Night", price: currentPrice, stock: 216, image: productImages[0] || "/placeholder.svg" },
+    ],
+    shipping: {
+      free: true,
+      express: 4.99,
+      estimated: "7-14 days",
+      expressEstimated: "3-5 days",
+      returns: "30-day free returns"
+    },
+    coupons: [
+      { code: "GALAXY10", discount: "10% off" },
+      { code: "NEWUSER5", discount: "$5 off for new users" },
+      { code: "FLASH25", discount: "25% off today only" }
+    ],
+    features: [
+      "16.7 million vibrant colors",
+      "Remote and mobile app control",
+      "10 projection modes",
+      "Built-in Bluetooth speaker",
+      "USB rechargeable",
+      "Auto timer function",
+      "360° rotation stand",
+      "Music reactive modes",
+      "IP65 water resistant",
+      "Child-safe certified"
+    ],
+    payments: [
+      "Credit/Debit Cards",
+      "PayPal",
+      "Apple Pay",
+      "Google Pay",
+      "Afterpay - Buy Now Pay Later",
+      "Klarna - 4 interest-free payments"
+    ],
+    warranty: [
+      { name: "Standard", duration: "1 year", price: 0 },
+      { name: "Extended", duration: "2 years", price: 4.99 },
+      { name: "Premium", duration: "3 years", price: 9.99 }
+    ],
+    stock: {
+      total: 1204,
+      reserved: 56,
+      selling_fast: true
+    },
+    badges: []
+  };
+  
+  const currentVariant = productForTabs.variants.find(v => v.name === selectedColor);
+  const currentStock = currentVariant ? currentVariant.stock : 0;
+  
+  const warrantyOption = productForTabs.warranty.find(w => w.name.toLowerCase() === selectedWarranty);
   const warrantyPrice = warrantyOption ? warrantyOption.price : 0;
   
-  const totalPrice = (currentPrice * quantity) + warrantyPrice + (giftWrap ? 2.99 : 0) + (isExpressSelected ? product.shipping.express : 0);
-  
-  const currentStock = currentVariant ? currentVariant.stock : 0;
+  const totalPrice = (currentPrice * quantity) + warrantyPrice + (giftWrap ? 2.99 : 0) + (isExpressSelected ? productForTabs.shipping.express : 0);
   
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <div ref={headerRef} className="relative w-full bg-white">
-        <ProductImageGallery images={product.images} />
+        <ProductImageGallery images={productImages.length > 0 ? productImages : ["/placeholder.svg"]} />
         
         <ProductHeader 
           isFavorite={isFavorite}
@@ -293,7 +309,7 @@ const ProductDetail = () => {
         <div className="bg-white p-3 mb-0">
           <div className="flex items-center justify-between mb-0.5">
             <ProductBadges 
-              hasFreeShipping={product.shipping.free}
+              hasFreeShipping={productForTabs.shipping.free}
               isTopSeller={true}
               isFlashDeal={true}
               isTrending={analytics?.trending}
@@ -317,9 +333,9 @@ const ProductDetail = () => {
           <h1 className="text-lg font-medium mt-1">{product.name}</h1>
           
           <ProductRatings 
-            rating={product.rating}
-            reviewCount={product.reviewCount}
-            soldCount={product.sold}
+            rating={4.8}
+            reviewCount={2543}
+            soldCount={5000}
           />
 
           <div className="mt-4">
@@ -327,12 +343,12 @@ const ProductDetail = () => {
           </div>
           
           <div className="mt-3">
-            <ProductCoupons coupons={product.coupons} />
+            <ProductCoupons coupons={productForTabs.coupons} />
           </div>
           
           <div className="mt-4">
             <ProductColorVariants 
-              variants={product.variants}
+              variants={productForTabs.variants}
               selectedColor={selectedColor}
               onColorChange={setSelectedColor}
             />
@@ -342,7 +358,7 @@ const ProductDetail = () => {
         <div className="mt-2 mb-2 p-4 bg-white">
           <LiveStockUpdates 
             initialStock={currentStock}
-            highDemand={product.stock.selling_fast}
+            highDemand={productForTabs.stock.selling_fast}
           />
           
           <div className="mt-4">
@@ -355,7 +371,7 @@ const ProductDetail = () => {
           
           <div className="mt-4">
             <ProductShipping
-              shippingInfo={product.shipping}
+              shippingInfo={productForTabs.shipping}
               isExpressSelected={isExpressSelected}
               onExpressChange={setIsExpressSelected}
               giftWrap={giftWrap}
@@ -365,22 +381,21 @@ const ProductDetail = () => {
           
           <div className="mt-4">
             <ProductWarranty
-              warrantyOptions={product.warranty}
+              warrantyOptions={productForTabs.warranty}
               selectedWarranty={selectedWarranty}
               onWarrantyChange={setSelectedWarranty}
             />
           </div>
           
           <div className="mt-4">
-            <ProductPaymentOptions paymentOptions={product.payments} />
+            <ProductPaymentOptions paymentOptions={productForTabs.payments} />
           </div>
-          
         </div>
       </div>
       
       <div ref={tabsRef} className="relative">
         <ProductTabs 
-          product={product} 
+          product={productForTabs}
           activeTab={activeTab} 
           setActiveTab={setActiveTab} 
           isScrolled={isScrolled} 
