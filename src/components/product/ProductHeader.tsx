@@ -150,8 +150,6 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
             </form>
           )}
         </div>
-        
-        {/* The shortcut chips section is now removed */}
       </div>
     );
   }
