@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import ProductDetail from "./pages/ProductDetail";
 import AdminPanel from "./pages/AdminPanel";
+import MainLayout from "./components/layout/MainLayout";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -21,11 +22,13 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/product/:id" element={<ProductDetail />} />
-            <Route path="/admin" element={<AdminPanel />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
+            <Route element={<MainLayout />}>
+              <Route path="/" element={<Index />} />
+              <Route path="/product/:id" element={<ProductDetail />} />
+              <Route path="/admin" element={<AdminPanel />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Route>
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
