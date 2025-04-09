@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Carousel,
@@ -351,13 +350,11 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   return (
     <div 
       ref={containerRef}
-      className="flex flex-col gap-3"
+      className="flex flex-col gap-1 bg-gray-50 mb-0"
     >
       <div 
-        className="relative w-full aspect-square bg-gray-100 overflow-hidden"
+        className="relative w-full aspect-square overflow-hidden"
       >
-        {/* Removing the top action buttons that are duplicated */}
-        
         <Carousel
           className="w-full h-full"
           opts={{
@@ -645,9 +642,9 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
         </Carousel>
       </div>
       
-      <div className="flex items-center justify-between mb-1">
+      <div className="flex items-center justify-between px-2">
         <div className="flex items-center gap-1">
-          <p className="text-xs text-gray-500 ml-1">
+          <p className="text-xs text-gray-500">
             {images.length} Images
           </p>
           {viewHistory.length > 1 && (
@@ -682,10 +679,10 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
       
       <div 
         className={cn(
-          "transition-all duration-300",
+          "transition-all duration-300 mb-1",
           thumbnailViewMode === "row" 
-            ? "flex gap-2 overflow-x-auto pb-1 px-1 scrollbar-none" 
-            : "grid grid-cols-4 gap-2 pb-1 px-1"
+            ? "flex gap-2 overflow-x-auto pb-0 px-1 scrollbar-none" 
+            : "grid grid-cols-4 gap-2 pb-0 px-1"
         )}
       >
         {images.map((image, index) => (
@@ -771,7 +768,12 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                         variant="ghost"
                         size="sm"
                         className="justify-start text-sm h-8 px-2 w-full"
-                        onClick={(e) => handleMenuAction(e, () => copyImageUrl(index))}
+                        onClick={(e) => {
+                          handleMenuAction(e, () => {
+                            copyImageUrl(index);
+                            handleThumbnailClick(index);
+                          });
+                        }}
                       >
                         {copiedIndex === index ? (
                           <Check className="h-4 w-4 mr-2 text-green-600" />

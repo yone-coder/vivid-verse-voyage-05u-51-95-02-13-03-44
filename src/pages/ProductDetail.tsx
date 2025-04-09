@@ -316,7 +316,7 @@ const ProductDetail = () => {
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       {/* Gallery Section with Header Overlay */}
-      <div ref={headerRef} className="relative w-full">
+      <div ref={headerRef} className="relative w-full bg-gray-50">
         {/* Header overlay - positioned absolutely on top of the image */}
         <div className="absolute top-0 left-0 right-0 z-10">
           <ProductHeader 
@@ -352,7 +352,7 @@ const ProductDetail = () => {
         />
       </div>
       
-      <div className={`flex-1 ${isScrolled ? 'pt-10' : ''}`}>
+      <div className={`flex-1 ${isScrolled ? 'pt-0' : ''}`}>
         <div className="bg-white p-3 mb-0">
           <div className="flex items-center justify-between mb-0.5">
             {/* Badges section removed */}
