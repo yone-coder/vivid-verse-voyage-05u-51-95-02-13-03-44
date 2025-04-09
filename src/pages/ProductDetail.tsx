@@ -141,13 +141,6 @@ const ProductDetail = () => {
     });
   };
 
-  const handleCartClick = () => {
-    toast({
-      title: "Cart opened",
-      description: "Opening your shopping cart",
-    });
-  };
-
   // Effects
   useEffect(() => {
     const handleScroll = () => {
@@ -313,7 +306,6 @@ const ProductDetail = () => {
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
             handleSearch={handleSearch}
-            handleCartClick={handleCartClick}
           />
         </div>
         
@@ -331,7 +323,6 @@ const ProductDetail = () => {
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
             handleSearch={handleSearch}
-            handleCartClick={handleCartClick}
           />
         </div>
       )}
