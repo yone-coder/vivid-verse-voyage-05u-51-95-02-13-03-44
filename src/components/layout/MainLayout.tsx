@@ -14,7 +14,7 @@ export default function MainLayout() {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       {isProductPage ? <ProductHeader /> : <Header />}
-      <main className="flex-grow">
+      <main className="flex-grow pt-[calc(var(--header-height))]">
         <Outlet />
       </main>
       {!isMobile && <Footer />}
