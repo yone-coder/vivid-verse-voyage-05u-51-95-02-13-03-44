@@ -10,7 +10,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 // Product Components
 import ProductHeader from "@/components/product/ProductHeader";
-import ProductPriceDisplay from "@/components/product/ProductPriceDisplay";
+import DynamicPriceDisplay from "@/components/product/DynamicPriceDisplay";
 import ProductRatings from "@/components/product/ProductRatings";
 import ProductLimitedTimeOffer from "@/components/product/ProductLimitedTimeOffer";
 import ProductCoupons from "@/components/product/ProductCoupons";
@@ -359,11 +359,8 @@ const ProductDetail = () => {
           </div>
           
           <div className="flex items-center justify-between">
-            <ProductPriceDisplay 
-              currentPrice={currentPrice}
-              originalPrice={originalPrice}
-            />
-            
+            {/* Replace static price display with dynamic component */}
+            <DynamicPriceDisplay />
           </div>
           
           <h1 className="text-lg font-medium mt-1">{product.name}</h1>
