@@ -10,6 +10,18 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 // Product Components
 import ProductHeader from "@/components/product/ProductHeader";
+import ProductBadges from "@/components/product/ProductBadges";
+import ProductPriceDisplay from "@/components/product/ProductPriceDisplay";
+import ProductLiveData from "@/components/product/ProductLiveData";
+import ProductRatings from "@/components/product/ProductRatings";
+import ProductLimitedTimeOffer from "@/components/product/ProductLimitedTimeOffer";
+import ProductCoupons from "@/components/product/ProductCoupons";
+import ProductColorVariants from "@/components/product/ProductColorVariants";
+import ProductQuantitySelector from "@/components/product/ProductQuantitySelector";
+import ProductShipping from "@/components/product/ProductShipping";
+import ProductWarranty from "@/components/product/ProductWarranty";
+import ProductPaymentOptions from "@/components/product/ProductPaymentOptions";
+import ProductActionsRow from "@/components/product/ProductActionsRow";
 
 const ProductDetail = () => {
   // State variables
