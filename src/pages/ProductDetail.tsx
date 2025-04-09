@@ -286,7 +286,8 @@ const ProductDetail = () => {
   
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
-      <div ref={headerRef} className="relative w-full bg-white">
+      {/* Gallery Section - No top padding to eliminate white space */}
+      <div ref={headerRef} className="relative w-full">
         <ProductImageGallery images={productImages.length > 0 ? productImages : ["/placeholder.svg"]} />
       </div>
 
