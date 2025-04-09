@@ -2,7 +2,8 @@
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { ChevronRight, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const banners = [
   {
@@ -33,6 +34,7 @@ const banners = [
 
 export default function HeroBanner() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const isMobile = useIsMobile();
   
   useEffect(() => {
     const interval = setInterval(() => {
@@ -43,11 +45,16 @@ export default function HeroBanner() {
 
   return (
     <div className="relative">
-      <Carousel className="w-full">
+      <Carousel className="w-full" setApi={(api) => {
+        api?.on("select", () => {
+          const selectedIndex = api.selectedScrollSnap();
+          setActiveIndex(selectedIndex);
+        });
+      }}>
         <CarouselContent>
           {banners.map((banner, index) => (
             <CarouselItem key={banner.id}>
-              <div className="relative h-[180px] md:h-[250px] lg:h-[300px] overflow-hidden rounded-lg mx-4 mt-4">
+              <div className="relative h-[160px] md:h-[250px] lg:h-[300px] overflow-hidden rounded-none md:rounded-lg mx-0 md:mx-4 mt-0 md:mt-4">
                 <div className={`absolute inset-0 bg-gradient-to-r ${banner.color} opacity-30`}></div>
                 <img 
                   src={banner.image} 
@@ -55,12 +62,12 @@ export default function HeroBanner() {
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 flex items-center">
-                  <div className="container mx-auto px-6">
+                  <div className="container mx-auto px-4">
                     <div className="max-w-lg">
-                      <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-1 md:mb-2 drop-shadow-md">{banner.title}</h2>
-                      <p className="text-white text-sm md:text-base mb-3 md:mb-4 max-w-md drop-shadow-md font-medium">{banner.subtitle}</p>
-                      <Button className="bg-white text-black hover:bg-gray-100 font-medium text-sm rounded-full">
-                        {banner.cta} <ArrowRight className="w-3.5 h-3.5 ml-1" />
+                      <h2 className="text-xl md:text-3xl font-extrabold text-white mb-0.5 md:mb-2 drop-shadow-md">{banner.title}</h2>
+                      <p className="text-white text-xs md:text-base mb-2 md:mb-4 max-w-md drop-shadow-md font-medium">{banner.subtitle}</p>
+                      <Button className="bg-white text-black hover:bg-gray-100 font-medium text-xs md:text-sm rounded-full h-7 md:h-auto">
+                        {banner.cta} <ArrowRight className="w-3 h-3 md:w-3.5 md:h-3.5 ml-1" />
                       </Button>
                     </div>
                   </div>
@@ -69,17 +76,21 @@ export default function HeroBanner() {
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="left-6 bg-white/80 hover:bg-white" />
-        <CarouselNext className="right-6 bg-white/80 hover:bg-white" />
+        {!isMobile && (
+          <>
+            <CarouselPrevious className="left-6 bg-white/80 hover:bg-white hidden md:flex" />
+            <CarouselNext className="right-6 bg-white/80 hover:bg-white hidden md:flex" />
+          </>
+        )}
       </Carousel>
       
       {/* Indicators */}
-      <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5">
+      <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5">
         {banners.map((_, index) => (
           <button
             key={index}
-            className={`h-1.5 rounded-full transition-all ${
-              activeIndex === index ? "bg-orange-500 w-6" : "bg-gray-300 w-3"
+            className={`h-1 rounded-full transition-all ${
+              activeIndex === index ? "bg-orange-500 w-5" : "bg-gray-300 w-2.5"
             }`}
             onClick={() => setActiveIndex(index)}
           />

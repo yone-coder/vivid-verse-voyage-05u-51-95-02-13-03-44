@@ -10,12 +10,15 @@ import SuperDealsSection from "@/components/home/SuperDealsSection";
 import ProductGrid from "@/components/home/ProductGrid";
 import TopBrands from "@/components/home/TopBrands";
 import ProductRecommendations from "@/components/home/ProductRecommendations";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function Index() {
   const { data: products, isLoading } = useQuery({
     queryKey: ['products'],
     queryFn: fetchAllProducts,
   });
+  
+  const isMobile = useIsMobile();
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
@@ -23,32 +26,32 @@ export default function Index() {
       <Header />
       
       {/* Main Content */}
-      <main className="flex-grow">
+      <main className="flex-grow pb-16 md:pb-0">
         {/* Hero Banner Carousel */}
         <HeroBanner />
         
         {/* Featured Categories */}
-        <div className="bg-white mb-2 mt-2">
+        <div className="bg-white mb-1 mt-1">
           <FeaturedCategories />
         </div>
         
         {/* Flash Deals Section */}
-        <div className="mb-2">
+        <div className="mb-1">
           <FlashDeals />
         </div>
         
         {/* Super Deals */}
-        <div className="mb-2">
+        <div className="mb-1">
           <SuperDealsSection />
         </div>
         
         {/* Top Brands */}
-        <div className="bg-white mb-2">
+        <div className="bg-white mb-1">
           <TopBrands />
         </div>
         
         {/* Recommended Products */}
-        <div className="bg-white mb-2">
+        <div className="bg-white mb-1">
           <ProductRecommendations products={products} />
         </div>
         
@@ -58,8 +61,8 @@ export default function Index() {
         </div>
       </main>
       
-      {/* Footer */}
-      <Footer />
+      {/* Footer - hide on mobile since we have bottom navigation */}
+      {!isMobile && <Footer />}
     </div>
   );
 }

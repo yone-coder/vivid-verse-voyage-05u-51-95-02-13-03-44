@@ -1,9 +1,9 @@
 
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Star, Clock } from "lucide-react";
+import { Clock, ArrowRight } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const flashProducts = [
   {
@@ -64,6 +64,7 @@ const flashProducts = [
 ];
 
 export default function FlashDeals() {
+  const isMobile = useIsMobile();
   const [timeLeft, setTimeLeft] = useState({
     hours: 5,
     minutes: 30,
@@ -90,39 +91,42 @@ export default function FlashDeals() {
   
   return (
     <div className="py-3 bg-white">
-      <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center mb-3">
+      <div className="container mx-auto px-3">
+        <div className="flex justify-between items-center mb-2">
           <div className="flex items-center">
-            <h2 className="text-lg font-bold text-orange-500 mr-3">Flash Deals</h2>
+            <h2 className="text-sm font-bold text-orange-500 mr-2">Flash Sale</h2>
             <div className="flex items-center gap-1">
-              <Clock className="h-4 w-4 text-orange-500" />
+              <Clock className="h-3 w-3 text-orange-500" />
               <div className="text-xs font-medium">
-                <span className="inline-flex items-center justify-center bg-gray-800 text-white h-5 w-5 rounded">
+                <span className="inline-flex items-center justify-center bg-gray-900 text-white h-4 w-5 rounded text-[10px]">
                   {timeLeft.hours.toString().padStart(2, '0')}
                 </span>
-                :
-                <span className="inline-flex items-center justify-center bg-gray-800 text-white h-5 w-5 rounded">
+                <span className="text-gray-500 mx-0.5">:</span>
+                <span className="inline-flex items-center justify-center bg-gray-900 text-white h-4 w-5 rounded text-[10px]">
                   {timeLeft.minutes.toString().padStart(2, '0')}
                 </span>
-                :
-                <span className="inline-flex items-center justify-center bg-gray-800 text-white h-5 w-5 rounded">
+                <span className="text-gray-500 mx-0.5">:</span>
+                <span className="inline-flex items-center justify-center bg-gray-900 text-white h-4 w-5 rounded text-[10px]">
                   {timeLeft.seconds.toString().padStart(2, '0')}
                 </span>
               </div>
             </div>
           </div>
-          <Link to="#" className="text-sm text-orange-500 hover:underline">View All</Link>
+          <Link to="#" className="text-xs text-orange-500 hover:underline flex items-center">
+            More <ArrowRight className="h-3 w-3 ml-0.5" />
+          </Link>
         </div>
         
-        <div className="flex gap-2.5 overflow-x-auto pb-2 -mx-1 px-1">
+        <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-hide">
           {flashProducts.map((product) => (
-            <div key={product.id} className="w-[130px] flex-shrink-0">
+            <div key={product.id} className="w-[110px] md:w-[130px] flex-shrink-0">
               <Link to={`/product/${product.id}`}>
-                <div className="relative aspect-square overflow-hidden bg-gray-100 rounded-md mb-1.5">
+                <div className="relative aspect-square overflow-hidden bg-gray-50 rounded-md mb-1.5">
                   <img 
                     src={product.image} 
                     alt={product.name}
                     className="h-full w-full object-cover hover:scale-105 transition-transform duration-300"
+                    loading="lazy"
                   />
                   <div className="absolute top-0 left-0 bg-orange-500 text-white text-[10px] px-1.5 py-0.5 rounded-br-md font-medium">
                     {Math.round(((product.price - product.discountPrice) / product.price) * 100)}% OFF
@@ -131,11 +135,14 @@ export default function FlashDeals() {
                 <div>
                   <div className="text-orange-500 font-semibold text-sm">US ${product.discountPrice.toFixed(2)}</div>
                   <div className="text-xs text-gray-500 line-through">US ${product.price.toFixed(2)}</div>
-                  <div className="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden mt-1.5 mb-1">
+                  <div className="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden mt-1 mb-0.5">
                     <div 
                       className="h-full bg-orange-500 rounded-full" 
                       style={{width: `${100 - (product.stock / (product.stock + product.sold) * 100)}%`}}
                     />
+                  </div>
+                  <div className="text-[10px] text-gray-500">
+                    {product.stock} left
                   </div>
                 </div>
               </Link>
