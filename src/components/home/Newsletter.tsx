@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Mail, MessageSquare, CheckCircle } from "lucide-react";
+import { Mail, MessageSquare, CheckCircle, Facebook, Instagram, Twitter, Youtube } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -38,12 +38,12 @@ export default function Newsletter() {
   };
   
   return (
-    <div className="py-6 bg-orange-50">
+    <div className="py-6 bg-gradient-to-r from-orange-50 to-red-50">
       <div className="container mx-auto px-3">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-base md:text-lg font-bold mb-1">Subscribe to our Newsletter</h2>
           <p className="text-xs md:text-sm text-gray-600 mb-4">
-            Get the latest deals and special offers right to your inbox
+            Get exclusive deals and special offers right to your inbox
           </p>
           
           <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-2 items-center">
@@ -69,6 +69,21 @@ export default function Newsletter() {
           <p className="text-[10px] md:text-xs text-gray-500 mt-2">
             By subscribing, you agree to our Terms and Privacy Policy
           </p>
+          
+          <div className="mt-4 flex justify-center gap-3">
+            <a href="#" className="text-gray-500 hover:text-orange-500 transition-colors">
+              <Facebook className="h-4 w-4" />
+            </a>
+            <a href="#" className="text-gray-500 hover:text-orange-500 transition-colors">
+              <Instagram className="h-4 w-4" />
+            </a>
+            <a href="#" className="text-gray-500 hover:text-orange-500 transition-colors">
+              <Twitter className="h-4 w-4" />
+            </a>
+            <a href="#" className="text-gray-500 hover:text-orange-500 transition-colors">
+              <Youtube className="h-4 w-4" />
+            </a>
+          </div>
         </div>
       </div>
     </div>

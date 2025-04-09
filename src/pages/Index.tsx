@@ -43,7 +43,7 @@ export default function Index() {
         <HeroBanner />
       </div>
       
-      {/* Benefits Banner - New Feature */}
+      {/* Benefits Banner with improved layout */}
       <div className="mb-1 bg-white">
         <BenefitsBanner />
       </div>
@@ -58,7 +58,7 @@ export default function Index() {
         <FlashDeals />
       </div>
       
-      {/* Popular Searches - New Feature */}
+      {/* Enhanced Popular Searches */}
       <div className="mb-1 bg-white">
         <PopularSearches />
       </div>
@@ -78,7 +78,7 @@ export default function Index() {
         <TopBrands />
       </div>
       
-      {/* Trending Products - New Feature */}
+      {/* Trending Products - Enhanced */}
       <div className="mb-1">
         <TrendingProducts products={products?.slice(0, 6)} />
       </div>
@@ -88,12 +88,12 @@ export default function Index() {
         <ProductRecommendations products={products} />
       </div>
       
-      {/* Recently Viewed - New Feature */}
+      {/* Recently Viewed */}
       <div className="bg-white mb-1">
         <RecentlyViewed />
       </div>
       
-      {/* Newsletter - New Feature */}
+      {/* Enhanced Newsletter */}
       <div className="mb-1">
         <Newsletter />
       </div>
