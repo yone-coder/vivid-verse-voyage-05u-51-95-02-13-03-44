@@ -46,4 +46,22 @@ function Badge({ className, variant, ...props }: BadgeProps) {
   )
 }
 
+/* AliExpress-specific utility for hiding scrollbars while allowing scrolling */
+const globalStyles = `
+  .no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari, Opera */
+  }
+`;
+
+// Add global styles via a style tag in the document head
+if (typeof document !== 'undefined') {
+  const styleTag = document.createElement('style');
+  styleTag.textContent = globalStyles;
+  document.head.appendChild(styleTag);
+}
+
 export { Badge, badgeVariants }

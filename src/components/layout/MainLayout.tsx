@@ -48,7 +48,7 @@ export default function MainLayout() {
   // Use the css variable approach for header height - using reduced height for AliExpress-like compact header
   const headerHeightStyle = `
     :root {
-      --header-height: ${isMobile ? '48px' : '100px'};
+      --header-height: ${isMobile ? '44px' : '90px'};
     }
   `;
   
