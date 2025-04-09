@@ -21,6 +21,7 @@ import ProductQuantitySelector from "@/components/product/ProductQuantitySelecto
 import ProductShipping from "@/components/product/ProductShipping";
 import ProductWarranty from "@/components/product/ProductWarranty";
 import ProductPaymentOptions from "@/components/product/ProductPaymentOptions";
+import ProductActionsRow from "@/components/product/ProductActionsRow";
 
 const ProductDetail = () => {
   // State variables
@@ -383,6 +384,11 @@ const ProductDetail = () => {
           <div className="mt-4">
             <ProductPaymentOptions paymentOptions={productForTabs.payments} />
           </div>
+          
+          <ProductActionsRow 
+            addToCart={addToCart}
+            buyNow={buyNow}
+          />
         </div>
       </div>
       

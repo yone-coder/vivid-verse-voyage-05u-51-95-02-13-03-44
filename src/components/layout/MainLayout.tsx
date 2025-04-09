@@ -57,23 +57,31 @@ export default function MainLayout() {
     <div className="min-h-screen flex flex-col bg-gray-50">
       <style dangerouslySetInnerHTML={{ __html: headerHeightStyle }} />
       {isProductPage ? (
-        <Header 
-          isProductHeader 
-          isFavorite={isFavorite} 
-          toggleFavorite={toggleFavorite} 
-          handleShare={handleShare}
-          isSearchOpen={isSearchOpen}
-          setIsSearchOpen={setIsSearchOpen}
-        />
+        <>
+          <Header 
+            isProductHeader 
+            isFavorite={isFavorite} 
+            toggleFavorite={toggleFavorite} 
+            handleShare={handleShare}
+            isSearchOpen={isSearchOpen}
+            setIsSearchOpen={setIsSearchOpen}
+            className="absolute top-0 left-0 right-0 z-50 bg-transparent"
+          />
+          <main className="flex-grow">
+            <Outlet />
+          </main>
+        </>
       ) : (
-        <Header 
-          isSearchOpen={isSearchOpen}
-          setIsSearchOpen={setIsSearchOpen}
-        />
+        <>
+          <Header 
+            isSearchOpen={isSearchOpen}
+            setIsSearchOpen={setIsSearchOpen}
+          />
+          <main className="flex-grow pb-20">
+            <Outlet />
+          </main>
+        </>
       )}
-      <main className="flex-grow pb-20">
-        <Outlet />
-      </main>
       {!isMobile && <Footer />}
     </div>
   );
