@@ -1,15 +1,21 @@
 
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
+// Update imports at the top of the file to include the missing icons
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { 
-  Search, User, ShoppingCart, Heart, Menu, Camera, Home, 
-  Package, Gift, Percent, ChevronDown, Bell, LogOut, Settings,
-  UserCircle, ShoppingBag, Award, HelpCircle, Truck, Headphones,
-  Languages, Globe, DollarSign, MessageCircle, CheckSquare, MapPin,
-  ChevronRight, Sun, Moon, Phone, Laptop, Monitor, Gamepad, Shirt, Clock,
-  BookOpen, Pizza, HardHat, X, Zap, Bookmark, PlusCircle, AlertCircle, MailOpen,
-  ShieldCheck, Mic, QrCode, BarChart, Scan, Upload, Download, CreditCard,
-  UserPlus, Calendar, Undo, SendHorizonal
+  Search, 
+  ShoppingCart, 
+  User, 
+  ChevronDown, 
+  Heart, 
+  Bell, 
+  Globe, 
+  MessageSquare, 
+  Camera,
+  Menu,
+  ArrowLeft,
+  Share,
+  Smartphone
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
