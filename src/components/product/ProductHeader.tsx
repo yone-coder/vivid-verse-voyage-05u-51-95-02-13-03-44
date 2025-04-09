@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Heart, Share, Search, Camera } from "lucide-react";
+import { ArrowLeft, Heart, Share, Search, Camera, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -9,6 +9,7 @@ interface ProductHeaderProps {
   isFavorite: boolean;
   toggleFavorite: () => void;
   handleShare: () => void;
+  handleCartClick?: () => void;
   isScrolled?: boolean;
   searchQuery?: string;
   setSearchQuery?: (query: string) => void;
@@ -19,19 +20,20 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
   isFavorite,
   toggleFavorite,
   handleShare,
+  handleCartClick = () => {},
   isScrolled = false,
   searchQuery = "",
   setSearchQuery = () => {},
   handleSearch = () => {}
 }) => {
   return (
-    <div className={`${isScrolled ? 'py-1.5' : 'py-2'} px-2 w-full`}>
+    <div className={`${isScrolled ? 'py-1.5 bg-white shadow-sm' : 'py-2'} px-2 w-full`}>
       <div className="flex items-center justify-between">
         <Link to="/">
           <Button 
             variant={isScrolled ? "ghost" : "outline"} 
             size="sm" 
-            className={`rounded-full ${isScrolled ? 'text-white hover:bg-orange-600 h-7 w-7' : 'bg-black/30 backdrop-blur-sm hover:bg-black/40 border-0 text-white h-7 w-7'} p-0`}
+            className={`rounded-full ${isScrolled ? 'text-gray-700 hover:bg-gray-100 h-7 w-7' : 'bg-black/30 backdrop-blur-sm hover:bg-black/40 border-0 text-white h-7 w-7'} p-0`}
           >
             <ArrowLeft className="h-3.5 w-3.5" />
           </Button>
@@ -42,7 +44,7 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
             <Input 
               type="text" 
               placeholder="Search products..." 
-              className={`h-7 pl-7 pr-7 text-[10px] rounded-full ${isScrolled ? 'border-0' : 'bg-black/30 backdrop-blur-sm hover:bg-black/40 border-0 text-white placeholder:text-gray-300'}`}
+              className={`h-7 pl-7 pr-7 text-[10px] rounded-full ${isScrolled ? 'border-gray-200' : 'bg-black/30 backdrop-blur-sm hover:bg-black/40 border-0 text-white placeholder:text-gray-300'}`}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyUp={(e) => {
@@ -60,7 +62,7 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
           <Button 
             variant={isScrolled ? "ghost" : "outline"}
             size="sm" 
-            className={`rounded-full ${isScrolled ? 'text-white hover:bg-orange-600 h-7 w-7' : 'bg-black/30 backdrop-blur-sm hover:bg-black/40 border-0 text-white h-7 w-7'} p-0`}
+            className={`rounded-full ${isScrolled ? 'text-gray-700 hover:bg-gray-100 h-7 w-7' : 'bg-black/30 backdrop-blur-sm hover:bg-black/40 border-0 text-white h-7 w-7'} p-0`}
             onClick={toggleFavorite}
           >
             <Heart className={`h-3.5 w-3.5 ${isFavorite ? (isScrolled ? "fill-red-500 text-red-500" : "fill-white text-white") : ""}`} />
@@ -68,10 +70,18 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
           <Button 
             variant={isScrolled ? "ghost" : "outline"}
             size="sm" 
-            className={`rounded-full ${isScrolled ? 'text-white hover:bg-orange-600 h-7 w-7' : 'bg-black/30 backdrop-blur-sm hover:bg-black/40 border-0 text-white h-7 w-7'} p-0`}
+            className={`rounded-full ${isScrolled ? 'text-gray-700 hover:bg-gray-100 h-7 w-7' : 'bg-black/30 backdrop-blur-sm hover:bg-black/40 border-0 text-white h-7 w-7'} p-0`}
             onClick={handleShare}
           >
             <Share className="h-3.5 w-3.5" />
+          </Button>
+          <Button 
+            variant={isScrolled ? "ghost" : "outline"}
+            size="sm" 
+            className={`rounded-full ${isScrolled ? 'text-gray-700 hover:bg-gray-100 h-7 w-7' : 'bg-black/30 backdrop-blur-sm hover:bg-black/40 border-0 text-white h-7 w-7'} p-0`}
+            onClick={handleCartClick}
+          >
+            <ShoppingCart className="h-3.5 w-3.5" />
           </Button>
         </div>
       </div>

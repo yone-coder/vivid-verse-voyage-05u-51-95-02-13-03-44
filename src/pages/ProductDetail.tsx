@@ -141,6 +141,13 @@ const ProductDetail = () => {
     });
   };
 
+  const handleCartClick = () => {
+    toast({
+      title: "Cart",
+      description: "Opening your shopping cart",
+    });
+  };
+
   // Effects
   useEffect(() => {
     const handleScroll = () => {
@@ -302,6 +309,7 @@ const ProductDetail = () => {
             isFavorite={isFavorite}
             toggleFavorite={toggleFavorite}
             handleShare={handleShare}
+            handleCartClick={handleCartClick}
             isScrolled={false}
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
@@ -314,11 +322,12 @@ const ProductDetail = () => {
 
       {/* Fixed header when scrolled */}
       {isScrolled && (
-        <div className="fixed top-0 left-0 right-0 bg-orange-500 z-30 shadow-sm">
+        <div className="fixed top-0 left-0 right-0 z-30">
           <ProductHeader 
             isFavorite={isFavorite}
             toggleFavorite={toggleFavorite}
             handleShare={handleShare}
+            handleCartClick={handleCartClick}
             isScrolled={true}
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
