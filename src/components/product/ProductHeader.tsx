@@ -114,7 +114,7 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
                         ref={searchInputRef}
                         type="text" 
                         placeholder="Search products..." 
-                        className={`h-9 pl-8 pr-8 text-sm rounded-full ${isScrolled ? 'border-gray-200' : 'bg-black/30 backdrop-blur-sm hover:bg-black/40 border-0 text-white placeholder:text-gray-300'}`}
+                        className={`h-7 pl-8 pr-8 text-xs rounded-full ${isScrolled ? 'border-gray-200' : 'bg-black/30 backdrop-blur-sm hover:bg-black/40 border-0 text-white placeholder:text-gray-300'}`}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         onFocus={() => {
@@ -128,16 +128,16 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
                         }}
                         onClick={() => setOpen(true)}
                       />
-                      <Search className={`absolute left-2.5 top-1/2 transform -translate-y-1/2 h-4 w-4 ${isScrolled ? 'text-gray-500' : 'text-gray-300'}`} />
+                      <Search className={`absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 ${isScrolled ? 'text-gray-500' : 'text-gray-300'}`} />
                       {searchQuery && (
                         <Button
                           type="button"
                           variant="ghost"
                           size="sm"
-                          className="absolute right-1.5 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 rounded-full"
+                          className="absolute right-1.5 top-1/2 transform -translate-y-1/2 h-5 w-5 p-0 rounded-full"
                           onClick={clearSearch}
                         >
-                          <X className={`h-3.5 w-3.5 ${isScrolled ? 'text-gray-500' : 'text-gray-300'}`} />
+                          <X className={`h-3 w-3 ${isScrolled ? 'text-gray-500' : 'text-gray-300'}`} />
                         </Button>
                       )}
                     </div>
