@@ -46,3 +46,93 @@ export const fetchAllProducts = async () => {
   
   return data;
 };
+
+// Helper function to upload a product image
+export const uploadProductImage = async (
+  productId: string, 
+  file: File, 
+  altText: string
+) => {
+  // Upload file to Supabase Storage
+  const fileExt = file.name.split('.').pop();
+  const fileName = `${productId}_${Date.now()}.${fileExt}`;
+  const filePath = `${fileName}`;
+
+  const { error: uploadError, data } = await supabase.storage
+    .from('product-images')
+    .upload(filePath, file);
+
+  if (uploadError) {
+    throw uploadError;
+  }
+
+  // Get the public URL
+  const { data: publicUrlData } = supabase.storage
+    .from('product-images')
+    .getPublicUrl(filePath);
+
+  const imageUrl = publicUrlData.publicUrl;
+
+  // Add entry to product_images table
+  const { error: dbError, data: imageData } = await supabase
+    .from('product_images')
+    .insert({
+      product_id: productId,
+      src: imageUrl,
+      alt: altText
+    })
+    .select()
+    .single();
+
+  if (dbError) {
+    throw dbError;
+  }
+
+  return imageData;
+};
+
+// Helper function to delete a product image
+export const deleteProductImage = async (imageId: string, imageUrl: string) => {
+  // Extract the filename from the URL
+  const url = new URL(imageUrl);
+  const pathname = url.pathname;
+  const filename = pathname.substring(pathname.lastIndexOf('/') + 1);
+
+  // Delete from product_images table
+  const { error: dbError } = await supabase
+    .from('product_images')
+    .delete()
+    .eq('id', imageId);
+
+  if (dbError) {
+    throw dbError;
+  }
+
+  // Try to delete from storage
+  try {
+    await supabase.storage
+      .from('product-images')
+      .remove([filename]);
+  } catch (storageError) {
+    console.warn('Could not delete from storage:', storageError);
+    // Continue even if storage deletion fails
+  }
+
+  return true;
+};
+
+// Helper function to update a product image's metadata
+export const updateProductImage = async (imageId: string, updates: { alt?: string }) => {
+  const { error, data } = await supabase
+    .from('product_images')
+    .update(updates)
+    .eq('id', imageId)
+    .select()
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+};
