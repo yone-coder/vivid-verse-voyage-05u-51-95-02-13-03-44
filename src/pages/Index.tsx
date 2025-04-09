@@ -10,6 +10,10 @@ import TopBrands from "@/components/home/TopBrands";
 import ProductRecommendations from "@/components/home/ProductRecommendations";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useState, useEffect } from "react";
+import FeaturedProduct from "@/components/home/FeaturedProduct";
+import TrendingProducts from "@/components/home/TrendingProducts";
+import NewsletterSignup from "@/components/home/NewsletterSignup";
+import CategoryGrid from "@/components/home/CategoryGrid";
 
 export default function Index() {
   const { data: products, isLoading } = useQuery({
@@ -30,6 +34,11 @@ export default function Index() {
     return null; // Prevent flash while detecting mobile
   }
 
+  // Get a random featured product
+  const featuredProduct = products && products.length > 0 
+    ? products[Math.floor(Math.random() * products.length)]
+    : null;
+
   return (
     <div className="flex-grow pb-20 md:pb-0">
       {/* Hero Banner Carousel */}
@@ -42,29 +51,43 @@ export default function Index() {
         <FeaturedCategories />
       </div>
       
-      {/* Flash Deals Section */}
-      <div className="mb-1">
-        <FlashDeals />
-      </div>
-      
-      {/* Super Deals */}
-      <div className="mb-1">
-        <SuperDealsSection />
-      </div>
-      
-      {/* Top Brands */}
-      <div className="bg-white mb-1">
-        <TopBrands />
-      </div>
-      
-      {/* Recommended Products */}
-      <div className="bg-white mb-1">
-        <ProductRecommendations products={products} />
-      </div>
-      
-      {/* All Products Grid with Filters */}
-      <div className="bg-white pb-16 md:pb-6">
-        <ProductGrid products={products} isLoading={isLoading} />
+      <div className="container mx-auto px-4 py-4">
+        {/* Featured Product */}
+        <FeaturedProduct product={featuredProduct} isLoading={isLoading} />
+        
+        {/* Category Grid */}
+        <CategoryGrid />
+        
+        {/* Flash Deals Section */}
+        <div className="mb-6">
+          <FlashDeals />
+        </div>
+        
+        {/* Trending Products */}
+        <TrendingProducts products={products} isLoading={isLoading} />
+        
+        {/* Newsletter Signup */}
+        <NewsletterSignup />
+        
+        {/* Super Deals */}
+        <div className="mb-6">
+          <SuperDealsSection />
+        </div>
+        
+        {/* Top Brands */}
+        <div className="bg-white rounded-lg mb-6">
+          <TopBrands />
+        </div>
+        
+        {/* Recommended Products */}
+        <div className="bg-white rounded-lg mb-6">
+          <ProductRecommendations products={products} />
+        </div>
+        
+        {/* All Products Grid with Filters */}
+        <div className="bg-white rounded-lg pb-16 md:pb-6">
+          <ProductGrid products={products} isLoading={isLoading} />
+        </div>
       </div>
       
       {/* Extra bottom padding for mobile to account for fixed navigation */}
