@@ -79,7 +79,9 @@ export default function MainLayout() {
             setIsSearchOpen={setIsSearchOpen}
             notificationCount={wishlistCount}
           />
-          <LivePurchaseBanner productName={productName} />
+          <div className="pt-0">
+            <LivePurchaseBanner productName={productName} />
+          </div>
         </>
       ) : (
         <Header 
@@ -88,7 +90,7 @@ export default function MainLayout() {
           notificationCount={wishlistCount}
         />
       )}
-      <main className="flex-grow pb-20">
+      <main className={`flex-grow ${isProductPage ? 'pb-20' : ''}`}>
         <Outlet />
       </main>
       {!isMobile && <Footer />}

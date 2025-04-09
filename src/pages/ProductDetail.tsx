@@ -39,6 +39,7 @@ const ProductDetail = () => {
   const [comparisonMode, setComparisonMode] = useState(false);
   const [showLiveData, setShowLiveData] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [notificationCount, setNotificationCount] = useState(0);
   
   // Refs and hooks
   const headerRef = useRef<HTMLDivElement>(null);
@@ -147,7 +148,7 @@ const ProductDetail = () => {
     const handleScroll = () => {
       if (headerRef.current) {
         const scrollPosition = window.scrollY;
-        setIsScrolled(scrollPosition > 50);
+        setIsScrolled(scrollPosition > 100);
       }
     };
 
@@ -303,14 +304,16 @@ const ProductDetail = () => {
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         handleSearch={handleSearch}
+        notificationCount={notificationCount}
       />
       
-      <div className="w-full pt-0 mt-0">
+      {/* Add proper spacing for the gallery to avoid overlap with the header */}
+      <div className="w-full pt-10 mt-3">
         <ProductImageGallery images={productImages.length > 0 ? productImages : ["/placeholder.svg"]} />
       </div>
 
-      <div className={`flex-1`}>
-        <div className="bg-white p-3 mb-0">
+      <div className="flex-1">
+        <div className="bg-white p-4 mt-2 rounded-t-xl shadow-sm">
           <div className="flex items-center justify-between mb-0.5">
             <ProductBadges 
               hasFreeShipping={productForTabs.shipping.free}
@@ -334,7 +337,7 @@ const ProductDetail = () => {
             )}
           </div>
           
-          <h1 className="text-lg font-medium mt-1">{product.name}</h1>
+          <h1 className="text-lg font-semibold mt-1">{product.name}</h1>
           
           <ProductRatings 
             rating={4.8}
