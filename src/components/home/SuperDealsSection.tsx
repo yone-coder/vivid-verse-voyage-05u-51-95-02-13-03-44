@@ -106,26 +106,28 @@ const SuperDeals = () => {
 
   // Function to render a product card
   const renderProductCard = (deal) => (
-    <div key={deal.id} className="border border-gray-200 rounded-lg mb-4 overflow-hidden hover:shadow-md transition-shadow">
+    <div key={deal.id} className="border border-gray-200 rounded-lg mb-3 overflow-hidden hover:shadow-md transition-shadow">
       <div className="flex items-center">
         <div className="relative">
           <div className="absolute top-0 left-0 bg-orange-500 text-white px-2 py-1 text-xs font-bold rounded-br">
             SUPER
           </div>
-          <div className={`${deal.color} p-3 w-28 h-28 flex items-center justify-center`}>
+          <div className={`${deal.color} p-2 w-24 h-24 flex items-center justify-center`}>
             <div className="flex flex-col items-center">
               {deal.icon}
-              <span className="text-sm font-medium text-white mt-2 text-center">
+              <span className="text-xs font-medium text-white mt-1 text-center">
                 {deal.shortLabel}
               </span>
             </div>
           </div>
         </div>
         
-        <div className="p-3 flex-1">
-          <h3 className="font-medium text-gray-800 text-sm mb-1">{deal.title}</h3>
+        <div className="p-2 flex-1 min-w-0">
+          <h3 className="font-medium text-gray-800 text-xs mb-1 whitespace-nowrap overflow-hidden text-ellipsis pr-1" title={deal.title}>
+            {deal.title}
+          </h3>
           <div className="flex flex-col">
-            <span className="text-lg font-bold text-orange-500">
+            <span className="text-base font-bold text-orange-500">
               US ${deal.currentPrice}
             </span>
             <span className="text-gray-500 line-through text-xs">
@@ -143,11 +145,11 @@ const SuperDeals = () => {
   return (
     <div className="w-full bg-white">
       {/* Header */}
-      <div className="px-4 py-4">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold text-gray-800">Super Deals</h2>
-          <button className="flex items-center text-orange-500 hover:text-orange-600 transition-colors">
-            More <ChevronRight size={20} />
+      <div className="px-4 py-2">
+        <div className="flex justify-between items-center mb-2">
+          <h2 className="text-xl font-bold text-gray-800">Super Deals</h2>
+          <button className="flex items-center text-orange-500 hover:text-orange-600 transition-colors text-sm">
+            More <ChevronRight size={16} />
           </button>
         </div>
       </div>
@@ -169,8 +171,8 @@ const SuperDeals = () => {
             {groupedDeals.map((column, colIndex) => (
               <div 
                 key={`column-${colIndex}`}
-                className="flex-none w-72 snap-start"
-                style={{ marginRight: colIndex < groupedDeals.length - 1 ? '1.5rem' : '0' }}
+                className="flex-none w-64 snap-start"
+                style={{ marginRight: colIndex < groupedDeals.length - 1 ? '1rem' : '0' }}
               >
                 {column.map(deal => renderProductCard(deal))}
               </div>
