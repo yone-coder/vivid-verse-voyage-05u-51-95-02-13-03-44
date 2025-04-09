@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -288,12 +287,6 @@ const ProductDetail = () => {
     <div className="flex flex-col min-h-screen bg-gray-50">
       <div ref={headerRef} className="relative w-full bg-white">
         <ProductImageGallery images={productImages.length > 0 ? productImages : ["/placeholder.svg"]} />
-        
-        <ProductHeader 
-          isFavorite={isFavorite}
-          toggleFavorite={toggleFavorite}
-          handleShare={handleShare}
-        />
       </div>
 
       {isScrolled && (
