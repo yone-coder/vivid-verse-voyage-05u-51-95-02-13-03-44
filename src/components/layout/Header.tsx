@@ -1,6 +1,6 @@
 
 import { Link } from "react-router-dom";
-import { Search, User, ShoppingCart, Heart, ChevronDown, Menu, Bell, Camera, MessageCircle, Scan, Home, Package, Gift, Percent, ArrowLeft } from "lucide-react";
+import { Search, User, ShoppingCart, Heart, Menu, Bell, Camera, MessageCircle, Scan, Home, Package, Gift, Percent, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -58,7 +58,7 @@ export function Header() {
         <>
           {/* Top promotion banner (desktop only) */}
           <div className="bg-gradient-to-r from-orange-500 to-red-500 py-1.5 text-xs text-white text-center hidden md:block">
-            <div className="container mx-auto px-4">
+            <div className="container mx-auto px-4 max-w-full">
               <div className="flex justify-between items-center">
                 <div className="flex-1 text-left">
                   <Link to="#" className="hover:underline">Get the app</Link>
@@ -76,8 +76,8 @@ export function Header() {
           </div>
 
           {/* Main Header */}
-          <div className={`${isMobile ? 'bg-orange-500 py-2' : 'bg-white py-3'} px-3`}>
-            <div className="container mx-auto">
+          <div className={`${isMobile ? 'bg-orange-500 py-2' : 'bg-white py-3'} px-2`}>
+            <div className="max-w-full mx-auto">
               <div className="flex items-center gap-2">
                 {/* Menu button (mobile) */}
                 {isMobile && (
@@ -87,7 +87,7 @@ export function Header() {
                 )}
                 
                 {/* Logo */}
-                <Link to="/" className={`text-xl font-bold ${isMobile ? 'text-white' : 'text-orange-600'} flex-shrink-0 mr-1`}>
+                <Link to="/" className={`text-xl font-bold ${isMobile ? 'text-white' : 'text-orange-600'} flex-shrink-0`}>
                   AliMarket
                 </Link>
                 
@@ -162,7 +162,7 @@ export function Header() {
           {/* Category navigation (desktop) */}
           {!isMobile && (
             <div className="bg-white py-1 hidden md:block border-t border-b">
-              <div className="container mx-auto">
+              <div className="container mx-auto px-4 max-w-full">
                 <div className="flex gap-6 overflow-x-auto pb-1 text-sm">
                   {categories.map((category) => (
                     <Link to="#" key={category.name} className="whitespace-nowrap hover:text-orange-500 transition-colors py-1">

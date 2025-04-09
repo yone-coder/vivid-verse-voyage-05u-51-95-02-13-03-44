@@ -21,8 +21,8 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
   if (isScrolled) {
     return (
       <div className="fixed top-0 left-0 right-0 bg-orange-500 z-30 shadow-sm">
-        <div className="flex items-center h-12 px-3">
-          <Link to="/" className="mr-2">
+        <div className="flex items-center h-12 px-2">
+          <Link to="/" className="mr-1">
             <Button variant="ghost" size="sm" className="rounded-full h-8 w-8 p-0 text-white hover:bg-orange-600">
               <ArrowLeft className="h-4 w-4" />
             </Button>
@@ -35,7 +35,7 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
             />
             <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-gray-500" />
           </div>
-          <div className="flex gap-1 ml-2">
+          <div className="flex gap-1 ml-1">
             <Button 
               variant="ghost" 
               size="sm" 
@@ -59,7 +59,7 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
   }
 
   return (
-    <div className="absolute top-2 left-2 right-2 flex justify-between z-10">
+    <div className="absolute top-2 left-0 right-0 flex justify-between z-10 px-2">
       <Link to="/">
         <Button variant="outline" size="sm" className="rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/40 border-0 text-white">
           <ArrowLeft className="h-4 w-4" />
