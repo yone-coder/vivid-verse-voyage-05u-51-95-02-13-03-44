@@ -1,19 +1,70 @@
 
 import React from "react";
 import Header from "@/components/layout/Header";
-import ProductHeader from "@/components/layout/ProductHeader";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Footer from "@/components/layout/Footer";
 import { Outlet, useLocation } from "react-router-dom";
+import { useState } from "react";
+import { Heart, Share } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 export default function MainLayout() {
   const isMobile = useIsMobile();
   const location = useLocation();
   const isProductPage = location.pathname.includes('/product/');
+  const { toast } = useToast();
+  const [isFavorite, setIsFavorite] = useState(false);
+  
+  const toggleFavorite = () => {
+    setIsFavorite(!isFavorite);
+    toast({
+      title: !isFavorite ? "Added to Wishlist" : "Removed from Wishlist",
+      description: !isFavorite ? "This item has been added to your wishlist" : "This item has been removed from your wishlist",
+    });
+  };
+  
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: 'Check out this product',
+        text: 'I found this amazing product I thought you might like!',
+        url: window.location.href,
+      }).catch((error) => {
+        toast({
+          title: "Sharing Failed",
+          description: "There was an error sharing this content.",
+        });
+      });
+    } else {
+      // Fallback for browsers that don't support navigator.share
+      navigator.clipboard.writeText(window.location.href);
+      toast({
+        title: "Link Copied",
+        description: "Product link copied to clipboard!",
+      });
+    }
+  };
+  
+  // Use the css variable approach for header height
+  const headerHeightStyle = `
+    :root {
+      --header-height: ${isMobile ? '97px' : '152px'};
+    }
+  `;
   
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      {isProductPage ? <ProductHeader /> : <Header />}
+      <style dangerouslySetInnerHTML={{ __html: headerHeightStyle }} />
+      {isProductPage ? (
+        <Header 
+          isProductHeader 
+          isFavorite={isFavorite} 
+          toggleFavorite={toggleFavorite} 
+          handleShare={handleShare} 
+        />
+      ) : (
+        <Header />
+      )}
       <main className="flex-grow pt-[calc(var(--header-height))]">
         <Outlet />
       </main>
