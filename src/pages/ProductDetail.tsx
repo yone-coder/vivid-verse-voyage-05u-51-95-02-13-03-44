@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -136,10 +137,9 @@ const ProductDetail = () => {
   // Effects
   useEffect(() => {
     const handleScroll = () => {
-      if (headerRef.current && tabsRef.current) {
+      if (headerRef.current) {
         const headerBottom = headerRef.current.getBoundingClientRect().bottom;
-        const tabsTop = tabsRef.current.getBoundingClientRect().top;
-        setIsScrolled(headerBottom < 0 || tabsTop <= 0);
+        setIsScrolled(headerBottom < 0);
       }
     };
 
@@ -299,13 +299,25 @@ const ProductDetail = () => {
       </div>
 
       {isScrolled && (
-        <ProductHeader 
-          isFavorite={isFavorite}
-          toggleFavorite={toggleFavorite}
-          handleShare={handleShare}
-          isScrolled={true}
-          cartCount={cartCount}
-        />
+        <div className="fixed top-0 left-0 right-0 z-10">
+          <ProductHeader 
+            isFavorite={isFavorite}
+            toggleFavorite={toggleFavorite}
+            handleShare={handleShare}
+            isScrolled={true}
+            cartCount={cartCount}
+          />
+          
+          <div ref={tabsRef} className="bg-white shadow-sm">
+            <ProductTabs 
+              product={productForTabs}
+              activeTab={activeTab} 
+              setActiveTab={setActiveTab} 
+              isScrolled={true} 
+              headerHeight={0}
+            />
+          </div>
+        </div>
       )}
       
       <div className={`flex-1 ${isScrolled ? 'pt-14' : ''}`}>
@@ -396,13 +408,17 @@ const ProductDetail = () => {
         </div>
       </div>
       
-      <ProductTabs 
-        product={productForTabs}
-        activeTab={activeTab} 
-        setActiveTab={setActiveTab} 
-        isScrolled={isScrolled} 
-        headerHeight={isScrolled ? 60 : 0}
-      />
+      {!isScrolled && (
+        <div ref={tabsRef} className="bg-white shadow-sm">
+          <ProductTabs 
+            product={productForTabs}
+            activeTab={activeTab} 
+            setActiveTab={setActiveTab} 
+            isScrolled={false} 
+            headerHeight={0}
+          />
+        </div>
+      )}
       
       <ModernBuyButton productId={product.id} />
     </div>
