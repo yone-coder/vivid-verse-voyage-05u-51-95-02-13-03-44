@@ -2,31 +2,31 @@
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, ArrowRight } from "lucide-react";
 
 const banners = [
   {
     id: 1,
-    title: "Summer Sale Up to 70% OFF",
-    subtitle: "Amazing deals on electronics, fashion, home goods and more!",
-    image: "https://placehold.co/1200x400/FF6B6B/FFF?text=Summer+Sale",
-    color: "from-pink-500 to-red-500",
+    title: "MEGA SALE",
+    subtitle: "Up to 70% OFF on thousands of items",
+    image: "https://placehold.co/1200x400/FF6B6B/FFF?text=MEGA+SALE",
+    color: "from-orange-500 to-red-500",
     cta: "Shop Now"
   },
   {
     id: 2,
-    title: "New Arrivals",
-    subtitle: "Check out the latest tech gadgets and accessories",
-    image: "https://placehold.co/1200x400/4ECDC4/FFF?text=New+Tech+Arrivals",
-    color: "from-teal-500 to-blue-500",
+    title: "NEW ARRIVALS",
+    subtitle: "Fresh tech and trending products",
+    image: "https://placehold.co/1200x400/4ECDC4/FFF?text=NEW+ARRIVALS",
+    color: "from-cyan-500 to-blue-500",
     cta: "Discover"
   },
   {
     id: 3,
-    title: "Flash Deals",
-    subtitle: "Limited time offers - up to 50% off top brands",
-    image: "https://placehold.co/1200x400/FF9A8B/FFF?text=Flash+Deals",
-    color: "from-orange-500 to-red-500",
+    title: "FLASH DEALS",
+    subtitle: "Time-limited offers - Hurry!",
+    image: "https://placehold.co/1200x400/FF9A8B/FFF?text=FLASH+DEALS",
+    color: "from-orange-400 to-red-400",
     cta: "Grab Deals"
   }
 ];
@@ -47,7 +47,7 @@ export default function HeroBanner() {
         <CarouselContent>
           {banners.map((banner, index) => (
             <CarouselItem key={banner.id}>
-              <div className="relative h-[200px] md:h-[300px] lg:h-[400px] overflow-hidden">
+              <div className="relative h-[180px] md:h-[250px] lg:h-[300px] overflow-hidden rounded-lg mx-4 mt-4">
                 <div className={`absolute inset-0 bg-gradient-to-r ${banner.color} opacity-30`}></div>
                 <img 
                   src={banner.image} 
@@ -57,10 +57,10 @@ export default function HeroBanner() {
                 <div className="absolute inset-0 flex items-center">
                   <div className="container mx-auto px-6">
                     <div className="max-w-lg">
-                      <h2 className="text-2xl md:text-4xl font-bold text-white mb-2 md:mb-4 drop-shadow-md">{banner.title}</h2>
-                      <p className="text-white mb-4 md:mb-6 max-w-md drop-shadow-md hidden md:block">{banner.subtitle}</p>
-                      <Button className="bg-white text-black hover:bg-gray-100 font-medium">
-                        {banner.cta} <ChevronRight className="w-4 h-4 ml-1" />
+                      <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-1 md:mb-2 drop-shadow-md">{banner.title}</h2>
+                      <p className="text-white text-sm md:text-base mb-3 md:mb-4 max-w-md drop-shadow-md font-medium">{banner.subtitle}</p>
+                      <Button className="bg-white text-black hover:bg-gray-100 font-medium text-sm rounded-full">
+                        {banner.cta} <ArrowRight className="w-3.5 h-3.5 ml-1" />
                       </Button>
                     </div>
                   </div>
@@ -69,8 +69,8 @@ export default function HeroBanner() {
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="left-2" />
-        <CarouselNext className="right-2" />
+        <CarouselPrevious className="left-6 bg-white/80 hover:bg-white" />
+        <CarouselNext className="right-6 bg-white/80 hover:bg-white" />
       </Carousel>
       
       {/* Indicators */}
@@ -78,8 +78,8 @@ export default function HeroBanner() {
         {banners.map((_, index) => (
           <button
             key={index}
-            className={`w-2 h-2 rounded-full transition-all ${
-              activeIndex === index ? "bg-white w-4" : "bg-white/50"
+            className={`h-1.5 rounded-full transition-all ${
+              activeIndex === index ? "bg-orange-500 w-6" : "bg-gray-300 w-3"
             }`}
             onClick={() => setActiveIndex(index)}
           />

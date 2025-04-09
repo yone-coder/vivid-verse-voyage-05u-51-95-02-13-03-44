@@ -15,20 +15,20 @@ export default function ProductRecommendations({ products }) {
   // Filter products into tabs (in a real app, these would come from an API)
   // Here we're just using the same products for demo purposes
   return (
-    <div className="py-8">
+    <div className="py-3">
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">Just For You</h2>
-          <Link to="#" className="text-sm text-red-500 hover:underline">View More</Link>
+        <div className="flex justify-between items-center mb-3">
+          <h2 className="text-lg font-bold">Just For You</h2>
+          <Link to="#" className="text-sm text-orange-500 hover:underline">View More</Link>
         </div>
         
         <Tabs defaultValue="for-you" className="w-full">
-          <TabsList className="bg-transparent mb-4 border-b w-full justify-start h-auto overflow-x-auto pb-0 gap-3">
+          <TabsList className="bg-transparent mb-3 border-b w-full justify-start h-auto overflow-x-auto pb-0 gap-4">
             {recommendedCategories.map(category => (
               <TabsTrigger 
                 key={category.id}
                 value={category.id}
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-red-500 bg-transparent data-[state=active]:bg-transparent data-[state=active]:text-red-500 px-2 py-1 h-auto shadow-none"
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-orange-500 bg-transparent data-[state=active]:bg-transparent data-[state=active]:text-orange-500 px-1 py-1.5 h-auto shadow-none text-sm"
               >
                 {category.name}
               </TabsTrigger>
@@ -37,7 +37,7 @@ export default function ProductRecommendations({ products }) {
           
           {recommendedCategories.map(category => (
             <TabsContent key={category.id} value={category.id} className="mt-0">
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3">
                 {products?.slice(0, 10).map(product => (
                   <ProductCard key={product.id} product={product} />
                 ))}

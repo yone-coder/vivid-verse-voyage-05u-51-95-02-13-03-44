@@ -13,19 +13,19 @@ const brands = [
 
 export default function TopBrands() {
   return (
-    <div className="py-8 bg-white">
+    <div className="py-3">
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">Top Brands</h2>
-          <Link to="#" className="text-sm text-red-500 hover:underline">View All</Link>
+        <div className="flex justify-between items-center mb-3">
+          <h2 className="text-lg font-bold">Featured Brands</h2>
+          <Link to="#" className="text-sm text-orange-500 hover:underline">View All</Link>
         </div>
         
-        <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
+        <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
           {brands.map((brand) => (
             <Link 
               key={brand.id} 
               to="#" 
-              className="flex items-center justify-center border rounded hover:shadow-sm transition-shadow py-4"
+              className="flex items-center justify-center border rounded-md hover:shadow-sm transition-shadow py-3 bg-white"
             >
               <img 
                 src={brand.logo} 

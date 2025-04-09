@@ -18,7 +18,7 @@ export default function Index() {
   });
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-gray-100">
       {/* Header */}
       <Header />
       
@@ -28,22 +28,34 @@ export default function Index() {
         <HeroBanner />
         
         {/* Featured Categories */}
-        <FeaturedCategories />
+        <div className="bg-white mb-2 mt-2">
+          <FeaturedCategories />
+        </div>
         
         {/* Flash Deals Section */}
-        <FlashDeals />
+        <div className="mb-2">
+          <FlashDeals />
+        </div>
         
         {/* Super Deals */}
-        <SuperDealsSection />
+        <div className="mb-2">
+          <SuperDealsSection />
+        </div>
         
         {/* Top Brands */}
-        <TopBrands />
+        <div className="bg-white mb-2">
+          <TopBrands />
+        </div>
         
-        {/* Recommended Products Tabs */}
-        <ProductRecommendations products={products} />
+        {/* Recommended Products */}
+        <div className="bg-white mb-2">
+          <ProductRecommendations products={products} />
+        </div>
         
         {/* All Products Grid with Filters */}
-        <ProductGrid products={products} isLoading={isLoading} />
+        <div className="bg-white">
+          <ProductGrid products={products} isLoading={isLoading} />
+        </div>
       </main>
       
       {/* Footer */}

@@ -49,6 +49,17 @@ const flashProducts = [
     ratingCount: 186,
     sold: 536,
     stock: 38
+  },
+  {
+    id: 105,
+    name: "Wireless Gaming Mouse",
+    image: "https://placehold.co/300x300/D946EF/FFF?text=Mouse",
+    price: 39.99,
+    discountPrice: 19.99,
+    rating: 4.5,
+    ratingCount: 315,
+    sold: 892,
+    stock: 31
   }
 ];
 
@@ -78,74 +89,57 @@ export default function FlashDeals() {
   }, []);
   
   return (
-    <div className="py-8 bg-gradient-to-r from-orange-50 to-red-50">
+    <div className="py-3 bg-white">
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center mb-4">
+        <div className="flex justify-between items-center mb-3">
           <div className="flex items-center">
-            <h2 className="text-xl font-bold text-red-600 mr-3">Flash Deals</h2>
+            <h2 className="text-lg font-bold text-orange-500 mr-3">Flash Deals</h2>
             <div className="flex items-center gap-1">
-              <Clock className="h-4 w-4 text-red-500" />
-              <div className="text-sm font-medium">
-                <span className="inline-flex items-center justify-center bg-red-500 text-white h-5 w-5 rounded">
+              <Clock className="h-4 w-4 text-orange-500" />
+              <div className="text-xs font-medium">
+                <span className="inline-flex items-center justify-center bg-gray-800 text-white h-5 w-5 rounded">
                   {timeLeft.hours.toString().padStart(2, '0')}
                 </span>
                 :
-                <span className="inline-flex items-center justify-center bg-red-500 text-white h-5 w-5 rounded">
+                <span className="inline-flex items-center justify-center bg-gray-800 text-white h-5 w-5 rounded">
                   {timeLeft.minutes.toString().padStart(2, '0')}
                 </span>
                 :
-                <span className="inline-flex items-center justify-center bg-red-500 text-white h-5 w-5 rounded">
+                <span className="inline-flex items-center justify-center bg-gray-800 text-white h-5 w-5 rounded">
                   {timeLeft.seconds.toString().padStart(2, '0')}
                 </span>
               </div>
             </div>
           </div>
-          <Link to="#" className="text-sm text-red-500 hover:underline">View All</Link>
+          <Link to="#" className="text-sm text-orange-500 hover:underline">View All</Link>
         </div>
         
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+        <div className="flex gap-2.5 overflow-x-auto pb-2 -mx-1 px-1">
           {flashProducts.map((product) => (
-            <Card key={product.id} className="overflow-hidden hover:shadow-md transition-shadow">
+            <div key={product.id} className="w-[130px] flex-shrink-0">
               <Link to={`/product/${product.id}`}>
-                <div className="relative aspect-square overflow-hidden bg-gray-100">
+                <div className="relative aspect-square overflow-hidden bg-gray-100 rounded-md mb-1.5">
                   <img 
                     src={product.image} 
                     alt={product.name}
                     className="h-full w-full object-cover hover:scale-105 transition-transform duration-300"
                   />
-                  <div className="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded-sm font-medium">
+                  <div className="absolute top-0 left-0 bg-orange-500 text-white text-[10px] px-1.5 py-0.5 rounded-br-md font-medium">
                     {Math.round(((product.price - product.discountPrice) / product.price) * 100)}% OFF
                   </div>
                 </div>
-                <div className="p-3">
-                  <h3 className="font-medium text-sm line-clamp-2 mb-1 hover:text-red-500 transition-colors">
-                    {product.name}
-                  </h3>
-                  <div className="flex items-baseline gap-2 mt-1">
-                    <span className="text-red-500 font-semibold">${product.discountPrice.toFixed(2)}</span>
-                    <span className="text-gray-400 text-xs line-through">${product.price.toFixed(2)}</span>
-                  </div>
-                  <div className="flex items-center gap-1 mt-1">
-                    <div className="flex text-amber-400 text-xs">
-                      <Star className="h-3 w-3 fill-amber-400" />
-                      <span className="ml-1 text-gray-600">{product.rating}</span>
-                    </div>
-                    <span className="text-xs text-gray-500">({product.ratingCount})</span>
-                  </div>
-                  <div className="mt-2">
-                    <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-red-500 rounded-full" 
-                        style={{width: `${100 - (product.stock / (product.stock + product.sold) * 100)}%`}}
-                      />
-                    </div>
-                    <div className="text-xs text-gray-600 mt-1">
-                      {product.sold} sold | {product.stock} left
-                    </div>
+                <div>
+                  <div className="text-orange-500 font-semibold text-sm">US ${product.discountPrice.toFixed(2)}</div>
+                  <div className="text-xs text-gray-500 line-through">US ${product.price.toFixed(2)}</div>
+                  <div className="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden mt-1.5 mb-1">
+                    <div 
+                      className="h-full bg-orange-500 rounded-full" 
+                      style={{width: `${100 - (product.stock / (product.stock + product.sold) * 100)}%`}}
+                    />
                   </div>
                 </div>
               </Link>
-            </Card>
+            </div>
           ))}
         </div>
       </div>
