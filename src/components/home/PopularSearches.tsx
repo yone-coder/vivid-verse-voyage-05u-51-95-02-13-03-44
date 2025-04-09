@@ -1,7 +1,7 @@
 
 import React from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Search, Trending, ArrowUp } from "lucide-react";
+import { Search, TrendingUp, ArrowUp } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 
@@ -28,7 +28,7 @@ export default function PopularSearches() {
             <h2 className="text-sm font-medium">Popular Searches</h2>
           </div>
           <Link to="/search/trending" className="text-xs text-orange-500 hover:underline flex items-center">
-            <Trending className="h-3 w-3 mr-0.5" />
+            <TrendingUp className="h-3 w-3 mr-0.5" />
             View All
           </Link>
         </div>
