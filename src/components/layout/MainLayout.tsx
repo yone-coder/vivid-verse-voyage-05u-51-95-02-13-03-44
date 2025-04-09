@@ -48,7 +48,7 @@ export default function MainLayout() {
   // Use the css variable approach for header height
   const headerHeightStyle = `
     :root {
-      --header-height: ${isMobile ? '97px' : '152px'};
+      --header-height: ${isMobile ? '67px' : '152px'};
     }
   `;
   
@@ -65,7 +65,7 @@ export default function MainLayout() {
       ) : (
         <Header />
       )}
-      <main className="flex-grow pt-[calc(var(--header-height))]">
+      <main className="flex-grow pb-20">
         <Outlet />
       </main>
       {!isMobile && <Footer />}
