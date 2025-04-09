@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -8,8 +7,6 @@ import ModernBuyButton from "@/components/ModernBuyButton";
 import { useProduct, useProductAnalytics } from "@/hooks/useProduct";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Badge } from "@/components/ui/badge";
-import { TrendingUp } from "lucide-react";
 
 // Product Components
 import ProductHeader from "@/components/product/ProductHeader";
@@ -340,29 +337,7 @@ const ProductDetail = () => {
       <div className={`flex-1 ${isScrolled ? 'pt-10' : ''}`}>
         <div className="bg-white p-3 mb-0">
           <div className="flex items-center justify-between mb-0.5">
-            {/* Replace ProductBadges with inline badges */}
-            <div className="flex items-center flex-wrap gap-1">
-              {productForTabs.shipping.free && (
-                <Badge variant="outline" className="text-xs bg-green-50 text-green-500 border-green-200">
-                  Free Shipping
-                </Badge>
-              )}
-              
-              <Badge variant="outline" className="text-xs bg-orange-50 text-orange-500 border-orange-200">
-                Top Seller
-              </Badge>
-              
-              <Badge variant="outline" className="text-xs bg-red-50 text-red-500 border-red-200">
-                Flash Deal
-              </Badge>
-              
-              {analytics?.trending && (
-                <Badge variant="outline" className="text-xs bg-purple-50 text-purple-600 border-purple-200 flex items-center">
-                  <TrendingUp className="h-3 w-3 mr-0.5" />
-                  <span className="whitespace-nowrap">Trending</span>
-                </Badge>
-              )}
-            </div>
+            {/* Badges section removed */}
           </div>
           
           <div className="flex items-center justify-between">

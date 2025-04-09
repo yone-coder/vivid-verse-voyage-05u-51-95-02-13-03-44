@@ -17,7 +17,6 @@ export default function TrendingProducts({ products }) {
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <h2 className="text-sm font-bold">Trending Now</h2>
-            <Badge variant="aliHot" className="text-[10px] py-0 h-4">HOT</Badge>
           </div>
           <Link to="/trending" className="text-xs text-orange-500 hover:underline flex items-center">
             View All <ChevronRight className="h-3 w-3" />
