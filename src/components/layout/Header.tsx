@@ -42,14 +42,16 @@ const Header = ({
   toggleFavorite, 
   handleShare,
   isSearchOpen,
-  setIsSearchOpen
+  setIsSearchOpen,
+  cartCount = 2
 }: { 
   isProductHeader?: boolean, 
   isFavorite?: boolean, 
   toggleFavorite?: () => void, 
   handleShare?: () => void,
   isSearchOpen?: boolean,
-  setIsSearchOpen?: (open: boolean) => void
+  setIsSearchOpen?: (open: boolean) => void,
+  cartCount?: number
 }) => {
   const isMobile = useIsMobile();
   const location = useLocation();
@@ -58,7 +60,6 @@ const Header = ({
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [cartCount, setCartCount] = useState(2);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const categories = [
@@ -131,8 +132,14 @@ const Header = ({
                 </Link>
               </Button>
               
-              <div className="flex-1 mx-2 max-w-[200px]">
-                <div className="text-xs font-medium truncate text-center">Product Details</div>
+              <div className="flex-1 mx-2 max-w-[200px] relative">
+                <div 
+                  className="bg-gray-100 rounded-full h-7 px-3 py-1.5 flex items-center cursor-pointer"
+                  onClick={() => setIsSearchOpen && setIsSearchOpen(true)}
+                >
+                  <Search className="h-3 w-3 text-gray-400 mr-1" />
+                  <span className="text-[10px] text-gray-500 truncate">Search products</span>
+                </div>
               </div>
               
               <div className="flex items-center space-x-1">

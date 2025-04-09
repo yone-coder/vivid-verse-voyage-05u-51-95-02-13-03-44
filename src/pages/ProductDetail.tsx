@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -39,6 +38,7 @@ const ProductDetail = () => {
   const [maxQuantityReached, setMaxQuantityReached] = useState(false);
   const [comparisonMode, setComparisonMode] = useState(false);
   const [showLiveData, setShowLiveData] = useState(true);
+  const [cartCount, setCartCount] = useState(2);
   
   // Refs and hooks
   const headerRef = useRef<HTMLDivElement>(null);
@@ -102,6 +102,7 @@ const ProductDetail = () => {
   };
 
   const addToCart = () => {
+    setCartCount(prev => prev + quantity);
     toast({
       title: "Added to cart",
       description: `${quantity} x ${product?.name || "Product"} (${selectedColor}) added to your cart`,
@@ -293,6 +294,7 @@ const ProductDetail = () => {
           isFavorite={isFavorite}
           toggleFavorite={toggleFavorite}
           handleShare={handleShare}
+          cartCount={cartCount}
         />
       </div>
 
@@ -302,10 +304,11 @@ const ProductDetail = () => {
           toggleFavorite={toggleFavorite}
           handleShare={handleShare}
           isScrolled={true}
+          cartCount={cartCount}
         />
       )}
       
-      <div className={`flex-1 ${isScrolled ? 'pt-10' : ''}`}>
+      <div className={`flex-1 ${isScrolled ? 'pt-14' : ''}`}>
         <div className="bg-white p-3 mb-0">
           <div className="flex items-center justify-between mb-0.5">
             <ProductBadges 
@@ -399,13 +402,13 @@ const ProductDetail = () => {
           activeTab={activeTab} 
           setActiveTab={setActiveTab} 
           isScrolled={isScrolled} 
-          headerHeight={isScrolled ? 40 : 0}
+          headerHeight={isScrolled ? 60 : 0}
         />
       </div>
       
       <div className="pb-44"></div>
       
-      <ModernBuyButton />
+      <ModernBuyButton onAddToCart={addToCart} onBuyNow={buyNow} />
     </div>
   );
 };
