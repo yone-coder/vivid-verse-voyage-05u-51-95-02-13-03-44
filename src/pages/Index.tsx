@@ -9,6 +9,7 @@ import ProductGrid from "@/components/home/ProductGrid";
 import TopBrands from "@/components/home/TopBrands";
 import ProductRecommendations from "@/components/home/ProductRecommendations";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useState, useEffect } from "react";
 
 export default function Index() {
   const { data: products, isLoading } = useQuery({
@@ -17,6 +18,17 @@ export default function Index() {
   });
   
   const isMobile = useIsMobile();
+  const [isReady, setIsReady] = useState(false);
+  
+  useEffect(() => {
+    if (isMobile !== undefined) {
+      setIsReady(true);
+    }
+  }, [isMobile]);
+  
+  if (!isReady) {
+    return null; // Prevent flash while detecting mobile
+  }
 
   return (
     <div className="flex-grow pb-20 md:pb-0">
