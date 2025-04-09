@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -153,26 +152,22 @@ const ProductDetail = () => {
   useEffect(() => {
     const handleScroll = () => {
       if (headerRef.current) {
-        const headerRect = headerRef.current.getBoundingClientRect();
-        const headerBottom = headerRect.bottom;
-        const headerHeight = headerRect.height;
-        const currentScrollTop = window.scrollY;
+        const scrollY = window.scrollY;
+        const headerHeight = headerRef.current.getBoundingClientRect().height;
         
-        // Only consider scrolled when we're completely past the header/overlay
-        // This ensures the fixed header only appears after passing the entire gallery
-        const isPastHeader = headerBottom <= 0;
-        setIsScrolled(isPastHeader);
+        // Show fixed header as soon as we start scrolling past the overlay header
+        // This is the key change - now we check if we've scrolled even just a little bit
+        const isPastOverlay = scrollY > 0;
+        setIsScrolled(isPastOverlay);
         
-        // Show header with animation when scrolling down AND we're past the header
-        // Or immediately when specifically scrolling past the header threshold
-        if (currentScrollTop > lastScrollTop.current && isPastHeader) {
+        // Show the header with animation when scrolled past the overlay
+        if (isPastOverlay) {
           setIsHeaderVisible(true);
-        } else if (currentScrollTop < lastScrollTop.current && !isPastHeader) {
-          // Hide when scrolling up and not past header
+        } else {
           setIsHeaderVisible(false);
         }
         
-        lastScrollTop.current = currentScrollTop;
+        lastScrollTop.current = scrollY;
       }
     };
 
@@ -339,7 +334,7 @@ const ProductDetail = () => {
         <ProductImageGallery images={productImages.length > 0 ? productImages : ["/placeholder.svg"]} />
       </div>
 
-      {/* Fixed header when scrolled - only visible after passing the full gallery */}
+      {/* Fixed header when scrolled - visible as soon as we scroll past the overlay */}
       <div 
         className={`fixed top-0 left-0 right-0 z-30 transition-transform duration-300 ${
           isHeaderVisible && isScrolled ? 'translate-y-0' : '-translate-y-full'
