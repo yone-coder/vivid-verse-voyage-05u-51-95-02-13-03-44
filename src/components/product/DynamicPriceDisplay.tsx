@@ -29,30 +29,30 @@ const DynamicPriceDisplay = () => {
   }, [currentPrice]);
   
   return (
-    <div className="flex items-center justify-between bg-white p-2 rounded-lg shadow-sm w-full max-w-md">
+    <div className="flex items-center justify-between w-full py-1">
       {/* Current price */}
-      <div className="text-2xl font-bold text-red-500 flex-1 text-center">
+      <div className="text-xl font-bold text-red-500 flex-1">
         ${currentPrice.toFixed(2)}
       </div>
       
       {/* Original price */}
-      <div className="text-gray-500 line-through flex-1 text-center">
+      <div className="text-gray-500 line-through flex-1 text-sm">
         ${originalPrice.toFixed(2)}
       </div>
       
       {/* Discount badge */}
-      <div className="bg-red-100 text-red-700 text-sm px-2 py-1 rounded-md font-medium flex-1 text-center mx-2">
+      <div className="bg-red-100 text-red-700 text-xs px-2 py-0.5 rounded-md font-medium flex-1 text-center mx-1">
         {discountPercentage}% OFF
       </div>
       
       {/* Percentage change indicator */}
-      <div className={`flex items-center justify-center ${isPositiveChange ? 'text-green-600' : 'text-red-600'} text-sm font-medium flex-1 text-center`}>
+      <div className={`flex items-center justify-end ${isPositiveChange ? 'text-green-600' : 'text-red-600'} text-xs font-medium flex-1`}>
         {isPositiveChange ? (
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7"></path>
           </svg>
         ) : (
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
           </svg>
         )}
