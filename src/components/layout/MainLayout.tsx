@@ -14,6 +14,7 @@ export default function MainLayout() {
   const isProductPage = location.pathname.includes('/product/');
   const { toast } = useToast();
   const [isFavorite, setIsFavorite] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
   
   const toggleFavorite = () => {
     setIsFavorite(!isFavorite);
@@ -60,10 +61,15 @@ export default function MainLayout() {
           isProductHeader 
           isFavorite={isFavorite} 
           toggleFavorite={toggleFavorite} 
-          handleShare={handleShare} 
+          handleShare={handleShare}
+          isSearchOpen={isSearchOpen}
+          setIsSearchOpen={setIsSearchOpen}
         />
       ) : (
-        <Header />
+        <Header 
+          isSearchOpen={isSearchOpen}
+          setIsSearchOpen={setIsSearchOpen}
+        />
       )}
       <main className="flex-grow pb-20">
         <Outlet />

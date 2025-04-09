@@ -1,13 +1,13 @@
 
 import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { 
   Search, 
   ShoppingCart, 
   Camera, 
   Mic, 
   ChevronDown, 
-  Heart, 
+  Heart,
   Menu,
   X,
   User,
@@ -15,27 +15,60 @@ import {
   Share,
   MessageSquare,
   Bell,
+  Home,
+  Package,
+  ShoppingBag,
+  Zap,
+  Settings,
+  Globe,
+  Headphones,
+  LogIn,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-const Header = ({ isProductHeader, isFavorite, toggleFavorite, handleShare }: { 
+const Header = ({ 
+  isProductHeader, 
+  isFavorite, 
+  toggleFavorite, 
+  handleShare,
+  isSearchOpen,
+  setIsSearchOpen
+}: { 
   isProductHeader?: boolean, 
   isFavorite?: boolean, 
   toggleFavorite?: () => void, 
-  handleShare?: () => void 
+  handleShare?: () => void,
+  isSearchOpen?: boolean,
+  setIsSearchOpen?: (open: boolean) => void
 }) => {
   const isMobile = useIsMobile();
-  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [cartCount, setCartCount] = useState(2);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const categories = [
+    { name: "Women's Fashion", icon: <ShoppingBag className="h-4 w-4" /> },
+    { name: "Men's Fashion", icon: <Package className="h-4 w-4" /> },
+    { name: "Electronics", icon: <Zap className="h-4 w-4" /> },
+    { name: "Home & Garden", icon: <Home className="h-4 w-4" /> },
+    { name: "Beauty & Health", icon: <Heart className="h-4 w-4" /> },
+    { name: "Sports & Outdoors", icon: <Globe className="h-4 w-4" /> },
+  ];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -50,10 +83,38 @@ const Header = ({ isProductHeader, isFavorite, toggleFavorite, handleShare }: {
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSearchModalOpen(false);
+    if (setIsSearchOpen) setIsSearchOpen(false);
+    
+    if (searchQuery.trim()) {
+      toast({
+        title: "Search submitted",
+        description: `Searching for: ${searchQuery}`,
+      });
+      // In a real app, you would navigate to search results page
+      navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+    }
+  };
+
+  const handleVoiceSearch = () => {
     toast({
-      title: "Search submitted",
-      description: `Searching for: ${searchQuery}`,
+      title: "Voice Search",
+      description: "Voice search feature activated",
+    });
+  };
+
+  const handleCameraSearch = () => {
+    toast({
+      title: "Camera Search",
+      description: "Camera search feature activated",
+    });
+  };
+
+  const handleLogin = () => {
+    setIsLoggedIn(true);
+    toast({
+      title: "Login Successful",
+      description: "You have been logged in successfully",
+      variant: "success",
     });
   };
 
@@ -82,10 +143,10 @@ const Header = ({ isProductHeader, isFavorite, toggleFavorite, handleShare }: {
                   <Share className="h-4 w-4" />
                 </Button>
                 <div className="relative">
-                  <Button variant="ghost" size="icon" className="h-8 w-8 p-0">
+                  <Button variant="ghost" size="icon" className="h-8 w-8 p-0" onClick={() => navigate('/cart')}>
                     <ShoppingCart className="h-4 w-4" />
                     <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-[8px] rounded-full h-3 w-3 flex items-center justify-center">
-                      2
+                      {cartCount}
                     </span>
                   </Button>
                 </div>
@@ -122,10 +183,11 @@ const Header = ({ isProductHeader, isFavorite, toggleFavorite, handleShare }: {
                     variant="outline" 
                     size="icon" 
                     className="h-8 w-8 p-0 rounded-full bg-black/40 backdrop-blur-sm border-0 text-white"
+                    onClick={() => navigate('/cart')}
                   >
                     <ShoppingCart className="h-4 w-4" />
                     <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-[8px] rounded-full h-3 w-3 flex items-center justify-center">
-                      2
+                      {cartCount}
                     </span>
                   </Button>
                 </div>
@@ -145,19 +207,37 @@ const Header = ({ isProductHeader, isFavorite, toggleFavorite, handleShare }: {
         <div className="py-2 px-3">
           {/* Main Search Bar */}
           <div className="flex items-center">
-            <Sheet>
+            <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-7 w-7 mr-2">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
               <SheetContent side="left" className="w-[80%] p-0">
                 <div className="flex flex-col h-full">
                   <div className="p-4 border-b">
                     <div className="flex items-center gap-3">
                       <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center">
-                        <User className="h-6 w-6 text-gray-500" />
+                        {isLoggedIn ? (
+                          <Avatar>
+                            <AvatarFallback className="bg-orange-500 text-white">JD</AvatarFallback>
+                          </Avatar>
+                        ) : (
+                          <User className="h-6 w-6 text-gray-500" />
+                        )}
                       </div>
                       <div className="flex-1">
-                        <div className="flex gap-2">
-                          <Button variant="default" size="sm" className="h-7 text-[10px] bg-red-500 hover:bg-red-600">Sign In</Button>
-                          <Button variant="outline" size="sm" className="h-7 text-[10px]">Register</Button>
-                        </div>
+                        {isLoggedIn ? (
+                          <div className="space-y-1">
+                            <p className="text-sm font-medium">John Doe</p>
+                            <p className="text-xs text-gray-500">john.doe@example.com</p>
+                          </div>
+                        ) : (
+                          <div className="flex gap-2">
+                            <Button variant="default" size="sm" className="h-7 text-[10px] bg-red-500 hover:bg-red-600" onClick={handleLogin}>Sign In</Button>
+                            <Button variant="outline" size="sm" className="h-7 text-[10px]">Register</Button>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -193,25 +273,45 @@ const Header = ({ isProductHeader, isFavorite, toggleFavorite, handleShare }: {
                       
                       <div className="mt-3 space-y-3">
                         <div className="text-sm font-medium">Categories</div>
-                        {['Women\'s Fashion', 'Men\'s Fashion', 'Phones & Accessories', 'Electronics', 'Home & Garden'].map((cat, idx) => (
+                        {categories.map((category, idx) => (
                           <div key={idx} className="py-2 border-b border-gray-100">
                             <div className="flex justify-between items-center">
-                              <span className="text-xs">{cat}</span>
+                              <div className="flex items-center gap-2">
+                                {category.icon}
+                                <span className="text-xs">{category.name}</span>
+                              </div>
                               <ChevronDown className="h-3.5 w-3.5 text-gray-400" />
                             </div>
                           </div>
                         ))}
                       </div>
+                      
+                      <div className="mt-6">
+                        <div className="text-sm font-medium mb-3">Account</div>
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-2">
+                            <Settings className="h-4 w-4 text-gray-500" />
+                            <span className="text-xs">Settings</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Headphones className="h-4 w-4 text-gray-500" />
+                            <span className="text-xs">Help Center</span>
+                          </div>
+                          {isLoggedIn && (
+                            <div className="flex items-center gap-2" onClick={() => setIsLoggedIn(false)}>
+                              <LogIn className="h-4 w-4 text-gray-500" />
+                              <span className="text-xs">Log Out</span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </SheetContent>
-              <Button variant="ghost" size="icon" className="h-7 w-7 mr-2">
-                <Menu className="h-5 w-5" />
-              </Button>
             </Sheet>
             
-            <div className="flex-1 relative" onClick={() => setIsSearchModalOpen(true)}>
+            <div className="flex-1 relative" onClick={() => setIsSearchOpen && setIsSearchOpen(true)}>
               <div className="bg-gray-100 rounded-full h-8 px-3 py-1.5 flex items-center">
                 <Search className="h-3.5 w-3.5 text-gray-400 mr-2" />
                 <span className="text-[11px] text-gray-500">Search on AliExpress</span>
@@ -219,23 +319,134 @@ const Header = ({ isProductHeader, isFavorite, toggleFavorite, handleShare }: {
             </div>
             
             <div className="flex items-center ml-2 gap-2">
-              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => {
-                toast({
-                  title: "Camera Search",
-                  description: "Camera search feature opened",
-                });
-              }}>
+              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={handleCameraSearch}>
                 <Camera className="h-5 w-5" />
               </Button>
               
-              <div className="relative">
-                <Button variant="ghost" size="icon" className="h-7 w-7">
-                  <ShoppingCart className="h-5 w-5" />
-                  <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-[8px] rounded-full h-3.5 w-3.5 flex items-center justify-center">
-                    2
-                  </span>
-                </Button>
-              </div>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <div className="relative">
+                    <Button variant="ghost" size="icon" className="h-7 w-7">
+                      <ShoppingCart className="h-5 w-5" />
+                      <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-[8px] rounded-full h-3.5 w-3.5 flex items-center justify-center">
+                        {cartCount}
+                      </span>
+                    </Button>
+                  </div>
+                </PopoverTrigger>
+                <PopoverContent className="w-80 p-3">
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <h3 className="text-sm font-medium">Shopping Cart ({cartCount})</h3>
+                      <Button variant="link" size="sm" className="text-[10px] text-orange-500 h-auto p-0">View All</Button>
+                    </div>
+                    
+                    {cartCount > 0 ? (
+                      <div className="space-y-2">
+                        {[...Array(cartCount)].map((_, idx) => (
+                          <div key={idx} className="flex gap-2 p-2 rounded-md hover:bg-gray-50">
+                            <div className="w-12 h-12 bg-gray-100 rounded-md shrink-0">
+                              <img 
+                                src={`https://picsum.photos/200/200?random=${idx + 1}`} 
+                                className="w-full h-full object-cover rounded-md"
+                                alt="Product"
+                              />
+                            </div>
+                            <div className="flex-1">
+                              <p className="text-xs font-medium truncate">Wireless Earbuds with Noise Cancellation</p>
+                              <div className="flex justify-between mt-1">
+                                <p className="text-xs text-red-500">$19.99</p>
+                                <p className="text-[10px] text-gray-500">Qty: 1</p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                        
+                        <div className="pt-2 border-t mt-2">
+                          <div className="flex justify-between items-center mb-3">
+                            <span className="text-xs">Subtotal:</span>
+                            <span className="text-xs font-medium">$39.98</span>
+                          </div>
+                          <Button className="w-full text-xs bg-red-500 hover:bg-red-600">
+                            Checkout Now
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-center py-6">
+                        <ShoppingCart className="h-10 w-10 text-gray-300 mx-auto mb-2" />
+                        <p className="text-xs text-gray-500">Your cart is empty</p>
+                      </div>
+                    )}
+                  </div>
+                </PopoverContent>
+              </Popover>
+              
+              {!isMobile && (
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-7 w-7">
+                      {isLoggedIn ? (
+                        <Avatar className="h-7 w-7">
+                          <AvatarFallback className="bg-orange-500 text-white text-[10px]">JD</AvatarFallback>
+                        </Avatar>
+                      ) : (
+                        <User className="h-5 w-5" />
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-56 p-3">
+                    {isLoggedIn ? (
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2">
+                          <Avatar className="h-10 w-10">
+                            <AvatarFallback className="bg-orange-500 text-white">JD</AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <p className="text-sm font-medium">John Doe</p>
+                            <p className="text-xs text-gray-500">john.doe@example.com</p>
+                          </div>
+                        </div>
+                        
+                        <div className="pt-2 border-t space-y-2">
+                          <Button variant="ghost" size="sm" className="w-full justify-start text-xs h-8">
+                            <User className="h-3.5 w-3.5 mr-2" />
+                            My Account
+                          </Button>
+                          <Button variant="ghost" size="sm" className="w-full justify-start text-xs h-8">
+                            <ShoppingBag className="h-3.5 w-3.5 mr-2" />
+                            My Orders
+                          </Button>
+                          <Button variant="ghost" size="sm" className="w-full justify-start text-xs h-8">
+                            <Heart className="h-3.5 w-3.5 mr-2" />
+                            My Wishlist
+                          </Button>
+                          <Button variant="ghost" size="sm" className="w-full justify-start text-xs h-8" onClick={() => setIsLoggedIn(false)}>
+                            <LogIn className="h-3.5 w-3.5 mr-2" />
+                            Log Out
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="space-y-3">
+                        <div className="text-center mb-2">
+                          <p className="text-sm font-medium mb-1">Sign in to your account</p>
+                          <p className="text-xs text-gray-500">Access your orders, wishlist and more</p>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Button className="w-full text-xs bg-red-500 hover:bg-red-600" onClick={handleLogin}>
+                            Sign In
+                          </Button>
+                          <Button variant="outline" className="w-full text-xs">
+                            Register
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                  </PopoverContent>
+                </Popover>
+              )}
             </div>
           </div>
           
@@ -257,11 +468,11 @@ const Header = ({ isProductHeader, isFavorite, toggleFavorite, handleShare }: {
       </div>
 
       {/* Search Modal */}
-      {isSearchModalOpen && (
+      {isSearchOpen && (
         <div className="fixed inset-0 bg-white z-50">
           <div className="p-3 border-b">
             <div className="flex items-center">
-              <Button variant="ghost" size="icon" className="h-8 w-8 mr-2" onClick={() => setIsSearchModalOpen(false)}>
+              <Button variant="ghost" size="icon" className="h-8 w-8 mr-2" onClick={() => setIsSearchOpen && setIsSearchOpen(false)}>
                 <X className="h-4 w-4" />
               </Button>
               
@@ -296,8 +507,14 @@ const Header = ({ isProductHeader, isFavorite, toggleFavorite, handleShare }: {
             
             <div className="flex items-center justify-between mt-3">
               <div className="flex items-center space-x-2">
-                <Badge className="bg-gray-100 hover:bg-gray-200 text-gray-600 border-0 text-[10px]">Camera</Badge>
-                <Badge className="bg-gray-100 hover:bg-gray-200 text-gray-600 border-0 text-[10px]">Mic</Badge>
+                <Button variant="outline" size="sm" className="h-7 rounded-full text-[10px] flex gap-1" onClick={handleCameraSearch}>
+                  <Camera className="h-3 w-3" />
+                  <span>Camera</span>
+                </Button>
+                <Button variant="outline" size="sm" className="h-7 rounded-full text-[10px] flex gap-1" onClick={handleVoiceSearch}>
+                  <Mic className="h-3 w-3" />
+                  <span>Voice</span>
+                </Button>
               </div>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -316,24 +533,35 @@ const Header = ({ isProductHeader, isFavorite, toggleFavorite, handleShare }: {
           </div>
           
           <div className="p-3">
-            <div className="mb-4">
-              <h3 className="text-xs font-medium mb-2">Recent Searches</h3>
-              <div className="flex items-center gap-1.5 flex-wrap">
-                <Badge className="bg-gray-100 hover:bg-gray-200 text-gray-600 border-0 text-[10px]">iphone 15 case</Badge>
-                <Badge className="bg-gray-100 hover:bg-gray-200 text-gray-600 border-0 text-[10px]">wireless earbuds</Badge>
-                <Badge className="bg-gray-100 hover:bg-gray-200 text-gray-600 border-0 text-[10px]">smart watch</Badge>
-              </div>
-            </div>
-            
-            <div className="mb-4">
-              <h3 className="text-xs font-medium mb-2">Popular Searches</h3>
-              <div className="flex items-center gap-1.5 flex-wrap">
-                <Badge className="bg-gray-100 hover:bg-gray-200 text-gray-600 border-0 text-[10px]">summer dress</Badge>
-                <Badge className="bg-gray-100 hover:bg-gray-200 text-gray-600 border-0 text-[10px]">phone charger</Badge>
-                <Badge className="bg-gray-100 hover:bg-gray-200 text-gray-600 border-0 text-[10px]">bluetooth speaker</Badge>
-                <Badge className="bg-gray-100 hover:bg-gray-200 text-gray-600 border-0 text-[10px]">men's shoes</Badge>
-              </div>
-            </div>
+            <Tabs defaultValue="recent" className="mb-4">
+              <TabsList className="w-full grid grid-cols-3 h-8">
+                <TabsTrigger value="recent" className="text-[10px]">Recent Searches</TabsTrigger>
+                <TabsTrigger value="popular" className="text-[10px]">Popular</TabsTrigger>
+                <TabsTrigger value="trending" className="text-[10px]">Trending</TabsTrigger>
+              </TabsList>
+              <TabsContent value="recent" className="mt-2">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <Badge className="bg-gray-100 hover:bg-gray-200 text-gray-600 border-0 text-[10px]">iphone 15 case</Badge>
+                  <Badge className="bg-gray-100 hover:bg-gray-200 text-gray-600 border-0 text-[10px]">wireless earbuds</Badge>
+                  <Badge className="bg-gray-100 hover:bg-gray-200 text-gray-600 border-0 text-[10px]">smart watch</Badge>
+                </div>
+              </TabsContent>
+              <TabsContent value="popular" className="mt-2">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <Badge className="bg-gray-100 hover:bg-gray-200 text-gray-600 border-0 text-[10px]">summer dress</Badge>
+                  <Badge className="bg-gray-100 hover:bg-gray-200 text-gray-600 border-0 text-[10px]">phone charger</Badge>
+                  <Badge className="bg-gray-100 hover:bg-gray-200 text-gray-600 border-0 text-[10px]">bluetooth speaker</Badge>
+                  <Badge className="bg-gray-100 hover:bg-gray-200 text-gray-600 border-0 text-[10px]">men's shoes</Badge>
+                </div>
+              </TabsContent>
+              <TabsContent value="trending" className="mt-2">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <Badge className="bg-gray-100 hover:bg-gray-200 text-gray-600 border-0 text-[10px]">led lights</Badge>
+                  <Badge className="bg-gray-100 hover:bg-gray-200 text-gray-600 border-0 text-[10px]">water bottle</Badge>
+                  <Badge className="bg-gray-100 hover:bg-gray-200 text-gray-600 border-0 text-[10px]">laptop sleeve</Badge>
+                </div>
+              </TabsContent>
+            </Tabs>
             
             <div>
               <h3 className="text-xs font-medium mb-2">Trending Products</h3>
