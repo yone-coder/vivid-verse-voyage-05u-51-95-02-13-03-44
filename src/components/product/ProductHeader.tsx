@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Heart, Share, Search, Camera } from "lucide-react";
+import { ArrowLeft, Heart, Share, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -10,13 +10,15 @@ interface ProductHeaderProps {
   toggleFavorite: () => void;
   handleShare: () => void;
   isScrolled?: boolean;
+  productTitle?: string;
 }
 
 const ProductHeader: React.FC<ProductHeaderProps> = ({
   isFavorite,
   toggleFavorite,
   handleShare,
-  isScrolled = false
+  isScrolled = false,
+  productTitle
 }) => {
   if (isScrolled) {
     return (
@@ -27,13 +29,10 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
               <ArrowLeft className="h-4 w-4" />
             </Button>
           </Link>
-          <div className="flex-1 relative">
-            <Input 
-              type="text" 
-              placeholder="Search products..." 
-              className="h-8 pl-8 pr-3 text-xs rounded-full border-0"
-            />
-            <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-gray-500" />
+          <div className="flex-1 ml-2 truncate">
+            <span className="text-sm font-medium text-white truncate">
+              {productTitle || "Product Details"}
+            </span>
           </div>
           <div className="flex gap-1 ml-1">
             <Button 
@@ -65,17 +64,6 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
           <ArrowLeft className="h-4 w-4" />
         </Button>
       </Link>
-      <div className="flex-1 mx-3 relative hidden md:block">
-        <div className="relative w-full max-w-[300px] mx-auto">
-          <Input 
-            type="text" 
-            placeholder="Search products..." 
-            className="h-8 pl-8 pr-3 bg-black/30 backdrop-blur-sm hover:bg-black/40 text-xs rounded-full border-0 text-white placeholder:text-gray-300"
-          />
-          <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-gray-300" />
-          <Camera className="absolute right-2 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-gray-300" />
-        </div>
-      </div>
       <div className="flex gap-1">
         <Button 
           variant="outline" 
