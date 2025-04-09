@@ -65,7 +65,7 @@ export default function MainLayout() {
             handleShare={handleShare}
             isSearchOpen={isSearchOpen}
             setIsSearchOpen={setIsSearchOpen}
-            className="absolute top-0 left-0 right-0 z-50 bg-transparent"
+            // Removed the className prop as it doesn't exist on the Header component
           />
           <main className="flex-grow">
             <Outlet />
