@@ -10,6 +10,12 @@ import TopBrands from "@/components/home/TopBrands";
 import ProductRecommendations from "@/components/home/ProductRecommendations";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useState, useEffect } from "react";
+import TrendingProducts from "@/components/home/TrendingProducts";
+import NewArrivals from "@/components/home/NewArrivals";
+import Newsletter from "@/components/home/Newsletter";
+import PopularSearches from "@/components/home/PopularSearches";
+import RecentlyViewed from "@/components/home/RecentlyViewed";
+import BenefitsBanner from "@/components/home/BenefitsBanner";
 
 export default function Index() {
   const { data: products, isLoading } = useQuery({
@@ -37,6 +43,11 @@ export default function Index() {
         <HeroBanner />
       </div>
       
+      {/* Benefits Banner - New Feature */}
+      <div className="mb-1 bg-white">
+        <BenefitsBanner />
+      </div>
+      
       {/* Featured Categories - shown in a compact grid on mobile */}
       <div className="bg-white mb-1">
         <FeaturedCategories />
@@ -47,9 +58,19 @@ export default function Index() {
         <FlashDeals />
       </div>
       
+      {/* Popular Searches - New Feature */}
+      <div className="mb-1 bg-white">
+        <PopularSearches />
+      </div>
+      
       {/* Super Deals */}
       <div className="mb-1">
         <SuperDealsSection />
+      </div>
+      
+      {/* New Arrivals - New Feature */}
+      <div className="bg-white mb-1">
+        <NewArrivals products={products?.slice(0, 4)} />
       </div>
       
       {/* Top Brands */}
@@ -57,9 +78,24 @@ export default function Index() {
         <TopBrands />
       </div>
       
+      {/* Trending Products - New Feature */}
+      <div className="mb-1">
+        <TrendingProducts products={products?.slice(0, 6)} />
+      </div>
+      
       {/* Recommended Products */}
       <div className="bg-white mb-1">
         <ProductRecommendations products={products} />
+      </div>
+      
+      {/* Recently Viewed - New Feature */}
+      <div className="bg-white mb-1">
+        <RecentlyViewed />
+      </div>
+      
+      {/* Newsletter - New Feature */}
+      <div className="mb-1">
+        <Newsletter />
       </div>
       
       {/* All Products Grid with Filters */}
