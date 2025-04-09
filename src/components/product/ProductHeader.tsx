@@ -104,9 +104,9 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
         
         {/* Search bar - only show when scrolled or search is active */}
         {(isScrolled || isSearchActive) && (
-          <div className={`relative ${isSearchActive ? 'flex-1' : 'hidden md:block flex-1'} mx-2`}>
+          <div className={`relative ${isSearchActive ? 'flex-1' : 'flex-1'} mx-2`}>
             <form onSubmit={submitSearch} className="w-full">
-              <div className={`relative w-full ${isSearchActive ? 'max-w-full' : 'max-w-[300px]'} mx-auto`}>
+              <div className={`relative w-full ${isSearchActive ? 'max-w-full' : 'max-w-full'} mx-auto`}>
                 <Popover open={open} onOpenChange={setOpen}>
                   <PopoverTrigger asChild>
                     <div className="relative w-full">
@@ -174,18 +174,16 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
         {/* Action buttons */}
         {!isSearchActive ? (
           <div className="flex gap-1">
-            {/* Search button (only on mobile when not scrolled) */}
-            {!isScrolled && (
-              <div className="md:hidden">
-                <Button 
-                  variant={isScrolled ? "ghost" : "outline"}
-                  size="sm" 
-                  className={`rounded-full ${isScrolled ? 'text-gray-700 hover:bg-gray-100 h-7 w-7' : 'bg-black/30 backdrop-blur-sm hover:bg-black/40 border-0 text-white h-7 w-7'} p-0`}
-                  onClick={activateSearch}
-                >
-                  <Search className="h-3.5 w-3.5" />
-                </Button>
-              </div>
+            {/* Search button (only shown when not scrolled and not showing search bar) */}
+            {!isScrolled && !isSearchActive && (
+              <Button 
+                variant={isScrolled ? "ghost" : "outline"}
+                size="sm" 
+                className={`rounded-full ${isScrolled ? 'text-gray-700 hover:bg-gray-100 h-7 w-7' : 'bg-black/30 backdrop-blur-sm hover:bg-black/40 border-0 text-white h-7 w-7'} p-0`}
+                onClick={activateSearch}
+              >
+                <Search className="h-3.5 w-3.5" />
+              </Button>
             )}
             
             {/* Favorite button */}

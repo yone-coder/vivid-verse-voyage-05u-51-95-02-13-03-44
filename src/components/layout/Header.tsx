@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { 
@@ -42,21 +41,27 @@ const Header = ({
   toggleFavorite, 
   handleShare,
   isSearchOpen,
-  setIsSearchOpen
+  setIsSearchOpen,
+  searchQuery,
+  setSearchQuery,
+  handleSearch
 }: { 
   isProductHeader?: boolean, 
   isFavorite?: boolean, 
   toggleFavorite?: () => void, 
   handleShare?: () => void,
   isSearchOpen?: boolean,
-  setIsSearchOpen?: (open: boolean) => void
+  setIsSearchOpen?: (open: boolean) => void,
+  searchQuery?: string,
+  setSearchQuery?: (query: string) => void,
+  handleSearch?: (e: React.FormEvent) => void
 }) => {
   const isMobile = useIsMobile();
   const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isScrolled, setIsScrolled] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [_searchQuery, _setSearchQuery] = useState("");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [cartCount, setCartCount] = useState(2);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -69,6 +74,10 @@ const Header = ({
     { name: "Beauty & Health", icon: <Heart className="h-4 w-4" /> },
     { name: "Sports & Outdoors", icon: <Globe className="h-4 w-4" /> },
   ];
+
+  // Use the props if provided, otherwise use internal state
+  const actualSearchQuery = searchQuery !== undefined ? searchQuery : _searchQuery;
+  const actualSetSearchQuery = setSearchQuery || _setSearchQuery;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -85,13 +94,17 @@ const Header = ({
     e.preventDefault();
     if (setIsSearchOpen) setIsSearchOpen(false);
     
-    if (searchQuery.trim()) {
-      toast({
-        title: "Search submitted",
-        description: `Searching for: ${searchQuery}`,
-      });
-      // In a real app, you would navigate to search results page
-      navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+    if (actualSearchQuery.trim()) {
+      if (handleSearch) {
+        handleSearch(e);
+      } else {
+        toast({
+          title: "Search submitted",
+          description: `Searching for: ${actualSearchQuery}`,
+        });
+        // In a real app, you would navigate to search results page
+        navigate(`/search?q=${encodeURIComponent(actualSearchQuery)}`);
+      }
     }
   };
 
@@ -137,8 +150,8 @@ const Header = ({
                     type="text"
                     placeholder="Search products..."
                     className="h-7 pl-7 pr-3 text-[10px] rounded-full"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    value={actualSearchQuery}
+                    onChange={(e) => actualSetSearchQuery(e.target.value)}
                   />
                   <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3 w-3 text-gray-500" />
                 </form>
@@ -176,8 +189,8 @@ const Header = ({
                     type="text" 
                     placeholder="Search products..." 
                     className="h-7 pl-7 pr-7 bg-black/30 backdrop-blur-sm hover:bg-black/40 text-[10px] rounded-full border-0 text-white placeholder:text-gray-300"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    value={actualSearchQuery}
+                    onChange={(e) => actualSetSearchQuery(e.target.value)}
                     onKeyUp={(e) => {
                       if (e.key === 'Enter') {
                         handleSearchSubmit(e as unknown as React.FormEvent);
@@ -510,18 +523,18 @@ const Header = ({
                     type="text"
                     placeholder="Search on AliExpress"
                     className="h-9 pl-8 pr-8 rounded-full border-gray-200 text-xs"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    value={actualSearchQuery}
+                    onChange={(e) => actualSetSearchQuery(e.target.value)}
                     autoFocus
                   />
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-gray-400" />
-                  {searchQuery && (
+                  {actualSearchQuery && (
                     <Button 
                       type="button" 
                       variant="ghost" 
                       size="icon" 
                       className="absolute right-1 top-1/2 transform -translate-y-1/2 h-7 w-7"
-                      onClick={() => setSearchQuery("")}
+                      onClick={() => actualSetSearchQuery("")}
                     >
                       <X className="h-3 w-3 text-gray-400" />
                     </Button>

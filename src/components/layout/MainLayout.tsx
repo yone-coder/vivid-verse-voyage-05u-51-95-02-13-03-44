@@ -15,6 +15,7 @@ export default function MainLayout() {
   const { toast } = useToast();
   const [isFavorite, setIsFavorite] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   
   const toggleFavorite = () => {
     setIsFavorite(!isFavorite);
@@ -46,6 +47,14 @@ export default function MainLayout() {
     }
   };
   
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    toast({
+      title: "Search submitted",
+      description: `Searching for: ${searchQuery}`,
+    });
+  };
+  
   // Use the css variable approach for header height - using reduced height for AliExpress-like compact header
   const headerHeightStyle = `
     :root {
@@ -67,6 +76,9 @@ export default function MainLayout() {
           <Header 
             isSearchOpen={isSearchOpen}
             setIsSearchOpen={setIsSearchOpen}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            handleSearch={handleSearch}
           />
           <main className="flex-grow pb-20">
             <Outlet />
