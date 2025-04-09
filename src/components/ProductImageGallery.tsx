@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Carousel,
@@ -355,46 +356,8 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
       <div 
         className="relative w-full aspect-square bg-gray-100 overflow-hidden"
       >
-        <div className="absolute top-3 left-3 z-20 flex items-center space-x-2">
-          <button
-            onClick={() => window.history.back()}
-            className="bg-white/70 backdrop-blur-sm p-1.5 rounded-full text-gray-700 hover:bg-white/90 transition-colors shadow-sm"
-          >
-            <ArrowLeft size={18} />
-          </button>
-        </div>
+        {/* Removing the top action buttons that are duplicated */}
         
-        <div className="absolute top-3 right-3 z-20 flex items-center space-x-2">
-          <button
-            onClick={toggleFavorite}
-            className={cn(
-              "bg-white/70 backdrop-blur-sm p-1.5 rounded-full text-gray-700 hover:bg-white/90 transition-colors shadow-sm",
-              isFavorite && "text-red-500"
-            )}
-          >
-            <Heart size={18} className={isFavorite ? "fill-red-500" : ""} />
-          </button>
-          
-          <button
-            onClick={() => shareImage(currentIndex)}
-            className="bg-white/70 backdrop-blur-sm p-1.5 rounded-full text-gray-700 hover:bg-white/90 transition-colors shadow-sm"
-          >
-            <Share2 size={18} />
-          </button>
-          
-          <button
-            onClick={() => {
-              toast({
-                title: "Added to cart",
-                description: "Item has been added to your cart",
-              });
-            }}
-            className="bg-white/70 backdrop-blur-sm p-1.5 rounded-full text-gray-700 hover:bg-white/90 transition-colors shadow-sm"
-          >
-            <ShoppingCart size={18} />
-          </button>
-        </div>
-
         <Carousel
           className="w-full h-full"
           opts={{
@@ -1015,7 +978,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                       className={cn("justify-start h-7 text-white hover:bg-white/10", imageFilter === "contrast" && "bg-white/20")} 
                       onClick={() => applyFilter("contrast")}
                     >
-                      Enhance
+                      Enhance Contrast
                     </Button>
                   </div>
                 </PopoverContent>
