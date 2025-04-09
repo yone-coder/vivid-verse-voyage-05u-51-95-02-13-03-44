@@ -13,7 +13,6 @@ interface ProductHeaderProps {
   searchQuery?: string;
   setSearchQuery?: (query: string) => void;
   handleSearch?: (e: React.FormEvent) => void;
-  notificationCount?: number;
 }
 
 const ProductHeader: React.FC<ProductHeaderProps> = ({
@@ -23,15 +22,14 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
   isScrolled = false,
   searchQuery = "",
   setSearchQuery = () => {},
-  handleSearch = () => {},
-  notificationCount = 0
+  handleSearch = () => {}
 }) => {
   if (isScrolled) {
     return (
-      <div className="fixed top-0 left-0 right-0 w-full bg-white shadow-sm z-50">
+      <div className="fixed top-0 left-0 right-0 bg-orange-500 z-30 shadow-sm">
         <div className="flex items-center h-10 px-2">
           <Link to="/" className="mr-1">
-            <Button variant="ghost" size="sm" className="rounded-full h-7 w-7 p-0 text-black hover:bg-gray-100">
+            <Button variant="ghost" size="sm" className="rounded-full h-7 w-7 p-0 text-white hover:bg-orange-600">
               <ArrowLeft className="h-3.5 w-3.5" />
             </Button>
           </Link>
@@ -39,7 +37,7 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
             <Input 
               type="text" 
               placeholder="Search products..." 
-              className="h-7 pl-7 pr-3 text-[10px] rounded-full border-gray-200"
+              className="h-7 pl-7 pr-3 text-[10px] rounded-full border-0"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -49,20 +47,15 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
             <Button 
               variant="ghost" 
               size="sm" 
-              className="rounded-full h-7 w-7 p-0 hover:bg-gray-100 relative"
+              className="rounded-full h-7 w-7 p-0 text-white hover:bg-orange-600"
               onClick={toggleFavorite}
             >
-              <Heart className={`h-3.5 w-3.5 ${isFavorite ? "fill-red-500 text-red-500" : ""}`} />
-              {notificationCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[8px] rounded-full h-3 w-3 flex items-center justify-center">
-                  {notificationCount > 9 ? '9+' : notificationCount}
-                </span>
-              )}
+              <Heart className={`h-3.5 w-3.5 ${isFavorite ? "fill-white" : ""}`} />
             </Button>
             <Button 
               variant="ghost" 
               size="sm" 
-              className="rounded-full h-7 w-7 p-0 hover:bg-gray-100"
+              className="rounded-full h-7 w-7 p-0 text-white hover:bg-orange-600"
               onClick={handleShare}
             >
               <Share className="h-3.5 w-3.5" />
@@ -74,54 +67,47 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
   }
 
   return (
-    <div className="fixed top-0 left-0 right-0 w-full z-50 px-3 py-3 bg-gradient-to-b from-black/50 to-transparent">
-      <div className="flex justify-between">
-        <Link to="/">
-          <Button variant="outline" size="sm" className="rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/40 border-0 text-white h-8 w-8 p-0">
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-        </Link>
-        <div className="flex-1 mx-3 relative hidden md:block">
-          <div className="relative w-full max-w-[300px] mx-auto">
-            <Input 
-              type="text" 
-              placeholder="Search products..." 
-              className="h-8 pl-8 pr-8 bg-black/30 backdrop-blur-sm hover:bg-black/40 text-xs rounded-full border-0 text-white placeholder:text-gray-300"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyUp={(e) => {
-                if (e.key === 'Enter') {
-                  handleSearch(e as unknown as React.FormEvent);
-                }
-              }}
-            />
-            <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-gray-300" />
-            <Camera className="absolute right-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-gray-300" />
-          </div>
+    <div className="absolute top-2 left-0 right-0 flex justify-between z-10 px-2">
+      <Link to="/">
+        <Button variant="outline" size="sm" className="rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/40 border-0 text-white h-7 w-7 p-0">
+          <ArrowLeft className="h-3.5 w-3.5" />
+        </Button>
+      </Link>
+      <div className="flex-1 mx-3 relative hidden md:block">
+        <div className="relative w-full max-w-[300px] mx-auto">
+          <Input 
+            type="text" 
+            placeholder="Search products..." 
+            className="h-7 pl-7 pr-7 bg-black/30 backdrop-blur-sm hover:bg-black/40 text-[10px] rounded-full border-0 text-white placeholder:text-gray-300"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyUp={(e) => {
+              if (e.key === 'Enter') {
+                handleSearch(e as unknown as React.FormEvent);
+              }
+            }}
+          />
+          <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3 w-3 text-gray-300" />
+          <Camera className="absolute right-2 top-1/2 transform -translate-y-1/2 h-3 w-3 text-gray-300" />
         </div>
-        <div className="flex gap-2">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/40 border-0 text-white h-8 w-8 p-0 relative"
-            onClick={toggleFavorite}
-          >
-            <Heart className={`h-4 w-4 ${isFavorite ? "fill-white text-white" : ""}`} />
-            {notificationCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[8px] rounded-full h-3.5 w-3.5 flex items-center justify-center">
-                {notificationCount > 9 ? '9+' : notificationCount}
-              </span>
-            )}
-          </Button>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/40 border-0 text-white h-8 w-8 p-0"
-            onClick={handleShare}
-          >
-            <Share className="h-4 w-4" />
-          </Button>
-        </div>
+      </div>
+      <div className="flex gap-1">
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/40 border-0 text-white h-7 w-7 p-0"
+          onClick={toggleFavorite}
+        >
+          <Heart className={`h-3.5 w-3.5 ${isFavorite ? "fill-white text-white" : ""}`} />
+        </Button>
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/40 border-0 text-white h-7 w-7 p-0"
+          onClick={handleShare}
+        >
+          <Share className="h-3.5 w-3.5" />
+        </Button>
       </div>
     </div>
   );

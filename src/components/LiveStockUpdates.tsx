@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Progress } from "@/components/ui/progress";
 import { AlertTriangle, Clock } from "lucide-react";
 
-export interface LiveStockUpdatesProps {
+interface LiveStockUpdatesProps {
   initialStock: number;
   highDemand?: boolean;
 }
@@ -69,6 +69,7 @@ const LiveStockUpdates: React.FC<LiveStockUpdatesProps> = ({
       <Progress 
         value={stockPercentage} 
         className="h-1.5" 
+        indicatorClassName={pulseProgress ? "animate-pulse" : ""}
       />
       
       <div className="flex justify-between mt-2 text-xs">

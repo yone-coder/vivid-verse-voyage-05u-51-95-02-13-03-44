@@ -38,8 +38,6 @@ const ProductDetail = () => {
   const [maxQuantityReached, setMaxQuantityReached] = useState(false);
   const [comparisonMode, setComparisonMode] = useState(false);
   const [showLiveData, setShowLiveData] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [notificationCount, setNotificationCount] = useState(0);
   
   // Refs and hooks
   const headerRef = useRef<HTMLDivElement>(null);
@@ -102,16 +100,6 @@ const ProductDetail = () => {
     });
   };
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery) {
-      toast({
-        title: "Search initiated",
-        description: `Searching for: ${searchQuery}`,
-      });
-    }
-  };
-
   const addToCart = () => {
     toast({
       title: "Added to cart",
@@ -146,9 +134,10 @@ const ProductDetail = () => {
   // Effects
   useEffect(() => {
     const handleScroll = () => {
-      if (headerRef.current) {
-        const scrollPosition = window.scrollY;
-        setIsScrolled(scrollPosition > 100);
+      if (headerRef.current && tabsRef.current) {
+        const headerBottom = headerRef.current.getBoundingClientRect().bottom;
+        const tabsTop = tabsRef.current.getBoundingClientRect().top;
+        setIsScrolled(headerBottom < 0 || tabsTop <= 0);
       }
     };
 
@@ -296,24 +285,21 @@ const ProductDetail = () => {
   
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
-      <ProductHeader 
-        isFavorite={isFavorite}
-        toggleFavorite={toggleFavorite}
-        handleShare={handleShare}
-        isScrolled={isScrolled}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        handleSearch={handleSearch}
-        notificationCount={notificationCount}
-      />
-      
-      {/* Add proper spacing for the gallery to avoid overlap with the header */}
-      <div className="w-full pt-10 mt-3">
+      <div ref={headerRef} className="relative w-full bg-white">
         <ProductImageGallery images={productImages.length > 0 ? productImages : ["/placeholder.svg"]} />
       </div>
 
-      <div className="flex-1">
-        <div className="bg-white p-4 mt-2 rounded-t-xl shadow-sm">
+      {isScrolled && (
+        <ProductHeader 
+          isFavorite={isFavorite}
+          toggleFavorite={toggleFavorite}
+          handleShare={handleShare}
+          isScrolled={true}
+        />
+      )}
+      
+      <div className={`flex-1 ${isScrolled ? 'pt-10' : ''}`}>
+        <div className="bg-white p-3 mb-0">
           <div className="flex items-center justify-between mb-0.5">
             <ProductBadges 
               hasFreeShipping={productForTabs.shipping.free}
@@ -337,7 +323,7 @@ const ProductDetail = () => {
             )}
           </div>
           
-          <h1 className="text-lg font-semibold mt-1">{product.name}</h1>
+          <h1 className="text-lg font-medium mt-1">{product.name}</h1>
           
           <ProductRatings 
             rating={4.8}

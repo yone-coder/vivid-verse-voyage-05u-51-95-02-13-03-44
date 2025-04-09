@@ -36,25 +36,21 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-interface HeaderProps {
-  isProductHeader?: boolean;
-  isFavorite?: boolean;
-  toggleFavorite?: () => void;
-  handleShare?: () => void;
-  isSearchOpen?: boolean;
-  setIsSearchOpen?: (open: boolean) => void;
-  notificationCount?: number;
-}
-
-const Header: React.FC<HeaderProps> = ({ 
+const Header = ({ 
   isProductHeader, 
   isFavorite, 
   toggleFavorite, 
   handleShare,
   isSearchOpen,
-  setIsSearchOpen,
-  notificationCount = 0
-}: HeaderProps) => {
+  setIsSearchOpen
+}: { 
+  isProductHeader?: boolean, 
+  isFavorite?: boolean, 
+  toggleFavorite?: () => void, 
+  handleShare?: () => void,
+  isSearchOpen?: boolean,
+  setIsSearchOpen?: (open: boolean) => void
+}) => {
   const isMobile = useIsMobile();
   const location = useLocation();
   const navigate = useNavigate();
