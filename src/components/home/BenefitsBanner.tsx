@@ -1,72 +1,50 @@
 
-import React from "react";
-import { Shield, Truck, Clock, CreditCard, Star, Gift } from "lucide-react";
-import { useIsMobile } from "@/hooks/use-mobile";
+import React, { useState } from 'react';
+import { Shield, Truck, Clock, CreditCard, Star, Gift, ChevronRight } from 'lucide-react';
 
-const benefits = [
-  {
-    id: 1,
-    icon: Shield,
-    title: "Buyer Protection",
-    description: "Money back guarantee"
-  },
-  {
-    id: 2,
-    icon: Truck,
-    title: "Free Shipping",
-    description: "On orders over $50"
-  },
-  {
-    id: 3,
-    icon: Clock,
-    title: "Fast Delivery",
-    description: "Get your items quickly"
-  },
-  {
-    id: 4,
-    icon: CreditCard,
-    title: "Secure Payment",
-    description: "Multiple payment options"
-  },
-  {
-    id: 5,
-    icon: Star,
-    title: "Loyalty Rewards",
-    description: "Earn points on purchases"
-  },
-  {
-    id: 6,
-    icon: Gift,
-    title: "Gift Vouchers",
-    description: "Special offers for members"
-  }
-];
-
-export default function BenefitsBanner() {
-  const isMobile = useIsMobile();
+const EcommerceFeatures = () => {
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
   
+  const features = [
+    { icon: <Shield size={16} />, text: "Buyer Protection" },
+    { icon: <Truck size={16} />, text: "Free Shipping" },
+    { icon: <Clock size={16} />, text: "Fast Delivery" },
+    { icon: <CreditCard size={16} />, text: "Secure Payment" },
+    { icon: <Star size={16} />, text: "Loyalty Rewards" },
+    { icon: <Gift size={16} />, text: "Gift Vouchers" },
+  ];
+
   return (
-    <div className="py-3">
-      <div className="container mx-auto px-3">
-        <div className={`grid ${isMobile ? 'grid-cols-2 gap-2' : 'grid-cols-3 md:grid-cols-6 gap-2'}`}>
-          {benefits.map((benefit) => (
-            <div 
-              key={benefit.id} 
-              className="flex items-center gap-2 p-2 rounded-md hover:bg-gradient-to-r hover:from-orange-50 hover:to-red-50 transition-all duration-300 group"
-            >
-              <div className="h-8 w-8 flex items-center justify-center rounded-full bg-orange-100 group-hover:bg-orange-200 transition-colors">
-                <benefit.icon className="h-4 w-4 text-orange-500 flex-shrink-0" />
-              </div>
-              <div>
-                <h3 className="text-xs font-medium">{benefit.title}</h3>
-                {(!isMobile || benefits.length <= 4) && (
-                  <p className="text-[10px] text-gray-500">{benefit.description}</p>
-                )}
-              </div>
+    <div className="bg-white rounded-lg text-xs">
+      <div className="flex overflow-x-auto py-2 px-1 no-scrollbar">
+        {features.map((feature, index) => (
+          <div 
+            key={index} 
+            className="flex items-center shrink-0 px-2 py-1 mx-1 bg-orange-50 rounded-full cursor-pointer"
+            onClick={() => setExpandedIndex(expandedIndex === index ? null : index)}
+          >
+            <div className="flex items-center justify-center w-5 h-5 bg-orange-100 rounded-full mr-1.5">
+              {feature.icon}
             </div>
-          ))}
-        </div>
+            <span className="whitespace-nowrap">{feature.text}</span>
+            <ChevronRight size={12} className={`ml-1 transition-transform ${expandedIndex === index ? 'rotate-90' : ''}`} />
+          </div>
+        ))}
       </div>
+      
+      {expandedIndex !== null && (
+        <div className="p-2 text-xs bg-orange-50 rounded-md">
+          {expandedIndex === 0 && "We protect your purchase with our satisfaction guarantee."}
+          {expandedIndex === 1 && "All orders ship free with no minimum purchase required."}
+          {expandedIndex === 2 && "Most orders delivered within 24-48 hours."}
+          {expandedIndex === 3 && "Your payment information is encrypted and secure."}
+          {expandedIndex === 4 && "Earn points with every purchase toward future discounts."}
+          {expandedIndex === 5 && "Send the perfect gift with our digital vouchers."}
+        </div>
+      )}
     </div>
   );
-}
+};
+
+// For backwards compatibility, we'll export EcommerceFeatures as the default export
+export default EcommerceFeatures;
