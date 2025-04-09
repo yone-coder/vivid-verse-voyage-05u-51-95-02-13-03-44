@@ -4,7 +4,7 @@ import { fetchAllProducts } from "@/integrations/supabase/client";
 import HeroBanner from "@/components/home/HeroBanner";
 import SpaceSavingCategories from "@/components/home/SpaceSavingCategories";
 import FlashDeals from "@/components/home/FlashDeals";
-import SuperDealsSection from "@/components/home/SuperDealsSection";
+import SuperDeals from "@/components/home/SuperDealsSection";
 import ProductGrid from "@/components/home/ProductGrid";
 import TopBrands from "@/components/home/TopBrands";
 import ProductRecommendations from "@/components/home/ProductRecommendations";
@@ -65,7 +65,7 @@ export default function Index() {
       
       {/* Super Deals */}
       <div className="mb-1">
-        <SuperDealsSection />
+        <SuperDeals />
       </div>
       
       {/* New Arrivals - New Feature */}
