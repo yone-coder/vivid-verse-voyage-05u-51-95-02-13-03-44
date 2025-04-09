@@ -29,24 +29,24 @@ const DynamicPriceDisplay = () => {
   }, [currentPrice]);
   
   return (
-    <div className="flex items-center justify-between w-full py-1">
+    <div className="flex items-center justify-between w-full py-1 gap-3">
       {/* Current price */}
-      <div className="text-xl font-bold text-red-500 flex-1">
+      <div className="text-xl font-bold text-red-500">
         ${currentPrice.toFixed(2)}
       </div>
       
       {/* Original price */}
-      <div className="text-gray-500 line-through flex-1 text-sm">
+      <div className="text-gray-500 line-through text-sm">
         ${originalPrice.toFixed(2)}
       </div>
       
       {/* Discount badge */}
-      <div className="bg-red-100 text-red-700 text-xs px-2 py-0.5 rounded-md font-medium flex-1 text-center mx-1">
+      <div className="bg-red-100 text-red-700 text-xs px-2 py-0.5 rounded-md font-medium text-center">
         {discountPercentage}% OFF
       </div>
       
       {/* Percentage change indicator */}
-      <div className={`flex items-center justify-end ${isPositiveChange ? 'text-green-600' : 'text-red-600'} text-xs font-medium flex-1`}>
+      <div className={`flex items-center ${isPositiveChange ? 'text-green-600' : 'text-red-600'} text-xs font-medium`}>
         {isPositiveChange ? (
           <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7"></path>
