@@ -1,7 +1,6 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
-import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Flame, ChevronRight } from "lucide-react";
 import { ProductCard } from "./ProductGrid";
