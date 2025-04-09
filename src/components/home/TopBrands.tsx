@@ -1,6 +1,5 @@
 
 import { Link } from "react-router-dom";
-import { Separator } from "@/components/ui/separator";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const brands = [
@@ -18,9 +17,11 @@ export default function TopBrands() {
   return (
     <div className="py-3">
       <div className="container mx-auto px-3">
-        <div className="flex justify-between items-center mb-2">
+        <div className="flex justify-between items-center mb-3">
           <h2 className="text-sm font-bold">Featured Brands</h2>
-          <Link to="#" className="text-xs text-orange-500 hover:underline">View All</Link>
+          <Link to="#" className="text-xs text-orange-500 hover:underline flex items-center">
+            View All
+          </Link>
         </div>
         
         <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
@@ -28,7 +29,7 @@ export default function TopBrands() {
             <Link 
               key={brand.id} 
               to="#" 
-              className="flex items-center justify-center border rounded-md hover:shadow-sm transition-shadow py-2 bg-white"
+              className="flex items-center justify-center border rounded-md hover:shadow-md transition-shadow py-3 bg-white"
             >
               <img 
                 src={brand.logo} 

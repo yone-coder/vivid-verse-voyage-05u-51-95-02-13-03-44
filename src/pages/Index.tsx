@@ -21,17 +21,19 @@ export default function Index() {
   const isMobile = useIsMobile();
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-100">
+    <div className="min-h-screen flex flex-col bg-gray-50">
       {/* Header */}
       <Header />
       
       {/* Main Content */}
-      <main className="flex-grow pb-16 md:pb-0">
+      <main className="flex-grow pb-20 md:pb-0">
         {/* Hero Banner Carousel */}
-        <HeroBanner />
+        <div className="mb-1">
+          <HeroBanner />
+        </div>
         
-        {/* Featured Categories */}
-        <div className="bg-white mb-1 mt-1">
+        {/* Featured Categories - shown in a compact grid on mobile */}
+        <div className="bg-white mb-1">
           <FeaturedCategories />
         </div>
         
@@ -56,7 +58,7 @@ export default function Index() {
         </div>
         
         {/* All Products Grid with Filters */}
-        <div className="bg-white">
+        <div className="bg-white pb-16 md:pb-6">
           <ProductGrid products={products} isLoading={isLoading} />
         </div>
       </main>

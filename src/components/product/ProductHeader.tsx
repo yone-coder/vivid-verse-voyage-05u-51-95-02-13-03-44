@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, Heart, Share, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/hooks/use-toast";
 
 interface ProductHeaderProps {
   isFavorite: boolean;
@@ -32,7 +31,7 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
             <Input 
               type="text" 
               placeholder="Search products..." 
-              className="h-7 pl-8 pr-3 text-xs"
+              className="h-7 pl-8 pr-3 text-xs rounded-full"
             />
             <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-gray-500" />
           </div>
@@ -43,7 +42,7 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
               className="rounded-full h-8 w-8 p-0"
               onClick={toggleFavorite}
             >
-              <Heart className={`h-4 w-4 ${isFavorite ? "fill-red-500 text-red-500" : ""}`} />
+              <Heart className={`h-4 w-4 ${isFavorite ? "fill-orange-500 text-orange-500" : ""}`} />
             </Button>
             <Button 
               variant="ghost" 
@@ -71,7 +70,7 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
           <Input 
             type="text" 
             placeholder="Search products..." 
-            className="h-8 pl-8 pr-3 bg-white/70 backdrop-blur-sm hover:bg-white/90 text-xs rounded-full border-gray-200 focus-visible:ring-1"
+            className="h-8 pl-8 pr-3 bg-white/70 backdrop-blur-sm hover:bg-white/90 text-xs rounded-full border-gray-200 focus-visible:ring-1 focus-visible:ring-orange-200"
           />
           <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-gray-500" />
         </div>
@@ -83,7 +82,7 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
           className="rounded-full bg-white/70 backdrop-blur-sm hover:bg-white/90"
           onClick={toggleFavorite}
         >
-          <Heart className={`h-4 w-4 ${isFavorite ? "fill-red-500 text-red-500" : ""}`} />
+          <Heart className={`h-4 w-4 ${isFavorite ? "fill-orange-500 text-orange-500" : ""}`} />
         </Button>
         <Button 
           variant="outline" 

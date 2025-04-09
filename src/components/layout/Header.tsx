@@ -21,7 +21,7 @@ export function Header() {
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   
   return (
-    <header className="bg-white sticky top-0 z-40 border-b">
+    <header className="bg-white sticky top-0 z-40 shadow-sm">
       {/* Top promotional banner (desktop only) */}
       <div className="bg-gradient-to-r from-orange-500 to-red-500 py-1.5 text-xs text-white text-center hidden md:block">
         <div className="container mx-auto px-4">
@@ -61,8 +61,12 @@ export function Header() {
               autoFocus
             />
             <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-1">
-              <Camera className="h-4 w-4 text-gray-500" />
-              <Search className="h-4 w-4 text-gray-500" />
+              <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                <Camera className="h-4 w-4 text-gray-500" />
+              </Button>
+              <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                <Search className="h-4 w-4 text-gray-500" />
+              </Button>
             </div>
           </div>
         </div>
@@ -73,13 +77,13 @@ export function Header() {
             <div className="flex items-center gap-2">
               {/* Menu button (mobile) */}
               {isMobile && (
-                <Button variant="ghost" size="icon" className="md:hidden">
+                <Button variant="ghost" size="icon" className="md:hidden rounded-full p-2">
                   <Menu className="h-5 w-5" />
                 </Button>
               )}
               
               {/* Logo */}
-              <Link to="/" className="text-xl font-bold text-orange-500 flex-shrink-0 mr-1">
+              <Link to="/" className="text-xl font-bold text-orange-600 flex-shrink-0 mr-1">
                 AliMarket
               </Link>
               
@@ -89,36 +93,47 @@ export function Header() {
                   <Input 
                     type="text" 
                     placeholder={isMobile ? "Search" : "Search on AliMarket..."}
-                    className="rounded-full h-9 pr-10 pl-4 bg-gray-100 border-gray-200 focus-visible:ring-orange-200"
+                    className="rounded-full h-9 pr-10 pl-4 bg-gray-100 border-gray-200 focus-visible:ring-orange-200 focus-visible:ring-offset-0"
                     onFocus={() => setIsSearchFocused(true)}
                     onBlur={() => setTimeout(() => setIsSearchFocused(false), 100)}
                   />
-                  <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-1">
-                    {!isMobile && <Camera className="h-4 w-4 text-gray-500 mr-1" />}
+                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center gap-1">
+                    {!isMobile && (
+                      <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                        <Camera className="h-4 w-4 text-gray-500" />
+                      </Button>
+                    )}
                     <Search className="h-4 w-4 text-gray-500" />
                   </div>
                 </div>
               </div>
               
               {/* User actions */}
-              <div className="flex items-center gap-1 md:gap-3">
-                <Button variant="ghost" size="icon" className="hidden md:flex flex-col items-center rounded-full h-10 w-10">
-                  <MessageCircle className="h-5 w-5" />
-                </Button>
-                <Link to="/account" className="hidden md:flex flex-col items-center text-xs p-1">
-                  <User className="h-5 w-5 mb-0.5" />
-                  <span>Account</span>
+              <div className="flex items-center gap-1 md:gap-2">
+                {!isMobile && (
+                  <Button variant="ghost" size="sm" className="hidden md:flex items-center rounded-full h-9 w-9 p-0">
+                    <MessageCircle className="h-5 w-5" />
+                  </Button>
+                )}
+                {!isMobile && (
+                  <Link to="/account" className="hidden md:flex flex-col items-center justify-center text-xs p-1">
+                    <User className="h-5 w-5 mb-0.5" />
+                    <span className="text-[10px]">Account</span>
+                  </Link>
+                )}
+                <Link to="/wishlist" className="flex flex-col items-center justify-center text-xs p-1">
+                  <div className="relative">
+                    <Heart className="h-5 w-5 mb-0.5" />
+                    <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[9px] rounded-full h-4 w-4 flex items-center justify-center font-medium">5</span>
+                  </div>
+                  <span className="hidden md:inline text-[10px]">Wishlist</span>
                 </Link>
-                <Link to="/wishlist" className="flex flex-col items-center text-xs p-1">
-                  <Heart className="h-5 w-5 mb-0.5" />
-                  <span className="hidden md:inline">Wishlist</span>
-                </Link>
-                <Link to="/cart" className="flex flex-col items-center text-xs p-1">
+                <Link to="/cart" className="flex flex-col items-center justify-center text-xs p-1">
                   <div className="relative">
                     <ShoppingCart className="h-5 w-5 mb-0.5" />
                     <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[9px] rounded-full h-4 w-4 flex items-center justify-center font-medium">3</span>
                   </div>
-                  <span className="hidden md:inline">Cart</span>
+                  <span className="hidden md:inline text-[10px]">Cart</span>
                 </Link>
               </div>
             </div>
@@ -127,23 +142,25 @@ export function Header() {
       )}
 
       {/* Category navigation (desktop) */}
-      <div className="bg-white py-1 hidden md:block border-t">
-        <div className="container mx-auto">
-          <div className="flex gap-6 overflow-x-auto pb-1 text-sm">
-            {categories.map((category) => (
-              <Link to="#" key={category.name} className="whitespace-nowrap hover:text-orange-500 transition-colors">
-                {category.name}
-              </Link>
-            ))}
+      {!isMobile && (
+        <div className="bg-white py-1 hidden md:block border-t">
+          <div className="container mx-auto">
+            <div className="flex gap-6 overflow-x-auto pb-1 text-sm">
+              {categories.map((category) => (
+                <Link to="#" key={category.name} className="whitespace-nowrap hover:text-orange-500 transition-colors">
+                  {category.name}
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
       
       {/* Mobile bottom navigation */}
       {isMobile && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t z-40 py-1">
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t z-40 py-1 shadow-[0_-2px_8px_rgba(0,0,0,0.06)]">
           <div className="grid grid-cols-5 gap-1">
-            <Link to="/" className="flex flex-col items-center justify-center p-1 text-[10px] text-gray-500">
+            <Link to="/" className="flex flex-col items-center justify-center p-1 text-[10px] text-orange-600">
               <Home className="h-5 w-5 mb-0.5" />
               <span>Home</span>
             </Link>
@@ -151,9 +168,9 @@ export function Header() {
               <Menu className="h-5 w-5 mb-0.5" />
               <span>Categories</span>
             </Link>
-            <Link to="/scan" className="flex flex-col items-center justify-center p-1 text-[10px] text-gray-500">
-              <Scan className="h-5 w-5 mb-0.5" />
-              <span>Scan</span>
+            <Link to="/deals" className="flex flex-col items-center justify-center p-1 text-[10px] text-gray-500">
+              <Percent className="h-5 w-5 mb-0.5" />
+              <span>Deals</span>
             </Link>
             <Link to="/orders" className="flex flex-col items-center justify-center p-1 text-[10px] text-gray-500">
               <Package className="h-5 w-5 mb-0.5" />
