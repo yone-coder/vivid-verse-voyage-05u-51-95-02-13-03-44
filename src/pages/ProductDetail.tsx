@@ -408,7 +408,7 @@ const ProductDetail = () => {
       
       <div className="pb-44"></div>
       
-      <ModernBuyButton onAddToCart={addToCart} onBuyNow={buyNow} />
+      <ModernBuyButton productId={product.id} />
     </div>
   );
 };

@@ -4,7 +4,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Heart, Share, Search, Camera, ShoppingCart, Mic, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 interface ProductHeaderProps {
@@ -152,28 +151,7 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
           )}
         </div>
         
-        {/* Quick action chip shortcuts */}
-        {!showSearchInput && (
-          <div className="overflow-x-auto no-scrollbar bg-orange-500/90 py-1 px-2">
-            <div className="flex items-center space-x-2 whitespace-nowrap">
-              <Badge variant="outline" className="bg-white/20 text-white border-transparent text-[8px] px-2 py-0.5 hover:bg-white/30">
-                Similar Items
-              </Badge>
-              <Badge variant="outline" className="bg-white/20 text-white border-transparent text-[8px] px-2 py-0.5 hover:bg-white/30">
-                Related Products
-              </Badge>
-              <Badge variant="outline" className="bg-white/20 text-white border-transparent text-[8px] px-2 py-0.5 hover:bg-white/30">
-                Compare Prices
-              </Badge>
-              <Badge variant="outline" className="bg-white/20 text-white border-transparent text-[8px] px-2 py-0.5 hover:bg-white/30">
-                Save for Later
-              </Badge>
-              <Badge variant="outline" className="bg-white/20 text-white border-transparent text-[8px] px-2 py-0.5 hover:bg-white/30">
-                Customer Reviews
-              </Badge>
-            </div>
-          </div>
-        )}
+        {/* The shortcut chips section is now removed */}
       </div>
     );
   }
