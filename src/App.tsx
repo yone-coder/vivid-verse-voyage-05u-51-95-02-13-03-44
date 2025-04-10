@@ -8,6 +8,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import ProductDetail from "./pages/ProductDetail";
+import SearchPage from "./pages/SearchPage";
 import AdminPanel from "./pages/AdminPanel";
 import MainLayout from "./components/layout/MainLayout";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -28,6 +29,7 @@ const App = () => (
                 <Route path="/" element={<Index />} />
                 <Route path="/product/:id" element={<ProductDetail />} />
                 <Route path="/admin" element={<AdminPanel />} />
+                <Route path="/search" element={<SearchPage />} />
                 <Route path="/categories" element={<NotFound />} />
                 <Route path="/cart" element={<NotFound />} />
                 <Route path="/wishlist" element={<NotFound />} />

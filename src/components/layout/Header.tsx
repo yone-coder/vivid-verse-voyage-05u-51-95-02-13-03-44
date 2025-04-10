@@ -98,11 +98,6 @@ const Header = ({
       if (handleSearch) {
         handleSearch(e);
       } else {
-        toast({
-          title: "Search submitted",
-          description: `Searching for: ${actualSearchQuery}`,
-        });
-        // In a real app, you would navigate to search results page
         navigate(`/search?q=${encodeURIComponent(actualSearchQuery)}`);
       }
     }
@@ -352,7 +347,7 @@ const Header = ({
               </SheetContent>
             </Sheet>
             
-            <div className="flex-1 relative" onClick={() => setIsSearchOpen && setIsSearchOpen(true)}>
+            <div className="flex-1 relative" onClick={() => navigate('/search')}>
               <div className="bg-gray-100 rounded-full h-8 px-3 py-1.5 flex items-center">
                 <Search className="h-3.5 w-3.5 text-gray-400 mr-2" />
                 <span className="text-[11px] text-gray-500">Search on AliExpress</span>
@@ -360,7 +355,7 @@ const Header = ({
             </div>
             
             <div className="flex items-center ml-2 gap-2">
-              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={handleCameraSearch}>
+              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => navigate('/search')}>
                 <Camera className="h-5 w-5" />
               </Button>
               
