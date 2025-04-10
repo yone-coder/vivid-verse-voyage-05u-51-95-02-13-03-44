@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
   ChevronDown, 
@@ -98,10 +97,7 @@ const DynamicPriceDisplay = () => {
   const [priceChangePercentage, setPriceChangePercentage] = useState<number>(0);
   const [isPositiveChange, setIsPositiveChange] = useState<boolean>(true);
   
-  // Calculate the discount percentage based on original and current price
-  const discountPercentage = useMemo(() => {
-    return Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
-  }, [originalPrice, currentPrice]);
+  const discountPercentage = Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
   
   const lowestPrice = Math.min(...priceHistory.map(item => item.price), currentPrice);
   const highestPrice = Math.max(...priceHistory.map(item => item.price), currentPrice);
@@ -482,15 +478,7 @@ const DynamicPriceDisplay = () => {
             ) : (
               <ArrowDownRight size={14} className="mr-1" />
             )}
-            <span className="animate-pulse">
-              {isPositiveChange ? '+' : ''}{priceChange.toFixed(2)} 
-              ({isPositiveChange ? '+' : ''}{priceChangePercentage.toFixed(2)}%)
-            </span>
-          </div>
-          <div className="text-xs font-medium text-red-600">
-            <span className="animate-pulse">
-              -{discountPercentage}% off
-            </span>
+            <span className="animate-pulse">{isPositiveChange ? '+' : ''}{priceChange} ({isPositiveChange ? '+' : ''}{priceChangePercentage}%)</span>
           </div>
         </div>
         <button 
