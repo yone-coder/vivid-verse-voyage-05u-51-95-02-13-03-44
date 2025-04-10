@@ -3,12 +3,17 @@ import React, { useState, useEffect } from 'react';
 import { ChevronDown, ChevronUp, Bell, Heart, TrendingUp, AlertTriangle, Star } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
+interface PriceHistoryPoint {
+  day: string;
+  price: number;
+}
+
 const DynamicPriceDisplay = () => {
   // Initial values
   const [currentPrice, setCurrentPrice] = useState(149.99);
   const [originalPrice, setOriginalPrice] = useState(199.99);
   const [previousPrice, setPreviousPrice] = useState(145.99);
-  const [priceHistory, setPriceHistory] = useState([
+  const [priceHistory, setPriceHistory] = useState<PriceHistoryPoint[]>([
     { day: '7d', price: 147.99 },
     { day: '6d', price: 151.20 },
     { day: '5d', price: 148.50 },
@@ -18,6 +23,7 @@ const DynamicPriceDisplay = () => {
     { day: '1d', price: 149.99 }
   ]);
   const [isWishlist, setIsWishlist] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
   const [showPriceHistory, setShowPriceHistory] = useState(false);
   const [priceAlert, setPriceAlert] = useState<number | null>(null);
   const [showAlertInput, setShowAlertInput] = useState(false);
@@ -101,8 +107,8 @@ const DynamicPriceDisplay = () => {
   };
   
   return (
-    <div className="w-full border border-gray-200 rounded-lg p-4 bg-white shadow-sm">
-      {/* Main price display row with price history toggle */}
+    <div className="w-full">
+      {/* Main price display row with toggle */}
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center space-x-6">
           {/* Current price */}
@@ -122,146 +128,154 @@ const DynamicPriceDisplay = () => {
           </div>
         </div>
         
-        {/* Toggle button for price history */}
+        {/* Toggle button for all details */}
         <button 
-          onClick={() => setShowPriceHistory(!showPriceHistory)}
+          onClick={() => setShowDetails(!showDetails)}
           className="flex items-center justify-center p-2 rounded-full hover:bg-gray-100 transition-colors text-blue-600"
+          aria-label={showDetails ? "Hide price details" : "Show price details"}
         >
-          <TrendingUp size={18} className="mr-1" />
-          {showPriceHistory ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          {showDetails ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
         </button>
       </div>
       
-      {/* Always visible details section */}
-      <div className="pt-3 border-t border-gray-100 mt-2">
-        {/* Header with actions */}
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-sm font-medium text-gray-800">Price Details</h3>
-          <div className="flex space-x-2">
-            <button 
-              onClick={toggleWishlist} 
-              className={`p-1 rounded-full ${isWishlist ? 'bg-red-50' : 'bg-gray-50'}`}
-            >
-              <Heart 
-                size={16} 
-                className={isWishlist ? 'text-red-500 fill-red-500' : 'text-gray-400'} 
-              />
-            </button>
-            <button 
-              onClick={() => setShowAlertInput(!showAlertInput)}
-              className="p-1 rounded-full bg-gray-50"
-            >
-              <Bell size={16} className="text-gray-400" />
-            </button>
-          </div>
-        </div>
-        
-        {/* Price alert input */}
-        {showAlertInput && (
-          <div className="mb-3 p-2 bg-blue-50 rounded-md flex items-center space-x-2">
-            <AlertTriangle size={16} className="text-blue-500" />
-            <input 
-              type="number" 
-              placeholder="Set price alert" 
-              className="p-1 text-sm border border-blue-200 rounded w-24"
-              onChange={handleSetAlert}
-              step="0.01"
-            />
-            <button 
-              className="bg-blue-500 text-white text-xs px-2 py-1 rounded"
-              onClick={() => setShowAlertInput(false)}
-            >
-              Set Alert
-            </button>
-          </div>
-        )}
-        
-        {/* Stock status */}
-        <div className="flex items-center mb-3">
-          {inStock ? (
-            <div className="flex items-center text-green-600 text-sm">
-              <div className="w-2 h-2 rounded-full bg-green-500 mr-1"></div>
-              In Stock ({stockCount} available)
+      {/* Collapsible details section */}
+      {showDetails && (
+        <div className="pt-3 border-t border-gray-100 mt-2 animate-accordion-down">
+          {/* Header with actions */}
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-medium text-gray-800">Price Details</h3>
+            <div className="flex space-x-2">
+              <button 
+                onClick={toggleWishlist} 
+                className={`p-1 rounded-full ${isWishlist ? 'bg-red-50' : 'bg-gray-50'}`}
+              >
+                <Heart 
+                  size={16} 
+                  className={isWishlist ? 'text-red-500 fill-red-500' : 'text-gray-400'} 
+                />
+              </button>
+              <button 
+                onClick={() => setShowAlertInput(!showAlertInput)}
+                className="p-1 rounded-full bg-gray-50"
+              >
+                <Bell size={16} className="text-gray-400" />
+              </button>
+              <button 
+                onClick={() => setShowPriceHistory(!showPriceHistory)}
+                className="p-1 rounded-full bg-gray-50 text-blue-600"
+              >
+                <TrendingUp size={16} />
+              </button>
             </div>
-          ) : (
-            <div className="flex items-center text-red-600 text-sm">
-              <div className="w-2 h-2 rounded-full bg-red-500 mr-1"></div>
-              Out of Stock
+          </div>
+          
+          {/* Price alert input */}
+          {showAlertInput && (
+            <div className="mb-3 p-2 bg-blue-50 rounded-md flex items-center space-x-2">
+              <AlertTriangle size={16} className="text-blue-500" />
+              <input 
+                type="number" 
+                placeholder="Set price alert" 
+                className="p-1 text-sm border border-blue-200 rounded w-24"
+                onChange={handleSetAlert}
+                step="0.01"
+              />
+              <button 
+                className="bg-blue-500 text-white text-xs px-2 py-1 rounded"
+                onClick={() => setShowAlertInput(false)}
+              >
+                Set Alert
+              </button>
+            </div>
+          )}
+          
+          {/* Stock status */}
+          <div className="flex items-center mb-3">
+            {inStock ? (
+              <div className="flex items-center text-green-600 text-sm">
+                <div className="w-2 h-2 rounded-full bg-green-500 mr-1"></div>
+                In Stock ({stockCount} available)
+              </div>
+            ) : (
+              <div className="flex items-center text-red-600 text-sm">
+                <div className="w-2 h-2 rounded-full bg-red-500 mr-1"></div>
+                Out of Stock
+              </div>
+            )}
+          </div>
+          
+          {/* Currency selector */}
+          <div className="flex items-center space-x-2 text-xs text-gray-600 mb-3">
+            <span>Currency:</span>
+            <select 
+              value={currency} 
+              onChange={(e) => setCurrency(e.target.value)}
+              className="border border-gray-200 rounded p-1 text-xs"
+            >
+              <option value="USD">USD ($)</option>
+              <option value="EUR">EUR (€)</option>
+              <option value="GBP">GBP (£)</option>
+              <option value="JPY">JPY (¥)</option>
+            </select>
+          </div>
+          
+          {/* Price history section */}
+          {showPriceHistory && (
+            <div className="mb-3">
+              <div className="font-medium text-sm text-gray-700 mb-2">Price History</div>
+              <div className="h-40 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={priceHistory}>
+                    <XAxis 
+                      dataKey="day" 
+                      tick={{ fontSize: 10 }}
+                      axisLine={{ stroke: '#e0e0e0' }}
+                      tickLine={false}
+                    />
+                    <YAxis 
+                      domain={['auto', 'auto']}
+                      tick={{ fontSize: 10 }}
+                      axisLine={{ stroke: '#e0e0e0' }}
+                      tickLine={false}
+                      tickFormatter={(value) => `${getCurrencySymbol(currency)}${value}`}
+                    />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Line 
+                      type="monotone"
+                      dataKey="price"
+                      stroke="#3b82f6"
+                      strokeWidth={2}
+                      dot={{ r: 3, fill: "#3b82f6", stroke: "#3b82f6" }}
+                      activeDot={{ r: 5, fill: "#1d4ed8", stroke: "#3b82f6" }}
+                      isAnimationActive={true}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="flex justify-between text-xs text-gray-500 mt-1">
+                <span>Lowest: {getCurrencySymbol(currency)}{lowestPrice.toFixed(2)}</span>
+                <span>Highest: {getCurrencySymbol(currency)}{Math.max(...priceHistory.map(item => item.price)).toFixed(2)}</span>
+              </div>
+            </div>
+          )}
+          
+          {/* Deal indicator */}
+          {isGoodDeal && (
+            <div className="flex items-center space-x-1 bg-green-50 p-2 rounded-md mb-2 text-sm text-green-700">
+              <Star size={16} className="text-yellow-500 mr-1" fill="#EAB308" />
+              <span>Good deal! Near 30-day low price.</span>
+            </div>
+          )}
+          
+          {/* Price alert status */}
+          {priceAlert && (
+            <div className="text-xs text-gray-600 flex items-center">
+              <Bell size={14} className="mr-1" />
+              Alert set: We'll notify you if price drops below {getCurrencySymbol(currency)}{priceAlert.toFixed(2)}
             </div>
           )}
         </div>
-        
-        {/* Currency selector */}
-        <div className="flex items-center space-x-2 text-xs text-gray-600 mb-3">
-          <span>Currency:</span>
-          <select 
-            value={currency} 
-            onChange={(e) => setCurrency(e.target.value)}
-            className="border border-gray-200 rounded p-1 text-xs"
-          >
-            <option value="USD">USD ($)</option>
-            <option value="EUR">EUR (€)</option>
-            <option value="GBP">GBP (£)</option>
-            <option value="JPY">JPY (¥)</option>
-          </select>
-        </div>
-        
-        {/* Price history section - toggled by button */}
-        {showPriceHistory && (
-          <div className="mb-3">
-            <div className="font-medium text-sm text-gray-700 mb-2">Price History</div>
-            <div className="h-40 w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={priceHistory}>
-                  <XAxis 
-                    dataKey="day" 
-                    tick={{ fontSize: 10 }}
-                    axisLine={{ stroke: '#e0e0e0' }}
-                    tickLine={false}
-                  />
-                  <YAxis 
-                    domain={['auto', 'auto']}
-                    tick={{ fontSize: 10 }}
-                    axisLine={{ stroke: '#e0e0e0' }}
-                    tickLine={false}
-                    tickFormatter={(value) => `${getCurrencySymbol(currency)}${value}`}
-                  />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Line 
-                    type="monotone"
-                    dataKey="price"
-                    stroke="#3b82f6"
-                    strokeWidth={2}
-                    dot={{ r: 3, fill: "#3b82f6", stroke: "#3b82f6" }}
-                    activeDot={{ r: 5, fill: "#1d4ed8", stroke: "#3b82f6" }}
-                    isAnimationActive={true}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-            <div className="flex justify-between text-xs text-gray-500 mt-1">
-              <span>Lowest: {getCurrencySymbol(currency)}{lowestPrice.toFixed(2)}</span>
-              <span>Highest: {getCurrencySymbol(currency)}{Math.max(...priceHistory.map(item => item.price)).toFixed(2)}</span>
-            </div>
-          </div>
-        )}
-        
-        {/* Deal indicator */}
-        {isGoodDeal && (
-          <div className="flex items-center space-x-1 bg-green-50 p-2 rounded-md mb-2 text-sm text-green-700">
-            <Star size={16} className="text-yellow-500 mr-1" fill="#EAB308" />
-            <span>Good deal! Near 30-day low price.</span>
-          </div>
-        )}
-        
-        {/* Price alert status */}
-        {priceAlert && (
-          <div className="text-xs text-gray-600 flex items-center">
-            <Bell size={14} className="mr-1" />
-            Alert set: We'll notify you if price drops below {getCurrencySymbol(currency)}{priceAlert.toFixed(2)}
-          </div>
-        )}
-      </div>
+      )}
     </div>
   );
 };
