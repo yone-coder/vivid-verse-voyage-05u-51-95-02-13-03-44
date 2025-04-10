@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
   ChevronDown, 
@@ -63,6 +62,7 @@ interface PriceHistoryPoint {
   price: number;
   volume?: number;
   date?: string;
+  average?: number;
 }
 
 const timeRanges = [
@@ -75,7 +75,6 @@ const timeRanges = [
 ];
 
 const DynamicPriceDisplay = () => {
-  // Initial values
   const [currentPrice, setCurrentPrice] = useState(149.99);
   const [originalPrice, setOriginalPrice] = useState(199.99);
   const [previousPrice, setPreviousPrice] = useState(145.99);
@@ -98,14 +97,11 @@ const DynamicPriceDisplay = () => {
   const [priceChangePercentage, setPriceChangePercentage] = useState<number>(0);
   const [isPositiveChange, setIsPositiveChange] = useState<boolean>(true);
   
-  // Calculate discount percentage
   const discountPercentage = Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
   
-  // Calculate lowest price in 30 days
   const lowestPrice = Math.min(...priceHistory.map(item => item.price), currentPrice);
   const highestPrice = Math.max(...priceHistory.map(item => item.price), currentPrice);
   
-  // Chart config with theming colors
   const chartConfig = {
     price: {
       label: "Price",
@@ -137,7 +133,6 @@ const DynamicPriceDisplay = () => {
     }
   };
   
-  // Function to get currency symbol
   const getCurrencySymbol = (curr: string) => {
     switch(curr) {
       case 'EUR': return '€';
@@ -147,11 +142,7 @@ const DynamicPriceDisplay = () => {
     }
   };
   
-  // Generate more extended price history data when timeRange changes
   useEffect(() => {
-    // This would ideally fetch from an API based on the timeRange
-    // For now, we'll generate mock data
-    
     const generateExtendedPriceHistory = () => {
       const now = new Date();
       let days = 7;
@@ -173,14 +164,10 @@ const DynamicPriceDisplay = () => {
         const date = new Date(now);
         date.setDate(date.getDate() - i);
         
-        // Create price fluctuations that look realistic
-        // More volatility for longer time periods
-        // Ensure a general trend over time
         const trendFactor = Math.sin(i / (days / 3)) * (volatility / 2);
         const randomFactor = (Math.random() - 0.5) * volatility;
         const datePrice = basePrice + trendFactor + randomFactor;
         
-        // Generate volume data that correlates somewhat with price changes
         const volume = Math.round(100 + Math.random() * 200);
         
         data.push({
@@ -197,7 +184,6 @@ const DynamicPriceDisplay = () => {
     const newData = generateExtendedPriceHistory();
     setPriceHistory(newData);
     
-    // Calculate day-to-day price change and percentage
     if (newData.length >= 2) {
       const latestPrice = newData[newData.length - 1].price;
       const previousPrice = newData[newData.length - 2].price;
@@ -208,27 +194,22 @@ const DynamicPriceDisplay = () => {
       setPriceChangePercentage(parseFloat(changePercentage.toFixed(2)));
       setIsPositiveChange(change >= 0);
     }
-    
   }, [timeRange]);
   
-  // Simulate price updates
   useEffect(() => {
     const interval = setInterval(() => {
-      // Simulate market-like fluctuations (small random changes)
       const fluctuation = (Math.random() - 0.5) * 4;
       const newPrice = Math.max(parseFloat((currentPrice + fluctuation).toFixed(2)), 120);
       
       setPreviousPrice(currentPrice);
       setCurrentPrice(newPrice);
       
-      // Update price change indicators
       const change = newPrice - currentPrice;
       const changePercentage = (change / currentPrice) * 100;
       setPriceChange(parseFloat(change.toFixed(2)));
       setPriceChangePercentage(parseFloat(changePercentage.toFixed(2)));
       setIsPositiveChange(change >= 0);
       
-      // Update price history - shift array and add new price
       setPriceHistory(prev => {
         const now = new Date();
         const updatedHistory = [...prev.slice(1), { 
@@ -238,7 +219,6 @@ const DynamicPriceDisplay = () => {
           date: now.toISOString().split('T')[0]
         }];
         
-        // Rename the last day to "Now"
         for (let i = 0; i < updatedHistory.length - 1; i++) {
           updatedHistory[i].day = `${updatedHistory.length - i - 1}d`;
         }
@@ -249,9 +229,8 @@ const DynamicPriceDisplay = () => {
     return () => clearInterval(interval);
   }, [currentPrice]);
   
-  // Calculate moving average (SMA)
   const movingAverage = useMemo(() => {
-    const period = 3; // 3-day simple moving average
+    const period = 3;
     const result = [...priceHistory];
     
     for (let i = period - 1; i < result.length; i++) {
@@ -267,21 +246,16 @@ const DynamicPriceDisplay = () => {
     return result;
   }, [priceHistory]);
   
-  // Determine if current price is a good deal
-  const isGoodDeal = currentPrice <= (lowestPrice * 1.03); // Within 3% of lowest price
+  const isGoodDeal = currentPrice <= (lowestPrice * 1.03);
   
-  // Calculate price statistics
   const priceStats = useMemo(() => {
     const prices = priceHistory.map(item => item.price);
     
-    // Calculate average
     const avg = prices.reduce((sum, price) => sum + price, 0) / prices.length;
     
-    // Calculate standard deviation
     const variance = prices.reduce((sum, price) => sum + Math.pow(price - avg, 2), 0) / prices.length;
     const stdDev = Math.sqrt(variance);
     
-    // Calculate volatility (as coefficient of variation)
     const volatility = (stdDev / avg) * 100;
     
     return {
@@ -291,7 +265,6 @@ const DynamicPriceDisplay = () => {
     };
   }, [priceHistory]);
   
-  // Custom tooltip for the line chart
   const CustomTooltip = ({ active, payload }: { active?: boolean, payload?: any[] }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
@@ -329,7 +302,6 @@ const DynamicPriceDisplay = () => {
     return null;
   };
   
-  // Price table data for the table view
   const priceTableData = useMemo(() => {
     return [...priceHistory].reverse().map((item, index) => ({
       ...item,
@@ -345,26 +317,18 @@ const DynamicPriceDisplay = () => {
   
   return (
     <div className="w-full">
-      {/* Main price display row */}
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center space-x-6">
-          {/* Current price */}
           <div className="text-2xl font-bold text-red-500">
             {getCurrencySymbol(currency)}{currentPrice.toFixed(2)}
           </div>
-          
-          {/* Original price */}
           <div className="text-gray-500 line-through text-sm">
             {getCurrencySymbol(currency)}{originalPrice.toFixed(2)}
           </div>
-          
-          {/* Discount badge */}
           <div className="bg-red-100 text-red-700 text-xs px-2 py-1 rounded-md font-medium flex items-center">
             <ChevronDown size={14} className="mr-1" />
             <span>{discountPercentage}% OFF</span>
           </div>
-          
-          {/* Price change indicator */}
           <div className={`flex items-center text-xs font-medium ${isPositiveChange ? 'text-green-600' : 'text-red-600'}`}>
             {isPositiveChange ? (
               <ArrowUpRight size={14} className="mr-1" />
@@ -374,8 +338,6 @@ const DynamicPriceDisplay = () => {
             <span>{isPositiveChange ? '+' : ''}{priceChange} ({isPositiveChange ? '+' : ''}{priceChangePercentage}%)</span>
           </div>
         </div>
-        
-        {/* Toggle button for price history */}
         <button 
           onClick={() => setShowPriceHistory(!showPriceHistory)}
           className="flex items-center justify-center p-2 rounded-full hover:bg-gray-100 transition-colors text-blue-600"
@@ -385,14 +347,11 @@ const DynamicPriceDisplay = () => {
         </button>
       </div>
       
-      {/* Price history section */}
       {showPriceHistory && (
         <div className="pt-3 border-t border-gray-100 mt-2 animate-accordion-down">
-          {/* Header with controls */}
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-sm font-medium text-gray-800">Price History</h3>
             <div className="flex items-center space-x-2">
-              {/* Time range selector */}
               <Select 
                 value={timeRange} 
                 onValueChange={(value) => setTimeRange(value)}
@@ -408,8 +367,6 @@ const DynamicPriceDisplay = () => {
                   ))}
                 </SelectContent>
               </Select>
-              
-              {/* Chart type toggle */}
               <div className="flex bg-gray-100 rounded-md p-0.5">
                 <button 
                   onClick={() => setChartType('line')} 
@@ -436,8 +393,6 @@ const DynamicPriceDisplay = () => {
                   <Calendar size={14} />
                 </button>
               </div>
-              
-              {/* Settings and Share buttons */}
               <div className="flex space-x-1">
                 <button className="p-1 rounded-full hover:bg-gray-100">
                   <Cog size={14} className="text-gray-500" />
@@ -452,7 +407,6 @@ const DynamicPriceDisplay = () => {
             </div>
           </div>
           
-          {/* Stats summary */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-3">
             <div className="bg-gray-50 p-2 rounded-md">
               <div className="text-xs text-gray-500">Low</div>
@@ -472,7 +426,6 @@ const DynamicPriceDisplay = () => {
             </div>
           </div>
           
-          {/* Chart content */}
           {chartType !== 'table' ? (
             <div className="mb-3">
               <div className="h-64 w-full">
@@ -481,146 +434,151 @@ const DynamicPriceDisplay = () => {
                   className="h-full [&_.recharts-cartesian-grid-horizontal_line]:stroke-gray-200 [&_.recharts-cartesian-grid-vertical_line]:stroke-gray-200"
                 >
                   {chartType === 'line' && (
-                    <LineChart data={movingAverage}>
-                      {showGrid && <CartesianGrid strokeDasharray="3 3" />}
-                      <XAxis 
-                        dataKey="day" 
-                        tick={{ fontSize: 10 }}
-                        axisLine={{ stroke: '#e0e0e0' }}
-                        tickLine={false}
-                      />
-                      <YAxis 
-                        domain={['auto', 'auto']}
-                        tick={{ fontSize: 10 }}
-                        axisLine={{ stroke: '#e0e0e0' }}
-                        tickLine={false}
-                        tickFormatter={(value) => `${getCurrencySymbol(currency)}${value}`}
-                      />
-                      <Tooltip content={<CustomTooltip />} />
-                      <Legend />
-                      <ReferenceLine 
-                        y={currentPrice} 
-                        stroke="#ef4444" 
-                        strokeDasharray="3 3" 
-                        label={{ 
-                          value: 'Current', 
-                          position: 'insideBottomRight',
-                          fontSize: 10,
-                          fill: '#ef4444'
-                        }} 
-                      />
-                      <Line 
-                        name="Price"
-                        type="monotone"
-                        dataKey="price"
-                        stroke="#3b82f6"
-                        strokeWidth={2}
-                        dot={{ r: 3, fill: "#3b82f6", stroke: "#3b82f6" }}
-                        activeDot={{ r: 5, fill: "#1d4ed8", stroke: "#3b82f6" }}
-                        isAnimationActive={true}
-                      />
-                      <Line 
-                        name="3-Day Avg"
-                        type="monotone"
-                        dataKey="average"
-                        stroke="#f97316"
-                        strokeWidth={1.5}
-                        dot={false}
-                        activeDot={false}
-                        strokeDasharray="5 5"
-                      />
-                      <Brush 
-                        dataKey="day" 
-                        height={20} 
-                        stroke="#3b82f6"
-                        fill="#f8fafc"
-                      />
-                    </LineChart>
+                    <React.Fragment>
+                      <LineChart data={movingAverage}>
+                        {showGrid && <CartesianGrid strokeDasharray="3 3" />}
+                        <XAxis 
+                          dataKey="day" 
+                          tick={{ fontSize: 10 }}
+                          axisLine={{ stroke: '#e0e0e0' }}
+                          tickLine={false}
+                        />
+                        <YAxis 
+                          domain={['auto', 'auto']}
+                          tick={{ fontSize: 10 }}
+                          axisLine={{ stroke: '#e0e0e0' }}
+                          tickLine={false}
+                          tickFormatter={(value) => `${getCurrencySymbol(currency)}${value}`}
+                        />
+                        <Tooltip content={<CustomTooltip />} />
+                        <Legend />
+                        <ReferenceLine 
+                          y={currentPrice} 
+                          stroke="#ef4444" 
+                          strokeDasharray="3 3" 
+                          label={{ 
+                            value: 'Current', 
+                            position: 'insideBottomRight',
+                            fontSize: 10,
+                            fill: '#ef4444'
+                          }} 
+                        />
+                        <Line 
+                          name="Price"
+                          type="monotone"
+                          dataKey="price"
+                          stroke="#3b82f6"
+                          strokeWidth={2}
+                          dot={{ r: 3, fill: "#3b82f6", stroke: "#3b82f6" }}
+                          activeDot={{ r: 5, fill: "#1d4ed8", stroke: "#3b82f6" }}
+                          isAnimationActive={true}
+                        />
+                        <Line 
+                          name="3-Day Avg"
+                          type="monotone"
+                          dataKey="average"
+                          stroke="#f97316"
+                          strokeWidth={1.5}
+                          dot={false}
+                          activeDot={false}
+                          strokeDasharray="5 5"
+                        />
+                        <Brush 
+                          dataKey="day" 
+                          height={20} 
+                          stroke="#3b82f6"
+                          fill="#f8fafc"
+                        />
+                      </LineChart>
+                    </React.Fragment>
                   )}
                   
                   {chartType === 'bar' && (
-                    <BarChart data={movingAverage}>
-                      {showGrid && <CartesianGrid strokeDasharray="3 3" />}
-                      <XAxis 
-                        dataKey="day" 
-                        tick={{ fontSize: 10 }}
-                        axisLine={{ stroke: '#e0e0e0' }}
-                        tickLine={false}
-                      />
-                      <YAxis 
-                        domain={['auto', 'auto']}
-                        tick={{ fontSize: 10 }}
-                        axisLine={{ stroke: '#e0e0e0' }}
-                        tickLine={false}
-                        tickFormatter={(value) => `${getCurrencySymbol(currency)}${value}`}
-                      />
-                      <Tooltip content={<CustomTooltip />} />
-                      <Legend />
-                      <Bar 
-                        name="Price"
-                        dataKey="price" 
-                        fill="#3b82f6" 
-                        radius={[2, 2, 0, 0]}
-                      />
-                      {showVolume && (
-                        <Bar 
-                          name="Volume"
-                          dataKey="volume" 
-                          fill="#9ca3af" 
-                          radius={[2, 2, 0, 0]} 
+                    <React.Fragment>
+                      <BarChart data={movingAverage}>
+                        {showGrid && <CartesianGrid strokeDasharray="3 3" />}
+                        <XAxis 
+                          dataKey="day" 
+                          tick={{ fontSize: 10 }}
+                          axisLine={{ stroke: '#e0e0e0' }}
+                          tickLine={false}
                         />
-                      )}
-                    </BarChart>
+                        <YAxis 
+                          domain={['auto', 'auto']}
+                          tick={{ fontSize: 10 }}
+                          axisLine={{ stroke: '#e0e0e0' }}
+                          tickLine={false}
+                          tickFormatter={(value) => `${getCurrencySymbol(currency)}${value}`}
+                        />
+                        <Tooltip content={<CustomTooltip />} />
+                        <Legend />
+                        <Bar 
+                          name="Price"
+                          dataKey="price" 
+                          fill="#3b82f6" 
+                          radius={[2, 2, 0, 0]}
+                        />
+                        {showVolume && (
+                          <Bar 
+                            name="Volume"
+                            dataKey="volume" 
+                            fill="#9ca3af" 
+                            radius={[2, 2, 0, 0]} 
+                          />
+                        )}
+                      </BarChart>
+                    </React.Fragment>
                   )}
                   
                   {chartType === 'area' && (
-                    <AreaChart data={movingAverage}>
-                      {showGrid && <CartesianGrid strokeDasharray="3 3" />}
-                      <XAxis 
-                        dataKey="day" 
-                        tick={{ fontSize: 10 }}
-                        axisLine={{ stroke: '#e0e0e0' }}
-                        tickLine={false}
-                      />
-                      <YAxis 
-                        domain={['auto', 'auto']}
-                        tick={{ fontSize: 10 }}
-                        axisLine={{ stroke: '#e0e0e0' }}
-                        tickLine={false}
-                        tickFormatter={(value) => `${getCurrencySymbol(currency)}${value}`}
-                      />
-                      <Tooltip content={<CustomTooltip />} />
-                      <Legend />
-                      <Area
-                        name="Price"
-                        type="monotone"
-                        dataKey="price"
-                        stroke="#3b82f6"
-                        fill="#93c5fd"
-                        fillOpacity={0.3}
-                        activeDot={{ r: 5 }}
-                      />
-                      <ReferenceLine 
-                        y={currentPrice} 
-                        stroke="#ef4444" 
-                        strokeDasharray="3 3" 
-                      />
-                      {showVolume && (
-                        <Area
-                          name="Volume"
-                          type="monotone"
-                          dataKey="volume"
-                          stroke="#9ca3af"
-                          fill="#e5e7eb"
-                          fillOpacity={0.3}
+                    <React.Fragment>
+                      <AreaChart data={movingAverage}>
+                        {showGrid && <CartesianGrid strokeDasharray="3 3" />}
+                        <XAxis 
+                          dataKey="day" 
+                          tick={{ fontSize: 10 }}
+                          axisLine={{ stroke: '#e0e0e0' }}
+                          tickLine={false}
                         />
-                      )}
-                    </AreaChart>
+                        <YAxis 
+                          domain={['auto', 'auto']}
+                          tick={{ fontSize: 10 }}
+                          axisLine={{ stroke: '#e0e0e0' }}
+                          tickLine={false}
+                          tickFormatter={(value) => `${getCurrencySymbol(currency)}${value}`}
+                        />
+                        <Tooltip content={<CustomTooltip />} />
+                        <Legend />
+                        <Area
+                          name="Price"
+                          type="monotone"
+                          dataKey="price"
+                          stroke="#3b82f6"
+                          fill="#93c5fd"
+                          fillOpacity={0.3}
+                          activeDot={{ r: 5 }}
+                        />
+                        <ReferenceLine 
+                          y={currentPrice} 
+                          stroke="#ef4444" 
+                          strokeDasharray="3 3" 
+                        />
+                        {showVolume && (
+                          <Area
+                            name="Volume"
+                            type="monotone"
+                            dataKey="volume"
+                            stroke="#9ca3af"
+                            fill="#e5e7eb"
+                            fillOpacity={0.3}
+                          />
+                        )}
+                      </AreaChart>
+                    </React.Fragment>
                   )}
                 </ChartContainer>
               </div>
               
-              {/* Chart controls */}
               <div className="flex justify-between items-center text-xs text-gray-500 mt-2">
                 <div className="flex items-center space-x-4">
                   <label className="flex items-center space-x-1">
@@ -682,7 +640,6 @@ const DynamicPriceDisplay = () => {
             </div>
           )}
           
-          {/* Deal indicator */}
           {isGoodDeal && (
             <div className="flex items-center space-x-1 bg-green-50 p-2 rounded-md mb-2 text-sm text-green-700">
               <Star size={16} className="text-yellow-500 mr-1" fill="#EAB308" />
@@ -690,7 +647,6 @@ const DynamicPriceDisplay = () => {
             </div>
           )}
           
-          {/* Currency selector */}
           <div className="flex items-center space-x-2 text-xs text-gray-600 mb-3">
             <span>Currency:</span>
             <select 
