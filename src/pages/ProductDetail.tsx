@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -13,7 +14,7 @@ import ProductHeader from "@/components/product/ProductHeader";
 import DynamicPriceDisplay from "@/components/product/DynamicPriceDisplay";
 import EnhancedRating from "@/components/product/EnhancedRating";
 import ProductLimitedTimeOffer from "@/components/product/ProductLimitedTimeOffer";
-import ProductCoupons from "@/components/product/ProductCoupons";
+import AliExpressCoupons from "@/components/product/AliExpressCoupons";
 import ProductColorVariants from "@/components/product/ProductColorVariants";
 import ProductQuantitySelector from "@/components/product/ProductQuantitySelector";
 import ProductShipping from "@/components/product/ProductShipping";
@@ -374,7 +375,7 @@ const ProductDetail = () => {
           </div>
           
           <div className="mt-3">
-            <ProductCoupons coupons={productForTabs.coupons} />
+            <AliExpressCoupons />
           </div>
           
           <div className="mt-4">
