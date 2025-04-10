@@ -3,6 +3,7 @@ import React from "react";
 import Header from "@/components/layout/Header";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Footer from "@/components/layout/Footer";
+import MobileBottomNav from "@/components/layout/MobileBottomNav";
 import { Outlet, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { Heart, Share } from "lucide-react";
@@ -86,6 +87,7 @@ export default function MainLayout() {
         </>
       )}
       {!isMobile && <Footer />}
+      {isMobile && <MobileBottomNav />}
     </div>
   );
 }
