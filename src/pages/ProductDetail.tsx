@@ -353,7 +353,7 @@ const ProductDetail = () => {
       </div>
       
       <div className={`flex-1 ${isScrolled ? 'pt-0' : ''}`}>
-        <div className="bg-white p-2">
+        <div className="bg-white p-1">
           <div className="flex items-center justify-between mb-0.5">
             {/* Badges section removed */}
           </div>
