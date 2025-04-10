@@ -10,7 +10,7 @@ import ProductRecommendations from "@/components/home/ProductRecommendations";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useState, useEffect } from "react";
 import TrendingProducts from "@/components/home/TrendingProducts";
-import NewArrivals from "@/components/home/NewArrivals";
+import SecondaryFlashDeals from "@/components/home/SecondaryFlashDeals";
 import Newsletter from "@/components/home/Newsletter";
 import PopularSearches from "@/components/home/PopularSearches";
 import RecentlyViewed from "@/components/home/RecentlyViewed";
@@ -67,9 +67,9 @@ export default function Index() {
         <SuperDeals />
       </div>
       
-      {/* New Arrivals - New Feature */}
+      {/* Secondary Flash Deals - Replaced New Arrivals */}
       <div className="bg-white mb-1">
-        <NewArrivals products={products?.slice(0, 4) || []} />
+        <SecondaryFlashDeals />
       </div>
       
       {/* Top Brands */}
