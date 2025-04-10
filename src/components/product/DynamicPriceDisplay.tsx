@@ -22,7 +22,7 @@ const DynamicPriceDisplay = () => {
     { day: '2d', price: 150.25 },
     { day: '1d', price: 149.99 }
   ]);
-  const [showPriceHistory, setShowPriceHistory] = useState(false);
+  const [showPriceHistory, setShowPriceHistory] = useState(true);
   const [currency, setCurrency] = useState('USD');
   
   // Calculate discount percentage
@@ -88,6 +88,17 @@ const DynamicPriceDisplay = () => {
           {/* Current price */}
           <div className="text-2xl font-bold text-red-500">
             {getCurrencySymbol(currency)}{currentPrice.toFixed(2)}
+          </div>
+          
+          {/* Original price */}
+          <div className="text-gray-500 line-through text-sm">
+            {getCurrencySymbol(currency)}{originalPrice.toFixed(2)}
+          </div>
+          
+          {/* Discount badge */}
+          <div className="bg-red-100 text-red-700 text-xs px-2 py-1 rounded-md font-medium flex items-center">
+            <ChevronDown size={14} className="mr-1" />
+            <span>{discountPercentage}% OFF</span>
           </div>
         </div>
         
@@ -182,4 +193,3 @@ const DynamicPriceDisplay = () => {
 };
 
 export default DynamicPriceDisplay;
-
