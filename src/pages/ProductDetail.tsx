@@ -11,7 +11,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 // Product Components
 import ProductHeader from "@/components/product/ProductHeader";
 import DynamicPriceDisplay from "@/components/product/DynamicPriceDisplay";
-import ProductRatings from "@/components/product/ProductRatings";
+import EnhancedRating from "@/components/product/EnhancedRating";
 import ProductLimitedTimeOffer from "@/components/product/ProductLimitedTimeOffer";
 import ProductCoupons from "@/components/product/ProductCoupons";
 import ProductColorVariants from "@/components/product/ProductColorVariants";
@@ -365,11 +365,8 @@ const ProductDetail = () => {
           
           <h1 className="text-lg font-medium mt-1">{product.name}</h1>
           
-          <ProductRatings 
-            rating={4.8}
-            reviewCount={2543}
-            soldCount={5000}
-          />
+          {/* Replace original ProductRatings with new EnhancedRating component */}
+          <EnhancedRating />
 
           <div className="mt-4">
             <ProductLimitedTimeOffer timeLeft={timeLeft} />
