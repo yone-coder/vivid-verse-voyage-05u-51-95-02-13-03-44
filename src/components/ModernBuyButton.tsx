@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { ShoppingCart, Clock, Check, ChevronDown, Star, Info, TrendingUp, Heart, ShieldCheck, ArrowRight, AlertTriangle, Plus, Minus, Truck, Gift, RefreshCw, Share2, Lock, Zap } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
@@ -517,7 +516,7 @@ const ModernBuyButton = ({ productId }: { productId?: string }) => {
       >
         <div className={`bg-red-50 py-0.5 px-3 border-t border-red-100 flex items-center justify-between ${highlightStock ? 'animate-pulse bg-red-100' : ''}`}>
           <div className="flex items-center">
-            <AlertTriangle size={12} className={`text-red-500 mr-1 ${rotateIcons ? 'animate-spin' : ''}`} />
+            <AlertTriangle size={12} className="text-red-500 mr-1" />
             <span className={`text-xs font-bold text-red-700 ${highlightStock ? 'animate-bounce' : ''}`}>
               {stockRemaining <= 1 ? 'Last one available!' : `Only ${stockRemaining} left in stock!`}
             </span>
@@ -578,7 +577,7 @@ const ModernBuyButton = ({ productId }: { productId?: string }) => {
                 key={index}
                 className="px-2 py-1.5 hover:bg-gray-100 cursor-pointer flex items-center space-x-2 transition-all duration-200 hover:translate-x-1"
               >
-                <div className={`${index === 0 ? '' : 'animate-pulse'}`}>
+                <div>
                   {option.icon}
                 </div>
                 <span className="text-xs">{option.text}</span>
@@ -612,7 +611,7 @@ const ModernBuyButton = ({ productId }: { productId?: string }) => {
                   <TooltipProvider delayDuration={300}>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <button className={`ml-1 ${rotateIcons ? 'animate-spin' : ''}`} onClick={() => setShowPriceIncrease(true)}>
+                        <button className="ml-1" onClick={() => setShowPriceIncrease(true)}>
                           <Info size={10} className="text-gray-400" />
                         </button>
                       </TooltipTrigger>
@@ -630,7 +629,6 @@ const ModernBuyButton = ({ productId }: { productId?: string }) => {
                       fill={i < 4 ? "#FFD700" : "none"} 
                       color="#FFD700" 
                       size={8}
-                      className={`${i === Math.floor(Math.random() * 5) && rotateIcons ? 'animate-ping' : ''}`}
                     />
                   ))}
                   <span className="text-xs text-gray-500 ml-1">1.2K</span>
@@ -644,7 +642,7 @@ const ModernBuyButton = ({ productId }: { productId?: string }) => {
                 className="flex flex-col items-center justify-center relative overflow-hidden"
                 aria-label="Share product"
               >
-                <Share2 className={`text-gray-400 hover:text-gray-600 ${rotateIcons ? 'animate-spin' : ''}`} size={14} />
+                <Share2 className="text-gray-400 hover:text-gray-600" size={14} />
               </button>
               
               <button 
@@ -693,7 +691,7 @@ const ModernBuyButton = ({ productId }: { productId?: string }) => {
           
           <div className="flex items-center mt-0.5 mb-0.5 justify-between">
             <div className="flex items-center text-xs text-gray-600">
-              <div className={`${rotateIcons ? 'animate-spin' : ''}`}>
+              <div>
                 {features[activeFeature].icon}
               </div>
               <span className="ml-1 text-[10px]">{features[activeFeature].text}</span>
@@ -709,7 +707,7 @@ const ModernBuyButton = ({ productId }: { productId?: string }) => {
                 className="px-1 py-0.5 text-gray-500 hover:bg-gray-200 flex items-center justify-center transition-colors duration-300"
                 disabled={quantity <= 1}
               >
-                <Minus size={10} className="hover:animate-spin" />
+                <Minus size={10} />
               </button>
               <span className="px-1 font-medium">{quantity}</span>
               <button 
@@ -717,7 +715,7 @@ const ModernBuyButton = ({ productId }: { productId?: string }) => {
                 className="px-1 py-0.5 text-gray-500 hover:bg-gray-200 flex items-center justify-center transition-colors duration-300"
                 disabled={quantity >= stockRemaining || quantity >= 10}
               >
-                <Plus size={10} className="hover:animate-spin" />
+                <Plus size={10} />
               </button>
             </div>
           </div>
@@ -748,7 +746,7 @@ const ModernBuyButton = ({ productId }: { productId?: string }) => {
                   setVariantOpen(false);
                 }}
               >
-                <Truck size={12} className={`text-gray-500 ${rotateIcons ? 'animate-spin' : ''}`} />
+                <Truck size={12} className="text-gray-500" />
                 <span className="text-xs">Delivery</span>
                 <ChevronDown 
                   size={10} 
@@ -777,7 +775,7 @@ const ModernBuyButton = ({ productId }: { productId?: string }) => {
                 backgroundPosition: buttonHover ? 'right center' : 'left center'
               }}
             >
-              <ShoppingCart size={14} className={rotateIcons ? 'animate-spin' : ''} />
+              <ShoppingCart size={14} />
               <span className="text-sm">{buttonHover ? 'Buy Now!' : 'Buy Now'}</span>
               {buttonHover && <ArrowRight size={12} className="ml-1 animate-pulse" />}
             </button>
@@ -798,7 +796,7 @@ const ModernBuyButton = ({ productId }: { productId?: string }) => {
         <div className={`bg-gray-50 py-0.5 px-4 flex items-center justify-between border-t border-gray-200 ${rainbowBorder ? 'animate-pulse bg-gray-100' : ''}`}>
           <div className="flex items-center space-x-1">
             <div className="flex space-x-1">
-              <div className={`w-6 h-4 bg-white rounded flex items-center justify-center ${rotateIcons ? 'animate-pulse' : ''}`} style={{ border: "1px solid #ddd" }}>
+              <div className="w-6 h-4 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
                 <img 
                   src="/lovable-uploads/f3efe2eb-c3db-48bd-abc7-c65456fdc028.png" 
                   alt="Visa" 
@@ -806,13 +804,13 @@ const ModernBuyButton = ({ productId }: { productId?: string }) => {
                 />
               </div>
               <div className="w-6 h-4 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="10" className={rotateIcons ? 'animate-spin' : ''}>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="10">
                   <circle fill="#EA001B" cx="8" cy="12" r="5"/>
                   <circle fill="#F79E1B" cx="16" cy="12" r="5"/>
                   <path fill="#FF5F00" d="M12 7.5v9a5 5 0 0 0 0-9z"/>
                 </svg>
               </div>
-              <div className={`w-6 h-4 bg-white rounded flex items-center justify-center ${rotateIcons ? 'animate-pulse' : ''}`} style={{ border: "1px solid #ddd" }}>
+              <div className="w-6 h-4 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
                 <img 
                   src="/lovable-uploads/dd1cad7b-c3b6-43a6-9bc6-deb38a120604.png" 
                   alt="Venmo" 
@@ -820,7 +818,7 @@ const ModernBuyButton = ({ productId }: { productId?: string }) => {
                 />
               </div>
               <div className="w-6 h-4 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="10" className={rotateIcons ? 'animate-spin' : ''}>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="14" height="10">
                   <path fill="#253B80" d="M7 7h2c1.4 0 1.9 1 1.9 1.5 0 1.8-2 1.8-2.5 1.8H7.3L7 7z"/>
                   <path fill="#179BD7" d="M19 7.8C18.7 5.8 16.9 5 14.7 5H9.2c-.3 0-.5.2-.6.5l-1.7 11c0 .2.1.4.4.4h2.9l.7-4.7v.3c.1-.3.3-.5.6-.5h1.3c2.5 0 4.4-1 5-3.9V8c-.1-.2-.1-.2-.1-.2H19z"/>
                   <path fill="#253B80" d="M8.3 11.5l-.3 2.1-.2 1h-3c-.2 0-.4-.2-.3-.4L6.1 5.9c.1-.3.3-.5.6-.5h5.5c1.5 0 2.6.3 3.2 1 .3.3.5.7.6 1.1.1.3.1.7.1 1.1-1-.6-2-.8-3.3-.8L8.3 11.5z"/>
@@ -841,7 +839,7 @@ const ModernBuyButton = ({ productId }: { productId?: string }) => {
                 setTimeout(() => setSparkleEffect(false), 1000);
               }}
             >
-              <RefreshCw size={8} className={`mr-1 ${rotateIcons ? 'animate-spin' : 'group-hover:animate-spin'}`} />
+              <RefreshCw size={8} className="mr-1 group-hover:animate-spin" />
               <span>30-day returns</span>
             </div>
             
@@ -855,7 +853,7 @@ const ModernBuyButton = ({ productId }: { productId?: string }) => {
                 setTimeout(() => setSparkleEffect(false), 1000);
               }}
             >
-              <Gift size={8} className={`mr-1 ${rotateIcons ? 'animate-pulse' : 'group-hover:animate-pulse'}`} />
+              <Gift size={8} className="mr-1 group-hover:animate-pulse" />
               <span>Gift options</span>
             </div>
           </div>
