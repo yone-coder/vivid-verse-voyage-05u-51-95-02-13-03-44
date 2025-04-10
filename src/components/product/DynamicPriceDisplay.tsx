@@ -472,10 +472,6 @@ const DynamicPriceDisplay = () => {
           <div className="text-gray-500 line-through text-sm">
             {getCurrencySymbol(currency)}{originalPrice.toFixed(2)}
           </div>
-          <div className="bg-red-100 text-red-700 text-xs px-2 py-1 rounded-md font-medium flex items-center">
-            <ChevronDown size={14} className="mr-1" />
-            <span>{discountPercentage}% OFF</span>
-          </div>
           <div className={`flex items-center text-xs font-medium ${isPositiveChange ? 'text-green-600' : 'text-red-600'}`}>
             {isPositiveChange ? (
               <ArrowUpRight size={14} className="mr-1" />
