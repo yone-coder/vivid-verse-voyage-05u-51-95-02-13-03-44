@@ -80,52 +80,52 @@ const EnhancedRating = () => {
   };
 
   return (
-    <div className="w-full">
-      {/* Compact rating bar */}
+    <div className="w-full px-1">
+      {/* Compact rating bar - minimal padding */}
       <div 
-        className="flex items-center justify-between px-3 py-2 cursor-pointer hover:bg-gray-50 rounded-md"
+        className="flex items-center justify-between py-2 cursor-pointer hover:bg-gray-50 rounded-md"
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-4">
           <div className="flex items-center">
             {renderStars(rating)}
           </div>
           <span className="font-bold text-gray-800">{rating}</span>
-          <div className="flex items-center text-gray-500 text-xs">
+          <div className="flex items-center text-gray-500 text-sm">
             <span className="border-r border-gray-300 pr-2">{reviews} Reviews</span>
             <span className="pl-2">{sold} Sold</span>
           </div>
         </div>
         <button className="text-gray-500 hover:text-gray-700">
-          {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          {isExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
         </button>
       </div>
       
       {/* Expanded features */}
       {isExpanded && (
-        <div className="px-3 pb-3 pt-1 border-t border-gray-200">
+        <div className="pt-1 border-t border-gray-200">
           {/* Tabs */}
           <div className="flex mb-2 border-b border-gray-200 overflow-x-auto whitespace-nowrap">
             <button 
-              className={`py-1 px-2 text-xs ${activeTab === 'summary' ? 'text-blue-600 border-b-2 border-blue-600 font-medium' : 'text-gray-500'}`}
+              className={`py-1 px-2 text-sm ${activeTab === 'summary' ? 'text-blue-600 border-b-2 border-blue-600 font-medium' : 'text-gray-500'}`}
               onClick={() => setActiveTab('summary')}
             >
               Summary
             </button>
             <button 
-              className={`py-1 px-2 text-xs ${activeTab === 'distribution' ? 'text-blue-600 border-b-2 border-blue-600 font-medium' : 'text-gray-500'}`}
+              className={`py-1 px-2 text-sm ${activeTab === 'distribution' ? 'text-blue-600 border-b-2 border-blue-600 font-medium' : 'text-gray-500'}`}
               onClick={() => setActiveTab('distribution')}
             >
               Distribution
             </button>
             <button 
-              className={`py-1 px-2 text-xs ${activeTab === 'metrics' ? 'text-blue-600 border-b-2 border-blue-600 font-medium' : 'text-gray-500'}`}
+              className={`py-1 px-2 text-sm ${activeTab === 'metrics' ? 'text-blue-600 border-b-2 border-blue-600 font-medium' : 'text-gray-500'}`}
               onClick={() => setActiveTab('metrics')}
             >
               Metrics
             </button>
             <button 
-              className={`py-1 px-2 text-xs ${activeTab === 'media' ? 'text-blue-600 border-b-2 border-blue-600 font-medium' : 'text-gray-500'}`}
+              className={`py-1 px-2 text-sm ${activeTab === 'media' ? 'text-blue-600 border-b-2 border-blue-600 font-medium' : 'text-gray-500'}`}
               onClick={() => setActiveTab('media')}
             >
               Media
@@ -180,7 +180,7 @@ const EnhancedRating = () => {
           {/* Metrics tab */}
           {activeTab === 'metrics' && (
             <div>
-              <div className="flex border-b border-gray-200 text-xs mb-2 overflow-x-auto whitespace-nowrap">
+              <div className="flex border-b border-gray-200 text-sm mb-2 overflow-x-auto whitespace-nowrap">
                 <button 
                   className={`p-1 ${selectedMetricsTab === 'trust' ? 'text-blue-600 border-b border-blue-600' : 'text-gray-500'}`}
                   onClick={() => setSelectedMetricsTab('trust')}

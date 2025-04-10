@@ -353,17 +353,18 @@ const ProductDetail = () => {
       </div>
       
       <div className={`flex-1 ${isScrolled ? 'pt-0' : ''}`}>
-        <div className="bg-white p-3 mb-0">
+        <div className="bg-white p-2">
           <div className="flex items-center justify-between mb-0.5">
             {/* Badges section removed */}
           </div>
           
-          <div className="flex items-center justify-between">
+          {/* Product title now appears before price */}
+          <h1 className="text-lg font-medium">{product.name}</h1>
+          
+          <div className="flex items-center justify-between mt-1">
             {/* Replace static price display with dynamic component */}
             <DynamicPriceDisplay />
           </div>
-          
-          <h1 className="text-lg font-medium mt-1">{product.name}</h1>
           
           {/* Replace original ProductRatings with new EnhancedRating component */}
           <EnhancedRating />
@@ -385,7 +386,7 @@ const ProductDetail = () => {
           </div>
         </div>
         
-        <div className="mt-2 mb-2 p-4 bg-white">
+        <div className="mt-2 mb-2 p-3 bg-white">
           <LiveStockUpdates 
             initialStock={currentStock}
             highDemand={productForTabs.stock.selling_fast}
