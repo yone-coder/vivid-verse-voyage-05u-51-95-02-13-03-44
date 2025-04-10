@@ -1,78 +1,148 @@
 
-import React, { useState, useEffect } from "react";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { Link } from "react-router-dom";
-import { ProductCard } from "./ProductGrid";
-import { History, ChevronRight, X } from "lucide-react";
+import React from 'react';
+import { Clock } from 'lucide-react';
 
-// Demo recently viewed products
-const demoProducts = [
-  {
-    id: "demo-1",
-    name: "Wireless Bluetooth Headphones",
-    price: 59.99,
-    product_images: [{ src: "https://placehold.co/300x300/3B82F6/FFF?text=Headphones" }]
-  },
-  {
-    id: "demo-2",
-    name: "Smart Watch with Heart Rate Monitor",
-    price: 129.99,
-    discount_price: 99.99,
-    product_images: [{ src: "https://placehold.co/300x300/10B981/FFF?text=Watch" }]
-  },
-  {
-    id: "demo-3",
-    name: "Ultra Slim Portable Power Bank",
-    price: 45.99,
-    product_images: [{ src: "https://placehold.co/300x300/A855F7/FFF?text=PowerBank" }]
-  }
-];
+const RecentlyViewed = () => {
+  const products = [
+    {
+      name: 'Wireless Headphones',
+      price: 59.99,
+      rating: 5,
+      reviews: 42,
+      color: 'bg-blue-500',
+      freeShipping: true
+    },
+    {
+      name: 'Smart Watch',
+      price: 99.99,
+      originalPrice: 129.99,
+      rating: 5,
+      reviews: 42,
+      discount: '23% OFF',
+      color: 'bg-green-500',
+      freeShipping: true
+    },
+    {
+      name: 'Ultra Slim PowerBank',
+      price: 45.99,
+      rating: 5,
+      reviews: 42,
+      color: 'bg-purple-500',
+      freeShipping: true
+    },
+    {
+      name: 'Bluetooth Speaker',
+      price: 79.99,
+      originalPrice: 89.99,
+      rating: 4,
+      reviews: 36,
+      discount: '11% OFF',
+      color: 'bg-red-500',
+      freeShipping: true
+    },
+    {
+      name: 'Wireless Mouse',
+      price: 29.99,
+      rating: 4,
+      reviews: 28,
+      color: 'bg-gray-600',
+      freeShipping: false
+    },
+    {
+      name: 'USB-C Hub',
+      price: 39.99,
+      originalPrice: 49.99,
+      rating: 5,
+      reviews: 55,
+      discount: '20% OFF',
+      color: 'bg-indigo-500',
+      freeShipping: true
+    },
+    {
+      name: 'Smart Bulb Set',
+      price: 34.99,
+      rating: 4,
+      reviews: 19,
+      color: 'bg-yellow-400',
+      freeShipping: true
+    },
+    {
+      name: 'Fitness Tracker',
+      price: 69.99,
+      originalPrice: 89.99,
+      rating: 4,
+      reviews: 47,
+      discount: '22% OFF',
+      color: 'bg-pink-500',
+      freeShipping: true
+    },
+    {
+      name: 'Desktop Stand',
+      price: 24.99,
+      rating: 5,
+      reviews: 33,
+      color: 'bg-teal-500',
+      freeShipping: false
+    },
+    {
+      name: 'Wireless Charger',
+      price: 19.99,
+      originalPrice: 29.99,
+      rating: 4,
+      reviews: 61,
+      discount: '33% OFF',
+      color: 'bg-orange-500',
+      freeShipping: true
+    }
+  ];
 
-export default function RecentlyViewed() {
-  const [products, setProducts] = useState([]);
-  const isMobile = useIsMobile();
-  
-  useEffect(() => {
-    // In a real app, this would come from local storage or a database
-    // Using demo data for now
-    setProducts(demoProducts);
-  }, []);
-  
-  if (!products?.length) return null;
-  
-  const handleClearHistory = () => {
-    setProducts([]);
-  };
-  
   return (
-    <div className="py-3">
-      <div className="container mx-auto px-3">
-        <div className="flex justify-between items-center mb-2">
-          <div className="flex items-center gap-1.5">
-            <History className="h-3.5 w-3.5 text-gray-500" />
-            <h2 className="text-sm font-bold">Recently Viewed</h2>
-          </div>
-          <div className="flex items-center gap-3">
-            <button 
-              onClick={handleClearHistory} 
-              className="text-xs text-gray-500 hover:text-red-500 flex items-center"
-            >
-              <X className="h-3.5 w-3.5 mr-0.5" /> Clear
-            </button>
-            <Link to="/history" className="text-xs text-orange-500 hover:underline flex items-center">
-              View All <ChevronRight className="h-3 w-3" />
-            </Link>
-          </div>
+    <div className="max-w-full">
+      <div className="flex justify-between items-center px-2 mb-2">
+        <div className="flex items-center space-x-1">
+          <Clock size={16} className="text-orange-500" />
+          <span className="font-bold text-sm">Recently Viewed</span>
         </div>
+        <div className="flex items-center text-xs">
+          <button className="text-gray-500 mr-2">× Clear</button>
+          <a href="#" className="text-orange-500">View All ›</a>
+        </div>
+      </div>
+      
+      <div className="flex overflow-x-auto px-2 -mx-2 scrollbar-hide">
+        {/* Left padding spacer */}
+        <div className="flex-shrink-0 w-2"></div>
         
-        <div className={`grid ${isMobile ? 'grid-cols-3' : 'grid-cols-6'} gap-2`}>
-          {products.map(product => (
-            <div key={product.id} className="h-full">
-              <ProductCard key={product.id} product={product} />
+        {products.map((product, index) => (
+          <div key={index} className="flex-shrink-0 w-20 pb-1 mx-1">
+            <div className="relative">
+              <div className={`${product.color} h-20 w-20 rounded flex items-center justify-center`}>
+                {product.discount && (
+                  <div className="absolute top-0 right-0 bg-red-500 text-white text-xs px-1 rounded-tr">
+                    {product.discount}
+                  </div>
+                )}
+              </div>
             </div>
-          ))}
-        </div>
+            
+            <div className="flex items-baseline justify-between mt-1">
+              <span className="font-medium text-xs text-orange-600">${product.price}</span>
+              {product.originalPrice && (
+                <span className="text-gray-400 text-xs line-through">${product.originalPrice}</span>
+              )}
+            </div>
+            
+            <button className="mt-1 w-full bg-gray-100 rounded text-xs py-1">
+              Add
+            </button>
+          </div>
+        ))}
+        
+        {/* Right padding spacer */}
+        <div className="flex-shrink-0 w-2"></div>
       </div>
     </div>
   );
-}
+};
+
+export default RecentlyViewed;

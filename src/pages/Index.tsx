@@ -1,4 +1,3 @@
-
 import { useQuery } from "@tanstack/react-query";
 import { fetchAllProducts } from "@/integrations/supabase/client";
 import HeroBanner from "@/components/home/HeroBanner";
@@ -88,7 +87,7 @@ export default function Index() {
         <ProductRecommendations products={products || []} />
       </div>
       
-      {/* Recently Viewed */}
+      {/* Recently Viewed - Updated Component */}
       <div className="bg-white mb-1">
         <RecentlyViewed />
       </div>
