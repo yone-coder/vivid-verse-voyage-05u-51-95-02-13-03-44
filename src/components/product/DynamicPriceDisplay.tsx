@@ -22,7 +22,7 @@ const DynamicPriceDisplay = () => {
     { day: '2d', price: 150.25 },
     { day: '1d', price: 149.99 }
   ]);
-  const [showPriceHistory, setShowPriceHistory] = useState(true);
+  const [showPriceHistory, setShowPriceHistory] = useState(false);
   const [currency, setCurrency] = useState('USD');
   
   // Calculate discount percentage
