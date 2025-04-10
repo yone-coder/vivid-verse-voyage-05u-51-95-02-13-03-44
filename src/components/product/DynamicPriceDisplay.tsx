@@ -97,9 +97,7 @@ const DynamicPriceDisplay = () => {
   const [priceChangePercentage, setPriceChangePercentage] = useState<number>(0);
   const [isPositiveChange, setIsPositiveChange] = useState<boolean>(true);
   
-  const discountPercentage = useMemo(() => {
-    return Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
-  }, [originalPrice, currentPrice]);
+  const discountPercentage = Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
   
   const lowestPrice = Math.min(...priceHistory.map(item => item.price), currentPrice);
   const highestPrice = Math.max(...priceHistory.map(item => item.price), currentPrice);
@@ -482,11 +480,6 @@ const DynamicPriceDisplay = () => {
             )}
             <span className="animate-pulse">{isPositiveChange ? '+' : ''}{priceChange} ({isPositiveChange ? '+' : ''}{priceChangePercentage}%)</span>
           </div>
-          {discountPercentage !== 0 && (
-            <div className="text-xs text-red-500">
-              {discountPercentage > 0 ? `-${discountPercentage}%` : `+${Math.abs(discountPercentage)}%`}
-            </div>
-          )}
         </div>
         <button 
           onClick={() => setShowPriceHistory(!showPriceHistory)}
