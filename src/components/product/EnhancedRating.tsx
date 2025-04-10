@@ -80,10 +80,10 @@ const EnhancedRating = () => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 w-full max-w-md">
+    <div className="w-full">
       {/* Compact rating bar */}
       <div 
-        className="flex items-center justify-between px-3 py-2 cursor-pointer hover:bg-gray-50"
+        className="flex items-center justify-between px-3 py-2 cursor-pointer hover:bg-gray-50 rounded-md"
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <div className="flex items-center space-x-3">
