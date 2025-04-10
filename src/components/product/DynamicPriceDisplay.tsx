@@ -433,148 +433,138 @@ const DynamicPriceDisplay = () => {
                   config={chartConfig}
                   className="h-full [&_.recharts-cartesian-grid-horizontal_line]:stroke-gray-200 [&_.recharts-cartesian-grid-vertical_line]:stroke-gray-200"
                 >
-                  {chartType === 'line' && (
-                    <React.Fragment>
-                      <LineChart data={movingAverage}>
-                        {showGrid && <CartesianGrid strokeDasharray="3 3" />}
-                        <XAxis 
-                          dataKey="day" 
-                          tick={{ fontSize: 10 }}
-                          axisLine={{ stroke: '#e0e0e0' }}
-                          tickLine={false}
-                        />
-                        <YAxis 
-                          domain={['auto', 'auto']}
-                          tick={{ fontSize: 10 }}
-                          axisLine={{ stroke: '#e0e0e0' }}
-                          tickLine={false}
-                          tickFormatter={(value) => `${getCurrencySymbol(currency)}${value}`}
-                        />
-                        <Tooltip content={<CustomTooltip />} />
-                        <Legend />
-                        <ReferenceLine 
-                          y={currentPrice} 
-                          stroke="#ef4444" 
-                          strokeDasharray="3 3" 
-                          label={{ 
-                            value: 'Current', 
-                            position: 'insideBottomRight',
-                            fontSize: 10,
-                            fill: '#ef4444'
-                          }} 
-                        />
-                        <Line 
-                          name="Price"
-                          type="monotone"
-                          dataKey="price"
-                          stroke="#3b82f6"
-                          strokeWidth={2}
-                          dot={{ r: 3, fill: "#3b82f6", stroke: "#3b82f6" }}
-                          activeDot={{ r: 5, fill: "#1d4ed8", stroke: "#3b82f6" }}
-                          isAnimationActive={true}
-                        />
-                        <Line 
-                          name="3-Day Avg"
-                          type="monotone"
-                          dataKey="average"
-                          stroke="#f97316"
-                          strokeWidth={1.5}
-                          dot={false}
-                          activeDot={false}
-                          strokeDasharray="5 5"
-                        />
-                        <Brush 
-                          dataKey="day" 
-                          height={20} 
-                          stroke="#3b82f6"
-                          fill="#f8fafc"
-                        />
-                      </LineChart>
-                    </React.Fragment>
-                  )}
-                  
-                  {chartType === 'bar' && (
-                    <React.Fragment>
-                      <BarChart data={movingAverage}>
-                        {showGrid && <CartesianGrid strokeDasharray="3 3" />}
-                        <XAxis 
-                          dataKey="day" 
-                          tick={{ fontSize: 10 }}
-                          axisLine={{ stroke: '#e0e0e0' }}
-                          tickLine={false}
-                        />
-                        <YAxis 
-                          domain={['auto', 'auto']}
-                          tick={{ fontSize: 10 }}
-                          axisLine={{ stroke: '#e0e0e0' }}
-                          tickLine={false}
-                          tickFormatter={(value) => `${getCurrencySymbol(currency)}${value}`}
-                        />
-                        <Tooltip content={<CustomTooltip />} />
-                        <Legend />
+                  {chartType === 'line' ? (
+                    <LineChart data={movingAverage}>
+                      {showGrid && <CartesianGrid strokeDasharray="3 3" />}
+                      <XAxis 
+                        dataKey="day" 
+                        tick={{ fontSize: 10 }}
+                        axisLine={{ stroke: '#e0e0e0' }}
+                        tickLine={false}
+                      />
+                      <YAxis 
+                        domain={['auto', 'auto']}
+                        tick={{ fontSize: 10 }}
+                        axisLine={{ stroke: '#e0e0e0' }}
+                        tickLine={false}
+                        tickFormatter={(value) => `${getCurrencySymbol(currency)}${value}`}
+                      />
+                      <Tooltip content={<CustomTooltip />} />
+                      <Legend />
+                      <ReferenceLine 
+                        y={currentPrice} 
+                        stroke="#ef4444" 
+                        strokeDasharray="3 3" 
+                        label={{ 
+                          value: 'Current', 
+                          position: 'insideBottomRight',
+                          fontSize: 10,
+                          fill: '#ef4444'
+                        }} 
+                      />
+                      <Line 
+                        name="Price"
+                        type="monotone"
+                        dataKey="price"
+                        stroke="#3b82f6"
+                        strokeWidth={2}
+                        dot={{ r: 3, fill: "#3b82f6", stroke: "#3b82f6" }}
+                        activeDot={{ r: 5, fill: "#1d4ed8", stroke: "#3b82f6" }}
+                        isAnimationActive={true}
+                      />
+                      <Line 
+                        name="3-Day Avg"
+                        type="monotone"
+                        dataKey="average"
+                        stroke="#f97316"
+                        strokeWidth={1.5}
+                        dot={false}
+                        activeDot={false}
+                        strokeDasharray="5 5"
+                      />
+                      <Brush 
+                        dataKey="day" 
+                        height={20} 
+                        stroke="#3b82f6"
+                        fill="#f8fafc"
+                      />
+                    </LineChart>
+                  ) : chartType === 'bar' ? (
+                    <BarChart data={movingAverage}>
+                      {showGrid && <CartesianGrid strokeDasharray="3 3" />}
+                      <XAxis 
+                        dataKey="day" 
+                        tick={{ fontSize: 10 }}
+                        axisLine={{ stroke: '#e0e0e0' }}
+                        tickLine={false}
+                      />
+                      <YAxis 
+                        domain={['auto', 'auto']}
+                        tick={{ fontSize: 10 }}
+                        axisLine={{ stroke: '#e0e0e0' }}
+                        tickLine={false}
+                        tickFormatter={(value) => `${getCurrencySymbol(currency)}${value}`}
+                      />
+                      <Tooltip content={<CustomTooltip />} />
+                      <Legend />
+                      <Bar 
+                        name="Price"
+                        dataKey="price" 
+                        fill="#3b82f6" 
+                        radius={[2, 2, 0, 0]}
+                      />
+                      {showVolume && (
                         <Bar 
-                          name="Price"
-                          dataKey="price" 
-                          fill="#3b82f6" 
-                          radius={[2, 2, 0, 0]}
+                          name="Volume"
+                          dataKey="volume" 
+                          fill="#9ca3af" 
+                          radius={[2, 2, 0, 0]} 
                         />
-                        {showVolume && (
-                          <Bar 
-                            name="Volume"
-                            dataKey="volume" 
-                            fill="#9ca3af" 
-                            radius={[2, 2, 0, 0]} 
-                          />
-                        )}
-                      </BarChart>
-                    </React.Fragment>
-                  )}
-                  
-                  {chartType === 'area' && (
-                    <React.Fragment>
-                      <AreaChart data={movingAverage}>
-                        {showGrid && <CartesianGrid strokeDasharray="3 3" />}
-                        <XAxis 
-                          dataKey="day" 
-                          tick={{ fontSize: 10 }}
-                          axisLine={{ stroke: '#e0e0e0' }}
-                          tickLine={false}
-                        />
-                        <YAxis 
-                          domain={['auto', 'auto']}
-                          tick={{ fontSize: 10 }}
-                          axisLine={{ stroke: '#e0e0e0' }}
-                          tickLine={false}
-                          tickFormatter={(value) => `${getCurrencySymbol(currency)}${value}`}
-                        />
-                        <Tooltip content={<CustomTooltip />} />
-                        <Legend />
+                      )}
+                    </BarChart>
+                  ) : (
+                    <AreaChart data={movingAverage}>
+                      {showGrid && <CartesianGrid strokeDasharray="3 3" />}
+                      <XAxis 
+                        dataKey="day" 
+                        tick={{ fontSize: 10 }}
+                        axisLine={{ stroke: '#e0e0e0' }}
+                        tickLine={false}
+                      />
+                      <YAxis 
+                        domain={['auto', 'auto']}
+                        tick={{ fontSize: 10 }}
+                        axisLine={{ stroke: '#e0e0e0' }}
+                        tickLine={false}
+                        tickFormatter={(value) => `${getCurrencySymbol(currency)}${value}`}
+                      />
+                      <Tooltip content={<CustomTooltip />} />
+                      <Legend />
+                      <Area
+                        name="Price"
+                        type="monotone"
+                        dataKey="price"
+                        stroke="#3b82f6"
+                        fill="#93c5fd"
+                        fillOpacity={0.3}
+                        activeDot={{ r: 5 }}
+                      />
+                      <ReferenceLine 
+                        y={currentPrice} 
+                        stroke="#ef4444" 
+                        strokeDasharray="3 3" 
+                      />
+                      {showVolume && (
                         <Area
-                          name="Price"
+                          name="Volume"
                           type="monotone"
-                          dataKey="price"
-                          stroke="#3b82f6"
-                          fill="#93c5fd"
+                          dataKey="volume"
+                          stroke="#9ca3af"
+                          fill="#e5e7eb"
                           fillOpacity={0.3}
-                          activeDot={{ r: 5 }}
                         />
-                        <ReferenceLine 
-                          y={currentPrice} 
-                          stroke="#ef4444" 
-                          strokeDasharray="3 3" 
-                        />
-                        {showVolume && (
-                          <Area
-                            name="Volume"
-                            type="monotone"
-                            dataKey="volume"
-                            stroke="#9ca3af"
-                            fill="#e5e7eb"
-                            fillOpacity={0.3}
-                          />
-                        )}
-                      </AreaChart>
-                    </React.Fragment>
+                      )}
+                    </AreaChart>
                   )}
                 </ChartContainer>
               </div>
