@@ -2,6 +2,22 @@
 import React, { useState, useEffect } from 'react';
 import { Clock, Tag, Gift, Copy, Zap, ShoppingBag, Calendar, ChevronDown, ChevronUp, Check, X } from 'lucide-react';
 
+// Define an interface for our coupon type
+interface Coupon {
+  id: number;
+  code: string;
+  discount: string;
+  popular?: boolean;
+  expiryTime: number | null;
+  minSpend: string;
+  maxDiscount: string;
+  categories: string[];
+  storeWide?: boolean;
+  newUserOnly?: boolean;
+  flash?: boolean;
+  expires?: string | null;
+}
+
 const AliExpressCoupons = () => {
   const [expandedCoupon, setExpandedCoupon] = useState<number | null>(null);
   const [appliedCoupon, setAppliedCoupon] = useState<number | null>(null);
@@ -11,7 +27,7 @@ const AliExpressCoupons = () => {
   const [newCouponHighlight, setNewCouponHighlight] = useState<number | null>(null);
   
   // Initial coupon data
-  const initialCoupons = [
+  const initialCoupons: Coupon[] = [
     { 
       id: 1, 
       code: 'GALAXY10', 
@@ -21,7 +37,8 @@ const AliExpressCoupons = () => {
       minSpend: '$20',
       maxDiscount: '$30',
       categories: ['Electronics', 'Home Appliances'],
-      storeWide: true
+      storeWide: true,
+      expires: null
     },
     { 
       id: 2, 
@@ -33,7 +50,8 @@ const AliExpressCoupons = () => {
       maxDiscount: '$5',
       categories: ['All categories'],
       storeWide: true,
-      newUserOnly: true
+      newUserOnly: true,
+      expires: null
     },
     { 
       id: 3, 
@@ -45,11 +63,12 @@ const AliExpressCoupons = () => {
       maxDiscount: '$100',
       categories: ['Fashion', 'Accessories'],
       storeWide: false,
-      flash: true
+      flash: true,
+      expires: null
     }
   ];
   
-  const [coupons, setCoupons] = useState(initialCoupons);
+  const [coupons, setCoupons] = useState<Coupon[]>(initialCoupons);
   
   // Simulate a loading effect
   useEffect(() => {
@@ -358,7 +377,8 @@ const AliExpressCoupons = () => {
         ))}
       </div>
       
-      <style jsx>{`
+      <style>
+        {`
         @keyframes fadeIn {
           from { opacity: 0; }
           to { opacity: 1; }
@@ -376,7 +396,8 @@ const AliExpressCoupons = () => {
         .animate-slideDown {
           animation: slideDown 0.3s ease-out forwards;
         }
-      `}</style>
+        `}
+      </style>
     </div>
   );
 };
