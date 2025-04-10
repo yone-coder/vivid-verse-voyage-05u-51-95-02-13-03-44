@@ -91,7 +91,7 @@ const EnhancedRating = () => {
             {renderStars(rating)}
           </div>
           <span className="font-bold text-gray-800">{rating}</span>
-          <div className="flex items-center text-gray-500 text-sm">
+          <div className="flex items-center text-gray-500 text-xs">
             <span className="border-r border-gray-300 pr-2">{reviews} Reviews</span>
             <span className="pl-2">{sold} Sold</span>
           </div>
@@ -107,25 +107,25 @@ const EnhancedRating = () => {
           {/* Tabs */}
           <div className="flex mb-2 border-b border-gray-200 overflow-x-auto whitespace-nowrap">
             <button 
-              className={`py-1 px-2 text-sm ${activeTab === 'summary' ? 'text-blue-600 border-b-2 border-blue-600 font-medium' : 'text-gray-500'}`}
+              className={`py-1 px-2 text-xs ${activeTab === 'summary' ? 'text-blue-600 border-b-2 border-blue-600 font-medium' : 'text-gray-500'}`}
               onClick={() => setActiveTab('summary')}
             >
               Summary
             </button>
             <button 
-              className={`py-1 px-2 text-sm ${activeTab === 'distribution' ? 'text-blue-600 border-b-2 border-blue-600 font-medium' : 'text-gray-500'}`}
+              className={`py-1 px-2 text-xs ${activeTab === 'distribution' ? 'text-blue-600 border-b-2 border-blue-600 font-medium' : 'text-gray-500'}`}
               onClick={() => setActiveTab('distribution')}
             >
               Distribution
             </button>
             <button 
-              className={`py-1 px-2 text-sm ${activeTab === 'metrics' ? 'text-blue-600 border-b-2 border-blue-600 font-medium' : 'text-gray-500'}`}
+              className={`py-1 px-2 text-xs ${activeTab === 'metrics' ? 'text-blue-600 border-b-2 border-blue-600 font-medium' : 'text-gray-500'}`}
               onClick={() => setActiveTab('metrics')}
             >
               Metrics
             </button>
             <button 
-              className={`py-1 px-2 text-sm ${activeTab === 'media' ? 'text-blue-600 border-b-2 border-blue-600 font-medium' : 'text-gray-500'}`}
+              className={`py-1 px-2 text-xs ${activeTab === 'media' ? 'text-blue-600 border-b-2 border-blue-600 font-medium' : 'text-gray-500'}`}
               onClick={() => setActiveTab('media')}
             >
               Media
@@ -203,7 +203,7 @@ const EnhancedRating = () => {
                   className={`p-1 ${selectedMetricsTab === 'delivery' ? 'text-blue-600 border-b border-blue-600' : 'text-gray-500'}`}
                   onClick={() => setSelectedMetricsTab('delivery')}
                 >
-                  Delivery & Trust
+                  Delivery
                 </button>
               </div>
               
@@ -211,31 +211,31 @@ const EnhancedRating = () => {
               {selectedMetricsTab === 'trust' && (
                 <div className="grid grid-cols-2 gap-2">
                   <div className="flex items-center bg-gray-50 p-2 rounded">
-                    <Award size={14} className="text-yellow-500 mr-2" />
-                    <div>
+                    <Award size={14} className="text-yellow-500 mr-2 flex-shrink-0" />
+                    <div className="min-w-0">
                       <div className="text-xs text-gray-500">Rating</div>
-                      <div className="font-bold">{rating}</div>
+                      <div className="font-bold text-sm truncate">{rating}</div>
                     </div>
                   </div>
                   <div className="flex items-center bg-gray-50 p-2 rounded">
-                    <MessageSquare size={14} className="text-blue-500 mr-2" />
-                    <div>
+                    <MessageSquare size={14} className="text-blue-500 mr-2 flex-shrink-0" />
+                    <div className="min-w-0">
                       <div className="text-xs text-gray-500">Reviews</div>
-                      <div className="font-bold">{reviews}</div>
+                      <div className="font-bold text-sm truncate">{reviews}</div>
                     </div>
                   </div>
                   <div className="flex items-center bg-gray-50 p-2 rounded">
-                    <Camera size={14} className="text-purple-500 mr-2" />
-                    <div>
+                    <Camera size={14} className="text-purple-500 mr-2 flex-shrink-0" />
+                    <div className="min-w-0">
                       <div className="text-xs text-gray-500">Photos</div>
-                      <div className="font-bold">{photoReviews}</div>
+                      <div className="font-bold text-sm truncate">{photoReviews}</div>
                     </div>
                   </div>
                   <div className="flex items-center bg-gray-50 p-2 rounded">
-                    <ThumbsUp size={14} className="text-green-500 mr-2" />
-                    <div>
+                    <ThumbsUp size={14} className="text-green-500 mr-2 flex-shrink-0" />
+                    <div className="min-w-0">
                       <div className="text-xs text-gray-500">Satisfaction</div>
-                      <div className="font-bold">{satisfaction}%</div>
+                      <div className="font-bold text-sm truncate">{satisfaction}%</div>
                     </div>
                   </div>
                 </div>
@@ -245,52 +245,52 @@ const EnhancedRating = () => {
               {selectedMetricsTab === 'popularity' && (
                 <div className="grid grid-cols-2 gap-2">
                   <div className="flex items-center bg-gray-50 p-2 rounded">
-                    <ShoppingBag size={14} className="text-orange-500 mr-2" />
-                    <div>
+                    <ShoppingBag size={14} className="text-orange-500 mr-2 flex-shrink-0" />
+                    <div className="min-w-0">
                       <div className="text-xs text-gray-500">Sold</div>
-                      <div className="font-bold">{sold}</div>
+                      <div className="font-bold text-sm truncate">{sold}</div>
                     </div>
                   </div>
                   <div className="flex items-center bg-gray-50 p-2 rounded">
-                    <TrendingUp size={14} className="text-red-500 mr-2" />
-                    <div>
+                    <TrendingUp size={14} className="text-red-500 mr-2 flex-shrink-0" />
+                    <div className="min-w-0">
                       <div className="text-xs text-gray-500">Trending</div>
-                      <div className="font-bold">{trending}</div>
+                      <div className="font-bold text-sm truncate">{trending}</div>
                     </div>
                   </div>
                   <div className="flex items-center bg-gray-50 p-2 rounded">
-                    <ShoppingCart size={14} className="text-blue-500 mr-2" />
-                    <div>
+                    <ShoppingCart size={14} className="text-blue-500 mr-2 flex-shrink-0" />
+                    <div className="min-w-0">
                       <div className="text-xs text-gray-500">Carts</div>
-                      <div className="font-bold">{carts}</div>
+                      <div className="font-bold text-sm truncate">{carts}</div>
                     </div>
                   </div>
                   <div className="flex items-center bg-gray-50 p-2 rounded">
-                    <Eye size={14} className="text-indigo-500 mr-2" />
-                    <div>
+                    <Eye size={14} className="text-indigo-500 mr-2 flex-shrink-0" />
+                    <div className="min-w-0">
                       <div className="text-xs text-gray-500">Viewers</div>
-                      <div className="font-bold">{viewers}</div>
+                      <div className="font-bold text-sm truncate">{viewers}</div>
                     </div>
                   </div>
                   <div className="flex items-center bg-gray-50 p-2 rounded">
-                    <RefreshCw size={14} className="text-green-500 mr-2" />
-                    <div>
+                    <RefreshCw size={14} className="text-green-500 mr-2 flex-shrink-0" />
+                    <div className="min-w-0">
                       <div className="text-xs text-gray-500">Repeat</div>
-                      <div className="font-bold">{repeatRate}%</div>
+                      <div className="font-bold text-sm truncate">{repeatRate}%</div>
                     </div>
                   </div>
                   <div className="flex items-center bg-gray-50 p-2 rounded">
-                    <Heart size={14} className="text-pink-500 mr-2" />
-                    <div>
+                    <Heart size={14} className="text-pink-500 mr-2 flex-shrink-0" />
+                    <div className="min-w-0">
                       <div className="text-xs text-gray-500">Wished</div>
-                      <div className="font-bold">{wished}</div>
+                      <div className="font-bold text-sm truncate">{wished}</div>
                     </div>
                   </div>
                   <div className="flex items-center bg-gray-50 p-2 rounded col-span-2">
-                    <Zap size={14} className="text-yellow-500 mr-2" />
-                    <div>
+                    <Zap size={14} className="text-yellow-500 mr-2 flex-shrink-0" />
+                    <div className="min-w-0">
                       <div className="text-xs text-gray-500">Recent</div>
-                      <div className="font-bold">{recentPurchases} in last 24h</div>
+                      <div className="font-bold text-sm truncate">{recentPurchases} in last 24h</div>
                     </div>
                   </div>
                 </div>
@@ -300,33 +300,33 @@ const EnhancedRating = () => {
               {selectedMetricsTab === 'urgency' && (
                 <div className="grid grid-cols-2 gap-2">
                   <div className="flex items-center bg-gray-50 p-2 rounded">
-                    <Package size={14} className="text-blue-500 mr-2" />
-                    <div>
+                    <Package size={14} className="text-blue-500 mr-2 flex-shrink-0" />
+                    <div className="min-w-0">
                       <div className="text-xs text-gray-500">Stock</div>
-                      <div className="font-bold">{stock} units</div>
+                      <div className="font-bold text-sm truncate">{stock} units</div>
                     </div>
                   </div>
                   <div className="flex items-center bg-gray-50 p-2 rounded">
-                    <AlertCircle size={14} className={`${alertTriggered ? 'text-red-500' : 'text-gray-400'} mr-2`} />
-                    <div>
+                    <AlertCircle size={14} className={`${alertTriggered ? 'text-red-500' : 'text-gray-400'} mr-2 flex-shrink-0`} />
+                    <div className="min-w-0">
                       <div className="text-xs text-gray-500">Alert</div>
-                      <div className={`font-bold ${alertTriggered ? 'text-red-500' : 'text-gray-500'}`}>
+                      <div className={`font-bold text-sm truncate ${alertTriggered ? 'text-red-500' : 'text-gray-500'}`}>
                         {alertTriggered ? 'Low Stock!' : 'Not Triggered'}
                       </div>
                     </div>
                   </div>
                   <div className="flex items-center bg-gray-50 p-2 rounded">
-                    <Clock size={14} className="text-orange-500 mr-2" />
-                    <div>
+                    <Clock size={14} className="text-orange-500 mr-2 flex-shrink-0" />
+                    <div className="min-w-0">
                       <div className="text-xs text-gray-500">Timer</div>
-                      <div className="font-bold">{timerHours}h remaining</div>
+                      <div className="font-bold text-sm truncate">{timerHours}h remaining</div>
                     </div>
                   </div>
                   <div className="flex items-center bg-gray-50 p-2 rounded">
-                    <PieChart size={14} className="text-purple-500 mr-2" />
-                    <div>
+                    <PieChart size={14} className="text-purple-500 mr-2 flex-shrink-0" />
+                    <div className="min-w-0">
                       <div className="text-xs text-gray-500">Drop</div>
-                      <div className="font-bold">{dropRate}%</div>
+                      <div className="font-bold text-sm truncate">{dropRate}%</div>
                     </div>
                   </div>
                 </div>
@@ -336,38 +336,38 @@ const EnhancedRating = () => {
               {selectedMetricsTab === 'delivery' && (
                 <div className="grid grid-cols-2 gap-2">
                   <div className="flex items-center bg-gray-50 p-2 rounded">
-                    <Truck size={14} className="text-green-500 mr-2" />
-                    <div>
+                    <Truck size={14} className="text-green-500 mr-2 flex-shrink-0" />
+                    <div className="min-w-0">
                       <div className="text-xs text-gray-500">OnTime</div>
-                      <div className="font-bold">{onTimeRate}%</div>
+                      <div className="font-bold text-sm truncate">{onTimeRate}%</div>
                     </div>
                   </div>
                   <div className="flex items-center bg-gray-50 p-2 rounded">
-                    <RotateCcw size={14} className="text-blue-500 mr-2" />
-                    <div>
+                    <RotateCcw size={14} className="text-blue-500 mr-2 flex-shrink-0" />
+                    <div className="min-w-0">
                       <div className="text-xs text-gray-500">Returns</div>
-                      <div className="font-bold">{returnAcceptance}%</div>
+                      <div className="font-bold text-sm truncate">{returnAcceptance}%</div>
                     </div>
                   </div>
                   <div className="flex items-center bg-gray-50 p-2 rounded">
-                    <Percent size={14} className="text-orange-500 mr-2" />
-                    <div>
+                    <Percent size={14} className="text-orange-500 mr-2 flex-shrink-0" />
+                    <div className="min-w-0">
                       <div className="text-xs text-gray-500">Refunds</div>
-                      <div className="font-bold">{refundTime}</div>
+                      <div className="font-bold text-sm truncate">{refundTime}</div>
                     </div>
                   </div>
                   <div className="flex items-center bg-gray-50 p-2 rounded">
-                    <Shield size={14} className="text-indigo-500 mr-2" />
-                    <div>
+                    <Shield size={14} className="text-indigo-500 mr-2 flex-shrink-0" />
+                    <div className="min-w-0">
                       <div className="text-xs text-gray-500">Policy</div>
-                      <div className="font-bold">{returnWindow} days</div>
+                      <div className="font-bold text-sm truncate">{returnWindow} days</div>
                     </div>
                   </div>
                   <div className="flex items-center bg-gray-50 p-2 rounded col-span-2">
-                    <Award size={14} className="text-yellow-500 mr-2" />
-                    <div>
+                    <Award size={14} className="text-yellow-500 mr-2 flex-shrink-0" />
+                    <div className="min-w-0">
                       <div className="text-xs text-gray-500">Seller</div>
-                      <div className="font-bold">{sellerRating}/5</div>
+                      <div className="font-bold text-sm truncate">{sellerRating}/5</div>
                     </div>
                   </div>
                 </div>
@@ -382,14 +382,14 @@ const EnhancedRating = () => {
                 <div className="flex flex-col items-center justify-center bg-gray-50 p-2 rounded">
                   <div className="flex items-center">
                     <Camera size={14} className="text-blue-500 mr-1" />
-                    <span className="font-bold">{photoReviews}</span>
+                    <span className="font-bold text-sm">{photoReviews}</span>
                   </div>
                   <div className="text-xs text-gray-500">Photos</div>
                 </div>
                 <div className="flex flex-col items-center justify-center bg-gray-50 p-2 rounded">
                   <div className="flex items-center">
                     <Image size={14} className="text-purple-500 mr-1" />
-                    <span className="font-bold">23</span>
+                    <span className="font-bold text-sm">23</span>
                   </div>
                   <div className="text-xs text-gray-500">Videos</div>
                 </div>
