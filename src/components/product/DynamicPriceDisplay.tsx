@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
   ChevronDown, 
@@ -97,6 +98,7 @@ const DynamicPriceDisplay = () => {
   const [priceChangePercentage, setPriceChangePercentage] = useState<number>(0);
   const [isPositiveChange, setIsPositiveChange] = useState<boolean>(true);
   
+  // Calculate discount percentage dynamically based on originalPrice and currentPrice
   const discountPercentage = Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
   
   const lowestPrice = Math.min(...priceHistory.map(item => item.price), currentPrice);
@@ -471,6 +473,10 @@ const DynamicPriceDisplay = () => {
           </div>
           <div className="text-gray-500 line-through text-sm">
             {getCurrencySymbol(currency)}{originalPrice.toFixed(2)}
+          </div>
+          <div className="bg-red-100 text-red-700 text-xs px-2 py-1 rounded-md font-medium flex items-center">
+            <ChevronDown size={14} className="mr-1" />
+            <span>{discountPercentage}% OFF</span>
           </div>
           <div className={`flex items-center text-xs font-medium ${isPositiveChange ? 'text-green-600' : 'text-red-600'}`}>
             {isPositiveChange ? (
