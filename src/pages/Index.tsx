@@ -1,3 +1,4 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { fetchAllProducts } from "@/integrations/supabase/client";
 import HeroBanner from "@/components/home/HeroBanner";
@@ -9,7 +10,6 @@ import TopBrands from "@/components/home/TopBrands";
 import ProductRecommendations from "@/components/home/ProductRecommendations";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useState, useEffect } from "react";
-import TrendingProducts from "@/components/home/TrendingProducts";
 import SecondaryFlashDeals from "@/components/home/SecondaryFlashDeals";
 import Newsletter from "@/components/home/Newsletter";
 import PopularSearches from "@/components/home/PopularSearches";
@@ -77,9 +77,9 @@ export default function Index() {
         <TopBrands />
       </div>
       
-      {/* Trending Products - Enhanced */}
+      {/* Duplicate Limited Offers section (replacing Trending Products) */}
       <div className="mb-1">
-        <TrendingProducts products={products?.slice(0, 6) || []} />
+        <SecondaryFlashDeals />
       </div>
       
       {/* Recommended Products */}
