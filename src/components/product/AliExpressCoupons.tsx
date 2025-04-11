@@ -226,7 +226,7 @@ const AliExpressCoupons = () => {
             style={{ transitionDelay: `${index * 150}ms` }}
           >
             <div 
-              className={`px-3 py-3 cursor-pointer hover:bg-gray-50 transition-colors relative
+              className={`px-2 py-3 cursor-pointer hover:bg-gray-50 transition-colors relative
                 ${appliedCoupon === coupon.id ? 'bg-green-50' : ''}
                 ${expandedCoupon === coupon.id ? 'shadow-inner' : ''}
               `}
@@ -265,9 +265,9 @@ const AliExpressCoupons = () => {
                 </div>
                 
                 {/* Toggle icon - Fixed width container for alignment */}
-                <div className="flex items-center w-6">
+                <div className="flex items-center ml-0 w-7">
                   {appliedCoupon === coupon.id && (
-                    <span className="text-xs text-green-600 flex items-center absolute right-9 top-1/2 -translate-y-1/2">
+                    <span className="text-xs text-green-600 flex items-center absolute right-8 top-1/2 -translate-y-1/2">
                       <Check size={14} className="mr-1" />
                     </span>
                   )}
@@ -282,7 +282,7 @@ const AliExpressCoupons = () => {
               
               {/* Tags for special coupons - with animations */}
               {(coupon.popular || coupon.flash || coupon.newUserOnly) && (
-                <div className="absolute top-0 right-8 transform -translate-y-1/2">
+                <div className="absolute top-0 right-9 transform -translate-y-1/2">
                   {coupon.popular && (
                     <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full text-xs animate-pulse">
                       Popular
