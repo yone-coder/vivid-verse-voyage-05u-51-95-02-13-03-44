@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -169,7 +168,7 @@ const ProductDetail = () => {
         }
         
         // Show/hide limited offers band based on scroll position relative to tabs
-        if (scrollY > tabsPosition) {
+        if (scrollY > tabsPosition - 100) {
           setShowLimitedOffersBand(false);
         } else {
           setShowLimitedOffersBand(true);
@@ -330,13 +329,13 @@ const ProductDetail = () => {
           handleSearch={handleSearch}
         />
 
-        {/* Limited Offers Band below fixed header - only visible when showLimitedOffersBand is true */}
+        {/* Limited Offers Band below fixed header - only visible when scrolled */}
         {showLimitedOffersBand && <LimitedOffersBand />}
       </div>
       
-      {/* Limited Offers Band below main header when not scrolled */}
+      {/* Limited Offers Band right after the gallery when not scrolled */}
       {!isScrolled && showLimitedOffersBand && (
-        <div className="w-full">
+        <div className="w-full sticky top-0 z-20">
           <LimitedOffersBand />
         </div>
       )}
