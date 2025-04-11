@@ -180,14 +180,14 @@ const AliExpressCoupons = () => {
   if (!isLoaded) {
     return (
       <div className="w-full bg-white">
-        <div className="flex items-center justify-between bg-gray-50 px-4 py-3">
+        <div className="flex items-center justify-between bg-gray-50 px-3 py-3">
           <div className={`${shimmerClass} w-32 h-6`}></div>
           <div className={`${shimmerClass} w-16 h-4`}></div>
         </div>
         
         <div>
           {[1, 2, 3].map((i) => (
-            <div key={i} className="p-4">
+            <div key={i} className="px-3 py-4">
               <div className="flex items-center">
                 <div className={`${shimmerClass} w-8 h-8 mr-3`}></div>
                 <div className="flex-1">
@@ -205,7 +205,7 @@ const AliExpressCoupons = () => {
 
   return (
     <div className="w-full bg-white overflow-hidden">
-      <div className="flex items-center justify-between bg-gray-50 px-4 py-3 text-gray-800">
+      <div className="flex items-center justify-between bg-gray-50 px-3 py-3 text-gray-800">
         <div className="flex items-center gap-2">
           <Tag size={16} className="text-orange-500 animate-bounce" />
           <span className="font-medium">Available Coupons</span>
@@ -226,7 +226,7 @@ const AliExpressCoupons = () => {
             style={{ transitionDelay: `${index * 150}ms` }}
           >
             <div 
-              className={`px-4 py-3 flex items-center cursor-pointer hover:bg-gray-50 transition-colors relative
+              className={`px-3 py-3 flex items-center cursor-pointer hover:bg-gray-50 transition-colors relative
                 ${appliedCoupon === coupon.id ? 'bg-green-50' : ''}
                 ${expandedCoupon === coupon.id ? 'shadow-inner' : ''}
               `}
@@ -303,7 +303,7 @@ const AliExpressCoupons = () => {
             {/* Expanded Details - with animations */}
             {expandedCoupon === coupon.id && (
               <div 
-                className="px-4 py-3 bg-gray-50 text-sm border-t border-gray-100 animate-slideDown overflow-hidden"
+                className="px-3 py-3 bg-gray-50 text-sm border-t border-gray-100 animate-slideDown overflow-hidden"
               >
                 <div className="grid grid-cols-2 gap-3 mb-3">
                   <div className="flex items-center text-gray-600 animate-fadeIn" style={{ animationDelay: '100ms' }}>
