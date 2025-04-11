@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { BadgePercent, Info, Copy, Clock, ChevronDown, ChevronUp } from "lucide-react";
@@ -138,7 +139,7 @@ const ProductCoupons: React.FC<ProductCouponsProps> = ({ coupons }) => {
                 </div>
               </div>
               
-              <div className="w-6 flex items-center justify-center">
+              <div className="w-4 flex items-center justify-center">
                 <Button
                   variant="ghost"
                   size="sm"
@@ -163,7 +164,7 @@ const ProductCoupons: React.FC<ProductCouponsProps> = ({ coupons }) => {
             )}
             
             {expandedCoupon === index && (
-              <div className="mt-2 ml-0 mr-6 p-2 bg-gray-50 rounded-md border border-gray-100 text-xs">
+              <div className="mt-2 ml-0 mr-4 p-2 bg-gray-50 rounded-md border border-gray-100 text-xs">
                 <p>Use this coupon at checkout to get {coupon.discount.toLowerCase()}</p>
                 <div className="flex justify-end mt-1">
                   <Button 
