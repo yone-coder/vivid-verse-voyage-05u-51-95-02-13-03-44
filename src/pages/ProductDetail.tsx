@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -328,14 +329,17 @@ const ProductDetail = () => {
           setSearchQuery={setSearchQuery}
           handleSearch={handleSearch}
         />
-      </div>
 
-      {/* Limited Offers Band - sticky below header */}
-      <div 
-        className={`sticky top-0 z-20 ${!showLimitedOffersBand ? 'hidden' : ''}`}
-      >
-        <LimitedOffersBand />
+        {/* Limited Offers Band below fixed header - only visible when showLimitedOffersBand is true */}
+        {showLimitedOffersBand && <LimitedOffersBand />}
       </div>
+      
+      {/* Limited Offers Band below main header when not scrolled */}
+      {!isScrolled && showLimitedOffersBand && (
+        <div className="w-full">
+          <LimitedOffersBand />
+        </div>
+      )}
       
       <div className={`flex-1 ${isScrolled ? 'pt-0' : ''}`}>
         <div className="bg-white p-1">
