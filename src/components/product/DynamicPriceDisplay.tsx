@@ -10,8 +10,6 @@ import {
   ArrowUp,
   ArrowDown,
   Calendar,
-  ChartLineIcon,
-  ChartBarIcon,
   Cog,
   ArrowUpRight,
   ArrowDownRight,
