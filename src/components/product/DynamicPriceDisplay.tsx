@@ -97,7 +97,8 @@ const DynamicPriceDisplay = () => {
   const [priceChangePercentage, setPriceChangePercentage] = useState<number>(0);
   const [isPositiveChange, setIsPositiveChange] = useState<boolean>(true);
   
-  const discountPercentage = Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
+  const discountAmount = originalPrice - currentPrice;
+  const discountPercentage = Math.round((discountAmount / originalPrice) * 100);
   
   const lowestPrice = Math.min(...priceHistory.map(item => item.price), currentPrice);
   const highestPrice = Math.max(...priceHistory.map(item => item.price), currentPrice);
@@ -472,13 +473,9 @@ const DynamicPriceDisplay = () => {
           <div className="text-gray-500 line-through text-sm">
             {getCurrencySymbol(currency)}{originalPrice.toFixed(2)}
           </div>
-          <div className={`flex items-center text-xs font-medium ${isPositiveChange ? 'text-green-600' : 'text-red-600'}`}>
-            {isPositiveChange ? (
-              <ArrowUpRight size={14} className="mr-1" />
-            ) : (
-              <ArrowDownRight size={14} className="mr-1" />
-            )}
-            <span className="animate-pulse">{isPositiveChange ? '+' : ''}{priceChange} ({isPositiveChange ? '+' : ''}{priceChangePercentage}%)</span>
+          <div className={`flex items-center text-xs font-medium text-red-600`}>
+            <ArrowDownRight size={14} className="mr-1" />
+            <span className="animate-pulse">-{discountAmount.toFixed(2)} (-{discountPercentage}%)</span>
           </div>
         </div>
         <button 
