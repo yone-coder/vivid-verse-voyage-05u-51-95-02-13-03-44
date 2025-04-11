@@ -14,12 +14,14 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   Maximize2,
-  Share2
+  Share2,
+  BarChart,
+  LineChart
 } from 'lucide-react';
 import { 
-  LineChart, 
+  LineChart as RechartsLineChart, 
   Line, 
-  BarChart,
+  BarChart as RechartsBarChart,
   Bar,
   XAxis, 
   YAxis, 
@@ -317,7 +319,7 @@ const DynamicPriceDisplay = () => {
   const renderChart = () => {
     if (chartType === 'line') {
       return (
-        <LineChart data={movingAverage}>
+        <RechartsLineChart data={movingAverage}>
           {showGrid && <CartesianGrid strokeDasharray="3 3" />}
           <XAxis 
             dataKey="day" 
@@ -372,11 +374,11 @@ const DynamicPriceDisplay = () => {
             stroke="#3b82f6"
             fill="#f8fafc"
           />
-        </LineChart>
+        </RechartsLineChart>
       );
     } else if (chartType === 'bar') {
       return (
-        <BarChart data={movingAverage}>
+        <RechartsBarChart data={movingAverage}>
           {showGrid && <CartesianGrid strokeDasharray="3 3" />}
           <XAxis 
             dataKey="day" 
@@ -409,7 +411,7 @@ const DynamicPriceDisplay = () => {
               isAnimationActive={false}
             />
           )}
-        </BarChart>
+        </RechartsBarChart>
       );
     } else {
       return (
@@ -510,13 +512,13 @@ const DynamicPriceDisplay = () => {
                   onClick={() => setChartType('line')} 
                   className={`p-1 rounded-sm text-xs ${chartType === 'line' ? 'bg-white shadow-sm' : ''}`}
                 >
-                  <ChartLineIcon size={14} />
+                  <LineChart size={14} />
                 </button>
                 <button 
                   onClick={() => setChartType('bar')} 
                   className={`p-1 rounded-sm text-xs ${chartType === 'bar' ? 'bg-white shadow-sm' : ''}`}
                 >
-                  <ChartBarIcon size={14} />
+                  <BarChart size={14} />
                 </button>
                 <button 
                   onClick={() => setChartType('area')} 
