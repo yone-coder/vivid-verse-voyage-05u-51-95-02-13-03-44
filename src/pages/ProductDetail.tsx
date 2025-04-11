@@ -13,7 +13,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import ProductHeader from "@/components/product/ProductHeader";
 import DynamicPriceDisplay from "@/components/product/DynamicPriceDisplay";
 import EnhancedRating from "@/components/product/EnhancedRating";
-import ProductLimitedTimeOffer from "@/components/product/ProductLimitedTimeOffer";
+import LimitedOffersBand from "@/components/product/LimitedOffersBand";
 import AliExpressCoupons from "@/components/product/AliExpressCoupons";
 import ProductColorVariants from "@/components/product/ProductColorVariants";
 import ProductQuantitySelector from "@/components/product/ProductQuantitySelector";
@@ -33,17 +33,18 @@ const ProductDetail = () => {
   const [selectedColor, setSelectedColor] = useState("Blue Galaxy");
   const [showPriceHistory, setShowPriceHistory] = useState(false);
   const [isExpressSelected, setIsExpressSelected] = useState(false);
-  const [timeLeft, setTimeLeft] = useState({ hours: 12, minutes: 35, seconds: 47 });
   const [giftWrap, setGiftWrap] = useState(false);
   const [selectedWarranty, setSelectedWarranty] = useState("none");
   const [maxQuantityReached, setMaxQuantityReached] = useState(false);
   const [comparisonMode, setComparisonMode] = useState(false);
   const [showLiveData, setShowLiveData] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showLimitedOffersBand, setShowLimitedOffersBand] = useState(true);
   
   // Refs and hooks
   const headerRef = useRef<HTMLDivElement>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
+  const limitedOffersBandRef = useRef<HTMLDivElement>(null);
   const lastScrollTop = useRef(0);
   const isMobile = useIsMobile();
   const { toast } = useToast();
@@ -152,12 +153,12 @@ const ProductDetail = () => {
   // Effects
   useEffect(() => {
     const handleScroll = () => {
-      if (headerRef.current) {
+      if (headerRef.current && tabsRef.current) {
         const scrollY = window.scrollY;
         const headerHeight = headerRef.current.getBoundingClientRect().height;
+        const tabsPosition = tabsRef.current.getBoundingClientRect().top + scrollY;
         
         // Show fixed header as soon as we start scrolling past the overlay header
-        // This is the key change - now we check if we've scrolled even just a little bit
         const isPastOverlay = scrollY > 0;
         setIsScrolled(isPastOverlay);
         
@@ -168,41 +169,19 @@ const ProductDetail = () => {
           setIsHeaderVisible(false);
         }
         
+        // Show/hide limited offers band based on scroll position relative to tabs
+        if (scrollY > tabsPosition) {
+          setShowLimitedOffersBand(false);
+        } else {
+          setShowLimitedOffersBand(true);
+        }
+        
         lastScrollTop.current = scrollY;
       }
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft(prevTime => {
-        const newSeconds = prevTime.seconds - 1;
-        
-        if (newSeconds < 0) {
-          const newMinutes = prevTime.minutes - 1;
-          
-          if (newMinutes < 0) {
-            const newHours = prevTime.hours - 1;
-            
-            if (newHours < 0) {
-              clearInterval(timer);
-              return { hours: 0, minutes: 0, seconds: 0 };
-            }
-            
-            return { hours: newHours, minutes: 59, seconds: 59 };
-          }
-          
-          return { ...prevTime, minutes: newMinutes, seconds: 59 };
-        }
-        
-        return { ...prevTime, seconds: newSeconds };
-      });
-    }, 1000);
-    
-    return () => clearInterval(timer);
   }, []);
 
   // Show loading state while product data is being fetched
@@ -352,6 +331,13 @@ const ProductDetail = () => {
           handleSearch={handleSearch}
         />
       </div>
+
+      {/* Limited Offers Band - shown below header, disappears when scrolled past tabs */}
+      {showLimitedOffersBand && (
+        <div ref={limitedOffersBandRef} className="sticky top-0 z-20">
+          <LimitedOffersBand />
+        </div>
+      )}
       
       <div className={`flex-1 ${isScrolled ? 'pt-0' : ''}`}>
         <div className="bg-white p-1">
@@ -369,10 +355,6 @@ const ProductDetail = () => {
           
           {/* Replace original ProductRatings with new EnhancedRating component */}
           <EnhancedRating />
-
-          <div className="mt-4">
-            <ProductLimitedTimeOffer timeLeft={timeLeft} />
-          </div>
           
           <div className="mt-3">
             <AliExpressCoupons />
