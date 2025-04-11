@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Clock, Tag, Gift, Copy, Zap, ShoppingBag, Calendar, ChevronDown, ChevronUp, Check, X } from 'lucide-react';
 
@@ -205,6 +204,7 @@ const AliExpressCoupons = () => {
 
   return (
     <div className="w-full bg-white overflow-hidden">
+      {/* Header Section */}
       <div className="flex items-center justify-between bg-gray-50 px-3 py-3 text-gray-800">
         <div className="flex items-center gap-2">
           <Tag size={16} className="text-orange-500 animate-bounce" />
@@ -215,6 +215,7 @@ const AliExpressCoupons = () => {
         </div>
       </div>
       
+      {/* Coupons List */}
       <div>
         {coupons.map((coupon, index) => (
           <div 
@@ -225,49 +226,53 @@ const AliExpressCoupons = () => {
               `}
             style={{ transitionDelay: `${index * 150}ms` }}
           >
+            {/* Main Content Row with Fixed Structure for Alignment */}
             <div 
-              className={`px-2 py-3 cursor-pointer hover:bg-gray-50 transition-colors relative
+              className={`px-1 py-3 cursor-pointer hover:bg-gray-50 transition-colors relative
                 ${appliedCoupon === coupon.id ? 'bg-green-50' : ''}
                 ${expandedCoupon === coupon.id ? 'shadow-inner' : ''}
               `}
               onClick={() => toggleCoupon(coupon.id)}
             >
-              {/* Coupon Basic Info Row - Fixed width layout for consistent alignment */}
-              <div className="flex items-start min-w-0">
-                {/* Icon */}
-                <div className={`mr-3 transition-all duration-300 ${
-                  coupon.flash 
-                    ? 'text-red-500 animate-pulse' 
-                    : coupon.newUserOnly 
-                      ? 'text-purple-500' 
-                      : 'text-orange-500'
-                } ${expandedCoupon === coupon.id ? 'transform rotate-12' : ''}`}
-                >
-                  {coupon.flash ? <Zap size={20} /> : <Gift size={20} className="transform hover:rotate-12 transition-transform" />}
-                </div>
-                
-                {/* Coupon content - Fill available space */}
-                <div className="flex-1 min-w-0">
-                  {/* Coupon discount and details */}
-                  <div className="font-medium text-gray-800">{coupon.discount}</div>
-                  <div className="text-xs text-gray-500 mt-0.5 flex flex-wrap items-center">
-                    <span className="font-mono">{coupon.code}</span>
-                    {coupon.minSpend && <span className="ml-2">Min: {coupon.minSpend}</span>}
-                    {coupon.expires && (
-                      <span className="ml-2 flex items-center text-amber-600">
-                        <Clock size={12} className="mr-1" />
-                        <span className={timers[coupon.id] < 300 ? "animate-pulse font-semibold" : ""}>
-                          {coupon.expires}
+              {/* Two-column layout to match other sections */}
+              <div className="flex items-start justify-between pr-1">
+                {/* Column 1: Content */}
+                <div className="flex items-start min-w-0 flex-1">
+                  {/* Icon */}
+                  <div className={`ml-1 mr-3 transition-all duration-300 ${
+                    coupon.flash 
+                      ? 'text-red-500 animate-pulse' 
+                      : coupon.newUserOnly 
+                        ? 'text-purple-500' 
+                        : 'text-orange-500'
+                    } ${expandedCoupon === coupon.id ? 'transform rotate-12' : ''}`}
+                  >
+                    {coupon.flash ? <Zap size={20} /> : <Gift size={20} className="transform hover:rotate-12 transition-transform" />}
+                  </div>
+                  
+                  {/* Coupon content - Fill available space */}
+                  <div className="flex-1 min-w-0">
+                    {/* Coupon discount and details */}
+                    <div className="font-medium text-gray-800">{coupon.discount}</div>
+                    <div className="text-xs text-gray-500 mt-0.5 flex flex-wrap items-center">
+                      <span className="font-mono">{coupon.code}</span>
+                      {coupon.minSpend && <span className="ml-2">Min: {coupon.minSpend}</span>}
+                      {coupon.expires && (
+                        <span className="ml-2 flex items-center text-amber-600">
+                          <Clock size={12} className="mr-1" />
+                          <span className={timers[coupon.id] < 300 ? "animate-pulse font-semibold" : ""}>
+                            {coupon.expires}
+                          </span>
                         </span>
-                      </span>
-                    )}
+                      )}
+                    </div>
                   </div>
                 </div>
                 
-                {/* Toggle icon - Fixed width container for alignment */}
-                <div className="flex items-center ml-0 w-7">
+                {/* Column 2: Toggle - Fixed position to align with other toggles */}
+                <div className="flex items-center w-6">
                   {appliedCoupon === coupon.id && (
-                    <span className="text-xs text-green-600 flex items-center absolute right-8 top-1/2 -translate-y-1/2">
+                    <span className="text-xs text-green-600 flex items-center absolute right-10 top-1/2 -translate-y-1/2">
                       <Check size={14} className="mr-1" />
                     </span>
                   )}
@@ -282,7 +287,7 @@ const AliExpressCoupons = () => {
               
               {/* Tags for special coupons - with animations */}
               {(coupon.popular || coupon.flash || coupon.newUserOnly) && (
-                <div className="absolute top-0 right-9 transform -translate-y-1/2">
+                <div className="absolute top-0 right-11 transform -translate-y-1/2">
                   {coupon.popular && (
                     <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full text-xs animate-pulse">
                       Popular
