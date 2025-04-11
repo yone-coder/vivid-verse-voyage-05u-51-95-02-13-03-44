@@ -333,12 +333,7 @@ const ProductDetail = () => {
         {showLimitedOffersBand && <LimitedOffersBand />}
       </div>
       
-      {/* Limited Offers Band right after the gallery when not scrolled */}
-      {!isScrolled && showLimitedOffersBand && (
-        <div className="w-full sticky top-0 z-20">
-          <LimitedOffersBand />
-        </div>
-      )}
+      {/* Removed the Limited Offers Band from this position */}
       
       <div className={`flex-1 ${isScrolled ? 'pt-0' : ''}`}>
         <div className="bg-white p-1">
