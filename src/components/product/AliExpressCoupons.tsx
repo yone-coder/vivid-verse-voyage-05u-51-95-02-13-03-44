@@ -179,15 +179,15 @@ const AliExpressCoupons = () => {
 
   if (!isLoaded) {
     return (
-      <div className="bg-white shadow-sm max-w-sm border border-gray-200">
-        <div className="flex items-center justify-between bg-gray-50 px-4 py-3 border-b border-gray-200">
+      <div className="w-full bg-white">
+        <div className="flex items-center justify-between bg-gray-50 px-4 py-3">
           <div className={`${shimmerClass} w-32 h-6`}></div>
           <div className={`${shimmerClass} w-16 h-4`}></div>
         </div>
         
         <div>
           {[1, 2, 3].map((i) => (
-            <div key={i} className="border-b border-gray-100 p-4">
+            <div key={i} className="p-4">
               <div className="flex items-center">
                 <div className={`${shimmerClass} w-8 h-8 mr-3`}></div>
                 <div className="flex-1">
@@ -204,8 +204,8 @@ const AliExpressCoupons = () => {
   }
 
   return (
-    <div className="bg-white shadow-sm max-w-sm border border-gray-200 overflow-hidden">
-      <div className="flex items-center justify-between bg-gray-50 px-4 py-3 text-gray-800 border-b border-gray-200">
+    <div className="w-full bg-white overflow-hidden">
+      <div className="flex items-center justify-between bg-gray-50 px-4 py-3 text-gray-800">
         <div className="flex items-center gap-2">
           <Tag size={16} className="text-orange-500 animate-bounce" />
           <span className="font-medium">Available Coupons</span>
@@ -219,7 +219,7 @@ const AliExpressCoupons = () => {
         {coupons.map((coupon, index) => (
           <div 
             key={coupon.id} 
-            className={`border-b border-gray-100 last:border-b-0 transition-all duration-300 
+            className={`last:border-b-0 transition-all duration-300 
               ${newCouponHighlight === coupon.id ? 'bg-yellow-50' : ''}
               ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
               `}
