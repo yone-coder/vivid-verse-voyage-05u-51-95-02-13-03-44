@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -14,7 +13,6 @@ import ProductHeader from "@/components/product/ProductHeader";
 import DynamicPriceDisplay from "@/components/product/DynamicPriceDisplay";
 import EnhancedRating from "@/components/product/EnhancedRating";
 import LimitedOffersBand from "@/components/product/LimitedOffersBand";
-import AliExpressCoupons from "@/components/product/AliExpressCoupons";
 import ProductColorVariants from "@/components/product/ProductColorVariants";
 import ProductQuantitySelector from "@/components/product/ProductQuantitySelector";
 import ProductShipping from "@/components/product/ProductShipping";
@@ -332,12 +330,12 @@ const ProductDetail = () => {
         />
       </div>
 
-      {/* Limited Offers Band - shown below header, disappears when scrolled past tabs */}
-      {showLimitedOffersBand && (
-        <div ref={limitedOffersBandRef} className="sticky top-0 z-20">
-          <LimitedOffersBand />
-        </div>
-      )}
+      {/* Limited Offers Band - sticky below header */}
+      <div 
+        className={`sticky top-0 z-20 ${!showLimitedOffersBand ? 'hidden' : ''}`}
+      >
+        <LimitedOffersBand />
+      </div>
       
       <div className={`flex-1 ${isScrolled ? 'pt-0' : ''}`}>
         <div className="bg-white p-1">
@@ -357,7 +355,7 @@ const ProductDetail = () => {
           <EnhancedRating />
           
           <div className="mt-3">
-            <AliExpressCoupons />
+            {/* We removed AliExpressCoupons as per user's request */}
           </div>
           
           <div className="mt-4">
