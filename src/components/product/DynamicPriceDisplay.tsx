@@ -56,7 +56,6 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart';
-import ProductPriceDisplay from './ProductPriceDisplay';
 
 interface PriceHistoryPoint {
   day: string;
@@ -76,7 +75,7 @@ const timeRanges = [
 ];
 
 const DynamicPriceDisplay = () => {
-  const [currentPrice, setCurrentPrice] = useState(167.79);
+  const [currentPrice, setCurrentPrice] = useState(149.99);
   const [originalPrice, setOriginalPrice] = useState(199.99);
   const [previousPrice, setPreviousPrice] = useState(145.99);
   const [priceHistory, setPriceHistory] = useState<PriceHistoryPoint[]>([
@@ -466,21 +465,26 @@ const DynamicPriceDisplay = () => {
   
   return (
     <div className="w-full">
-      <div className="flex flex-col">
-        <ProductPriceDisplay 
-          currentPrice={currentPrice}
-          originalPrice={originalPrice}
-        />
-        
-        <div className="flex justify-end mt-1">
-          <button 
-            onClick={() => setShowPriceHistory(!showPriceHistory)}
-            className="flex items-center justify-center p-2 text-blue-600 hover:bg-gray-100 rounded-full transition-colors"
-            aria-label={showPriceHistory ? "Hide price history" : "Show price history"}
-          >
-            {showPriceHistory ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-          </button>
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center space-x-6">
+          <div className="text-2xl font-bold text-red-500 animate-pulse">
+            {getCurrencySymbol(currency)}{currentPrice.toFixed(2)}
+          </div>
+          <div className="text-gray-500 line-through text-sm">
+            {getCurrencySymbol(currency)}{originalPrice.toFixed(2)}
+          </div>
+          <div className={`flex items-center text-xs font-medium text-red-600`}>
+            <ArrowDownRight size={14} className="mr-1" />
+            <span className="animate-pulse">-{discountAmount.toFixed(2)} (-{discountPercentage}%)</span>
+          </div>
         </div>
+        <button 
+          onClick={() => setShowPriceHistory(!showPriceHistory)}
+          className="flex items-center justify-center p-2 rounded-full hover:bg-gray-100 transition-colors text-blue-600"
+          aria-label={showPriceHistory ? "Hide price history" : "Show price history"}
+        >
+          {showPriceHistory ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+        </button>
       </div>
       
       {showPriceHistory && (
