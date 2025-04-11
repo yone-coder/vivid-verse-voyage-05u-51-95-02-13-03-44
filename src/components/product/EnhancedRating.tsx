@@ -70,7 +70,7 @@ const EnhancedRating = () => {
 
   return (
     <div className="w-full px-0">
-      {/* Compact rating bar - minimal padding */}
+      {/* Compact rating bar - better alignment with vertical content */}
       <div 
         className="flex items-center justify-between py-1 cursor-pointer hover:bg-gray-50 rounded-md"
         onClick={() => setIsExpanded(!isExpanded)}
@@ -85,7 +85,10 @@ const EnhancedRating = () => {
             <span className="pl-2">{sold} Sold</span>
           </div>
         </div>
-        <button className="text-gray-500 hover:text-gray-700">
+        <button 
+          className="text-gray-500 hover:text-gray-700 flex items-center justify-center w-6 h-6"
+          aria-label={isExpanded ? "Collapse details" : "Expand details"}
+        >
           {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
         </button>
       </div>

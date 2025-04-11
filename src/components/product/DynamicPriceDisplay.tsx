@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { 
   ChevronDown, 
-  ChevronUp, 
+  ChevronUp,
   Bell, 
   Heart, 
   TrendingUp, 
@@ -56,6 +56,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart';
+import ProductPriceDisplay from './ProductPriceDisplay';
 
 interface PriceHistoryPoint {
   day: string;
@@ -75,18 +76,10 @@ const timeRanges = [
 ];
 
 const DynamicPriceDisplay = () => {
-  const [currentPrice, setCurrentPrice] = useState(149.99);
+  const [currentPrice, setCurrentPrice] = useState(167.79);
   const [originalPrice, setOriginalPrice] = useState(199.99);
   const [previousPrice, setPreviousPrice] = useState(145.99);
-  const [priceHistory, setPriceHistory] = useState<PriceHistoryPoint[]>([
-    { day: '7d', price: 147.99, volume: 125, date: '2025-04-03' },
-    { day: '6d', price: 151.20, volume: 198, date: '2025-04-04' },
-    { day: '5d', price: 148.50, volume: 156, date: '2025-04-05' },
-    { day: '4d', price: 146.75, volume: 210, date: '2025-04-06' },
-    { day: '3d', price: 149.30, volume: 173, date: '2025-04-07' },
-    { day: '2d', price: 150.25, volume: 189, date: '2025-04-08' },
-    { day: '1d', price: 149.99, volume: 230, date: '2025-04-09' }
-  ]);
+  const [priceHistory, setPriceHistory] = useState<PriceHistoryPoint[]>([]);
   const [showPriceHistory, setShowPriceHistory] = useState(false);
   const [currency, setCurrency] = useState('USD');
   const [timeRange, setTimeRange] = useState('7d');
@@ -465,22 +458,11 @@ const DynamicPriceDisplay = () => {
   
   return (
     <div className="w-full">
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center space-x-6">
-          <div className="text-2xl font-bold text-red-500 animate-pulse">
-            {getCurrencySymbol(currency)}{currentPrice.toFixed(2)}
-          </div>
-          <div className="text-gray-500 line-through text-sm">
-            {getCurrencySymbol(currency)}{originalPrice.toFixed(2)}
-          </div>
-          <div className={`flex items-center text-xs font-medium text-red-600`}>
-            <ArrowDownRight size={14} className="mr-1" />
-            <span className="animate-pulse">-{discountAmount.toFixed(2)} (-{discountPercentage}%)</span>
-          </div>
-        </div>
+      <div className="flex items-center justify-between">
+        <ProductPriceDisplay currentPrice={currentPrice} originalPrice={originalPrice} />
         <button 
           onClick={() => setShowPriceHistory(!showPriceHistory)}
-          className="flex items-center justify-center p-2 rounded-full hover:bg-gray-100 transition-colors text-blue-600"
+          className="flex items-center justify-center w-6 h-6 text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
           aria-label={showPriceHistory ? "Hide price history" : "Show price history"}
         >
           {showPriceHistory ? <ChevronUp size={16} /> : <ChevronDown size={16} />}

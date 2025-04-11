@@ -27,12 +27,14 @@ const ProductRatings: React.FC<ProductRatingsProps> = ({
   };
 
   return (
-    <div className="flex items-center mt-1 text-sm">
-      <div className="flex items-center">
-        <div className="flex text-amber-400">
-          {'★'.repeat(Math.floor(rating))}
-          {rating % 1 !== 0 && '☆'}
-          {'☆'.repeat(5 - Math.ceil(rating))}
+    <div className="flex items-center justify-between">
+      <div className="flex items-center text-sm">
+        <div className="flex items-center">
+          <div className="flex text-yellow-400">
+            {'★'.repeat(Math.floor(rating))}
+            {rating % 1 !== 0 && '☆'}
+            {'☆'.repeat(5 - Math.ceil(rating))}
+          </div>
           <span className="ml-1 text-black">{rating}</span>
         </div>
         <span className="mx-2 text-gray-300">|</span>
