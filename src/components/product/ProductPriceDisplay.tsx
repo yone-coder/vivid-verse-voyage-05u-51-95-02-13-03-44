@@ -12,8 +12,9 @@ const ProductPriceDisplay: React.FC<ProductPriceDisplayProps> = ({
 }) => {
   const formatPrice = (price: number) => price.toFixed(2);
   
-  // Calculate discount percentage
-  const discountPercentage = Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
+  // Calculate discount percentage based on the difference between original and current price
+  const discountAmount = originalPrice - currentPrice;
+  const discountPercentage = Math.round((discountAmount / originalPrice) * 100);
   
   return (
     <div className="flex items-baseline">
