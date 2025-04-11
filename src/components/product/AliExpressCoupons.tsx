@@ -232,7 +232,7 @@ const AliExpressCoupons = () => {
               `}
               onClick={() => toggleCoupon(coupon.id)}
             >
-              {/* Coupon Basic Info Row - Restructured to align toggle with DynamicPriceDisplay */}
+              {/* Coupon Basic Info Row - Fixed width layout for consistent alignment */}
               <div className="flex items-start min-w-0">
                 {/* Icon */}
                 <div className={`mr-3 transition-all duration-300 ${
@@ -246,7 +246,7 @@ const AliExpressCoupons = () => {
                   {coupon.flash ? <Zap size={20} /> : <Gift size={20} className="transform hover:rotate-12 transition-transform" />}
                 </div>
                 
-                {/* Coupon content */}
+                {/* Coupon content - Fill available space */}
                 <div className="flex-1 min-w-0">
                   {/* Coupon discount and details */}
                   <div className="font-medium text-gray-800">{coupon.discount}</div>
@@ -264,10 +264,10 @@ const AliExpressCoupons = () => {
                   </div>
                 </div>
                 
-                {/* Toggle icon aligned to the right */}
-                <div className="flex items-center ml-2 w-6">
+                {/* Toggle icon - Fixed width container for alignment */}
+                <div className="flex items-center w-6">
                   {appliedCoupon === coupon.id && (
-                    <span className="text-xs text-green-600 flex items-center mr-2 animate-fadeIn absolute right-9 top-1/2 -translate-y-1/2">
+                    <span className="text-xs text-green-600 flex items-center absolute right-9 top-1/2 -translate-y-1/2">
                       <Check size={14} className="mr-1" />
                     </span>
                   )}
