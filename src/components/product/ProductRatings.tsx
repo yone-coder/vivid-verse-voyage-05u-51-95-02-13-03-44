@@ -27,19 +27,19 @@ const ProductRatings: React.FC<ProductRatingsProps> = ({
   };
 
   return (
-    <div className="flex items-center mt-1 text-sm">
+    <div className="flex items-center text-base mb-2">
       <div className="flex items-center">
-        <div className="flex text-amber-400">
+        <div className="flex text-amber-400 mr-2">
           {'★'.repeat(Math.floor(rating))}
           {rating % 1 !== 0 && '☆'}
           {'☆'.repeat(5 - Math.ceil(rating))}
-          <span className="ml-1 text-black">{rating}</span>
         </div>
-        <span className="mx-2 text-gray-300">|</span>
+        
+        <span className="font-medium text-lg mr-3">{rating}</span>
         
         <HoverCardWithDuration openDelay={300} closeDelay={100}>
           <HoverCardTrigger asChild>
-            <Button variant="link" className="h-5 p-0 text-sm text-gray-500">
+            <Button variant="link" className="h-5 p-0 text-base text-gray-600 font-normal">
               {reviewCount} Reviews
             </Button>
           </HoverCardTrigger>
@@ -103,7 +103,7 @@ const ProductRatings: React.FC<ProductRatingsProps> = ({
         
         <HoverCardWithDuration openDelay={300} closeDelay={100}>
           <HoverCardTrigger asChild>
-            <Button variant="link" className="h-5 p-0 text-sm text-gray-500">
+            <Button variant="link" className="h-5 p-0 text-base text-gray-600 font-normal">
               {formatNumber(soldCount)}+ Sold
             </Button>
           </HoverCardTrigger>
