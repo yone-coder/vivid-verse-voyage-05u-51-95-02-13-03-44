@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Heart, 
@@ -312,7 +313,7 @@ const LiveActivityNotifications = () => {
         text: randomComment.text,
         commentType: randomComment.type,
         opacity: 0,
-        translateY: 20,
+        translateY: 20, // Start below final position (for upward animation)
         scale: 0.95
       };
     } 
@@ -328,7 +329,7 @@ const LiveActivityNotifications = () => {
         giftColor: randomGift.color,
         giftIcon: randomGift.icon,
         opacity: 0,
-        translateY: 20,
+        translateY: 20, // Start below final position (for upward animation)
         scale: 0.95
       };
     } 
@@ -355,7 +356,7 @@ const LiveActivityNotifications = () => {
         bgColor: randomNotif.bgColor,
         icon: randomNotif.icon,
         opacity: 0,
-        translateY: 20,
+        translateY: 20, // Start below final position (for upward animation)
         scale: 0.95
       };
     }
@@ -388,7 +389,7 @@ const LiveActivityNotifications = () => {
       setStreamItems(prevItems => 
         prevItems.map(item => 
           item.id === newItem.id 
-            ? { ...item, opacity: 0, translateY: -20 }
+            ? { ...item, opacity: 0, translateY: -20 } // Exit by moving upward
             : item
         )
       );
@@ -524,7 +525,7 @@ const LiveActivityNotifications = () => {
   };
 
   return (
-    <div className="absolute z-20 bottom-14 left-4 flex flex-col space-y-2 pointer-events-none max-w-[250px]">
+    <div className="absolute z-20 bottom-36 left-4 flex flex-col space-y-2 pointer-events-none max-w-[250px]">
       <div 
         ref={containerRef}
         className="overflow-y-auto max-h-[300px] flex flex-col"
