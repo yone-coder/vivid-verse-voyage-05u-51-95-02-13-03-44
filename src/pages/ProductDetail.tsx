@@ -188,6 +188,9 @@ const ProductDetail = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Let ProductTabs know to hide on scroll up
+  const hideTabsOnScrollUp = true;
+
   // Show loading state while product data is being fetched
   if (isLoading) {
     return (

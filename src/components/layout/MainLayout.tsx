@@ -5,7 +5,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import Footer from "@/components/layout/Footer";
 import MobileBottomNav from "@/components/layout/MobileBottomNav";
 import { Outlet, useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Heart, Share } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -17,6 +17,33 @@ export default function MainLayout() {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isHeaderVisible, setIsHeaderVisible] = useState(true);
+  const prevScrollY = useRef(0);
+  
+  // Add scroll event listener to detect scroll direction
+  useEffect(() => {
+    if (!isProductPage) return;
+    
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      if (currentScrollY < 10) {
+        // Always show header at the top of the page
+        setIsHeaderVisible(true);
+      } else if (currentScrollY < prevScrollY.current) {
+        // Hide header when scrolling up
+        setIsHeaderVisible(false);
+      } else {
+        // Show header when scrolling down
+        setIsHeaderVisible(true);
+      }
+      
+      prevScrollY.current = currentScrollY;
+    };
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isProductPage]);
   
   const toggleFavorite = () => {
     setIsFavorite(!isFavorite);
