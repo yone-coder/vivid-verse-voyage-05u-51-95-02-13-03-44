@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -161,10 +162,17 @@ const ProductDetail = () => {
         const isPastOverlay = scrollY > 0;
         setIsScrolled(isPastOverlay);
         
-        if (isPastOverlay) {
-          setIsHeaderVisible(true);
+        // Hide header when scrolling up past the tabs
+        if (scrollY < tabsPosition - 100) {
+          setIsHeaderVisible(isPastOverlay);
         } else {
-          setIsHeaderVisible(false);
+          // When we're at or past the tabs section and scrolling up, hide the header
+          if (isScrollingUp && scrollY >= tabsPosition - 100) {
+            setIsHeaderVisible(false);
+          } else if (!isScrollingUp) {
+            // When scrolling down, show the header
+            setIsHeaderVisible(isPastOverlay);
+          }
         }
         
         if (scrollY > tabsPosition - 100) {
@@ -311,7 +319,7 @@ const ProductDetail = () => {
         <ProductImageGallery images={productImages.length > 0 ? productImages : ["/placeholder.svg"]} />
       </div>
 
-      {/* Fixed header when scrolled - visible as soon as we scroll past the overlay */}
+      {/* Fixed header when scrolled - visible based on scroll direction and position */}
       <div 
         className={`fixed top-0 left-0 right-0 z-30 transition-transform duration-300 ${
           isHeaderVisible && isScrolled ? 'translate-y-0' : '-translate-y-full'

@@ -87,7 +87,7 @@ export default function MainLayout() {
         </>
       )}
       {!isMobile && <Footer />}
-      {isMobile && <MobileBottomNav />}
+      {isMobile && !isProductPage && <MobileBottomNav />}
     </div>
   );
 }
