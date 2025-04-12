@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import LiveActivityNotifications from "@/components/LiveActivityNotifications";
 import {
   Carousel,
   CarouselContent,
@@ -351,7 +350,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   return (
     <div 
       ref={containerRef}
-      className="flex flex-col gap-1 bg-gray-50 mb-0 relative"
+      className="flex flex-col gap-1 bg-gray-50 mb-0"
     >
       <div 
         className="relative w-full aspect-square overflow-hidden"
@@ -641,10 +640,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             </Button>
           </div>
         </Carousel>
-
-        <div className="absolute z-20 bottom-24 left-4 pointer-events-none max-w-[250px]">
-          <LiveActivityNotifications />
-        </div>
       </div>
       
       <div className="flex items-center justify-between px-2">
