@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { Clock } from 'lucide-react';
+import { Clock, Tag } from 'lucide-react';
 
 export default function LimitedOffersBand() {
   const [timeLeft, setTimeLeft] = useState({
@@ -35,8 +35,8 @@ export default function LimitedOffersBand() {
   return (
     <div className="bg-[#FFDEE2] w-full py-0.5 px-2 text-[#ea384c] flex items-center justify-between shadow-sm">
       <div className="flex items-center space-x-1.5">
+        <Tag size={12} className="text-[#ea384c]" />
         <span className="font-bold text-xs">FLASH DEALS</span>
-        <span className="bg-[#ea384c] text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold animate-pulse">HOT</span>
       </div>
       
       <div className="flex items-center space-x-2">
