@@ -367,8 +367,8 @@ const LiveActivityNotifications = () => {
     setStreamItems(prevItems => {
       let updatedItems = [...prevItems, newItem];
       
-      if (updatedItems.length > 50) {
-        updatedItems = updatedItems.slice(-50);
+      if (updatedItems.length > 4) {
+        updatedItems = updatedItems.slice(-4);
       }
       
       return updatedItems;
@@ -524,7 +524,7 @@ const LiveActivityNotifications = () => {
   };
 
   return (
-    <div className="absolute z-20 bottom-16 left-4 flex flex-col space-y-2 pointer-events-none max-w-[250px]">
+    <div className="absolute z-20 top-16 left-4 flex flex-col space-y-2 pointer-events-none max-w-[250px]">
       <div 
         ref={containerRef}
         className="overflow-y-auto max-h-[300px] flex flex-col-reverse"
