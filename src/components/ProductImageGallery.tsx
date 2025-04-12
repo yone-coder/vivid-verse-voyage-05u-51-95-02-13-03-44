@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Carousel,
@@ -923,3 +924,19 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                 size="icon"
                 className="h-8 w-8 rounded-full hover:bg-white/10"
                 onClick={(e) => {
+                  e.stopPropagation();
+                  toggleFavorite();
+                }}
+              >
+                <Heart className={cn("h-4 w-4", isFavorite && "fill-red-500")} />
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default ProductImageGallery;
+
