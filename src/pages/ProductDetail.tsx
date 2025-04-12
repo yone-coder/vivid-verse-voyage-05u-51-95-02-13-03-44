@@ -18,7 +18,7 @@ import ProductQuantitySelector from "@/components/product/ProductQuantitySelecto
 import ProductShipping from "@/components/product/ProductShipping";
 import ProductWarranty from "@/components/product/ProductWarranty";
 import ProductPaymentOptions from "@/components/product/ProductPaymentOptions";
-import ProductCoupons from "@/components/product/ProductCoupons";
+import AliExpressCoupons from "@/components/product/AliExpressCoupons";
 
 const ProductDetail = () => {
   // State variables
@@ -353,8 +353,8 @@ const ProductDetail = () => {
           <EnhancedRating />
           
           <div className="mt-3">
-            {/* Using ProductCoupons component instead of AliExpressCoupons */}
-            <ProductCoupons coupons={productForTabs.coupons} />
+            {/* Using AliExpressCoupons component instead of ProductCoupons */}
+            <AliExpressCoupons />
           </div>
           
           <div className="mt-4">
