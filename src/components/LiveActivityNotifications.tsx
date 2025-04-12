@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ShoppingCart, Users, Star, Clock, Award, ThumbsUp, Check, ChevronRight, AlertTriangle, Gift, TrendingUp, Heart, Eye } from "lucide-react";
@@ -139,7 +138,8 @@ const LiveActivityNotifications = () => {
     const notificationInterval = setInterval(() => {
       if (Math.random() > 0.4) { // 60% chance of new notification
         const notification = generateRandomNotification();
-        setNotifications(prev => [notification, ...prev].slice(0, 3)); // Keep only 3 most recent
+        // Keep only 3 most recent notifications
+        setNotifications(prev => [notification, ...prev].slice(0, 3));
       }
     }, 12000); // Every 12 seconds
     
@@ -222,9 +222,9 @@ const LiveActivityNotifications = () => {
         </motion.div>
       </div>
 
-      {/* Activity notifications */}
+      {/* Activity notifications - limited to 3 */}
       <AnimatePresence>
-        {notifications.map((notification) => (
+        {notifications.slice(0, 3).map((notification) => (
           <motion.div
             key={notification.id}
             className={`rounded-lg shadow-md border px-3 py-2 ${getBackgroundForType(notification.type)} border-gray-100 backdrop-blur-sm max-w-[250px]`}
