@@ -8,9 +8,9 @@ interface Product {
   id: string;
   name: string;
   description: string;
-  features: string[];
-  specifications: { name: string; value: string }[];
-  reviews: { id: string; rating: number; author: string; title: string; content: string }[];
+  features?: string[];
+  specifications?: { name: string; value: string }[];
+  reviews?: { id: string; rating: number; author: string; title: string; content: string }[];
 }
 
 interface ProductTabsProps {
@@ -99,28 +99,36 @@ const ProductTabs: React.FC<ProductTabsProps> = ({
           </TabsContent>
 
           <TabsContent value="features" className="mt-0 focus-visible:outline-none focus-visible:ring-0">
-            <ul className="list-disc pl-5 space-y-2 text-sm">
-              {product.features.map((feature, index) => (
-                <li key={index} className="text-gray-700">{feature}</li>
-              ))}
-            </ul>
+            {product.features && product.features.length > 0 ? (
+              <ul className="list-disc pl-5 space-y-2 text-sm">
+                {product.features.map((feature, index) => (
+                  <li key={index} className="text-gray-700">{feature}</li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-gray-500 text-sm italic">No feature information available.</p>
+            )}
           </TabsContent>
 
           <TabsContent value="specs" className="mt-0 focus-visible:outline-none focus-visible:ring-0">
-            <div className="divide-y divide-gray-200">
-              {product.specifications.map((spec, index) => (
-                <div key={index} className="py-3 flex justify-between">
-                  <span className="text-sm font-medium text-gray-500">{spec.name}</span>
-                  <span className="text-sm text-gray-900">{spec.value}</span>
-                </div>
-              ))}
-            </div>
+            {product.specifications && product.specifications.length > 0 ? (
+              <div className="divide-y divide-gray-200">
+                {product.specifications.map((spec, index) => (
+                  <div key={index} className="py-3 flex justify-between">
+                    <span className="text-sm font-medium text-gray-500">{spec.name}</span>
+                    <span className="text-sm text-gray-900">{spec.value}</span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-500 text-sm italic">No specification information available.</p>
+            )}
           </TabsContent>
 
           <TabsContent value="reviews" className="mt-0 focus-visible:outline-none focus-visible:ring-0">
             <div className="mb-4">
               <div className="flex items-center mb-2">
-                <span className="text-2xl font-bold text-gray-900 mr-2">{averageRating}</span>
+                <span className="text-2xl font-bold text-gray-900 mr-2">{averageRating || 0}</span>
                 <div className="flex items-center">
                   {[...Array(5)].map((_, i) => (
                     <Star
@@ -137,35 +145,39 @@ const ProductTabs: React.FC<ProductTabsProps> = ({
               </div>
             </div>
 
-            <div className="space-y-4">
-              {product.reviews.map((review) => (
-                <div key={review.id} className="border-b border-gray-200 pb-4">
-                  <div className="flex items-center mb-1">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`w-3 h-3 ${
-                          i < review.rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"
-                        }`}
-                      />
-                    ))}
+            {product.reviews && product.reviews.length > 0 ? (
+              <div className="space-y-4">
+                {product.reviews.map((review) => (
+                  <div key={review.id} className="border-b border-gray-200 pb-4">
+                    <div className="flex items-center mb-1">
+                      {[...Array(5)].map((_, i) => (
+                        <Star
+                          key={i}
+                          className={`w-3 h-3 ${
+                            i < review.rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                    <h4 className="font-medium text-gray-900 text-sm mb-1">{review.title}</h4>
+                    <p className="text-xs text-gray-500 mb-2">by {review.author}</p>
+                    <p className="text-sm text-gray-700">{review.content}</p>
+                    <div className="flex items-center mt-2 space-x-3">
+                      <button className="flex items-center text-xs text-gray-500 hover:text-gray-700">
+                        <ThumbsUp className="w-3 h-3 mr-1" />
+                        Helpful
+                      </button>
+                      <button className="flex items-center text-xs text-gray-500 hover:text-gray-700">
+                        <MessageCircle className="w-3 h-3 mr-1" />
+                        Reply
+                      </button>
+                    </div>
                   </div>
-                  <h4 className="font-medium text-gray-900 text-sm mb-1">{review.title}</h4>
-                  <p className="text-xs text-gray-500 mb-2">by {review.author}</p>
-                  <p className="text-sm text-gray-700">{review.content}</p>
-                  <div className="flex items-center mt-2 space-x-3">
-                    <button className="flex items-center text-xs text-gray-500 hover:text-gray-700">
-                      <ThumbsUp className="w-3 h-3 mr-1" />
-                      Helpful
-                    </button>
-                    <button className="flex items-center text-xs text-gray-500 hover:text-gray-700">
-                      <MessageCircle className="w-3 h-3 mr-1" />
-                      Reply
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-500 text-sm italic">No reviews available yet.</p>
+            )}
           </TabsContent>
         </div>
       </Tabs>

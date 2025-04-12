@@ -15,7 +15,7 @@ import LiveActivityNotifications from "@/components/LiveActivityNotifications";
 
 const ProductDetail = () => {
   const { id } = useParams();
-  const { data: product, isLoading, error } = useProduct(id);
+  const { data: productData, isLoading, error } = useProduct(id);
   const { toast: uiToast } = useToast();
   
   const [activeTab, setActiveTab] = useState("description");
@@ -29,18 +29,18 @@ const ProductDetail = () => {
   const lastScrollTop = useRef<number>(0);
   
   // Product image gallery
-  const images = [
+  const images = productData?.product_images?.map(img => img.src) || [
     "/lovable-uploads/4dbaee7c-2ac5-4a1b-9f9b-121275273e79.png",
     "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=1000",
     "https://images.unsplash.com/photo-1572635196237-14b3f281503f?q=80&w=1000",
     "https://images.unsplash.com/photo-1491553895911-0055eca6402d?q=80&w=1000",
   ];
   
-  // Product data for tabs
-  const productForTabs = product || {
-    id: "123",
-    name: "Premium Wireless Headphones",
-    description: "Experience crystal-clear sound with our premium wireless headphones. Featuring active noise cancellation, comfortable ear cushions, and 30+ hour battery life. Perfect for music lovers, gamers, and professionals alike.",
+  // Merge the actual product data with default product data for tabs
+  const productForTabs = {
+    id: productData?.id || "123",
+    name: productData?.name || "Premium Wireless Headphones",
+    description: productData?.description || "Experience crystal-clear sound with our premium wireless headphones. Featuring active noise cancellation, comfortable ear cushions, and 30+ hour battery life. Perfect for music lovers, gamers, and professionals alike.",
     features: [
       "Active noise cancellation",
       "30+ hour battery life",
@@ -80,7 +80,6 @@ const ProductDetail = () => {
       if (headerRef.current && tabsRef.current) {
         const scrollY = window.scrollY;
         const headerHeight = headerRef.current.getBoundingClientRect().height;
-        const tabsPosition = tabsRef.current.getBoundingClientRect().top + scrollY;
         
         // Detect scroll direction
         const isScrollUp = scrollY < lastScrollTop.current;
@@ -140,7 +139,7 @@ const ProductDetail = () => {
       >
         <div className="flex justify-between items-center px-4 py-2 border-b">
           <h1 className="font-bold text-lg line-clamp-1">
-            {product?.name || "Premium Wireless Headphones"}
+            {productData?.name || "Premium Wireless Headphones"}
           </h1>
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="icon" className="text-gray-600">
@@ -160,18 +159,22 @@ const ProductDetail = () => {
         
         <div className="px-4 mt-4">
           <h1 className="text-2xl font-bold text-gray-900">
-            {product?.name || "Premium Wireless Headphones"}
+            {productData?.name || "Premium Wireless Headphones"}
           </h1>
           
           <div className="flex items-center justify-between mt-2">
             <div className="flex items-baseline">
-              <span className="text-2xl font-bold text-gray-900">$149.99</span>
-              <span className="text-lg text-gray-500 line-through ml-2">$199.99</span>
+              <span className="text-2xl font-bold text-gray-900">${productData?.price || '149.99'}</span>
+              {productData?.discount_price && (
+                <span className="text-lg text-gray-500 line-through ml-2">${productData.discount_price}</span>
+              )}
             </div>
             
-            <span className="bg-red-100 text-red-800 text-xs font-medium px-2 py-0.5 rounded">
-              25% OFF
-            </span>
+            {productData?.discount_price && (
+              <span className="bg-red-100 text-red-800 text-xs font-medium px-2 py-0.5 rounded">
+                {Math.round((1 - productData.price / productData.discount_price) * 100)}% OFF
+              </span>
+            )}
           </div>
           
           <LiveStockUpdates initialStock={37} highDemand={true} />
@@ -194,7 +197,7 @@ const ProductDetail = () => {
       </div>
       
       {/* Purchase banner & notifications */}
-      <LivePurchaseBanner productName="Wireless Headphones" />
+      <LivePurchaseBanner productName={productData?.name || "Wireless Headphones"} />
       <LiveActivityNotifications />
       <ModernBuyButton productId={id} />
     </div>
