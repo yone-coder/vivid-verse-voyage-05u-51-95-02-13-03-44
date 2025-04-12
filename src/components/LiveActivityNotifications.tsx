@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Heart, 
@@ -313,7 +312,7 @@ const LiveActivityNotifications = () => {
         text: randomComment.text,
         commentType: randomComment.type,
         opacity: 0,
-        translateY: -20, // Changed from translateX to translateY for upward animation
+        translateY: 20,
         scale: 0.95
       };
     } 
@@ -329,7 +328,7 @@ const LiveActivityNotifications = () => {
         giftColor: randomGift.color,
         giftIcon: randomGift.icon,
         opacity: 0,
-        translateY: -20, // Changed from translateX to translateY for upward animation
+        translateY: 20,
         scale: 0.95
       };
     } 
@@ -356,7 +355,7 @@ const LiveActivityNotifications = () => {
         bgColor: randomNotif.bgColor,
         icon: randomNotif.icon,
         opacity: 0,
-        translateY: -20, // Changed from translateX to translateY for upward animation
+        translateY: 20,
         scale: 0.95
       };
     }
@@ -366,7 +365,6 @@ const LiveActivityNotifications = () => {
     const newItem = createRandomStreamItem();
     
     setStreamItems(prevItems => {
-      // Add new item at the beginning of the array for upward animation
       let updatedItems = [newItem, ...prevItems];
       
       if (updatedItems.length > 4) {
@@ -380,7 +378,7 @@ const LiveActivityNotifications = () => {
       setStreamItems(prevItems => 
         prevItems.map(item => 
           item.id === newItem.id 
-            ? { ...item, opacity: 1, translateY: 0, scale: 1 } 
+            ? { ...item, opacity: 1, translateY: 0, scale: 1 }
             : item
         )
       );
@@ -390,7 +388,7 @@ const LiveActivityNotifications = () => {
       setStreamItems(prevItems => 
         prevItems.map(item => 
           item.id === newItem.id 
-            ? { ...item, opacity: 0, translateY: 20 } // Exit animation goes upward
+            ? { ...item, opacity: 0, translateY: -20 }
             : item
         )
       );
@@ -526,7 +524,7 @@ const LiveActivityNotifications = () => {
   };
 
   return (
-    <div className="absolute z-20 top-24 left-4 flex flex-col space-y-2 pointer-events-none max-w-[250px]">
+    <div className="absolute z-20 bottom-14 left-4 flex flex-col space-y-2 pointer-events-none max-w-[250px]">
       <div 
         ref={containerRef}
         className="overflow-y-auto max-h-[300px] flex flex-col"

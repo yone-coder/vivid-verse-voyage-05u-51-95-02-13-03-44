@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -313,7 +312,7 @@ const ProductDetail = () => {
         {/* Product image gallery */}
         <ProductImageGallery images={productImages.length > 0 ? productImages : ["/placeholder.svg"]} />
         
-        {/* LiveActivityNotifications positioned for upward animation */}
+        {/* LiveActivityNotifications positioned near the image counter */}
         <LiveActivityNotifications />
       </div>
 
