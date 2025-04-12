@@ -32,7 +32,6 @@ interface ProductTabsProps {
   setActiveTab: (tab: string) => void;
   isScrolled: boolean;
   headerHeight: number;
-  hideOnScrollUp?: boolean; // Add this prop to the interface
 }
 
 const ProductTabs: React.FC<ProductTabsProps> = ({
@@ -40,8 +39,7 @@ const ProductTabs: React.FC<ProductTabsProps> = ({
   activeTab,
   setActiveTab,
   isScrolled,
-  headerHeight,
-  hideOnScrollUp = false // Add default value
+  headerHeight
 }) => {
   return (
     <Tabs 
@@ -51,7 +49,7 @@ const ProductTabs: React.FC<ProductTabsProps> = ({
     >
       <div className={`bg-white sticky z-20`} style={{ top: `${headerHeight}px` }}>
         <ScrollArea className="w-full" orientation="horizontal">
-          <TabsList className="w-full h-10 bg-white px-0 justify-start" hideOnScrollUp={hideOnScrollUp} stickyOnScroll={isScrolled}>
+          <TabsList className="w-full h-10 bg-white px-0 justify-start">
             <TabsTrigger 
               value="description" 
               className="flex-1 data-[state=active]:border-b-2 data-[state=active]:border-red-500 data-[state=active]:rounded-none rounded-none text-sm"

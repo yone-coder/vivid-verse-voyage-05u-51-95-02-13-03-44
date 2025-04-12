@@ -4,49 +4,7 @@ import * as TabsPrimitive from "@radix-ui/react-tabs"
 
 import { cn } from "@/lib/utils"
 
-const Tabs = React.forwardRef<
-  React.ElementRef<typeof TabsPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof TabsPrimitive.Root> & {
-    hideOnScrollUp?: boolean;
-  }
->(({ className, hideOnScrollUp, ...props }, ref) => {
-  const [isVisible, setIsVisible] = React.useState(true);
-  const prevScrollY = React.useRef(0);
-
-  React.useEffect(() => {
-    if (!hideOnScrollUp) return;
-
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      
-      // When scrolling up and not at the top of page, hide tabs
-      if (currentScrollY > 0 && currentScrollY < prevScrollY.current) {
-        setIsVisible(false);
-      } else {
-        // Show tabs when scrolling down or at top of page
-        setIsVisible(true);
-      }
-      
-      prevScrollY.current = currentScrollY;
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [hideOnScrollUp]);
-
-  const visibilityClasses = hideOnScrollUp
-    ? `transition-transform duration-300 ${isVisible ? "translate-y-0" : "-translate-y-full"}`
-    : "";
-
-  return (
-    <TabsPrimitive.Root
-      ref={ref}
-      className={cn(visibilityClasses, className)}
-      {...props}
-    />
-  )
-})
-Tabs.displayName = TabsPrimitive.Root.displayName
+const Tabs = TabsPrimitive.Root
 
 const TabsList = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.List>,
@@ -64,12 +22,12 @@ const TabsList = React.forwardRef<
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       
-      // When scrolling up and not at the top of page, hide tabs
-      if (currentScrollY > 0 && currentScrollY < prevScrollY.current) {
-        setIsVisible(false);
-      } else {
-        // Show tabs when scrolling down or at top of page
+      // Show tabs when scrolling down or at top of page
+      if (currentScrollY <= 0 || currentScrollY > prevScrollY.current) {
         setIsVisible(true);
+      } else {
+        // Hide tabs when scrolling up
+        setIsVisible(false);
       }
       
       prevScrollY.current = currentScrollY;
