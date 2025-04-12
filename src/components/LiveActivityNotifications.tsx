@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Heart, 
@@ -313,7 +312,7 @@ const LiveActivityNotifications = () => {
         text: randomComment.text,
         commentType: randomComment.type,
         opacity: 0,
-        translateY: -20, // Changed: Start above final position (for downward animation)
+        translateY: -20,
         scale: 0.95
       };
     } 
@@ -329,7 +328,7 @@ const LiveActivityNotifications = () => {
         giftColor: randomGift.color,
         giftIcon: randomGift.icon,
         opacity: 0,
-        translateY: -20, // Changed: Start above final position (for downward animation)
+        translateY: -20,
         scale: 0.95
       };
     } 
@@ -356,7 +355,7 @@ const LiveActivityNotifications = () => {
         bgColor: randomNotif.bgColor,
         icon: randomNotif.icon,
         opacity: 0,
-        translateY: -20, // Changed: Start above final position (for downward animation)
+        translateY: -20,
         scale: 0.95
       };
     }
@@ -375,7 +374,6 @@ const LiveActivityNotifications = () => {
       return updatedItems;
     });
     
-    // Apply entrance animation with slight delay for fluid effect
     setTimeout(() => {
       setStreamItems(prevItems => 
         prevItems.map(item => 
@@ -384,24 +382,22 @@ const LiveActivityNotifications = () => {
             : item
         )
       );
-    }, 30); // Reduced delay for more immediate animation
+    }, 30);
     
-    // Set exit animation
     setTimeout(() => {
       setStreamItems(prevItems => 
         prevItems.map(item => 
           item.id === newItem.id 
-            ? { ...item, opacity: 0, translateY: 20 } // Changed: Exit by moving downward
+            ? { ...item, opacity: 0, translateY: 20 }
             : item
         )
       );
       
-      // Remove item after animation completes
       setTimeout(() => {
         setStreamItems(prevItems => 
           prevItems.filter(item => item.id !== newItem.id)
         );
-      }, 400); // Slightly longer duration for smoother exit
+      }, 400);
     }, 4000 + Math.random() * 2000);
   };
 
@@ -528,7 +524,7 @@ const LiveActivityNotifications = () => {
   };
 
   return (
-    <div className="absolute z-20 bottom-24 left-4 flex flex-col-reverse space-y-reverse space-y-2 pointer-events-none max-w-[250px]">
+    <div className="absolute z-20 bottom-24 left-2 flex flex-col-reverse space-y-reverse space-y-2 pointer-events-none max-w-[250px]">
       <div 
         ref={containerRef}
         className="overflow-y-auto max-h-[300px] flex flex-col-reverse"
