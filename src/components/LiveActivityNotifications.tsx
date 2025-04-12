@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Heart, 
@@ -312,7 +313,7 @@ const LiveActivityNotifications = () => {
         text: randomComment.text,
         commentType: randomComment.type,
         opacity: 0,
-        translateX: 100,
+        translateY: -20, // Changed from translateX to translateY for upward animation
         scale: 0.95
       };
     } 
@@ -328,7 +329,7 @@ const LiveActivityNotifications = () => {
         giftColor: randomGift.color,
         giftIcon: randomGift.icon,
         opacity: 0,
-        translateX: 100,
+        translateY: -20, // Changed from translateX to translateY for upward animation
         scale: 0.95
       };
     } 
@@ -355,7 +356,7 @@ const LiveActivityNotifications = () => {
         bgColor: randomNotif.bgColor,
         icon: randomNotif.icon,
         opacity: 0,
-        translateX: 100,
+        translateY: -20, // Changed from translateX to translateY for upward animation
         scale: 0.95
       };
     }
@@ -365,10 +366,11 @@ const LiveActivityNotifications = () => {
     const newItem = createRandomStreamItem();
     
     setStreamItems(prevItems => {
-      let updatedItems = [...prevItems, newItem];
+      // Add new item at the beginning of the array for upward animation
+      let updatedItems = [newItem, ...prevItems];
       
       if (updatedItems.length > 4) {
-        updatedItems = updatedItems.slice(-4);
+        updatedItems = updatedItems.slice(0, 4);
       }
       
       return updatedItems;
@@ -378,7 +380,7 @@ const LiveActivityNotifications = () => {
       setStreamItems(prevItems => 
         prevItems.map(item => 
           item.id === newItem.id 
-            ? { ...item, opacity: 1, translateX: 0, scale: 1 } 
+            ? { ...item, opacity: 1, translateY: 0, scale: 1 } 
             : item
         )
       );
@@ -388,7 +390,7 @@ const LiveActivityNotifications = () => {
       setStreamItems(prevItems => 
         prevItems.map(item => 
           item.id === newItem.id 
-            ? { ...item, opacity: 0, translateX: -20 } 
+            ? { ...item, opacity: 0, translateY: 20 } // Exit animation goes upward
             : item
         )
       );
@@ -447,8 +449,8 @@ const LiveActivityNotifications = () => {
         className="mb-2 transition-all duration-500 ease-out"
         style={{ 
           opacity: comment.opacity,
-          transform: `translateX(${comment.translateX}px) scale(${comment.scale})`,
-          transformOrigin: 'center right'
+          transform: `translateY(${comment.translateY}px) scale(${comment.scale})`,
+          transformOrigin: 'center center'
         }}
       >
         <div className="flex items-center px-3 py-1 bg-black/60 rounded-full backdrop-blur-sm">
@@ -473,8 +475,8 @@ const LiveActivityNotifications = () => {
         className="mb-2 transition-all duration-500 ease-out"
         style={{ 
           opacity: gift.opacity,
-          transform: `translateX(${gift.translateX}px) scale(${gift.scale})`,
-          transformOrigin: 'center right'
+          transform: `translateY(${gift.translateY}px) scale(${gift.scale})`,
+          transformOrigin: 'center center'
         }}
       >
         <div className="flex items-center px-3 py-1 bg-black/60 rounded-full backdrop-blur-sm">
@@ -502,8 +504,8 @@ const LiveActivityNotifications = () => {
         className="mb-2 transition-all duration-500 ease-out"
         style={{ 
           opacity: notification.opacity,
-          transform: `translateX(${notification.translateX}px) scale(${notification.scale})`,
-          transformOrigin: 'center right'
+          transform: `translateY(${notification.translateY}px) scale(${notification.scale})`,
+          transformOrigin: 'center center'
         }}
       >
         <div className={`flex items-center px-3 py-1 bg-black/70 rounded-full backdrop-blur-sm border-l-2 ${notification.color.replace('text', 'border')}`}>
@@ -524,10 +526,10 @@ const LiveActivityNotifications = () => {
   };
 
   return (
-    <div className="absolute z-20 top-16 left-4 flex flex-col space-y-2 pointer-events-none max-w-[250px]">
+    <div className="absolute z-20 top-24 left-4 flex flex-col space-y-2 pointer-events-none max-w-[250px]">
       <div 
         ref={containerRef}
-        className="overflow-y-auto max-h-[300px] flex flex-col-reverse"
+        className="overflow-y-auto max-h-[300px] flex flex-col"
       >
         {streamItems.map(item => (
           <div key={item.id}>

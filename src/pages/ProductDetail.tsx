@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -309,11 +310,11 @@ const ProductDetail = () => {
           />
         </div>
         
-        {/* LiveActivityNotifications now positioned higher in the gallery */}
-        <LiveActivityNotifications />
-        
         {/* Product image gallery */}
         <ProductImageGallery images={productImages.length > 0 ? productImages : ["/placeholder.svg"]} />
+        
+        {/* LiveActivityNotifications positioned for upward animation */}
+        <LiveActivityNotifications />
       </div>
 
       {/* Fixed header when scrolled - visible as soon as we scroll past the overlay */}
