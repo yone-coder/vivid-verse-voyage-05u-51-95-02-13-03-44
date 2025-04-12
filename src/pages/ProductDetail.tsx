@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -160,7 +159,7 @@ const ProductDetail = () => {
         
         // Direction of scroll to hide/show header
         const isScrollingUp = scrollY < lastScrollTop.current;
-        setShouldHideHeader(!isScrollingUp && scrollY > 100);
+        setShouldHideHeader(isScrollingUp && scrollY > 100);
         
         // Show fixed header as soon as we start scrolling past the overlay header
         const isPastOverlay = scrollY > 0;
