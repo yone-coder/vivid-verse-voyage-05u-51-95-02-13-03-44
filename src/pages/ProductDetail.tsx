@@ -417,7 +417,7 @@ const ProductDetail = () => {
           setActiveTab={setActiveTab} 
           isScrolled={isScrolled} 
           headerHeight={isScrolled ? 40 : 0}
-          hideOnScrollUp={true}
+          hideOnScrollUp={false}
         />
       </div>
       

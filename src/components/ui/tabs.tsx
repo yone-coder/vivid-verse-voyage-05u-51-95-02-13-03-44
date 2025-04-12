@@ -1,4 +1,3 @@
-
 import * as React from "react"
 import * as TabsPrimitive from "@radix-ui/react-tabs"
 
@@ -20,17 +19,9 @@ const TabsList = React.forwardRef<
     if (!hideOnScrollUp) return;
 
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
+      setIsVisible(true);
       
-      // Show tabs when scrolling down or at top of page
-      if (currentScrollY <= 0 || currentScrollY > prevScrollY.current) {
-        setIsVisible(true);
-      } else {
-        // Hide tabs when scrolling up
-        setIsVisible(false);
-      }
-      
-      prevScrollY.current = currentScrollY;
+      prevScrollY.current = window.scrollY;
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -42,7 +33,7 @@ const TabsList = React.forwardRef<
     : "";
   
   const visibilityClasses = hideOnScrollUp
-    ? `transition-transform duration-300 ${isVisible ? "translate-y-0" : "-translate-y-full"}`
+    ? "transition-transform duration-300 translate-y-0"
     : "";
 
   return (
