@@ -18,8 +18,6 @@ import ProductQuantitySelector from "@/components/product/ProductQuantitySelecto
 import ProductShipping from "@/components/product/ProductShipping";
 import ProductWarranty from "@/components/product/ProductWarranty";
 import ProductPaymentOptions from "@/components/product/ProductPaymentOptions";
-import ProductActionsRow from "@/components/product/ProductActionsRow";
-import AliExpressCoupons from "@/components/product/AliExpressCoupons";
 
 const ProductDetail = () => {
   // State variables
@@ -403,10 +401,7 @@ const ProductDetail = () => {
             <ProductPaymentOptions paymentOptions={productForTabs.payments} />
           </div>
           
-          <ProductActionsRow 
-            addToCart={addToCart}
-            buyNow={buyNow}
-          />
+          {/* Removed ProductActionsRow component */}
         </div>
       </div>
       
