@@ -156,24 +156,24 @@ const ProductDetail = () => {
         const headerHeight = headerRef.current.getBoundingClientRect().height;
         const tabsPosition = tabsRef.current.getBoundingClientRect().top + scrollY;
         
+        // Direction of scroll to determine visibility behavior
         const isScrollingUp = scrollY < lastScrollTop.current;
         
+        // Always show header when scrolling up, regardless of position
+        // Don't need to use shouldHideHeader state anymore
+        
+        // Show fixed header as soon as we start scrolling past the overlay header
         const isPastOverlay = scrollY > 0;
         setIsScrolled(isPastOverlay);
         
-        // Hide header when scrolling up past the tabs
-        if (scrollY < tabsPosition - 100) {
-          setIsHeaderVisible(isPastOverlay);
+        // Show the header with animation when scrolled past the overlay
+        if (isPastOverlay) {
+          setIsHeaderVisible(true);
         } else {
-          // When we're at or past the tabs section and scrolling up, hide the header
-          if (isScrollingUp && scrollY >= tabsPosition - 100) {
-            setIsHeaderVisible(false);
-          } else if (!isScrollingUp) {
-            // When scrolling down, show the header
-            setIsHeaderVisible(isPastOverlay);
-          }
+          setIsHeaderVisible(false);
         }
         
+        // Show/hide limited offers band based on scroll position relative to tabs
         if (scrollY > tabsPosition - 100) {
           setShowLimitedOffersBand(false);
         } else {
@@ -318,7 +318,7 @@ const ProductDetail = () => {
         <ProductImageGallery images={productImages.length > 0 ? productImages : ["/placeholder.svg"]} />
       </div>
 
-      {/* Fixed header when scrolled - visible based on scroll direction and position */}
+      {/* Fixed header when scrolled - visible as soon as we scroll past the overlay */}
       <div 
         className={`fixed top-0 left-0 right-0 z-30 transition-transform duration-300 ${
           isHeaderVisible && isScrolled ? 'translate-y-0' : '-translate-y-full'
@@ -338,6 +338,8 @@ const ProductDetail = () => {
         {/* Limited Offers Band below fixed header - only visible when scrolled */}
         {showLimitedOffersBand && <LimitedOffersBand />}
       </div>
+      
+      {/* Removed the Limited Offers Band from this position */}
       
       <div className={`flex-1 ${isScrolled ? 'pt-0' : ''}`}>
         <div className="bg-white p-1">
@@ -417,9 +419,10 @@ const ProductDetail = () => {
           setActiveTab={setActiveTab} 
           isScrolled={isScrolled} 
           headerHeight={isScrolled ? 40 : 0}
-          hideOnScrollUp={true}
         />
       </div>
+      
+      <div className="pb-44"></div>
       
       <StickyBuyButton />
     </div>

@@ -60,7 +60,6 @@ export default function MainLayout() {
   const headerHeightStyle = `
     :root {
       --header-height: ${isMobile ? '44px' : '90px'};
-      --tabs-height: 40px;
     }
   `;
   
@@ -88,7 +87,7 @@ export default function MainLayout() {
         </>
       )}
       {!isMobile && <Footer />}
-      {isMobile && !isProductPage && <MobileBottomNav />}
+      {isMobile && <MobileBottomNav />}
     </div>
   );
 }
