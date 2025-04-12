@@ -296,8 +296,6 @@ const StickyBuyButton = () => {
         <ChevronUp className="w-5 h-5 text-gray-500" />
       </button>
       
-      <div className="min-h-screen"></div>
-
       <style dangerouslySetInnerHTML={{
         __html: `
           @keyframes shimmer {
