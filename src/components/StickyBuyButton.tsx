@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { ShoppingCart, Heart, Share2, Star, TrendingUp, ChevronUp, AlertCircle, MessageCircle } from 'lucide-react';
 
@@ -14,7 +13,6 @@ const StickyBuyButton = () => {
   const [isStockChanging, setIsStockChanging] = useState(false);
   const [recentPurchase, setRecentPurchase] = useState(false);
 
-  // Product details (would come from props or API in a real app)
   const product = {
     name: "Wireless Bluetooth Earbuds",
     price: 29.99,
@@ -29,12 +27,10 @@ const StickyBuyButton = () => {
     inStock: stockLevel
   };
 
-  // Handle scroll behavior
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       
-      // Hide when scrolling down, show when scrolling up
       if (currentScrollY > lastScrollY && currentScrollY > 100) {
         setIsVisible(false);
       } else {
@@ -48,9 +44,7 @@ const StickyBuyButton = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [lastScrollY]);
 
-  // Animate the progress bar
   useEffect(() => {
-    // Start with 0 and animate to the actual value
     setAnimationProgress(0);
     
     const timer = setTimeout(() => {
@@ -60,7 +54,6 @@ const StickyBuyButton = () => {
     return () => clearTimeout(timer);
   }, []);
   
-  // Update animation progress when stock changes
   useEffect(() => {
     if (product.inStock !== undefined) {
       setIsStockChanging(true);
@@ -74,21 +67,18 @@ const StickyBuyButton = () => {
     }
   }, [product.inStock]);
   
-  // Simulate random stock decreases
   useEffect(() => {
     const interval = setInterval(() => {
-      // 20% chance of stock decrease on each interval
       if (Math.random() < 0.2 && stockLevel > 3) {
-        const purchaseAmount = Math.floor(Math.random() * 3) + 1; // Random 1-3 items
+        const purchaseAmount = Math.floor(Math.random() * 3) + 1;
         setStockLevel(prevStock => Math.max(1, prevStock - purchaseAmount));
         setRecentPurchase(true);
         
-        // Reset recent purchase notification after a delay
         setTimeout(() => {
           setRecentPurchase(false);
         }, 3000);
       }
-    }, 8000); // Check every 8 seconds
+    }, 8000);
     
     return () => clearInterval(interval);
   }, [stockLevel]);
@@ -119,13 +109,11 @@ const StickyBuyButton = () => {
 
   return (
     <div className="font-sans">
-      {/* Main sticky button bar */}
       <div 
         className={`fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200 transition-transform duration-300 z-50 ${
           isVisible ? 'translate-y-0' : 'translate-y-full'
         }`}
       >
-        {/* Stock progress bar */}
         <div className="px-3 pt-2 pb-0">
           <div className="flex items-center justify-between mb-1">
             <div className="flex items-center">
@@ -171,7 +159,6 @@ const StickyBuyButton = () => {
         </div>
 
         <div className="flex items-center justify-between px-3 py-2">
-          {/* Left side - Product info */}
           <div className="flex items-center space-x-2">
             <div className="flex flex-col">
               <span className="text-red-500 font-bold text-lg">${product.salePrice}</span>
@@ -182,7 +169,6 @@ const StickyBuyButton = () => {
             </div>
           </div>
 
-          {/* Right side - Buttons */}
           <div className="flex items-center space-x-2">
             <button 
               onClick={toggleWishlist}
@@ -199,20 +185,18 @@ const StickyBuyButton = () => {
               <span>Options</span>
             </button>
             
-            <button className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2 rounded-full font-medium shadow-sm hover:shadow-md transition-all">
+            <button className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2 rounded-full font-medium shadow-sm hover:shadow-md transition-all whitespace-nowrap">
               Buy Now
             </button>
           </div>
         </div>
 
-        {/* Expandable panel */}
         <div 
           className={`bg-white transition-all duration-300 overflow-hidden ${
             isOpen ? 'max-h-96 border-t border-gray-200' : 'max-h-0'
           }`}
         >
           <div className="p-4">
-            {/* Product details section */}
             <div className="flex items-start mb-4">
               <div className="bg-gray-200 w-16 h-16 rounded-md mr-3 flex-shrink-0"></div>
               <div>
@@ -231,7 +215,6 @@ const StickyBuyButton = () => {
               </div>
             </div>
             
-            {/* Variants */}
             <div className="mb-4">
               <h4 className="text-sm font-medium mb-2">Color</h4>
               <div className="flex flex-wrap gap-2">
@@ -251,7 +234,6 @@ const StickyBuyButton = () => {
               </div>
             </div>
             
-            {/* Quantity */}
             <div className="mb-4">
               <h4 className="text-sm font-medium mb-2">Quantity</h4>
               <div className="flex items-center">
@@ -277,7 +259,6 @@ const StickyBuyButton = () => {
               </div>
             </div>
             
-            {/* Shipping info */}
             <div className="mb-4">
               <div className="flex items-center mb-1">
                 <span className="text-xs text-gray-600 mr-2">Shipping:</span>
@@ -289,18 +270,16 @@ const StickyBuyButton = () => {
               </div>
             </div>
             
-            {/* Total */}
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">Total:</span>
               <span className="text-red-500 font-bold">${calculateTotal()}</span>
             </div>
             
-            {/* Action buttons */}
             <div className="flex mt-4 space-x-2">
-              <button className="flex-1 bg-orange-50 border border-orange-500 text-orange-500 rounded-full py-2 font-medium">
+              <button className="flex-1 bg-orange-50 border border-orange-500 text-orange-500 rounded-full py-2 font-medium whitespace-nowrap">
                 Add to Cart
               </button>
-              <button className="flex-1 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-full py-2 font-medium">
+              <button className="flex-1 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-full py-2 font-medium whitespace-nowrap">
                 Buy Now
               </button>
             </div>
@@ -308,7 +287,6 @@ const StickyBuyButton = () => {
         </div>
       </div>
       
-      {/* Close/Open toggle button */}
       <button 
         onClick={togglePanel}
         className={`fixed bottom-20 right-4 bg-white shadow-md rounded-full p-2 z-50 transition-opacity duration-300 ${
@@ -318,49 +296,49 @@ const StickyBuyButton = () => {
         <ChevronUp className="w-5 h-5 text-gray-500" />
       </button>
       
-      {/* Empty container to enable proper positioning of fixed elements */}
       <div className="min-h-screen"></div>
 
-      {/* Add the CSS animations */}
-      <style jsx>{`
-        @keyframes shimmer {
-          0% {
-            background-position: -200% 0;
+      <style dangerouslySetInnerHTML={{
+        __html: `
+          @keyframes shimmer {
+            0% {
+              background-position: -200% 0;
+            }
+            100% {
+              background-position: 200% 0;
+            }
           }
-          100% {
-            background-position: 200% 0;
+          .animate-shimmer {
+            animation: shimmer 2s infinite linear;
           }
-        }
-        .animate-shimmer {
-          animation: shimmer 2s infinite linear;
-        }
-        
-        @keyframes flash {
-          0%, 100% {
-            opacity: 0;
+          
+          @keyframes flash {
+            0%, 100% {
+              opacity: 0;
+            }
+            50% {
+              opacity: 0.3;
+            }
           }
-          50% {
-            opacity: 0.3;
+          .animate-flash {
+            animation: flash 0.8s ease-in-out;
           }
-        }
-        .animate-flash {
-          animation: flash 0.8s ease-in-out;
-        }
-        
-        @keyframes fadeIn {
-          0% {
-            opacity: 0;
-            transform: translateY(5px);
+          
+          @keyframes fadeIn {
+            0% {
+              opacity: 0;
+              transform: translateY(5px);
+            }
+            100% {
+              opacity: 1;
+              transform: translateY(0);
+            }
           }
-          100% {
-            opacity: 1;
-            transform: translateY(0);
+          .animate-fadeIn {
+            animation: fadeIn 0.3s ease-out forwards;
           }
-        }
-        .animate-fadeIn {
-          animation: fadeIn 0.3s ease-out forwards;
-        }
-      `}</style>
+        `
+      }} />
     </div>
   );
 };
