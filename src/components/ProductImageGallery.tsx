@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Carousel,
@@ -643,8 +642,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
           </div>
         </Carousel>
 
-        {/* LiveActivityNotifications positioned at the bottom of the gallery */}
-        <div className="absolute z-20 bottom-4 left-0 right-0 flex justify-center pointer-events-none">
+        <div className="absolute z-20 bottom-4 left-4 pointer-events-none max-w-[250px]">
           <LiveActivityNotifications />
         </div>
       </div>
