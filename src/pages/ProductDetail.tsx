@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
 import ProductTabs from "@/components/ProductTabs";
 import LiveStockUpdates from "@/components/LiveStockUpdates";
-import ModernBuyButton from "@/components/ModernBuyButton";
+import StickyBuyButton from "@/components/StickyBuyButton";
 import { useProduct, useProductAnalytics } from "@/hooks/useProduct";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -418,7 +418,7 @@ const ProductDetail = () => {
       
       <div className="pb-44"></div>
       
-      <ModernBuyButton />
+      <StickyBuyButton />
     </div>
   );
 };
