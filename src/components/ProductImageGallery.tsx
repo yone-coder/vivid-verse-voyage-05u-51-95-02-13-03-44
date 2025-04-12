@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Carousel,
@@ -393,10 +394,20 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             ))}
           </CarouselContent>
           
+          {/* Moved image counter from bottom to top */}
           <div className={cn(
-            "absolute bottom-4 left-0 right-0 flex items-center justify-between px-4 z-10",
+            "absolute top-4 left-4 z-10 flex items-center gap-2",
             viewMode === "immersive" && "opacity-0 hover:opacity-100 transition-opacity"
           )}>
+            <Button
+              variant="outline"
+              size="icon"
+              className="rounded-full bg-white/70 backdrop-blur-sm hover:bg-white/90 w-8 h-8"
+              onClick={handlePrevious}
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            
             <div className="bg-black/50 backdrop-blur-sm text-white px-2 py-1.5 rounded-lg text-xs flex items-center gap-1.5">
               <span>{currentIndex + 1}/{images.length}</span>
               {viewHistory.length > 1 && (
@@ -405,7 +416,12 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                 </button>
               )}
             </div>
-            
+          </div>
+          
+          <div className={cn(
+            "absolute bottom-4 right-0 px-4 z-10 flex items-center justify-end",
+            viewMode === "immersive" && "opacity-0 hover:opacity-100 transition-opacity"
+          )}>
             <div className="flex items-center gap-1.5">
               {!showAllControls ? (
                 <>
