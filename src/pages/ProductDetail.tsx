@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -39,7 +38,6 @@ const ProductDetail = () => {
   const [showLiveData, setShowLiveData] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [showLimitedOffersBand, setShowLimitedOffersBand] = useState(true);
-  const [shouldHideHeader, setShouldHideHeader] = useState(false);
   
   // Refs and hooks
   const headerRef = useRef<HTMLDivElement>(null);
@@ -158,12 +156,11 @@ const ProductDetail = () => {
         const headerHeight = headerRef.current.getBoundingClientRect().height;
         const tabsPosition = tabsRef.current.getBoundingClientRect().top + scrollY;
         
-        // Direction of scroll to hide/show header
+        // Direction of scroll to determine visibility behavior
         const isScrollingUp = scrollY < lastScrollTop.current;
         
-        // Only hide header when scrolling up AND past the tabs section
-        const isPastTabs = scrollY > tabsPosition;
-        setShouldHideHeader(isScrollingUp && scrollY > 100 && isPastTabs);
+        // Always show header when scrolling up, regardless of position
+        // Don't need to use shouldHideHeader state anymore
         
         // Show fixed header as soon as we start scrolling past the overlay header
         const isPastOverlay = scrollY > 0;
@@ -336,7 +333,6 @@ const ProductDetail = () => {
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           handleSearch={handleSearch}
-          shouldHide={shouldHideHeader}
         />
 
         {/* Limited Offers Band below fixed header - only visible when scrolled */}

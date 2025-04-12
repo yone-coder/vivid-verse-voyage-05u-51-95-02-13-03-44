@@ -89,7 +89,7 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
   }, [isSearchActive]);
 
   return (
-    <div className={`${isScrolled ? 'py-1.5 bg-white shadow-sm' : 'py-2'} px-2 w-full transition-all duration-200 ${shouldHide ? 'translate-y-[-100%]' : 'translate-y-0'}`}>
+    <div className={`${isScrolled ? 'py-1.5 bg-white shadow-sm' : 'py-2'} px-2 w-full transition-all duration-200`}>
       <div className="flex items-center justify-between">
         {/* Back button */}
         {!isSearchActive && (
