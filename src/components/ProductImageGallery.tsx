@@ -62,6 +62,7 @@ import {
   HoverCardContent,
 } from "@/components/ui/hover-card";
 import { supabase } from "@/integrations/supabase/client";
+import { LiveActivityNotifications } from "@/components/LiveActivityNotifications";
 
 interface ProductImageGalleryProps {
   images: string[];
