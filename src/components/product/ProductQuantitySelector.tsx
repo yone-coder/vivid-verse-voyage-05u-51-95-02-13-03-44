@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { MinusIcon, PlusIcon, ShoppingBag, AlertCircle, Package, TrendingUp } from "lucide-react";
+import { MinusIcon, PlusIcon, ShoppingCart, AlertCircle, Boxes, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 
@@ -69,7 +68,6 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
     onIncrement();
   };
   
-  // Pulse stock warning effect
   useEffect(() => {
     if (isLowStock) {
       const interval = setInterval(() => {
@@ -128,7 +126,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
       {price > 0 && (
         <div className="bg-red-50 border border-red-100 rounded-md p-2 flex items-center justify-between text-sm shadow-sm">
           <div className="flex items-center gap-1 text-gray-700">
-            <ShoppingBag size={14} className="text-red-500" />
+            <ShoppingCart size={14} className="text-red-500" />
             <span>Subtotal:</span>
           </div>
           <div className={`font-medium text-red-600 transition-all duration-500 ${priceAnimation ? 'scale-110' : ''}`}>
@@ -161,7 +159,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
           
           {inStock >= 20 && (
             <div className="flex items-center text-gray-500 gap-1">
-              <Package size={12} />
+              <Boxes size={12} />
               In stock
             </div>
           )}
