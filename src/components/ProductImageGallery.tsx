@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Carousel,
@@ -642,7 +643,8 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
           </div>
         </Carousel>
 
-        <div className="absolute z-20 bottom-24 left-4 pointer-events-none max-w-[250px]">
+        {/* LiveActivityNotifications positioned at the bottom of the gallery */}
+        <div className="absolute z-20 bottom-4 left-0 right-0 flex justify-center pointer-events-none">
           <LiveActivityNotifications />
         </div>
       </div>
@@ -925,4 +927,77 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
               <Button
                 variant="ghost" 
                 size="icon"
-                className="h-8 w-8 rounded-full hover:
+                className="h-8 w-8 rounded-full hover:bg-white/10"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  resetEnhancements();
+                }}
+              >
+                <Undo2 className="h-4 w-4" />
+              </Button>
+              
+              <Popover>
+                <PopoverTrigger asChild onClick={(e) => e.stopPropagation()}>
+                  <Button
+                    variant="ghost" 
+                    size="icon"
+                    className="h-8 w-8 rounded-full hover:bg-white/10"
+                  >
+                    <Filter className="h-4 w-4" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="bg-black/90 border-gray-800 text-white" onClick={(e) => e.stopPropagation()}>
+                  <p className="text-xs font-medium mb-2">Image Filters</p>
+                  <div className="grid grid-cols-2 gap-1">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className={cn("justify-start h-7 text-white hover:bg-white/10", imageFilter === "none" && "bg-white/20")} 
+                      onClick={() => applyFilter("none")}
+                    >
+                      Normal
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className={cn("justify-start h-7 text-white hover:bg-white/10", imageFilter === "grayscale" && "bg-white/20")} 
+                      onClick={() => applyFilter("grayscale")}
+                    >
+                      Grayscale
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className={cn("justify-start h-7 text-white hover:bg-white/10", imageFilter === "sepia" && "bg-white/20")} 
+                      onClick={() => applyFilter("sepia")}
+                    >
+                      Sepia
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className={cn("justify-start h-7 text-white hover:bg-white/10", imageFilter === "brightness" && "bg-white/20")} 
+                      onClick={() => applyFilter("brightness")}
+                    >
+                      Brighten
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className={cn("justify-start h-7 text-white hover:bg-white/10", imageFilter === "contrast" && "bg-white/20")} 
+                      onClick={() => applyFilter("contrast")}
+                    >
+                      Enhance Contrast
+                    </Button>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default ProductImageGallery;
