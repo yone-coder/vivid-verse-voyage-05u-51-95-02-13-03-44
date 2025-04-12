@@ -23,14 +23,11 @@ const TabsList = React.forwardRef<
       const currentScrollY = window.scrollY;
       
       // Show tabs when scrolling down or at top of page
-      if (currentScrollY <= 0) {
+      if (currentScrollY <= 0 || currentScrollY > prevScrollY.current) {
         setIsVisible(true);
-      } else if (currentScrollY < prevScrollY.current) {
-        // Hide tabs when scrolling up (except at the top)
-        setIsVisible(false);
       } else {
-        // Show tabs when scrolling down
-        setIsVisible(true);
+        // Hide tabs when scrolling up
+        setIsVisible(false);
       }
       
       prevScrollY.current = currentScrollY;
