@@ -33,26 +33,26 @@ export default function LimitedOffersBand() {
   };
 
   return (
-    <div className="bg-red-600 w-full py-0.5 px-2 text-white flex items-center justify-between shadow-md">
-      <div className="flex items-center space-x-1">
+    <div className="bg-pink-600 w-full py-1 px-2 text-white flex items-center justify-between shadow-md">
+      <div className="flex items-center space-x-1.5">
         <span className="font-bold text-xs">LIMITED OFFERS</span>
-        <span className="bg-yellow-400 text-red-600 text-[10px] px-1 py-0 rounded-full font-bold animate-pulse">HOT</span>
+        <span className="bg-yellow-400 text-pink-600 text-[10px] px-1.5 py-0.5 rounded-full font-bold animate-pulse">HOT</span>
       </div>
       
-      <div className="flex items-center space-x-1">
-        <Clock size={12} />
-        <span className="text-[10px] font-medium">Ends:</span>
-        <div className="flex items-center space-x-1">
-          <div className="w-[20px] text-center">
-            <span className="text-[10px] font-mono">{formatTime(timeLeft.hours)}</span>
+      <div className="flex items-center space-x-2">
+        <Clock size={14} className="text-pink-100" />
+        <span className="text-xs font-medium">Ends in:</span>
+        <div className="flex items-center">
+          <div className="bg-pink-800/50 px-1.5 py-0.5 rounded text-center min-w-[22px]">
+            <span className="text-xs font-mono font-semibold">{formatTime(timeLeft.hours)}</span>
           </div>
-          <span className="text-[10px]">:</span>
-          <div className="w-[20px] text-center">
-            <span className="text-[10px] font-mono">{formatTime(timeLeft.minutes)}</span>
+          <span className="text-xs mx-0.5 font-bold">:</span>
+          <div className="bg-pink-800/50 px-1.5 py-0.5 rounded text-center min-w-[22px]">
+            <span className="text-xs font-mono font-semibold">{formatTime(timeLeft.minutes)}</span>
           </div>
-          <span className="text-[10px]">:</span>
-          <div className="w-[20px] text-center">
-            <span className="text-[10px] font-mono">{formatTime(timeLeft.seconds)}</span>
+          <span className="text-xs mx-0.5 font-bold">:</span>
+          <div className="bg-pink-800/50 px-1.5 py-0.5 rounded text-center min-w-[22px]">
+            <span className="text-xs font-mono font-semibold">{formatTime(timeLeft.seconds)}</span>
           </div>
         </div>
       </div>
