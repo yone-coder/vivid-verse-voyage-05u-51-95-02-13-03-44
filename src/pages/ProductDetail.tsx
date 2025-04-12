@@ -18,6 +18,7 @@ import ProductQuantitySelector from "@/components/product/ProductQuantitySelecto
 import ProductShipping from "@/components/product/ProductShipping";
 import ProductWarranty from "@/components/product/ProductWarranty";
 import ProductPaymentOptions from "@/components/product/ProductPaymentOptions";
+import AliExpressCoupons from "@/components/product/AliExpressCoupons";
 
 const ProductDetail = () => {
   // State variables
