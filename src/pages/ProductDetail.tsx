@@ -118,7 +118,7 @@ const ProductDetail = () => {
     );
   }
 
-  if (!product && !isLoading) {
+  if (!productData && !isLoading) {
     return (
       <div className="flex flex-col items-center justify-center p-8 text-center">
         <h2 className="text-2xl font-bold text-gray-800 mb-2">Product Not Found</h2>
