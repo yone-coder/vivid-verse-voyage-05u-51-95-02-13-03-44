@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { ShoppingCart, Heart, Share2, Star, TrendingUp, ChevronUp, AlertCircle, MessageCircle } from 'lucide-react';
+import { ShoppingCart, Heart, Share2, Star, TrendingUp, ChevronUp } from 'lucide-react';
 
 const StickyBuyButton = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -322,7 +322,7 @@ const StickyBuyButton = () => {
       <div className="min-h-screen"></div>
 
       {/* Add the CSS animations */}
-      <style jsx>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         @keyframes shimmer {
           0% {
             background-position: -200% 0;
@@ -360,7 +360,7 @@ const StickyBuyButton = () => {
         .animate-fadeIn {
           animation: fadeIn 0.3s ease-out forwards;
         }
-      `}</style>
+      `}}></style>
     </div>
   );
 };
