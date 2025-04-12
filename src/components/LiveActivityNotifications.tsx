@@ -524,10 +524,10 @@ const LiveActivityNotifications = () => {
   };
 
   return (
-    <div className="absolute z-20 bottom-20 left-2 flex flex-col space-y-2 pointer-events-none max-w-[250px]">
+    <div className="absolute z-20 bottom-20 left-2 flex flex-col-reverse space-y-reverse space-y-2 pointer-events-none max-w-[250px]">
       <div 
         ref={containerRef}
-        className="overflow-y-auto max-h-[300px] flex flex-col"
+        className="overflow-y-auto max-h-[300px] flex flex-col-reverse"
       >
         {streamItems.map(item => (
           <div key={item.id}>
