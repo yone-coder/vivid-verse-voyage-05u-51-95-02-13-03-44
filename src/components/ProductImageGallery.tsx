@@ -62,7 +62,6 @@ import {
   HoverCardContent,
 } from "@/components/ui/hover-card";
 import { supabase } from "@/integrations/supabase/client";
-import LiveActivityNotifications from "@/components/LiveActivityNotifications";
 
 interface ProductImageGalleryProps {
   images: string[];
@@ -641,10 +640,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             </Button>
           </div>
         </Carousel>
-
-        <div className="absolute z-20 bottom-4 left-4 pointer-events-none max-w-[250px]">
-          <LiveActivityNotifications />
-        </div>
       </div>
       
       <div className="flex items-center justify-between px-2">
