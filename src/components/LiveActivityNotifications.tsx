@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Heart, 
@@ -525,7 +524,7 @@ const LiveActivityNotifications = () => {
   };
 
   return (
-    <div className="absolute z-20 bottom-36 left-4 flex flex-col space-y-2 pointer-events-none max-w-[250px]">
+    <div className="absolute z-20 bottom-16 left-4 flex flex-col space-y-2 pointer-events-none max-w-[250px]">
       <div 
         ref={containerRef}
         className="overflow-y-auto max-h-[300px] flex flex-col"

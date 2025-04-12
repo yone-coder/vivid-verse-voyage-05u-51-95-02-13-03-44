@@ -311,8 +311,10 @@ const ProductDetail = () => {
         
         {/* Product image gallery */}
         <ProductImageGallery images={productImages.length > 0 ? productImages : ["/placeholder.svg"]} />
-        
-        {/* LiveActivityNotifications positioned higher with bottom at the image counter */}
+      </div>
+
+      {/* LiveActivityNotifications positioned lower */}
+      <div className="relative h-0">
         <LiveActivityNotifications />
       </div>
 
