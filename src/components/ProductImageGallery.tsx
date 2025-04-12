@@ -922,4 +922,4 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                 variant="ghost" 
                 size="icon"
                 className="h-8 w-8 rounded-full hover:bg-white/10"
-                onClick={(e)
+                onClick={(e) => {
