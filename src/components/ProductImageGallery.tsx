@@ -62,6 +62,7 @@ import {
   HoverCardContent,
 } from "@/components/ui/hover-card";
 import { supabase } from "@/integrations/supabase/client";
+import { Link, useNavigate } from "react-router-dom";
 
 interface ProductImageGalleryProps {
   images: string[];
@@ -103,6 +104,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const touchStartPosition = useRef<TouchPosition | null>(null);
   const fullscreenRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
 
   const [openedThumbnailMenu, setOpenedThumbnailMenu] = useState<number | null>(null);
 
@@ -393,7 +395,16 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             ))}
           </CarouselContent>
           
-          <div className="absolute top-4 left-4 z-10 flex items-center justify-between gap-2">
+          <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
+            <Button 
+              variant="outline"
+              size="icon"
+              className="rounded-full bg-black/50 backdrop-blur-sm hover:bg-black/60 border-0 text-white h-7 w-7 p-0"
+              onClick={() => navigate(-1)}
+            >
+              <ArrowLeft className="h-3.5 w-3.5" />
+            </Button>
+            
             <div className="bg-black/50 backdrop-blur-sm text-white px-2 py-1.5 rounded-lg text-xs flex items-center gap-1.5">
               <span>{currentIndex + 1}/{images.length}</span>
               {viewHistory.length > 1 && (
@@ -911,88 +922,4 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                 variant="ghost" 
                 size="icon"
                 className="h-8 w-8 rounded-full hover:bg-white/10"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setZoomLevel(prev => prev < 2 ? prev + 0.25 : 1);
-                }}
-              >
-                <ZoomIn className="h-4 w-4" />
-              </Button>
-              
-              <Button
-                variant="ghost" 
-                size="icon"
-                className="h-8 w-8 rounded-full hover:bg-white/10"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  resetEnhancements();
-                }}
-              >
-                <Undo2 className="h-4 w-4" />
-              </Button>
-              
-              <Popover>
-                <PopoverTrigger asChild onClick={(e) => e.stopPropagation()}>
-                  <Button
-                    variant="ghost" 
-                    size="icon"
-                    className="h-8 w-8 rounded-full hover:bg-white/10"
-                  >
-                    <Filter className="h-4 w-4" />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="bg-black/90 border-gray-800 text-white" onClick={(e) => e.stopPropagation()}>
-                  <p className="text-xs font-medium mb-2">Image Filters</p>
-                  <div className="grid grid-cols-2 gap-1">
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className={cn("justify-start h-7 text-white hover:bg-white/10", imageFilter === "none" && "bg-white/20")} 
-                      onClick={() => applyFilter("none")}
-                    >
-                      Normal
-                    </Button>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className={cn("justify-start h-7 text-white hover:bg-white/10", imageFilter === "grayscale" && "bg-white/20")} 
-                      onClick={() => applyFilter("grayscale")}
-                    >
-                      Grayscale
-                    </Button>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className={cn("justify-start h-7 text-white hover:bg-white/10", imageFilter === "sepia" && "bg-white/20")} 
-                      onClick={() => applyFilter("sepia")}
-                    >
-                      Sepia
-                    </Button>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className={cn("justify-start h-7 text-white hover:bg-white/10", imageFilter === "brightness" && "bg-white/20")} 
-                      onClick={() => applyFilter("brightness")}
-                    >
-                      Brighten
-                    </Button>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className={cn("justify-start h-7 text-white hover:bg-white/10", imageFilter === "contrast" && "bg-white/20")} 
-                      onClick={() => applyFilter("contrast")}
-                    >
-                      Enhance Contrast
-                    </Button>
-                  </div>
-                </PopoverContent>
-              </Popover>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
-export default ProductImageGallery;
+                onClick={(e)
