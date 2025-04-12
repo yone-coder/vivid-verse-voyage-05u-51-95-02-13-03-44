@@ -43,19 +43,20 @@ export default function LimitedOffersBand() {
         <Clock size={12} />
         <span className="text-[10px] font-medium">Ends:</span>
         <div className="flex items-center space-x-1">
-          <div className="bg-black bg-opacity-30 px-1 py-0 rounded">
-            <span className="text-[10px]">{formatTime(timeLeft.hours)}</span>
+          <div className="px-1 py-0">
+            <span className="text-[10px] font-mono">{formatTime(timeLeft.hours)}</span>
           </div>
           <span className="text-[10px]">:</span>
-          <div className="bg-black bg-opacity-30 px-1 py-0 rounded">
-            <span className="text-[10px]">{formatTime(timeLeft.minutes)}</span>
+          <div className="px-1 py-0">
+            <span className="text-[10px] font-mono">{formatTime(timeLeft.minutes)}</span>
           </div>
           <span className="text-[10px]">:</span>
-          <div className="bg-black bg-opacity-30 px-1 py-0 rounded">
-            <span className="text-[10px]">{formatTime(timeLeft.seconds)}</span>
+          <div className="px-1 py-0">
+            <span className="text-[10px] font-mono">{formatTime(timeLeft.seconds)}</span>
           </div>
         </div>
       </div>
     </div>
   );
 }
+
