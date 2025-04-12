@@ -1,5 +1,6 @@
+
 import React, { useState, useEffect } from 'react';
-import { Clock, Tag, Gift, Copy, Zap, ShoppingBag, Calendar, ChevronDown, ChevronUp, Check, X } from 'lucide-react';
+import { Clock, Tag, Gift, Copy, Zap, ShoppingBag, Calendar, Check, X } from 'lucide-react';
 
 // Define an interface for our coupon type
 interface Coupon {
@@ -269,25 +270,22 @@ const AliExpressCoupons = () => {
                   </div>
                 </div>
                 
-                {/* Column 2: Toggle - Fixed position to align with other toggles */}
-                <div className="flex items-center w-6">
+                {/* Column 2: "See details" text - Replace arrows with text */}
+                <div className="flex items-center">
                   {appliedCoupon === coupon.id && (
-                    <span className="text-xs text-green-600 flex items-center absolute right-10 top-1/2 -translate-y-1/2">
+                    <span className="text-xs text-green-600 flex items-center absolute right-24 top-1/2 -translate-y-1/2">
                       <Check size={14} className="mr-1" />
                     </span>
                   )}
-                  <div className="transition-transform duration-300 transform">
-                    {expandedCoupon === coupon.id ? 
-                      <ChevronUp size={16} className="animate-bounce" /> : 
-                      <ChevronDown size={16} />
-                    }
-                  </div>
+                  <span className={`text-xs text-blue-600 hover:text-blue-800 transition-colors ${expandedCoupon === coupon.id ? 'font-semibold' : ''}`}>
+                    {expandedCoupon === coupon.id ? 'Hide details' : 'See details'}
+                  </span>
                 </div>
               </div>
               
               {/* Tags for special coupons - with animations */}
               {(coupon.popular || coupon.flash || coupon.newUserOnly) && (
-                <div className="absolute top-0 right-11 transform -translate-y-1/2">
+                <div className="absolute top-0 right-24 transform -translate-y-1/2">
                   {coupon.popular && (
                     <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full text-xs animate-pulse">
                       Popular
