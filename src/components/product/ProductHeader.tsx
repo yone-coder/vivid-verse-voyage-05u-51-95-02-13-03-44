@@ -23,6 +23,7 @@ interface ProductHeaderProps {
   searchQuery?: string;
   setSearchQuery?: (query: string) => void;
   handleSearch?: (e: React.FormEvent) => void;
+  shouldHide?: boolean;
 }
 
 const ProductHeader: React.FC<ProductHeaderProps> = ({
@@ -33,7 +34,8 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
   isScrolled = false,
   searchQuery = "",
   setSearchQuery = () => {},
-  handleSearch = () => {}
+  handleSearch = () => {},
+  shouldHide = false
 }) => {
   const navigate = useNavigate();
   const [isSearchActive, setIsSearchActive] = useState(false);
@@ -87,7 +89,7 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
   }, [isSearchActive]);
 
   return (
-    <div className={`${isScrolled ? 'py-1.5 bg-white shadow-sm' : 'py-2'} px-2 w-full transition-all duration-200`}>
+    <div className={`${isScrolled ? 'py-1.5 bg-white shadow-sm' : 'py-2'} px-2 w-full transition-all duration-200 ${shouldHide ? 'translate-y-[-100%]' : 'translate-y-0'}`}>
       <div className="flex items-center justify-between">
         {/* Back button */}
         {!isSearchActive && (
