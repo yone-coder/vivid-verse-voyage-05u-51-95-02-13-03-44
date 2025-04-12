@@ -1,6 +1,11 @@
 
 import React from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import ProductDescription from "./product/ProductDescription";
+import ProductSpecifications from "./product/ProductSpecifications";
+import ReviewsTab from "./product/ReviewsTab";
+import ShippingInfoTab from "./product/ShippingInfoTab";
+import UGCTab from "./product/UGCTab";
 
 // Define props interface
 export interface ProductTabsProps {
@@ -11,99 +16,6 @@ export interface ProductTabsProps {
   headerHeight?: number;
   hideOnScrollUp?: boolean;
 }
-
-// Placeholder components for tab content
-const ProductDescription = ({ product }: { product: any }) => (
-  <div>
-    <h3 className="text-lg font-medium mb-2">Product Description</h3>
-    <p className="text-gray-700">{product.description || "No description available"}</p>
-    {product.features && product.features.length > 0 && (
-      <div className="mt-4">
-        <h4 className="font-medium mb-2">Features</h4>
-        <ul className="list-disc pl-5 space-y-1">
-          {product.features.map((feature: string, index: number) => (
-            <li key={index} className="text-gray-700">{feature}</li>
-          ))}
-        </ul>
-      </div>
-    )}
-  </div>
-);
-
-const ProductSpecifications = ({ specs }: { specs: any[] }) => (
-  <div>
-    <h3 className="text-lg font-medium mb-2">Specifications</h3>
-    {specs && specs.length > 0 ? (
-      <div className="grid grid-cols-1 gap-2">
-        {specs.map((spec, index) => (
-          <div key={index} className="grid grid-cols-2 border-b border-gray-200 py-2">
-            <div className="text-gray-600 font-medium">{spec.name}</div>
-            <div className="text-gray-800">{spec.value}</div>
-          </div>
-        ))}
-      </div>
-    ) : (
-      <p className="text-gray-500">No specifications available</p>
-    )}
-  </div>
-);
-
-const ReviewsTab = ({ product }: { product: any }) => (
-  <div>
-    <h3 className="text-lg font-medium mb-2">Customer Reviews</h3>
-    <div className="bg-gray-50 p-4 rounded-md text-center">
-      <p className="text-gray-500">No reviews available for this product yet.</p>
-      <button className="mt-2 text-blue-500 font-medium">Be the first to review</button>
-    </div>
-  </div>
-);
-
-const ShippingInfoTab = ({ shipping }: { shipping: any }) => (
-  <div>
-    <h3 className="text-lg font-medium mb-3">Shipping Information</h3>
-    <div className="space-y-3">
-      <div className="flex justify-between py-2 border-b border-gray-100">
-        <span className="text-gray-600">Standard Shipping:</span>
-        <span className="font-medium">{shipping?.free ? "Free" : "$4.99"}</span>
-      </div>
-      <div className="flex justify-between py-2 border-b border-gray-100">
-        <span className="text-gray-600">Estimated Delivery:</span>
-        <span className="font-medium">{shipping?.estimated || "7-14 days"}</span>
-      </div>
-      <div className="flex justify-between py-2 border-b border-gray-100">
-        <span className="text-gray-600">Express Shipping:</span>
-        <span className="font-medium">${shipping?.express || "9.99"}</span>
-      </div>
-      <div className="flex justify-between py-2 border-b border-gray-100">
-        <span className="text-gray-600">Express Delivery:</span>
-        <span className="font-medium">{shipping?.expressEstimated || "2-3 days"}</span>
-      </div>
-      <div className="flex justify-between py-2">
-        <span className="text-gray-600">Return Policy:</span>
-        <span className="font-medium">{shipping?.returns || "30-day free returns"}</span>
-      </div>
-    </div>
-  </div>
-);
-
-const UGCTab = ({ product }: { product: any }) => (
-  <div>
-    <h3 className="text-lg font-medium mb-3">Customer Media</h3>
-    <div className="bg-gray-50 p-4 rounded-md text-center">
-      <p className="text-gray-500">No customer photos or videos yet.</p>
-      <button className="mt-2 text-blue-500 font-medium">Share your experience</button>
-    </div>
-    <div className="mt-4">
-      <h4 className="font-medium mb-2">Unboxing Videos</h4>
-      <div className="grid grid-cols-1 gap-4">
-        {/* Placeholder for videos */}
-        <div className="bg-gray-100 h-40 rounded-md flex items-center justify-center">
-          <p className="text-gray-500">No videos available</p>
-        </div>
-      </div>
-    </div>
-  </div>
-);
 
 const ProductTabs: React.FC<ProductTabsProps> = ({ 
   product, 
