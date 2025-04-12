@@ -26,11 +26,11 @@ const TabsList = React.forwardRef<
         // Always show at the top of the page
         setIsVisible(true);
       } else if (currentScrollY < prevScrollY.current) {
-        // Hide when scrolling up
-        setIsVisible(false);
-      } else {
-        // Show when scrolling down
+        // Show when scrolling up
         setIsVisible(true);
+      } else {
+        // Hide when scrolling down
+        setIsVisible(false);
       }
       
       prevScrollY.current = currentScrollY;
