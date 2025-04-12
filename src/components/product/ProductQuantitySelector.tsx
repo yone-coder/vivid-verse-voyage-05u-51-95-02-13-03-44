@@ -1,8 +1,9 @@
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { MinusIcon, PlusIcon, ShoppingBag } from "lucide-react";
+import { MinusIcon, PlusIcon, ShoppingBag, AlertCircle, Package, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
 
 interface ProductQuantitySelectorProps {
   quantity: number;
@@ -25,6 +26,10 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
   inStock = 999,
   productName = "item"
 }) => {
+  const [showAnimation, setShowAnimation] = useState(false);
+  const [priceAnimation, setPriceAnimation] = useState(false);
+  const [stockPulse, setStockPulse] = useState(false);
+  
   const formatPrice = (value: number) => {
     return value.toFixed(2);
   };
@@ -34,9 +39,15 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
   const isMinQuantity = quantity <= minQuantity;
   
   const effectiveMaxQuantity = Math.min(maxQuantity, inStock);
+  const stockPercentage = (inStock / 100) * 100;
+  const isLowStock = inStock < 10;
+  const isMediumStock = inStock >= 10 && inStock < 30;
   
   const handleIncrementWithFeedback = () => {
     if (isMaxQuantity) {
+      setStockPulse(true);
+      setTimeout(() => setStockPulse(false), 1000);
+      
       if (inStock <= maxQuantity) {
         toast.warning(`Limited stock available`, {
           description: `Only ${inStock} ${productName}${inStock !== 1 ? 's' : ''} left in stock.`
@@ -48,59 +59,126 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
       }
       return;
     }
+    
+    setShowAnimation(true);
+    setTimeout(() => setShowAnimation(false), 300);
+    
+    setPriceAnimation(true);
+    setTimeout(() => setPriceAnimation(false), 800);
+    
     onIncrement();
   };
+  
+  // Pulse stock warning effect
+  useEffect(() => {
+    if (isLowStock) {
+      const interval = setInterval(() => {
+        setStockPulse(true);
+        setTimeout(() => setStockPulse(false), 1000);
+      }, 5000);
+      
+      return () => clearInterval(interval);
+    }
+  }, [isLowStock]);
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 font-aliexpress">
       <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-gray-700">Quantity:</span>
-        <div className="flex items-center border border-gray-300 rounded-md overflow-hidden">
-          <Button 
-            onClick={onDecrement} 
-            variant="ghost" 
-            size="sm"
-            className="h-8 px-3 rounded-none border-r border-gray-300"
-            disabled={isMinQuantity}
-          >
-            <MinusIcon size={14} />
-          </Button>
-          <div className="w-10 text-center">{quantity}</div>
-          <Button 
-            onClick={handleIncrementWithFeedback} 
-            variant="ghost" 
-            size="sm"
-            className="h-8 px-3 rounded-none border-l border-gray-300"
-            disabled={isMaxQuantity}
-          >
-            <PlusIcon size={14} />
-          </Button>
+        <div className="flex items-center">
+          <span className="text-sm font-medium text-gray-700">Quantity:</span>
+          {inStock < 20 && (
+            <span className={`ml-2 text-xs text-red-500 inline-flex items-center ${stockPulse ? 'animate-pulse' : ''}`}>
+              <AlertCircle size={12} className="mr-1 animate-pulse" />
+              {inStock < 10 ? 'Almost sold out!' : 'Selling fast!'}
+            </span>
+          )}
+        </div>
+        
+        <div className="flex items-center">
+          <div className="flex items-center border border-gray-300 rounded-md overflow-hidden shadow-sm">
+            <Button 
+              onClick={onDecrement} 
+              variant="ghost" 
+              size="sm"
+              className={`h-8 px-2 rounded-none border-r border-gray-300 transition-all duration-300
+                ${isMinQuantity ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100'}`}
+              disabled={isMinQuantity}
+            >
+              <MinusIcon size={16} className="text-gray-600" />
+            </Button>
+            
+            <div className={`w-12 text-center font-medium ${showAnimation ? 'scale-110' : ''} transition-all duration-300`}>
+              {quantity}
+            </div>
+            
+            <Button 
+              onClick={handleIncrementWithFeedback} 
+              variant="ghost" 
+              size="sm"
+              className={`h-8 px-2 rounded-none border-l border-gray-300 transition-all duration-300
+                ${isMaxQuantity ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100'}`}
+              disabled={isMaxQuantity}
+            >
+              <PlusIcon size={16} className="text-gray-600" />
+            </Button>
+          </div>
         </div>
       </div>
       
       {price > 0 && (
-        <div className="flex items-center justify-between text-sm">
-          <div className="flex items-center text-gray-600">
-            <ShoppingBag size={14} className="mr-1" />
+        <div className="bg-red-50 border border-red-100 rounded-md p-2 flex items-center justify-between text-sm shadow-sm">
+          <div className="flex items-center gap-1 text-gray-700">
+            <ShoppingBag size={14} className="text-red-500" />
             <span>Subtotal:</span>
           </div>
-          <div className="font-medium text-gray-900">
+          <div className={`font-medium text-red-600 transition-all duration-500 ${priceAnimation ? 'scale-110' : ''}`}>
             ${formatPrice(totalPrice)}
           </div>
         </div>
       )}
       
-      {inStock < 20 && (
-        <div className="text-xs text-red-500 flex items-center">
-          <span className="w-2 h-2 bg-red-500 rounded-full mr-1.5 animate-pulse"></span>
-          Only {inStock} left in stock
+      <div className="flex flex-col space-y-1">
+        {inStock < 50 && (
+          <div className="relative pt-1">
+            <div className="overflow-hidden h-1.5 text-xs flex rounded bg-gray-200">
+              <div 
+                style={{ width: `${stockPercentage}%` }}
+                className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center 
+                          ${isLowStock ? 'bg-red-500' : isMediumStock ? 'bg-amber-500' : 'bg-green-500'}
+                          ${stockPulse ? 'animate-pulse' : ''}`}>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        <div className="flex items-center justify-between text-xs">
+          {inStock < 20 && (
+            <div className="text-red-500 flex items-center">
+              <span className="w-2 h-2 bg-red-500 rounded-full mr-1.5 animate-pulse"></span>
+              Only {inStock} left in stock
+            </div>
+          )}
+          
+          {inStock >= 20 && (
+            <div className="flex items-center text-gray-500 gap-1">
+              <Package size={12} />
+              In stock
+            </div>
+          )}
+          
+          {effectiveMaxQuantity > 1 && (
+            <div className="text-gray-500 flex items-center gap-1">
+              <TrendingUp size={12} />
+              Buy up to {effectiveMaxQuantity} at once
+            </div>
+          )}
         </div>
-      )}
+      </div>
       
-      {effectiveMaxQuantity > 1 && (
-        <div className="text-xs text-gray-500">
-          Buy up to {effectiveMaxQuantity} at once
-        </div>
+      {inStock < 5 && (
+        <Badge variant="aliHot" className="text-xs py-0.5 animate-pulse">
+          HOT ITEM - SELLING FAST!
+        </Badge>
       )}
     </div>
   );
