@@ -313,7 +313,7 @@ const LiveActivityNotifications = () => {
         text: randomComment.text,
         commentType: randomComment.type,
         opacity: 0,
-        translateY: 20, // Start below final position (for upward animation)
+        translateY: -20, // Changed: Start above final position (for downward animation)
         scale: 0.95
       };
     } 
@@ -329,7 +329,7 @@ const LiveActivityNotifications = () => {
         giftColor: randomGift.color,
         giftIcon: randomGift.icon,
         opacity: 0,
-        translateY: 20, // Start below final position (for upward animation)
+        translateY: -20, // Changed: Start above final position (for downward animation)
         scale: 0.95
       };
     } 
@@ -356,7 +356,7 @@ const LiveActivityNotifications = () => {
         bgColor: randomNotif.bgColor,
         icon: randomNotif.icon,
         opacity: 0,
-        translateY: 20, // Start below final position (for upward animation)
+        translateY: -20, // Changed: Start above final position (for downward animation)
         scale: 0.95
       };
     }
@@ -375,6 +375,7 @@ const LiveActivityNotifications = () => {
       return updatedItems;
     });
     
+    // Apply entrance animation with slight delay for fluid effect
     setTimeout(() => {
       setStreamItems(prevItems => 
         prevItems.map(item => 
@@ -383,22 +384,24 @@ const LiveActivityNotifications = () => {
             : item
         )
       );
-    }, 50);
+    }, 30); // Reduced delay for more immediate animation
     
+    // Set exit animation
     setTimeout(() => {
       setStreamItems(prevItems => 
         prevItems.map(item => 
           item.id === newItem.id 
-            ? { ...item, opacity: 0, translateY: -20 } // Exit by moving upward
+            ? { ...item, opacity: 0, translateY: 20 } // Changed: Exit by moving downward
             : item
         )
       );
       
+      // Remove item after animation completes
       setTimeout(() => {
         setStreamItems(prevItems => 
           prevItems.filter(item => item.id !== newItem.id)
         );
-      }, 300);
+      }, 400); // Slightly longer duration for smoother exit
     }, 4000 + Math.random() * 2000);
   };
 
@@ -445,7 +448,7 @@ const LiveActivityNotifications = () => {
     
     return (
       <div 
-        className="mb-2 transition-all duration-500 ease-out"
+        className="mb-2 transition-all duration-300 ease-in-out will-change-transform will-change-opacity"
         style={{ 
           opacity: comment.opacity,
           transform: `translateY(${comment.translateY}px) scale(${comment.scale})`,
@@ -471,7 +474,7 @@ const LiveActivityNotifications = () => {
     
     return (
       <div 
-        className="mb-2 transition-all duration-500 ease-out"
+        className="mb-2 transition-all duration-300 ease-in-out will-change-transform will-change-opacity"
         style={{ 
           opacity: gift.opacity,
           transform: `translateY(${gift.translateY}px) scale(${gift.scale})`,
@@ -500,7 +503,7 @@ const LiveActivityNotifications = () => {
     
     return (
       <div 
-        className="mb-2 transition-all duration-500 ease-out"
+        className="mb-2 transition-all duration-300 ease-in-out will-change-transform will-change-opacity"
         style={{ 
           opacity: notification.opacity,
           transform: `translateY(${notification.translateY}px) scale(${notification.scale})`,
@@ -525,10 +528,10 @@ const LiveActivityNotifications = () => {
   };
 
   return (
-    <div className="absolute z-20 bottom-24 left-4 flex flex-col space-y-2 pointer-events-none max-w-[250px]">
+    <div className="absolute z-20 bottom-24 left-4 flex flex-col-reverse space-y-reverse space-y-2 pointer-events-none max-w-[250px]">
       <div 
         ref={containerRef}
-        className="overflow-y-auto max-h-[300px] flex flex-col"
+        className="overflow-y-auto max-h-[300px] flex flex-col-reverse"
       >
         {streamItems.map(item => (
           <div key={item.id}>
@@ -544,6 +547,18 @@ const LiveActivityNotifications = () => {
           </div>
         ))}
       </div>
+      
+      <style jsx>{`
+        @keyframes float-up {
+          0% { transform: translateY(20px); opacity: 0; }
+          100% { transform: translateY(0); opacity: 1; }
+        }
+        
+        @keyframes float-down {
+          0% { transform: translateY(0); opacity: 1; }
+          100% { transform: translateY(20px); opacity: 0; }
+        }
+      `}</style>
     </div>
   );
 };
