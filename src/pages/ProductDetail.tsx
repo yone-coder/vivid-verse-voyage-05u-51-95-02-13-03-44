@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -313,7 +314,7 @@ const ProductDetail = () => {
         <ProductImageGallery images={productImages.length > 0 ? productImages : ["/placeholder.svg"]} />
       </div>
 
-      {/* LiveActivityNotifications positioned lower */}
+      {/* LiveActivityNotifications positioned at a medium height */}
       <div className="relative h-0">
         <LiveActivityNotifications />
       </div>
