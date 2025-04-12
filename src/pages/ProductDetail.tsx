@@ -19,6 +19,7 @@ import ProductShipping from "@/components/product/ProductShipping";
 import ProductWarranty from "@/components/product/ProductWarranty";
 import ProductPaymentOptions from "@/components/product/ProductPaymentOptions";
 import AliExpressCoupons from "@/components/product/AliExpressCoupons";
+import ProductActionsRow from "@/components/product/ProductActionsRow";
 
 const ProductDetail = () => {
   // State variables
@@ -374,6 +375,11 @@ const ProductDetail = () => {
               quantity={quantity}
               onIncrement={incrementQuantity}
               onDecrement={decrementQuantity}
+              price={currentPrice}
+              maxQuantity={10}
+              minQuantity={1}
+              inStock={currentStock}
+              productName={product.name}
             />
           </div>
           
@@ -399,7 +405,12 @@ const ProductDetail = () => {
             <ProductPaymentOptions paymentOptions={productForTabs.payments} />
           </div>
           
-          {/* Removed ProductActionsRow component */}
+          <div className="mt-4">
+            <ProductActionsRow 
+              addToCart={addToCart}
+              buyNow={buyNow}
+            />
+          </div>
         </div>
       </div>
       
