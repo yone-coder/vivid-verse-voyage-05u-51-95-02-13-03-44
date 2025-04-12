@@ -1,6 +1,28 @@
 
 import { createClient } from '@supabase/supabase-js'
-import { Product } from './types'
+import type { Database } from './types'
+
+// Define the Product interface based on the database schema
+export interface Product {
+  id: string
+  name: string
+  description: string
+  price: number
+  discount_price: number | null
+  created_at: string
+  updated_at: string
+  product_images?: ProductImage[]
+}
+
+// Define the ProductImage interface
+export interface ProductImage {
+  id: string
+  product_id: string
+  src: string
+  alt: string
+  created_at: string
+  updated_at: string
+}
 
 export const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL || '',
