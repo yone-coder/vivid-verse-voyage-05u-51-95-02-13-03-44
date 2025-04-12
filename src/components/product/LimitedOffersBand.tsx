@@ -43,15 +43,15 @@ export default function LimitedOffersBand() {
         <Clock size={12} />
         <span className="text-[10px] font-medium">Ends:</span>
         <div className="flex items-center space-x-1">
-          <div className="px-1 py-0">
+          <div className="w-[20px] text-center">
             <span className="text-[10px] font-mono">{formatTime(timeLeft.hours)}</span>
           </div>
           <span className="text-[10px]">:</span>
-          <div className="px-1 py-0">
+          <div className="w-[20px] text-center">
             <span className="text-[10px] font-mono">{formatTime(timeLeft.minutes)}</span>
           </div>
           <span className="text-[10px]">:</span>
-          <div className="px-1 py-0">
+          <div className="w-[20px] text-center">
             <span className="text-[10px] font-mono">{formatTime(timeLeft.seconds)}</span>
           </div>
         </div>
@@ -59,4 +59,3 @@ export default function LimitedOffersBand() {
     </div>
   );
 }
-
