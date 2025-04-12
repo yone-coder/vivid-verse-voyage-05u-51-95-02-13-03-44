@@ -1,4 +1,3 @@
-
 import * as React from "react"
 import * as TabsPrimitive from "@radix-ui/react-tabs"
 
@@ -26,7 +25,7 @@ const TabsList = React.forwardRef<
         // Always show at the top of the page
         setIsVisible(true);
       } else if (currentScrollY < prevScrollY.current) {
-        // Hide when scrolling up
+        // Hide when scrolling up - this was flipped, should be false when scrolling up
         setIsVisible(false);
       } else {
         // Show when scrolling down

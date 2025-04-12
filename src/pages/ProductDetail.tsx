@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -421,7 +420,7 @@ const ProductDetail = () => {
           setActiveTab={setActiveTab} 
           isScrolled={isScrolled} 
           headerHeight={isScrolled ? 40 : 0}
-          // Remove the hideOnScrollUp prop since it's not in the component's props interface
+          hideOnScrollUp={hideTabsOnScrollUp}
         />
       </div>
       
