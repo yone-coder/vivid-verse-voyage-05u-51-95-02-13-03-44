@@ -11,16 +11,20 @@ const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiO
 
 export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
-// Fetch all products with their images
+// Function to fetch all products from the Supabase database
 export const fetchAllProducts = async () => {
   const { data, error } = await supabase
     .from('products')
-    .select('*, product_images(*)');
-  
+    .select(`
+      *,
+      product_images(*)
+    `)
+    .order('created_at', { ascending: false });
+    
   if (error) {
     console.error('Error fetching products:', error);
-    throw new Error('Failed to fetch products');
+    return [];
   }
   
-  return data;
+  return data || [];
 };

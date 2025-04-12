@@ -32,7 +32,6 @@ interface ProductTabsProps {
   setActiveTab: (tab: string) => void;
   isScrolled: boolean;
   headerHeight: number;
-  hideOnScrollUp?: boolean; // Added this optional prop
 }
 
 const ProductTabs: React.FC<ProductTabsProps> = ({
@@ -40,8 +39,7 @@ const ProductTabs: React.FC<ProductTabsProps> = ({
   activeTab,
   setActiveTab,
   isScrolled,
-  headerHeight,
-  hideOnScrollUp = false // Default value is false
+  headerHeight
 }) => {
   return (
     <Tabs 
