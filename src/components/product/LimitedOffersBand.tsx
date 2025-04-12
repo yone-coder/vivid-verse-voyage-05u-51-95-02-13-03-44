@@ -33,26 +33,26 @@ export default function LimitedOffersBand() {
   };
 
   return (
-    <div className="bg-red-600 w-full py-1 px-2 text-white flex items-center justify-between shadow-md">
+    <div className="bg-red-600 w-full py-0.5 px-2 text-white flex items-center justify-between shadow-md">
       <div className="flex items-center space-x-1">
         <span className="font-bold text-xs">LIMITED OFFERS</span>
-        <span className="bg-yellow-400 text-red-600 text-xs px-1 py-0.5 rounded-full font-bold animate-pulse">HOT</span>
+        <span className="bg-yellow-400 text-red-600 text-[10px] px-1 py-0 rounded-full font-bold animate-pulse">HOT</span>
       </div>
       
       <div className="flex items-center space-x-1">
-        <Clock size={14} />
-        <span className="text-xs font-medium">Ends:</span>
+        <Clock size={12} />
+        <span className="text-[10px] font-medium">Ends:</span>
         <div className="flex items-center space-x-1">
-          <div className="bg-black bg-opacity-30 px-1 py-0.5 rounded">
-            <span className="text-xs">{formatTime(timeLeft.hours)}</span>
+          <div className="bg-black bg-opacity-30 px-1 py-0 rounded">
+            <span className="text-[10px]">{formatTime(timeLeft.hours)}</span>
           </div>
-          <span className="text-xs">:</span>
-          <div className="bg-black bg-opacity-30 px-1 py-0.5 rounded">
-            <span className="text-xs">{formatTime(timeLeft.minutes)}</span>
+          <span className="text-[10px]">:</span>
+          <div className="bg-black bg-opacity-30 px-1 py-0 rounded">
+            <span className="text-[10px]">{formatTime(timeLeft.minutes)}</span>
           </div>
-          <span className="text-xs">:</span>
-          <div className="bg-black bg-opacity-30 px-1 py-0.5 rounded">
-            <span className="text-xs">{formatTime(timeLeft.seconds)}</span>
+          <span className="text-[10px]">:</span>
+          <div className="bg-black bg-opacity-30 px-1 py-0 rounded">
+            <span className="text-[10px]">{formatTime(timeLeft.seconds)}</span>
           </div>
         </div>
       </div>
