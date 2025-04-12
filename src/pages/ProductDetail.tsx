@@ -309,10 +309,10 @@ const ProductDetail = () => {
           />
         </div>
         
-        <ProductImageGallery images={productImages.length > 0 ? productImages : ["/placeholder.svg"]} />
-        
-        {/* Add LiveActivityNotifications component here */}
+        {/* Add LiveActivityNotifications component here inside the relative container */}
         <LiveActivityNotifications />
+        
+        <ProductImageGallery images={productImages.length > 0 ? productImages : ["/placeholder.svg"]} />
       </div>
 
       {/* Fixed header when scrolled - visible as soon as we scroll past the overlay */}

@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ShoppingCart, Users, Star, Clock, Award, ThumbsUp, Check, ChevronRight, AlertTriangle, Gift, TrendingUp, Heart, Eye } from "lucide-react";
@@ -201,7 +202,7 @@ const LiveActivityNotifications = () => {
   };
 
   return (
-    <div className="fixed z-20 bottom-36 left-4 flex flex-col space-y-2 pointer-events-none max-w-[250px]">
+    <div className="absolute z-20 bottom-4 left-4 flex flex-col space-y-2 pointer-events-none max-w-[250px]">
       {/* Active visitors badge */}
       <div className="flex items-center justify-start">
         <motion.div 
