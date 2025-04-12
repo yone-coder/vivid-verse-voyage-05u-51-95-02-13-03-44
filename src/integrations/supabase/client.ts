@@ -24,10 +24,11 @@ export interface ProductImage {
   updated_at: string
 }
 
-export const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL || '',
-  import.meta.env.VITE_SUPABASE_ANON_KEY || ''
-)
+// Get the Supabase project URL and anon key
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://wkfzhcszhgewkvwukzes.supabase.co';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndrZnpoY3N6aGdld2t2d3VremVzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzg3MDE1NzksImV4cCI6MjA1NDI3NzU3OX0.TzSh8M9NOTnsmVaNxquif4xzSxWaVZp9sePHcjrgCVI';
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 export const fetchProduct = async (id: string) => {
   const { data, error } = await supabase
