@@ -8,59 +8,17 @@ const Tabs = TabsPrimitive.Root
 
 const TabsList = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.List>,
-  React.ComponentPropsWithoutRef<typeof TabsPrimitive.List> & {
-    stickyOnScroll?: boolean;
-    hideOnScrollUp?: boolean;
-  }
->(({ className, stickyOnScroll, hideOnScrollUp, ...props }, ref) => {
-  const [isVisible, setIsVisible] = React.useState(true);
-  const prevScrollY = React.useRef(0);
-
-  React.useEffect(() => {
-    if (!hideOnScrollUp) return;
-
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      
-      if (currentScrollY < 10) {
-        // Always show at the top of the page
-        setIsVisible(true);
-      } else if (currentScrollY < prevScrollY.current) {
-        // Show when scrolling up
-        setIsVisible(true);
-      } else {
-        // Hide when scrolling down
-        setIsVisible(false);
-      }
-      
-      prevScrollY.current = currentScrollY;
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [hideOnScrollUp]);
-
-  const stickyClasses = stickyOnScroll
-    ? "sticky top-0 z-20 bg-white shadow-sm"
-    : "";
-  
-  const visibilityClasses = hideOnScrollUp
-    ? `transition-transform duration-300 ${isVisible ? "translate-y-0" : "-translate-y-full"}`
-    : "";
-
-  return (
-    <TabsPrimitive.List
-      ref={ref}
-      className={cn(
-        "inline-flex h-6 items-center justify-center rounded-md bg-muted p-0.5 text-muted-foreground",
-        stickyClasses,
-        visibilityClasses,
-        className
-      )}
-      {...props}
-    />
-  )
-})
+  React.ComponentPropsWithoutRef<typeof TabsPrimitive.List>
+>(({ className, ...props }, ref) => (
+  <TabsPrimitive.List
+    ref={ref}
+    className={cn(
+      "inline-flex h-6 items-center justify-center rounded-md bg-muted p-0.5 text-muted-foreground", // Reduced padding from p-1 to p-0.5
+      className
+    )}
+    {...props}
+  />
+))
 TabsList.displayName = TabsPrimitive.List.displayName
 
 const TabsTrigger = React.forwardRef<
