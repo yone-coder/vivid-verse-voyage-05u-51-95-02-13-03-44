@@ -7,6 +7,7 @@ import StickyBuyButton from "@/components/StickyBuyButton";
 import { useProduct, useProductAnalytics } from "@/hooks/useProduct";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
+import LiveActivityNotifications from "@/components/LiveActivityNotifications";
 
 // Product Components
 import ProductHeader from "@/components/product/ProductHeader";
@@ -309,6 +310,9 @@ const ProductDetail = () => {
         </div>
         
         <ProductImageGallery images={productImages.length > 0 ? productImages : ["/placeholder.svg"]} />
+        
+        {/* Add LiveActivityNotifications component here */}
+        <LiveActivityNotifications />
       </div>
 
       {/* Fixed header when scrolled - visible as soon as we scroll past the overlay */}

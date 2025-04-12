@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ShoppingCart, Users, Star, Clock, Award, ThumbsUp, Check, ChevronRight, AlertTriangle, Gift, TrendingUp, Heart, Eye } from "lucide-react";
