@@ -39,7 +39,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
   const isMinQuantity = quantity <= minQuantity;
   
   const effectiveMaxQuantity = Math.min(maxQuantity, inStock);
-  const stockPercentage = Math.min(100, Math.round((inStock / 100) * 100));
+  const stockPercentage = Math.min(inStock, 100);
   const isLowStock = inStock < 10;
   const isMediumStock = inStock >= 10 && inStock < 30;
   
