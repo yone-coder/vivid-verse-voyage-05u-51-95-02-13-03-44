@@ -13,6 +13,7 @@ export default function MainLayout() {
   const isMobile = useIsMobile();
   const location = useLocation();
   const isProductPage = location.pathname.includes('/product/');
+  const isHomePage = location.pathname === "/";
   const { toast } = useToast();
   const [isFavorite, setIsFavorite] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -66,7 +67,7 @@ export default function MainLayout() {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <style dangerouslySetInnerHTML={{ __html: headerHeightStyle }} />
-      {isProductPage ? (
+      {isProductPage || isHomePage ? (
         <>
           <main className="flex-grow relative">
             <Outlet />
@@ -86,8 +87,8 @@ export default function MainLayout() {
           </main>
         </>
       )}
-      {!isMobile && <Footer />}
-      {isMobile && !isProductPage && <MobileBottomNav />}
+      {!isMobile && !isHomePage && <Footer />}
+      {isMobile && !isProductPage && !isHomePage && <MobileBottomNav />}
     </div>
   );
 }
