@@ -22,9 +22,6 @@ import ProductWarranty from "@/components/product/ProductWarranty";
 import ProductPaymentOptions from "@/components/product/ProductPaymentOptions";
 import AliExpressCoupons from "@/components/product/AliExpressCoupons";
 
-// Default product ID for the nebula light product
-const DEFAULT_PRODUCT_ID = "7b5fad5f-e8b7-42ab-aba6-dd38afc1ebf8"; // Nebula Light product ID
-
 const ProductDetail = () => {
   // State variables
   const [activeTab, setActiveTab] = useState("description");
@@ -51,14 +48,11 @@ const ProductDetail = () => {
   const lastScrollTop = useRef(0);
   const isMobile = useIsMobile();
   const { toast } = useToast();
-  const { id: paramId } = useParams<{ id: string }>();
-  
-  // Use either the ID from URL params or the default product ID
-  const productId = paramId || DEFAULT_PRODUCT_ID;
+  const { id } = useParams<{ id: string }>();
   
   // Use real product data from Supabase
-  const { data: product, isLoading } = useProduct(productId);
-  const { data: analytics, isLoading: analyticsLoading } = useProductAnalytics(productId);
+  const { data: product, isLoading } = useProduct(id || "");
+  const { data: analytics, isLoading: analyticsLoading } = useProductAnalytics(id || "");
   
   // Event handlers
   const incrementQuantity = () => {

@@ -544,7 +544,7 @@ const LiveActivityNotifications = () => {
         ))}
       </div>
       
-      <style dangerouslySetInnerHTML={{ __html: `
+      <style jsx>{`
         @keyframes float-up {
           0% { transform: translateY(20px); opacity: 0; }
           100% { transform: translateY(0); opacity: 1; }
@@ -554,7 +554,7 @@ const LiveActivityNotifications = () => {
           0% { transform: translateY(0); opacity: 1; }
           100% { transform: translateY(20px); opacity: 0; }
         }
-      `}} />
+      `}</style>
     </div>
   );
 };

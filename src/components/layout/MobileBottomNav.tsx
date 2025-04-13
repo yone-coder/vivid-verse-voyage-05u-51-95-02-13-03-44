@@ -16,8 +16,8 @@ export default function MobileBottomNav() {
       icon: Home,
     },
     {
-      name: 'Browse',
-      path: '/browse',
+      name: 'Categories',
+      path: '/categories',
       icon: Search,
     },
     {
