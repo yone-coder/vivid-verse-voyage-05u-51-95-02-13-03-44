@@ -1,6 +1,6 @@
 
 import React from "react";
-import { AlertCircle, TrendingDown, Clock } from "lucide-react";
+import { Clock, AlertCircle, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -21,60 +21,87 @@ const ProductPriceDisplay: React.FC<ProductPriceDisplayProps> = ({
   const discountPercentage = Math.round((discountAmount / originalPrice) * 100);
   
   return (
-    <div className="flex flex-col w-full">
-      {/* Main price display section */}
-      <div className={cn(
-        "flex", 
-        isMobile ? "flex-col gap-1.5" : "items-baseline justify-between"
-      )}>
-        {/* Price and discount area */}
-        <div className="flex items-baseline">
-          <span className="text-2xl md:text-3xl font-bold text-red-500">
-            ${formatPrice(currentPrice)}
-          </span>
-          
-          <span className="ml-2 text-xs md:text-sm line-through text-gray-500">
-            ${formatPrice(originalPrice)}
-          </span>
-          
-          {discountPercentage > 0 && (
-            <div className="ml-3 flex items-center">
-              <span className="text-xs md:text-sm font-medium px-1.5 md:px-2 py-0.5 bg-red-100 text-red-600 rounded">
-                <TrendingDown className="inline w-2.5 h-2.5 md:w-3 md:h-3 mr-0.5 md:mr-1" />
-                {discountPercentage}% OFF
-              </span>
-            </div>
-          )}
-        </div>
+    <div className="flex flex-col w-full space-y-2">
+      {/* Row 1: Price Details */}
+      <div className="flex items-center gap-2">
+        <span className="text-2xl font-bold text-red-500">
+          ${formatPrice(currentPrice)}
+        </span>
         
-        {/* Savings and time-limited offer */}
-        <div className={cn(
-          "flex", 
-          isMobile ? "justify-between" : "flex-col items-end"
-        )}>
-          <span className="text-xs md:text-sm font-medium text-red-600">
-            Save ${discountAmount.toFixed(2)}
+        <span className="text-sm line-through text-gray-500">
+          ${formatPrice(originalPrice)}
+        </span>
+        
+        {discountPercentage > 0 && (
+          <span className="text-xs font-medium px-2 py-0.5 bg-red-100 text-red-600 rounded">
+            {discountPercentage}% OFF
+          </span>
+        )}
+      </div>
+      
+      {/* Row 2: Savings + Tags */}
+      <div className="flex flex-wrap items-center justify-between">
+        <span className="text-sm font-medium text-red-600">
+          Save ${discountAmount.toFixed(2)}
+        </span>
+        
+        <div className="flex items-center gap-2">
+          <span className="text-xs px-4 py-1 bg-blue-100 text-blue-700 rounded-full">
+            Top Seller
           </span>
           
-          <div className="text-[10px] md:text-xs text-gray-500 flex items-center mt-0.5">
-            <Clock className="w-2.5 h-2.5 md:w-3 md:h-3 mr-0.5 md:mr-1" />
-            Limited time offer
-          </div>
+          <span className="text-sm text-gray-600 flex items-center">
+            <span className="hidden sm:inline">5.0k+ </span>
+            <span className="inline sm:hidden">5k+ </span>
+            Sold
+          </span>
         </div>
       </div>
       
-      {/* Shipping and price alert information */}
-      <div className="mt-2 text-[10px] md:text-xs flex items-center justify-between flex-wrap gap-y-1">
-        <div className="flex items-center text-green-600">
-          <span className="bg-green-100 px-1.5 md:px-2 py-0.5 rounded">Free shipping</span>
-          <span className="mx-1 md:mx-2">•</span>
-          <span>Free returns</span>
+      {/* Row 3: Shipping & Returns */}
+      <div className="flex items-center gap-2">
+        <span className="bg-green-100 px-2 py-0.5 rounded text-green-600 text-xs">
+          Free shipping
+        </span>
+        <span className="text-xs text-gray-500">•</span>
+        <span className="text-green-600 text-xs">
+          Free returns
+        </span>
+      </div>
+      
+      {/* Row 4: Ratings */}
+      <div className="flex items-center gap-2">
+        <div className="flex text-yellow-400">
+          {'★'.repeat(Math.floor(4.8))}
+          {4.8 % 1 !== 0 && '★½'}
+          {'☆'.repeat(5 - Math.ceil(4.8))}
         </div>
         
-        <div className="flex items-center text-amber-600">
-          <AlertCircle className="w-2.5 h-2.5 md:w-3 md:h-3 mr-0.5 md:mr-1" />
+        <span className="font-semibold text-gray-800">4.8</span>
+        
+        <a href="#reviews" className="text-blue-600 hover:underline">
+          2543 Reviews
+        </a>
+      </div>
+      
+      {/* Row 5: Alerts */}
+      <div className="flex justify-between items-center">
+        <div className="flex items-center text-gray-500 text-xs">
+          <Clock className="w-3.5 h-3.5 mr-1" />
+          <span>Limited time offer</span>
+        </div>
+        
+        <div className="flex items-center text-amber-600 text-xs">
+          <AlertCircle className="w-3.5 h-3.5 mr-1" />
           <span>Price may increase soon</span>
         </div>
+      </div>
+      
+      {/* Row 6: Review Navigation */}
+      <div className="flex justify-between items-center">
+        <a href="#all-reviews" className="text-blue-600 flex items-center hover:underline">
+          All Reviews <ChevronRight className="w-4 h-4" />
+        </a>
       </div>
     </div>
   );
