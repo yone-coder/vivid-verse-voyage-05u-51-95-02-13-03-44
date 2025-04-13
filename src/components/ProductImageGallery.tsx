@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Carousel,
@@ -281,8 +280,15 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
 
   const toggleFocusMode = useCallback(() => {
     setFocusMode(prev => !prev);
-    // Removed toast notification
   }, [focusMode]);
+
+  const handleImageClick = useCallback(() => {
+    if (focusMode) {
+      setFocusMode(false);
+    } else {
+      toggleFullscreen();
+    }
+  }, [focusMode, toggleFullscreen]);
 
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
@@ -320,7 +326,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
 
   const toggleAutoScroll = useCallback(() => {
     setAutoScrollEnabled(prev => !prev);
-    // Removed toast notification
   }, [autoScrollEnabled]);
 
   return (
@@ -357,14 +362,13 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                         : "none"
                     }}
                     draggable={false}
-                    onClick={toggleFullscreen}
+                    onClick={handleImageClick}
                   />
                 </div>
               </CarouselItem>
             ))}
           </CarouselContent>
           
-          {/* Image counter - Added on the far left */}
           <div className={cn(
             "absolute left-3 top-3 z-30",
             viewMode === "immersive" && "opacity-0 hover:opacity-100 transition-opacity",
@@ -597,4 +601,3 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
 };
 
 export default ProductImageGallery;
-
