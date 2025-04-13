@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { MinusIcon, PlusIcon, ShoppingCart, AlertCircle, Boxes, TrendingUp } from "lucide-react";
@@ -124,7 +125,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
       </div>
       
       {price > 0 && (
-        <div className="bg-red-50 border border-red-100 rounded-md p-2 flex items-center justify-between text-sm shadow-sm">
+        <div className="flex items-center justify-between text-sm">
           <div className="flex items-center gap-1 text-gray-700">
             <ShoppingCart size={14} className="text-red-500" />
             <span>Subtotal:</span>
