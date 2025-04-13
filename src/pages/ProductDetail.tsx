@@ -7,6 +7,7 @@ import { useProduct, useProductAnalytics } from "@/hooks/useProduct";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import LiveActivityNotifications from "@/components/LiveActivityNotifications";
+import { Heart } from "lucide-react";
 
 // Product Components
 import ProductHeader from "@/components/product/ProductHeader";
@@ -335,8 +336,14 @@ const ProductDetail = () => {
             {/* Badges section removed */}
           </div>
           
-          {/* Product title now appears before price */}
-          <h1 className="text-lg font-medium">{product.name}</h1>
+          {/* Product title now appears before price with like count */}
+          <div className="flex items-center justify-between">
+            <h1 className="text-lg font-medium">{product.name}</h1>
+            <div className="flex items-center">
+              <Heart className={`h-4 w-4 mr-1 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-400'}`} />
+              <span className="text-sm text-gray-500">{analytics?.viewCount || 1245}</span>
+            </div>
+          </div>
           
           <div className="flex items-center justify-between mt-1">
             {/* Replace static price display with dynamic component */}

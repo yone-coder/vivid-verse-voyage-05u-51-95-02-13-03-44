@@ -35,7 +35,7 @@ const ProductActionsRow: React.FC<ProductActionsRowProps> = ({
   
   return (
     <div className="flex items-center space-x-2">
-      <div className="relative">
+      <div className="relative flex items-center">
         <Button 
           variant="ghost" 
           size="icon" 
@@ -45,7 +45,7 @@ const ProductActionsRow: React.FC<ProductActionsRowProps> = ({
           <Heart className={`h-5 w-5 ${isFavorite ? 'fill-red-500 text-red-500' : ''}`} />
         </Button>
         {likeCount > 0 && (
-          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 min-w-[16px] flex items-center justify-center px-1">
+          <span className="ml-1 text-sm text-gray-600">
             {likeCount > 999 ? '999+' : likeCount}
           </span>
         )}
