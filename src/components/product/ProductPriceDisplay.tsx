@@ -1,6 +1,6 @@
 
 import React from "react";
-import { TrendingDown } from "lucide-react";
+import { AlertCircle, TrendingDown, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -37,10 +37,6 @@ const ProductPriceDisplay: React.FC<ProductPriceDisplayProps> = ({
             ${formatPrice(originalPrice)}
           </span>
           
-          <span className="ml-2 text-xs md:text-sm font-medium text-red-600">
-            Save ${discountAmount.toFixed(2)}
-          </span>
-          
           {discountPercentage > 0 && (
             <div className="ml-3 flex items-center">
               <span className="text-xs md:text-sm font-medium px-1.5 md:px-2 py-0.5 bg-red-100 text-red-600 rounded">
@@ -49,6 +45,35 @@ const ProductPriceDisplay: React.FC<ProductPriceDisplayProps> = ({
               </span>
             </div>
           )}
+        </div>
+        
+        {/* Savings and time-limited offer */}
+        <div className={cn(
+          "flex", 
+          isMobile ? "justify-between" : "flex-col items-end"
+        )}>
+          <span className="text-xs md:text-sm font-medium text-red-600">
+            Save ${discountAmount.toFixed(2)}
+          </span>
+          
+          <div className="text-[10px] md:text-xs text-gray-500 flex items-center mt-0.5">
+            <Clock className="w-2.5 h-2.5 md:w-3 md:h-3 mr-0.5 md:mr-1" />
+            Limited time offer
+          </div>
+        </div>
+      </div>
+      
+      {/* Shipping and price alert information */}
+      <div className="mt-2 text-[10px] md:text-xs flex items-center justify-between flex-wrap gap-y-1">
+        <div className="flex items-center text-green-600">
+          <span className="bg-green-100 px-1.5 md:px-2 py-0.5 rounded">Free shipping</span>
+          <span className="mx-1 md:mx-2">•</span>
+          <span>Free returns</span>
+        </div>
+        
+        <div className="flex items-center text-amber-600">
+          <AlertCircle className="w-2.5 h-2.5 md:w-3 md:h-3 mr-0.5 md:mr-1" />
+          <span>Price may increase soon</span>
         </div>
       </div>
     </div>
