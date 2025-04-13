@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -22,8 +21,8 @@ import ProductWarranty from "@/components/product/ProductWarranty";
 import ProductPaymentOptions from "@/components/product/ProductPaymentOptions";
 import AliExpressCoupons from "@/components/product/AliExpressCoupons";
 
-// Default product ID for the nebula light product
-const DEFAULT_PRODUCT_ID = "7b5fad5f-e8b7-42ab-aba6-dd38afc1ebf8"; // Nebula Light product ID
+// Default product ID for the premium headphones product
+const DEFAULT_PRODUCT_ID = "aae97882-a3a1-4db5-b4f5-156705cd10ee"; // Premium Headphones product ID
 
 const ProductDetail = () => {
   // State variables
