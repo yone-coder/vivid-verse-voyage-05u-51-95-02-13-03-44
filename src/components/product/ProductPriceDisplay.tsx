@@ -1,6 +1,6 @@
 
 import React from "react";
-import { AlertCircle, TrendingDown, Clock } from "lucide-react";
+import { AlertCircle, TrendingDown, Clock, Star, StarHalf, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -22,59 +22,67 @@ const ProductPriceDisplay: React.FC<ProductPriceDisplayProps> = ({
   
   return (
     <div className="flex flex-col w-full">
-      {/* Main price display section */}
-      <div className={cn(
-        "flex", 
-        isMobile ? "flex-col gap-1.5" : "items-baseline justify-between"
-      )}>
-        {/* Price and discount area */}
-        <div className="flex items-baseline">
-          <span className="text-2xl md:text-3xl font-bold text-red-500">
-            ${formatPrice(currentPrice)}
-          </span>
-          
-          <span className="ml-2 text-xs md:text-sm line-through text-gray-500">
-            ${formatPrice(originalPrice)}
-          </span>
-          
-          {discountPercentage > 0 && (
-            <div className="ml-3 flex items-center">
-              <span className="text-xs md:text-sm font-medium px-1.5 md:px-2 py-0.5 bg-red-100 text-red-600 rounded">
-                <TrendingDown className="inline w-2.5 h-2.5 md:w-3 md:h-3 mr-0.5 md:mr-1" />
-                {discountPercentage}% OFF
-              </span>
-            </div>
-          )}
-        </div>
+      {/* Product title - Added new section */}
+      <h1 className="text-lg font-semibold text-gray-900 mb-1">Premium Headphones</h1>
+      
+      {/* Price & Discount Section */}
+      <div className="flex flex-wrap items-center gap-2 mb-1">
+        <span className="text-2xl font-bold text-red-600">
+          ${formatPrice(currentPrice)}
+        </span>
         
-        {/* Savings and time-limited offer */}
-        <div className={cn(
-          "flex", 
-          isMobile ? "justify-between" : "flex-col items-end"
-        )}>
-          <span className="text-xs md:text-sm font-medium text-red-600">
-            Save ${discountAmount.toFixed(2)}
+        <span className="line-through text-gray-400 text-sm">
+          ${formatPrice(originalPrice)}
+        </span>
+        
+        {discountPercentage > 0 && (
+          <span className="bg-red-100 text-red-600 text-xs px-2 py-0.5 rounded">
+            {discountPercentage}% OFF
           </span>
-          
-          <div className="text-[10px] md:text-xs text-gray-500 flex items-center mt-0.5">
-            <Clock className="w-2.5 h-2.5 md:w-3 md:h-3 mr-0.5 md:mr-1" />
-            Limited time offer
-          </div>
+        )}
+      </div>
+      
+      {/* Savings amount */}
+      <div className="text-sm text-red-500 mb-2">
+        Save ${discountAmount.toFixed(2)}
+      </div>
+      
+      {/* Promo & Alert Section */}
+      <div className="flex flex-col sm:flex-row gap-1 text-xs text-gray-500 mb-2">
+        <div className="flex items-center gap-1">
+          <Clock className="w-3 h-3" /> Limited time offer
+        </div>
+        <div className="flex items-center gap-1 text-yellow-600">
+          <AlertCircle className="w-3 h-3" /> Price may increase soon
         </div>
       </div>
       
-      {/* Shipping and price alert information */}
-      <div className="mt-2 text-[10px] md:text-xs flex items-center justify-between flex-wrap gap-y-1">
-        <div className="flex items-center text-green-600">
-          <span className="bg-green-100 px-1.5 md:px-2 py-0.5 rounded">Free shipping</span>
-          <span className="mx-1 md:mx-2">•</span>
-          <span>Free returns</span>
+      {/* Shipping & Returns Section */}
+      <div className="flex flex-wrap gap-2 mb-2">
+        <span className="bg-green-100 text-green-600 text-xs px-2 py-0.5 rounded">Free shipping</span>
+        <span className="bg-green-100 text-green-600 text-xs px-2 py-0.5 rounded">Free returns</span>
+      </div>
+      
+      {/* Rating & Reviews Section */}
+      <div className="flex flex-wrap items-center gap-2 text-sm text-gray-800 mb-2">
+        <div className="flex items-center text-yellow-400">
+          <Star className="h-4 w-4 fill-yellow-400" />
+          <Star className="h-4 w-4 fill-yellow-400" />
+          <Star className="h-4 w-4 fill-yellow-400" />
+          <Star className="h-4 w-4 fill-yellow-400" />
+          <StarHalf className="h-4 w-4 fill-yellow-400" />
         </div>
-        
-        <div className="flex items-center text-amber-600">
-          <AlertCircle className="w-2.5 h-2.5 md:w-3 md:h-3 mr-0.5 md:mr-1" />
-          <span>Price may increase soon</span>
-        </div>
+        <span className="font-semibold">4.8</span>
+        <a href="#" className="text-blue-600 underline">2543 Reviews</a>
+        <span className="text-gray-500">| 5.0k+ Sold</span>
+      </div>
+      
+      {/* Badges & Links Section */}
+      <div className="flex flex-wrap justify-between items-center mt-2">
+        <span className="bg-blue-100 text-blue-600 text-xs px-2 py-0.5 rounded">Top Seller</span>
+        <a href="#" className="text-blue-600 text-sm flex items-center">
+          All Reviews <ChevronRight className="w-4 h-4" />
+        </a>
       </div>
     </div>
   );
