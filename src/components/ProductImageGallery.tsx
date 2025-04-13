@@ -347,8 +347,13 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   }, [autoScrollEnabled]);
 
   return (
-    <div ref={containerRef} className="flex flex-col gap-1 bg-gray-50 mb-0">
-      <div className="relative w-full aspect-square overflow-hidden">
+    <div 
+      ref={containerRef}
+      className="flex flex-col gap-1 bg-gray-50 mb-0"
+    >
+      <div 
+        className="relative w-full aspect-square overflow-hidden"
+      >
         <Carousel
           className="w-full h-full"
           opts={{
