@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { MinusIcon, PlusIcon } from "lucide-react";
@@ -42,6 +43,44 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
   
   const stockPercentage = Math.min(100, (inStock / 200) * 100);
   
+  // Determine stock level category and associated color
+  const getStockLevelInfo = () => {
+    if (inStock <= 5) {
+      return {
+        level: 'critical',
+        color: 'bg-red-500',
+        textColor: 'text-red-500',
+        label: 'Critical - Almost Sold Out!',
+        animate: true
+      };
+    } else if (inStock <= 15) {
+      return {
+        level: 'low',
+        color: 'bg-orange-500',
+        textColor: 'text-orange-500',
+        label: 'Low Stock',
+        animate: true
+      };
+    } else if (inStock <= 50) {
+      return {
+        level: 'medium',
+        color: 'bg-amber-500',
+        textColor: 'text-amber-500',
+        label: 'Limited Stock',
+        animate: false
+      };
+    } else {
+      return {
+        level: 'high',
+        color: 'bg-green-500',
+        textColor: 'text-green-600',
+        label: 'In Stock',
+        animate: false
+      };
+    }
+  };
+  
+  const stockInfo = getStockLevelInfo();
   const isLowStock = inStock < 10;
   const isMediumStock = inStock >= 10 && inStock < 30;
   
@@ -88,8 +127,8 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
         <div className="flex items-center">
           <span className="text-sm font-medium text-gray-700">Quantity:</span>
           {inStock < 20 && (
-            <span className={`ml-2 text-xs text-red-500 inline-flex items-center ${stockPulse ? 'animate-pulse' : ''}`}>
-              {inStock < 10 ? 'Almost sold out!' : 'Selling fast!'}
+            <span className={`ml-2 text-xs ${stockInfo.textColor} inline-flex items-center ${stockInfo.animate ? 'animate-pulse' : ''}`}>
+              {stockInfo.label}
             </span>
           )}
         </div>
@@ -141,27 +180,21 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
           <Progress 
             value={stockPercentage} 
             className="h-1.5 w-full"
-            indicatorClassName={`${
-              isLowStock 
-                ? 'bg-red-500' 
-                : isMediumStock 
-                  ? 'bg-amber-500' 
-                  : 'bg-green-500'
-            } ${stockPulse ? 'animate-pulse' : ''}`}
+            indicatorClassName={`${stockInfo.color} ${stockPulse ? 'animate-pulse' : ''}`}
           />
         </div>
         
         <div className="flex items-center justify-between text-xs">
-          {inStock < 20 && (
-            <div className="text-red-500 flex items-center">
-              <span className="w-2 h-2 bg-red-500 rounded-full mr-1.5 animate-pulse"></span>
-              Only {inStock} left in stock
+          {inStock < 50 && (
+            <div className={`${stockInfo.textColor} flex items-center`}>
+              <span className={`w-2 h-2 ${stockInfo.color} rounded-full mr-1.5 ${stockInfo.animate ? 'animate-pulse' : ''}`}></span>
+              {inStock <= 1 ? 'Last item in stock!' : `Only ${inStock} left in stock`}
             </div>
           )}
           
-          {inStock >= 20 && (
+          {inStock >= 50 && (
             <div className="flex items-center text-green-600 font-semibold">
-              {inStock} left in stock
+              {inStock} available
             </div>
           )}
           
@@ -173,7 +206,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
         </div>
       </div>
       
-      {inStock < 5 && (
+      {inStock <= 5 && (
         <Badge variant="aliHot" className="text-xs py-0.5 animate-pulse">
           HOT ITEM - SELLING FAST!
         </Badge>

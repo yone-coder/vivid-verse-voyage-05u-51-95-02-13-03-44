@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { ShoppingCart, Heart, Share2, Star, ChevronUp, ArrowRight } from 'lucide-react';
 
@@ -9,8 +10,6 @@ const StickyBuyButton = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [animationProgress, setAnimationProgress] = useState(0);
-  const [stockLevel, setStockLevel] = useState(156);
-  const [isStockChanging, setIsStockChanging] = useState(false);
   const [recentPurchase, setRecentPurchase] = useState(false);
   const [likeCount, setLikeCount] = useState(156);
 
@@ -45,9 +44,7 @@ const StickyBuyButton = () => {
   }, [lastScrollY]);
 
   const incrementQuantity = () => {
-    if (quantity < stockLevel) {
-      setQuantity(quantity + 1);
-    }
+    setQuantity(quantity + 1);
   };
 
   const decrementQuantity = () => {
@@ -180,7 +177,6 @@ const StickyBuyButton = () => {
                 >
                   +
                 </button>
-                <span className="text-xs text-gray-500 ml-3">{stockLevel} available</span>
               </div>
             </div>
             
