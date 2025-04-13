@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Carousel,
@@ -363,6 +364,17 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             ))}
           </CarouselContent>
           
+          {/* Image counter - Added on the far left */}
+          <div className={cn(
+            "absolute left-3 top-3 z-30",
+            viewMode === "immersive" && "opacity-0 hover:opacity-100 transition-opacity",
+            focusMode && "opacity-0"
+          )}>
+            <div className="bg-black/60 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs font-medium">
+              {currentIndex + 1} / {images.length}
+            </div>
+          </div>
+          
           <div className={cn(
             "absolute left-2 top-1/2 -translate-y-1/2 z-10",
             viewMode === "immersive" && "opacity-0 hover:opacity-100 transition-opacity",
@@ -585,3 +597,4 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
 };
 
 export default ProductImageGallery;
+
