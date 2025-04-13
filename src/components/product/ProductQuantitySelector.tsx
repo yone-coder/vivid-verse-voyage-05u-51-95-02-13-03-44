@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { MinusIcon, PlusIcon } from "lucide-react";
@@ -40,9 +39,9 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
   const isMinQuantity = quantity <= minQuantity;
   
   const effectiveMaxQuantity = Math.min(maxQuantity, inStock);
-  // Reverses the percentage - if inStock is 100, progress is 0%; if inStock is 0, progress is 100%
-  const maxStockValue = 100; // Assuming max stock we'd represent is 100
-  const stockPercentage = Math.max(0, Math.min(100, 100 - ((inStock / maxStockValue) * 100)));
+  
+  const stockPercentage = Math.min(100, (inStock / 200) * 100);
+  
   const isLowStock = inStock < 10;
   const isMediumStock = inStock >= 10 && inStock < 30;
   
