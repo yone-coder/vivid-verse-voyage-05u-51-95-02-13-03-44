@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { MinusIcon, PlusIcon, ShoppingCart, AlertCircle, Boxes, TrendingUp } from "lucide-react";
+import { MinusIcon, PlusIcon } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 
@@ -87,7 +87,6 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
           <span className="text-sm font-medium text-gray-700">Quantity:</span>
           {inStock < 20 && (
             <span className={`ml-2 text-xs text-red-500 inline-flex items-center ${stockPulse ? 'animate-pulse' : ''}`}>
-              <AlertCircle size={12} className="mr-1 animate-pulse" />
               {inStock < 10 ? 'Almost sold out!' : 'Selling fast!'}
             </span>
           )}
@@ -126,8 +125,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
       
       {price > 0 && (
         <div className="flex items-center justify-between text-sm">
-          <div className="flex items-center gap-1 text-gray-700">
-            <ShoppingCart size={14} className="text-red-500" />
+          <div className="flex items-center text-gray-700">
             <span>Subtotal:</span>
           </div>
           <div className={`font-medium text-red-600 transition-all duration-500 ${priceAnimation ? 'scale-110' : ''}`}>
@@ -159,15 +157,13 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
           )}
           
           {inStock >= 20 && (
-            <div className="flex items-center text-gray-500 gap-1">
-              <Boxes size={12} />
-              In stock
+            <div className="flex items-center text-green-600 font-semibold">
+              IN STOCK
             </div>
           )}
           
           {effectiveMaxQuantity > 1 && (
             <div className="text-gray-500 flex items-center gap-1">
-              <TrendingUp size={12} />
               Buy up to {effectiveMaxQuantity} at once
             </div>
           )}
