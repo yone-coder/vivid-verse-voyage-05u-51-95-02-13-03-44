@@ -25,7 +25,7 @@ const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
   
   // Define our specific color variants with additional properties
   const colorVariants = [
-    { name: "Black", price: 199.99, stock: 256, image: "", bestseller: true },
+    { name: "Black", price: 199.99, stock: 48, image: "", bestseller: true },
     { name: "White", price: 199.99, stock: 124, image: "", bestseller: false },
     { name: "Jet Black", price: 209.99, stock: 78, image: "", bestseller: false },
     { name: "Blue", price: 219.99, stock: 42, image: "", bestseller: false },
