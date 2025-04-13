@@ -405,240 +405,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
           </CarouselContent>
           
           <div className={cn(
-            "absolute top-4 left-4 right-4 z-10 flex items-center justify-between",
-            focusMode && "opacity-0 hover:opacity-100 transition-opacity duration-200"
-          )}>
-            <div className="flex items-center gap-2">
-              <Button 
-                variant="outline"
-                size="icon"
-                className="rounded-full bg-black/50 backdrop-blur-sm hover:bg-black/60 border-0 text-white h-7 w-7 p-0"
-                onClick={() => navigate(-1)}
-              >
-                <ArrowLeft className="h-3.5 w-3.5" />
-              </Button>
-              
-              <div className="bg-black/50 backdrop-blur-sm text-white px-2 py-1.5 rounded-lg text-xs flex items-center gap-1.5">
-                <span>{currentIndex + 1}/{images.length}</span>
-                {viewHistory.length > 1 && (
-                  <button onClick={undoLastView} className="p-0.5 hover:bg-white/10 rounded">
-                    <Undo2 size={12} />
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-          
-          <div className={cn(
-            "absolute bottom-4 right-0 px-4 z-10 flex items-center justify-end",
-            viewMode === "immersive" && "opacity-0 hover:opacity-100 transition-opacity",
-            focusMode && "opacity-0 hover:opacity-100 transition-opacity duration-200"
-          )}>
-            <div className="flex items-center gap-1.5">
-              {!showAllControls ? (
-                <>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button
-                          onClick={handleRotate}
-                          className="bg-black/50 backdrop-blur-sm p-1.5 rounded-lg text-white hover:bg-black/60 transition-colors"
-                        >
-                          <RotateCw size={16} />
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent>Rotate 90°</TooltipContent>
-                    </Tooltip>
-                    
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button
-                          onClick={toggleFocusMode}
-                          className="bg-black/50 backdrop-blur-sm p-1.5 rounded-lg text-white hover:bg-black/60 transition-colors"
-                        >
-                          <Focus size={16} />
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent>{focusMode ? "Exit Focus Mode" : "Focus Mode"}</TooltipContent>
-                    </Tooltip>
-                    
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button
-                          onClick={() => setShowAllControls(true)}
-                          className="bg-black/50 backdrop-blur-sm p-1.5 rounded-lg text-white hover:bg-black/60 transition-colors"
-                        >
-                          <PanelRight size={16} />
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent>More Options</TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </>
-              ) : (
-                <div className="flex items-center gap-1.5 bg-black/60 backdrop-blur-md p-1 rounded-lg">
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button
-                          onClick={handleRotate}
-                          className="p-1 rounded-md text-white hover:bg-white/10 transition-colors"
-                        >
-                          <RotateCw size={14} />
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent>Rotate 90°</TooltipContent>
-                    </Tooltip>
-                    
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button
-                          onClick={handleFlip}
-                          className="p-1 rounded-md text-white hover:bg-white/10 transition-colors"
-                        >
-                          <FlipHorizontal size={14} />
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent>Flip Horizontally</TooltipContent>
-                    </Tooltip>
-                    
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button
-                          onClick={toggleFavorite}
-                          className={cn(
-                            "p-1 rounded-md text-white hover:bg-white/10 transition-colors",
-                            isFavorite && "text-red-500"
-                          )}
-                        >
-                          <Heart size={14} className={isFavorite ? "fill-red-500" : ""} />
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent>{isFavorite ? "Remove from Favorites" : "Add to Favorites"}</TooltipContent>
-                    </Tooltip>
-                    
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button
-                          onClick={toggleAutoScroll}
-                          className={cn(
-                            "p-1 rounded-md text-white hover:bg-white/10 transition-colors",
-                            autoScrollEnabled && "text-green-500"
-                          )}
-                        >
-                          {autoScrollEnabled ? <Pause size={14} /> : <Play size={14} />}
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent>{autoScrollEnabled ? "Disable Auto-scroll" : "Enable Auto-scroll"}</TooltipContent>
-                    </Tooltip>
-                    
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <button className="p-1 rounded-md text-white hover:bg-white/10 transition-colors">
-                          <Filter size={14} />
-                        </button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-40 p-2">
-                        <p className="text-xs font-medium mb-2">Image Filters</p>
-                        <div className="flex flex-col gap-1">
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className={cn("justify-start h-7", imageFilter === "none" && "bg-accent")} 
-                            onClick={() => applyFilter("none")}
-                          >
-                            Normal
-                          </Button>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className={cn("justify-start h-7", imageFilter === "grayscale" && "bg-accent")} 
-                            onClick={() => applyFilter("grayscale")}
-                          >
-                            Grayscale
-                          </Button>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className={cn("justify-start h-7", imageFilter === "sepia" && "bg-accent")} 
-                            onClick={() => applyFilter("sepia")}
-                          >
-                            Sepia
-                          </Button>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className={cn("justify-start h-7", imageFilter === "brightness" && "bg-accent")} 
-                            onClick={() => applyFilter("brightness")}
-                          >
-                            Brighten
-                          </Button>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className={cn("justify-start h-7", imageFilter === "contrast" && "bg-accent")} 
-                            onClick={() => applyFilter("contrast")}
-                          >
-                            Enhance Contrast
-                          </Button>
-                        </div>
-                      </PopoverContent>
-                    </Popover>
-                    
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button
-                          onClick={resetEnhancements}
-                          className="p-1 rounded-md text-white hover:bg-white/10 transition-colors"
-                        >
-                          <Undo2 size={14} />
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent>Reset All</TooltipContent>
-                    </Tooltip>
-                    
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button
-                          onClick={() => setZoomLevel(prev => prev < 2 ? prev + 0.25 : 1)}
-                          className="p-1 rounded-md text-white hover:bg-white/10 transition-colors"
-                        >
-                          <ZoomIn size={14} />
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent>Zoom {zoomLevel >= 2 ? "Reset" : "In"}</TooltipContent>
-                    </Tooltip>
-                    
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button
-                          onClick={() => shareImage(currentIndex)}
-                          className="p-1 rounded-md text-white hover:bg-white/10 transition-colors"
-                        >
-                          <Share2 size={14} />
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent>Share Image</TooltipContent>
-                    </Tooltip>
-                    
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button
-                          onClick={() => setShowAllControls(false)}
-                          className="p-1 rounded-md text-white hover:bg-white/10 transition-colors"
-                        >
-                          <X size={14} />
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent>Hide Controls</TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </div>
-              )}
-            </div>
-          </div>
-          
-          <div className={cn(
             "absolute left-2 top-1/2 -translate-y-1/2 z-10",
             viewMode === "immersive" && "opacity-0 hover:opacity-100 transition-opacity",
             focusMode && "opacity-0 hover:opacity-100 transition-opacity duration-200"
@@ -646,7 +412,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             <Button
               variant="outline"
               size="icon"
-              className="rounded-full bg-white/70 backdrop-blur-sm hover:bg-white/90 w-8 h-8"
+              className="rounded-full w-8 h-8"
               onClick={handlePrevious}
             >
               <ChevronLeft className="h-4 w-4" />
@@ -661,7 +427,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             <Button
               variant="outline"
               size="icon"
-              className="rounded-full bg-white/70 backdrop-blur-sm hover:bg-white/90 w-8 h-8"
+              className="rounded-full w-8 h-8"
               onClick={handleNext}
             >
               <ChevronRight className="h-4 w-4" />
@@ -739,7 +505,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
               <Button 
                 variant="outline" 
                 size="icon" 
-                className="rounded-full bg-white/20 hover:bg-white/40"
+                className="rounded-full"
                 onClick={(e) => {
                   e.stopPropagation();
                   handlePrevious();
@@ -755,7 +521,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
               <Button 
                 variant="outline" 
                 size="icon" 
-                className="rounded-full bg-white/20 hover:bg-white/40"
+                className="rounded-full"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleNext();
