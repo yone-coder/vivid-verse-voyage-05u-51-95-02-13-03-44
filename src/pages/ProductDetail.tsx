@@ -345,7 +345,7 @@ const ProductDetail = () => {
           
           <EnhancedRating />
           
-          <div className="mt-2">
+          <div className="mt-1">
             <ProductColorVariants 
               variants={productForTabs.variants}
               selectedColor={selectedColor}
