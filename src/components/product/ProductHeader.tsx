@@ -88,7 +88,7 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
   if (shouldHide) return null;
 
   return (
-    <div className={`${isScrolled ? 'py-1 sm:py-1.5 bg-white shadow-sm' : 'py-1.5 sm:py-2'} px-1.5 sm:px-2 w-full transition-all duration-200`}>
+    <div className={`${isScrolled ? 'py-2 sm:py-2.5 bg-white shadow-sm' : 'py-1.5 sm:py-2'} px-1.5 sm:px-2 w-full transition-all duration-200`}>
       <div className="flex items-center justify-between">
         {!isSearchActive && (
           <Link to="/">
