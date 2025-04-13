@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Carousel,
@@ -350,7 +351,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   }, [autoScrollEnabled]);
 
   return (
-    <div ref={containerRef} className="flex flex-col gap-1 bg-transparent mb-0">
+    <div ref={containerRef} className="flex flex-col gap-1 bg-white mb-0">
       <div className="relative w-full aspect-square overflow-hidden">
         <Carousel
           className="w-full h-full"
@@ -404,6 +405,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             ))}
           </CarouselContent>
           
+          {/* Updated navigation buttons with consistent styling */}
           <div className={cn(
             "absolute left-2 top-1/2 -translate-y-1/2 z-10",
             viewMode === "immersive" && "opacity-0 hover:opacity-100 transition-opacity",
