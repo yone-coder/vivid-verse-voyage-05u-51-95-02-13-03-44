@@ -1,4 +1,4 @@
-
+import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchAllProducts } from "@/integrations/supabase/client";
 import HeroBanner from "@/components/home/HeroBanner";
@@ -15,6 +15,8 @@ import Newsletter from "@/components/home/Newsletter";
 import PopularSearches from "@/components/home/PopularSearches";
 import RecentlyViewed from "@/components/home/RecentlyViewed";
 import BenefitsBanner from "@/components/home/BenefitsBanner";
+import ModernBuyButton from "@/components/ModernBuyButton";
+import ProductLimitedTimeOffer from "@/components/product/ProductLimitedTimeOffer";
 
 export default function Index() {
   const { data: products, isLoading } = useQuery({
@@ -35,6 +37,12 @@ export default function Index() {
     return null; // Prevent flash while detecting mobile
   }
 
+  const timeLeft = {
+    hours: 5,
+    minutes: 30,
+    seconds: 0
+  };
+
   return (
     <div className="flex-grow pb-20 md:pb-0">
       {/* Hero Banner Carousel */}
@@ -53,8 +61,11 @@ export default function Index() {
       </div>
       
       {/* Flash Deals Section */}
-      <div className="mb-1">
+      <div className="mb-1 relative">
         <FlashDeals />
+        <div className="absolute top-2 right-4 z-10">
+          <ProductLimitedTimeOffer timeLeft={timeLeft} />
+        </div>
       </div>
       
       {/* Enhanced Popular Searches */}
@@ -104,6 +115,9 @@ export default function Index() {
       
       {/* Extra bottom padding for mobile to account for fixed navigation */}
       {isMobile && <div className="h-16"></div>}
+      
+      {/* Add ModernBuyButton as a fixed component */}
+      <ModernBuyButton productId="flash-deals-product" />
     </div>
   );
 }
