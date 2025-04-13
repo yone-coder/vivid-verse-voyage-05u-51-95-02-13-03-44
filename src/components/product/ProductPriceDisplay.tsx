@@ -25,20 +25,26 @@ const ProductPriceDisplay: React.FC<ProductPriceDisplayProps> = ({
       {/* Main price display section */}
       <div className={cn(
         "flex", 
-        isMobile ? "flex-col gap-1.5" : "items-baseline justify-between"
+        isMobile ? "flex-col gap-1.5" : "items-center justify-between"
       )}>
         {/* Price and discount area */}
-        <div className="flex items-baseline">
-          <span className="text-2xl md:text-3xl font-bold text-red-500">
-            ${formatPrice(currentPrice)}
-          </span>
+        <div className="flex items-center gap-2">
+          <div className="flex items-baseline">
+            <span className="text-2xl md:text-3xl font-bold text-red-500">
+              ${formatPrice(currentPrice)}
+            </span>
+            
+            <span className="ml-2 text-xs md:text-sm line-through text-gray-500">
+              ${formatPrice(originalPrice)}
+            </span>
+          </div>
           
-          <span className="ml-2 text-xs md:text-sm line-through text-gray-500">
-            ${formatPrice(originalPrice)}
+          <span className="text-sm font-medium text-green-600">
+            Save ${discountAmount.toFixed(2)}
           </span>
           
           {discountPercentage > 0 && (
-            <div className="ml-3 flex items-center">
+            <div className="flex items-center">
               <span className="text-xs md:text-sm font-medium px-1.5 md:px-2 py-0.5 bg-red-100 text-red-600 rounded">
                 <TrendingDown className="inline w-2.5 h-2.5 md:w-3 md:h-3 mr-0.5 md:mr-1" />
                 {discountPercentage}% OFF
@@ -47,15 +53,11 @@ const ProductPriceDisplay: React.FC<ProductPriceDisplayProps> = ({
           )}
         </div>
         
-        {/* Savings and time-limited offer */}
+        {/* Time-limited offer */}
         <div className={cn(
           "flex", 
           isMobile ? "justify-between" : "flex-col items-end"
         )}>
-          <span className="text-xs md:text-sm font-medium text-red-600">
-            Save ${discountAmount.toFixed(2)}
-          </span>
-          
           <div className="text-[10px] md:text-xs text-gray-500 flex items-center mt-0.5">
             <Clock className="w-2.5 h-2.5 md:w-3 md:h-3 mr-0.5 md:mr-1" />
             Limited time offer
