@@ -6,7 +6,6 @@ import StickyBuyButton from "@/components/StickyBuyButton";
 import { useProduct, useProductAnalytics } from "@/hooks/useProduct";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
-import LiveActivityNotifications from "@/components/LiveActivityNotifications";
 import { Heart } from "lucide-react";
 
 // Product Components
@@ -302,11 +301,6 @@ const ProductDetail = () => {
       <div ref={headerRef} className="relative w-full bg-gray-50">
         {/* Product image gallery */}
         <ProductImageGallery images={productImages.length > 0 ? productImages : ["/placeholder.svg"]} />
-      </div>
-
-      {/* LiveActivityNotifications positioned at a medium height */}
-      <div className="relative h-0">
-        <LiveActivityNotifications />
       </div>
 
       {/* Fixed header when scrolled - visible as soon as we scroll past the overlay */}
