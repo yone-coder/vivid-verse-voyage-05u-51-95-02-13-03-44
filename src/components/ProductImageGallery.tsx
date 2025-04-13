@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Carousel,
@@ -5,6 +6,27 @@ import {
   CarouselItem,
   CarouselApi,
 } from "@/components/ui/carousel";
+import { 
+  Heart, 
+  Play,
+  Pause,
+  RotateCw,
+  FlipHorizontal,
+  ChevronLeft,
+  ChevronRight,
+  Download,
+  Copy,
+  ZoomIn,
+  ArrowUpToLine,
+  Share2,
+  Maximize,
+  Square,
+  PanelRight,
+  X,
+  Undo2,
+  Filter,
+  ArrowLeft
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
