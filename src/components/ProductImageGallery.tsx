@@ -24,7 +24,6 @@ import {
   ArrowUpToLine
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
@@ -51,6 +50,7 @@ import {
 } from "@/components/ui/hover-card";
 import { supabase } from "@/integrations/supabase/client";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "@/hooks/use-toast";
 
 interface ProductImageGalleryProps {
   images: string[];
@@ -280,12 +280,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
 
   const toggleFocusMode = useCallback(() => {
     setFocusMode(prev => !prev);
-    
-    toast({
-      title: focusMode ? "Normal view" : "Focus mode",
-      description: focusMode ? "Showing all controls" : "Distraction-free viewing mode",
-      duration: 2000,
-    });
+    // Removed toast notification
   }, [focusMode]);
 
   useEffect(() => {
@@ -324,13 +319,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
 
   const toggleAutoScroll = useCallback(() => {
     setAutoScrollEnabled(prev => !prev);
-    toast({
-      title: autoScrollEnabled ? "Auto-scroll disabled" : "Auto-scroll enabled",
-      description: autoScrollEnabled 
-        ? "Images will no longer scroll automatically" 
-        : "Images will scroll automatically every 3 seconds",
-      duration: 2000,
-    });
+    // Removed toast notification
   }, [autoScrollEnabled]);
 
   return (
