@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Carousel,
@@ -25,7 +24,8 @@ import {
   X,
   Undo2,
   Filter,
-  ArrowLeft
+  ArrowLeft,
+  Focus
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
@@ -66,7 +66,6 @@ interface TouchPosition {
 }
 
 const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => {
-  // Core state
   const [currentIndex, setCurrentIndex] = useState(0);
   const [api, setApi] = useState<CarouselApi | null>(null);
   const [isRotated, setIsRotated] = useState(0);
@@ -79,8 +78,8 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [isFullscreenMode, setIsFullscreenMode] = useState(false);
   const [hoveredThumbnail, setHoveredThumbnail] = useState<number | null>(null);
-  
-  // Enhanced features state
+  const [focusMode, setFocusMode] = useState(false);
+
   const [zoomLevel, setZoomLevel] = useState(1);
   const [showCompareMode, setShowCompareMode] = useState(false);
   const [compareIndex, setCompareIndex] = useState(0);
@@ -90,7 +89,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const [showOtherColors, setShowOtherColors] = useState<boolean>(false);
   const [showAllControls, setShowAllControls] = useState<boolean>(false);
   const [viewMode, setViewMode] = useState<"default" | "immersive">("default");
-  
+
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
   const touchStartPosition = useRef<TouchPosition | null>(null);
@@ -131,7 +130,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
       setIsFlipped(false);
       setZoomLevel(1);
       
-      // Add to view history for undo feature
       setViewHistory(prev => [...prev, index]);
     });
   }, []);
@@ -139,7 +137,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const undoLastView = useCallback(() => {
     if (viewHistory.length > 1) {
       const newHistory = [...viewHistory];
-      newHistory.pop(); // Remove current view
+      newHistory.pop();
       const lastIndex = newHistory[newHistory.length - 1];
       
       if (api) {
@@ -291,10 +289,20 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   }, [openedThumbnailMenu]);
 
   const handleMenuAction = useCallback((e: React.MouseEvent, action: () => void) => {
-    e.stopPropagation(); // Prevent thumbnail click
-    e.preventDefault(); // Prevent default behavior
+    e.stopPropagation();
+    e.preventDefault();
     action();
   }, []);
+
+  const toggleFocusMode = useCallback(() => {
+    setFocusMode(prev => !prev);
+    
+    toast({
+      title: focusMode ? "Normal view" : "Focus mode",
+      description: focusMode ? "Showing all controls" : "Distraction-free viewing mode",
+      duration: 2000,
+    });
+  }, [focusMode]);
 
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
@@ -383,7 +391,10 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                       e.stopPropagation();
                       toggleImmersiveView();
                     }}
-                    className="absolute bottom-3 right-3 bg-black/60 backdrop-blur-sm text-white rounded-full p-2 hover:bg-black/80 transition-colors z-30"
+                    className={cn(
+                      "absolute bottom-3 right-3 bg-black/60 backdrop-blur-sm text-white rounded-full p-2 hover:bg-black/80 transition-colors z-30",
+                      focusMode && "opacity-0 hover:opacity-100 transition-opacity"
+                    )}
                   >
                     {viewMode === "default" ? <Maximize size={16} /> : <Square size={16} />}
                   </button>
@@ -392,7 +403,10 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             ))}
           </CarouselContent>
           
-          <div className="absolute top-4 left-4 right-4 z-10 flex items-center justify-between">
+          <div className={cn(
+            "absolute top-4 left-4 right-4 z-10 flex items-center justify-between",
+            focusMode && "opacity-0 hover:opacity-100 transition-opacity duration-200"
+          )}>
             <div className="flex items-center gap-2">
               <Button 
                 variant="outline"
@@ -416,7 +430,8 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
           
           <div className={cn(
             "absolute bottom-4 right-0 px-4 z-10 flex items-center justify-end",
-            viewMode === "immersive" && "opacity-0 hover:opacity-100 transition-opacity"
+            viewMode === "immersive" && "opacity-0 hover:opacity-100 transition-opacity",
+            focusMode && "opacity-0 hover:opacity-100 transition-opacity duration-200"
           )}>
             <div className="flex items-center gap-1.5">
               {!showAllControls ? (
@@ -432,6 +447,18 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                         </button>
                       </TooltipTrigger>
                       <TooltipContent>Rotate 90°</TooltipContent>
+                    </Tooltip>
+                    
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={toggleFocusMode}
+                          className="bg-black/50 backdrop-blur-sm p-1.5 rounded-lg text-white hover:bg-black/60 transition-colors"
+                        >
+                          <Focus size={16} />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>{focusMode ? "Exit Focus Mode" : "Focus Mode"}</TooltipContent>
                     </Tooltip>
                     
                     <Tooltip>
@@ -612,7 +639,8 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
           
           <div className={cn(
             "absolute left-2 top-1/2 -translate-y-1/2 z-10",
-            viewMode === "immersive" && "opacity-0 hover:opacity-100 transition-opacity"
+            viewMode === "immersive" && "opacity-0 hover:opacity-100 transition-opacity",
+            focusMode && "opacity-0 hover:opacity-100 transition-opacity duration-200"
           )}>
             <Button
               variant="outline"
@@ -626,7 +654,8 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
           
           <div className={cn(
             "absolute right-2 top-1/2 -translate-y-1/2 z-10",
-            viewMode === "immersive" && "opacity-0 hover:opacity-100 transition-opacity"
+            viewMode === "immersive" && "opacity-0 hover:opacity-100 transition-opacity",
+            focusMode && "opacity-0 hover:opacity-100 transition-opacity duration-200"
           )}>
             <Button
               variant="outline"
@@ -641,7 +670,10 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
         </Carousel>
       </div>
       
-      <div className="flex items-center gap-1.5 px-1.5 pb-1.5 overflow-x-auto scrollbar-none">
+      <div className={cn(
+        "flex items-center gap-1.5 px-1.5 pb-1.5 overflow-x-auto scrollbar-none",
+        focusMode && "opacity-0 hover:opacity-100 transition-opacity duration-200"
+      )}>
         {images.map((image, index) => (
           <div
             key={index}
