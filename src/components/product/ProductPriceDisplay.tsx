@@ -27,33 +27,27 @@ const ProductPriceDisplay: React.FC<ProductPriceDisplayProps> = ({
         "flex", 
         isMobile ? "flex-col gap-1.5" : "items-center justify-between"
       )}>
-        {/* Price and discount area */}
-        <div className="flex items-center gap-2">
-          <div className="flex flex-col">
-            <div className="flex items-baseline">
-              <span className="text-2xl md:text-3xl font-bold text-red-500">
-                ${formatPrice(currentPrice)}
-              </span>
-              
-              <span className="ml-2 text-sm md:text-base line-through text-gray-400">
-                ${formatPrice(originalPrice)}
-              </span>
-            </div>
+        {/* Price and discount area - all in one horizontal line */}
+        <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex items-center space-x-2">
+            <span className="text-2xl md:text-3xl font-bold text-red-500">
+              ${formatPrice(currentPrice)}
+            </span>
             
-            <div className="flex items-center space-x-1 mt-1">
-              <span className="text-sm text-green-600">
-                Save ${discountAmount.toFixed(2)}
+            <span className="text-sm md:text-base line-through text-gray-400">
+              ${formatPrice(originalPrice)}
+            </span>
+            
+            <span className="text-sm text-green-600">
+              Save ${discountAmount.toFixed(2)}
+            </span>
+            
+            {discountPercentage > 0 && (
+              <span className="text-xs md:text-sm font-bold px-1.5 md:px-2 py-0.5 bg-red-500 text-white rounded">
+                <TrendingDown className="inline w-2.5 h-2.5 md:w-3 md:h-3 mr-0.5 md:mr-1" />
+                {discountPercentage}% OFF
               </span>
-              
-              {discountPercentage > 0 && (
-                <div className="flex items-center">
-                  <span className="text-xs md:text-sm font-bold px-1.5 md:px-2 py-0.5 bg-red-500 text-white rounded ml-2">
-                    <TrendingDown className="inline w-2.5 h-2.5 md:w-3 md:h-3 mr-0.5 md:mr-1" />
-                    {discountPercentage}% OFF
-                  </span>
-                </div>
-              )}
-            </div>
+            )}
           </div>
         </div>
         
