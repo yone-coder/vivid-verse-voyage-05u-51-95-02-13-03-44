@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Carousel,
@@ -351,7 +350,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   }, [autoScrollEnabled]);
 
   return (
-    <div ref={containerRef} className="flex flex-col gap-1 bg-white mb-0">
+    <div ref={containerRef} className="flex flex-col gap-1 bg-transparent mb-0">
       <div className="relative w-full aspect-square overflow-hidden">
         <Carousel
           className="w-full h-full"
@@ -387,6 +386,59 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                     onClick={toggleFullscreen}
                   />
                   
+                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-2 bg-black/40 backdrop-blur-sm rounded-full p-1.5 z-30">
+                    <Button
+                      variant="ghost" 
+                      size="icon"
+                      className="h-8 w-8 rounded-full hover:bg-white/10"
+                      onClick={handleRotate}
+                    >
+                      <RotateCw className="h-4 w-4 text-white" />
+                    </Button>
+                    
+                    <Button
+                      variant="ghost" 
+                      size="icon"
+                      className="h-8 w-8 rounded-full hover:bg-white/10"
+                      onClick={handleFlip}
+                    >
+                      <FlipHorizontal className="h-4 w-4 text-white" />
+                    </Button>
+                    
+                    <Button
+                      variant="ghost" 
+                      size="icon"
+                      className={cn(
+                        "h-8 w-8 rounded-full hover:bg-white/10",
+                        autoScrollEnabled && "bg-white/20"
+                      )}
+                      onClick={toggleAutoScroll}
+                    >
+                      {autoScrollEnabled ? 
+                        <Pause className="h-4 w-4 text-white" /> : 
+                        <Play className="h-4 w-4 text-white" />
+                      }
+                    </Button>
+                    
+                    <Button
+                      variant="ghost" 
+                      size="icon"
+                      className="h-8 w-8 rounded-full hover:bg-white/10"
+                      onClick={toggleFavorite}
+                    >
+                      <Heart className={cn("h-4 w-4 text-white", isFavorite && "fill-red-500")} />
+                    </Button>
+                    
+                    <Button
+                      variant="ghost" 
+                      size="icon"
+                      className="h-8 w-8 rounded-full hover:bg-white/10"
+                      onClick={() => downloadImage(currentIndex)}
+                    >
+                      <Download className="h-4 w-4 text-white" />
+                    </Button>
+                  </div>
+                  
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -405,7 +457,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             ))}
           </CarouselContent>
           
-          {/* Updated navigation buttons with consistent styling */}
           <div className={cn(
             "absolute left-2 top-1/2 -translate-y-1/2 z-10",
             viewMode === "immersive" && "opacity-0 hover:opacity-100 transition-opacity",
@@ -414,10 +465,10 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             <Button
               variant="outline"
               size="icon"
-              className="rounded-full bg-white/80 backdrop-blur-sm hover:bg-white border-gray-200 shadow-sm h-9 w-9"
+              className="rounded-full bg-black/40 backdrop-blur-sm hover:bg-black/60 border-gray-200/10 shadow-sm h-9 w-9"
               onClick={handlePrevious}
             >
-              <ChevronLeft className="h-5 w-5" />
+              <ChevronLeft className="h-5 w-5 text-white" />
               <span className="sr-only">Previous slide</span>
             </Button>
           </div>
@@ -430,10 +481,10 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             <Button
               variant="outline"
               size="icon"
-              className="rounded-full bg-white/80 backdrop-blur-sm hover:bg-white border-gray-200 shadow-sm h-9 w-9"
+              className="rounded-full bg-black/40 backdrop-blur-sm hover:bg-black/60 border-gray-200/10 shadow-sm h-9 w-9"
               onClick={handleNext}
             >
-              <ChevronRight className="h-5 w-5" />
+              <ChevronRight className="h-5 w-5 text-white" />
               <span className="sr-only">Next slide</span>
             </Button>
           </div>
@@ -508,29 +559,29 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
               <Button 
                 variant="outline" 
                 size="icon" 
-                className="rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 border-white/10"
+                className="rounded-full bg-black/40 backdrop-blur-sm hover:bg-black/60 border-white/10"
                 onClick={(e) => {
                   e.stopPropagation();
                   handlePrevious();
                 }}
               >
-                <ChevronLeft className="h-5 w-5" />
+                <ChevronLeft className="h-5 w-5 text-white" />
               </Button>
               
-              <div className="bg-white/20 backdrop-blur-sm text-white px-3 py-1.5 rounded-lg">
+              <div className="bg-black/40 backdrop-blur-sm text-white px-3 py-1.5 rounded-lg">
                 {currentIndex + 1} / {images.length}
               </div>
               
               <Button 
                 variant="outline" 
                 size="icon" 
-                className="rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 border-white/10"
+                className="rounded-full bg-black/40 backdrop-blur-sm hover:bg-black/60 border-white/10"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleNext();
                 }}
               >
-                <ChevronRight className="h-5 w-5" />
+                <ChevronRight className="h-5 w-5 text-white" />
               </Button>
             </div>
             
@@ -544,7 +595,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                   handleRotate();
                 }}
               >
-                <RotateCw className="h-4 w-4" />
+                <RotateCw className="h-4 w-4 text-white" />
               </Button>
               
               <Button
@@ -556,7 +607,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                   handleFlip();
                 }}
               >
-                <FlipHorizontal className="h-4 w-4" />
+                <FlipHorizontal className="h-4 w-4 text-white" />
               </Button>
               
               <Button
@@ -568,7 +619,19 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                   toggleFavorite();
                 }}
               >
-                <Heart className={cn("h-4 w-4", isFavorite && "fill-red-500")} />
+                <Heart className={cn("h-4 w-4 text-white", isFavorite && "fill-red-500")} />
+              </Button>
+              
+              <Button
+                variant="ghost" 
+                size="icon"
+                className="h-8 w-8 rounded-full hover:bg-white/10"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  downloadImage(currentIndex);
+                }}
+              >
+                <Download className="h-4 w-4 text-white" />
               </Button>
             </div>
           </div>
