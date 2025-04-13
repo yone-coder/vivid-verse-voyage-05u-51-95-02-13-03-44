@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Carousel,
@@ -7,7 +6,6 @@ import {
   CarouselApi,
 } from "@/components/ui/carousel";
 import { 
-  Heart, 
   Play,
   Pause,
   RotateCw,
@@ -68,7 +66,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const [api, setApi] = useState<CarouselApi | null>(null);
   const [isRotated, setIsRotated] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
-  const [isFavorite, setIsFavorite] = useState(false);
   const [preloadedImages, setPreloadedImages] = useState<string[]>([]);
   const [autoScrollEnabled, setAutoScrollEnabled] = useState(false);
   const [autoScrollInterval, setAutoScrollInterval] = useState<NodeJS.Timeout | null>(null);
@@ -77,7 +74,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const [isFullscreenMode, setIsFullscreenMode] = useState(false);
   const [hoveredThumbnail, setHoveredThumbnail] = useState<number | null>(null);
   const [focusMode, setFocusMode] = useState(false);
-  const [likeCount, setLikeCount] = useState(0);
 
   const [zoomLevel, setZoomLevel] = useState(1);
   const [showCompareMode, setShowCompareMode] = useState(false);
@@ -201,19 +197,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
       duration: 2000,
     });
   }, [viewMode]);
-
-  const toggleFavorite = useCallback(() => {
-    setIsFavorite(prev => !prev);
-    setLikeCount(prev => isFavorite ? prev - 1 : prev + 1);
-    
-    toast({
-      title: isFavorite ? "Removed from favorites" : "Added to favorites",
-      description: isFavorite 
-        ? "Image removed from your saved collection" 
-        : "Image saved to your collection",
-      duration: 2000,
-    });
-  }, [isFavorite]);
 
   const handleThumbnailClick = useCallback((index: number) => {
     if (api) {
@@ -394,7 +377,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
           <div className={cn(
             "absolute left-2 top-1/2 -translate-y-1/2 z-10",
             viewMode === "immersive" && "opacity-0 hover:opacity-100 transition-opacity",
-            focusMode && "opacity-0 hover:opacity-100 transition-opacity duration-200"
+            focusMode && "opacity-0"
           )}>
             <Button
               variant="outline"
@@ -410,7 +393,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
           <div className={cn(
             "absolute right-2 top-1/2 -translate-y-1/2 z-10",
             viewMode === "immersive" && "opacity-0 hover:opacity-100 transition-opacity",
-            focusMode && "opacity-0 hover:opacity-100 transition-opacity duration-200"
+            focusMode && "opacity-0"
           )}>
             <Button
               variant="outline"
@@ -424,7 +407,10 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
           </div>
         </Carousel>
         
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-2 bg-black/40 backdrop-blur-sm rounded-full p-1.5 z-30">
+        <div className={cn(
+          "absolute bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-2 bg-black/40 backdrop-blur-sm rounded-full p-1.5 z-30 transition-opacity",
+          focusMode && "opacity-0"
+        )}>
           <Button
             variant="ghost" 
             size="icon"
@@ -457,36 +443,20 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
               <Play className="h-4 w-4 text-white" />
             }
           </Button>
-          
-          <div className="relative">
-            <Button
-              variant="ghost" 
-              size="icon"
-              className="h-8 w-8 rounded-full hover:bg-white/10"
-              onClick={toggleFavorite}
-            >
-              <Heart className={cn("h-4 w-4 text-white", isFavorite && "fill-red-500")} />
-            </Button>
-            {likeCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 min-w-[16px] flex items-center justify-center px-1">
-                {likeCount > 999 ? '999+' : likeCount}
-              </span>
-            )}
-          </div>
         </div>
         
         <button
           onClick={(e) => {
             e.stopPropagation();
-            toggleImmersiveView();
+            toggleFocusMode();
           }}
           className={cn(
             "absolute bottom-3 right-3 bg-black/60 backdrop-blur-sm text-white rounded-full p-2 hover:bg-black/80 transition-colors z-30",
-            focusMode && "bg-primary text-white",
-            focusMode && "opacity-0 hover:opacity-100 transition-opacity"
+            focusMode && "bg-primary text-white"
           )}
+          aria-label={focusMode ? "Exit focus mode" : "Enter focus mode"}
         >
-          {viewMode === "default" ? <Maximize size={16} /> : <Square size={16} />}
+          <Focus size={16} />
         </button>
       </div>
       
@@ -607,18 +577,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                 }}
               >
                 <FlipHorizontal className="h-4 w-4 text-white" />
-              </Button>
-              
-              <Button
-                variant="ghost" 
-                size="icon"
-                className="h-8 w-8 rounded-full hover:bg-white/10"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleFavorite();
-                }}
-              >
-                <Heart className={cn("h-4 w-4 text-white", isFavorite && "fill-red-500")} />
               </Button>
               
               <Button
