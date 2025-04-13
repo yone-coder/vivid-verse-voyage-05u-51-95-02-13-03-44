@@ -34,6 +34,8 @@ import {
   View,
   ShoppingCart,
   ArrowLeft,
+  Grid,
+  Rows,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
@@ -362,7 +364,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
           <CarouselContent className="h-full">
             {images.map((image, index) => (
               <CarouselItem key={index} className="h-full">
-                <div className="flex h-full w-full items-center justify-center overflow-hidden">
+                <div className="flex h-full w-full items-center justify-center overflow-hidden relative">
                   <img
                     ref={index === currentIndex ? imageRef : undefined}
                     src={image}
@@ -385,6 +387,17 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                     draggable={false}
                     onClick={toggleFullscreen}
                   />
+                  
+                  {/* Focus button moved directly onto the image */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleImmersiveView();
+                    }}
+                    className="absolute bottom-3 right-3 bg-black/60 backdrop-blur-sm text-white rounded-full p-2 hover:bg-black/80 transition-colors z-30"
+                  >
+                    {viewMode === "default" ? <Maximize size={16} /> : <Square size={16} />}
+                  </button>
                 </div>
               </CarouselItem>
             ))}
@@ -636,26 +649,15 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             </Button>
           </div>
           
-          <div className={cn(
-            "absolute top-4 right-4",
-            viewMode === "immersive" && "opacity-0 hover:opacity-100 transition-opacity"
-          )}>
-            <Button
-              variant="outline"
-              size="icon"
-              className="rounded-full bg-white/70 backdrop-blur-sm hover:bg-white/90 w-7 h-7"
-              onClick={toggleImmersiveView}
-            >
-              {viewMode === "default" ? <Maximize size={13} /> : <Square size={13} />}
-            </Button>
-          </div>
+          
         </Carousel>
       </div>
       
-      <div className="flex items-center justify-between px-2">
+      {/* Redesigned thumbnail info and controls section */}
+      <div className="flex items-center justify-between px-2 mt-1 mb-1">
         <div className="flex items-center gap-1">
           <p className="text-xs text-gray-500">
-            {images.length} Images
+            {currentIndex + 1}/{images.length}
           </p>
           {viewHistory.length > 1 && (
             <Button
@@ -669,42 +671,42 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             </Button>
           )}
         </div>
-        <div className="flex items-center gap-1">
-          <button 
-            onClick={toggleImmersiveView}
-            className="flex items-center text-xs text-gray-600 hover:text-blue-600 px-1.5 py-1"
-          >
-            {viewMode === "default" ? <Maximize size={12} className="mr-1" /> : <Square size={12} className="mr-1" />}
-            {viewMode === "default" ? "Focus" : "Normal"}
-          </button>
-          <button 
-            onClick={toggleThumbnailViewMode}
-            className="flex items-center text-xs text-gray-600 hover:text-blue-600 px-1.5 py-1"
-          >
-            <GalleryHorizontal className="h-3.5 w-3.5 mr-1" />
-            {thumbnailViewMode === "row" ? "Grid" : "Row"}
-          </button>
-        </div>
+        
+        {/* Layout toggle for thumbnails */}
+        <Button 
+          variant="ghost"
+          size="sm"
+          className="h-6 px-1.5 text-xs text-gray-600 hover:text-blue-600"
+          onClick={toggleThumbnailViewMode}
+        >
+          {thumbnailViewMode === "row" ? (
+            <Grid className="h-3.5 w-3.5 mr-1" />
+          ) : (
+            <Rows className="h-3.5 w-3.5 mr-1" />
+          )}
+          {thumbnailViewMode === "row" ? "Grid" : "Row"}
+        </Button>
       </div>
       
+      {/* Redesigned thumbnail section with cleaner layout */}
       <div 
         className={cn(
-          "transition-all duration-300 mb-1",
+          "transition-all duration-300 px-1.5 pb-1.5",
           thumbnailViewMode === "row" 
-            ? "flex gap-2 overflow-x-auto pb-0 px-1 scrollbar-none" 
-            : "grid grid-cols-4 gap-2 pb-0 px-1"
+            ? "flex gap-1.5 overflow-x-auto pb-1 scrollbar-none" 
+            : "grid grid-cols-4 gap-1.5"
         )}
       >
         {images.map((image, index) => (
           <div
             key={index}
             className={cn(
-              "relative overflow-hidden rounded-md border-2 flex-shrink-0 transition-all",
+              "relative overflow-hidden rounded-md border flex-shrink-0 transition-all",
               thumbnailViewMode === "row" ? "w-14 h-14" : "aspect-square",
               currentIndex === index 
-                ? "border-primary ring-2 ring-primary/20" 
-                : "border-transparent hover:border-gray-300",
-              "group cursor-pointer",
+                ? "border-primary shadow-sm" 
+                : "border-gray-200 hover:border-gray-300",
+              "cursor-pointer",
             )}
             onClick={() => handleThumbnailClick(index)}
             onMouseEnter={() => setHoveredThumbnail(index)}
@@ -722,104 +724,21 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             
             {hoveredThumbnail === index && (
               <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                <HoverCard>
-                  <HoverCardTrigger asChild>
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
-                      className="h-6 w-6 rounded-full bg-white/80 hover:bg-white"
-                    >
-                      <Eye className="h-3 w-3 text-gray-800" />
-                    </Button>
-                  </HoverCardTrigger>
-                  <HoverCardContent className="p-0 w-auto">
-                    <img 
-                      src={image} 
-                      alt={`Preview ${index + 1}`} 
-                      className="max-w-[200px] max-h-[200px] object-contain"
-                    />
-                  </HoverCardContent>
-                </HoverCard>
-                
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
-                      className="h-6 w-6 rounded-full bg-white/80 hover:bg-white ml-1"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <View className="h-3 w-3 text-gray-800" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent 
-                    className="w-40 p-1" 
-                    align="center" 
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <div className="flex flex-col gap-0.5 py-1">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="justify-start text-sm h-8 px-2 w-full"
-                        onClick={(e) => handleMenuAction(e, () => handleThumbnailClick(index))}
-                      >
-                        <Eye className="h-4 w-4 mr-2" /> View
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="justify-start text-sm h-8 px-2 w-full"
-                        onClick={(e) => handleMenuAction(e, () => downloadImage(index))}
-                      >
-                        <Download className="h-4 w-4 mr-2" /> Download
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="justify-start text-sm h-8 px-2 w-full"
-                        onClick={(e) => {
-                          handleMenuAction(e, () => {
-                            copyImageUrl(index);
-                            handleThumbnailClick(index);
-                          });
-                        }}
-                      >
-                        {copiedIndex === index ? (
-                          <Check className="h-4 w-4 mr-2 text-green-600" />
-                        ) : (
-                          <Copy className="h-4 w-4 mr-2" />
-                        )}
-                        {copiedIndex === index ? "Copied!" : "Copy URL"}
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="justify-start text-sm h-8 px-2 w-full"
-                        onClick={(e) => {
-                          handleMenuAction(e, () => {
-                            toggleFullscreen();
-                            handleThumbnailClick(index);
-                          });
-                        }}
-                      >
-                        <ZoomIn className="h-4 w-4 mr-2" /> Fullscreen
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="justify-start text-sm h-8 px-2 w-full"
-                        onClick={(e) => handleMenuAction(e, () => shareImage(index))}
-                      >
-                        <Share2 className="h-4 w-4 mr-2" /> Share
-                      </Button>
-                    </div>
-                  </PopoverContent>
-                </Popover>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="h-6 w-6 rounded-full bg-white/80 hover:bg-white"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleThumbnailClick(index);
+                  }}
+                >
+                  <Eye className="h-3 w-3 text-gray-800" />
+                </Button>
               </div>
             )}
             
-            <span className="absolute bottom-0.5 right-0.5 text-[10px] bg-black/40 text-white px-1 rounded">
+            <span className="absolute bottom-0.5 right-0.5 text-[9px] bg-black/40 text-white px-0.5 rounded">
               {index + 1}
             </span>
           </div>
