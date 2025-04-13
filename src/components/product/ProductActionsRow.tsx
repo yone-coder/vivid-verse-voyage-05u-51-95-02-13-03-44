@@ -9,24 +9,47 @@ interface ProductActionsRowProps {
   toggleFavorite: () => void;
   handleShare: () => void;
   handleCartClick: () => void;
+  likeCount?: number;
 }
 
 const ProductActionsRow: React.FC<ProductActionsRowProps> = ({
   isFavorite,
   toggleFavorite,
   handleShare,
-  handleCartClick
+  handleCartClick,
+  likeCount = 0
 }) => {
+  const { toast } = useToast();
+
+  const handleLike = () => {
+    toggleFavorite();
+    
+    toast({
+      title: isFavorite ? "Removed from favorites" : "Added to favorites",
+      description: isFavorite 
+        ? "Product removed from your saved collection" 
+        : "Product saved to your collection",
+      duration: 2000,
+    });
+  };
+  
   return (
     <div className="flex items-center space-x-2">
-      <Button 
-        variant="ghost" 
-        size="icon" 
-        className="rounded-full"
-        onClick={toggleFavorite}
-      >
-        <Heart className={`h-5 w-5 ${isFavorite ? 'fill-red-500 text-red-500' : ''}`} />
-      </Button>
+      <div className="relative">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="rounded-full"
+          onClick={handleLike}
+        >
+          <Heart className={`h-5 w-5 ${isFavorite ? 'fill-red-500 text-red-500' : ''}`} />
+        </Button>
+        {likeCount > 0 && (
+          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 min-w-[16px] flex items-center justify-center px-1">
+            {likeCount > 999 ? '999+' : likeCount}
+          </span>
+        )}
+      </div>
       
       <Button 
         variant="ghost" 

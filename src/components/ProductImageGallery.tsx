@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Carousel,
@@ -14,14 +13,9 @@ import {
   FlipHorizontal,
   ChevronLeft,
   ChevronRight,
-  Download,
-  Copy,
-  ZoomIn,
-  ArrowUpToLine,
   Share2,
   Maximize,
   Square,
-  PanelRight,
   X,
   Undo2,
   Filter,
@@ -206,6 +200,8 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
 
   const toggleFavorite = useCallback(() => {
     setIsFavorite(prev => !prev);
+    setLikeCount(prev => isFavorite ? prev - 1 : prev + 1);
+    
     toast({
       title: isFavorite ? "Removed from favorites" : "Added to favorites",
       description: isFavorite 
@@ -424,7 +420,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
           </div>
         </Carousel>
         
-        {/* Fixed overlay controls - moved outside of carousel items so they don't scroll */}
         <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-2 bg-black/40 backdrop-blur-sm rounded-full p-1.5 z-30">
           <Button
             variant="ghost" 
@@ -459,23 +454,21 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             }
           </Button>
           
-          <Button
-            variant="ghost" 
-            size="icon"
-            className="h-8 w-8 rounded-full hover:bg-white/10"
-            onClick={toggleFavorite}
-          >
-            <Heart className={cn("h-4 w-4 text-white", isFavorite && "fill-red-500")} />
-          </Button>
-          
-          <Button
-            variant="ghost" 
-            size="icon"
-            className="h-8 w-8 rounded-full hover:bg-white/10"
-            onClick={() => downloadImage(currentIndex)}
-          >
-            <Download className="h-4 w-4 text-white" />
-          </Button>
+          <div className="relative">
+            <Button
+              variant="ghost" 
+              size="icon"
+              className="h-8 w-8 rounded-full hover:bg-white/10"
+              onClick={toggleFavorite}
+            >
+              <Heart className={cn("h-4 w-4 text-white", isFavorite && "fill-red-500")} />
+            </Button>
+            {likeCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 min-w-[16px] flex items-center justify-center px-1">
+                {likeCount > 999 ? '999+' : likeCount}
+              </span>
+            )}
+          </div>
         </div>
         
         <button

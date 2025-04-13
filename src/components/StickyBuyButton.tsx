@@ -12,6 +12,7 @@ const StickyBuyButton = () => {
   const [stockLevel, setStockLevel] = useState(156);
   const [isStockChanging, setIsStockChanging] = useState(false);
   const [recentPurchase, setRecentPurchase] = useState(false);
+  const [likeCount, setLikeCount] = useState(156);
 
   const product = {
     name: "Wireless Bluetooth Earbuds",
@@ -97,6 +98,7 @@ const StickyBuyButton = () => {
 
   const toggleWishlist = () => {
     setIsWishlist(!isWishlist);
+    setLikeCount(prev => isWishlist ? prev - 1 : prev + 1);
   };
 
   const togglePanel = () => {
@@ -170,12 +172,19 @@ const StickyBuyButton = () => {
           </div>
 
           <div className="flex items-center space-x-2">
-            <button 
-              onClick={toggleWishlist}
-              className="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-full"
-            >
-              <Heart className={`w-5 h-5 ${isWishlist ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
-            </button>
+            <div className="relative">
+              <button 
+                onClick={toggleWishlist}
+                className="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-full"
+              >
+                <Heart className={`w-5 h-5 ${isWishlist ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
+                {likeCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 min-w-[16px] flex items-center justify-center px-1">
+                    {likeCount > 999 ? '999+' : likeCount}
+                  </span>
+                )}
+              </button>
+            </div>
             
             <button 
               onClick={togglePanel}
