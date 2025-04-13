@@ -393,6 +393,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                     }}
                     className={cn(
                       "absolute bottom-3 right-3 bg-black/60 backdrop-blur-sm text-white rounded-full p-2 hover:bg-black/80 transition-colors z-30",
+                      focusMode && "bg-primary text-white",
                       focusMode && "opacity-0 hover:opacity-100 transition-opacity"
                     )}
                   >
