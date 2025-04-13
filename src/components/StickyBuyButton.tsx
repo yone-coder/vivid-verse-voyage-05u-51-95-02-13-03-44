@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ShoppingCart, Heart, Share2, Star, TrendingUp, ChevronUp, AlertCircle, MessageCircle } from 'lucide-react';
+import { ShoppingCart, Heart, Share2, Star, ChevronUp, ArrowRight } from 'lucide-react';
 
 const StickyBuyButton = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -25,7 +25,6 @@ const StickyBuyButton = () => {
     variants: ["Red", "Black", "White", "Blue"],
     shipping: "Free Shipping",
     deliveryTime: "15-30 days",
-    inStock: stockLevel
   };
 
   useEffect(() => {
@@ -46,7 +45,7 @@ const StickyBuyButton = () => {
   }, [lastScrollY]);
 
   const incrementQuantity = () => {
-    if (quantity < product.inStock) {
+    if (quantity < stockLevel) {
       setQuantity(quantity + 1);
     }
   };
@@ -78,35 +77,7 @@ const StickyBuyButton = () => {
         }`}
       >
         <div className="px-3 pt-2 pb-0">
-          <div className="flex items-center justify-between mb-1">
-            <div className="flex items-center">
-              <span className="text-xs font-medium">Stock Remaining</span>
-              <div className="ml-2 px-1.5 py-0.5 bg-red-100 rounded text-red-500 text-xs font-medium flex items-center">
-                <span className="w-1.5 h-1.5 bg-red-500 rounded-full mr-1 animate-pulse"></span>
-                Limited
-              </div>
-            </div>
-            <div className="flex items-center">
-              <TrendingUp className="w-3 h-3 text-orange-500 mr-1" />
-              <span className="text-xs font-medium">{product.inStock} items left</span>
-            </div>
-          </div>
-          
           <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center">
-              <span className="text-xs text-gray-500">Selling fast - {Math.round((product.orders / (product.orders + product.inStock)) * 100)}% sold</span>
-              {recentPurchase && (
-                <span className="ml-2 px-1.5 py-0.5 bg-orange-100 rounded text-orange-600 text-xs font-medium animate-fadeIn">
-                  Just purchased!
-                </span>
-              )}
-            </div>
-            <span className="text-xs text-gray-500">{quantity} in your cart</span>
-          </div>
-        </div>
-
-        <div className="flex items-center justify-between px-3 py-2">
-          <div className="flex items-center space-x-2">
             <div className="flex flex-col">
               <span className="text-red-500 font-bold text-lg">${product.salePrice}</span>
               <div className="flex items-center">
@@ -114,34 +85,34 @@ const StickyBuyButton = () => {
                 <span className="text-red-500 text-xs ml-1">-{product.discount}%</span>
               </div>
             </div>
-          </div>
 
-          <div className="flex items-center space-x-2">
-            <div className="relative">
+            <div className="flex items-center space-x-2">
+              <div className="relative">
+                <button 
+                  onClick={toggleWishlist}
+                  className="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-full"
+                >
+                  <Heart className={`w-5 h-5 ${isWishlist ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
+                  {likeCount > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 min-w-[16px] flex items-center justify-center px-1">
+                      {likeCount > 999 ? '999+' : likeCount}
+                    </span>
+                  )}
+                </button>
+              </div>
+              
               <button 
-                onClick={toggleWishlist}
-                className="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-full"
+                onClick={togglePanel}
+                className="bg-gray-100 text-gray-700 px-3 py-2 rounded-full flex items-center justify-center"
               >
-                <Heart className={`w-5 h-5 ${isWishlist ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
-                {likeCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 min-w-[16px] flex items-center justify-center px-1">
-                    {likeCount > 999 ? '999+' : likeCount}
-                  </span>
-                )}
+                <ShoppingCart className="w-5 h-5 mr-1" />
+                <span>Options</span>
+              </button>
+              
+              <button className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2 rounded-full font-medium shadow-sm hover:shadow-md transition-all whitespace-nowrap">
+                Buy Now
               </button>
             </div>
-            
-            <button 
-              onClick={togglePanel}
-              className="bg-gray-100 text-gray-700 px-3 py-2 rounded-full flex items-center justify-center"
-            >
-              <ShoppingCart className="w-5 h-5 mr-1" />
-              <span>Options</span>
-            </button>
-            
-            <button className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2 rounded-full font-medium shadow-sm hover:shadow-md transition-all whitespace-nowrap">
-              Buy Now
-            </button>
           </div>
         </div>
 
@@ -209,7 +180,7 @@ const StickyBuyButton = () => {
                 >
                   +
                 </button>
-                <span className="text-xs text-gray-500 ml-3">{product.inStock} available</span>
+                <span className="text-xs text-gray-500 ml-3">{stockLevel} available</span>
               </div>
             </div>
             
