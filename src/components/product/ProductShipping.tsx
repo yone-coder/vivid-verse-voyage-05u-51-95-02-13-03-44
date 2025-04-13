@@ -51,11 +51,14 @@ const ProductShipping: React.FC<ProductShippingProps> = ({
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium text-gray-700">Shipping:</span>
         <div className="flex flex-col items-end">
-          <span className="text-sm text-green-600 font-medium">
-            {isExpressSelected 
-              ? `Express Shipping ($${shippingInfo.express})` 
-              : "Free Standard Shipping"}
-          </span>
+          <div className="flex items-center">
+            <Truck className="h-4 w-4 text-green-600 mr-1" />
+            <span className="text-sm text-green-600 font-medium">
+              {isExpressSelected 
+                ? `Express Shipping ($${shippingInfo.express})` 
+                : "Free Standard Shipping"}
+            </span>
+          </div>
           <div className="text-xs text-gray-500 mt-0.5">
             Estimated delivery: {isExpressSelected ? shippingInfo.expressEstimated : shippingInfo.estimated}
           </div>
