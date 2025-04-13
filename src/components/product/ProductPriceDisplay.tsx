@@ -1,6 +1,6 @@
 
 import React from "react";
-import { TrendingDown, Clock } from "lucide-react";
+import { TrendingDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -53,14 +53,12 @@ const ProductPriceDisplay: React.FC<ProductPriceDisplayProps> = ({
           )}
         </div>
         
-        {/* Time-limited icon */}
+        {/* Time-limited section */}
         <div className={cn(
           "flex", 
           isMobile ? "justify-between" : "flex-col items-end"
         )}>
-          <div className="text-[10px] md:text-xs text-gray-500 flex items-center mt-0.5">
-            <Clock className="w-2.5 h-2.5 md:w-3 md:h-3 mr-0.5 md:mr-1" />
-          </div>
+          {/* Clock icon and text have been removed */}
         </div>
       </div>
       
