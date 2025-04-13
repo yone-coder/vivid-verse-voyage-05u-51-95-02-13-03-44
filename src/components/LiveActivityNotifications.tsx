@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { ShoppingCart } from 'lucide-react';
 
@@ -41,7 +40,7 @@ const LiveActivityNotifications = () => {
     const randomUser = users[Math.floor(Math.random() * users.length)];
     
     return { 
-      content: `user${randomUser.username.replace(/\D/g, '')} from ${randomCity} just bought this product ${randomTime}`,
+      content: `${randomUser.username} from ${randomCity} just bought this product ${randomTime}`,
       color: "text-green-500",
       bgColor: "bg-green-100/10",
       icon: ShoppingCart
