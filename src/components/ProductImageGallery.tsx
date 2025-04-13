@@ -670,10 +670,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
         </Carousel>
       </div>
       
-      <div className={cn(
-        "flex items-center gap-1.5 px-1.5 pb-1.5 overflow-x-auto scrollbar-none",
-        focusMode && "opacity-0 hover:opacity-100 transition-opacity duration-200"
-      )}>
+      <div className="flex items-center gap-1.5 px-1.5 pb-1.5 overflow-x-auto scrollbar-none">
         {images.map((image, index) => (
           <div
             key={index}
