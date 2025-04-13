@@ -30,17 +30,8 @@ const LiveActivityNotifications = () => {
   ];
 
   const generatePurchaseNotification = () => {
-    const cities = ["New York", "Los Angeles", "Chicago", "Miami", "Toronto", "London", "Paris", "Berlin", "Sydney", "Tokyo", 
-                   "Amsterdam", "Barcelona", "Singapore", "Seoul", "Dubai", "Mexico City", "Vancouver", "Madrid", "Rome", "Bangkok"];
-    const randomCity = cities[Math.floor(Math.random() * cities.length)];
-    
-    const timeDescriptions = ["just now", "moments ago", "a few seconds ago", "30 seconds ago", "a minute ago"];
-    const randomTime = timeDescriptions[Math.floor(Math.random() * timeDescriptions.length)];
-    
-    const randomUser = users[Math.floor(Math.random() * users.length)];
-    
     return { 
-      content: `${randomUser.username} from ${randomCity} just bought this product ${randomTime}`,
+      content: "Someone just bought this product",
       color: "text-green-500",
       bgColor: "bg-green-100/10",
       icon: ShoppingCart
