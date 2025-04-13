@@ -7,7 +7,6 @@ import {
   BellRing,
   Clock,
   Check,
-  ChevronDown,
   CircleDollarSign,
   ShieldCheck
 } from "lucide-react";
@@ -24,7 +23,6 @@ interface ProductLimitedTimeOfferProps {
 }
 
 const ProductLimitedTimeOffer: React.FC<ProductLimitedTimeOfferProps> = ({ timeLeft }) => {
-  const [showPerkInfo, setShowPerkInfo] = useState(false);
   const [isNotifyActive, setIsNotifyActive] = useState(false);
   const [earlyAccessActivated, setEarlyAccessActivated] = useState(false);
   const { toast } = useToast();
@@ -144,44 +142,32 @@ const ProductLimitedTimeOffer: React.FC<ProductLimitedTimeOfferProps> = ({ timeL
         </div>
       </div>
       
-      {showPerkInfo && (
-        <div className="mt-1.5 grid grid-cols-2 gap-1 text-[10px] bg-white/40 rounded p-1 animate-fade-in">
-          <div className="flex items-center">
-            <div className="h-3 w-3 rounded-full bg-purple-100 flex items-center justify-center mr-1">
-              <Check className="h-2 w-2 text-purple-700" />
-            </div>
-            <span className="text-purple-900">Free fast shipping</span>
+      <div className="mt-1.5 grid grid-cols-2 gap-1 text-[10px] bg-white/40 rounded p-1">
+        <div className="flex items-center">
+          <div className="h-3 w-3 rounded-full bg-purple-100 flex items-center justify-center mr-1">
+            <Check className="h-2 w-2 text-purple-700" />
           </div>
-          <div className="flex items-center">
-            <div className="h-3 w-3 rounded-full bg-purple-100 flex items-center justify-center mr-1">
-              <Check className="h-2 w-2 text-purple-700" />
-            </div>
-            <span className="text-purple-900">30-day returns</span>
-          </div>
-          <div className="flex items-center">
-            <div className="h-3 w-3 rounded-full bg-purple-100 flex items-center justify-center mr-1">
-              <Check className="h-2 w-2 text-purple-700" />
-            </div>
-            <span className="text-purple-900">2-year warranty</span>
-          </div>
-          <div className="flex items-center">
-            <div className="h-3 w-3 rounded-full bg-purple-100 flex items-center justify-center mr-1">
-              <Check className="h-2 w-2 text-purple-700" />
-            </div>
-            <span className="text-purple-900">Price match</span>
-          </div>
+          <span className="text-purple-900">Free fast shipping</span>
         </div>
-      )}
-      
-      <Button 
-        variant="link"
-        size="sm"
-        className="text-[10px] p-0 h-5 text-purple-700 hover:text-purple-900 w-full text-center mt-0.5"
-        onClick={() => setShowPerkInfo(!showPerkInfo)}
-      >
-        {showPerkInfo ? "Show less" : "Show offer details"}
-        <ChevronDown className={`h-3 w-3 ml-0.5 transition-transform ${showPerkInfo ? "rotate-180" : ""}`} />
-      </Button>
+        <div className="flex items-center">
+          <div className="h-3 w-3 rounded-full bg-purple-100 flex items-center justify-center mr-1">
+            <Check className="h-2 w-2 text-purple-700" />
+          </div>
+          <span className="text-purple-900">30-day returns</span>
+        </div>
+        <div className="flex items-center">
+          <div className="h-3 w-3 rounded-full bg-purple-100 flex items-center justify-center mr-1">
+            <Check className="h-2 w-2 text-purple-700" />
+          </div>
+          <span className="text-purple-900">2-year warranty</span>
+        </div>
+        <div className="flex items-center">
+          <div className="h-3 w-3 rounded-full bg-purple-100 flex items-center justify-center mr-1">
+            <Check className="h-2 w-2 text-purple-700" />
+          </div>
+          <span className="text-purple-900">Price match</span>
+        </div>
+      </div>
     </div>
   );
 };
