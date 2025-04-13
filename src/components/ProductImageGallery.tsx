@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Carousel,
@@ -20,7 +21,9 @@ import {
   Undo2,
   Filter,
   ArrowLeft,
-  Focus
+  Focus,
+  Download,
+  ArrowUpToLine
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
@@ -74,6 +77,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const [isFullscreenMode, setIsFullscreenMode] = useState(false);
   const [hoveredThumbnail, setHoveredThumbnail] = useState<number | null>(null);
   const [focusMode, setFocusMode] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
 
   const [zoomLevel, setZoomLevel] = useState(1);
   const [showCompareMode, setShowCompareMode] = useState(false);
