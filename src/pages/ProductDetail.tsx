@@ -34,7 +34,6 @@ const ProductDetail = () => {
   const [selectedColor, setSelectedColor] = useState("Blue Galaxy");
   const [showPriceHistory, setShowPriceHistory] = useState(false);
   const [isExpressSelected, setIsExpressSelected] = useState(false);
-  const [giftWrap, setGiftWrap] = useState(false);
   const [selectedWarranty, setSelectedWarranty] = useState("none");
   const [maxQuantityReached, setMaxQuantityReached] = useState(false);
   const [comparisonMode, setComparisonMode] = useState(false);
@@ -294,7 +293,7 @@ const ProductDetail = () => {
   const warrantyOption = productForTabs.warranty.find(w => w.name.toLowerCase() === selectedWarranty);
   const warrantyPrice = warrantyOption ? warrantyOption.price : 0;
   
-  const totalPrice = (currentPrice * quantity) + warrantyPrice + (giftWrap ? 2.99 : 0) + (isExpressSelected ? productForTabs.shipping.express : 0);
+  const totalPrice = (currentPrice * quantity) + warrantyPrice + (isExpressSelected ? productForTabs.shipping.express : 0);
   
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
@@ -380,8 +379,6 @@ const ProductDetail = () => {
               shippingInfo={productForTabs.shipping}
               isExpressSelected={isExpressSelected}
               onExpressChange={setIsExpressSelected}
-              giftWrap={giftWrap}
-              onGiftWrapChange={setGiftWrap}
             />
           </div>
           

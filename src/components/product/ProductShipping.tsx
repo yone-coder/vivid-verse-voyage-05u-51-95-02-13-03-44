@@ -1,9 +1,8 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Truck, Gift } from "lucide-react";
+import { Truck } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 
 interface ShippingInfo {
@@ -18,28 +17,25 @@ interface ProductShippingProps {
   shippingInfo: ShippingInfo;
   isExpressSelected: boolean;
   onExpressChange: (value: boolean) => void;
-  giftWrap: boolean;
-  onGiftWrapChange: (value: boolean) => void;
 }
 
 const ProductShipping: React.FC<ProductShippingProps> = ({
   shippingInfo,
   isExpressSelected,
-  onExpressChange,
-  giftWrap,
-  onGiftWrapChange
+  onExpressChange
 }) => {
   const [showDeliveryOptions, setShowDeliveryOptions] = useState(false);
   const { toast } = useToast();
 
-  const toggleGiftWrap = () => {
-    const newValue = !giftWrap;
-    onGiftWrapChange(newValue);
+  const handleShippingChange = (value: string) => {
+    const newValue = value === "express";
+    onExpressChange(newValue);
+    
     toast({
-      title: newValue ? "Gift wrapping added" : "Gift wrapping removed",
+      title: newValue ? "Express shipping selected" : "Standard shipping selected",
       description: newValue 
-        ? "Your item will be gift wrapped with a personalized message" 
-        : "Gift wrapping has been removed from your order"
+        ? `Express shipping for $${shippingInfo.express} added to your order` 
+        : "Free standard shipping selected"
     });
   };
 
@@ -75,7 +71,7 @@ const ProductShipping: React.FC<ProductShippingProps> = ({
         <div className="mt-1 p-3 bg-gray-50 rounded-md border border-gray-200">
           <RadioGroup 
             value={isExpressSelected ? "express" : "standard"}
-            onValueChange={(value) => onExpressChange(value === "express")}
+            onValueChange={handleShippingChange}
           >
             <div className="flex items-start space-x-2 mb-2">
               <RadioGroupItem value="standard" id="standard" className="mt-1" />
@@ -93,25 +89,6 @@ const ProductShipping: React.FC<ProductShippingProps> = ({
               </label>
             </div>
           </RadioGroup>
-          
-          <div className="mt-3 pt-3 border-t border-gray-200">
-            <div className="flex items-center justify-between text-sm">
-              <div className="flex items-center">
-                <Gift className="h-4 w-4 mr-1.5 text-purple-600" />
-                <span className="font-medium">Gift Wrapping</span>
-              </div>
-              <Switch 
-                checked={giftWrap} 
-                onCheckedChange={toggleGiftWrap}
-                className="scale-75"
-              />
-            </div>
-            {giftWrap && (
-              <div className="mt-2 text-xs text-gray-600">
-                Your item will be gift wrapped with a customized message card for $2.99
-              </div>
-            )}
-          </div>
         </div>
       )}
     </>
