@@ -45,45 +45,6 @@ const StickyBuyButton = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [lastScrollY]);
 
-  useEffect(() => {
-    setAnimationProgress(0);
-    
-    const timer = setTimeout(() => {
-      setAnimationProgress(Math.min(100, (product.inStock / 200) * 100));
-    }, 500);
-    
-    return () => clearTimeout(timer);
-  }, []);
-  
-  useEffect(() => {
-    if (product.inStock !== undefined) {
-      setIsStockChanging(true);
-      setAnimationProgress(Math.min(100, (product.inStock / 200) * 100));
-      
-      const timer = setTimeout(() => {
-        setIsStockChanging(false);
-      }, 1000);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [product.inStock]);
-  
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (Math.random() < 0.2 && stockLevel > 3) {
-        const purchaseAmount = Math.floor(Math.random() * 3) + 1;
-        setStockLevel(prevStock => Math.max(1, prevStock - purchaseAmount));
-        setRecentPurchase(true);
-        
-        setTimeout(() => {
-          setRecentPurchase(false);
-        }, 3000);
-      }
-    }, 8000);
-    
-    return () => clearInterval(interval);
-  }, [stockLevel]);
-
   const incrementQuantity = () => {
     if (quantity < product.inStock) {
       setQuantity(quantity + 1);
@@ -130,23 +91,7 @@ const StickyBuyButton = () => {
               <span className="text-xs font-medium">{product.inStock} items left</span>
             </div>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2 mb-2 overflow-hidden relative">
-            <div 
-              className={`bg-gradient-to-r from-orange-500 to-red-500 h-2 transition-all duration-1000 ease-out ${isStockChanging ? 'animate-pulse' : ''}`}
-              style={{ width: `${animationProgress}%` }}
-            >
-              <div className="absolute inset-0 overflow-hidden">
-                <div className="w-full h-2 opacity-50 bg-gradient-to-r from-transparent via-white to-transparent animate-shimmer" 
-                     style={{ 
-                       backgroundSize: '200% 100%'
-                     }}
-                ></div>
-              </div>
-            </div>
-            {isStockChanging && (
-              <div className="absolute inset-0 bg-red-500 opacity-30 animate-flash"></div>
-            )}
-          </div>
+          
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center">
               <span className="text-xs text-gray-500">Selling fast - {Math.round((product.orders / (product.orders + product.inStock)) * 100)}% sold</span>
