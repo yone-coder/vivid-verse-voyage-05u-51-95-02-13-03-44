@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -21,8 +20,7 @@ const ProductRatings: React.FC<ProductRatingsProps> = ({
 }) => {
   const formatNumber = (num: number): string => {
     if (!num && num !== 0) return "0"; // Handle undefined/null values
-    if (num >= 1000000) return `${(num / 1000000).toFixed(1)}m`;
-    if (num >= 1000) return `${(num / 1000).toFixed(1)}k`;
+    if (num >= 1000) return `Over ${Math.floor(num / 1000) * 1000} Sold`;
     return num.toString();
   };
 
