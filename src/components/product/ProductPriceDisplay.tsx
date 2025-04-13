@@ -1,17 +1,20 @@
 
 import React from "react";
-import { AlertCircle, TrendingDown, Clock } from "lucide-react";
+import { AlertCircle, TrendingDown, Clock, Star, ChevronRight, Package, ShoppingBag } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Badge } from "@/components/ui/badge";
 
 interface ProductPriceDisplayProps {
   currentPrice: number;
   originalPrice: number;
+  title?: string;
 }
 
 const ProductPriceDisplay: React.FC<ProductPriceDisplayProps> = ({
   currentPrice,
-  originalPrice
+  originalPrice,
+  title
 }) => {
   const isMobile = useIsMobile();
   const formatPrice = (price: number) => price.toFixed(2);
@@ -22,59 +25,92 @@ const ProductPriceDisplay: React.FC<ProductPriceDisplayProps> = ({
   
   return (
     <div className="flex flex-col w-full">
-      {/* Main price display section */}
-      <div className={cn(
-        "flex", 
-        isMobile ? "flex-col gap-1.5" : "items-baseline justify-between"
-      )}>
-        {/* Price and discount area */}
-        <div className="flex items-baseline">
-          <span className="text-2xl md:text-3xl font-bold text-red-500">
-            ${formatPrice(currentPrice)}
-          </span>
-          
-          <span className="ml-2 text-xs md:text-sm line-through text-gray-500">
-            ${formatPrice(originalPrice)}
-          </span>
-          
-          {discountPercentage > 0 && (
-            <div className="ml-3 flex items-center">
-              <span className="text-xs md:text-sm font-medium px-1.5 md:px-2 py-0.5 bg-red-100 text-red-600 rounded">
-                <TrendingDown className="inline w-2.5 h-2.5 md:w-3 md:h-3 mr-0.5 md:mr-1" />
-                {discountPercentage}% OFF
-              </span>
-            </div>
-          )}
-        </div>
+      {title && (
+        <h1 className="text-lg font-semibold text-gray-900 mb-1">{title}</h1>
+      )}
+      
+      {/* Row 1: Price Breakdown */}
+      <div className="flex items-center gap-2 mb-1">
+        <span className="text-2xl font-bold text-red-500">
+          ${formatPrice(currentPrice)}
+        </span>
         
-        {/* Savings and time-limited offer */}
-        <div className={cn(
-          "flex", 
-          isMobile ? "justify-between" : "flex-col items-end"
-        )}>
-          <span className="text-xs md:text-sm font-medium text-red-600">
-            Save ${discountAmount.toFixed(2)}
-          </span>
-          
-          <div className="text-[10px] md:text-xs text-gray-500 flex items-center mt-0.5">
-            <Clock className="w-2.5 h-2.5 md:w-3 md:h-3 mr-0.5 md:mr-1" />
-            Limited time offer
+        <span className="text-sm line-through text-gray-500">
+          ${formatPrice(originalPrice)}
+        </span>
+        
+        {discountPercentage > 0 && (
+          <div className="flex items-center">
+            <span className="text-xs px-2 py-0.5 bg-red-100 text-red-600 rounded flex items-center">
+              <TrendingDown className="w-3 h-3 mr-0.5" />
+              {discountPercentage}% OFF
+            </span>
           </div>
+        )}
+      </div>
+      
+      {/* Row 2: Savings and Sold count */}
+      <div className="flex justify-between items-center mb-2">
+        <span className="text-sm font-medium text-red-600">
+          Save ${discountAmount.toFixed(2)}
+        </span>
+        
+        <div className="flex items-center text-gray-600 text-sm">
+          <ShoppingBag className="w-3.5 h-3.5 mr-1 text-gray-500" />
+          <span>5.0k+ Sold</span>
         </div>
       </div>
       
-      {/* Shipping and price alert information */}
-      <div className="mt-2 text-[10px] md:text-xs flex items-center justify-between flex-wrap gap-y-1">
-        <div className="flex items-center text-green-600">
-          <span className="bg-green-100 px-1.5 md:px-2 py-0.5 rounded">Free shipping</span>
-          <span className="mx-1 md:mx-2">•</span>
-          <span>Free returns</span>
+      {/* Row 3: Shipping information */}
+      <div className="flex items-center gap-2 mb-2">
+        <Badge variant="success" className="text-xs py-0.5 font-normal bg-green-100 text-green-600 hover:bg-green-100">
+          Free shipping
+        </Badge>
+        
+        <span className="text-xs text-gray-500 mx-0.5">•</span>
+        
+        <Badge variant="success" className="text-xs py-0.5 font-normal bg-green-100 text-green-600 hover:bg-green-100">
+          Free returns
+        </Badge>
+      </div>
+      
+      {/* Row 4: Ratings */}
+      <div className="flex items-center gap-2 mb-2">
+        <div className="flex text-yellow-400">
+          {'★'.repeat(4)}
+          {'★'.repeat(1).replace('★', '★½')}
         </div>
         
-        <div className="flex items-center text-amber-600">
-          <AlertCircle className="w-2.5 h-2.5 md:w-3 md:h-3 mr-0.5 md:mr-1" />
-          <span>Price may increase soon</span>
+        <span className="font-medium">4.8</span>
+        
+        <a href="#" className="text-sm text-blue-600 hover:underline">
+          2543 Reviews
+        </a>
+      </div>
+      
+      {/* Row 5: Time-limited offers */}
+      <div className="flex justify-between items-center mb-2">
+        <div className="text-xs text-gray-500 flex items-center">
+          <Clock className="w-3.5 h-3.5 mr-1 text-gray-500" />
+          Limited time offer
         </div>
+        
+        <div className="text-xs text-amber-600 flex items-center">
+          <AlertCircle className="w-3.5 h-3.5 mr-1" />
+          Price may increase soon
+        </div>
+      </div>
+      
+      {/* Row 6: Top seller badge and all reviews link */}
+      <div className="flex justify-between items-center">
+        <Badge variant="info" className="text-sm bg-blue-100 text-blue-700 hover:bg-blue-100">
+          Top Seller
+        </Badge>
+        
+        <a href="#" className="text-sm text-blue-600 hover:underline flex items-center">
+          All Reviews 
+          <ChevronRight className="w-4 h-4 ml-0.5" />
+        </a>
       </div>
     </div>
   );
