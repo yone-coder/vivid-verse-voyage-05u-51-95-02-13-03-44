@@ -1,8 +1,7 @@
 
 import React, { useState } from "react";
-import { Check, Circle, Palette, ChevronDown, ChevronUp } from "lucide-react";
+import { Check, Palette } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 
 interface ProductVariant {
   name: string;
@@ -39,13 +38,13 @@ const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
   const hasMoreVariants = colorVariants.length > 3;
   
   return (
-    <div className="relative">
+    <div className="relative px-1 py-2">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <Palette className="w-4 h-4 text-primary" />
           <span className="text-sm font-medium">Color Options</span>
           <span className="text-xs text-blue-500 font-medium">
-            ({colorVariants.length} available)
+            (3 Colors)
           </span>
         </div>
         
