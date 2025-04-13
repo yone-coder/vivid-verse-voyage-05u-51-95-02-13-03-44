@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -31,7 +30,7 @@ const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [isFavorite, setIsFavorite] = useState(false);
   const [showVariants, setShowVariants] = useState(true);
-  const [selectedColor, setSelectedColor] = useState("Blue Galaxy");
+  const [selectedColor, setSelectedColor] = useState("Black");
   const [showPriceHistory, setShowPriceHistory] = useState(false);
   const [isExpressSelected, setIsExpressSelected] = useState(false);
   const [selectedWarranty, setSelectedWarranty] = useState("none");
@@ -40,7 +39,9 @@ const ProductDetail = () => {
   const [showLiveData, setShowLiveData] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [showLimitedOffersBand, setShowLimitedOffersBand] = useState(true);
-  
+  const [expanded, setExpanded] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
+
   // Refs and hooks
   const headerRef = useRef<HTMLDivElement>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
@@ -49,14 +50,14 @@ const ProductDetail = () => {
   const isMobile = useIsMobile();
   const { toast } = useToast();
   const { id: paramId } = useParams<{ id: string }>();
-  
+
   // Use either the ID from URL params or the default product ID
   const productId = paramId || DEFAULT_PRODUCT_ID;
-  
+
   // Use real product data from Supabase
   const { data: product, isLoading } = useProduct(productId);
   const { data: analytics, isLoading: analyticsLoading } = useProductAnalytics(productId);
-  
+
   // Event handlers
   const incrementQuantity = () => {
     if (quantity < 10) {
@@ -210,7 +211,7 @@ const ProductDetail = () => {
   const currentPrice = product.discount_price || product.price;
   const originalPrice = product.price;
   
-  // Mock data for tabs
+  // Mock data for tabs with updated variants for color
   const productForTabs = {
     id: product.id,
     name: product.name,
@@ -237,10 +238,9 @@ const ProductDetail = () => {
       { name: "Weight", value: "450g" },
     ],
     variants: [
-      { name: "Blue Galaxy", price: currentPrice, stock: 256, image: productImages[0] || "/placeholder.svg" },
-      { name: "Aurora Borealis", price: currentPrice, stock: 124, image: productImages[1] || "/placeholder.svg" },
-      { name: "Cosmic Universe", price: currentPrice, stock: 78, image: productImages[2] || "/placeholder.svg" },
-      { name: "Starry Night", price: currentPrice, stock: 216, image: productImages[0] || "/placeholder.svg" },
+      { name: "Black", price: currentPrice, stock: 256, image: productImages[0] || "/placeholder.svg" },
+      { name: "White", price: currentPrice, stock: 124, image: productImages[1] || "/placeholder.svg" },
+      { name: "Jet Black", price: currentPrice + 10, stock: 78, image: productImages[2] || "/placeholder.svg" }
     ],
     shipping: {
       free: true,

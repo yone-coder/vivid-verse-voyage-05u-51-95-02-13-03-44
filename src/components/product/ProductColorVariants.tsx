@@ -25,12 +25,19 @@ const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
   const [expanded, setExpanded] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
   
+  // Define our specific color variants
+  const colorVariants = [
+    { name: "Black", price: 199.99, stock: 256, image: "" },
+    { name: "White", price: 199.99, stock: 124, image: "" },
+    { name: "Jet Black", price: 209.99, stock: 78, image: "" }
+  ];
+  
   // Get the currently selected variant
-  const selectedVariant = variants.find((v) => v.name === selectedColor);
+  const selectedVariant = colorVariants.find((v) => v.name === selectedColor);
   
   // Determine which variants to show
-  const visibleVariants = expanded ? variants : variants.slice(0, 3);
-  const hasMoreVariants = variants.length > 3;
+  const visibleVariants = expanded ? colorVariants : colorVariants.slice(0, 3);
+  const hasMoreVariants = colorVariants.length > 3;
   
   return (
     <div className="relative">
@@ -39,7 +46,7 @@ const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
           <Palette className="w-4 h-4 text-primary" />
           <span className="text-sm font-medium">Color Options</span>
           <span className="text-xs text-blue-500 font-medium">
-            ({variants.length} available)
+            ({colorVariants.length} available)
           </span>
         </div>
         
@@ -126,7 +133,7 @@ const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
           ) : (
             <>
               <ChevronDown className="w-3 h-3 mr-1" />
-              Show All {variants.length} Colors
+              Show All {colorVariants.length} Colors
             </>
           )}
         </button>
