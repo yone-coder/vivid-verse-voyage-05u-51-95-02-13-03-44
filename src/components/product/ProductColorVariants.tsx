@@ -29,8 +29,8 @@ const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
   const selectedVariant = variants.find((v) => v.name === selectedColor);
   
   // Determine which variants to show
-  const visibleVariants = expanded ? variants : variants.slice(0, 4);
-  const hasMoreVariants = variants.length > 4;
+  const visibleVariants = expanded ? variants : variants.slice(0, 3);
+  const hasMoreVariants = variants.length > 3;
   
   return (
     <div className="relative">
@@ -64,11 +64,11 @@ const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
       
       {showInfo && (
         <div className="bg-blue-50 text-blue-700 text-xs p-2 rounded-md mb-3 animate-fade-in">
-          <p>Color options may appear slightly different from actual product due to screen settings.</p>
+          <p>Color variations may appear slightly different from actual product.</p>
         </div>
       )}
       
-      <div className="grid grid-cols-5 gap-2 mb-2">
+      <div className="grid grid-cols-3 gap-2 mb-2">
         {visibleVariants.map((variant) => (
           <button 
             key={variant.name} 
@@ -81,12 +81,23 @@ const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
             onClick={() => onColorChange(variant.name)}
             aria-label={`Select color: ${variant.name}`}
           >
-            <div className="w-10 h-10 rounded-full overflow-hidden border border-gray-200 mb-1">
-              <img 
-                src={variant.image} 
-                alt={variant.name} 
-                className="w-full h-full object-cover" 
-              />
+            <div 
+              className="w-10 h-10 rounded-full overflow-hidden border border-gray-200 mb-1"
+              style={{
+                backgroundColor: 
+                  variant.name === 'Black' ? '#000000' :
+                  variant.name === 'White' ? '#FFFFFF' :
+                  variant.name === 'Jet Black' ? '#0A0A0A' : 'transparent',
+                border: variant.name === 'White' ? '1px solid #E0E0E0' : 'none'
+              }}
+            >
+              {variant.image ? (
+                <img 
+                  src={variant.image} 
+                  alt={variant.name} 
+                  className="w-full h-full object-cover" 
+                />
+              ) : null}
             </div>
             
             <span className="text-[10px] text-gray-600 truncate w-full text-center">
@@ -97,12 +108,6 @@ const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
               <Check 
                 className="absolute top-0 right-0 w-4 h-4 text-blue-500 bg-white rounded-full p-0.5 shadow-sm" 
               />
-            )}
-            
-            {variant.stock < 20 && (
-              <span className="absolute -top-1 -left-1 text-[8px] font-medium bg-red-500 text-white px-1 rounded-full">
-                Low
-              </span>
             )}
           </button>
         ))}
