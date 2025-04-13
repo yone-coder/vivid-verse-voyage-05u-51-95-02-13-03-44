@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Carousel,
@@ -351,13 +350,8 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   }, [autoScrollEnabled]);
 
   return (
-    <div 
-      ref={containerRef}
-      className="flex flex-col gap-1 bg-gray-50 mb-0"
-    >
-      <div 
-        className="relative w-full aspect-square overflow-hidden"
-      >
+    <div ref={containerRef} className="flex flex-col gap-1 bg-gray-50 mb-0">
+      <div className="relative w-full aspect-square overflow-hidden">
         <Carousel
           className="w-full h-full"
           opts={{
@@ -396,23 +390,25 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             ))}
           </CarouselContent>
           
-          <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
-            <Button 
-              variant="outline"
-              size="icon"
-              className="rounded-full bg-black/50 backdrop-blur-sm hover:bg-black/60 border-0 text-white h-7 w-7 p-0"
-              onClick={() => navigate(-1)}
-            >
-              <ArrowLeft className="h-3.5 w-3.5" />
-            </Button>
-            
-            <div className="bg-black/50 backdrop-blur-sm text-white px-2 py-1.5 rounded-lg text-xs flex items-center gap-1.5">
-              <span>{currentIndex + 1}/{images.length}</span>
-              {viewHistory.length > 1 && (
-                <button onClick={undoLastView} className="p-0.5 hover:bg-white/10 rounded">
-                  <Undo2 size={12} />
-                </button>
-              )}
+          <div className="absolute top-4 left-4 right-4 z-10 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Button 
+                variant="outline"
+                size="icon"
+                className="rounded-full bg-black/50 backdrop-blur-sm hover:bg-black/60 border-0 text-white h-7 w-7 p-0"
+                onClick={() => navigate(-1)}
+              >
+                <ArrowLeft className="h-3.5 w-3.5" />
+              </Button>
+              
+              <div className="bg-black/50 backdrop-blur-sm text-white px-2 py-1.5 rounded-lg text-xs flex items-center gap-1.5">
+                <span>{currentIndex + 1}/{images.length}</span>
+                {viewHistory.length > 1 && (
+                  <button onClick={undoLastView} className="p-0.5 hover:bg-white/10 rounded">
+                    <Undo2 size={12} />
+                  </button>
+                )}
+              </div>
             </div>
           </div>
           
@@ -611,7 +607,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
               )}
             </div>
           </div>
-
+          
           <div className={cn(
             "absolute left-2 top-1/2 -translate-y-1/2 z-10",
             viewMode === "immersive" && "opacity-0 hover:opacity-100 transition-opacity"
@@ -939,4 +935,3 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
 };
 
 export default ProductImageGallery;
-
