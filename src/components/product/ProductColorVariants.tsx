@@ -23,7 +23,6 @@ const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
   onColorChange
 }) => {
   const [expanded, setExpanded] = useState(false);
-  const [showInfo, setShowInfo] = useState(false);
   
   // Define our specific color variants
   const colorVariants = [
@@ -56,24 +55,8 @@ const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
               Selected: <span className="font-medium">{selectedColor}</span>
             </span>
           )}
-          
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="h-6 p-1"
-            onClick={() => setShowInfo(!showInfo)}
-          >
-            <Circle className="w-3 h-3 mr-1" />
-            Info
-          </Button>
         </div>
       </div>
-      
-      {showInfo && (
-        <div className="bg-blue-50 text-blue-700 text-xs p-2 rounded-md mb-3 animate-fade-in">
-          <p>Color variations may appear slightly different from actual product.</p>
-        </div>
-      )}
       
       <div className="grid grid-cols-3 gap-2 mb-2">
         {visibleVariants.map((variant) => (
@@ -109,6 +92,10 @@ const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
             
             <span className="text-[10px] text-gray-600 truncate w-full text-center">
               {variant.name}
+            </span>
+            
+            <span className="text-[10px] text-blue-600 font-medium truncate w-full text-center">
+              ${variant.price.toFixed(2)}
             </span>
             
             {selectedColor === variant.name && (
