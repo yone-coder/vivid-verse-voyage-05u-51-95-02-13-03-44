@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Carousel,
@@ -385,73 +386,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                     draggable={false}
                     onClick={toggleFullscreen}
                   />
-                  
-                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-2 bg-black/40 backdrop-blur-sm rounded-full p-1.5 z-30">
-                    <Button
-                      variant="ghost" 
-                      size="icon"
-                      className="h-8 w-8 rounded-full hover:bg-white/10"
-                      onClick={handleRotate}
-                    >
-                      <RotateCw className="h-4 w-4 text-white" />
-                    </Button>
-                    
-                    <Button
-                      variant="ghost" 
-                      size="icon"
-                      className="h-8 w-8 rounded-full hover:bg-white/10"
-                      onClick={handleFlip}
-                    >
-                      <FlipHorizontal className="h-4 w-4 text-white" />
-                    </Button>
-                    
-                    <Button
-                      variant="ghost" 
-                      size="icon"
-                      className={cn(
-                        "h-8 w-8 rounded-full hover:bg-white/10",
-                        autoScrollEnabled && "bg-white/20"
-                      )}
-                      onClick={toggleAutoScroll}
-                    >
-                      {autoScrollEnabled ? 
-                        <Pause className="h-4 w-4 text-white" /> : 
-                        <Play className="h-4 w-4 text-white" />
-                      }
-                    </Button>
-                    
-                    <Button
-                      variant="ghost" 
-                      size="icon"
-                      className="h-8 w-8 rounded-full hover:bg-white/10"
-                      onClick={toggleFavorite}
-                    >
-                      <Heart className={cn("h-4 w-4 text-white", isFavorite && "fill-red-500")} />
-                    </Button>
-                    
-                    <Button
-                      variant="ghost" 
-                      size="icon"
-                      className="h-8 w-8 rounded-full hover:bg-white/10"
-                      onClick={() => downloadImage(currentIndex)}
-                    >
-                      <Download className="h-4 w-4 text-white" />
-                    </Button>
-                  </div>
-                  
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleImmersiveView();
-                    }}
-                    className={cn(
-                      "absolute bottom-3 right-3 bg-black/60 backdrop-blur-sm text-white rounded-full p-2 hover:bg-black/80 transition-colors z-30",
-                      focusMode && "bg-primary text-white",
-                      focusMode && "opacity-0 hover:opacity-100 transition-opacity"
-                    )}
-                  >
-                    {viewMode === "default" ? <Maximize size={16} /> : <Square size={16} />}
-                  </button>
                 </div>
               </CarouselItem>
             ))}
@@ -489,6 +423,74 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             </Button>
           </div>
         </Carousel>
+        
+        {/* Fixed overlay controls - moved outside of carousel items so they don't scroll */}
+        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-2 bg-black/40 backdrop-blur-sm rounded-full p-1.5 z-30">
+          <Button
+            variant="ghost" 
+            size="icon"
+            className="h-8 w-8 rounded-full hover:bg-white/10"
+            onClick={handleRotate}
+          >
+            <RotateCw className="h-4 w-4 text-white" />
+          </Button>
+          
+          <Button
+            variant="ghost" 
+            size="icon"
+            className="h-8 w-8 rounded-full hover:bg-white/10"
+            onClick={handleFlip}
+          >
+            <FlipHorizontal className="h-4 w-4 text-white" />
+          </Button>
+          
+          <Button
+            variant="ghost" 
+            size="icon"
+            className={cn(
+              "h-8 w-8 rounded-full hover:bg-white/10",
+              autoScrollEnabled && "bg-white/20"
+            )}
+            onClick={toggleAutoScroll}
+          >
+            {autoScrollEnabled ? 
+              <Pause className="h-4 w-4 text-white" /> : 
+              <Play className="h-4 w-4 text-white" />
+            }
+          </Button>
+          
+          <Button
+            variant="ghost" 
+            size="icon"
+            className="h-8 w-8 rounded-full hover:bg-white/10"
+            onClick={toggleFavorite}
+          >
+            <Heart className={cn("h-4 w-4 text-white", isFavorite && "fill-red-500")} />
+          </Button>
+          
+          <Button
+            variant="ghost" 
+            size="icon"
+            className="h-8 w-8 rounded-full hover:bg-white/10"
+            onClick={() => downloadImage(currentIndex)}
+          >
+            <Download className="h-4 w-4 text-white" />
+          </Button>
+        </div>
+        
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            toggleImmersiveView();
+          }}
+          className={cn(
+            "absolute bottom-3 right-3 bg-black/60 backdrop-blur-sm text-white rounded-full p-2 hover:bg-black/80 transition-colors z-30",
+            focusMode && "bg-primary text-white",
+            focusMode && "opacity-0 hover:opacity-100 transition-opacity"
+          )}
+        >
+          {viewMode === "default" ? <Maximize size={16} /> : <Square size={16} />}
+        </button>
       </div>
       
       <div className="flex items-center gap-1.5 px-1.5 pb-1.5 overflow-x-auto scrollbar-none">
