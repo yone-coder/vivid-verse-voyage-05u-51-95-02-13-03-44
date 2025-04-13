@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { MinusIcon, PlusIcon } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 
 interface ProductQuantitySelectorProps {
   quantity: number;
@@ -39,7 +40,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
   const isMinQuantity = quantity <= minQuantity;
   
   const effectiveMaxQuantity = Math.min(maxQuantity, inStock);
-  const stockPercentage = (inStock / 100) * 100;
+  const stockPercentage = Math.min(100, Math.round((inStock / 100) * 100));
   const isLowStock = inStock < 10;
   const isMediumStock = inStock >= 10 && inStock < 30;
   
@@ -135,18 +136,19 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
       )}
       
       <div className="flex flex-col space-y-1">
-        {inStock < 50 && (
-          <div className="relative pt-1">
-            <div className="overflow-hidden h-1.5 text-xs flex rounded bg-gray-200">
-              <div 
-                style={{ width: `${stockPercentage}%` }}
-                className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center 
-                          ${isLowStock ? 'bg-red-500' : isMediumStock ? 'bg-amber-500' : 'bg-green-500'}
-                          ${stockPulse ? 'animate-pulse' : ''}`}>
-              </div>
-            </div>
-          </div>
-        )}
+        <div className="relative pt-1">
+          <Progress 
+            value={stockPercentage} 
+            className="h-1.5 w-full"
+            indicatorClassName={`${
+              isLowStock 
+                ? 'bg-red-500' 
+                : isMediumStock 
+                  ? 'bg-amber-500' 
+                  : 'bg-green-500'
+            } ${stockPulse ? 'animate-pulse' : ''}`}
+          />
+        </div>
         
         <div className="flex items-center justify-between text-xs">
           {inStock < 20 && (
@@ -158,7 +160,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
           
           {inStock >= 20 && (
             <div className="flex items-center text-green-600 font-semibold">
-              IN STOCK
+              IN STOCK: {inStock} available
             </div>
           )}
           
