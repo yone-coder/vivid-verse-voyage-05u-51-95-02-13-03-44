@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { ShoppingCart } from 'lucide-react';
 
@@ -41,8 +40,7 @@ const LiveActivityNotifications = () => {
     const randomUser = users[Math.floor(Math.random() * users.length)];
     
     return { 
-      title: "Recent Purchase",
-      content: `${randomUser.username} from ${randomCity} just purchased this product ${randomTime}`,
+      content: `${randomUser.username} from ${randomCity} just bought this product ${randomTime}`,
       color: "text-green-500",
       bgColor: "bg-green-100/10",
       icon: ShoppingCart
@@ -55,7 +53,6 @@ const LiveActivityNotifications = () => {
     return {
       id: Date.now() + Math.random(),
       itemType: "notification",
-      title: notification.title,
       content: notification.content,
       color: notification.color,
       bgColor: notification.bgColor,
@@ -72,7 +69,6 @@ const LiveActivityNotifications = () => {
     setStreamItems(prevItems => {
       let updatedItems = [newItem, ...prevItems];
       
-      // Limit to only 2 notifications
       if (updatedItems.length > 2) {
         updatedItems = updatedItems.slice(0, 2);
       }
@@ -80,7 +76,6 @@ const LiveActivityNotifications = () => {
       return updatedItems;
     });
     
-    // Fade in animation
     setTimeout(() => {
       setStreamItems(prevItems => 
         prevItems.map(item => 
@@ -91,7 +86,6 @@ const LiveActivityNotifications = () => {
       );
     }, 30);
     
-    // Fade out animation after display duration
     setTimeout(() => {
       setStreamItems(prevItems => 
         prevItems.map(item => 
@@ -106,19 +100,17 @@ const LiveActivityNotifications = () => {
           prevItems.filter(item => item.id !== newItem.id)
         );
       }, 400);
-    }, 5000); // Display for 5 seconds
+    }, 5000);
   };
 
   useEffect(() => {
-    // Add first notification after a short delay
     const initialTimeout = setTimeout(() => {
       addNewStreamItem();
     }, 1000);
     
-    // Setup interval for periodic notifications
     const intervalId = setInterval(() => {
       addNewStreamItem();
-    }, 8000); // Show a new notification every 8 seconds
+    }, 8000);
     
     return () => {
       clearTimeout(initialTimeout);
@@ -144,11 +136,6 @@ const LiveActivityNotifications = () => {
         <div className={`flex items-start px-3 py-2 bg-black/70 rounded-lg backdrop-blur-sm border-l-2 ${notification.color.replace('text', 'border')} max-w-[280px]`}>
           <IconComponent size={16} className={`${notification.color} mt-0.5 flex-shrink-0`} />
           <div className="ml-2 break-words">
-            {notification.title && (
-              <span className={`text-xs font-medium ${notification.color} mr-1`}>
-                {notification.title}:
-              </span>
-            )}
             <span className="text-gray-200 text-xs leading-tight whitespace-normal">
               {notification.content}
             </span>
