@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -18,7 +19,6 @@ import ProductQuantitySelector from "@/components/product/ProductQuantitySelecto
 import ProductShipping from "@/components/product/ProductShipping";
 import ProductWarranty from "@/components/product/ProductWarranty";
 import ProductPaymentOptions from "@/components/product/ProductPaymentOptions";
-import AliExpressCoupons from "@/components/product/AliExpressCoupons";
 
 // Default product ID for the premium headphones product
 const DEFAULT_PRODUCT_ID = "aae97882-a3a1-4db5-b4f5-156705cd10ee"; // Premium Headphones product ID
@@ -345,11 +345,6 @@ const ProductDetail = () => {
           
           {/* Replace original ProductRatings with new EnhancedRating component */}
           <EnhancedRating />
-          
-          <div className="mt-3">
-            {/* Using AliExpressCoupons component instead of ProductCoupons */}
-            <AliExpressCoupons />
-          </div>
           
           <div className="mt-4">
             <ProductColorVariants 
