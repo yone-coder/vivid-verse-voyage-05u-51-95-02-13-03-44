@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
 import ProductTabs from "@/components/ProductTabs";
-import LiveStockUpdates from "@/components/LiveStockUpdates";
 import StickyBuyButton from "@/components/StickyBuyButton";
 import { useProduct, useProductAnalytics } from "@/hooks/useProduct";
 import { useToast } from "@/hooks/use-toast";
@@ -363,11 +362,6 @@ const ProductDetail = () => {
         </div>
         
         <div className="mt-2 mb-2 p-3 bg-white">
-          <LiveStockUpdates 
-            initialStock={currentStock}
-            highDemand={productForTabs.stock.selling_fast}
-          />
-          
           <div className="mt-4">
             <ProductQuantitySelector 
               quantity={quantity}
