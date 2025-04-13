@@ -388,7 +388,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                     onClick={toggleFullscreen}
                   />
                   
-                  {/* Focus button moved directly onto the image */}
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -649,68 +648,21 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             </Button>
           </div>
           
-          
         </Carousel>
       </div>
       
-      {/* Redesigned thumbnail info and controls section */}
-      <div className="flex items-center justify-between px-2 mt-1 mb-1">
-        <div className="flex items-center gap-1">
-          <p className="text-xs text-gray-500">
-            {currentIndex + 1}/{images.length}
-          </p>
-          {viewHistory.length > 1 && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-6 px-1.5 text-xs text-blue-600"
-              onClick={undoLastView}
-            >
-              <Undo2 size={12} className="mr-1" />
-              Undo
-            </Button>
-          )}
-        </div>
-        
-        {/* Layout toggle for thumbnails */}
-        <Button 
-          variant="ghost"
-          size="sm"
-          className="h-6 px-1.5 text-xs text-gray-600 hover:text-blue-600"
-          onClick={toggleThumbnailViewMode}
-        >
-          {thumbnailViewMode === "row" ? (
-            <Grid className="h-3.5 w-3.5 mr-1" />
-          ) : (
-            <Rows className="h-3.5 w-3.5 mr-1" />
-          )}
-          {thumbnailViewMode === "row" ? "Grid" : "Row"}
-        </Button>
-      </div>
-      
-      {/* Redesigned thumbnail section with cleaner layout */}
-      <div 
-        className={cn(
-          "transition-all duration-300 px-1.5 pb-1.5",
-          thumbnailViewMode === "row" 
-            ? "flex gap-1.5 overflow-x-auto pb-1 scrollbar-none" 
-            : "grid grid-cols-4 gap-1.5"
-        )}
-      >
+      <div className="flex items-center gap-1.5 px-1.5 pb-1.5 overflow-x-auto scrollbar-none">
         {images.map((image, index) => (
           <div
             key={index}
             className={cn(
               "relative overflow-hidden rounded-md border flex-shrink-0 transition-all",
-              thumbnailViewMode === "row" ? "w-14 h-14" : "aspect-square",
+              "w-14 h-14 cursor-pointer",
               currentIndex === index 
                 ? "border-primary shadow-sm" 
-                : "border-gray-200 hover:border-gray-300",
-              "cursor-pointer",
+                : "border-gray-200 hover:border-gray-300"
             )}
             onClick={() => handleThumbnailClick(index)}
-            onMouseEnter={() => setHoveredThumbnail(index)}
-            onMouseLeave={() => setHoveredThumbnail(null)}
           >
             <img 
               src={image} 
@@ -720,22 +672,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             
             {currentIndex === index && (
               <div className="absolute inset-0 bg-primary/10"></div>
-            )}
-            
-            {hoveredThumbnail === index && (
-              <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="h-6 w-6 rounded-full bg-white/80 hover:bg-white"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleThumbnailClick(index);
-                  }}
-                >
-                  <Eye className="h-3 w-3 text-gray-800" />
-                </Button>
-              </div>
             )}
             
             <span className="absolute bottom-0.5 right-0.5 text-[9px] bg-black/40 text-white px-0.5 rounded">
