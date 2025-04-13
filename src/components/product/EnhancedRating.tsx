@@ -1,16 +1,16 @@
 
 import React, { useState } from 'react';
-import { Star, User, ShoppingBag, ChevronRight, Award, ThumbsUp } from 'lucide-react';
+import { Star, User, ShoppingBag, ChevronRight } from 'lucide-react';
 import { 
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
+import RatingBreakdown from "./RatingBreakdown";
 
 const EnhancedRating = () => {
   // Sample data
@@ -73,6 +73,7 @@ const EnhancedRating = () => {
   return (
     <div className="w-full px-0">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+        {/* Rating stars and count */}
         <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
           <div className="flex items-center">
             {renderStars(rating)}
@@ -104,6 +105,7 @@ const EnhancedRating = () => {
           </div>
         </div>
         
+        {/* Badges and action buttons */}
         <div className="flex justify-between sm:justify-end w-full sm:w-auto mt-1.5 sm:mt-0">
           <Badge className="bg-blue-100 hover:bg-blue-200 text-blue-800 border-none text-[10px] sm:text-xs py-0.5">
             Top Seller
@@ -116,43 +118,21 @@ const EnhancedRating = () => {
         </div>
       </div>
       
+      {/* Conditionally show rating breakdown */}
       {showStats && (
-        <div className="mt-2 sm:mt-3 p-2 sm:p-3 bg-gray-50 rounded-md border border-gray-200 animate-in fade-in-50 duration-300">
-          <div className="flex justify-between items-center mb-1.5 sm:mb-2">
-            <h4 className="text-xs sm:text-sm font-medium">Rating Breakdown</h4>
-            <Button variant="outline" size="sm" className="h-6 sm:h-7 text-[10px] sm:text-xs" onClick={toggleStats}>
-              Hide
-            </Button>
-          </div>
-          
-          <div className="space-y-1 sm:space-y-1.5">
-            {ratingBreakdown.map((item) => (
-              <div key={item.stars} className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
-                <div className="flex items-center w-9 sm:w-12">
-                  <span className="mr-0.5 sm:mr-1">{item.stars}</span>
-                  <Star className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-yellow-400 fill-yellow-400" />
-                </div>
-                <Progress value={item.percentage} className="h-1.5 sm:h-2 w-full max-w-[120px] sm:max-w-[180px]" />
-                <span className="text-[10px] sm:text-xs text-gray-500 w-8 sm:w-10">{item.percentage}%</span>
-                <span className="text-[10px] sm:text-xs text-gray-500">({item.count})</span>
-              </div>
-            ))}
-          </div>
-          
-          <div className="flex flex-wrap justify-between items-center gap-y-1 mt-2 sm:mt-3 text-[10px] sm:text-xs text-gray-600">
-            <div className="flex items-center">
-              <User className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-0.5 sm:mr-1" />
-              <span>{Math.round(reviews * 0.22)} verified purchases</span>
-            </div>
-            <div className="flex items-center">
-              <ThumbsUp className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-0.5 sm:mr-1" />
-              <span>94% recommend this product</span>
-            </div>
-            <div className="flex items-center">
-              <Award className="h-2.5 w-2.5 sm:h-3 sm:w-3 mr-0.5 sm:mr-1" />
-              <span>Top 5% in category</span>
-            </div>
-          </div>
+        <div className="relative">
+          <RatingBreakdown 
+            breakdown={ratingBreakdown} 
+            totalReviews={reviews} 
+          />
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="h-6 sm:h-7 text-[10px] sm:text-xs absolute top-2 right-2"
+            onClick={toggleStats}
+          >
+            Hide
+          </Button>
         </div>
       )}
     </div>
