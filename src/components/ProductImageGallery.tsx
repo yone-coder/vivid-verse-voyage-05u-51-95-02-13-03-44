@@ -74,6 +74,7 @@ interface TouchPosition {
 }
 
 const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => {
+  // Core state
   const [currentIndex, setCurrentIndex] = useState(0);
   const [api, setApi] = useState<CarouselApi | null>(null);
   const [isRotated, setIsRotated] = useState(0);
@@ -87,6 +88,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const [isFullscreenMode, setIsFullscreenMode] = useState(false);
   const [hoveredThumbnail, setHoveredThumbnail] = useState<number | null>(null);
   
+  // Enhanced features state
   const [zoomLevel, setZoomLevel] = useState(1);
   const [showCompareMode, setShowCompareMode] = useState(false);
   const [compareIndex, setCompareIndex] = useState(0);
@@ -137,6 +139,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
       setIsFlipped(false);
       setZoomLevel(1);
       
+      // Add to view history for undo feature
       setViewHistory(prev => [...prev, index]);
     });
   }, []);
@@ -144,7 +147,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const undoLastView = useCallback(() => {
     if (viewHistory.length > 1) {
       const newHistory = [...viewHistory];
-      newHistory.pop();
+      newHistory.pop(); // Remove current view
       const lastIndex = newHistory[newHistory.length - 1];
       
       if (api) {
@@ -296,8 +299,8 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   }, [openedThumbnailMenu]);
 
   const handleMenuAction = useCallback((e: React.MouseEvent, action: () => void) => {
-    e.stopPropagation();
-    e.preventDefault();
+    e.stopPropagation(); // Prevent thumbnail click
+    e.preventDefault(); // Prevent default behavior
     action();
   }, []);
 
@@ -347,13 +350,8 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   }, [autoScrollEnabled]);
 
   return (
-    <div 
-      ref={containerRef}
-      className="flex flex-col gap-1 bg-gray-50 mb-0"
-    >
-      <div 
-        className="relative w-full aspect-square overflow-hidden"
-      >
+    <div ref={containerRef} className="flex flex-col gap-1 bg-gray-50 mb-0">
+      <div className="relative w-full aspect-square overflow-hidden">
         <Carousel
           className="w-full h-full"
           opts={{
@@ -392,7 +390,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             ))}
           </CarouselContent>
           
-          <div className="absolute top-4 left-0 right-0 px-4 z-10 flex items-center justify-between">
+          <div className="absolute top-4 left-4 right-4 z-10 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Button 
                 variant="outline"
@@ -411,17 +409,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                   </button>
                 )}
               </div>
-            </div>
-            
-            <div className="flex items-center gap-2">
-              <Button 
-                variant="outline"
-                size="icon"
-                className="rounded-full bg-black/50 backdrop-blur-sm hover:bg-black/60 border-0 text-white h-7 w-7 p-0"
-                onClick={toggleImmersiveView}
-              >
-                {viewMode === "default" ? <Maximize size={13} /> : <Square size={13} />}
-              </Button>
             </div>
           </div>
           
@@ -646,6 +633,20 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
               onClick={handleNext}
             >
               <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
+          
+          <div className={cn(
+            "absolute top-4 right-4",
+            viewMode === "immersive" && "opacity-0 hover:opacity-100 transition-opacity"
+          )}>
+            <Button
+              variant="outline"
+              size="icon"
+              className="rounded-full bg-white/70 backdrop-blur-sm hover:bg-white/90 w-7 h-7"
+              onClick={toggleImmersiveView}
+            >
+              {viewMode === "default" ? <Maximize size={13} /> : <Square size={13} />}
             </Button>
           </div>
         </Carousel>

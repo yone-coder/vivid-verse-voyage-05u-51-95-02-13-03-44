@@ -1,7 +1,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Heart, Share, Search, ShoppingCart, X } from "lucide-react";
+import { ArrowLeft, Heart, Share, Search, Camera, ShoppingCart, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -87,11 +87,6 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
     document.addEventListener('keydown', handleEscKey);
     return () => document.removeEventListener('keydown', handleEscKey);
   }, [isSearchActive]);
-
-  // Don't render this component if shouldHide is true
-  if (shouldHide) {
-    return null;
-  }
 
   return (
     <div className={`${isScrolled ? 'py-1.5 bg-white shadow-sm' : 'py-2'} px-2 w-full transition-all duration-200`}>

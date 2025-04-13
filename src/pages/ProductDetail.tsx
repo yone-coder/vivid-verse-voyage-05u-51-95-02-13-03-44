@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -39,7 +40,6 @@ const ProductDetail = () => {
   const [showLiveData, setShowLiveData] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [showLimitedOffersBand, setShowLimitedOffersBand] = useState(true);
-  const [showHeader, setShowHeader] = useState(true);
   
   // Refs and hooks
   const headerRef = useRef<HTMLDivElement>(null);
@@ -307,7 +307,6 @@ const ProductDetail = () => {
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
             handleSearch={handleSearch}
-            shouldHide={!showHeader}
           />
         </div>
         
