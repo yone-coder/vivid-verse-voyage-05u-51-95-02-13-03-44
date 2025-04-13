@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Carousel,
@@ -404,6 +405,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             ))}
           </CarouselContent>
           
+          {/* Updated navigation buttons with consistent styling */}
           <div className={cn(
             "absolute left-2 top-1/2 -translate-y-1/2 z-10",
             viewMode === "immersive" && "opacity-0 hover:opacity-100 transition-opacity",
@@ -412,10 +414,11 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             <Button
               variant="outline"
               size="icon"
-              className="rounded-full w-8 h-8"
+              className="rounded-full bg-white/80 backdrop-blur-sm hover:bg-white border-gray-200 shadow-sm h-9 w-9"
               onClick={handlePrevious}
             >
-              <ChevronLeft className="h-4 w-4" />
+              <ChevronLeft className="h-5 w-5" />
+              <span className="sr-only">Previous slide</span>
             </Button>
           </div>
           
@@ -427,13 +430,13 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             <Button
               variant="outline"
               size="icon"
-              className="rounded-full w-8 h-8"
+              className="rounded-full bg-white/80 backdrop-blur-sm hover:bg-white border-gray-200 shadow-sm h-9 w-9"
               onClick={handleNext}
             >
-              <ChevronRight className="h-4 w-4" />
+              <ChevronRight className="h-5 w-5" />
+              <span className="sr-only">Next slide</span>
             </Button>
           </div>
-          
         </Carousel>
       </div>
       
@@ -505,7 +508,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
               <Button 
                 variant="outline" 
                 size="icon" 
-                className="rounded-full"
+                className="rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 border-white/10"
                 onClick={(e) => {
                   e.stopPropagation();
                   handlePrevious();
@@ -521,7 +524,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
               <Button 
                 variant="outline" 
                 size="icon" 
-                className="rounded-full"
+                className="rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/30 border-white/10"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleNext();
