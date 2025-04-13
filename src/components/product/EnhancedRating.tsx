@@ -1,13 +1,12 @@
 
 import React, { useState } from 'react';
-import { Star, User, ShoppingBag, ChevronRight } from 'lucide-react';
+import { Star, User, Box, ChevronRight } from 'lucide-react';
 import { 
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import RatingBreakdown from "./RatingBreakdown";
@@ -71,56 +70,44 @@ const EnhancedRating = () => {
   };
 
   return (
-    <div className="w-full px-0">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-        {/* Rating stars and count */}
-        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-          <div className="flex items-center">
-            {renderStars(rating)}
-          </div>
-          <span className="font-bold text-base sm:text-lg text-gray-800">{rating}</span>
-          
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button 
-                  variant="link" 
-                  className="p-0 h-auto text-xs sm:text-sm text-blue-600 underline underline-offset-2"
-                  onClick={toggleStats}
-                >
-                  {reviews} Reviews
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p className="text-xs">Click to view rating details</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          
-          <span className="text-gray-300 hidden sm:inline">|</span>
-          
-          <div className="flex items-center text-gray-600">
-            <ShoppingBag className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-0.5 sm:mr-1" />
-            <span className="font-medium text-xs sm:text-sm">{sold} Sold</span>
-          </div>
+    <div className="w-full px-2 py-2">
+      {/* Rating stars and count - improved padding */}
+      <div className="flex flex-wrap items-center gap-2">
+        <div className="flex items-center">
+          {renderStars(rating)}
         </div>
+        <span className="font-bold text-base sm:text-lg text-gray-800">{rating}</span>
         
-        {/* Badges and action buttons */}
-        <div className="flex justify-between sm:justify-end w-full sm:w-auto mt-1.5 sm:mt-0">
-          <Badge className="bg-blue-100 hover:bg-blue-200 text-blue-800 border-none text-[10px] sm:text-xs py-0.5">
-            Top Seller
-          </Badge>
-          
-          <Button variant="ghost" size="sm" className="text-blue-600 p-1 h-auto ml-auto sm:ml-2">
-            <span className="text-[10px] sm:text-xs mr-0.5 sm:mr-1">All Reviews</span>
-            <ChevronRight className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-          </Button>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button 
+                variant="link" 
+                className="p-0 h-auto text-xs sm:text-sm text-blue-600 underline underline-offset-2"
+                onClick={toggleStats}
+              >
+                {reviews} Reviews
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p className="text-xs">Click to view rating details</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+        
+        <span className="text-gray-300">|</span>
+        
+        <div className="flex items-center text-gray-600">
+          <Box className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1" />
+          <span className="font-medium text-xs sm:text-sm">{sold} Sold</span>
         </div>
       </div>
       
+      {/* Badges and action buttons row has been removed */}
+      
       {/* Conditionally show rating breakdown */}
       {showStats && (
-        <div className="relative">
+        <div className="relative mt-3">
           <RatingBreakdown 
             breakdown={ratingBreakdown} 
             totalReviews={reviews} 
