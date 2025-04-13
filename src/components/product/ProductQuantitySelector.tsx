@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { MinusIcon, PlusIcon } from "lucide-react";
@@ -160,7 +159,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
           
           {inStock >= 20 && (
             <div className="flex items-center text-green-600 font-semibold">
-              IN STOCK: {inStock} available
+              {inStock} left in stock
             </div>
           )}
           
