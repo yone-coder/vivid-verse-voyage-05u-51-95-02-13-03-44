@@ -5,38 +5,6 @@ import {
   CarouselItem,
   CarouselApi,
 } from "@/components/ui/carousel";
-import { 
-  Heart, 
-  Play,
-  Pause,
-  RotateCw,
-  FlipHorizontal,
-  ChevronLeft,
-  ChevronRight,
-  GalleryHorizontal,
-  Download,
-  Copy,
-  ZoomIn,
-  Eye,
-  ArrowUpToLine,
-  Check,
-  Share2,
-  Maximize,
-  Square,
-  ImagePlus,
-  Image as ImageIcon,
-  PanelRight,
-  X,
-  Undo2,
-  Filter,
-  Paintbrush,
-  BadgeInfo,
-  View,
-  ShoppingCart,
-  ArrowLeft,
-  Grid,
-  Rows,
-} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -352,7 +320,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   }, [autoScrollEnabled]);
 
   return (
-    <div ref={containerRef} className="flex flex-col gap-1 bg-gray-50 mb-0">
+    <div ref={containerRef} className="flex flex-col gap-1 bg-white mb-0">
       <div className="relative w-full aspect-square overflow-hidden">
         <Carousel
           className="w-full h-full"
