@@ -88,6 +88,8 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
     return () => document.removeEventListener('keydown', handleEscKey);
   }, [isSearchActive]);
 
+  if (shouldHide) return null;
+
   return (
     <div className={`${isScrolled ? 'py-1.5 bg-white shadow-sm' : 'py-2'} px-2 w-full transition-all duration-200`}>
       <div className="flex items-center justify-between">

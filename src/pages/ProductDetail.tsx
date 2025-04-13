@@ -294,22 +294,8 @@ const ProductDetail = () => {
   
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
-      {/* Gallery Section with Header Overlay */}
+      {/* Gallery Section without Header Overlay */}
       <div ref={headerRef} className="relative w-full bg-gray-50">
-        {/* Header overlay - positioned absolutely on top of the image */}
-        <div className="absolute top-0 left-0 right-0 z-10">
-          <ProductHeader 
-            isFavorite={isFavorite}
-            toggleFavorite={toggleFavorite}
-            handleShare={handleShare}
-            handleCartClick={handleCartClick}
-            isScrolled={false}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            handleSearch={handleSearch}
-          />
-        </div>
-        
         {/* Product image gallery */}
         <ProductImageGallery images={productImages.length > 0 ? productImages : ["/placeholder.svg"]} />
       </div>
