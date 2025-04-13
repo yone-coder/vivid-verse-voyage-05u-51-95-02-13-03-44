@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Truck } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -26,8 +26,15 @@ const ProductShipping: React.FC<ProductShippingProps> = ({
 }) => {
   const [showDeliveryOptions, setShowDeliveryOptions] = useState(false);
   const { toast } = useToast();
+  const [deliveryMethod, setDeliveryMethod] = useState(isExpressSelected ? "express" : "standard");
+
+  // Update internal state when prop changes
+  useEffect(() => {
+    setDeliveryMethod(isExpressSelected ? "express" : "standard");
+  }, [isExpressSelected]);
 
   const handleShippingChange = (value: string) => {
+    setDeliveryMethod(value);
     const newValue = value === "express";
     onExpressChange(newValue);
     
@@ -44,14 +51,13 @@ const ProductShipping: React.FC<ProductShippingProps> = ({
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium text-gray-700">Shipping:</span>
         <div className="flex flex-col items-end">
-          <div className="flex items-center">
-            <Truck className="h-4 w-4 text-green-600 mr-1" />
-            <span className="text-sm text-green-600 font-medium">
-              {shippingInfo.free ? "Free Standard Shipping" : "Standard Shipping"}
-            </span>
-          </div>
+          <span className="text-sm text-green-600 font-medium">
+            {isExpressSelected 
+              ? `Express Shipping ($${shippingInfo.express})` 
+              : "Free Standard Shipping"}
+          </span>
           <div className="text-xs text-gray-500 mt-0.5">
-            Estimated delivery: {shippingInfo.estimated}
+            Estimated delivery: {isExpressSelected ? shippingInfo.expressEstimated : shippingInfo.estimated}
           </div>
         </div>
       </div>
@@ -70,7 +76,7 @@ const ProductShipping: React.FC<ProductShippingProps> = ({
       {showDeliveryOptions && (
         <div className="mt-1 p-3 bg-gray-50 rounded-md border border-gray-200">
           <RadioGroup 
-            value={isExpressSelected ? "express" : "standard"}
+            value={deliveryMethod}
             onValueChange={handleShippingChange}
           >
             <div className="flex items-start space-x-2 mb-2">
