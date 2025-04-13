@@ -340,14 +340,12 @@ const ProductDetail = () => {
           </div>
           
           <div className="flex items-center justify-between mt-1">
-            {/* Replace static price display with dynamic component */}
             <DynamicPriceDisplay />
           </div>
           
-          {/* Replace original ProductRatings with new EnhancedRating component */}
           <EnhancedRating />
           
-          <div className="mt-4">
+          <div className="mt-2">
             <ProductColorVariants 
               variants={productForTabs.variants}
               selectedColor={selectedColor}
@@ -356,8 +354,8 @@ const ProductDetail = () => {
           </div>
         </div>
         
-        <div className="mt-2 mb-2 p-3 bg-white">
-          <div className="mt-4">
+        <div className="mt-1 mb-1 p-3 bg-white">
+          <div className="mt-2">
             <ProductQuantitySelector 
               quantity={quantity}
               onIncrement={incrementQuantity}
@@ -370,7 +368,7 @@ const ProductDetail = () => {
             />
           </div>
           
-          <div className="mt-4">
+          <div className="mt-2">
             <ProductShipping
               shippingInfo={productForTabs.shipping}
               isExpressSelected={isExpressSelected}
@@ -378,7 +376,7 @@ const ProductDetail = () => {
             />
           </div>
           
-          <div className="mt-4">
+          <div className="mt-2">
             <ProductWarranty
               warrantyOptions={productForTabs.warranty}
               selectedWarranty={selectedWarranty}
@@ -386,7 +384,7 @@ const ProductDetail = () => {
             />
           </div>
           
-          <div className="mt-4">
+          <div className="mt-2">
             <ProductPaymentOptions paymentOptions={productForTabs.payments} />
           </div>
         </div>
