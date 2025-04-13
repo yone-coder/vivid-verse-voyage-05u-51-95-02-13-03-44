@@ -28,3 +28,27 @@ export const fetchAllProducts = async () => {
   
   return data || [];
 };
+
+/**
+ * Fetches a specific product by ID
+ * @param productId The ID of the product to fetch
+ * @returns The product with its images
+ */
+export const fetchProductById = async (productId: string) => {
+  if (!productId) {
+    throw new Error('Product ID is required');
+  }
+  
+  const { data, error } = await supabase
+    .from('products')
+    .select('*, product_images(*)')
+    .eq('id', productId)
+    .single();
+    
+  if (error) {
+    console.error('Error fetching product:', error);
+    throw new Error('Failed to fetch product');
+  }
+  
+  return data;
+};
