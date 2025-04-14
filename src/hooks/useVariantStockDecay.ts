@@ -11,14 +11,16 @@ export interface VariantStockInfo {
   startTime: number; // timestamp when the countdown started
   lastRefilledAt?: number; // timestamp of the last refill
   refillCooldown?: number; // cooldown period in milliseconds before next refill
+  decayPeriod: number; // Track individual decay period
 }
 
 interface UseVariantStockDecayProps {
   variants: Array<{
     name: string;
     stock: number;
+    decayPeriod?: number; // Optional custom decay period
   }>;
-  decayPeriod?: number; // Time in milliseconds for full decay cycle (default 12 hours)
+  decayPeriod?: number; // Default fallback decay period
   demoMode?: boolean; // Accelerated decay for demo purposes
   autoRefill?: boolean; // Enable automatic refill when stock runs out
   refillCooldown?: number; // Time in milliseconds to wait before refilling (default 30 seconds)
@@ -55,7 +57,7 @@ export function useVariantStockDecay({
       const savedInfo = savedInfoString ? JSON.parse(savedInfoString) : null;
       
       // Only initialize variants that aren't already being tracked or restore from localStorage
-      if (savedInfo && Date.now() - savedInfo.startTime < decayPeriod) {
+      if (savedInfo && Date.now() - savedInfo.startTime < variant.decayPeriod || Date.now() - savedInfo.startTime < decayPeriod) {
         // If saved data exists and hasn't expired, use it
         initialStockInfo[variant.name] = savedInfo;
         console.info(`Restored variant from localStorage: ${variant.name} with remaining stock: ${savedInfo.currentStock.toFixed(2)}`);
@@ -74,12 +76,13 @@ export function useVariantStockDecay({
           currentStock: variant.stock,
           stockPercentage: 100,
           decayRate: decayRate,
-          timeRemaining: decayPeriod,
+          timeRemaining: variant.decayPeriod || decayPeriod,
           isLowStock: variant.stock <= 15,
           isActive: false,
           startTime: Date.now(), // Record start time for accurate calculations
           lastRefilledAt: 0, // Initialize last refilled timestamp
-          refillCooldown: refillCooldown // Set refill cooldown period
+          refillCooldown: refillCooldown, // Set refill cooldown period
+          decayPeriod: variant.decayPeriod || decayPeriod // Store the decay period with the variant info
         };
         
         console.info(`Initialized variant: ${variant.name} with decay rate: ${decayRate} units/12-hours`);
@@ -125,7 +128,7 @@ export function useVariantStockDecay({
               ...variant,
               currentStock: refillAmount,
               stockPercentage: (refillAmount / variant.initialStock) * 100,
-              timeRemaining: (refillAmount / variant.initialStock) * decayPeriod,
+              timeRemaining: (refillAmount / variant.initialStock) * variant.decayPeriod,
               isLowStock: refillAmount <= 15,
               lastRefilledAt: now
             };
@@ -152,7 +155,7 @@ export function useVariantStockDecay({
             
             // Calculate remaining time proportionally to the 12-hour window
             const remainingFraction = newStock / variant.initialStock;
-            const remainingTime = Math.max(0, remainingFraction * decayPeriod);
+            const remainingTime = Math.max(0, remainingFraction * variant.decayPeriod);
             
             // Calculate stock percentage for the progress bar
             const percentage = (newStock / variant.initialStock) * 100;
@@ -225,7 +228,7 @@ export function useVariantStockDecay({
       const savedInfo = savedInfoString ? JSON.parse(savedInfoString) : null;
       
       // If the timer had expired or no existing data, reset the start time
-      const shouldReset = !savedInfo || (Date.now() - savedInfo.startTime >= decayPeriod);
+      const shouldReset = !savedInfo || (Date.now() - savedInfo.startTime >= variant.decayPeriod || Date.now() - savedInfo.startTime >= decayPeriod);
       
       // Reset the start time when a variant is activated if needed
       const updatedVariant = {
@@ -274,7 +277,7 @@ export function useVariantStockDecay({
         initialStock: variant.stock,
         currentStock: variant.stock,
         stockPercentage: 100,
-        timeRemaining: decayPeriod,
+        timeRemaining: variant.decayPeriod || decayPeriod,
         startTime: Date.now(),
         lastRefilledAt: Date.now() // Reset the refill timestamp
       };
@@ -303,7 +306,7 @@ export function useVariantStockDecay({
             initialStock: variant.stock,
             currentStock: variant.stock,
             stockPercentage: 100,
-            timeRemaining: decayPeriod,
+            timeRemaining: variant.decayPeriod || decayPeriod,
             startTime: Date.now(),
             lastRefilledAt: Date.now(), // Reset the refill timestamp
             isActive: updated[variant.name].isActive // Preserve active state
@@ -334,7 +337,7 @@ export function useVariantStockDecay({
         ...variant,
         currentStock: refillAmount,
         stockPercentage: (refillAmount / variant.initialStock) * 100,
-        timeRemaining: (refillAmount / variant.initialStock) * decayPeriod,
+        timeRemaining: (refillAmount / variant.initialStock) * variant.decayPeriod,
         isLowStock: refillAmount <= 15,
         lastRefilledAt: Date.now()
       };

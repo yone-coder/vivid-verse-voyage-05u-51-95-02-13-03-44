@@ -60,19 +60,23 @@ const ProductDetail = () => {
   const { data: product, isLoading } = useProduct(productId);
   const { data: analytics, isLoading: analyticsLoading } = useProductAnalytics(productId);
 
-  // Updated color variants with consistent 256 stock
+  // Updated color variants with consistent 256 stock and unique decay rates
   const colorVariants = [
-    { name: "Black", price: 199.99, stock: 256, image: "", bestseller: true },
-    { name: "White", price: 199.99, stock: 256, image: "", bestseller: false },
-    { name: "Jet Black", price: 209.99, stock: 256, image: "", bestseller: false },
-    { name: "Blue", price: 219.99, stock: 256, image: "", bestseller: false },
-    { name: "Red", price: 229.99, stock: 256, image: "", bestseller: false, limited: true }
+    { name: "Black", price: 199.99, stock: 256, image: "", bestseller: true, decayPeriod: 12 * 60 * 60 * 1000 }, // 12 hours
+    { name: "White", price: 199.99, stock: 256, image: "", bestseller: false, decayPeriod: 10 * 60 * 60 * 1000 }, // 10 hours
+    { name: "Jet Black", price: 209.99, stock: 256, image: "", bestseller: false, decayPeriod: 9 * 60 * 60 * 1000 }, // 9 hours
+    { name: "Blue", price: 219.99, stock: 256, image: "", bestseller: false, decayPeriod: 11 * 60 * 60 * 1000 }, // 11 hours
+    { name: "Red", price: 229.99, stock: 256, image: "", bestseller: false, limited: true, decayPeriod: 8 * 60 * 60 * 1000 } // 8 hours
   ];
   
-  // Use our stock decay hook with 12-hour decay period and localStorage persistence
+  // Use our stock decay hook with variant-specific decay periods
   const { variantStockInfo, activateVariant, getTimeRemaining, resetVariant, resetAllVariants } = useVariantStockDecay({
-    variants: colorVariants,
-    decayPeriod: 12 * 60 * 60 * 1000 // 12 hours in milliseconds
+    variants: colorVariants.map(variant => ({
+      name: variant.name,
+      stock: variant.stock,
+      decayPeriod: variant.decayPeriod // Pass unique decay period for each variant
+    })),
+    demoMode: true // Keep demo mode for slower, visible decay
   });
 
   // Effect to activate the selected variant for real-time stock decay
