@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -75,6 +74,13 @@ const ProductDetail = () => {
     variants: colorVariants,
     decayPeriod: 5 * 60 * 1000 // 5 minutes in milliseconds
   });
+
+  // Effect to activate the selected variant for real-time stock decay
+  useEffect(() => {
+    if (selectedColor && activateVariant) {
+      activateVariant(selectedColor);
+    }
+  }, [selectedColor, activateVariant]);
 
   // Event handlers
   const incrementQuantity = () => {
@@ -309,7 +315,7 @@ const ProductDetail = () => {
   
   // Get the currently selected variant
   const selectedVariant = colorVariants.find((v) => v.name === selectedColor);
-  const selectedVariantStockInfo = selectedVariant ? variantStockInfo[selectedColor] : undefined;
+  const selectedVariantStockInfo = selectedColor ? variantStockInfo[selectedColor] : undefined;
   
   const currentVariant = productForTabs.variants.find(v => v.name === selectedColor);
   const currentStock = selectedVariantStockInfo?.currentStock !== undefined 

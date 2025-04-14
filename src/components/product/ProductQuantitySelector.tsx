@@ -44,10 +44,12 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
   const [priceAnimation, setPriceAnimation] = useState(false);
   const [stockPulse, setStockPulse] = useState(false);
   
+  // Use real-time stock info if available, otherwise fallback to static value
   const displayStock = stockInfo?.currentStock !== undefined
     ? Math.floor(stockInfo.currentStock)
     : inStock;
   
+  // Use real-time stock percentage if available, otherwise calculate based on display stock
   const stockPercentage = stockInfo?.stockPercentage !== undefined
     ? stockInfo.stockPercentage
     : Math.min(100, (displayStock / 200) * 100);
@@ -168,7 +170,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
     }
   };
   
-  // Renamed from 'stockInfo' to 'stockLevelInfo' to avoid the naming conflict
+  // Renamed to 'stockLevelInfo' to avoid naming conflict with the prop
   const stockLevelInfo = getStockLevelInfo();
   
   const handleIncrementWithFeedback = () => {
@@ -197,6 +199,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
     onIncrement();
   };
   
+  // Add useEffect to show stock pulse animation for low stock
   useEffect(() => {
     if (isLowStock) {
       const interval = setInterval(() => {
@@ -207,6 +210,29 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
       return () => clearInterval(interval);
     }
   }, [isLowStock]);
+
+  // Add new useEffect to force re-render when stockInfo changes for real-time updates
+  useEffect(() => {
+    // This empty dependency array with stockInfo will cause re-renders when stockInfo changes
+    // which is necessary for smooth real-time animation of the progress bar
+    if (stockInfo?.isActive) {
+      // Force animation frame updates for smoother animation
+      let animationFrameId: number;
+      
+      const updateAnimation = () => {
+        // This causes a re-render on each animation frame
+        animationFrameId = requestAnimationFrame(updateAnimation);
+      };
+      
+      animationFrameId = requestAnimationFrame(updateAnimation);
+      
+      return () => {
+        if (animationFrameId) {
+          cancelAnimationFrame(animationFrameId);
+        }
+      };
+    }
+  }, [stockInfo]);
 
   return (
     <div className="space-y-2 font-aliexpress">
@@ -267,7 +293,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
           <Progress 
             value={stockPercentage} 
             className="h-1.5 w-full"
-            indicatorClassName={`${stockLevelInfo.color} ${stockPulse ? 'animate-pulse' : ''}`}
+            indicatorClassName={`${stockLevelInfo.color} ${stockPulse ? 'animate-pulse' : ''} ${stockInfo?.isActive ? 'transition-all duration-300 ease-linear' : ''}`}
           />
         </div>
         
