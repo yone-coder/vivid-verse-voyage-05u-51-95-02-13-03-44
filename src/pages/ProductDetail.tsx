@@ -62,11 +62,11 @@ const ProductDetail = () => {
 
   // Define our specific color variants with additional properties
   const colorVariants = [
-    { name: "Black", price: 199.99, stock: 48, image: "", bestseller: true },
-    { name: "White", price: 199.99, stock: 124, image: "", bestseller: false },
-    { name: "Jet Black", price: 209.99, stock: 78, image: "", bestseller: false },
-    { name: "Blue", price: 219.99, stock: 42, image: "", bestseller: false },
-    { name: "Red", price: 229.99, stock: 16, image: "", bestseller: false, limited: true }
+    { name: "Black", price: 199.99, stock: 256, image: "", bestseller: true },
+    { name: "White", price: 199.99, stock: 256, image: "", bestseller: false },
+    { name: "Jet Black", price: 209.99, stock: 256, image: "", bestseller: false },
+    { name: "Blue", price: 219.99, stock: 256, image: "", bestseller: false },
+    { name: "Red", price: 229.99, stock: 256, image: "", bestseller: false, limited: true }
   ];
   
   // Use our stock decay hook with 12-hour decay period and localStorage persistence
@@ -271,11 +271,11 @@ const ProductDetail = () => {
       { name: "Weight", value: "450g" },
     ],
     variants: [
-      { name: "Black", price: currentPrice, stock: 48, image: productImages[0] || "/placeholder.svg" },
-      { name: "White", price: currentPrice, stock: 124, image: productImages[1] || "/placeholder.svg" },
-      { name: "Jet Black", price: currentPrice + 10, stock: 78, image: productImages[2] || "/placeholder.svg" },
-      { name: "Blue", price: currentPrice + 20, stock: 42, image: productImages[0] || "/placeholder.svg" },
-      { name: "Red", price: currentPrice + 30, stock: 16, image: productImages[1] || "/placeholder.svg" }
+      { name: "Black", price: currentPrice, stock: 256, image: productImages[0] || "/placeholder.svg" },
+      { name: "White", price: currentPrice, stock: 256, image: productImages[1] || "/placeholder.svg" },
+      { name: "Jet Black", price: currentPrice + 10, stock: 256, image: productImages[2] || "/placeholder.svg" },
+      { name: "Blue", price: currentPrice + 20, stock: 256, image: productImages[0] || "/placeholder.svg" },
+      { name: "Red", price: currentPrice + 30, stock: 256, image: productImages[1] || "/placeholder.svg" }
     ],
     shipping: {
       free: true,
