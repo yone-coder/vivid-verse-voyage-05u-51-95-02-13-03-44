@@ -1,5 +1,5 @@
 
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 interface AliExpressTabsProps {
   children?: React.ReactNode;
@@ -94,18 +94,18 @@ const AliExpressTabs = ({ initialTab = 0, tabs = [] }: AliExpressTabsProps) => {
   }, []);
 
   return (
-    <div className="flex flex-col w-full h-full bg-white border-t border-gray-100">
-      {/* Header with scrollable tabs */}
+    <div className="w-screen -mx-4 flex flex-col bg-white border-t border-gray-100">
+      {/* Header with full-width, edge-to-edge scrollable tabs */}
       <div 
         ref={scrollContainerRef}
-        className="flex overflow-x-auto py-3 px-2 bg-white border-b border-gray-200 hide-scrollbar relative" 
+        className="w-full flex overflow-x-auto py-3 px-0 bg-white border-b border-gray-200 hide-scrollbar relative" 
         style={{ scrollbarWidth: 'none' }}
       >
         {displayTabs.map((tab, index) => (
           <div
             key={tab.id}
             ref={(el) => (tabsRef.current[index] = el)}
-            className={`cursor-pointer px-4 whitespace-nowrap text-sm font-medium ${
+            className={`flex-shrink-0 cursor-pointer px-4 whitespace-nowrap text-sm font-medium ${
               activeTab === index ? 'text-red-500' : 'text-gray-600'
             }`}
             onClick={() => handleTabClick(index)}
@@ -121,7 +121,7 @@ const AliExpressTabs = ({ initialTab = 0, tabs = [] }: AliExpressTabsProps) => {
       </div>
 
       {/* Content area */}
-      <div className="flex-1 p-4 overflow-y-auto bg-white">
+      <div className="w-full flex-1 p-4 overflow-y-auto bg-white">
         {displayTabs.map((tab, index) => (
           <div 
             key={tab.id}
