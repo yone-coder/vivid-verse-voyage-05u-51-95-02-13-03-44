@@ -62,11 +62,6 @@ export default function MainLayout() {
     :root {
       --header-height: ${isMobile ? '44px' : '90px'};
     }
-    
-    /* Add CSS for the sticky tabs to properly position beneath the header */
-    #tabs-header .fixed {
-      top: var(--header-height);
-    }
   `;
   
   return (

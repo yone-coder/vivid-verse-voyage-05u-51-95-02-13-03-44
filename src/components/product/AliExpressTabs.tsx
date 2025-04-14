@@ -12,7 +12,6 @@ const AliExpressTabs = ({ initialTab = 0, tabs = [] }: AliExpressTabsProps) => {
   const [tabUnderlineStyle, setTabUnderlineStyle] = useState({});
   const tabsRef = useRef<Array<HTMLDivElement | null>>([]);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
-  const [isSticky, setIsSticky] = useState(false);
 
   const defaultTabs = [
     { id: 0, name: 'Description', content: <div>Description content goes here</div> },
@@ -46,27 +45,6 @@ const AliExpressTabs = ({ initialTab = 0, tabs = [] }: AliExpressTabsProps) => {
     
     return () => window.removeEventListener('resize', handleResize);
   }, [activeTab]);
-
-  // Handle sticky tabs behavior when scrolling
-  useEffect(() => {
-    const tabsElement = scrollContainerRef.current;
-    if (!tabsElement) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsSticky(!entry.isIntersecting);
-      },
-      { threshold: 0, rootMargin: "-1px 0px 0px 0px" }
-    );
-
-    observer.observe(tabsElement);
-
-    return () => {
-      if (tabsElement) {
-        observer.unobserve(tabsElement);
-      }
-    };
-  }, []);
 
   // Update underline position when active tab changes
   useEffect(() => {
@@ -119,14 +97,12 @@ const AliExpressTabs = ({ initialTab = 0, tabs = [] }: AliExpressTabsProps) => {
     <div className="w-screen -mx-4 flex flex-col bg-white border-t border-gray-100">
       {/* Header with full-width, edge-to-edge scrollable tabs */}
       <div 
-        ref={scrollContainerRef}
-        className="w-full relative"
+        className="sticky top-[var(--header-height)] z-40 w-full bg-white shadow-sm"
         id="tabs-header"
       >
-        <div className={`w-full flex overflow-x-auto py-2 px-0 bg-white border-b border-gray-200 hide-scrollbar relative ${
-          isSticky ? 'fixed top-0 left-0 z-50 shadow-sm' : ''
-        }`} 
-        style={{ scrollbarWidth: 'none' }}
+        <div className="w-full flex overflow-x-auto py-2 px-0 bg-white border-b border-gray-200 hide-scrollbar relative" 
+          ref={scrollContainerRef}
+          style={{ scrollbarWidth: 'none' }}
         >
           {displayTabs.map((tab, index) => (
             <div
@@ -146,8 +122,6 @@ const AliExpressTabs = ({ initialTab = 0, tabs = [] }: AliExpressTabsProps) => {
             style={tabUnderlineStyle}
           />
         </div>
-        {/* Spacer div that takes up space when tabs become sticky */}
-        {isSticky && <div className="w-full py-2" />}
       </div>
 
       {/* Content area */}
