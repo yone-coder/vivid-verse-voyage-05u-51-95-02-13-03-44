@@ -79,14 +79,7 @@ export const updateProduct = async (productId: string, updates: Partial<any>) =>
 export const subscribeToProductChanges = (callback: () => void) => {
   console.log("Setting up real-time subscription for products table");
   
-  // Enable realtime for the products table if not already enabled
-  supabase
-    .from('products')
-    .on('UPDATE', (payload) => {
-      console.log('Product updated via legacy listener:', payload);
-      callback();
-    });
-    
+  // Create a channel for product changes using the newer API
   const channel = supabase
     .channel('product-changes')
     .on(
