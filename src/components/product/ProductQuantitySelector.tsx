@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { MinusIcon, PlusIcon } from "lucide-react";
+import { MinusIcon, PlusIcon, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -43,6 +43,8 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
   const [showAnimation, setShowAnimation] = useState(false);
   const [priceAnimation, setPriceAnimation] = useState(false);
   const [stockPulse, setStockPulse] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [animationTimestamp, setAnimationTimestamp] = useState(0);
   
   // Use real-time stock info if available, otherwise fallback to static value
   const displayStock = stockInfo?.currentStock !== undefined
@@ -213,14 +215,22 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
 
   // Add new useEffect to force re-render when stockInfo changes for real-time updates
   useEffect(() => {
-    // This empty dependency array with stockInfo will cause re-renders when stockInfo changes
-    // which is necessary for smooth real-time animation of the progress bar
     if (stockInfo?.isActive) {
       // Force animation frame updates for smoother animation
       let animationFrameId: number;
       
-      const updateAnimation = () => {
-        // This causes a re-render on each animation frame
+      const updateAnimation = (timestamp: number) => {
+        // Update animation timestamp for smoother rendering
+        if (!animationTimestamp) {
+          setAnimationTimestamp(timestamp);
+        }
+        
+        // Set progress based on stockPercentage from stockInfo
+        if (stockInfo?.stockPercentage !== undefined) {
+          setProgress(stockInfo.stockPercentage);
+        }
+        
+        // This causes a re-render on each animation frame for smooth animation
         animationFrameId = requestAnimationFrame(updateAnimation);
       };
       
@@ -232,7 +242,13 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
         }
       };
     }
-  }, [stockInfo]);
+  }, [stockInfo, animationTimestamp]);
+
+  // Calculate remaining time in minutes and seconds if available
+  const timeRemaining = stockInfo?.timeRemaining ? {
+    minutes: Math.floor((stockInfo.timeRemaining / 1000) / 60),
+    seconds: Math.floor((stockInfo.timeRemaining / 1000) % 60)
+  } : null;
 
   return (
     <div className="space-y-2 font-aliexpress">
@@ -289,6 +305,18 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
       )}
       
       <div className="flex flex-col space-y-1">
+        {/* Add timer countdown display when active */}
+        {stockInfo?.isActive && timeRemaining && (
+          <div className="flex justify-between items-center text-xs mb-1">
+            <span className="text-amber-600 font-medium flex items-center">
+              <RefreshCw className="w-3 h-3 mr-1 animate-spin" />
+              Stock updating in real-time
+            </span>
+            <span className="text-gray-500">
+              {timeRemaining.minutes}:{timeRemaining.seconds.toString().padStart(2, '0')} remaining
+            </span>
+          </div>
+        )}
         <div className="relative pt-1">
           <Progress 
             value={stockPercentage} 

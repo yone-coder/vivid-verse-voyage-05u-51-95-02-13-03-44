@@ -56,8 +56,9 @@ export function useVariantStockDecay({
         hasNewVariants = true;
         
         // Generate random decay rate between 10-30 units per minute for a 5-minute window
+        // Increase decay rates to make it more noticeable
         const decayRate = demoMode 
-          ? Math.max(10, Math.floor(Math.random() * 20) + 10) // 10-30 units per minute
+          ? Math.max(20, Math.floor(Math.random() * 40) + 20) // 20-60 units per minute (faster for demo)
           : Math.max(5, Math.floor(Math.random() * 10) + 5);   // 5-15 units per minute for production
         
         // Create new stock info for this variant
@@ -87,7 +88,7 @@ export function useVariantStockDecay({
     }
     
     initializedRef.current = true;
-  }, [variants]);
+  }, [variants, decayPeriod]);
 
   // Use requestAnimationFrame for smoother real-time updates
   useEffect(() => {
@@ -122,7 +123,8 @@ export function useVariantStockDecay({
             const percentage = (newStock / variant.initialStock) * 100;
             
             // Only update if there's an actual change to avoid unnecessary re-renders
-            if (Math.abs(newStock - variant.currentStock) > 0.01) {
+            // Decrease the threshold to ensure more frequent updates
+            if (Math.abs(newStock - variant.currentStock) > 0.001) {
               needsUpdate = true;
               newInfo[variantName] = {
                 ...variant,
@@ -141,7 +143,7 @@ export function useVariantStockDecay({
         return needsUpdate ? newInfo : prevInfo;
       });
       
-      // Continue the animation loop
+      // Continue the animation loop at a higher frame rate
       animationFrameRef.current = requestAnimationFrame(updateStockLevels);
     };
     
@@ -216,9 +218,13 @@ export function useVariantStockDecay({
     setVariantStockInfo(prev => {
       if (!prev[variantName]) return prev;
       
+      const variant = variants.find(v => v.name === variantName);
+      if (!variant) return prev;
+      
       const updatedVariant = {
         ...prev[variantName],
-        currentStock: prev[variantName].initialStock,
+        initialStock: variant.stock,
+        currentStock: variant.stock,
         stockPercentage: 100,
         timeRemaining: decayPeriod,
         startTime: Date.now()
@@ -236,10 +242,38 @@ export function useVariantStockDecay({
     });
   };
 
+  // Reset all variants to initial stock (for testing)
+  const resetAllVariants = () => {
+    setVariantStockInfo(prev => {
+      const updated = { ...prev };
+      
+      variants.forEach(variant => {
+        if (updated[variant.name]) {
+          updated[variant.name] = {
+            ...updated[variant.name],
+            initialStock: variant.stock,
+            currentStock: variant.stock,
+            stockPercentage: 100,
+            timeRemaining: decayPeriod,
+            startTime: Date.now()
+          };
+          
+          // Save to localStorage
+          localStorage.setItem(getStorageKey(variant.name), JSON.stringify(updated[variant.name]));
+        }
+      });
+      
+      console.info("Reset all variants to initial stock");
+      
+      return updated;
+    });
+  };
+
   return {
     variantStockInfo,
     activateVariant,
     getTimeRemaining,
-    resetVariant
+    resetVariant,
+    resetAllVariants
   };
 }

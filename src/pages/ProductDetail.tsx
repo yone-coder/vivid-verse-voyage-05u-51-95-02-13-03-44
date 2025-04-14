@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -6,8 +7,9 @@ import StickyBuyButton from "@/components/StickyBuyButton";
 import { useProduct, useProductAnalytics } from "@/hooks/useProduct";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Heart } from "lucide-react";
+import { Heart, RotateCcw } from "lucide-react";
 import { useVariantStockDecay } from "@/hooks/useVariantStockDecay";
+import { Button } from "@/components/ui/button";
 
 // Product Components
 import ProductHeader from "@/components/product/ProductHeader";
@@ -70,7 +72,7 @@ const ProductDetail = () => {
   
   // Use our stock decay hook with 5-minute decay period and localStorage persistence
   // IMPORTANT: We now use this hook only once in the parent component
-  const { variantStockInfo, activateVariant, getTimeRemaining, resetVariant } = useVariantStockDecay({
+  const { variantStockInfo, activateVariant, getTimeRemaining, resetVariant, resetAllVariants } = useVariantStockDecay({
     variants: colorVariants,
     decayPeriod: 5 * 60 * 1000 // 5 minutes in milliseconds
   });
@@ -175,6 +177,15 @@ const ProductDetail = () => {
     toast({
       title: "Cart",
       description: "Opening your shopping cart",
+    });
+  };
+
+  // Handler to manually reset stock levels (for demo purposes)
+  const handleResetStock = () => {
+    resetAllVariants();
+    toast({
+      title: "Stock Reset",
+      description: "All product variants stock has been reset to initial values",
     });
   };
 
@@ -329,6 +340,18 @@ const ProductDetail = () => {
   
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
+      {/* Demo reset button */}
+      <div className="fixed top-20 right-4 z-50">
+        <Button 
+          size="sm" 
+          variant="outline"
+          className="bg-white shadow-md text-xs flex items-center gap-1 border-amber-200"
+          onClick={handleResetStock}
+        >
+          <RotateCcw className="w-3 h-3" /> Reset Demo
+        </Button>
+      </div>
+
       {/* Gallery Section without Header Overlay */}
       <div ref={headerRef} className="relative w-full bg-gray-50">
         {/* Product image gallery */}
