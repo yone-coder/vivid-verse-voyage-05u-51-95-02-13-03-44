@@ -42,6 +42,7 @@ const ProductDetail = () => {
   const [showLimitedOffersBand, setShowLimitedOffersBand] = useState(true);
   const [expanded, setExpanded] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
+  const [showFullTabContent, setShowFullTabContent] = useState(false);
 
   // Refs and hooks
   const tabsRef = useRef<HTMLDivElement>(null);
@@ -150,21 +151,13 @@ const ProductDetail = () => {
     });
   };
 
-  const scrollToTab = (tabName: string) => {
-    setActiveTab(tabName);
+  // This function is called when a tab is clicked in the header
+  const handleTabClick = (tabId: string) => {
+    setActiveTab(tabId);
+    setShowFullTabContent(true);
     if (tabsRef.current) {
       tabsRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-  };
-
-  const toggleComparisonMode = () => {
-    setComparisonMode(!comparisonMode);
-    toast({
-      title: !comparisonMode ? "Comparison mode activated" : "Comparison mode deactivated",
-      description: !comparisonMode 
-        ? "You can now add products to compare" 
-        : "Comparison mode has been turned off"
-    });
   };
 
   const handleSearch = (e: React.FormEvent) => {
@@ -319,7 +312,7 @@ const ProductDetail = () => {
         setSearchQuery={setSearchQuery}
         handleSearch={handleSearch}
         activeTab={activeTab}
-        onTabChange={scrollToTab}
+        onTabChange={handleTabClick}
         totalReviews={productForTabs.reviewCount}
         hasQuestions={true}
       />
@@ -402,13 +395,15 @@ const ProductDetail = () => {
         </div>
       </div>
       
-      <div ref={tabsRef} className="relative">
+      {/* Tab content preview mode - always shows on the main page */}
+      <div className="mb-4">
         <ProductTabs 
           product={productForTabs}
           activeTab={activeTab} 
           setActiveTab={setActiveTab} 
           isScrolled={false} 
           headerHeight={0}
+          previewMode={!showFullTabContent}
         />
       </div>
       
