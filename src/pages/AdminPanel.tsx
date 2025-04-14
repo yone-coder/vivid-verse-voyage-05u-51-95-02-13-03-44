@@ -1,7 +1,6 @@
-
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, Trash2, Edit, Eye, X, Check, Save } from "lucide-react";
+import { Plus, Trash2, Edit, Eye, X, Check, Save, Pencil } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,6 +34,12 @@ interface NewProduct {
   discount_price: number | null;
 }
 
+interface EditableProduct {
+  id: string;
+  name: string;
+  isEditing: boolean;
+}
+
 const AdminPanel: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -53,12 +58,44 @@ const AdminPanel: React.FC = () => {
     discount_price: null
   });
   const [creatingProduct, setCreatingProduct] = useState(false);
+  const [editableProducts, setEditableProducts] = useState<EditableProduct[]>([]);
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
     fetchProducts();
+    
+    const channel = supabase
+      .channel('product-changes')
+      .on(
+        'postgres_changes',
+        { 
+          event: '*', 
+          schema: 'public', 
+          table: 'products' 
+        },
+        (payload) => {
+          console.log('Real-time update received:', payload);
+          fetchProducts();
+        }
+      )
+      .subscribe();
+      
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
+
+  useEffect(() => {
+    if (products.length > 0) {
+      const initialEditableProducts = products.map(product => ({
+        id: product.id,
+        name: product.name,
+        isEditing: false
+      }));
+      setEditableProducts(initialEditableProducts);
+    }
+  }, [products]);
 
   const fetchProducts = async () => {
     try {
@@ -114,7 +151,6 @@ const AdminPanel: React.FC = () => {
 
     try {
       setUploading(true);
-      // Upload file to Supabase Storage
       const fileExt = uploadFile.name.split('.').pop();
       const fileName = `${selectedProduct.id}_${Date.now()}.${fileExt}`;
       const filePath = `${fileName}`;
@@ -127,14 +163,12 @@ const AdminPanel: React.FC = () => {
         throw uploadError;
       }
 
-      // Get the public URL
       const { data: publicUrlData } = supabase.storage
         .from('product-images')
         .getPublicUrl(filePath);
 
       const imageUrl = publicUrlData.publicUrl;
 
-      // Add entry to product_images table
       const { error: dbError } = await supabase
         .from('product_images')
         .insert({
@@ -152,7 +186,6 @@ const AdminPanel: React.FC = () => {
         description: "Image uploaded successfully",
       });
 
-      // Refresh product data
       fetchProducts();
       setIsUploadDialogOpen(false);
       setUploadFile(null);
@@ -193,7 +226,6 @@ const AdminPanel: React.FC = () => {
         description: "Image updated successfully",
       });
 
-      // Refresh product data
       fetchProducts();
       setIsEditDialogOpen(false);
       setEditingImage(null);
@@ -210,12 +242,10 @@ const AdminPanel: React.FC = () => {
 
   const handleDeleteImage = async (imageId: string, imagePath: string) => {
     try {
-      // Extract the filename from the URL
       const url = new URL(imagePath);
       const pathname = url.pathname;
       const filename = pathname.substring(pathname.lastIndexOf('/') + 1);
 
-      // Delete from product_images table
       const { error: dbError } = await supabase
         .from('product_images')
         .delete()
@@ -225,14 +255,12 @@ const AdminPanel: React.FC = () => {
         throw dbError;
       }
 
-      // Try to delete from storage (might fail if path is not correct)
       try {
         await supabase.storage
           .from('product-images')
           .remove([filename]);
       } catch (storageError) {
         console.warn('Could not delete from storage:', storageError);
-        // Continue even if storage deletion fails
       }
 
       toast({
@@ -240,7 +268,6 @@ const AdminPanel: React.FC = () => {
         description: "Image deleted successfully",
       });
 
-      // Refresh product data
       fetchProducts();
     } catch (error) {
       console.error('Error deleting image:', error);
@@ -306,7 +333,6 @@ const AdminPanel: React.FC = () => {
         description: "Product created successfully!",
       });
 
-      // Refresh product data and close dialog
       fetchProducts();
       setIsNewProductDialogOpen(false);
     } catch (error) {
@@ -323,6 +349,75 @@ const AdminPanel: React.FC = () => {
 
   const viewProduct = (productId: string) => {
     navigate(`/product/${productId}`);
+  };
+
+  const startEditingProductName = (productId: string) => {
+    setEditableProducts(prev => 
+      prev.map(p => p.id === productId ? { ...p, isEditing: true } : p)
+    );
+  };
+
+  const cancelEditingProductName = (productId: string) => {
+    setEditableProducts(prev => 
+      prev.map(p => {
+        if (p.id === productId) {
+          const originalProduct = products.find(product => product.id === productId);
+          return { 
+            ...p, 
+            isEditing: false, 
+            name: originalProduct ? originalProduct.name : p.name 
+          };
+        }
+        return p;
+      })
+    );
+  };
+
+  const handleProductNameChange = (productId: string, newName: string) => {
+    setEditableProducts(prev => 
+      prev.map(p => p.id === productId ? { ...p, name: newName } : p)
+    );
+  };
+
+  const saveProductName = async (productId: string) => {
+    try {
+      const productToUpdate = editableProducts.find(p => p.id === productId);
+      
+      if (!productToUpdate || !productToUpdate.name.trim()) {
+        toast({
+          variant: "destructive",
+          title: "Validation Error",
+          description: "Product name cannot be empty.",
+        });
+        return;
+      }
+      
+      const { error } = await supabase
+        .from('products')
+        .update({ name: productToUpdate.name })
+        .eq('id', productId);
+        
+      if (error) {
+        throw error;
+      }
+      
+      setEditableProducts(prev => 
+        prev.map(p => p.id === productId ? { ...p, isEditing: false } : p)
+      );
+      
+      toast({
+        title: "Success",
+        description: "Product name updated successfully",
+      });
+      
+    } catch (error) {
+      console.error('Error updating product name:', error);
+      toast({
+        variant: "destructive",
+        title: "Update Failed",
+        description: "Failed to update product name. Please try again.",
+      });
+    }
   };
 
   return (
@@ -346,56 +441,92 @@ const AdminPanel: React.FC = () => {
             {loading ? (
               <div className="col-span-full p-4">Loading products...</div>
             ) : (
-              products.map((product) => (
-                <Card key={product.id} className="overflow-hidden">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="line-clamp-1">{product.name}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-gray-500 line-clamp-2 mb-2">{product.description}</p>
-                    <div className="flex items-baseline gap-2">
-                      <span className="font-medium">
-                        ${product.price.toFixed(2)}
-                      </span>
-                      {product.discount_price && (
-                        <span className="text-sm text-gray-500 line-through">
-                          ${product.discount_price.toFixed(2)}
-                        </span>
+              products.map((product) => {
+                const editableProduct = editableProducts.find(p => p.id === product.id);
+                
+                return (
+                  <Card key={product.id} className="overflow-hidden">
+                    <CardHeader className="pb-2">
+                      {editableProduct?.isEditing ? (
+                        <div className="flex items-center gap-2">
+                          <Input
+                            value={editableProduct.name}
+                            onChange={(e) => handleProductNameChange(product.id, e.target.value)}
+                            className="font-semibold"
+                          />
+                          <Button 
+                            size="icon" 
+                            variant="ghost"
+                            onClick={() => saveProductName(product.id)}
+                          >
+                            <Check className="h-4 w-4" />
+                          </Button>
+                          <Button 
+                            size="icon" 
+                            variant="ghost"
+                            onClick={() => cancelEditingProductName(product.id)}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-between">
+                          <CardTitle className="line-clamp-1">{product.name}</CardTitle>
+                          <Button 
+                            size="icon" 
+                            variant="ghost"
+                            onClick={() => startEditingProductName(product.id)}
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                        </div>
                       )}
-                    </div>
-                    <div className="mt-2">
-                      <p className="text-xs text-gray-500">
-                        {product.product_images?.length || 0} images
-                      </p>
-                    </div>
-                  </CardContent>
-                  <CardFooter className="flex justify-between pt-0">
-                    <Button 
-                      size="sm" 
-                      variant="outline" 
-                      onClick={() => viewProduct(product.id)}
-                    >
-                      <Eye className="mr-1 h-4 w-4" />
-                      View
-                    </Button>
-                    <Button 
-                      size="sm" 
-                      variant="outline"
-                      onClick={() => handleProductSelect(product)}
-                    >
-                      <Edit className="mr-1 h-4 w-4" />
-                      Manage Images
-                    </Button>
-                  </CardFooter>
-                </Card>
-              ))
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-gray-500 line-clamp-2 mb-2">{product.description}</p>
+                      <div className="flex items-baseline gap-2">
+                        <span className="font-medium">
+                          ${product.price.toFixed(2)}
+                        </span>
+                        {product.discount_price && (
+                          <span className="text-sm text-gray-500 line-through">
+                            ${product.discount_price.toFixed(2)}
+                          </span>
+                        )}
+                      </div>
+                      <div className="mt-2">
+                        <p className="text-xs text-gray-500">
+                          {product.product_images?.length || 0} images
+                        </p>
+                      </div>
+                    </CardContent>
+                    <CardFooter className="flex justify-between pt-0">
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        onClick={() => viewProduct(product.id)}
+                      >
+                        <Eye className="mr-1 h-4 w-4" />
+                        View
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => handleProductSelect(product)}
+                      >
+                        <Edit className="mr-1 h-4 w-4" />
+                        Manage Images
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                );
+              })
             )}
           </div>
         </TabsContent>
         
         <TabsContent value="images">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Products List */}
             <div className="md:col-span-1">
               <Card>
                 <CardHeader>
@@ -422,7 +553,6 @@ const AdminPanel: React.FC = () => {
               </Card>
             </div>
             
-            {/* Product Images */}
             <div className="md:col-span-2">
               <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
@@ -499,7 +629,6 @@ const AdminPanel: React.FC = () => {
         </TabsContent>
       </Tabs>
 
-      {/* Upload Image Dialog */}
       <Dialog open={isUploadDialogOpen} onOpenChange={setIsUploadDialogOpen}>
         <DialogContent>
           <DialogHeader>
@@ -552,7 +681,6 @@ const AdminPanel: React.FC = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Edit Image Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent>
           <DialogHeader>
@@ -596,7 +724,6 @@ const AdminPanel: React.FC = () => {
         </DialogContent>
       </Dialog>
 
-      {/* New Product Dialog */}
       <Dialog open={isNewProductDialogOpen} onOpenChange={setIsNewProductDialogOpen}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
