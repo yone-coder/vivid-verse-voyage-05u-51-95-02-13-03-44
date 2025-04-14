@@ -103,8 +103,6 @@ const EnhancedRating = () => {
         </div>
       </div>
       
-      {/* Badges and action buttons row has been removed */}
-      
       {/* Conditionally show rating breakdown */}
       {showStats && (
         <div className="relative mt-3">

@@ -50,17 +50,9 @@ const ProductPriceDisplay: React.FC<ProductPriceDisplayProps> = ({
             )}
           </div>
         </div>
-        
-        {/* Time-limited section */}
-        <div className={cn(
-          "flex", 
-          isMobile ? "justify-between" : "flex-col items-end"
-        )}>
-          {/* Clock icon and text have been removed */}
-        </div>
       </div>
       
-      {/* Shipping and price alert information - reduced bottom margin */}
+      {/* Shipping and price alert information */}
       <div className="mt-1 text-[10px] md:text-xs flex items-center justify-between flex-wrap gap-y-1">
         <div className="flex items-center bg-green-50 px-2 py-1 rounded-md text-green-600">
           <Truck className="mr-1 h-3.5 w-3.5" />
