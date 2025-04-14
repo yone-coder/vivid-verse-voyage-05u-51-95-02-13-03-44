@@ -3,6 +3,9 @@ import { Link } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProductCard } from "./ProductGrid";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { ChevronRight } from "lucide-react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 // Simulating product recommendations by category
 const recommendedCategories = [
@@ -14,6 +17,16 @@ const recommendedCategories = [
 
 export default function ProductRecommendations({ products }) {
   const isMobile = useIsMobile();
+  const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
+  
+  const toggleExpand = (categoryId: string) => {
+    setExpandedCategories(prev => ({
+      ...prev,
+      [categoryId]: !prev[categoryId]
+    }));
+  };
+  
+  const isExpanded = (categoryId: string) => expandedCategories[categoryId] || false;
   
   return (
     <div className="py-3">
@@ -39,12 +52,25 @@ export default function ProductRecommendations({ products }) {
           {recommendedCategories.map(category => (
             <TabsContent key={category.id} value={category.id} className="mt-0">
               <div className={`grid grid-cols-2 ${isMobile ? 'md:grid-cols-3' : 'md:grid-cols-4 lg:grid-cols-5'} gap-2`}>
-                {products?.slice(0, isMobile ? 6 : 10).map(product => (
+                {products?.slice(0, isExpanded(category.id) ? (isMobile ? 6 : 10) : (isMobile ? 2 : 5)).map(product => (
                   <div key={product.id} className="h-full">
                     <ProductCard key={product.id} product={product} />
                   </div>
                 ))}
               </div>
+              
+              {products && products.length > (isMobile ? 2 : 5) && (
+                <div className="mt-3 text-center">
+                  <Button
+                    onClick={() => toggleExpand(category.id)}
+                    variant="outline"
+                    className="w-full md:w-auto flex items-center justify-center gap-2 text-orange-500 border-orange-500"
+                  >
+                    {isExpanded(category.id) ? "Show Less" : "View More Products"}
+                    {!isExpanded(category.id) && <ChevronRight className="h-4 w-4" />}
+                  </Button>
+                </div>
+              )}
             </TabsContent>
           ))}
         </Tabs>
