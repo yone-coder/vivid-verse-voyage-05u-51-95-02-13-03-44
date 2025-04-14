@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useProduct } from '@/hooks/useProduct';
@@ -119,6 +120,21 @@ const ProductDetail: React.FC = () => {
   const productImages = product.product_images 
     ? product.product_images.map(image => image.src)
     : [];
+    
+  // Define product specifications for the tabs component
+  const productSpecs = [
+    { name: "Dimensions", value: "12 x 8 x 4 inches" },
+    { name: "Weight", value: "2.5 lbs" },
+    { name: "Material", value: "High-grade plastic and aluminum" },
+    { name: "Light Sources", value: "28 LED lights" },
+    { name: "Color Spectrum", value: "16.7 million colors" },
+    { name: "Power", value: "5W" },
+    { name: "Battery Life", value: "Up to 6 hours" },
+    { name: "Connectivity", value: "Bluetooth 5.0, WiFi" },
+    { name: "Input", value: "USB-C, 5V/2A" },
+    { name: "Package Contents", value: "Projector, Remote, USB Cable, Manual" },
+    { name: "Warranty", value: "12 months" }
+  ];
 
   return (
     <div className="pb-20">
@@ -249,7 +265,9 @@ const ProductDetail: React.FC = () => {
             rating: 4.5,
             reviewCount: 128,
             sold: 1024,
-            id: product.id
+            id: product.id,
+            images: productImages,
+            specs: productSpecs
           }} 
           activeTab={activeTab} 
           setActiveTab={setActiveTab} 
