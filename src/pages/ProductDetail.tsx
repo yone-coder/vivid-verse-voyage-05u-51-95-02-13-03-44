@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -23,6 +24,24 @@ import ProductPaymentOptions from "@/components/product/ProductPaymentOptions";
 
 // Default product ID for the premium headphones product
 const DEFAULT_PRODUCT_ID = "aae97882-a3a1-4db5-b4f5-156705cd10ee"; // Premium Headphones product ID
+
+// Function to generate offsets for staggered start times
+const generateStaggeredStartTimes = () => {
+  const now = Date.now();
+  // Starting points (hours ago)
+  const startOffsets = [
+    3,    // Black - started 3 hours ago (75% remaining)
+    1.5,  // White - started 1.5 hours ago (85% remaining)
+    4.5,  // Jet Black - started 4.5 hours ago (50% remaining)
+    0,    // Blue - starting now (100% remaining)
+    6     // Red - started 6 hours ago (25% remaining - limited edition)
+  ];
+  
+  return startOffsets.map(hours => now - (hours * 60 * 60 * 1000));
+};
+
+// Generate start times for variants
+const variantStartTimes = generateStaggeredStartTimes();
 
 const ProductDetail = () => {
   // State variables
@@ -60,21 +79,22 @@ const ProductDetail = () => {
   const { data: product, isLoading } = useProduct(productId);
   const { data: analytics, isLoading: analyticsLoading } = useProductAnalytics(productId);
 
-  // Updated color variants with consistent 256 stock and unique decay rates
+  // Updated color variants with consistent 256 stock and unique decay rates and start times
   const colorVariants = [
-    { name: "Black", price: 199.99, stock: 256, image: "", bestseller: true, decayPeriod: 12 * 60 * 60 * 1000 }, // 12 hours
-    { name: "White", price: 199.99, stock: 256, image: "", bestseller: false, decayPeriod: 10 * 60 * 60 * 1000 }, // 10 hours
-    { name: "Jet Black", price: 209.99, stock: 256, image: "", bestseller: false, decayPeriod: 9 * 60 * 60 * 1000 }, // 9 hours
-    { name: "Blue", price: 219.99, stock: 256, image: "", bestseller: false, decayPeriod: 11 * 60 * 60 * 1000 }, // 11 hours
-    { name: "Red", price: 229.99, stock: 256, image: "", bestseller: false, limited: true, decayPeriod: 8 * 60 * 60 * 1000 } // 8 hours
+    { name: "Black", price: 199.99, stock: 256, image: "", bestseller: true, decayPeriod: 12 * 60 * 60 * 1000, startTime: variantStartTimes[0] }, // 12 hours
+    { name: "White", price: 199.99, stock: 256, image: "", bestseller: false, decayPeriod: 10 * 60 * 60 * 1000, startTime: variantStartTimes[1] }, // 10 hours
+    { name: "Jet Black", price: 209.99, stock: 256, image: "", bestseller: false, decayPeriod: 9 * 60 * 60 * 1000, startTime: variantStartTimes[2] }, // 9 hours
+    { name: "Blue", price: 219.99, stock: 256, image: "", bestseller: false, decayPeriod: 11 * 60 * 60 * 1000, startTime: variantStartTimes[3] }, // 11 hours
+    { name: "Red", price: 229.99, stock: 256, image: "", bestseller: false, limited: true, decayPeriod: 8 * 60 * 60 * 1000, startTime: variantStartTimes[4] } // 8 hours
   ];
   
-  // Use our stock decay hook with variant-specific decay periods
+  // Use our stock decay hook with variant-specific decay periods and start times
   const { variantStockInfo, activateVariant, getTimeRemaining, resetVariant, resetAllVariants } = useVariantStockDecay({
     variants: colorVariants.map(variant => ({
       name: variant.name,
       stock: variant.stock,
-      decayPeriod: variant.decayPeriod // Pass unique decay period for each variant
+      decayPeriod: variant.decayPeriod, // Pass unique decay period for each variant
+      startTime: variant.startTime // Pass unique start time for each variant
     })),
     demoMode: true // Keep demo mode for slower, visible decay
   });

@@ -19,6 +19,7 @@ interface UseVariantStockDecayProps {
     name: string;
     stock: number;
     decayPeriod?: number; // Optional custom decay period in milliseconds
+    startTime?: number; // Optional custom start time as timestamp
   }>;
   decayPeriod?: number; // Default fallback decay period
   demoMode?: boolean; // Accelerated decay for demo purposes
@@ -71,8 +72,8 @@ export function useVariantStockDecay({
           ? Math.max(5, Math.floor(Math.random() * 10) + 5)   // 5-15 units per period (slower)
           : Math.max(2, Math.floor(Math.random() * 5) + 2);   // 2-7 units per period for production
         
-        // Current timestamp as real-time start
-        const currentTime = Date.now();
+        // Use custom start time if provided, otherwise use current time
+        const currentTime = variant.startTime || Date.now();
         
         // Create new stock info for this variant
         initialStockInfo[variant.name] = {
@@ -83,13 +84,27 @@ export function useVariantStockDecay({
           timeRemaining: variantDecayPeriod,
           isLowStock: variant.stock <= 15,
           isActive: false,
-          startTime: currentTime, // Real-time current timestamp
+          startTime: currentTime, // Use provided start time or current timestamp
           lastRefilledAt: 0, // Initialize last refilled timestamp
           refillCooldown: refillCooldown, // Set refill cooldown period
           decayPeriod: variantDecayPeriod // Store the variant-specific decay period
         };
         
-        console.info(`Initialized variant: ${variant.name} with decay rate: ${hourlyDecayRate} units/period and decay period: ${variantDecayPeriod/3600000} hours`);
+        // If a custom start time was provided and it's in the past, calculate initial stock based on elapsed time
+        if (variant.startTime && variant.startTime < Date.now()) {
+          const elapsedMs = Date.now() - variant.startTime;
+          const remainingPercentage = Math.max(0, 1 - (elapsedMs / variantDecayPeriod));
+          
+          // Set initial stock based on elapsed time
+          initialStockInfo[variant.name].currentStock = variant.stock * remainingPercentage;
+          initialStockInfo[variant.name].stockPercentage = remainingPercentage * 100;
+          initialStockInfo[variant.name].timeRemaining = remainingPercentage * variantDecayPeriod;
+          initialStockInfo[variant.name].isLowStock = initialStockInfo[variant.name].currentStock <= 15;
+          
+          console.info(`Initialized variant ${variant.name} with elapsed time ${(elapsedMs / 3600000).toFixed(2)} hours, remaining stock: ${initialStockInfo[variant.name].currentStock.toFixed(2)}`);
+        } else {
+          console.info(`Initialized variant: ${variant.name} with decay rate: ${hourlyDecayRate} units/period and decay period: ${variantDecayPeriod/3600000} hours`);
+        }
 
         // Save this initial state to localStorage
         localStorage.setItem(getStorageKey(variant.name), JSON.stringify(initialStockInfo[variant.name]));
