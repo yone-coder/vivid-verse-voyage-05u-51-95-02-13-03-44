@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -154,10 +155,10 @@ const ProductDetail = () => {
     });
   };
 
-  const scrollToTabs = () => {
+  const scrollToTab = (tabName: string) => {
+    setActiveTab(tabName);
     if (tabsRef.current) {
       tabsRef.current.scrollIntoView({ behavior: 'smooth' });
-      setActiveTab("description");
     }
   };
 
@@ -348,6 +349,16 @@ const ProductDetail = () => {
     <div className="flex flex-col min-h-screen bg-white">
       {/* Gallery Section without Header Overlay */}
       <div ref={headerRef} className="relative w-full bg-transparent">
+        <ProductHeader 
+          isFavorite={isFavorite}
+          toggleFavorite={toggleFavorite}
+          handleShare={handleShare}
+          handleCartClick={handleCartClick}
+          isScrolled={false}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          handleSearch={handleSearch}
+        />
         <ProductImageGallery images={productImages.length > 0 ? productImages : ["/placeholder.svg"]} />
       </div>
 
@@ -366,6 +377,10 @@ const ProductDetail = () => {
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           handleSearch={handleSearch}
+          activeTab={activeTab}
+          onTabChange={scrollToTab}
+          totalReviews={productForTabs.reviewCount}
+          hasQuestions={true}
         />
 
         {/* Limited Offers Band below fixed header - only visible when scrolled */}

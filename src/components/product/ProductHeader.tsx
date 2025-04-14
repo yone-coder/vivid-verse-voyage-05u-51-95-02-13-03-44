@@ -1,6 +1,10 @@
+
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Heart, Share, Search, Camera, ShoppingCart, X } from "lucide-react";
+import { 
+  ArrowLeft, Heart, Share, Search, Camera, ShoppingCart, X, 
+  Star, MessageSquare, FileText, Truck, Info, Users, Home
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -12,6 +16,8 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ProductHeaderProps {
   isFavorite: boolean;
@@ -23,6 +29,10 @@ interface ProductHeaderProps {
   setSearchQuery?: (query: string) => void;
   handleSearch?: (e: React.FormEvent) => void;
   shouldHide?: boolean;
+  activeTab?: string;
+  onTabChange?: (tab: string) => void;
+  totalReviews?: number;
+  hasQuestions?: boolean;
 }
 
 const ProductHeader: React.FC<ProductHeaderProps> = ({
@@ -34,12 +44,18 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
   searchQuery = "",
   setSearchQuery = () => {},
   handleSearch = () => {},
-  shouldHide = false
+  shouldHide = false,
+  activeTab = "description",
+  onTabChange = () => {},
+  totalReviews = 0,
+  hasQuestions = false
 }) => {
   const navigate = useNavigate();
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [open, setOpen] = useState(false);
+  const [showTabs, setShowTabs] = useState(true);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const isMobile = useIsMobile();
   
   const searchSuggestions = [
     "Smartphones",
@@ -52,6 +68,7 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
   
   const activateSearch = () => {
     setIsSearchActive(true);
+    setShowTabs(false);
     setTimeout(() => {
       searchInputRef.current?.focus();
     }, 100);
@@ -60,6 +77,7 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
   const deactivateSearch = () => {
     if (searchQuery === "") {
       setIsSearchActive(false);
+      setShowTabs(true);
     }
   };
   
@@ -87,8 +105,44 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
 
   if (shouldHide) return null;
 
+  const renderTabs = () => {
+    if (!showTabs || !isScrolled) return null;
+    
+    const tabs = [
+      { id: "description", label: "Details", icon: <FileText className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1" /> },
+      { id: "reviews", label: `Reviews (${totalReviews})`, icon: <Star className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1" /> },
+      { id: "questions", label: "Questions", icon: <MessageSquare className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1" /> },
+      { id: "shipping", label: "Shipping", icon: <Truck className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1" /> },
+      { id: "about", label: "Shop", icon: <Home className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1" /> },
+    ];
+    
+    return (
+      <div className="mt-1 px-1 overflow-x-auto no-scrollbar">
+        <div className="flex space-x-1 whitespace-nowrap">
+          {tabs.map((tab) => (
+            <Button
+              key={tab.id}
+              variant={activeTab === tab.id ? "default" : "outline"}
+              size="sm"
+              className={cn(
+                "h-6 sm:h-7 text-[9px] sm:text-[10px] px-2 sm:px-3 rounded-full", 
+                activeTab === tab.id 
+                  ? "bg-red-500 hover:bg-red-600 text-white border-transparent" 
+                  : "border-gray-200"
+              )}
+              onClick={() => onTabChange(tab.id)}
+            >
+              {tab.icon}
+              {tab.label}
+            </Button>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   return (
-    <div className={`${isScrolled ? 'py-2 sm:py-2.5 bg-white shadow-sm' : 'py-1.5 sm:py-2'} px-1.5 sm:px-2 w-full transition-all duration-200`}>
+    <div className={`${isScrolled ? 'py-2 sm:py-2.5 bg-white shadow-sm' : 'py-1.5 sm:py-2'} px-1.5 sm:px-2 w-full transition-all duration-200 sticky top-0 z-30`}>
       <div className="flex items-center justify-between">
         {!isSearchActive && (
           <Link to="/">
@@ -221,6 +275,8 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
           </Button>
         )}
       </div>
+      
+      {renderTabs()}
     </div>
   );
 };
