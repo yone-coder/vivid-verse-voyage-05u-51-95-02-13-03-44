@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Palette, ChevronDown, ChevronUp } from "lucide-react";
 import ColorVariantItem from "./ColorVariantItem";
 import { VariantStockInfo } from "@/hooks/useVariantStockDecay";
@@ -29,6 +29,7 @@ const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
   activateVariant
 }) => {
   const [expanded, setExpanded] = useState(false);
+  const [initialLoad, setInitialLoad] = useState(true);
   
   // Define our specific color variants with additional properties
   const colorVariants = [
@@ -38,6 +39,17 @@ const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
     { name: "Blue", price: 219.99, stock: 256, image: "", bestseller: false },
     { name: "Red", price: 229.99, stock: 256, image: "", bestseller: false, limited: true }
   ];
+  
+  // Log current stock levels for debugging purposes
+  useEffect(() => {
+    if (initialLoad && Object.keys(variantStockInfo).length > 0) {
+      console.log("Current variant stock levels:");
+      Object.entries(variantStockInfo).forEach(([name, info]) => {
+        console.log(`${name}: ${Math.floor(info.currentStock)} units, started at ${new Date(info.startTime).toLocaleTimeString()}`);
+      });
+      setInitialLoad(false);
+    }
+  }, [variantStockInfo, initialLoad]);
   
   // Get the currently selected variant
   const selectedVariant = colorVariants.find((v) => v.name === selectedColor);
@@ -61,8 +73,6 @@ const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
   // Custom color change handler to update both parent and activate variant
   const handleColorChange = (color: string) => {
     onColorChange(color);
-    // Remove this line to prevent duplicate activation - the parent component will handle it
-    // if (activateVariant) activateVariant(color);
   };
   
   return (

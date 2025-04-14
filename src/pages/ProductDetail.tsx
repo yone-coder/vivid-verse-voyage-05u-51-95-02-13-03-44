@@ -40,21 +40,28 @@ const generateFixedStartTimes = () => {
       time.setDate(time.getDate() - 1);
     }
     
+    // Return as timestamp (milliseconds)
     return time.getTime();
   };
   
-  // Set specific start times for each variant
+  // Set specific start times for each variant - spread over the day for better visualization
   return {
-    black: createTimeAt(2, 0),      // Black - started at 2:00 AM
-    white: createTimeAt(4, 0),      // White - started at 4:00 AM
-    jetBlack: createTimeAt(8, 0),   // Jet Black - started at 8:00 AM
+    black: createTimeAt(3, 0),      // Black - started at 3:00 AM
+    white: createTimeAt(6, 0),      // White - started at 6:00 AM
+    jetBlack: createTimeAt(9, 0),   // Jet Black - started at 9:00 AM
     blue: createTimeAt(12, 0),      // Blue - started at 12:00 PM (noon)
-    red: createTimeAt(6, 0)         // Red - started at 6:00 AM
+    red: createTimeAt(15, 0)        // Red - started at 3:00 PM
   };
 };
 
 // Generate specific time-of-day start times
 const variantStartTimes = generateFixedStartTimes();
+
+// Log start times for debugging
+console.log("Variant start times:");
+Object.entries(variantStartTimes).forEach(([color, timestamp]) => {
+  console.log(`${color}: ${new Date(timestamp).toLocaleTimeString()}`);
+});
 
 const ProductDetail = () => {
   // State variables
@@ -94,12 +101,23 @@ const ProductDetail = () => {
 
   // Updated color variants with consistent 256 stock, unique decay rates and specific time-of-day start times
   const colorVariants = [
-    { name: "Black", price: 199.99, stock: 256, image: "", bestseller: true, decayPeriod: 12 * 60 * 60 * 1000, startTime: variantStartTimes.black }, // Started at 2:00 AM
-    { name: "White", price: 199.99, stock: 256, image: "", bestseller: false, decayPeriod: 10 * 60 * 60 * 1000, startTime: variantStartTimes.white }, // Started at 4:00 AM
-    { name: "Jet Black", price: 209.99, stock: 256, image: "", bestseller: false, decayPeriod: 9 * 60 * 60 * 1000, startTime: variantStartTimes.jetBlack }, // Started at 8:00 AM
-    { name: "Blue", price: 219.99, stock: 256, image: "", bestseller: false, decayPeriod: 11 * 60 * 60 * 1000, startTime: variantStartTimes.blue }, // Started at 12:00 PM (noon)
-    { name: "Red", price: 229.99, stock: 256, image: "", bestseller: false, limited: true, decayPeriod: 8 * 60 * 60 * 1000, startTime: variantStartTimes.red } // Started at 6:00 AM
+    { name: "Black", price: 199.99, stock: 256, image: "", bestseller: true, decayPeriod: 12 * 60 * 60 * 1000, startTime: variantStartTimes.black },
+    { name: "White", price: 199.99, stock: 256, image: "", bestseller: false, decayPeriod: 10 * 60 * 60 * 1000, startTime: variantStartTimes.white },
+    { name: "Jet Black", price: 209.99, stock: 256, image: "", bestseller: false, decayPeriod: 9 * 60 * 60 * 1000, startTime: variantStartTimes.jetBlack },
+    { name: "Blue", price: 219.99, stock: 256, image: "", bestseller: false, decayPeriod: 11 * 60 * 60 * 1000, startTime: variantStartTimes.blue },
+    { name: "Red", price: 229.99, stock: 256, image: "", bestseller: false, limited: true, decayPeriod: 8 * 60 * 60 * 1000, startTime: variantStartTimes.red }
   ];
+  
+  // Clear localStorage when component mounts to ensure fresh start with new time calculations
+  useEffect(() => {
+    // Clear variant stock info from localStorage
+    colorVariants.forEach(variant => {
+      const key = `variant_stock_${variant.name.replace(/\s+/g, '_').toLowerCase()}`;
+      localStorage.removeItem(key);
+    });
+    
+    console.log("Cleared localStorage for fresh variant stock initialization");
+  }, []);
   
   // Use our stock decay hook with variant-specific decay periods and specific time-of-day start times
   const { variantStockInfo, activateVariant, getTimeRemaining, resetVariant, resetAllVariants } = useVariantStockDecay({
@@ -117,7 +135,7 @@ const ProductDetail = () => {
     if (selectedColor) {
       activateVariant(selectedColor);
     }
-  }, [selectedColor]); // Remove activateVariant from dependency array to prevent infinite loop
+  }, [selectedColor]);
 
   // Event handlers
   const incrementQuantity = () => {
@@ -217,7 +235,15 @@ const ProductDetail = () => {
 
   // Handler to manually reset stock levels (for demo purposes)
   const handleResetStock = () => {
+    // Clear localStorage first
+    colorVariants.forEach(variant => {
+      const key = `variant_stock_${variant.name.replace(/\s+/g, '_').toLowerCase()}`;
+      localStorage.removeItem(key);
+    });
+    
+    // Then reset all variants
     resetAllVariants();
+    
     toast({
       title: "Stock Reset",
       description: "All product variants stock has been reset to initial values",
