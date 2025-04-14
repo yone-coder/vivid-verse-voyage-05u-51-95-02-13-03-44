@@ -18,25 +18,30 @@ export function useProduct(productId: string) {
   useEffect(() => {
     if (!productId) return;
 
+    console.log(`Setting up real-time subscription for product: ${productId}`);
+    
     const channel = supabase
       .channel(`product-${productId}`)
       .on(
         'postgres_changes',
         {
-          event: 'UPDATE',
+          event: '*', // Listen for all events (INSERT, UPDATE, DELETE)
           schema: 'public',
           table: 'products',
           filter: `id=eq.${productId}`
         },
         (payload) => {
-          console.log('Product updated:', payload);
+          console.log('Product update detected:', payload);
           // Invalidate the query to refetch the latest data
           queryClient.invalidateQueries({ queryKey: ['product', productId] });
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log(`Subscription status for product ${productId}:`, status);
+      });
 
     return () => {
+      console.log(`Cleaning up subscription for product: ${productId}`);
       supabase.removeChannel(channel);
     };
   }, [productId, queryClient]);
@@ -44,7 +49,10 @@ export function useProduct(productId: string) {
   return useQuery({
     queryKey: ['product', productId],
     queryFn: async () => {
-      return await fetchProductById(productId);
+      console.log(`Fetching product data for ID: ${productId}`);
+      const data = await fetchProductById(productId);
+      console.log('Fetched product data:', data);
+      return data;
     },
     enabled: !!productId,
   });

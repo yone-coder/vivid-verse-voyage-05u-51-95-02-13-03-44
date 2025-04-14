@@ -47,6 +47,8 @@ export const fetchProductById = async (productId: string) => {
 
 // Function to update a product
 export const updateProduct = async (productId: string, updates: Partial<any>) => {
+  console.log("Updating product with ID:", productId, "Updates:", updates);
+  
   const { data, error } = await supabase
     .from('products')
     .update(updates)
@@ -58,5 +60,31 @@ export const updateProduct = async (productId: string, updates: Partial<any>) =>
     throw error;
   }
   
+  console.log("Product updated successfully:", data);
   return data;
+};
+
+// Function to subscribe to products changes
+export const subscribeToProductChanges = (callback: () => void) => {
+  console.log("Setting up real-time subscription for products table");
+  
+  const channel = supabase
+    .channel('product-changes')
+    .on(
+      'postgres_changes',
+      { 
+        event: '*', 
+        schema: 'public', 
+        table: 'products' 
+      },
+      (payload) => {
+        console.log('Real-time product update received:', payload);
+        callback();
+      }
+    )
+    .subscribe((status) => {
+      console.log('Realtime subscription status:', status);
+    });
+    
+  return channel;
 };

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Plus, Trash2, Edit, Eye, X, Check, Save, Pencil } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase, updateProduct, subscribeToProductChanges } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -65,35 +65,13 @@ const AdminPanel: React.FC = () => {
   useEffect(() => {
     fetchProducts();
     
-    const channel = supabase
-      .channel('product-changes')
-      .on(
-        'postgres_changes',
-        { 
-          event: '*', 
-          schema: 'public', 
-          table: 'products' 
-        },
-        (payload) => {
-          console.log('Real-time update received:', payload);
-          
-          if (payload.eventType === 'UPDATE') {
-            const updatedProduct = payload.new as Product;
-            setProducts(prev => 
-              prev.map(p => p.id === updatedProduct.id ? { ...p, ...updatedProduct } : p)
-            );
-            
-            setEditableProducts(prev => 
-              prev.map(p => p.id === updatedProduct.id ? { ...p, name: updatedProduct.name, isEditing: false } : p)
-            );
-          } else {
-            fetchProducts();
-          }
-        }
-      )
-      .subscribe();
+    const channel = subscribeToProductChanges(() => {
+      console.log("Real-time update received, refreshing products");
+      fetchProducts();
+    });
       
     return () => {
+      console.log("Cleaning up channel subscription");
       supabase.removeChannel(channel);
     };
   }, []);
@@ -112,6 +90,8 @@ const AdminPanel: React.FC = () => {
   const fetchProducts = async () => {
     try {
       setLoading(true);
+      console.log("Fetching products from Supabase");
+      
       const { data, error } = await supabase
         .from('products')
         .select(`
@@ -123,6 +103,7 @@ const AdminPanel: React.FC = () => {
         throw error;
       }
       
+      console.log("Products fetched successfully:", data);
       setProducts(data || []);
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -364,12 +345,14 @@ const AdminPanel: React.FC = () => {
   };
 
   const startEditingProductName = (productId: string) => {
+    console.log(`Starting edit for product: ${productId}`);
     setEditableProducts(prev => 
       prev.map(p => p.id === productId ? { ...p, isEditing: true } : p)
     );
   };
 
   const cancelEditingProductName = (productId: string) => {
+    console.log(`Canceling edit for product: ${productId}`);
     setEditableProducts(prev => 
       prev.map(p => {
         if (p.id === productId) {
@@ -386,6 +369,7 @@ const AdminPanel: React.FC = () => {
   };
 
   const handleProductNameChange = (productId: string, newName: string) => {
+    console.log(`Changing name for product ${productId} to: ${newName}`);
     setEditableProducts(prev => 
       prev.map(p => p.id === productId ? { ...p, name: newName } : p)
     );
@@ -404,17 +388,11 @@ const AdminPanel: React.FC = () => {
         return;
       }
       
-      const { error, data } = await supabase
-        .from('products')
-        .update({ name: productToUpdate.name })
-        .eq('id', productId)
-        .select();
-        
-      if (error) {
-        throw error;
-      }
+      console.log(`Saving new name for product ${productId}: ${productToUpdate.name}`);
       
-      console.log('Product updated successfully:', data);
+      const data = await updateProduct(productId, { name: productToUpdate.name });
+      
+      console.log('Product updated successfully in Supabase:', data);
       
       setProducts(prev => 
         prev.map(p => p.id === productId ? { ...p, name: productToUpdate.name } : p)
