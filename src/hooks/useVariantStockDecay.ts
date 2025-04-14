@@ -25,10 +25,10 @@ interface UseVariantStockDecayProps {
 const getStorageKey = (variantName: string) => `variant_stock_${variantName.replace(/\s+/g, '_').toLowerCase()}`;
 
 export function useVariantStockDecay({ 
-  variants = [], 
+  variants, 
   decayPeriod = 12 * 60 * 60 * 1000, // 12 hours in milliseconds
   demoMode = true // Enable demo mode by default for slower decay
-}: UseVariantStockDecayProps = { variants: [] }) {
+}: UseVariantStockDecayProps) {
   const [variantStockInfo, setVariantStockInfo] = useState<Record<string, VariantStockInfo>>({});
   const [lastUpdate, setLastUpdate] = useState(Date.now());
   const initializedRef = useRef(false);
