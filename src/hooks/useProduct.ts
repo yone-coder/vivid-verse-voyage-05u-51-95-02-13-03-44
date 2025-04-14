@@ -55,7 +55,7 @@ export function useProduct(productId: string) {
       return data;
     },
     enabled: !!productId,
-    staleTime: 10000, // Consider data fresh for 10 seconds
+    staleTime: 0, // Always consider data stale to ensure fresh fetches
   });
 }
 

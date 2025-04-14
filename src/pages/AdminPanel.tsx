@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Plus, Trash2, Edit, Eye, X, Check, Save, Pencil } from "lucide-react";
 import { supabase, updateProduct, subscribeToProductChanges } from "@/integrations/supabase/client";
@@ -390,11 +390,9 @@ const AdminPanel: React.FC = () => {
       
       console.log(`Saving new name for product ${productId}: ${productToUpdate.name}`);
       
-      const data = await updateProduct(productId, { 
+      await updateProduct(productId, { 
         name: productToUpdate.name,
       });
-      
-      console.log('Product updated successfully in Supabase:', data);
       
       setProducts(prev => 
         prev.map(p => p.id === productId ? { ...p, name: productToUpdate.name } : p)
@@ -409,8 +407,6 @@ const AdminPanel: React.FC = () => {
         description: "Product name updated successfully",
       });
       
-      fetchProducts();
-      
     } catch (error) {
       console.error('Error updating product name:', error);
       toast({
@@ -418,6 +414,8 @@ const AdminPanel: React.FC = () => {
         title: "Update Failed",
         description: "Failed to update product name. Please try again.",
       });
+      
+      cancelEditingProductName(productId);
     }
   };
 
