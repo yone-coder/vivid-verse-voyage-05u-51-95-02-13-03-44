@@ -1,3 +1,4 @@
+
 import React, { useEffect } from "react";
 import { Check, AlertTriangle, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -64,6 +65,20 @@ const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
   const timeRemainingText = timeRemaining 
     ? `${timeRemaining.minutes}:${timeRemaining.seconds.toString().padStart(2, '0')} left`
     : null;
+  
+  // Format start time for display in tooltip
+  const formatStartTime = () => {
+    if (!stockInfo?.startTime) return "";
+    
+    const startDate = new Date(stockInfo.startTime);
+    const hours = startDate.getHours();
+    const minutes = startDate.getMinutes();
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    const formattedHours = hours % 12 || 12;
+    const formattedMinutes = minutes.toString().padStart(2, '0');
+    
+    return `Started at ${formattedHours}:${formattedMinutes} ${ampm}`;
+  };
   
   // Get color for the stock level indicator
   const getStockLevelColor = () => {
@@ -202,6 +217,9 @@ const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
           <p className={isLowStock ? "text-red-500" : "text-gray-500"}>
             {currentStock > 0 ? `${currentStock} in stock` : "Out of stock"}
           </p>
+          {stockInfo?.startTime && (
+            <p className="text-gray-600 text-[10px]">{formatStartTime()}</p>
+          )}
           {isActive && timeRemaining && (
             <p className="text-amber-600">
               {timeRemaining.minutes === 0 && timeRemaining.seconds < 30 

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -25,23 +24,37 @@ import ProductPaymentOptions from "@/components/product/ProductPaymentOptions";
 // Default product ID for the premium headphones product
 const DEFAULT_PRODUCT_ID = "aae97882-a3a1-4db5-b4f5-156705cd10ee"; // Premium Headphones product ID
 
-// Function to generate offsets for staggered start times
-const generateStaggeredStartTimes = () => {
-  const now = Date.now();
-  // Starting points (hours ago)
-  const startOffsets = [
-    3,    // Black - started 3 hours ago (75% remaining)
-    1.5,  // White - started 1.5 hours ago (85% remaining)
-    4.5,  // Jet Black - started 4.5 hours ago (50% remaining)
-    0,    // Blue - starting now (100% remaining)
-    6     // Red - started 6 hours ago (25% remaining - limited edition)
-  ];
+// Function to generate specific time-of-day start times
+const generateFixedStartTimes = () => {
+  // Get the current date as a base
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   
-  return startOffsets.map(hours => now - (hours * 60 * 60 * 1000));
+  // Create specific times for today
+  const createTimeAt = (hours: number, minutes: number = 0) => {
+    const time = new Date(today);
+    time.setHours(hours, minutes, 0, 0);
+    
+    // If the time is in the future, move it to yesterday
+    if (time > now) {
+      time.setDate(time.getDate() - 1);
+    }
+    
+    return time.getTime();
+  };
+  
+  // Set specific start times for each variant
+  return {
+    black: createTimeAt(2, 0),      // Black - started at 2:00 AM
+    white: createTimeAt(4, 0),      // White - started at 4:00 AM
+    jetBlack: createTimeAt(8, 0),   // Jet Black - started at 8:00 AM
+    blue: createTimeAt(12, 0),      // Blue - started at 12:00 PM (noon)
+    red: createTimeAt(6, 0)         // Red - started at 6:00 AM
+  };
 };
 
-// Generate start times for variants
-const variantStartTimes = generateStaggeredStartTimes();
+// Generate specific time-of-day start times
+const variantStartTimes = generateFixedStartTimes();
 
 const ProductDetail = () => {
   // State variables
@@ -79,16 +92,16 @@ const ProductDetail = () => {
   const { data: product, isLoading } = useProduct(productId);
   const { data: analytics, isLoading: analyticsLoading } = useProductAnalytics(productId);
 
-  // Updated color variants with consistent 256 stock and unique decay rates and start times
+  // Updated color variants with consistent 256 stock, unique decay rates and specific time-of-day start times
   const colorVariants = [
-    { name: "Black", price: 199.99, stock: 256, image: "", bestseller: true, decayPeriod: 12 * 60 * 60 * 1000, startTime: variantStartTimes[0] }, // 12 hours
-    { name: "White", price: 199.99, stock: 256, image: "", bestseller: false, decayPeriod: 10 * 60 * 60 * 1000, startTime: variantStartTimes[1] }, // 10 hours
-    { name: "Jet Black", price: 209.99, stock: 256, image: "", bestseller: false, decayPeriod: 9 * 60 * 60 * 1000, startTime: variantStartTimes[2] }, // 9 hours
-    { name: "Blue", price: 219.99, stock: 256, image: "", bestseller: false, decayPeriod: 11 * 60 * 60 * 1000, startTime: variantStartTimes[3] }, // 11 hours
-    { name: "Red", price: 229.99, stock: 256, image: "", bestseller: false, limited: true, decayPeriod: 8 * 60 * 60 * 1000, startTime: variantStartTimes[4] } // 8 hours
+    { name: "Black", price: 199.99, stock: 256, image: "", bestseller: true, decayPeriod: 12 * 60 * 60 * 1000, startTime: variantStartTimes.black }, // Started at 2:00 AM
+    { name: "White", price: 199.99, stock: 256, image: "", bestseller: false, decayPeriod: 10 * 60 * 60 * 1000, startTime: variantStartTimes.white }, // Started at 4:00 AM
+    { name: "Jet Black", price: 209.99, stock: 256, image: "", bestseller: false, decayPeriod: 9 * 60 * 60 * 1000, startTime: variantStartTimes.jetBlack }, // Started at 8:00 AM
+    { name: "Blue", price: 219.99, stock: 256, image: "", bestseller: false, decayPeriod: 11 * 60 * 60 * 1000, startTime: variantStartTimes.blue }, // Started at 12:00 PM (noon)
+    { name: "Red", price: 229.99, stock: 256, image: "", bestseller: false, limited: true, decayPeriod: 8 * 60 * 60 * 1000, startTime: variantStartTimes.red } // Started at 6:00 AM
   ];
   
-  // Use our stock decay hook with variant-specific decay periods and start times
+  // Use our stock decay hook with variant-specific decay periods and specific time-of-day start times
   const { variantStockInfo, activateVariant, getTimeRemaining, resetVariant, resetAllVariants } = useVariantStockDecay({
     variants: colorVariants.map(variant => ({
       name: variant.name,
