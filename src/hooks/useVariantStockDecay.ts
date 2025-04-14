@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 
 export interface VariantStockInfo {
@@ -57,7 +58,7 @@ export function useVariantStockDecay({
       const savedInfo = savedInfoString ? JSON.parse(savedInfoString) : null;
       
       // Only initialize variants that aren't already being tracked or restore from localStorage
-      if (savedInfo && Date.now() - savedInfo.startTime < variant.decayPeriod || Date.now() - savedInfo.startTime < decayPeriod) {
+      if (savedInfo && Date.now() - savedInfo.startTime < (variant.decayPeriod || decayPeriod)) {
         // If saved data exists and hasn't expired, use it
         initialStockInfo[variant.name] = savedInfo;
         console.info(`Restored variant from localStorage: ${variant.name} with remaining stock: ${savedInfo.currentStock.toFixed(2)}`);
@@ -227,8 +228,12 @@ export function useVariantStockDecay({
       const savedInfoString = localStorage.getItem(getStorageKey(variantName));
       const savedInfo = savedInfoString ? JSON.parse(savedInfoString) : null;
       
+      // Find the variant's decay period in the variants array
+      const currentVariant = variants.find(v => v.name === variantName);
+      const variantDecayPeriod = currentVariant?.decayPeriod || decayPeriod;
+      
       // If the timer had expired or no existing data, reset the start time
-      const shouldReset = !savedInfo || (Date.now() - savedInfo.startTime >= variant.decayPeriod || Date.now() - savedInfo.startTime >= decayPeriod);
+      const shouldReset = !savedInfo || (Date.now() - savedInfo.startTime >= variantDecayPeriod);
       
       // Reset the start time when a variant is activated if needed
       const updatedVariant = {
