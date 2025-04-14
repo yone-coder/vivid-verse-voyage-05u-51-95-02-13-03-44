@@ -26,7 +26,7 @@ const App = () => (
           <BrowserRouter>
             <Routes>
               <Route element={<MainLayout />}>
-                <Route path="/" element={<Navigate to="/product/aae97882-a3a1-4db5-b4f5-156705cd10ee" />} />
+                <Route path="/" element={<Index />} />
                 <Route path="/browse" element={<Index />} />
                 <Route path="/product/:id" element={<ProductDetail />} />
                 <Route path="/admin" element={<AdminPanel />} />
