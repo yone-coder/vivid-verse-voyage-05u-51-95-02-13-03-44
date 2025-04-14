@@ -8,9 +8,8 @@ const Progress = React.forwardRef<
   React.ElementRef<typeof ProgressPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof ProgressPrimitive.Root> & {
     indicatorClassName?: string;
-    indicatorRef?: React.RefObject<HTMLDivElement>;
   }
->(({ className, value, indicatorClassName, indicatorRef, ...props }, ref) => (
+>(({ className, value, indicatorClassName, ...props }, ref) => (
   <ProgressPrimitive.Root
     ref={ref}
     className={cn(
@@ -20,7 +19,6 @@ const Progress = React.forwardRef<
     {...props}
   >
     <ProgressPrimitive.Indicator
-      ref={indicatorRef}
       className={cn(
         "h-full w-full flex-1 bg-primary transition-all",
         indicatorClassName
