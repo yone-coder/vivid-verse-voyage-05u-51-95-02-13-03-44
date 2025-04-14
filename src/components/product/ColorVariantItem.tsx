@@ -112,7 +112,7 @@ const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
             
             {variant.bestseller && (
               <Badge 
-                className="absolute -top-1 -right-1 text-[7px] py-0 px-1 bg-amber-400 hover:bg-amber-400"
+                className="absolute -top-1 -left-1 text-[7px] py-0 px-1 bg-amber-400 hover:bg-amber-400"
               >
                 BEST
               </Badge>
@@ -120,7 +120,7 @@ const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
             
             {variant.limited && (
               <Badge 
-                className="absolute -top-1 -right-1 text-[7px] py-0 px-1 bg-red-500 hover:bg-red-500"
+                className="absolute -top-1 -left-1 text-[7px] py-0 px-1 bg-red-500 hover:bg-red-500"
               >
                 LIMITED
               </Badge>

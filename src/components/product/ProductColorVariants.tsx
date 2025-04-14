@@ -30,11 +30,11 @@ const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
 }) => {
   const [expanded, setExpanded] = useState(false);
   
-  // Define our specific color variants with only Black, White, and Jet Black
+  // Define our specific color variants with only Black, White, and Jet Black with updated prices
   const colorVariants = [
-    { name: "Black", price: 199.99, stock: 48, image: "", bestseller: true },
-    { name: "White", price: 199.99, stock: 124, image: "", bestseller: false },
-    { name: "Jet Black", price: 209.99, stock: 78, image: "", bestseller: false }
+    { name: "Black", price: 79.99, stock: 48, image: "", bestseller: true },
+    { name: "White", price: 89.99, stock: 124, image: "", bestseller: false },
+    { name: "Jet Black", price: 89.99, stock: 78, image: "", bestseller: false }
   ];
   
   // Get the currently selected variant
