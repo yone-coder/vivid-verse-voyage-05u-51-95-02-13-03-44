@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback, useRef } from "react";
 
 interface Variant {
@@ -6,11 +7,14 @@ interface Variant {
   [key: string]: any;
 }
 
-interface VariantStockInfo {
+// Export the interface so other components can use it
+export interface VariantStockInfo {
   initialStock: number;
   currentStock: number;
   activationTime: number | null;
   decayRate: number;
+  stockPercentage?: number;
+  isActive?: boolean;
 }
 
 interface UseVariantStockDecayOptions {
@@ -49,7 +53,9 @@ export function useVariantStockDecay({
         initialStock: variant.stock,
         currentStock: variant.stock,
         activationTime: null,
-        decayRate: variant.stock * (1 - minStockPercentage) / decayPeriod
+        decayRate: variant.stock * (1 - minStockPercentage) / decayPeriod,
+        stockPercentage: 100,
+        isActive: false
       };
       return acc;
     }, {} as Record<string, VariantStockInfo>);
@@ -82,10 +88,21 @@ export function useVariantStockDecay({
               info.initialStock - (info.decayRate * elapsedMs)
             );
             
-            if (newStock !== info.currentStock) {
+            // Calculate percentage of stock remaining
+            const stockPercentage = Math.max(
+              0, 
+              Math.min(
+                100, 
+                ((newStock - minStock) / (info.initialStock - minStock)) * 100
+              )
+            );
+            
+            if (newStock !== info.currentStock || !info.stockPercentage) {
               updatedInfo[variantName] = {
                 ...info,
-                currentStock: newStock
+                currentStock: newStock,
+                stockPercentage: stockPercentage,
+                isActive: true
               };
               hasUpdates = true;
             }
@@ -111,7 +128,8 @@ export function useVariantStockDecay({
         ...prevInfo,
         [variantName]: {
           ...prevInfo[variantName],
-          activationTime: Date.now()
+          activationTime: Date.now(),
+          isActive: true
         }
       };
     });
@@ -129,7 +147,9 @@ export function useVariantStockDecay({
           initialStock: variant.stock,
           currentStock: variant.stock,
           activationTime: null,
-          decayRate: variant.stock * (1 - minStockPercentage) / decayPeriod
+          decayRate: variant.stock * (1 - minStockPercentage) / decayPeriod,
+          stockPercentage: 100,
+          isActive: false
         }
       };
     });
@@ -142,7 +162,9 @@ export function useVariantStockDecay({
         initialStock: variant.stock,
         currentStock: variant.stock,
         activationTime: null,
-        decayRate: variant.stock * (1 - minStockPercentage) / decayPeriod
+        decayRate: variant.stock * (1 - minStockPercentage) / decayPeriod,
+        stockPercentage: 100,
+        isActive: false
       };
       return acc;
     }, {} as Record<string, VariantStockInfo>);
@@ -150,17 +172,22 @@ export function useVariantStockDecay({
     setVariantStockInfo(newInfo);
   }, [decayPeriod, minStockPercentage]);
   
-  // Function to get time remaining until stock reaches minimum
-  const getTimeRemaining = useCallback((variantName: string): number | null => {
+  // Function to get time remaining until stock reaches minimum, returns format expected by components
+  const getTimeRemaining = useCallback((variantName: string): { minutes: number, seconds: number } | null => {
     const info = variantStockInfo[variantName];
     if (!info || info.activationTime === null) return null;
     
     const minStock = info.initialStock * minStockPercentage;
     const remainingStock = info.currentStock - minStock;
-    if (remainingStock <= 0) return 0;
+    if (remainingStock <= 0) return { minutes: 0, seconds: 0 };
     
-    const timeToDecay = remainingStock / info.decayRate;
-    return Math.floor(timeToDecay);
+    const timeToDecayMs = remainingStock / info.decayRate;
+    const totalSeconds = Math.floor(timeToDecayMs / 1000);
+    
+    return {
+      minutes: Math.floor(totalSeconds / 60),
+      seconds: totalSeconds % 60
+    };
   }, [variantStockInfo, minStockPercentage]);
   
   return {
