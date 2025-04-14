@@ -88,7 +88,7 @@ export function useVariantStockDecay({
     }
     
     initializedRef.current = true;
-  }, [variants, decayPeriod]);
+  }, [variants, decayPeriod, variantStockInfo, demoMode]);
 
   // Use requestAnimationFrame for smoother real-time updates
   useEffect(() => {
