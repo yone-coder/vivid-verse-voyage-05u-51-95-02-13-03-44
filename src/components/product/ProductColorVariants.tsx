@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Palette, ChevronDown, ChevronUp } from "lucide-react";
 import ColorVariantItem from "./ColorVariantItem";
 import { VariantStockInfo } from "@/hooks/useVariantStockDecay";
@@ -32,11 +32,11 @@ const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
   
   // Define our specific color variants with additional properties
   const colorVariants = [
-    { name: "Black", price: 199.99, stock: 48, image: "", bestseller: true },
-    { name: "White", price: 199.99, stock: 124, image: "", bestseller: false },
-    { name: "Jet Black", price: 209.99, stock: 78, image: "", bestseller: false },
-    { name: "Blue", price: 219.99, stock: 42, image: "", bestseller: false },
-    { name: "Red", price: 229.99, stock: 16, image: "", bestseller: false, limited: true }
+    { name: "Black", price: 199.99, stock: 256, image: "", bestseller: true },
+    { name: "White", price: 199.99, stock: 256, image: "", bestseller: false },
+    { name: "Jet Black", price: 209.99, stock: 256, image: "", bestseller: false },
+    { name: "Blue", price: 219.99, stock: 256, image: "", bestseller: false },
+    { name: "Red", price: 229.99, stock: 256, image: "", bestseller: false, limited: true }
   ];
   
   // Get the currently selected variant
@@ -58,16 +58,11 @@ const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
     return colorMap[name as keyof typeof colorMap] || "transparent";
   };
   
-  // Activate the selected variant for decay simulation
-  useEffect(() => {
-    if (selectedColor && activateVariant) {
-      activateVariant(selectedColor);
-    }
-  }, [selectedColor, activateVariant]);
-  
   // Custom color change handler to update both parent and activate variant
   const handleColorChange = (color: string) => {
     onColorChange(color);
+    // Remove this line to prevent duplicate activation - the parent component will handle it
+    // if (activateVariant) activateVariant(color);
   };
   
   return (

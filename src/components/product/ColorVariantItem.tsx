@@ -1,4 +1,3 @@
-
 import React, { useEffect } from "react";
 import { Check, AlertTriangle, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -83,23 +82,22 @@ const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
   
   // Force re-render every animation frame for smooth countdown when active
   useEffect(() => {
+    if (!isActive || !stockInfo?.currentStock) return;
+
     let animationFrame: number;
     
-    if (isActive && stockInfo?.currentStock) {
-      const updateAnimation = () => {
-        // This creates a loop that updates at 60fps for smooth animation
-        animationFrame = requestAnimationFrame(updateAnimation);
-      };
-      
+    const updateAnimation = () => {
       animationFrame = requestAnimationFrame(updateAnimation);
-      
-      return () => {
-        if (animationFrame) {
-          cancelAnimationFrame(animationFrame);
-        }
-      };
-    }
-  }, [isActive, stockInfo]);
+    };
+    
+    animationFrame = requestAnimationFrame(updateAnimation);
+    
+    return () => {
+      if (animationFrame) {
+        cancelAnimationFrame(animationFrame);
+      }
+    };
+  }, [isActive, stockInfo?.currentStock]);
   
   return (
     <TooltipProvider>
@@ -165,7 +163,6 @@ const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
               </div>
             )}
             
-            {/* Add real-time progress bar */}
             {isActive && (
               <div className="w-full mt-1">
                 <Progress 

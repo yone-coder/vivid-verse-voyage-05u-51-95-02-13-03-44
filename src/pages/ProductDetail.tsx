@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -76,11 +77,12 @@ const ProductDetail = () => {
   });
 
   // Effect to activate the selected variant for real-time stock decay
+  // Fix: Add proper dependency array to prevent infinite loop
   useEffect(() => {
-    if (selectedColor && activateVariant) {
+    if (selectedColor) {
       activateVariant(selectedColor);
     }
-  }, [selectedColor, activateVariant]);
+  }, [selectedColor]); // Remove activateVariant from dependency array to prevent infinite loop
 
   // Event handlers
   const incrementQuantity = () => {
@@ -336,9 +338,29 @@ const ProductDetail = () => {
   
   const totalPrice = (currentPrice * quantity) + warrantyPrice + (isExpressSelected ? productForTabs.shipping.express : 0);
   
+  // Add a reset button for demonstration purposes
+  const handleResetStock = () => {
+    resetAllVariants();
+    toast({
+      title: "Stock Reset",
+      description: "All product variants stock has been reset to initial values",
+    });
+  };
+  
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
-      {/* Removed demo reset button */}
+      {/* Add demo reset button for testing */}
+      <div className="fixed bottom-24 right-4 z-50">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleResetStock}
+          className="flex items-center gap-1 bg-white border-gray-300 shadow-sm"
+        >
+          <RotateCcw className="w-3 h-3" />
+          <span className="text-xs">Reset Stock</span>
+        </Button>
+      </div>
 
       {/* Gallery Section without Header Overlay */}
       <div ref={headerRef} className="relative w-full bg-gray-50">
