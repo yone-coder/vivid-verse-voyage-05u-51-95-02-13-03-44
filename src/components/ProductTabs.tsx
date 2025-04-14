@@ -1,3 +1,4 @@
+
 import React, { useRef, useEffect } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -97,22 +98,22 @@ const ProductTabs: React.FC<ProductTabsProps> = ({
         <TabsContent value="description" className="mt-0">
           <div ref={tabContentsRefs.description} className="overflow-auto">
             <Card className="border-0 shadow-none">
-              <CardContent className="p-4">
-                <div className="flex flex-col space-y-4">
+              <CardContent className="p-0">
+                <div className="flex flex-col space-y-2">
                   {product.images.map((image, index) => (
                     <img 
                       key={index} 
                       src={image || "/placeholder.svg"} 
                       alt={`Product detail ${index + 1}`} 
-                      className="w-full h-auto rounded-md"
+                      className="w-full h-auto object-cover" 
                     />
                   ))}
                   
                   {product.images.length < 5 && (
                     <>
-                      <img src="/placeholder.svg" alt="Product feature" className="w-full h-auto rounded-md" />
-                      <img src="/placeholder.svg" alt="Product feature" className="w-full h-auto rounded-md" />
-                      <img src="/placeholder.svg" alt="Product feature" className="w-full h-auto rounded-md" />
+                      <img src="/placeholder.svg" alt="Product feature" className="w-full h-auto object-cover" />
+                      <img src="/placeholder.svg" alt="Product feature" className="w-full h-auto object-cover" />
+                      <img src="/placeholder.svg" alt="Product feature" className="w-full h-auto object-cover" />
                     </>
                   )}
                 </div>
