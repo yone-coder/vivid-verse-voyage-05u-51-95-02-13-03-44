@@ -1,7 +1,8 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Palette, ChevronDown, ChevronUp } from "lucide-react";
 import ColorVariantItem from "./ColorVariantItem";
+import { useVariantStockDecay } from "@/hooks/useVariantStockDecay";
 
 interface ProductVariant {
   name: string;
@@ -32,6 +33,12 @@ const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
     { name: "Red", price: 229.99, stock: 16, image: "", bestseller: false, limited: true }
   ];
   
+  // Use our new stock decay hook
+  const { variantStockInfo, activateVariant } = useVariantStockDecay({
+    variants: colorVariants,
+    decayPeriod: 24 * 60 * 60 * 1000 // 24 hours
+  });
+  
   // Get the currently selected variant
   const selectedVariant = colorVariants.find((v) => v.name === selectedColor);
   
@@ -48,7 +55,19 @@ const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
       "Blue": "#0066CC",
       "Red": "#CC0000"
     };
-    return colorMap[name] || "transparent";
+    return colorMap[name as keyof typeof colorMap] || "transparent";
+  };
+  
+  // Activate the selected variant for decay simulation
+  useEffect(() => {
+    if (selectedColor) {
+      activateVariant(selectedColor);
+    }
+  }, [selectedColor, activateVariant]);
+  
+  // Custom color change handler to update both parent and activate variant
+  const handleColorChange = (color: string) => {
+    onColorChange(color);
   };
   
   return (
@@ -77,8 +96,9 @@ const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
             key={variant.name}
             variant={variant}
             selectedColor={selectedColor}
-            onColorChange={onColorChange}
+            onColorChange={handleColorChange}
             getColorHex={getColorHex}
+            stockInfo={variantStockInfo[variant.name]}
           />
         ))}
       </div>

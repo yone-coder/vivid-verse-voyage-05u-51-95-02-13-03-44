@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { MinusIcon, PlusIcon } from "lucide-react";
@@ -30,6 +29,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
   const [showAnimation, setShowAnimation] = useState(false);
   const [priceAnimation, setPriceAnimation] = useState(false);
   const [stockPulse, setStockPulse] = useState(false);
+  const [countdownStock, setCountdownStock] = useState(inStock);
   
   const formatPrice = (value: number) => {
     return value.toFixed(2);
@@ -43,7 +43,6 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
   
   const stockPercentage = Math.min(100, (inStock / 200) * 100);
   
-  // Enhanced stock level info with 10 levels of granularity
   const getStockLevelInfo = () => {
     if (inStock === 0) {
       return {
@@ -178,6 +177,36 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
     }
   }, [isLowStock]);
 
+  useEffect(() => {
+    setCountdownStock(inStock);
+  }, [inStock]);
+  
+  useEffect(() => {
+    const fluctuateTimer = setInterval(() => {
+      if (inStock > 5 && Math.random() > 0.7) {
+        setCountdownStock(current => {
+          const newStock = current - 1;
+          
+          if (newStock === 3) {
+            toast.warning("Almost gone!", {
+              description: `Only 3 ${productName}s left in stock!`,
+              duration: 4000
+            });
+          } else if (newStock === 5) {
+            toast.warning("Selling fast!", { 
+              description: "This item is in high demand", 
+              duration: 3000 
+            });
+          }
+          
+          return newStock;
+        });
+      }
+    }, 60000);
+    
+    return () => clearInterval(fluctuateTimer);
+  }, [inStock, productName]);
+
   return (
     <div className="space-y-2 font-aliexpress">
       <div className="flex items-center justify-between">
@@ -244,11 +273,11 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
         <div className="flex items-center justify-between text-xs">
           <div className={`${stockInfo.textColor} flex items-center`}>
             <span className={`w-2 h-2 ${stockInfo.color} rounded-full mr-1.5 ${stockInfo.animate ? 'animate-pulse' : ''}`}></span>
-            {inStock === 0 
+            {countdownStock === 0 
               ? 'Currently out of stock' 
-              : inStock === 1 
+              : countdownStock === 1 
                 ? 'Last item in stock!' 
-                : `${inStock} units available`}
+                : `${countdownStock} units available`}
           </div>
           
           {effectiveMaxQuantity > 1 && (
