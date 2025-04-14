@@ -26,39 +26,48 @@ const ProductSectionCollapsible = ({
         onOpenChange={setIsExpanded}
         className="w-full"
       >
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="font-medium text-base">{title}</h2>
-          <CollapsibleTrigger asChild>
-            <Button 
-              variant="ghost" 
-              className="h-8 px-2 text-gray-600 hover:bg-gray-50"
-            >
-              {isExpanded ? (
-                <>
-                  Show Less <ChevronDown className="h-4 w-4 ml-1" />
-                </>
-              ) : (
-                <>
-                  See More <ChevronRight className="h-4 w-4 ml-1" />
-                </>
-              )}
-            </Button>
-          </CollapsibleTrigger>
-        </div>
+        <h2 className="font-medium text-base mb-3">{title}</h2>
         
-        {/* Preview content - only visible when collapsed */}
-        {!isExpanded && (
-          <div className="mb-2 text-gray-600 line-clamp-3">
-            {previewContent}
+        <div className="relative">
+          {/* Preview content with gradient overlay - only visible when collapsed */}
+          {!isExpanded && (
+            <div className="relative">
+              <div className="mb-2 text-gray-600 max-h-[120px] overflow-hidden">
+                {previewContent}
+                {/* Gradient overlay */}
+                <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-white to-transparent" />
+              </div>
+            </div>
+          )}
+          
+          <CollapsibleContent className="text-gray-700">
+            {children}
+          </CollapsibleContent>
+          
+          {/* Centered trigger button with shadow background */}
+          <div className="flex justify-center mt-4">
+            <CollapsibleTrigger asChild>
+              <Button 
+                variant="ghost"
+                className="relative px-6 py-2 text-gray-600 hover:bg-gray-50 shadow-sm bg-white/80 backdrop-blur-sm"
+              >
+                {isExpanded ? (
+                  <>
+                    Show Less <ChevronDown className="h-4 w-4 ml-1" />
+                  </>
+                ) : (
+                  <>
+                    See More <ChevronRight className="h-4 w-4 ml-1" />
+                  </>
+                )}
+              </Button>
+            </CollapsibleTrigger>
           </div>
-        )}
-        
-        <CollapsibleContent className="text-gray-700">
-          {children}
-        </CollapsibleContent>
+        </div>
       </Collapsible>
     </div>
   );
 };
 
 export default ProductSectionCollapsible;
+
