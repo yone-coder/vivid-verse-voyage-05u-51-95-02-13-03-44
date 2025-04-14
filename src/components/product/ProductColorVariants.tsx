@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Palette, ChevronDown, ChevronUp } from "lucide-react";
 import ColorVariantItem from "./ColorVariantItem";
-import { useVariantStockDecay } from "@/hooks/useVariantStockDecay";
+import { VariantStockInfo } from "@/hooks/useVariantStockDecay";
 
 interface ProductVariant {
   name: string;
@@ -15,12 +15,18 @@ interface ProductColorVariantsProps {
   variants: ProductVariant[];
   selectedColor: string;
   onColorChange: (color: string) => void;
+  variantStockInfo?: Record<string, VariantStockInfo>;
+  getTimeRemaining?: (variantName: string) => { minutes: number, seconds: number } | null;
+  activateVariant?: (variantName: string) => void;
 }
 
 const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
   variants,
   selectedColor,
-  onColorChange
+  onColorChange,
+  variantStockInfo = {},
+  getTimeRemaining,
+  activateVariant
 }) => {
   const [expanded, setExpanded] = useState(false);
   
@@ -32,12 +38,6 @@ const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
     { name: "Blue", price: 219.99, stock: 42, image: "", bestseller: false },
     { name: "Red", price: 229.99, stock: 16, image: "", bestseller: false, limited: true }
   ];
-  
-  // Use our stock decay hook with 5-minute decay period and localStorage persistence
-  const { variantStockInfo, activateVariant, getTimeRemaining, resetVariant } = useVariantStockDecay({
-    variants: colorVariants,
-    decayPeriod: 5 * 60 * 1000 // 5 minutes in milliseconds
-  });
   
   // Get the currently selected variant
   const selectedVariant = colorVariants.find((v) => v.name === selectedColor);
@@ -60,7 +60,7 @@ const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
   
   // Activate the selected variant for decay simulation
   useEffect(() => {
-    if (selectedColor) {
+    if (selectedColor && activateVariant) {
       activateVariant(selectedColor);
     }
   }, [selectedColor, activateVariant]);
@@ -99,7 +99,7 @@ const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
             onColorChange={handleColorChange}
             getColorHex={getColorHex}
             stockInfo={variantStockInfo[variant.name]}
-            getTimeRemaining={(name) => getTimeRemaining(name)}
+            getTimeRemaining={getTimeRemaining ? (name) => getTimeRemaining(name) : undefined}
           />
         ))}
       </div>

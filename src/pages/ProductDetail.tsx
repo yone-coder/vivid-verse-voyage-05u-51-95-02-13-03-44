@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -58,6 +59,22 @@ const ProductDetail = () => {
   // Use real product data from Supabase
   const { data: product, isLoading } = useProduct(productId);
   const { data: analytics, isLoading: analyticsLoading } = useProductAnalytics(productId);
+
+  // Define our specific color variants with additional properties
+  const colorVariants = [
+    { name: "Black", price: 199.99, stock: 48, image: "", bestseller: true },
+    { name: "White", price: 199.99, stock: 124, image: "", bestseller: false },
+    { name: "Jet Black", price: 209.99, stock: 78, image: "", bestseller: false },
+    { name: "Blue", price: 219.99, stock: 42, image: "", bestseller: false },
+    { name: "Red", price: 229.99, stock: 16, image: "", bestseller: false, limited: true }
+  ];
+  
+  // Use our stock decay hook with 5-minute decay period and localStorage persistence
+  // IMPORTANT: We now use this hook only once in the parent component
+  const { variantStockInfo, activateVariant, getTimeRemaining, resetVariant } = useVariantStockDecay({
+    variants: colorVariants,
+    decayPeriod: 5 * 60 * 1000 // 5 minutes in milliseconds
+  });
 
   // Event handlers
   const incrementQuantity = () => {
@@ -290,21 +307,6 @@ const ProductDetail = () => {
     badges: []
   };
   
-  // Define our specific color variants with additional properties
-  const colorVariants = [
-    { name: "Black", price: 199.99, stock: 48, image: "", bestseller: true },
-    { name: "White", price: 199.99, stock: 124, image: "", bestseller: false },
-    { name: "Jet Black", price: 209.99, stock: 78, image: "", bestseller: false },
-    { name: "Blue", price: 219.99, stock: 42, image: "", bestseller: false },
-    { name: "Red", price: 229.99, stock: 16, image: "", bestseller: false, limited: true }
-  ];
-  
-  // Use our stock decay hook with 5-minute decay period and localStorage persistence
-  const { variantStockInfo, activateVariant, getTimeRemaining, resetVariant } = useVariantStockDecay({
-    variants: colorVariants,
-    decayPeriod: 5 * 60 * 1000 // 5 minutes in milliseconds
-  });
-  
   // Get the currently selected variant
   const selectedVariant = colorVariants.find((v) => v.name === selectedColor);
   const selectedVariantStockInfo = selectedVariant ? variantStockInfo[selectedColor] : undefined;
@@ -374,6 +376,9 @@ const ProductDetail = () => {
               variants={productForTabs.variants}
               selectedColor={selectedColor}
               onColorChange={setSelectedColor}
+              variantStockInfo={variantStockInfo}
+              getTimeRemaining={getTimeRemaining}
+              activateVariant={activateVariant}
             />
           </div>
         </div>
