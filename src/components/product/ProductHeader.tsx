@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Heart, Share, Search, Camera, ShoppingCart, X } from "lucide-react";
@@ -114,7 +113,7 @@ const ProductHeader: React.FC<ProductHeaderProps> = ({
                         ref={searchInputRef}
                         type="text" 
                         placeholder="Search products..." 
-                        className={`h-8 sm:h-9 pl-7 sm:pl-8 pr-7 sm:pr-8 text-[10px] sm:text-xs rounded-full ${isScrolled ? 'border-gray-200' : 'bg-black/30 backdrop-blur-sm hover:bg-black/40 border-0 text-white placeholder:text-gray-300'}`}
+                        className={`h-6 sm:h-7 pl-7 sm:pl-8 pr-7 sm:pr-8 text-[10px] sm:text-xs rounded-full ${isScrolled ? 'border-gray-200' : 'bg-black/30 backdrop-blur-sm hover:bg-black/40 border-0 text-white placeholder:text-gray-300'}`}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         onFocus={() => {
