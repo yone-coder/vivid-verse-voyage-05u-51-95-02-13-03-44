@@ -373,7 +373,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             "absolute bottom-3 right-3 flex items-center gap-2 z-30 transition-opacity",
             focusMode && "opacity-0"
           )}>
-            <div className="bg-black/60 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs font-medium mr-2">
+            <div className="bg-black/60 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs font-medium mr-2 ml-auto">
               {currentIndex + 1} / {images.length}
             </div>
 
