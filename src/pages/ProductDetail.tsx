@@ -127,7 +127,9 @@ const ProductDetail = () => {
       decayPeriod: variant.decayPeriod, // Pass unique decay period for each variant
       startTime: variant.startTime // Pass unique start time for each variant
     })),
-    demoMode: true // Keep demo mode for slower, visible decay
+    demoMode: true, // Keep demo mode for slower, visible decay
+    autoRefill: true, // Make sure auto-refill is enabled
+    refillCooldown: 5 * 1000 // Reduce cooldown to 5 seconds for testing purposes
   });
 
   // Effect to activate the selected variant for real-time stock decay

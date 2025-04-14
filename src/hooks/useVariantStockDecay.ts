@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 
 export interface VariantStockInfo {
@@ -129,7 +130,7 @@ export function useVariantStockDecay({
           
           // Check if this variant needs a refill (out of stock or nearly out)
           if (autoRefill && 
-              variant.currentStock <= 0 && 
+              variant.currentStock <= 1 && 
               (!variant.lastRefilledAt || now - variant.lastRefilledAt > variant.refillCooldown!)) {
             
             // Calculate the refill amount based on the refill percentage
