@@ -80,12 +80,17 @@ const Header = ({
   const actualSearchQuery = searchQuery !== undefined ? searchQuery : _searchQuery;
   const actualSetSearchQuery = setSearchQuery || _setSearchQuery;
 
+  // Reimplement scroll behavior to switch header styles
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 30);
     };
 
     window.addEventListener('scroll', handleScroll);
+    
+    // Initialize on mount to ensure correct initial state
+    handleScroll();
+    
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
@@ -129,11 +134,11 @@ const Header = ({
 
   if (isProductHeader) {
     return (
-      <div className="absolute top-0 left-0 right-0 z-50 pointer-events-auto">
+      <div className="fixed top-0 left-0 right-0 z-50 pointer-events-none">
         <div className={`h-[44px] w-full transition-all duration-200 ${isScrolled ? 'bg-white shadow-sm' : 'bg-transparent'}`}>
           {isScrolled ? (
             // Scrolled Product Header with search bar instead of title
-            <div className="flex items-center justify-between h-full px-3">
+            <div className="flex items-center justify-between h-full px-3 pointer-events-auto">
               <Button variant="ghost" size="icon" className="h-8 w-8 p-0" asChild>
                 <Link to="/">
                   <ArrowLeft className="h-4 w-4" />
