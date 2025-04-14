@@ -341,7 +341,7 @@ const ProductDetail = () => {
       {/* Removed demo reset button */}
 
       {/* Gallery Section without Header Overlay */}
-      <div ref={headerRef} className="relative w-full bg-gray-50">
+      <div ref={headerRef} className="relative w-full bg-transparent">
         {/* Product image gallery */}
         <ProductImageGallery images={productImages.length > 0 ? productImages : ["/placeholder.svg"]} />
       </div>
