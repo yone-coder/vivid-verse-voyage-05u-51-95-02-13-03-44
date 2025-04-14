@@ -390,7 +390,9 @@ const AdminPanel: React.FC = () => {
       
       console.log(`Saving new name for product ${productId}: ${productToUpdate.name}`);
       
-      const data = await updateProduct(productId, { name: productToUpdate.name });
+      const data = await updateProduct(productId, { 
+        name: productToUpdate.name,
+      });
       
       console.log('Product updated successfully in Supabase:', data);
       
@@ -406,6 +408,8 @@ const AdminPanel: React.FC = () => {
         title: "Success",
         description: "Product name updated successfully",
       });
+      
+      fetchProducts();
       
     } catch (error) {
       console.error('Error updating product name:', error);

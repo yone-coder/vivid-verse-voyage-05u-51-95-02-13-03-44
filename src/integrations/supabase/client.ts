@@ -49,25 +49,44 @@ export const fetchProductById = async (productId: string) => {
 export const updateProduct = async (productId: string, updates: Partial<any>) => {
   console.log("Updating product with ID:", productId, "Updates:", updates);
   
-  const { data, error } = await supabase
-    .from('products')
-    .update(updates)
-    .eq('id', productId)
-    .select();
+  try {
+    // Add timestamp to the updates to ensure the change is detected
+    const updatesWithTimestamp = {
+      ...updates,
+      updated_at: new Date().toISOString()
+    };
     
-  if (error) {
-    console.error("Error updating product:", error);
+    const { data, error } = await supabase
+      .from('products')
+      .update(updatesWithTimestamp)
+      .eq('id', productId)
+      .select();
+      
+    if (error) {
+      console.error("Error updating product:", error);
+      throw error;
+    }
+    
+    console.log("Product updated successfully:", data);
+    return data;
+  } catch (error) {
+    console.error("Exception during product update:", error);
     throw error;
   }
-  
-  console.log("Product updated successfully:", data);
-  return data;
 };
 
 // Function to subscribe to products changes
 export const subscribeToProductChanges = (callback: () => void) => {
   console.log("Setting up real-time subscription for products table");
   
+  // Enable realtime for the products table if not already enabled
+  supabase
+    .from('products')
+    .on('UPDATE', (payload) => {
+      console.log('Product updated via legacy listener:', payload);
+      callback();
+    });
+    
   const channel = supabase
     .channel('product-changes')
     .on(
