@@ -9,7 +9,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { VariantStockInfo } from "@/hooks/useVariantStockDecay";
 
 interface ProductVariant {
@@ -169,15 +168,7 @@ const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
               </div>
             )}
             
-            {isActive && (
-              <div className="absolute -bottom-1 left-0 right-0 h-0.5">
-                <Progress 
-                  value={stockPercentage} 
-                  className="h-0.5 w-full"
-                  indicatorClassName={`${stockLevelColor} ${isLowStock ? 'animate-pulse' : ''}`}
-                />
-              </div>
-            )}
+            {/* Removed progress bar as requested */}
             
             {variant.bestseller && (
               <Badge 

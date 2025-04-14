@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 export interface VariantStockInfo {
   initialStock: number;
@@ -27,14 +27,20 @@ export function useVariantStockDecay({
 }: UseVariantStockDecayProps) {
   const [variantStockInfo, setVariantStockInfo] = useState<Record<string, VariantStockInfo>>({});
   const [lastUpdate, setLastUpdate] = useState(Date.now());
+  const initializedRef = useRef(false);
   
-  // Initialize stock info for each variant on first load
+  // Only initialize stock info for new variants on first load
   useEffect(() => {
+    // Skip initialization if already done to prevent resetting stock values
+    if (initializedRef.current) return;
+    
     const initialStockInfo: Record<string, VariantStockInfo> = {};
+    let hasNewVariants = false;
     
     variants.forEach(variant => {
       // Only initialize variants that aren't already being tracked
       if (!variantStockInfo[variant.name]) {
+        hasNewVariants = true;
         // Generate random decay rate between 1-10 units per hour (higher for demo purposes)
         const decayRate = demoMode 
           ? Math.max(3, Math.floor(Math.random() * 10) + 5) // Higher rates for demo
@@ -57,7 +63,11 @@ export function useVariantStockDecay({
       }
     });
     
-    setVariantStockInfo(initialStockInfo);
+    if (hasNewVariants) {
+      setVariantStockInfo(prev => ({...prev, ...initialStockInfo}));
+    }
+    
+    initializedRef.current = true;
   }, [variants]);
 
   // Update stock levels based on elapsed time
