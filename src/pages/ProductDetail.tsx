@@ -15,7 +15,6 @@ import AliExpressTabs from "@/components/product/AliExpressTabs";
 // Product Components
 import DynamicPriceDisplay from "@/components/product/DynamicPriceDisplay";
 import EnhancedRating from "@/components/product/EnhancedRating";
-import LimitedOffersBand from "@/components/product/LimitedOffersBand";
 import ProductColorVariants from "@/components/product/ProductColorVariants";
 import ProductQuantitySelector from "@/components/product/ProductQuantitySelector";
 import ProductShipping from "@/components/product/ProductShipping";
@@ -38,7 +37,6 @@ const ProductDetail = () => {
   const [comparisonMode, setComparisonMode] = useState(false);
   const [showLiveData, setShowLiveData] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [showLimitedOffersBand, setShowLimitedOffersBand] = useState(true);
   const [expanded, setExpanded] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
   const [activeTab, setActiveTab] = useState("");
@@ -540,8 +538,6 @@ const ProductDetail = () => {
   
   return (
     <div className="flex flex-col min-h-screen bg-white" ref={contentRef}>
-      {showLimitedOffersBand && <LimitedOffersBand />}
-      
       <div className="relative w-full bg-transparent">
         <ProductImageGallery images={productImages.length > 0 ? productImages : ["/placeholder.svg"]} />
       </div>
