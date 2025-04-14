@@ -5,9 +5,10 @@ interface AliExpressTabsProps {
   children?: React.ReactNode;
   initialTab?: number;
   tabs?: Array<{ id: number; name: string; content: React.ReactNode }>;
+  className?: string; // Added className prop to the interface
 }
 
-const AliExpressTabs = ({ initialTab = 0, tabs = [] }: AliExpressTabsProps) => {
+const AliExpressTabs = ({ initialTab = 0, tabs = [], className = '' }: AliExpressTabsProps) => {
   const [activeTab, setActiveTab] = useState(initialTab);
   const [tabUnderlineStyle, setTabUnderlineStyle] = useState({});
   const tabsRef = useRef<Array<HTMLDivElement | null>>([]);
@@ -94,7 +95,7 @@ const AliExpressTabs = ({ initialTab = 0, tabs = [] }: AliExpressTabsProps) => {
   }, []);
 
   return (
-    <div className="w-screen -mx-4 flex flex-col bg-white border-t border-gray-100">
+    <div className={`w-screen -mx-4 flex flex-col bg-white border-t border-gray-100 ${className}`}>
       {/* Header with full-width, edge-to-edge scrollable tabs */}
       <div 
         className="sticky top-[var(--header-height)] z-40 w-full bg-white shadow-sm"
