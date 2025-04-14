@@ -407,6 +407,8 @@ const AdminPanel: React.FC = () => {
         description: "Product name updated successfully",
       });
       
+      fetchProducts();
+      
     } catch (error) {
       console.error('Error updating product name:', error);
       toast({

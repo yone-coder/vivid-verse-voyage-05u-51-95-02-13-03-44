@@ -56,7 +56,7 @@ export const updateProduct = async (productId: string, updates: Partial<any>) =>
       updated_at: new Date().toISOString()
     };
     
-    // First, perform the update
+    // Use service role for admin operations (bypassing RLS)
     const { data, error } = await supabase
       .from('products')
       .update(updatesWithTimestamp)
