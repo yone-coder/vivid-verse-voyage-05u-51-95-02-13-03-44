@@ -1,4 +1,3 @@
-
 import React, { useEffect } from "react";
 import { Check, AlertTriangle, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -40,10 +39,12 @@ const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
 }) => {
   const isSelected = selectedColor === variant.name;
   
+  // Use time-based current stock from stockInfo or fallback to variant.stock
   const currentStock = stockInfo?.currentStock !== undefined 
     ? Math.floor(stockInfo.currentStock) 
     : variant.stock;
   
+  // Use time-based stock percentage from stockInfo or calculate a percentage based on stock level
   const stockPercentage = stockInfo?.stockPercentage !== undefined
     ? stockInfo.stockPercentage
     : (variant.stock < 20 ? 20 : variant.stock > 100 ? 100 : variant.stock);

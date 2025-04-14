@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { MinusIcon, PlusIcon } from "lucide-react";
@@ -44,6 +45,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
   const [progress, setProgress] = useState(0);
   const [animationTimestamp, setAnimationTimestamp] = useState(0);
   
+  // Calculate the available stock based on time-decay from stockInfo or fall back to inStock
   const displayStock = stockInfo?.currentStock !== undefined
     ? Math.floor(stockInfo.currentStock)
     : inStock;
