@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   Carousel,
@@ -419,9 +418,8 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             </button>
           </div>
           
-          {/* Image counter moved to bottom left */}
           <div className={cn(
-            "absolute bottom-3 left-3 z-30 transition-opacity",
+            "absolute bottom-3 left-3 z-30 transition-opacity flex items-center h-8",
             focusMode && "opacity-0"
           )}>
             <div className="bg-black/60 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs font-medium">
@@ -570,4 +568,3 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
 };
 
 export default ProductImageGallery;
-
