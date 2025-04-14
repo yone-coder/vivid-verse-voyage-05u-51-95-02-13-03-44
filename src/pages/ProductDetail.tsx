@@ -62,9 +62,9 @@ const ProductDetail = () => {
 
   // Define our specific color variants with additional properties
   const colorVariants = [
-    { name: "Black", price: 199.99, stock: 48, image: "", bestseller: true },
-    { name: "White", price: 199.99, stock: 124, image: "", bestseller: false },
-    { name: "Jet Black", price: 209.99, stock: 78, image: "", bestseller: false },
+    { name: "Black", price: 79.99, stock: 48, image: "", bestseller: true },
+    { name: "White", price: 89.99, stock: 124, image: "", bestseller: false },
+    { name: "Jet Black", price: 89.99, stock: 78, image: "", bestseller: false },
     { name: "Blue", price: 219.99, stock: 42, image: "", bestseller: false },
     { name: "Red", price: 229.99, stock: 16, image: "", bestseller: false, limited: true }
   ];
@@ -240,9 +240,9 @@ const ProductDetail = () => {
   }
   
   // Format product data for display
-  const productImages = product.product_images.map(img => img.src);
-  const currentPrice = product.discount_price || product.price;
-  const originalPrice = product.price;
+  const productImages = product?.product_images?.map(img => img.src) || [];
+  const currentPrice = product?.discount_price || product?.price || 0;
+  const originalPrice = product?.price || 0;
   
   // Mock data for tabs with updated variants for color
   const productForTabs = {
@@ -372,7 +372,7 @@ const ProductDetail = () => {
           
           {/* Product title now appears before price with like count */}
           <div className="flex items-center justify-between">
-            <h1 className="text-lg font-medium">{product.name}</h1>
+            <h1 className="text-lg font-medium">{product?.name}</h1>
             <div className="flex items-center">
               <Heart className={`h-4 w-4 mr-1 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-400'}`} />
               <span className="text-sm text-gray-500">{analytics?.viewCount || 1245}</span>
@@ -380,7 +380,7 @@ const ProductDetail = () => {
           </div>
           
           <div className="flex items-center justify-between mt-1">
-            <DynamicPriceDisplay />
+            <DynamicPriceDisplay selectedColor={selectedColor} />
           </div>
           
           <EnhancedRating />
