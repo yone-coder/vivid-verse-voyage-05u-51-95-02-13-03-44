@@ -61,12 +61,20 @@ const ProductDetail = () => {
   const { data: analytics, isLoading: analyticsLoading } = useProductAnalytics(productId);
 
   // Define our specific color variants with additional properties
+  const colorPrices = {
+    "Black": 79.99,
+    "White": 89.99,
+    "Jet Black": 89.99,
+    "Blue": 219.99,
+    "Red": 229.99
+  };
+  
   const colorVariants = [
-    { name: "Black", price: 79.99, stock: 48, image: "", bestseller: true },
-    { name: "White", price: 89.99, stock: 124, image: "", bestseller: false },
-    { name: "Jet Black", price: 89.99, stock: 78, image: "", bestseller: false },
-    { name: "Blue", price: 219.99, stock: 42, image: "", bestseller: false },
-    { name: "Red", price: 229.99, stock: 16, image: "", bestseller: false, limited: true }
+    { name: "Black", price: colorPrices.Black, stock: 48, image: "", bestseller: true },
+    { name: "White", price: colorPrices.White, stock: 124, image: "", bestseller: false },
+    { name: "Jet Black", price: colorPrices["Jet Black"], stock: 78, image: "", bestseller: false },
+    { name: "Blue", price: colorPrices.Blue, stock: 42, image: "", bestseller: false },
+    { name: "Red", price: colorPrices.Red, stock: 16, image: "", bestseller: false, limited: true }
   ];
   
   // Use our stock decay hook with 12-hour decay period and localStorage persistence
@@ -444,7 +452,10 @@ const ProductDetail = () => {
         />
       </div>
       
-      <StickyBuyButton />
+      <StickyBuyButton 
+        selectedColor={selectedColor}
+        colorPrices={colorPrices}
+      />
     </div>
   );
 };

@@ -1,11 +1,26 @@
-
 import { useState, useEffect } from 'react';
 import { ShoppingCart, Heart, Share2, Star, ChevronUp, ArrowRight } from 'lucide-react';
 
-const StickyBuyButton = () => {
+interface StickyBuyButtonProps {
+  selectedColor?: string;
+  colorPrices?: Record<string, number>;
+  defaultPrice?: number;
+}
+
+const StickyBuyButton = ({ 
+  selectedColor = "Black", 
+  colorPrices = {
+    "Black": 79.99,
+    "White": 89.99,
+    "Jet Black": 89.99,
+    "Blue": 219.99,
+    "Red": 229.99
+  },
+  defaultPrice = 79.99
+}: StickyBuyButtonProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [quantity, setQuantity] = useState(1);
-  const [selectedVariant, setSelectedVariant] = useState('Red');
+  const [selectedVariant, setSelectedVariant] = useState(selectedColor);
   const [isWishlist, setIsWishlist] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -13,18 +28,27 @@ const StickyBuyButton = () => {
   const [recentPurchase, setRecentPurchase] = useState(false);
   const [likeCount, setLikeCount] = useState(156);
 
+  // Get current price based on selected color or default to Black's price
+  const currentPrice = colorPrices[selectedColor as keyof typeof colorPrices] || colorPrices.Black || defaultPrice;
+
+  // Product information - now using the current price based on color
   const product = {
     name: "Wireless Bluetooth Earbuds",
-    price: 29.99,
-    salePrice: 19.99,
-    discount: 33,
+    price: currentPrice * 1.2, // Original price is higher than the current price
+    salePrice: currentPrice,
+    discount: Math.round(((currentPrice * 1.2 - currentPrice) / (currentPrice * 1.2)) * 100),
     rating: 4.7,
     reviewCount: 2483,
     orders: 5294,
-    variants: ["Red", "Black", "White", "Blue"],
+    variants: Object.keys(colorPrices),
     shipping: "Free Shipping",
     deliveryTime: "15-30 days",
   };
+
+  // Update the selected variant when the selectedColor prop changes
+  useEffect(() => {
+    setSelectedVariant(selectedColor);
+  }, [selectedColor]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -78,7 +102,7 @@ const StickyBuyButton = () => {
             <div className="flex flex-col">
               <span className="text-red-500 font-bold text-lg">${product.salePrice}</span>
               <div className="flex items-center">
-                <span className="text-gray-400 line-through text-xs">${product.price}</span>
+                <span className="text-gray-400 line-through text-xs">${product.price.toFixed(2)}</span>
                 <span className="text-red-500 text-xs ml-1">-{product.discount}%</span>
               </div>
             </div>
@@ -131,7 +155,7 @@ const StickyBuyButton = () => {
                 </div>
                 <div className="flex items-center mt-1">
                   <span className="text-red-500 font-bold">${product.salePrice}</span>
-                  <span className="text-gray-400 line-through text-xs ml-2">${product.price}</span>
+                  <span className="text-gray-400 line-through text-xs ml-2">${product.price.toFixed(2)}</span>
                   <span className="text-red-500 text-xs ml-1">-{product.discount}%</span>
                 </div>
               </div>
