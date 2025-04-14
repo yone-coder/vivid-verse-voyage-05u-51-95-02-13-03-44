@@ -49,12 +49,27 @@ export const fetchProductById = async (productId: string) => {
 export const updateProduct = async (productId: string, updates: Partial<any>) => {
   console.log("Updating product with ID:", productId, "Updates:", updates);
   
+  if (!productId) {
+    console.error("Product ID is missing");
+    throw new Error("Product ID is required");
+  }
+  
+  if (!updates || Object.keys(updates).length === 0) {
+    console.error("No updates provided");
+    throw new Error("Updates are required");
+  }
+  
   try {
     // Add timestamp to the updates to ensure the change is detected
     const updatesWithTimestamp = {
       ...updates,
       updated_at: new Date().toISOString()
     };
+    
+    console.log("Sending update to Supabase:", {
+      productId,
+      updates: updatesWithTimestamp
+    });
     
     const { data, error } = await supabase
       .from('products')

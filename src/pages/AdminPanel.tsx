@@ -390,9 +390,15 @@ const AdminPanel: React.FC = () => {
       
       console.log(`Saving new name for product ${productId}: ${productToUpdate.name}`);
       
-      await updateProduct(productId, { 
+      const updates = { 
         name: productToUpdate.name,
-      });
+      };
+      
+      console.log("Sending update object:", updates);
+      
+      const result = await updateProduct(productId, updates);
+      
+      console.log("Update result:", result);
       
       setProducts(prev => 
         prev.map(p => p.id === productId ? { ...p, name: productToUpdate.name } : p)
