@@ -1,3 +1,4 @@
+
 import React, { useRef, useEffect } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -43,6 +44,7 @@ const ProductTabs: React.FC<ProductTabsProps> = ({
   const descriptionContentRef = useRef<HTMLDivElement>(null);
   const specsContentRef = useRef<HTMLDivElement>(null);
   const reviewsContentRef = useRef<HTMLDivElement>(null);
+  const tabsListRef = useRef<HTMLDivElement>(null);
 
   const getActiveContentRef = () => {
     switch (activeTab) {
@@ -75,7 +77,11 @@ const ProductTabs: React.FC<ProductTabsProps> = ({
       onValueChange={handleTabChange}
       className="w-full"
     >
-      <div className={`bg-white sticky z-20`} style={{ top: `${headerHeight}px` }}>
+      <div 
+        ref={tabsListRef} 
+        className="bg-white sticky z-20 top-0"
+        style={{ top: `${headerHeight}px` }}
+      >
         <ScrollArea className="w-full" orientation="horizontal">
           <TabsList className="w-full h-10 bg-white px-0 justify-start">
             <TabsTrigger 
