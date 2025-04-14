@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import { Check, AlertTriangle, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { 
@@ -37,6 +37,7 @@ const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
   stockInfo
 }) => {
   const isSelected = selectedColor === variant.name;
+  const progressRef = useRef<HTMLDivElement>(null);
   
   // Use live stock data if available, otherwise fall back to static stock
   const currentStock = stockInfo?.currentStock !== undefined 
@@ -84,6 +85,37 @@ const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
   
   const stockLevelColor = getStockLevelColor();
   const isActive = stockInfo?.isActive || false;
+  
+  // Effect to create a more continuous animation for the progress bar
+  useEffect(() => {
+    if (!isActive || !stockInfo) return;
+    
+    // Only animate the progress bar if the variant is active
+    const animateProgress = () => {
+      if (!progressRef.current) return;
+      
+      const now = Date.now();
+      const lastUpdate = stockInfo.lastUpdate || now;
+      const elapsedMs = now - lastUpdate;
+      
+      // For demonstration, accelerate decay by 60x (1 minute = 1 hour)
+      const accelerationFactor = 60;
+      const hoursPassed = (elapsedMs / (60 * 60 * 1000)) * accelerationFactor;
+      
+      // Calculate real-time stock based on elapsed time
+      const stockToDecay = hoursPassed * (stockInfo.decayRate || 1);
+      const realTimeStock = Math.max(0, stockInfo.currentStock - stockToDecay);
+      const realTimePercentage = (realTimeStock / stockInfo.initialStock) * 100;
+      
+      // Update the progress bar width directly for smooth animation
+      progressRef.current.style.transform = `translateX(-${100 - realTimePercentage}%)`;
+    };
+    
+    // Update the animation every 50ms for smoother motion
+    const animationInterval = setInterval(animateProgress, 50);
+    
+    return () => clearInterval(animationInterval);
+  }, [isActive, stockInfo]);
   
   return (
     <TooltipProvider>
@@ -155,6 +187,7 @@ const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
                   value={stockPercentage} 
                   className="h-0.5 w-full"
                   indicatorClassName={`${stockLevelColor} ${isLowStock ? 'animate-pulse' : ''}`}
+                  indicatorRef={progressRef}
                 />
               </div>
             )}

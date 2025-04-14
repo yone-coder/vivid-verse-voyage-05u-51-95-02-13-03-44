@@ -1,8 +1,10 @@
 
 import React, { useState, useEffect } from "react";
-import { Palette, ChevronDown, ChevronUp } from "lucide-react";
+import { Palette, ChevronDown, ChevronUp, ZapIcon } from "lucide-react";
 import ColorVariantItem from "./ColorVariantItem";
 import { useVariantStockDecay } from "@/hooks/useVariantStockDecay";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 interface ProductVariant {
   name: string;
@@ -23,6 +25,7 @@ const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
   onColorChange
 }) => {
   const [expanded, setExpanded] = useState(false);
+  const [showRapidDemo, setShowRapidDemo] = useState(false);
   
   // Define our specific color variants with additional properties
   const colorVariants = [
@@ -33,10 +36,11 @@ const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
     { name: "Red", price: 229.99, stock: 16, image: "", bestseller: false, limited: true }
   ];
   
-  // Use our new stock decay hook
-  const { variantStockInfo, activateVariant } = useVariantStockDecay({
+  // Use our stock decay hook with faster update interval
+  const { variantStockInfo, activateVariant, reduceVariantStock } = useVariantStockDecay({
     variants: colorVariants,
-    decayPeriod: 24 * 60 * 60 * 1000 // 24 hours
+    decayPeriod: 24 * 60 * 60 * 1000, // 24 hours
+    updateInterval: 1000 // Update every second
   });
   
   // Get the currently selected variant
@@ -50,7 +54,7 @@ const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
   const getColorHex = (name: string) => {
     const colorMap = {
       "Black": "#000000",
-      "White": "#FFFFFF",
+      "White": "#FFFFFF", 
       "Jet Black": "#0A0A0A",
       "Blue": "#0066CC",
       "Red": "#CC0000"
@@ -70,6 +74,28 @@ const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
     onColorChange(color);
   };
   
+  // Function to simulate rapid purchases for demo purposes
+  const simulateRapidPurchase = () => {
+    if (!selectedColor) return;
+    
+    const purchaseAmount = Math.floor(Math.random() * 3) + 1;
+    reduceVariantStock(selectedColor, purchaseAmount);
+    
+    toast.info(`Demo: ${purchaseAmount} ${selectedColor} unit${purchaseAmount > 1 ? 's' : ''} sold!`, {
+      description: "This simulates real-time purchases by other users."
+    });
+  };
+  
+  // Toggle demo mode
+  const toggleRapidDemo = () => {
+    setShowRapidDemo(!showRapidDemo);
+    if (!showRapidDemo) {
+      toast.info("Rapid purchase demo activated", {
+        description: "Click the lightning button to simulate purchases."
+      });
+    }
+  };
+  
   return (
     <div className="relative px-3 py-2">
       <div className="flex items-center justify-between mb-3">
@@ -86,6 +112,27 @@ const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
             <span className="text-xs text-gray-500">
               Selected: <span className="font-medium">{selectedColor}</span>
             </span>
+          )}
+          
+          {/* Demo controls - for demonstration purposes only */}
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="h-6 px-2 text-xs"
+            onClick={toggleRapidDemo}
+          >
+            Demo Mode
+          </Button>
+          
+          {showRapidDemo && (
+            <Button 
+              variant="destructive" 
+              size="sm" 
+              className="h-6 w-6 p-0"
+              onClick={simulateRapidPurchase}
+            >
+              <ZapIcon className="h-3 w-3" />
+            </Button>
           )}
         </div>
       </div>
