@@ -30,30 +30,26 @@ const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
 }) => {
   const [expanded, setExpanded] = useState(false);
   
-  // Define our specific color variants with additional properties
+  // Define our specific color variants with only Black, White, and Jet Black
   const colorVariants = [
     { name: "Black", price: 199.99, stock: 48, image: "", bestseller: true },
     { name: "White", price: 199.99, stock: 124, image: "", bestseller: false },
-    { name: "Jet Black", price: 209.99, stock: 78, image: "", bestseller: false },
-    { name: "Blue", price: 219.99, stock: 42, image: "", bestseller: false },
-    { name: "Red", price: 229.99, stock: 16, image: "", bestseller: false, limited: true }
+    { name: "Jet Black", price: 209.99, stock: 78, image: "", bestseller: false }
   ];
   
   // Get the currently selected variant
   const selectedVariant = colorVariants.find((v) => v.name === selectedColor);
   
   // Determine which variants to show
-  const visibleVariants = expanded ? colorVariants : colorVariants.slice(0, 3);
-  const hasMoreVariants = colorVariants.length > 3;
+  const visibleVariants = colorVariants; // No need for "show more" since there are only 3 variants
+  const hasMoreVariants = false; // No longer need to expand since we only have 3 colors
   
   // Get color hex code based on name
   const getColorHex = (name: string) => {
     const colorMap = {
-      "Black": "#000000",
-      "White": "#FFFFFF",
-      "Jet Black": "#0A0A0A",
-      "Blue": "#0066CC",
-      "Red": "#CC0000"
+      "Black": "#000000e6",
+      "White": "#fff",
+      "Jet Black": "#0006"
     };
     return colorMap[name as keyof typeof colorMap] || "transparent";
   };
@@ -103,25 +99,6 @@ const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
           />
         ))}
       </div>
-      
-      {hasMoreVariants && (
-        <button 
-          className="flex items-center justify-center w-full text-xs text-blue-600 py-1 mt-1 hover:bg-blue-50 rounded-md transition-colors"
-          onClick={() => setExpanded(!expanded)}
-        >
-          {expanded ? (
-            <>
-              <ChevronUp className="w-3 h-3 mr-1" />
-              Show Fewer Colors
-            </>
-          ) : (
-            <>
-              <ChevronDown className="w-3 h-3 mr-1" />
-              Show All {colorVariants.length} Colors
-            </>
-          )}
-        </button>
-      )}
     </div>
   );
 };

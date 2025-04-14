@@ -1,6 +1,6 @@
 
-import React, { useEffect } from "react";
-import { Check, AlertTriangle, Clock } from "lucide-react";
+import React from "react";
+import { Check, AlertTriangle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { 
   Tooltip,
@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
 import { VariantStockInfo } from "@/hooks/useVariantStockDecay";
-import { Progress } from "@/components/ui/progress";
 
 interface ProductVariant {
   name: string;
@@ -36,7 +35,6 @@ const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
   onColorChange,
   getColorHex,
   stockInfo,
-  getTimeRemaining
 }) => {
   const isSelected = selectedColor === variant.name;
   
@@ -44,10 +42,6 @@ const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
   const currentStock = stockInfo?.currentStock !== undefined 
     ? Math.floor(stockInfo.currentStock) 
     : variant.stock;
-  
-  const stockPercentage = stockInfo?.stockPercentage !== undefined
-    ? stockInfo.stockPercentage
-    : (variant.stock < 20 ? 20 : variant.stock > 100 ? 100 : variant.stock);
   
   const isLowStock = currentStock < 20;
   const isVeryLowStock = currentStock < 8;
@@ -59,47 +53,7 @@ const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
                        isVeryLowStock ? "Almost gone!" :
                        isLowStock ? "Low stock" : null;
   
-  // Get remaining time if available
-  const timeRemaining = getTimeRemaining ? getTimeRemaining(variant.name) : null;
-  
-  const timeRemainingText = timeRemaining 
-    ? `${timeRemaining.minutes}:${timeRemaining.seconds.toString().padStart(2, '0')} left`
-    : null;
-  
-  // Get color for the stock level indicator
-  const getStockLevelColor = () => {
-    if (currentStock === 0) return "bg-gray-500"; // Grey — #9E9E9E
-    if (stockPercentage <= 5) return "bg-red-800";   // Dark Red — #C62828
-    if (stockPercentage <= 15) return "bg-red-400";   // Red — #EF5350
-    if (stockPercentage <= 30) return "bg-orange-500"; // Orange — #FB8C00
-    if (stockPercentage <= 50) return "bg-amber-400"; // Amber — #FFC107
-    if (stockPercentage <= 70) return "bg-yellow-300"; // Yellow — #FFEB3B
-    if (stockPercentage <= 85) return "bg-lime-600"; // Lime — #C0CA33
-    return "bg-green-500"; // Green — #4CAF50
-  };
-  
-  const stockLevelColor = getStockLevelColor();
   const isActive = stockInfo?.isActive || false;
-  
-  // Force re-render every animation frame for smooth countdown when active
-  useEffect(() => {
-    let animationFrame: number;
-    
-    if (isActive && stockInfo?.currentStock) {
-      const updateAnimation = () => {
-        // This creates a loop that updates at 60fps for smooth animation
-        animationFrame = requestAnimationFrame(updateAnimation);
-      };
-      
-      animationFrame = requestAnimationFrame(updateAnimation);
-      
-      return () => {
-        if (animationFrame) {
-          cancelAnimationFrame(animationFrame);
-        }
-      };
-    }
-  }, [isActive, stockInfo]);
   
   return (
     <TooltipProvider>
@@ -156,26 +110,6 @@ const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
               </div>
             )}
             
-            {isActive && timeRemainingText && !isExtremelyLowStock && (
-              <div className="mt-0.5 flex items-center justify-center">
-                <span className="text-[8px] text-amber-600 flex items-center">
-                  <Clock className="w-2 h-2 mr-0.5" />
-                  {timeRemainingText}
-                </span>
-              </div>
-            )}
-            
-            {/* Add real-time progress bar */}
-            {isActive && (
-              <div className="w-full mt-1">
-                <Progress 
-                  value={stockPercentage} 
-                  className="h-1 w-full"
-                  indicatorClassName={`${stockLevelColor} ${isLowStock ? 'animate-pulse' : ''}`}
-                />
-              </div>
-            )}
-            
             {variant.bestseller && (
               <Badge 
                 className="absolute -top-1 -right-1 text-[7px] py-0 px-1 bg-amber-400 hover:bg-amber-400"
@@ -205,13 +139,6 @@ const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
           <p className={isLowStock ? "text-red-500" : "text-gray-500"}>
             {currentStock > 0 ? `${currentStock} in stock` : "Out of stock"}
           </p>
-          {isActive && timeRemaining && (
-            <p className="text-amber-600">
-              {timeRemaining.minutes === 0 && timeRemaining.seconds < 30 
-                ? "Selling out soon!" 
-                : `${timeRemaining.minutes}:${timeRemaining.seconds.toString().padStart(2, '0')} remaining`}
-            </p>
-          )}
           {variant.bestseller && <p className="text-amber-600">Bestseller</p>}
           {variant.limited && <p className="text-red-600">Limited Edition</p>}
         </TooltipContent>
