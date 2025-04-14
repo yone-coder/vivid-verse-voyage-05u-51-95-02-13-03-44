@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 
 export interface VariantStockInfo {
@@ -17,7 +16,7 @@ interface UseVariantStockDecayProps {
     name: string;
     stock: number;
   }>;
-  decayPeriod?: number; // Time in milliseconds for full decay cycle (default 5min)
+  decayPeriod?: number; // Time in milliseconds for full decay cycle (default 12 hours)
   demoMode?: boolean; // Accelerated decay for demo purposes
 }
 
@@ -26,8 +25,8 @@ const getStorageKey = (variantName: string) => `variant_stock_${variantName.repl
 
 export function useVariantStockDecay({ 
   variants, 
-  decayPeriod = 5 * 60 * 1000, // 5 minutes in milliseconds
-  demoMode = true // Enable demo mode by default for faster decay
+  decayPeriod = 12 * 60 * 60 * 1000, // 12 hours in milliseconds
+  demoMode = true // Enable demo mode by default for slower decay
 }: UseVariantStockDecayProps) {
   const [variantStockInfo, setVariantStockInfo] = useState<Record<string, VariantStockInfo>>({});
   const [lastUpdate, setLastUpdate] = useState(Date.now());
@@ -55,11 +54,11 @@ export function useVariantStockDecay({
       } else if (!variantStockInfo[variant.name]) {
         hasNewVariants = true;
         
-        // Generate random decay rate between 10-30 units per minute for a 5-minute window
-        // Increase decay rates to make it more noticeable
+        // Generate more gradual decay rates for 12-hour window
+        // Reduced decay rates to make it less aggressive
         const decayRate = demoMode 
-          ? Math.max(20, Math.floor(Math.random() * 40) + 20) // 20-60 units per minute (faster for demo)
-          : Math.max(5, Math.floor(Math.random() * 10) + 5);   // 5-15 units per minute for production
+          ? Math.max(5, Math.floor(Math.random() * 10) + 5)   // 5-15 units per 12 hours (slower)
+          : Math.max(2, Math.floor(Math.random() * 5) + 2);   // 2-7 units per 12 hours for production
         
         // Create new stock info for this variant
         initialStockInfo[variant.name] = {
@@ -73,7 +72,7 @@ export function useVariantStockDecay({
           startTime: Date.now() // Record start time for accurate calculations
         };
         
-        console.info(`Initialized variant: ${variant.name} with decay rate: ${decayRate} units/minute`);
+        console.info(`Initialized variant: ${variant.name} with decay rate: ${decayRate} units/12-hours`);
 
         // Save this initial state to localStorage
         localStorage.setItem(getStorageKey(variant.name), JSON.stringify(initialStockInfo[variant.name]));
@@ -199,7 +198,7 @@ export function useVariantStockDecay({
       // Save to localStorage
       localStorage.setItem(getStorageKey(variantName), JSON.stringify(updatedVariant));
       
-      console.info(`Activated variant: ${variantName} with decay rate: ${updatedVariant.decayRate} units/minute`);
+      console.info(`Activated variant: ${variantName} with decay rate: ${updatedVariant.decayRate} units/12-hours`);
       
       return updated;
     });

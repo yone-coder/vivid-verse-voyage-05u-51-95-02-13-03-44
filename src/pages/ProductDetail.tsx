@@ -69,11 +69,10 @@ const ProductDetail = () => {
     { name: "Red", price: 229.99, stock: 16, image: "", bestseller: false, limited: true }
   ];
   
-  // Use our stock decay hook with 5-minute decay period and localStorage persistence
-  // IMPORTANT: We now use this hook only once in the parent component
+  // Use our stock decay hook with 12-hour decay period and localStorage persistence
   const { variantStockInfo, activateVariant, getTimeRemaining, resetVariant, resetAllVariants } = useVariantStockDecay({
     variants: colorVariants,
-    decayPeriod: 5 * 60 * 1000 // 5 minutes in milliseconds
+    decayPeriod: 12 * 60 * 60 * 1000 // 12 hours in milliseconds
   });
 
   // Effect to activate the selected variant for real-time stock decay
