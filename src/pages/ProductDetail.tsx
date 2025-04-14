@@ -9,7 +9,6 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { Heart, RotateCcw } from "lucide-react";
 import { useVariantStockDecay } from "@/hooks/useVariantStockDecay";
 import { Button } from "@/components/ui/button";
-import ProductHeader from "@/components/product/ProductHeader";
 
 // Product Components
 import DynamicPriceDisplay from "@/components/product/DynamicPriceDisplay";
@@ -40,7 +39,6 @@ const ProductDetail = () => {
   const [showLimitedOffersBand, setShowLimitedOffersBand] = useState(true);
   const [expanded, setExpanded] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
-  const [activeTab, setActiveTab] = useState("description");
 
   // Refs and hooks
   const isMobile = useIsMobile();
@@ -152,14 +150,6 @@ const ProductDetail = () => {
     toast({
       title: "Cart",
       description: "Opening your shopping cart",
-    });
-  };
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    toast({
-      title: "Search submitted",
-      description: `Searching for: ${searchQuery}`,
     });
   };
 
@@ -290,20 +280,6 @@ const ProductDetail = () => {
   
   return (
     <div className="flex flex-col min-h-screen bg-white">
-      {/* AliExpress-style header */}
-      <ProductHeader
-        isFavorite={isFavorite}
-        toggleFavorite={toggleFavorite}
-        handleShare={handleShare}
-        handleCartClick={handleCartClick}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        handleSearch={handleSearch}
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-        totalReviews={productForTabs.reviewCount}
-      />
-      
       {/* Limited Offers Band */}
       {showLimitedOffersBand && <LimitedOffersBand />}
       

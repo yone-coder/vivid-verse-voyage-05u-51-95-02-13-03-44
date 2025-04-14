@@ -7,7 +7,6 @@ import { Outlet, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { Heart, Share } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import Header from "@/components/layout/Header";
 
 export default function MainLayout() {
   const isMobile = useIsMobile();
@@ -69,36 +68,12 @@ export default function MainLayout() {
       <style dangerouslySetInnerHTML={{ __html: headerHeightStyle }} />
       {isProductPage || isHomePage ? (
         <>
-          {!isProductPage && (
-            <Header 
-              isProductHeader={false} 
-              isFavorite={isFavorite}
-              toggleFavorite={toggleFavorite}
-              handleShare={handleShare}
-              isSearchOpen={isSearchOpen}
-              setIsSearchOpen={setIsSearchOpen}
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
-              handleSearch={handleSearch}
-            />
-          )}
           <main className="flex-grow relative">
             <Outlet />
           </main>
         </>
       ) : (
         <>
-          <Header 
-            isProductHeader={false}
-            isFavorite={isFavorite}
-            toggleFavorite={toggleFavorite}
-            handleShare={handleShare}
-            isSearchOpen={isSearchOpen}
-            setIsSearchOpen={setIsSearchOpen}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            handleSearch={handleSearch}
-          />
           <main className="flex-grow pb-20">
             <Outlet />
           </main>
