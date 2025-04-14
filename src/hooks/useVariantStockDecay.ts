@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 
 export interface VariantStockInfo {
@@ -103,18 +104,19 @@ export function useVariantStockDecay({
           const variant = newInfo[variantName];
           
           if (variant.isActive && variant.currentStock > 0 && variant.timeRemaining > 0) {
-            // Calculate elapsed time in minutes since the start
+            // Calculate elapsed time in hours since the start (for 12-hour window)
             const elapsedMs = now - variant.startTime;
-            const elapsedMinutes = elapsedMs / (60 * 1000);
+            // Convert to the appropriate unit - now in hours for the 12-hour period
+            const elapsedHours = elapsedMs / (60 * 60 * 1000);
             
             // Calculate how much stock to decrease based on elapsed time and decay rate
             // For real-time effect, we use the exact elapsed time rather than increments
-            const stockToDecay = elapsedMinutes * variant.decayRate;
+            const stockToDecay = elapsedHours * variant.decayRate;
             
             // Calculate new stock with precise decimal values for smoother animation
             const newStock = Math.max(0, variant.initialStock - stockToDecay);
             
-            // Calculate remaining time proportionally to the 5-minute window
+            // Calculate remaining time proportionally to the 12-hour window
             const remainingFraction = newStock / variant.initialStock;
             const remainingTime = Math.max(0, remainingFraction * decayPeriod);
             
