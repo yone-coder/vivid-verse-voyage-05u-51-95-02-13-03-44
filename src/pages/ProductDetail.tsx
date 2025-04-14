@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -42,7 +41,7 @@ const ProductDetail = () => {
   const [showLimitedOffersBand, setShowLimitedOffersBand] = useState(true);
   const [expanded, setExpanded] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
-  const [showFullTabContent, setShowFullTabContent] = useState(false);
+  const [showTabContent, setShowTabContent] = useState(false);
 
   // Refs and hooks
   const tabsRef = useRef<HTMLDivElement>(null);
@@ -154,7 +153,7 @@ const ProductDetail = () => {
   // This function is called when a tab is clicked in the header
   const handleTabClick = (tabId: string) => {
     setActiveTab(tabId);
-    setShowFullTabContent(true);
+    setShowTabContent(true);
     if (tabsRef.current) {
       tabsRef.current.scrollIntoView({ behavior: 'smooth' });
     }
@@ -395,17 +394,19 @@ const ProductDetail = () => {
         </div>
       </div>
       
-      {/* Tab content preview mode - always shows on the main page */}
-      <div className="mb-4">
-        <ProductTabs 
-          product={productForTabs}
-          activeTab={activeTab} 
-          setActiveTab={setActiveTab} 
-          isScrolled={false} 
-          headerHeight={0}
-          previewMode={!showFullTabContent}
-        />
-      </div>
+      {/* Only show tab content when a tab is clicked */}
+      {showTabContent && (
+        <div ref={tabsRef} className="mb-4">
+          <ProductTabs 
+            product={productForTabs}
+            activeTab={activeTab} 
+            setActiveTab={setActiveTab} 
+            isScrolled={false} 
+            headerHeight={0}
+            previewMode={false}
+          />
+        </div>
+      )}
       
       <StickyBuyButton 
         selectedColor={selectedColor}
