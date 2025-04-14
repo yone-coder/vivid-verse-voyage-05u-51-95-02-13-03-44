@@ -337,12 +337,9 @@ const ProductDetail = () => {
   const totalPrice = (currentPrice * quantity) + warrantyPrice + (isExpressSelected ? productForTabs.shipping.express : 0);
   
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50">
-      {/* Removed demo reset button */}
-
+    <div className="flex flex-col min-h-screen bg-white">
       {/* Gallery Section without Header Overlay */}
       <div ref={headerRef} className="relative w-full bg-transparent">
-        {/* Product image gallery */}
         <ProductImageGallery images={productImages.length > 0 ? productImages : ["/placeholder.svg"]} />
       </div>
 
