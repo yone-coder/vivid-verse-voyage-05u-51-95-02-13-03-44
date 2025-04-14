@@ -12,6 +12,7 @@ const AliExpressTabs = ({ initialTab = 0, tabs = [] }: AliExpressTabsProps) => {
   const [tabUnderlineStyle, setTabUnderlineStyle] = useState({});
   const tabsRef = useRef<Array<HTMLDivElement | null>>([]);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+  const [isSticky, setIsSticky] = useState(false);
 
   const defaultTabs = [
     { id: 0, name: 'Description', content: <div>Description content goes here</div> },
@@ -45,6 +46,27 @@ const AliExpressTabs = ({ initialTab = 0, tabs = [] }: AliExpressTabsProps) => {
     
     return () => window.removeEventListener('resize', handleResize);
   }, [activeTab]);
+
+  // Handle sticky tabs behavior when scrolling
+  useEffect(() => {
+    const tabsElement = scrollContainerRef.current;
+    if (!tabsElement) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsSticky(!entry.isIntersecting);
+      },
+      { threshold: 0, rootMargin: "-1px 0px 0px 0px" }
+    );
+
+    observer.observe(tabsElement);
+
+    return () => {
+      if (tabsElement) {
+        observer.unobserve(tabsElement);
+      }
+    };
+  }, []);
 
   // Update underline position when active tab changes
   useEffect(() => {
@@ -98,26 +120,34 @@ const AliExpressTabs = ({ initialTab = 0, tabs = [] }: AliExpressTabsProps) => {
       {/* Header with full-width, edge-to-edge scrollable tabs */}
       <div 
         ref={scrollContainerRef}
-        className="w-full flex overflow-x-auto py-3 px-0 bg-white border-b border-gray-200 hide-scrollbar relative" 
-        style={{ scrollbarWidth: 'none' }}
+        className="w-full relative"
+        id="tabs-header"
       >
-        {displayTabs.map((tab, index) => (
+        <div className={`w-full flex overflow-x-auto py-2 px-0 bg-white border-b border-gray-200 hide-scrollbar relative ${
+          isSticky ? 'fixed top-0 left-0 z-50 shadow-sm' : ''
+        }`} 
+        style={{ scrollbarWidth: 'none' }}
+        >
+          {displayTabs.map((tab, index) => (
+            <div
+              key={tab.id}
+              ref={(el) => (tabsRef.current[index] = el)}
+              className={`flex-shrink-0 cursor-pointer px-4 whitespace-nowrap text-xs font-medium ${
+                activeTab === index ? 'text-red-500' : 'text-gray-600'
+              }`}
+              onClick={() => handleTabClick(index)}
+            >
+              {tab.name}
+            </div>
+          ))}
+          {/* Animated underline */}
           <div
-            key={tab.id}
-            ref={(el) => (tabsRef.current[index] = el)}
-            className={`flex-shrink-0 cursor-pointer px-4 whitespace-nowrap text-sm font-medium ${
-              activeTab === index ? 'text-red-500' : 'text-gray-600'
-            }`}
-            onClick={() => handleTabClick(index)}
-          >
-            {tab.name}
-          </div>
-        ))}
-        {/* Animated underline */}
-        <div
-          className="absolute bottom-0 left-0 h-0.5 bg-red-500 transition-all duration-300"
-          style={tabUnderlineStyle}
-        />
+            className="absolute bottom-0 left-0 h-0.5 bg-red-500 transition-all duration-300"
+            style={tabUnderlineStyle}
+          />
+        </div>
+        {/* Spacer div that takes up space when tabs become sticky */}
+        {isSticky && <div className="w-full py-2" />}
       </div>
 
       {/* Content area */}
