@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -340,17 +339,7 @@ const ProductDetail = () => {
   
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
-      {/* Demo reset button */}
-      <div className="fixed top-20 right-4 z-50">
-        <Button 
-          size="sm" 
-          variant="outline"
-          className="bg-white shadow-md text-xs flex items-center gap-1 border-amber-200"
-          onClick={handleResetStock}
-        >
-          <RotateCcw className="w-3 h-3" /> Reset Demo
-        </Button>
-      </div>
+      {/* Removed demo reset button */}
 
       {/* Gallery Section without Header Overlay */}
       <div ref={headerRef} className="relative w-full bg-gray-50">

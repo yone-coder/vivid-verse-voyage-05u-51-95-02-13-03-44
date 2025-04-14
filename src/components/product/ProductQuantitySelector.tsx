@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { MinusIcon, PlusIcon, RefreshCw } from "lucide-react";
+import { MinusIcon, PlusIcon } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -19,7 +18,6 @@ interface ProductQuantitySelectorProps {
   stockInfo?: VariantStockInfo;
 }
 
-// Define a separate type for the stock level information returned by getStockLevelInfo
 interface StockLevelInfo {
   level: string;
   color: string;
@@ -46,12 +44,10 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
   const [progress, setProgress] = useState(0);
   const [animationTimestamp, setAnimationTimestamp] = useState(0);
   
-  // Use real-time stock info if available, otherwise fallback to static value
   const displayStock = stockInfo?.currentStock !== undefined
     ? Math.floor(stockInfo.currentStock)
     : inStock;
   
-  // Use real-time stock percentage if available, otherwise calculate based on display stock
   const stockPercentage = stockInfo?.stockPercentage !== undefined
     ? stockInfo.stockPercentage
     : Math.min(100, (displayStock / 200) * 100);
@@ -82,7 +78,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
     if (currentStock === 0) {
       return {
         level: 'out-of-stock',
-        color: 'bg-gray-500', // Grey — #9E9E9E
+        color: 'bg-gray-500',
         textColor: 'text-gray-500',
         label: 'Out of Stock',
         animate: false,
@@ -91,7 +87,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
     } else if (currentStock <= 3) {
       return {
         level: 'extremely-low',
-        color: 'bg-red-800', // Dark Red — #C62828
+        color: 'bg-red-800',
         textColor: 'text-red-800',
         label: 'Extremely Low Stock!',
         animate: true,
@@ -100,7 +96,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
     } else if (currentStock <= 7) {
       return {
         level: 'very-low',
-        color: 'bg-red-400', // Red — #EF5350
+        color: 'bg-red-400',
         textColor: 'text-red-400',
         label: 'Very Low Stock!',
         animate: true,
@@ -109,7 +105,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
     } else if (currentStock <= 15) {
       return {
         level: 'low',
-        color: 'bg-orange-500', // Orange — #FB8C00
+        color: 'bg-orange-500',
         textColor: 'text-orange-500',
         label: 'Low Stock',
         animate: true,
@@ -118,7 +114,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
     } else if (currentStock <= 30) {
       return {
         level: 'below-medium',
-        color: 'bg-amber-400', // Amber — #FFC107
+        color: 'bg-amber-400',
         textColor: 'text-amber-500',
         label: 'Limited Stock',
         animate: false,
@@ -127,7 +123,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
     } else if (currentStock <= 60) {
       return {
         level: 'medium',
-        color: 'bg-yellow-300', // Yellow — #FFEB3B
+        color: 'bg-yellow-300',
         textColor: 'text-yellow-600',
         label: 'Medium Stock',
         animate: false,
@@ -136,7 +132,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
     } else if (currentStock <= 90) {
       return {
         level: 'above-medium',
-        color: 'bg-lime-600', // Lime — #C0CA33
+        color: 'bg-lime-600',
         textColor: 'text-lime-600',
         label: 'Good Stock',
         animate: false,
@@ -145,7 +141,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
     } else if (currentStock <= 130) {
       return {
         level: 'high',
-        color: 'bg-green-300', // Light Green — #81C784
+        color: 'bg-green-300',
         textColor: 'text-green-500',
         label: 'High Stock',
         animate: false,
@@ -154,7 +150,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
     } else if (currentStock <= 180) {
       return {
         level: 'very-high',
-        color: 'bg-green-500', // Green — #4CAF50
+        color: 'bg-green-500',
         textColor: 'text-green-600',
         label: 'Very High Stock',
         animate: false,
@@ -163,7 +159,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
     } else {
       return {
         level: 'overstocked',
-        color: 'bg-teal-500', // Teal — #26A69A
+        color: 'bg-teal-500',
         textColor: 'text-teal-600',
         label: 'Fully Stocked',
         animate: false,
@@ -172,7 +168,6 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
     }
   };
   
-  // Renamed to 'stockLevelInfo' to avoid naming conflict with the prop
   const stockLevelInfo = getStockLevelInfo();
   
   const handleIncrementWithFeedback = () => {
@@ -201,7 +196,6 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
     onIncrement();
   };
   
-  // Add useEffect to show stock pulse animation for low stock
   useEffect(() => {
     if (isLowStock) {
       const interval = setInterval(() => {
@@ -213,24 +207,19 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
     }
   }, [isLowStock]);
 
-  // Add new useEffect to force re-render when stockInfo changes for real-time updates
   useEffect(() => {
     if (stockInfo?.isActive) {
-      // Force animation frame updates for smoother animation
       let animationFrameId: number;
       
       const updateAnimation = (timestamp: number) => {
-        // Update animation timestamp for smoother rendering
         if (!animationTimestamp) {
           setAnimationTimestamp(timestamp);
         }
         
-        // Set progress based on stockPercentage from stockInfo
         if (stockInfo?.stockPercentage !== undefined) {
           setProgress(stockInfo.stockPercentage);
         }
         
-        // This causes a re-render on each animation frame for smooth animation
         animationFrameId = requestAnimationFrame(updateAnimation);
       };
       
@@ -243,12 +232,6 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
       };
     }
   }, [stockInfo, animationTimestamp]);
-
-  // Calculate remaining time in minutes and seconds if available
-  const timeRemaining = stockInfo?.timeRemaining ? {
-    minutes: Math.floor((stockInfo.timeRemaining / 1000) / 60),
-    seconds: Math.floor((stockInfo.timeRemaining / 1000) % 60)
-  } : null;
 
   return (
     <div className="space-y-2 font-aliexpress">
@@ -305,18 +288,6 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
       )}
       
       <div className="flex flex-col space-y-1">
-        {/* Add timer countdown display when active */}
-        {stockInfo?.isActive && timeRemaining && (
-          <div className="flex justify-between items-center text-xs mb-1">
-            <span className="text-amber-600 font-medium flex items-center">
-              <RefreshCw className="w-3 h-3 mr-1 animate-spin" />
-              Stock updating in real-time
-            </span>
-            <span className="text-gray-500">
-              {timeRemaining.minutes}:{timeRemaining.seconds.toString().padStart(2, '0')} remaining
-            </span>
-          </div>
-        )}
         <div className="relative pt-1">
           <Progress 
             value={stockPercentage} 
