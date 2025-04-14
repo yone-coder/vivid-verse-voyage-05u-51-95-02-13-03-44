@@ -66,8 +66,8 @@ const flashProducts = [
 export default function FlashDeals() {
   const isMobile = useIsMobile();
   const [timeLeft, setTimeLeft] = useState({
-    hours: 5,
-    minutes: 30,
+    hours: 12, // Changed to 12 hours to represent half day
+    minutes: 0,
     seconds: 0
   });
   

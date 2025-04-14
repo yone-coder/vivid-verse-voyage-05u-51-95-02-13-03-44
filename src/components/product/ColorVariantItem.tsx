@@ -1,4 +1,3 @@
-
 import React, { useEffect } from "react";
 import { Check, AlertTriangle, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -40,7 +39,6 @@ const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
 }) => {
   const isSelected = selectedColor === variant.name;
   
-  // Use live stock data if available, otherwise fall back to static stock
   const currentStock = stockInfo?.currentStock !== undefined 
     ? Math.floor(stockInfo.currentStock) 
     : variant.stock;
@@ -59,14 +57,12 @@ const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
                        isVeryLowStock ? "Almost gone!" :
                        isLowStock ? "Low stock" : null;
   
-  // Get remaining time if available
   const timeRemaining = getTimeRemaining ? getTimeRemaining(variant.name) : null;
   
   const timeRemainingText = timeRemaining 
     ? `${timeRemaining.minutes}:${timeRemaining.seconds.toString().padStart(2, '0')} left`
     : null;
   
-  // Format start time for display in tooltip
   const formatStartTime = () => {
     if (!stockInfo?.startTime) return "";
     
@@ -80,7 +76,6 @@ const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
     return `Started at ${formattedHours}:${formattedMinutes} ${ampm}`;
   };
   
-  // Get color for the stock level indicator
   const getStockLevelColor = () => {
     if (currentStock === 0) return "bg-gray-500"; // Grey — #9E9E9E
     if (stockPercentage <= 5) return "bg-red-800";   // Dark Red — #C62828
@@ -95,7 +90,6 @@ const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
   const stockLevelColor = getStockLevelColor();
   const isActive = stockInfo?.isActive || false;
   
-  // Force re-render every animation frame for smooth countdown when active
   useEffect(() => {
     if (!isActive || !stockInfo?.currentStock) return;
 
