@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -77,7 +76,6 @@ const ProductDetail = () => {
   });
 
   // Effect to activate the selected variant for real-time stock decay
-  // Fix: Add proper dependency array to prevent infinite loop
   useEffect(() => {
     if (selectedColor) {
       activateVariant(selectedColor);
@@ -246,7 +244,6 @@ const ProductDetail = () => {
   const currentPrice = product.discount_price || product.price;
   const originalPrice = product.price;
   
-  // Mock data for tabs with updated variants for color
   const productForTabs = {
     id: product.id,
     name: product.name,
@@ -338,14 +335,6 @@ const ProductDetail = () => {
   
   const totalPrice = (currentPrice * quantity) + warrantyPrice + (isExpressSelected ? productForTabs.shipping.express : 0);
   
-  // Add a reset button for demonstration purposes
-  const handleResetStock = () => {
-    resetAllVariants();
-    toast({
-      title: "Stock Reset",
-      description: "All product variants stock has been reset to initial values",
-    });
-  };
   
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
