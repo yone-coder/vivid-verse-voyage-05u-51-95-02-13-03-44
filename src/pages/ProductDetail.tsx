@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -9,6 +8,9 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { Heart, RotateCcw } from "lucide-react";
 import { useVariantStockDecay } from "@/hooks/useVariantStockDecay";
 import { Button } from "@/components/ui/button";
+import ProductTabs from "@/components/ProductTabs";
+import ProductSectionCollapsible from "@/components/product/ProductSectionCollapsible";
+import { Badge } from "@/components/ui/badge";
 
 // Product Components
 import DynamicPriceDisplay from "@/components/product/DynamicPriceDisplay";
@@ -39,7 +41,8 @@ const ProductDetail = () => {
   const [showLimitedOffersBand, setShowLimitedOffersBand] = useState(true);
   const [expanded, setExpanded] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
-  const [activeTab, setActiveTab] = useState("description");
+  const [activeTab, setActiveTab] = useState("");
+  const [headerHeight, setHeaderHeight] = useState(44);
 
   // Refs and hooks
   const isMobile = useIsMobile();
@@ -155,7 +158,6 @@ const ProductDetail = () => {
     });
   };
 
-  // Handler to manually reset stock levels (for demo purposes)
   const handleResetStock = () => {
     resetAllVariants();
     toast({
@@ -163,12 +165,10 @@ const ProductDetail = () => {
       description: "All product variants stock has been reset to initial values",
     });
   };
-  
-  // Handle tab change
+
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
     
-    // Scroll to the appropriate section
     if (contentRef.current) {
       const section = document.getElementById(tab);
       if (section) {
@@ -177,7 +177,6 @@ const ProductDetail = () => {
     }
   };
 
-  // Show loading state while product data is being fetched
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -186,7 +185,6 @@ const ProductDetail = () => {
     );
   }
 
-  // Handle case where product is not found
   if (!product) {
     return (
       <div className="flex flex-col items-center justify-center h-screen">
@@ -196,12 +194,10 @@ const ProductDetail = () => {
     );
   }
   
-  // Format product data for display
   const productImages = product?.product_images?.map(img => img.src) || [];
   const currentPrice = product?.discount_price || product?.price || 0;
   const originalPrice = product?.price || 0;
   
-  // Mock data for tabs with updated variants for color
   const productForTabs = {
     id: product.id,
     name: product.name,
@@ -279,7 +275,6 @@ const ProductDetail = () => {
     badges: []
   };
   
-  // Get the currently selected variant
   const selectedVariant = colorVariants.find((v) => v.name === selectedColor);
   const selectedVariantStockInfo = selectedColor ? variantStockInfo[selectedColor] : undefined;
   
@@ -293,12 +288,44 @@ const ProductDetail = () => {
   
   const totalPrice = (currentPrice * quantity) + warrantyPrice + (isExpressSelected ? productForTabs.shipping.express : 0);
   
+  const descriptionPreview = (
+    <p className="text-sm text-gray-600 line-clamp-2">{product.description}</p>
+  );
+  
+  const specsPreview = (
+    <div className="space-y-1">
+      {productForTabs.specs.slice(0, 3).map((spec, index) => (
+        <div key={index} className="flex text-sm">
+          <span className="w-1/3 text-gray-500">{spec.name}</span>
+          <span className="w-2/3 font-medium">{spec.value}</span>
+        </div>
+      ))}
+    </div>
+  );
+  
+  const reviewsPreview = (
+    <div className="bg-gray-50 p-4 rounded-lg">
+      <div className="flex items-center gap-2 mb-2">
+        <div className="text-2xl font-bold text-purple-700">{productForTabs.rating}</div>
+        <div className="text-amber-400 flex">
+          {'★'.repeat(Math.floor(productForTabs.rating))}
+          {productForTabs.rating % 1 !== 0 && '☆'}
+          {'☆'.repeat(5 - Math.ceil(productForTabs.rating))}
+        </div>
+        <div className="text-sm text-gray-500">({productForTabs.reviewCount} ratings)</div>
+      </div>
+      <div className="flex flex-wrap gap-1.5 mb-1">
+        <Badge variant="secondary" className="bg-purple-100 hover:bg-purple-200 text-purple-800">Amazing colors</Badge>
+        <Badge variant="secondary" className="bg-purple-100 hover:bg-purple-200 text-purple-800">Easy setup</Badge>
+        <Badge variant="secondary" className="bg-purple-100 hover:bg-purple-200 text-purple-800">Great gift</Badge>
+      </div>
+    </div>
+  );
+  
   return (
     <div className="flex flex-col min-h-screen bg-white" ref={contentRef}>
-      {/* Limited Offers Band */}
       {showLimitedOffersBand && <LimitedOffersBand />}
       
-      {/* Gallery Section - Remove any padding/margin here */}
       <div className="relative w-full bg-transparent">
         <ProductImageGallery images={productImages.length > 0 ? productImages : ["/placeholder.svg"]} />
       </div>
@@ -306,10 +333,8 @@ const ProductDetail = () => {
       <div className="flex-1">
         <div className="bg-white p-1">
           <div className="flex items-center justify-between mb-0.5">
-            {/* Badges section removed */}
           </div>
           
-          {/* Product title now appears before price with like count */}
           <div className="flex items-center justify-between">
             <h1 className="text-lg font-medium">{product?.name}</h1>
             <div className="flex items-center">
@@ -371,38 +396,112 @@ const ProductDetail = () => {
             <ProductPaymentOptions paymentOptions={productForTabs.payments} />
           </div>
           
-          {/* Content sections for tabs */}
-          <div id="description" className="mt-6 pt-6 border-t border-gray-100">
-            <h2 className="font-medium text-base mb-3">Product Description</h2>
-            <p className="text-sm text-gray-600">{product.description}</p>
-          </div>
-          
-          <div id="specs" className="mt-6 pt-6 border-t border-gray-100">
-            <h2 className="font-medium text-base mb-3">Specifications</h2>
-            <div className="space-y-2">
-              {productForTabs.specs.map((spec, index) => (
-                <div key={index} className="flex text-sm">
-                  <span className="w-1/3 text-gray-500">{spec.name}</span>
-                  <span className="w-2/3 font-medium">{spec.value}</span>
+          <ProductSectionCollapsible
+            title="Product Description"
+            previewContent={descriptionPreview}
+          >
+            <div className="text-sm text-gray-600">
+              <p className="mb-4">{product.description}</p>
+              
+              {productForTabs.features.map((feature, index) => (
+                <div key={index} className="flex items-start mb-2">
+                  <div className="h-2 w-2 rounded-full bg-purple-500 mt-1.5 mr-2"></div>
+                  <span>{feature}</span>
                 </div>
               ))}
+              
+              {productImages.slice(0, 2).map((image, idx) => (
+                <img 
+                  key={idx} 
+                  src={image || "/placeholder.svg"} 
+                  alt={`Product detail ${idx + 1}`} 
+                  className="w-full h-auto rounded-lg" 
+                />
+              ))}
             </div>
-          </div>
+          </ProductSectionCollapsible>
           
-          <div id="reviews" className="mt-6 pt-6 border-t border-gray-100">
-            <h2 className="font-medium text-base mb-3">Customer Reviews</h2>
-            <div className="flex items-center mb-2">
-              <div className="flex items-center text-yellow-400">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <svg key={star} className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                    <path d="M12 17.27L18.18 21L16.54 13.97L22 9.24L14.81 8.63L12 2L9.19 8.63L2 9.24L7.46 13.97L5.82 21L12 17.27Z" />
-                  </svg>
-                ))}
+          <ProductSectionCollapsible
+            title="Specifications"
+            previewContent={specsPreview}
+          >
+            <div className="space-y-4">
+              <div className="bg-blue-50 p-4 rounded-lg mb-4">
+                <h3 className="text-base font-medium text-blue-800 mb-1">Technical Specifications</h3>
+                <p className="text-sm text-blue-700">Detailed specifications of {product.name}</p>
               </div>
-              <span className="ml-1 text-sm font-medium">{productForTabs.rating} out of 5</span>
-              <span className="ml-2 text-xs text-gray-500">({productForTabs.reviewCount} reviews)</span>
+              
+              <div className="bg-gray-50 rounded-lg overflow-hidden">
+                <div className="divide-y">
+                  {productForTabs.specs.map((spec, index) => (
+                    <div key={index} className="py-2 px-4 flex hover:bg-gray-100 transition-colors">
+                      <span className="w-1/3 text-gray-500 text-sm">{spec.name}</span>
+                      <span className="w-2/3 font-medium text-sm">{spec.value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-          </div>
+          </ProductSectionCollapsible>
+          
+          <ProductSectionCollapsible
+            title="Reviews"
+            previewContent={reviewsPreview}
+          >
+            <div className="space-y-4">
+              <div className="flex flex-col md:flex-row gap-6 mb-6">
+                <div className="md:w-1/3 bg-gray-50 p-4 rounded-lg">
+                  <div className="flex flex-col items-center">
+                    <div className="text-4xl font-bold text-purple-700">{productForTabs.rating}</div>
+                    <div className="text-amber-400 flex mb-1">
+                      {'★'.repeat(Math.floor(productForTabs.rating))}
+                      {productForTabs.rating % 1 !== 0 && '☆'}
+                      {'☆'.repeat(5 - Math.ceil(productForTabs.rating))}
+                    </div>
+                    <div className="text-sm text-gray-500">{productForTabs.reviewCount} verified ratings</div>
+                  </div>
+                </div>
+                
+                <div className="md:w-2/3">
+                  <div className="space-y-4">
+                    {[...Array(2)].map((_, index) => (
+                      <div key={index} className="bg-white border border-gray-200 rounded-lg p-4">
+                        <div className="flex items-center">
+                          <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 font-medium mr-3">
+                            {["JS", "AK"][index]}
+                          </div>
+                          <div>
+                            <div className="font-medium">{["John S.", "Alyssa K."][index]}</div>
+                            <div className="text-xs text-gray-500">
+                              {new Date(Date.now() - index * 5 * 86400000).toLocaleDateString()}
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="mt-2">
+                          <div className="flex items-center mb-1">
+                            <div className="text-amber-400 text-sm">
+                              {'★'.repeat(5 - Math.min(2, index))}
+                              {'☆'.repeat(Math.min(2, index))}
+                            </div>
+                          </div>
+                          
+                          <p className="mt-1 text-sm text-gray-700">
+                            {index === 0 && "This product exceeded my expectations! The colors are vibrant and realistic, truly creating an immersive experience. The remote makes it easy to change modes and the bluetooth speaker is an awesome bonus feature."}
+                            {index === 1 && "The color is absolutely stunning. My only complaint is the battery life is about 4 hours instead of the advertised 6. Still a great purchase overall."}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <Button className="w-full py-2 mt-4 border border-gray-300 bg-white hover:bg-gray-50 text-gray-700">
+                    View All Reviews
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </ProductSectionCollapsible>
         </div>
       </div>
       
