@@ -21,31 +21,31 @@ const ProductSectionCollapsible = ({
 
   return (
     <div className="border-t border-gray-100 py-4">
-      <div className="flex items-center justify-between mb-3">
-        <h2 className="font-medium text-base">{title}</h2>
-        <CollapsibleTrigger asChild>
-          <Button 
-            variant="ghost" 
-            className="h-8 px-2 text-gray-600 hover:bg-gray-50"
-          >
-            {isExpanded ? (
-              <>
-                Show Less <ChevronDown className="h-4 w-4 ml-1" />
-              </>
-            ) : (
-              <>
-                See More <ChevronRight className="h-4 w-4 ml-1" />
-              </>
-            )}
-          </Button>
-        </CollapsibleTrigger>
-      </div>
-      
       <Collapsible
         open={isExpanded}
         onOpenChange={setIsExpanded}
         className="w-full"
       >
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="font-medium text-base">{title}</h2>
+          <CollapsibleTrigger asChild>
+            <Button 
+              variant="ghost" 
+              className="h-8 px-2 text-gray-600 hover:bg-gray-50"
+            >
+              {isExpanded ? (
+                <>
+                  Show Less <ChevronDown className="h-4 w-4 ml-1" />
+                </>
+              ) : (
+                <>
+                  See More <ChevronRight className="h-4 w-4 ml-1" />
+                </>
+              )}
+            </Button>
+          </CollapsibleTrigger>
+        </div>
+        
         {/* Preview content - only visible when collapsed */}
         {!isExpanded && (
           <div className="mb-2 text-gray-600 line-clamp-3">
@@ -62,4 +62,3 @@ const ProductSectionCollapsible = ({
 };
 
 export default ProductSectionCollapsible;
-
