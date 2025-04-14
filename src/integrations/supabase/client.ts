@@ -34,3 +34,35 @@ export const fetchAllProducts = async () => {
   
   return data;
 };
+
+// Function to fetch a product by ID
+export const fetchProductById = async (productId: string) => {
+  const { data, error } = await supabase
+    .from('products')
+    .select('*, product_images(*)')
+    .eq('id', productId)
+    .single();
+    
+  if (error) {
+    console.error("Error fetching product:", error);
+    throw error;
+  }
+  
+  return data;
+};
+
+// Function to update a product
+export const updateProduct = async (productId: string, updates: Partial<any>) => {
+  const { data, error } = await supabase
+    .from('products')
+    .update(updates)
+    .eq('id', productId)
+    .select();
+    
+  if (error) {
+    console.error("Error updating product:", error);
+    throw error;
+  }
+  
+  return data;
+};

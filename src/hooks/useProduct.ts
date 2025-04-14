@@ -1,6 +1,8 @@
 
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase, fetchProductById } from "@/integrations/supabase/client";
+import { useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 export interface ProductAnalytics {
   viewCount: number;
@@ -10,21 +12,39 @@ export interface ProductAnalytics {
 }
 
 export function useProduct(productId: string) {
+  const queryClient = useQueryClient();
+
+  // Subscribe to real-time updates for this product
+  useEffect(() => {
+    if (!productId) return;
+
+    const channel = supabase
+      .channel(`product-${productId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'products',
+          filter: `id=eq.${productId}`
+        },
+        (payload) => {
+          console.log('Product updated:', payload);
+          // Invalidate the query to refetch the latest data
+          queryClient.invalidateQueries({ queryKey: ['product', productId] });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [productId, queryClient]);
+
   return useQuery({
     queryKey: ['product', productId],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('products')
-        .select('*, product_images(*)')
-        .eq('id', productId)
-        .single();
-        
-      if (error) {
-        console.error('Error fetching product:', error);
-        throw new Error('Failed to fetch product');
-      }
-      
-      return data;
+      return await fetchProductById(productId);
     },
     enabled: !!productId,
   });

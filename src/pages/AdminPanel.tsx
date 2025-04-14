@@ -76,7 +76,19 @@ const AdminPanel: React.FC = () => {
         },
         (payload) => {
           console.log('Real-time update received:', payload);
-          fetchProducts();
+          
+          if (payload.eventType === 'UPDATE') {
+            const updatedProduct = payload.new as Product;
+            setProducts(prev => 
+              prev.map(p => p.id === updatedProduct.id ? { ...p, ...updatedProduct } : p)
+            );
+            
+            setEditableProducts(prev => 
+              prev.map(p => p.id === updatedProduct.id ? { ...p, name: updatedProduct.name, isEditing: false } : p)
+            );
+          } else {
+            fetchProducts();
+          }
         }
       )
       .subscribe();
@@ -392,14 +404,21 @@ const AdminPanel: React.FC = () => {
         return;
       }
       
-      const { error } = await supabase
+      const { error, data } = await supabase
         .from('products')
         .update({ name: productToUpdate.name })
-        .eq('id', productId);
+        .eq('id', productId)
+        .select();
         
       if (error) {
         throw error;
       }
+      
+      console.log('Product updated successfully:', data);
+      
+      setProducts(prev => 
+        prev.map(p => p.id === productId ? { ...p, name: productToUpdate.name } : p)
+      );
       
       setEditableProducts(prev => 
         prev.map(p => p.id === productId ? { ...p, isEditing: false } : p)
