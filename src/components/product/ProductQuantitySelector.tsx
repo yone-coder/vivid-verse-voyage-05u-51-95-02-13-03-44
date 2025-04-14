@@ -1,10 +1,10 @@
-
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { MinusIcon, PlusIcon } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { VariantStockInfo } from "@/hooks/useVariantStockDecay";
 
 interface ProductQuantitySelectorProps {
   quantity: number;
@@ -15,6 +15,7 @@ interface ProductQuantitySelectorProps {
   minQuantity?: number;
   inStock?: number;
   productName?: string;
+  stockInfo?: VariantStockInfo;
 }
 
 const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
@@ -25,18 +26,30 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
   maxQuantity = 10,
   minQuantity = 1,
   inStock = 999,
-  productName = "item"
+  productName = "item",
+  stockInfo
 }) => {
   const [showAnimation, setShowAnimation] = useState(false);
   const [priceAnimation, setPriceAnimation] = useState(false);
   const [stockPulse, setStockPulse] = useState(false);
-  const [countdownStock, setCountdownStock] = useState(inStock);
-  const [displayStock, setDisplayStock] = useState(inStock);
-  const [stockPercentage, setStockPercentage] = useState(Math.min(100, (inStock / 200) * 100));
   
-  // For real-time stock decrease visualization
-  const [decrementInterval, setDecrementInterval] = useState<number | null>(null);
-  const [lastUpdateTime, setLastUpdateTime] = useState(Date.now());
+  const displayStock = stockInfo?.currentStock !== undefined
+    ? Math.floor(stockInfo.currentStock)
+    : inStock;
+  
+  const stockPercentage = stockInfo?.stockPercentage !== undefined
+    ? stockInfo.stockPercentage
+    : Math.min(100, (displayStock / 200) * 100);
+  
+  const isLowStock = displayStock < 20;
+  const isVeryLowStock = displayStock < 8;
+  const isExtremelyLowStock = displayStock < 4;
+  
+  const lowStockText = displayStock === 0 ? "Sold out" :
+                       displayStock === 1 ? "Last one!" :
+                       isExtremelyLowStock ? `Only ${displayStock} left!` :
+                       isVeryLowStock ? "Almost gone!" :
+                       isLowStock ? "Low stock" : null;
   
   const formatPrice = (value: number) => {
     return value.toFixed(2);
@@ -145,7 +158,6 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
   };
   
   const stockInfo = getStockLevelInfo();
-  const isLowStock = displayStock <= 15;
   
   const handleIncrementWithFeedback = () => {
     if (isMaxQuantity) {
@@ -173,7 +185,6 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
     onIncrement();
   };
   
-  // Effect to periodically pulse stock indicator for low stock
   useEffect(() => {
     if (isLowStock) {
       const interval = setInterval(() => {
@@ -184,74 +195,6 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
       return () => clearInterval(interval);
     }
   }, [isLowStock]);
-
-  // Effect to initialize countdownStock when inStock prop changes
-  useEffect(() => {
-    setCountdownStock(inStock);
-    setDisplayStock(inStock);
-    setStockPercentage(Math.min(100, (inStock / 200) * 100));
-  }, [inStock]);
-  
-  // Effect to simulate real-time stock decay
-  useEffect(() => {
-    // Clear any existing intervals when component mounts or inStock changes
-    if (decrementInterval) {
-      clearInterval(decrementInterval);
-    }
-    
-    // Start a new interval to decrement stock in real-time
-    const decayInterval = window.setInterval(() => {
-      const now = Date.now();
-      const elapsedSecs = (now - lastUpdateTime) / 1000; 
-      
-      // Calculate decay rate - more aggressive for demo purposes
-      // For a realistic 24h decay, we'd use different math
-      const decayRate = countdownStock > 20 ? 0.05 : 0.02; // units per second
-      const stockToDecay = elapsedSecs * decayRate;
-      
-      // Update the stock with fractional decay (smoother animation)
-      setCountdownStock(prevStock => {
-        const newStock = Math.max(0, prevStock - stockToDecay);
-        return newStock;
-      });
-      
-      // Update the display stock (integer only) for UI
-      setDisplayStock(prev => {
-        // Convert countdown stock to integer for display
-        const newDisplay = Math.floor(countdownStock);
-        // Only update if different to avoid re-renders
-        return newDisplay !== prev ? newDisplay : prev;
-      });
-      
-      // Update stock percentage for progress bar
-      setStockPercentage(Math.min(100, (countdownStock / 200) * 100));
-      
-      // Update last update time
-      setLastUpdateTime(now);
-      
-      // Generate toast notifications on specific thresholds
-      if (Math.floor(countdownStock) === 3 && Math.floor(countdownStock) < Math.floor(countdownStock + stockToDecay)) {
-        toast.warning("Almost gone!", {
-          description: `Only 3 ${productName}s left in stock!`,
-          duration: 4000
-        });
-      } else if (Math.floor(countdownStock) === 5 && Math.floor(countdownStock) < Math.floor(countdownStock + stockToDecay)) {
-        toast.warning("Selling fast!", { 
-          description: "This item is in high demand", 
-          duration: 3000 
-        });
-      }
-    }, 50); // Update very frequently (50ms) for smooth animation
-    
-    setDecrementInterval(decayInterval);
-    
-    // Clean up interval on unmount
-    return () => {
-      if (decayInterval) {
-        clearInterval(decayInterval);
-      }
-    };
-  }, [inStock, productName, countdownStock, lastUpdateTime]);
 
   return (
     <div className="space-y-2 font-aliexpress">
