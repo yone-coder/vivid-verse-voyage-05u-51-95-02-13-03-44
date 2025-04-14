@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 
 export interface VariantStockInfo {
@@ -149,21 +148,18 @@ export function useVariantStockDecay({
             // Calculate elapsed time since the start in milliseconds
             const elapsedMs = now - variant.startTime;
             
-            // Convert to hours for the decay rate calculation (which is in units per hour)
-            const elapsedHours = elapsedMs / (60 * 60 * 1000);
+            // Calculate the time remaining percentage
+            const remainingPercentage = Math.max(0, 1 - (elapsedMs / variant.decayPeriod));
             
-            // Calculate how much stock to decrease based on elapsed time and decay rate
-            const stockToDecay = elapsedHours * variant.decayRate;
-            
-            // Calculate new stock with precise decimal values for smoother animation
-            const newStock = Math.max(0, variant.initialStock - stockToDecay);
+            // CHANGED: Calculate stock directly based on time percentage instead of decay rate
+            // This makes stock directly proportional to the time remaining
+            const newStock = variant.initialStock * remainingPercentage;
             
             // Calculate remaining time proportionally to the decay period
-            const remainingFraction = newStock / variant.initialStock;
-            const remainingTime = Math.max(0, remainingFraction * variant.decayPeriod);
+            const remainingTime = remainingPercentage * variant.decayPeriod;
             
-            // Calculate stock percentage for the progress bar
-            const percentage = (newStock / variant.initialStock) * 100;
+            // Calculate stock percentage for the progress bar (same as time percentage)
+            const percentage = remainingPercentage * 100;
             
             // Only update if there's an actual change to avoid unnecessary re-renders
             if (Math.abs(newStock - variant.currentStock) > 0.001) {
