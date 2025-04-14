@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -9,7 +8,6 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { Heart, RotateCcw } from "lucide-react";
 import { useVariantStockDecay } from "@/hooks/useVariantStockDecay";
 import { Button } from "@/components/ui/button";
-import ProductHeader from "@/components/product/ProductHeader";
 
 // Product Components
 import DynamicPriceDisplay from "@/components/product/DynamicPriceDisplay";
@@ -165,7 +163,7 @@ const ProductDetail = () => {
     });
   };
   
-  // Handle tab change for the product header
+  // Handle tab change
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
     
@@ -296,28 +294,6 @@ const ProductDetail = () => {
   
   return (
     <div className="flex flex-col min-h-screen bg-white" ref={contentRef}>
-      {/* Secondary header displayed in the page content (for tabs) */}
-      <ProductHeader
-        isFavorite={isFavorite}
-        toggleFavorite={toggleFavorite}
-        handleShare={handleShare}
-        handleCartClick={handleCartClick}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        handleSearch={(e) => {
-          e.preventDefault();
-          toast({
-            title: "Search",
-            description: `Searching for: ${searchQuery}`,
-          });
-        }}
-        shouldHide={false}
-        activeTab={activeTab}
-        onTabChange={handleTabChange}
-        totalReviews={productForTabs.reviewCount}
-        hasQuestions={true}
-      />
-      
       {/* Limited Offers Band */}
       {showLimitedOffersBand && <LimitedOffersBand />}
       
