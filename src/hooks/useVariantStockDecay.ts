@@ -83,7 +83,7 @@ export function useVariantStockDecay({
       }
     });
     
-    if (hasNewVariants) {
+    if (hasNewVariants || Object.keys(initialStockInfo).length > 0) {
       setVariantStockInfo(prev => ({...prev, ...initialStockInfo}));
     }
     
@@ -134,7 +134,7 @@ export function useVariantStockDecay({
                 isLowStock: newStock <= 15
               };
               
-              // Save updated state to localStorage
+              // Save updated state to localStorage immediately
               localStorage.setItem(getStorageKey(variantName), JSON.stringify(newInfo[variantName]));
             }
           }
@@ -165,10 +165,16 @@ export function useVariantStockDecay({
       
       // Deactivate all other variants
       Object.keys(updated).forEach(name => {
-        updated[name] = {
-          ...updated[name],
-          isActive: name === variantName
-        };
+        if (name !== variantName) {
+          const updatedVariant = {
+            ...updated[name],
+            isActive: false
+          };
+          updated[name] = updatedVariant;
+          
+          // Save inactive state to localStorage
+          localStorage.setItem(getStorageKey(name), JSON.stringify(updatedVariant));
+        }
       });
       
       // Make sure the variant is properly initialized before activating
@@ -182,16 +188,18 @@ export function useVariantStockDecay({
       const shouldReset = !savedInfo || (Date.now() - savedInfo.startTime >= decayPeriod);
       
       // Reset the start time when a variant is activated if needed
-      updated[variantName] = {
+      const updatedVariant = {
         ...updated[variantName],
         isActive: true,
         startTime: shouldReset ? Date.now() : updated[variantName].startTime // Only reset time if needed
       };
       
-      // Save to localStorage
-      localStorage.setItem(getStorageKey(variantName), JSON.stringify(updated[variantName]));
+      updated[variantName] = updatedVariant;
       
-      console.info(`Activated variant: ${variantName} with decay rate: ${updated[variantName].decayRate} units/minute`);
+      // Save to localStorage
+      localStorage.setItem(getStorageKey(variantName), JSON.stringify(updatedVariant));
+      
+      console.info(`Activated variant: ${variantName} with decay rate: ${updatedVariant.decayRate} units/minute`);
       
       return updated;
     });
@@ -249,17 +257,20 @@ export function useVariantStockDecay({
       
       variants.forEach(variant => {
         if (updated[variant.name]) {
-          updated[variant.name] = {
+          const updatedVariant = {
             ...updated[variant.name],
             initialStock: variant.stock,
             currentStock: variant.stock,
             stockPercentage: 100,
             timeRemaining: decayPeriod,
-            startTime: Date.now()
+            startTime: Date.now(),
+            isActive: updated[variant.name].isActive // Preserve active state
           };
           
+          updated[variant.name] = updatedVariant;
+          
           // Save to localStorage
-          localStorage.setItem(getStorageKey(variant.name), JSON.stringify(updated[variant.name]));
+          localStorage.setItem(getStorageKey(variant.name), JSON.stringify(updatedVariant));
         }
       });
       
