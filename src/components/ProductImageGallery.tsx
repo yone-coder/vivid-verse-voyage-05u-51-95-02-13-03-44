@@ -370,7 +370,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
           </CarouselContent>
           
           <div className={cn(
-            "absolute bottom-3 right-3 z-30",
+            "absolute bottom-3 left-3 z-30",
             viewMode === "immersive" && "opacity-0 hover:opacity-100 transition-opacity",
             focusMode && "opacity-0"
           )}>
