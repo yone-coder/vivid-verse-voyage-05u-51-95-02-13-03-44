@@ -9,6 +9,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { Heart, RotateCcw } from "lucide-react";
 import { useVariantStockDecay } from "@/hooks/useVariantStockDecay";
 import { Button } from "@/components/ui/button";
+import ProductHeader from "@/components/product/ProductHeader";
 
 // Product Components
 import DynamicPriceDisplay from "@/components/product/DynamicPriceDisplay";
@@ -39,11 +40,13 @@ const ProductDetail = () => {
   const [showLimitedOffersBand, setShowLimitedOffersBand] = useState(true);
   const [expanded, setExpanded] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
+  const [activeTab, setActiveTab] = useState("description");
 
   // Refs and hooks
   const isMobile = useIsMobile();
   const { toast } = useToast();
   const { id: paramId } = useParams<{ id: string }>();
+  const contentRef = useRef<HTMLDivElement>(null);
 
   // Use either the ID from URL params or the default product ID
   const productId = paramId || DEFAULT_PRODUCT_ID;
@@ -160,6 +163,19 @@ const ProductDetail = () => {
       title: "Stock Reset",
       description: "All product variants stock has been reset to initial values",
     });
+  };
+  
+  // Handle tab change for the product header
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+    
+    // Scroll to the appropriate section
+    if (contentRef.current) {
+      const section = document.getElementById(tab);
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
   };
 
   // Show loading state while product data is being fetched
@@ -279,7 +295,29 @@ const ProductDetail = () => {
   const totalPrice = (currentPrice * quantity) + warrantyPrice + (isExpressSelected ? productForTabs.shipping.express : 0);
   
   return (
-    <div className="flex flex-col min-h-screen bg-white">
+    <div className="flex flex-col min-h-screen bg-white" ref={contentRef}>
+      {/* Secondary header displayed in the page content (for tabs) */}
+      <ProductHeader
+        isFavorite={isFavorite}
+        toggleFavorite={toggleFavorite}
+        handleShare={handleShare}
+        handleCartClick={handleCartClick}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        handleSearch={(e) => {
+          e.preventDefault();
+          toast({
+            title: "Search",
+            description: `Searching for: ${searchQuery}`,
+          });
+        }}
+        shouldHide={false}
+        activeTab={activeTab}
+        onTabChange={handleTabChange}
+        totalReviews={productForTabs.reviewCount}
+        hasQuestions={true}
+      />
+      
       {/* Limited Offers Band */}
       {showLimitedOffersBand && <LimitedOffersBand />}
       
@@ -354,6 +392,39 @@ const ProductDetail = () => {
           
           <div className="mt-2">
             <ProductPaymentOptions paymentOptions={productForTabs.payments} />
+          </div>
+          
+          {/* Content sections for tabs */}
+          <div id="description" className="mt-6 pt-6 border-t border-gray-100">
+            <h2 className="font-medium text-base mb-3">Product Description</h2>
+            <p className="text-sm text-gray-600">{product.description}</p>
+          </div>
+          
+          <div id="specs" className="mt-6 pt-6 border-t border-gray-100">
+            <h2 className="font-medium text-base mb-3">Specifications</h2>
+            <div className="space-y-2">
+              {productForTabs.specs.map((spec, index) => (
+                <div key={index} className="flex text-sm">
+                  <span className="w-1/3 text-gray-500">{spec.name}</span>
+                  <span className="w-2/3 font-medium">{spec.value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          <div id="reviews" className="mt-6 pt-6 border-t border-gray-100">
+            <h2 className="font-medium text-base mb-3">Customer Reviews</h2>
+            <div className="flex items-center mb-2">
+              <div className="flex items-center text-yellow-400">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <svg key={star} className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                    <path d="M12 17.27L18.18 21L16.54 13.97L22 9.24L14.81 8.63L12 2L9.19 8.63L2 9.24L7.46 13.97L5.82 21L12 17.27Z" />
+                  </svg>
+                ))}
+              </div>
+              <span className="ml-1 text-sm font-medium">{productForTabs.rating} out of 5</span>
+              <span className="ml-2 text-xs text-gray-500">({productForTabs.reviewCount} reviews)</span>
+            </div>
           </div>
         </div>
       </div>

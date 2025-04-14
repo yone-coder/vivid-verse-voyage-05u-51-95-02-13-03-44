@@ -2,6 +2,7 @@
 import React from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Footer from "@/components/layout/Footer";
+import Header from "@/components/layout/Header";
 import MobileBottomNav from "@/components/layout/MobileBottomNav";
 import { Outlet, useLocation } from "react-router-dom";
 import { useState } from "react";
@@ -66,6 +67,33 @@ export default function MainLayout() {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <style dangerouslySetInnerHTML={{ __html: headerHeightStyle }} />
+      
+      {/* Show dynamic header on product pages */}
+      {isProductPage && (
+        <Header 
+          isProductHeader={true}
+          isFavorite={isFavorite}
+          toggleFavorite={toggleFavorite}
+          handleShare={handleShare}
+          isSearchOpen={isSearchOpen}
+          setIsSearchOpen={setIsSearchOpen}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          handleSearch={handleSearch}
+        />
+      )}
+      
+      {/* Show standard header for non-product pages */}
+      {!isProductPage && !isHomePage && (
+        <Header 
+          isSearchOpen={isSearchOpen}
+          setIsSearchOpen={setIsSearchOpen}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          handleSearch={handleSearch}
+        />
+      )}
+      
       {isProductPage || isHomePage ? (
         <>
           <main className="flex-grow relative">
