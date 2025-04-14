@@ -1,3 +1,4 @@
+
 import React, { useEffect } from "react";
 import { Check, AlertTriangle, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -44,6 +45,13 @@ const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
     ? Math.floor(stockInfo.currentStock) 
     : variant.stock;
   
+  // Log the current stock for this variant when selected
+  useEffect(() => {
+    if (isSelected && stockInfo) {
+      console.log(`Selected ${variant.name}: stock=${currentStock}, active=${stockInfo.isActive}`);
+    }
+  }, [isSelected, stockInfo, variant.name, currentStock]);
+  
   // Use time-based stock percentage from stockInfo or calculate a percentage based on stock level
   const stockPercentage = stockInfo?.stockPercentage !== undefined
     ? stockInfo.stockPercentage
@@ -52,8 +60,9 @@ const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
   const isLowStock = currentStock < 20;
   const isVeryLowStock = currentStock < 8;
   const isExtremelyLowStock = currentStock < 4;
+  const isSoldOut = currentStock <= 0;
   
-  const lowStockText = currentStock === 0 ? "Sold out" :
+  const lowStockText = isSoldOut ? "Sold out" :
                        currentStock === 1 ? "Last one!" :
                        isExtremelyLowStock ? `Only ${currentStock} left!` :
                        isVeryLowStock ? "Almost gone!" :
@@ -79,7 +88,7 @@ const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
   };
   
   const getStockLevelColor = () => {
-    if (currentStock === 0) return "bg-gray-500"; // Grey — #9E9E9E
+    if (isSoldOut) return "bg-gray-500"; // Grey — #9E9E9E
     if (stockPercentage <= 5) return "bg-red-800";   // Dark Red — #C62828
     if (stockPercentage <= 15) return "bg-red-400";   // Red — #EF5350
     if (stockPercentage <= 30) return "bg-orange-500"; // Orange — #FB8C00
@@ -120,11 +129,11 @@ const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
               isSelected 
                 ? 'ring-2 ring-blue-500 bg-blue-50' 
                 : 'hover:bg-gray-100',
-              currentStock === 0 && "opacity-50 cursor-not-allowed"
+              isSoldOut && "opacity-50 cursor-not-allowed"
             )}
-            onClick={() => currentStock > 0 && onColorChange(variant.name)}
+            onClick={() => !isSoldOut && onColorChange(variant.name)}
             aria-label={`Select color: ${variant.name}`}
-            disabled={currentStock === 0}
+            disabled={isSoldOut}
           >
             <div 
               className="w-10 h-10 rounded-full overflow-hidden border border-gray-200 mb-1"
@@ -141,7 +150,7 @@ const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
                 />
               ) : null}
               
-              {currentStock === 0 && (
+              {isSoldOut && (
                 <div className="absolute inset-0 bg-white bg-opacity-70 flex items-center justify-center">
                   <span className="text-[9px] font-medium text-red-500">Sold out</span>
                 </div>
@@ -178,7 +187,7 @@ const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
               <div className="w-full mt-1">
                 <Progress 
                   value={stockPercentage} 
-                  className="h-1 w-full"
+                  className="h-1.5 w-full"
                   indicatorClassName={`${stockLevelColor} ${isLowStock ? 'animate-pulse' : ''}`}
                 />
               </div>

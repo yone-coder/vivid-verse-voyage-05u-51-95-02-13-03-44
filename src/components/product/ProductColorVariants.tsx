@@ -72,8 +72,9 @@ const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
   
   // Custom color change handler to update both parent and activate variant
   const handleColorChange = (color: string) => {
-    // Make sure to activate the variant when color changes
+    // First activate the variant when color changes
     if (activateVariant) {
+      console.log(`ProductColorVariants: Activating color ${color}`);
       activateVariant(color);
     }
     
@@ -102,17 +103,26 @@ const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
       </div>
       
       <div className="grid grid-cols-3 gap-2 mb-2">
-        {visibleVariants.map((variant) => (
-          <ColorVariantItem
-            key={variant.name}
-            variant={variant}
-            selectedColor={selectedColor}
-            onColorChange={handleColorChange}
-            getColorHex={getColorHex}
-            stockInfo={variantStockInfo[variant.name]}
-            getTimeRemaining={getTimeRemaining ? (name) => getTimeRemaining(name) : undefined}
-          />
-        ))}
+        {visibleVariants.map((variant) => {
+          // Get stock info for this variant
+          const stockInfo = variantStockInfo[variant.name];
+          // Log stock info for debugging
+          if (stockInfo) {
+            console.log(`Rendering ${variant.name}: stock=${Math.floor(stockInfo.currentStock)}, active=${stockInfo.isActive}`);
+          }
+          
+          return (
+            <ColorVariantItem
+              key={variant.name}
+              variant={variant}
+              selectedColor={selectedColor}
+              onColorChange={handleColorChange}
+              getColorHex={getColorHex}
+              stockInfo={stockInfo}
+              getTimeRemaining={getTimeRemaining ? (name) => getTimeRemaining(name) : undefined}
+            />
+          );
+        })}
       </div>
       
       {hasMoreVariants && (

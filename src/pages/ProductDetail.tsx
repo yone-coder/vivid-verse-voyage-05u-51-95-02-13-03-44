@@ -129,7 +129,8 @@ const ProductDetail = () => {
     })),
     demoMode: true, // Keep demo mode for slower, visible decay
     autoRefill: true, // Make sure auto-refill is enabled
-    refillCooldown: 5 * 1000 // Reduce cooldown to 5 seconds for testing purposes
+    refillCooldown: 5 * 1000, // Reduce cooldown to 5 seconds for testing purposes
+    refillPercentage: 80 // Increase refill percentage to 80% for better visualization
   });
 
   // Effect to activate the selected variant for real-time stock decay
