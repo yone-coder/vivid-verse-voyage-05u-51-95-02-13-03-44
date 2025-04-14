@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { MinusIcon, PlusIcon } from "lucide-react";
@@ -16,6 +17,16 @@ interface ProductQuantitySelectorProps {
   inStock?: number;
   productName?: string;
   stockInfo?: VariantStockInfo;
+}
+
+// Define a separate type for the stock level information returned by getStockLevelInfo
+interface StockLevelInfo {
+  level: string;
+  color: string;
+  textColor: string;
+  label: string;
+  animate: boolean;
+  badge: string | null;
 }
 
 const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
@@ -61,7 +72,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
   
   const effectiveMaxQuantity = Math.min(maxQuantity, displayStock);
   
-  const getStockLevelInfo = () => {
+  const getStockLevelInfo = (): StockLevelInfo => {
     const currentStock = displayStock;
     
     if (currentStock === 0) {
@@ -157,7 +168,8 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
     }
   };
   
-  const stockInfo = getStockLevelInfo();
+  // Renamed from 'stockInfo' to 'stockLevelInfo' to avoid the naming conflict
+  const stockLevelInfo = getStockLevelInfo();
   
   const handleIncrementWithFeedback = () => {
     if (isMaxQuantity) {
@@ -202,8 +214,8 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
         <div className="flex items-center">
           <span className="text-sm font-medium text-gray-700">Quantity:</span>
           {displayStock <= 30 && (
-            <span className={`ml-2 text-xs ${stockInfo.textColor} inline-flex items-center ${stockInfo.animate ? 'animate-pulse' : ''}`}>
-              {stockInfo.label}
+            <span className={`ml-2 text-xs ${stockLevelInfo.textColor} inline-flex items-center ${stockLevelInfo.animate ? 'animate-pulse' : ''}`}>
+              {stockLevelInfo.label}
             </span>
           )}
         </div>
@@ -255,13 +267,13 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
           <Progress 
             value={stockPercentage} 
             className="h-1.5 w-full"
-            indicatorClassName={`${stockInfo.color} ${stockPulse ? 'animate-pulse' : ''}`}
+            indicatorClassName={`${stockLevelInfo.color} ${stockPulse ? 'animate-pulse' : ''}`}
           />
         </div>
         
         <div className="flex items-center justify-between text-xs">
-          <div className={`${stockInfo.textColor} flex items-center`}>
-            <span className={`w-2 h-2 ${stockInfo.color} rounded-full mr-1.5 ${stockInfo.animate ? 'animate-pulse' : ''}`}></span>
+          <div className={`${stockLevelInfo.textColor} flex items-center`}>
+            <span className={`w-2 h-2 ${stockLevelInfo.color} rounded-full mr-1.5 ${stockLevelInfo.animate ? 'animate-pulse' : ''}`}></span>
             {displayStock === 0 
               ? 'Currently out of stock' 
               : displayStock === 1 
@@ -277,9 +289,9 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
         </div>
       </div>
       
-      {stockInfo.badge && (
-        <Badge variant="aliHot" className={`text-xs py-0.5 ${stockInfo.animate ? 'animate-pulse' : ''}`}>
-          {stockInfo.badge}
+      {stockLevelInfo.badge && (
+        <Badge variant="aliHot" className={`text-xs py-0.5 ${stockLevelInfo.animate ? 'animate-pulse' : ''}`}>
+          {stockLevelInfo.badge}
         </Badge>
       )}
     </div>
