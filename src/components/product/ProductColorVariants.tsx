@@ -29,27 +29,15 @@ const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
   activateVariant
 }) => {
   const [expanded, setExpanded] = useState(false);
-  const [initialLoad, setInitialLoad] = useState(true);
   
   // Define our specific color variants with additional properties
   const colorVariants = [
-    { name: "Black", price: 199.99, stock: 256, image: "", bestseller: true },
-    { name: "White", price: 199.99, stock: 256, image: "", bestseller: false },
-    { name: "Jet Black", price: 209.99, stock: 256, image: "", bestseller: false },
-    { name: "Blue", price: 219.99, stock: 256, image: "", bestseller: false },
-    { name: "Red", price: 229.99, stock: 256, image: "", bestseller: false, limited: true }
+    { name: "Black", price: 199.99, stock: 48, image: "", bestseller: true },
+    { name: "White", price: 199.99, stock: 124, image: "", bestseller: false },
+    { name: "Jet Black", price: 209.99, stock: 78, image: "", bestseller: false },
+    { name: "Blue", price: 219.99, stock: 42, image: "", bestseller: false },
+    { name: "Red", price: 229.99, stock: 16, image: "", bestseller: false, limited: true }
   ];
-  
-  // Log current stock levels for debugging purposes
-  useEffect(() => {
-    if (initialLoad && Object.keys(variantStockInfo).length > 0) {
-      console.log("Current variant stock levels:");
-      Object.entries(variantStockInfo).forEach(([name, info]) => {
-        console.log(`${name}: ${Math.floor(info.currentStock)} units, started at ${new Date(info.startTime).toLocaleTimeString()}`);
-      });
-      setInitialLoad(false);
-    }
-  }, [variantStockInfo, initialLoad]);
   
   // Get the currently selected variant
   const selectedVariant = colorVariants.find((v) => v.name === selectedColor);
@@ -60,25 +48,25 @@ const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
   
   // Get color hex code based on name
   const getColorHex = (name: string) => {
-    const colorMap: Record<string, string> = {
+    const colorMap = {
       "Black": "#000000",
       "White": "#FFFFFF",
       "Jet Black": "#0A0A0A",
       "Blue": "#0066CC",
       "Red": "#CC0000"
     };
-    return colorMap[name] || "transparent";
+    return colorMap[name as keyof typeof colorMap] || "transparent";
   };
+  
+  // Activate the selected variant for decay simulation
+  useEffect(() => {
+    if (selectedColor && activateVariant) {
+      activateVariant(selectedColor);
+    }
+  }, [selectedColor, activateVariant]);
   
   // Custom color change handler to update both parent and activate variant
   const handleColorChange = (color: string) => {
-    // First activate the variant when color changes
-    if (activateVariant) {
-      console.log(`ProductColorVariants: Activating color ${color}`);
-      activateVariant(color);
-    }
-    
-    // Then notify parent component
     onColorChange(color);
   };
   
@@ -103,26 +91,17 @@ const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
       </div>
       
       <div className="grid grid-cols-3 gap-2 mb-2">
-        {visibleVariants.map((variant) => {
-          // Get stock info for this variant
-          const stockInfo = variantStockInfo[variant.name];
-          // Log stock info for debugging
-          if (stockInfo) {
-            console.log(`Rendering ${variant.name}: stock=${Math.floor(stockInfo.currentStock)}, active=${stockInfo.isActive}`);
-          }
-          
-          return (
-            <ColorVariantItem
-              key={variant.name}
-              variant={variant}
-              selectedColor={selectedColor}
-              onColorChange={handleColorChange}
-              getColorHex={getColorHex}
-              stockInfo={stockInfo}
-              getTimeRemaining={getTimeRemaining ? (name) => getTimeRemaining(name) : undefined}
-            />
-          );
-        })}
+        {visibleVariants.map((variant) => (
+          <ColorVariantItem
+            key={variant.name}
+            variant={variant}
+            selectedColor={selectedColor}
+            onColorChange={handleColorChange}
+            getColorHex={getColorHex}
+            stockInfo={variantStockInfo[variant.name]}
+            getTimeRemaining={getTimeRemaining ? (name) => getTimeRemaining(name) : undefined}
+          />
+        ))}
       </div>
       
       {hasMoreVariants && (

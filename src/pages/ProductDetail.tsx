@@ -24,45 +24,6 @@ import ProductPaymentOptions from "@/components/product/ProductPaymentOptions";
 // Default product ID for the premium headphones product
 const DEFAULT_PRODUCT_ID = "aae97882-a3a1-4db5-b4f5-156705cd10ee"; // Premium Headphones product ID
 
-// Function to generate specific time-of-day start times
-const generateFixedStartTimes = () => {
-  // Get the current date as a base
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  
-  // Create specific times for today
-  const createTimeAt = (hours: number, minutes: number = 0) => {
-    const time = new Date(today);
-    time.setHours(hours, minutes, 0, 0);
-    
-    // If the time is in the future, move it to yesterday
-    if (time > now) {
-      time.setDate(time.getDate() - 1);
-    }
-    
-    // Return as timestamp (milliseconds)
-    return time.getTime();
-  };
-  
-  // Set specific start times for each variant - spread over the day for better visualization
-  return {
-    black: createTimeAt(3, 0),      // Black - started at 3:00 AM
-    white: createTimeAt(6, 0),      // White - started at 6:00 AM
-    jetBlack: createTimeAt(9, 0),   // Jet Black - started at 9:00 AM
-    blue: createTimeAt(12, 0),      // Blue - started at 12:00 PM (noon)
-    red: createTimeAt(15, 0)        // Red - started at 3:00 PM
-  };
-};
-
-// Generate specific time-of-day start times
-const variantStartTimes = generateFixedStartTimes();
-
-// Log start times for debugging
-console.log("Variant start times:");
-Object.entries(variantStartTimes).forEach(([color, timestamp]) => {
-  console.log(`${color}: ${new Date(timestamp).toLocaleTimeString()}`);
-});
-
 const ProductDetail = () => {
   // State variables
   const [activeTab, setActiveTab] = useState("description");
@@ -99,44 +60,24 @@ const ProductDetail = () => {
   const { data: product, isLoading } = useProduct(productId);
   const { data: analytics, isLoading: analyticsLoading } = useProductAnalytics(productId);
 
-  // Updated color variants with consistent 256 stock, unique decay rates and specific time-of-day start times
+  // Define our specific color variants with additional properties
   const colorVariants = [
-    { name: "Black", price: 199.99, stock: 256, image: "", bestseller: true, decayPeriod: 12 * 60 * 60 * 1000, startTime: variantStartTimes.black },
-    { name: "White", price: 199.99, stock: 256, image: "", bestseller: false, decayPeriod: 10 * 60 * 60 * 1000, startTime: variantStartTimes.white },
-    { name: "Jet Black", price: 209.99, stock: 256, image: "", bestseller: false, decayPeriod: 9 * 60 * 60 * 1000, startTime: variantStartTimes.jetBlack },
-    { name: "Blue", price: 219.99, stock: 256, image: "", bestseller: false, decayPeriod: 11 * 60 * 60 * 1000, startTime: variantStartTimes.blue },
-    { name: "Red", price: 229.99, stock: 256, image: "", bestseller: false, limited: true, decayPeriod: 8 * 60 * 60 * 1000, startTime: variantStartTimes.red }
+    { name: "Black", price: 199.99, stock: 48, image: "", bestseller: true },
+    { name: "White", price: 199.99, stock: 124, image: "", bestseller: false },
+    { name: "Jet Black", price: 209.99, stock: 78, image: "", bestseller: false },
+    { name: "Blue", price: 219.99, stock: 42, image: "", bestseller: false },
+    { name: "Red", price: 229.99, stock: 16, image: "", bestseller: false, limited: true }
   ];
   
-  // Clear localStorage when component mounts to ensure fresh start with new time calculations
-  useEffect(() => {
-    // Clear variant stock info from localStorage
-    colorVariants.forEach(variant => {
-      const key = `variant_stock_${variant.name.replace(/\s+/g, '_').toLowerCase()}`;
-      localStorage.removeItem(key);
-    });
-    
-    console.log("Cleared localStorage for fresh variant stock initialization");
-  }, []);
-  
-  // Use our stock decay hook with variant-specific decay periods and specific time-of-day start times
+  // Use our stock decay hook with 12-hour decay period and localStorage persistence
   const { variantStockInfo, activateVariant, getTimeRemaining, resetVariant, resetAllVariants } = useVariantStockDecay({
-    variants: colorVariants.map(variant => ({
-      name: variant.name,
-      stock: variant.stock,
-      decayPeriod: variant.decayPeriod, // Pass unique decay period for each variant
-      startTime: variant.startTime // Pass unique start time for each variant
-    })),
-    demoMode: true, // Keep demo mode for slower, visible decay
-    autoRefill: true, // Make sure auto-refill is enabled
-    refillCooldown: 5 * 1000, // Reduce cooldown to 5 seconds for testing purposes
-    refillPercentage: 80 // Increase refill percentage to 80% for better visualization
+    variants: colorVariants,
+    decayPeriod: 12 * 60 * 60 * 1000 // 12 hours in milliseconds
   });
 
   // Effect to activate the selected variant for real-time stock decay
   useEffect(() => {
     if (selectedColor && activateVariant) {
-      console.log(`ProductDetail: Activating color variant: ${selectedColor}`);
       activateVariant(selectedColor);
     }
   }, [selectedColor, activateVariant]);
@@ -239,15 +180,7 @@ const ProductDetail = () => {
 
   // Handler to manually reset stock levels (for demo purposes)
   const handleResetStock = () => {
-    // Clear localStorage first
-    colorVariants.forEach(variant => {
-      const key = `variant_stock_${variant.name.replace(/\s+/g, '_').toLowerCase()}`;
-      localStorage.removeItem(key);
-    });
-    
-    // Then reset all variants
     resetAllVariants();
-    
     toast({
       title: "Stock Reset",
       description: "All product variants stock has been reset to initial values",
@@ -311,6 +244,7 @@ const ProductDetail = () => {
   const currentPrice = product.discount_price || product.price;
   const originalPrice = product.price;
   
+  // Mock data for tabs with updated variants for color
   const productForTabs = {
     id: product.id,
     name: product.name,
@@ -337,11 +271,11 @@ const ProductDetail = () => {
       { name: "Weight", value: "450g" },
     ],
     variants: [
-      { name: "Black", price: currentPrice, stock: 256, image: productImages[0] || "/placeholder.svg" },
-      { name: "White", price: currentPrice, stock: 256, image: productImages[1] || "/placeholder.svg" },
-      { name: "Jet Black", price: currentPrice + 10, stock: 256, image: productImages[2] || "/placeholder.svg" },
-      { name: "Blue", price: currentPrice + 20, stock: 256, image: productImages[0] || "/placeholder.svg" },
-      { name: "Red", price: currentPrice + 30, stock: 256, image: productImages[1] || "/placeholder.svg" }
+      { name: "Black", price: currentPrice, stock: 48, image: productImages[0] || "/placeholder.svg" },
+      { name: "White", price: currentPrice, stock: 124, image: productImages[1] || "/placeholder.svg" },
+      { name: "Jet Black", price: currentPrice + 10, stock: 78, image: productImages[2] || "/placeholder.svg" },
+      { name: "Blue", price: currentPrice + 20, stock: 42, image: productImages[0] || "/placeholder.svg" },
+      { name: "Red", price: currentPrice + 30, stock: 16, image: productImages[1] || "/placeholder.svg" }
     ],
     shipping: {
       free: true,
@@ -402,21 +336,9 @@ const ProductDetail = () => {
   
   const totalPrice = (currentPrice * quantity) + warrantyPrice + (isExpressSelected ? productForTabs.shipping.express : 0);
   
-  
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
-      {/* Add demo reset button for testing */}
-      <div className="fixed bottom-24 right-4 z-50">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handleResetStock}
-          className="flex items-center gap-1 bg-white border-gray-300 shadow-sm"
-        >
-          <RotateCcw className="w-3 h-3" />
-          <span className="text-xs">Reset Stock</span>
-        </Button>
-      </div>
+      {/* Removed demo reset button */}
 
       {/* Gallery Section without Header Overlay */}
       <div ref={headerRef} className="relative w-full bg-gray-50">
