@@ -43,46 +43,103 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
   
   const stockPercentage = Math.min(100, (inStock / 200) * 100);
   
-  // Determine stock level category and associated color
+  // Enhanced stock level info with 10 levels of granularity
   const getStockLevelInfo = () => {
-    if (inStock <= 5) {
+    if (inStock === 0) {
       return {
-        level: 'critical',
-        color: 'bg-red-500',
-        textColor: 'text-red-500',
-        label: 'Critical - Almost Sold Out!',
-        animate: true
+        level: 'out-of-stock',
+        color: 'bg-gray-500', // Grey — #9E9E9E
+        textColor: 'text-gray-500',
+        label: 'Out of Stock',
+        animate: false,
+        badge: 'SOLD OUT'
+      };
+    } else if (inStock <= 3) {
+      return {
+        level: 'extremely-low',
+        color: 'bg-red-800', // Dark Red — #C62828
+        textColor: 'text-red-800',
+        label: 'Extremely Low Stock!',
+        animate: true,
+        badge: 'LAST FEW ITEMS!'
+      };
+    } else if (inStock <= 7) {
+      return {
+        level: 'very-low',
+        color: 'bg-red-400', // Red — #EF5350
+        textColor: 'text-red-400',
+        label: 'Very Low Stock!',
+        animate: true,
+        badge: 'ALMOST GONE!'
       };
     } else if (inStock <= 15) {
       return {
         level: 'low',
-        color: 'bg-orange-500',
+        color: 'bg-orange-500', // Orange — #FB8C00
         textColor: 'text-orange-500',
         label: 'Low Stock',
-        animate: true
+        animate: true,
+        badge: 'SELLING FAST!'
       };
-    } else if (inStock <= 50) {
+    } else if (inStock <= 30) {
       return {
-        level: 'medium',
-        color: 'bg-amber-500',
+        level: 'below-medium',
+        color: 'bg-amber-400', // Amber — #FFC107
         textColor: 'text-amber-500',
         label: 'Limited Stock',
-        animate: false
+        animate: false,
+        badge: 'POPULAR ITEM'
+      };
+    } else if (inStock <= 60) {
+      return {
+        level: 'medium',
+        color: 'bg-yellow-300', // Yellow — #FFEB3B
+        textColor: 'text-yellow-600',
+        label: 'Medium Stock',
+        animate: false,
+        badge: null
+      };
+    } else if (inStock <= 90) {
+      return {
+        level: 'above-medium',
+        color: 'bg-lime-600', // Lime — #C0CA33
+        textColor: 'text-lime-600',
+        label: 'Good Stock',
+        animate: false,
+        badge: null
+      };
+    } else if (inStock <= 130) {
+      return {
+        level: 'high',
+        color: 'bg-green-300', // Light Green — #81C784
+        textColor: 'text-green-500',
+        label: 'High Stock',
+        animate: false,
+        badge: null
+      };
+    } else if (inStock <= 180) {
+      return {
+        level: 'very-high',
+        color: 'bg-green-500', // Green — #4CAF50
+        textColor: 'text-green-600',
+        label: 'Very High Stock',
+        animate: false,
+        badge: null
       };
     } else {
       return {
-        level: 'high',
-        color: 'bg-green-500',
-        textColor: 'text-green-600',
-        label: 'In Stock',
-        animate: false
+        level: 'overstocked',
+        color: 'bg-teal-500', // Teal — #26A69A
+        textColor: 'text-teal-600',
+        label: 'Fully Stocked',
+        animate: false,
+        badge: 'PLENTY AVAILABLE'
       };
     }
   };
   
   const stockInfo = getStockLevelInfo();
-  const isLowStock = inStock < 10;
-  const isMediumStock = inStock >= 10 && inStock < 30;
+  const isLowStock = inStock <= 15;
   
   const handleIncrementWithFeedback = () => {
     if (isMaxQuantity) {
@@ -126,7 +183,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
       <div className="flex items-center justify-between">
         <div className="flex items-center">
           <span className="text-sm font-medium text-gray-700">Quantity:</span>
-          {inStock < 20 && (
+          {inStock <= 30 && (
             <span className={`ml-2 text-xs ${stockInfo.textColor} inline-flex items-center ${stockInfo.animate ? 'animate-pulse' : ''}`}>
               {stockInfo.label}
             </span>
@@ -185,18 +242,14 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
         </div>
         
         <div className="flex items-center justify-between text-xs">
-          {inStock < 50 && (
-            <div className={`${stockInfo.textColor} flex items-center`}>
-              <span className={`w-2 h-2 ${stockInfo.color} rounded-full mr-1.5 ${stockInfo.animate ? 'animate-pulse' : ''}`}></span>
-              {inStock <= 1 ? 'Last item in stock!' : `Only ${inStock} left in stock`}
-            </div>
-          )}
-          
-          {inStock >= 50 && (
-            <div className="flex items-center text-green-600 font-semibold">
-              {inStock} available
-            </div>
-          )}
+          <div className={`${stockInfo.textColor} flex items-center`}>
+            <span className={`w-2 h-2 ${stockInfo.color} rounded-full mr-1.5 ${stockInfo.animate ? 'animate-pulse' : ''}`}></span>
+            {inStock === 0 
+              ? 'Currently out of stock' 
+              : inStock === 1 
+                ? 'Last item in stock!' 
+                : `${inStock} units available`}
+          </div>
           
           {effectiveMaxQuantity > 1 && (
             <div className="text-gray-500 flex items-center gap-1">
@@ -206,9 +259,9 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
         </div>
       </div>
       
-      {inStock <= 5 && (
-        <Badge variant="aliHot" className="text-xs py-0.5 animate-pulse">
-          HOT ITEM - SELLING FAST!
+      {stockInfo.badge && (
+        <Badge variant="aliHot" className={`text-xs py-0.5 ${stockInfo.animate ? 'animate-pulse' : ''}`}>
+          {stockInfo.badge}
         </Badge>
       )}
     </div>
