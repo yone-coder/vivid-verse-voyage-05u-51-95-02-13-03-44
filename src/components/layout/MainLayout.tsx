@@ -8,7 +8,6 @@ import { Outlet, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { Heart, Share } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import ProductHeader from "@/components/product/ProductHeader";
 
 export default function MainLayout() {
   const isMobile = useIsMobile();
@@ -19,7 +18,6 @@ export default function MainLayout() {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeTab, setActiveTab] = useState("description");
   
   const toggleFavorite = () => {
     setIsFavorite(!isFavorite);
@@ -58,16 +56,6 @@ export default function MainLayout() {
       description: `Searching for: ${searchQuery}`,
     });
   };
-
-  const handleTabChange = (tab: string) => {
-    setActiveTab(tab);
-    
-    // Find and scroll to the appropriate section
-    const section = document.getElementById(tab);
-    if (section) {
-      section.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
   
   // Use the css variable approach for header height - using reduced height for AliExpress-like compact header
   const headerHeightStyle = `
@@ -103,29 +91,6 @@ export default function MainLayout() {
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           handleSearch={handleSearch}
-        />
-      )}
-      
-      {/* Product tabs header - shown after scrolling on product pages */}
-      {isProductPage && (
-        <ProductHeader
-          isFavorite={isFavorite}
-          toggleFavorite={toggleFavorite}
-          handleShare={handleShare}
-          handleCartClick={() => {
-            toast({
-              title: "Cart",
-              description: "Opening your shopping cart",
-            });
-          }}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          handleSearch={handleSearch}
-          shouldHide={false}
-          activeTab={activeTab}
-          onTabChange={handleTabChange}
-          totalReviews={2543}
-          hasQuestions={true}
         />
       )}
       
