@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { 
@@ -128,7 +129,7 @@ const Header = ({
 
   if (isProductHeader) {
     return (
-      <div className="sticky top-0 left-0 right-0 z-40">
+      <div className="absolute top-0 left-0 right-0 z-50 pointer-events-auto">
         <div className={`h-[44px] w-full transition-all duration-200 ${isScrolled ? 'bg-white shadow-sm' : 'bg-transparent'}`}>
           {isScrolled ? (
             // Scrolled Product Header with search bar instead of title
@@ -171,7 +172,7 @@ const Header = ({
             </div>
           ) : (
             // Transparent Product Header for hero image
-            <div className="absolute top-2 left-0 right-0 flex justify-between z-10 px-3">
+            <div className="absolute top-2 left-0 right-0 flex justify-between z-10 px-3 pointer-events-auto">
               <Button variant="outline" size="icon" className="h-8 w-8 p-0 rounded-full bg-black/40 backdrop-blur-sm border-0 text-white" asChild>
                 <Link to="/">
                   <ArrowLeft className="h-4 w-4" />

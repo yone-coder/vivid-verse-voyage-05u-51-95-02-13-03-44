@@ -95,17 +95,13 @@ export default function MainLayout() {
       )}
       
       {isProductPage || isHomePage ? (
-        <>
-          <main className="flex-grow relative">
-            <Outlet />
-          </main>
-        </>
+        <main className="flex-grow relative">
+          <Outlet />
+        </main>
       ) : (
-        <>
-          <main className="flex-grow pb-20">
-            <Outlet />
-          </main>
-        </>
+        <main className="flex-grow pb-20">
+          <Outlet />
+        </main>
       )}
       {!isMobile && !isHomePage && <Footer />}
       {isMobile && !isProductPage && !isHomePage && <MobileBottomNav />}

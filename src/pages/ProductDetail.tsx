@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -297,7 +298,7 @@ const ProductDetail = () => {
       {/* Limited Offers Band */}
       {showLimitedOffersBand && <LimitedOffersBand />}
       
-      {/* Gallery Section */}
+      {/* Gallery Section - Remove any padding/margin here */}
       <div className="relative w-full bg-transparent">
         <ProductImageGallery images={productImages.length > 0 ? productImages : ["/placeholder.svg"]} />
       </div>
