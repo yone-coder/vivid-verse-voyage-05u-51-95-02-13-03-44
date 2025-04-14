@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 
 export interface VariantStockInfo {
@@ -16,15 +17,17 @@ interface UseVariantStockDecayProps {
     stock: number;
   }>;
   decayPeriod?: number; // Time in milliseconds for full decay cycle (default 24h)
+  demoMode?: boolean; // Accelerated decay for demo purposes
 }
 
 export function useVariantStockDecay({ 
   variants, 
-  decayPeriod = 24 * 60 * 60 * 1000 // 24 hours in milliseconds
+  decayPeriod = 24 * 60 * 60 * 1000, // 24 hours in milliseconds
+  demoMode = true // Enable demo mode by default for faster decay
 }: UseVariantStockDecayProps) {
   const [variantStockInfo, setVariantStockInfo] = useState<Record<string, VariantStockInfo>>({});
   const [lastUpdate, setLastUpdate] = useState(Date.now());
-
+  
   // Initialize stock info for each variant on first load
   useEffect(() => {
     const initialStockInfo: Record<string, VariantStockInfo> = {};
@@ -32,8 +35,10 @@ export function useVariantStockDecay({
     variants.forEach(variant => {
       // Only initialize variants that aren't already being tracked
       if (!variantStockInfo[variant.name]) {
-        // Generate random decay rate between 1-5 units per hour
-        const decayRate = Math.max(1, Math.floor(Math.random() * 5));
+        // Generate random decay rate between 1-10 units per hour (higher for demo purposes)
+        const decayRate = demoMode 
+          ? Math.max(3, Math.floor(Math.random() * 10) + 5) // Higher rates for demo
+          : Math.max(1, Math.floor(Math.random() * 5));      // Normal rates for production
         
         initialStockInfo[variant.name] = {
           initialStock: variant.stock,
@@ -44,6 +49,8 @@ export function useVariantStockDecay({
           isLowStock: variant.stock <= 15,
           isActive: false
         };
+        
+        console.info(`Initialized variant: ${variant.name} with decay rate: ${decayRate} units/hour`);
       } else {
         // Keep existing data for already initialized variants
         initialStockInfo[variant.name] = variantStockInfo[variant.name];
@@ -55,6 +62,9 @@ export function useVariantStockDecay({
 
   // Update stock levels based on elapsed time
   useEffect(() => {
+    // In demo mode, update much more frequently for visible animation
+    const updateInterval = demoMode ? 250 : 5000; // 250ms for demo, 5s for production
+    
     const timer = setInterval(() => {
       const now = Date.now();
       const elapsedMs = now - lastUpdate;
@@ -69,13 +79,17 @@ export function useVariantStockDecay({
           if (variant.isActive && variant.currentStock > 0 && variant.timeRemaining > 0) {
             // Calculate how much stock to decrease based on decay rate and elapsed time
             const hoursPassed = elapsedMs / (60 * 60 * 1000);
-            const stockToDecay = hoursPassed * variant.decayRate;
             
-            // Calculate new stock level
+            // If in demo mode, accelerate decay by multiplier for visible effect
+            const accelerationFactor = demoMode ? 50 : 1; // 50x faster in demo mode
+            const stockToDecay = hoursPassed * variant.decayRate * accelerationFactor;
+            
+            // Calculate new stock level with precise decimal values for smoother animation
             const newStock = Math.max(0, variant.currentStock - stockToDecay);
             
             // Calculate remaining time proportionally
-            const remainingTime = Math.max(0, variant.timeRemaining - elapsedMs);
+            const remainingFraction = newStock / variant.initialStock;
+            const remainingTime = Math.max(0, remainingFraction * decayPeriod);
             
             // Calculate stock percentage
             const percentage = (newStock / variant.initialStock) * 100;
@@ -94,10 +108,10 @@ export function useVariantStockDecay({
       });
       
       setLastUpdate(now);
-    }, 5000); // Update every 5 seconds
+    }, updateInterval);
     
     return () => clearInterval(timer);
-  }, [lastUpdate]);
+  }, [lastUpdate, decayPeriod, demoMode]);
 
   // Function to activate a variant (start its decay)
   const activateVariant = (variantName: string) => {
@@ -115,12 +129,25 @@ export function useVariantStockDecay({
       // Make sure the variant is properly initialized before activating
       if (!updated[variantName]) return updated;
       
+      console.info(`Activated variant: ${variantName} with decay rate: ${updated[variantName].decayRate} units/hour`);
+      
       return updated;
     });
   };
 
+  // Get the hours remaining for a specific variant (for display purposes)
+  const getHoursRemaining = (variantName: string): number | null => {
+    const variant = variantStockInfo[variantName];
+    if (!variant) return null;
+    
+    return variant.timeRemaining > 0 
+      ? Math.ceil(variant.timeRemaining / (1000 * 60 * 60)) 
+      : 0;
+  };
+
   return {
     variantStockInfo,
-    activateVariant
+    activateVariant,
+    getHoursRemaining
   };
 }

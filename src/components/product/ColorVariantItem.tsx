@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Check, AlertTriangle, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { 
@@ -84,6 +84,26 @@ const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
   
   const stockLevelColor = getStockLevelColor();
   const isActive = stockInfo?.isActive || false;
+  
+  // Force re-render every second for smooth countdown when active
+  useEffect(() => {
+    let animationFrame: number;
+    
+    if (isActive && stockInfo?.currentStock) {
+      const updateAnimation = () => {
+        // This creates a loop that updates at 60fps for smooth animation
+        animationFrame = requestAnimationFrame(updateAnimation);
+      };
+      
+      animationFrame = requestAnimationFrame(updateAnimation);
+      
+      return () => {
+        if (animationFrame) {
+          cancelAnimationFrame(animationFrame);
+        }
+      };
+    }
+  }, [isActive, stockInfo]);
   
   return (
     <TooltipProvider>

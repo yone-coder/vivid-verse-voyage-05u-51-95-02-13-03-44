@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { MinusIcon, PlusIcon } from "lucide-react";
@@ -30,21 +31,27 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
   const [priceAnimation, setPriceAnimation] = useState(false);
   const [stockPulse, setStockPulse] = useState(false);
   const [countdownStock, setCountdownStock] = useState(inStock);
+  const [displayStock, setDisplayStock] = useState(inStock);
+  const [stockPercentage, setStockPercentage] = useState(Math.min(100, (inStock / 200) * 100));
+  
+  // For real-time stock decrease visualization
+  const [decrementInterval, setDecrementInterval] = useState<number | null>(null);
+  const [lastUpdateTime, setLastUpdateTime] = useState(Date.now());
   
   const formatPrice = (value: number) => {
     return value.toFixed(2);
   };
 
   const totalPrice = price * quantity;
-  const isMaxQuantity = quantity >= maxQuantity || quantity >= inStock;
+  const isMaxQuantity = quantity >= maxQuantity || quantity >= displayStock;
   const isMinQuantity = quantity <= minQuantity;
   
-  const effectiveMaxQuantity = Math.min(maxQuantity, inStock);
-  
-  const stockPercentage = Math.min(100, (inStock / 200) * 100);
+  const effectiveMaxQuantity = Math.min(maxQuantity, displayStock);
   
   const getStockLevelInfo = () => {
-    if (inStock === 0) {
+    const currentStock = displayStock;
+    
+    if (currentStock === 0) {
       return {
         level: 'out-of-stock',
         color: 'bg-gray-500', // Grey — #9E9E9E
@@ -53,7 +60,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
         animate: false,
         badge: 'SOLD OUT'
       };
-    } else if (inStock <= 3) {
+    } else if (currentStock <= 3) {
       return {
         level: 'extremely-low',
         color: 'bg-red-800', // Dark Red — #C62828
@@ -62,7 +69,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
         animate: true,
         badge: 'LAST FEW ITEMS!'
       };
-    } else if (inStock <= 7) {
+    } else if (currentStock <= 7) {
       return {
         level: 'very-low',
         color: 'bg-red-400', // Red — #EF5350
@@ -71,7 +78,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
         animate: true,
         badge: 'ALMOST GONE!'
       };
-    } else if (inStock <= 15) {
+    } else if (currentStock <= 15) {
       return {
         level: 'low',
         color: 'bg-orange-500', // Orange — #FB8C00
@@ -80,7 +87,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
         animate: true,
         badge: 'SELLING FAST!'
       };
-    } else if (inStock <= 30) {
+    } else if (currentStock <= 30) {
       return {
         level: 'below-medium',
         color: 'bg-amber-400', // Amber — #FFC107
@@ -89,7 +96,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
         animate: false,
         badge: 'POPULAR ITEM'
       };
-    } else if (inStock <= 60) {
+    } else if (currentStock <= 60) {
       return {
         level: 'medium',
         color: 'bg-yellow-300', // Yellow — #FFEB3B
@@ -98,7 +105,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
         animate: false,
         badge: null
       };
-    } else if (inStock <= 90) {
+    } else if (currentStock <= 90) {
       return {
         level: 'above-medium',
         color: 'bg-lime-600', // Lime — #C0CA33
@@ -107,7 +114,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
         animate: false,
         badge: null
       };
-    } else if (inStock <= 130) {
+    } else if (currentStock <= 130) {
       return {
         level: 'high',
         color: 'bg-green-300', // Light Green — #81C784
@@ -116,7 +123,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
         animate: false,
         badge: null
       };
-    } else if (inStock <= 180) {
+    } else if (currentStock <= 180) {
       return {
         level: 'very-high',
         color: 'bg-green-500', // Green — #4CAF50
@@ -138,16 +145,16 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
   };
   
   const stockInfo = getStockLevelInfo();
-  const isLowStock = inStock <= 15;
+  const isLowStock = displayStock <= 15;
   
   const handleIncrementWithFeedback = () => {
     if (isMaxQuantity) {
       setStockPulse(true);
       setTimeout(() => setStockPulse(false), 1000);
       
-      if (inStock <= maxQuantity) {
+      if (displayStock <= maxQuantity) {
         toast.warning(`Limited stock available`, {
-          description: `Only ${inStock} ${productName}${inStock !== 1 ? 's' : ''} left in stock.`
+          description: `Only ${displayStock} ${productName}${displayStock !== 1 ? 's' : ''} left in stock.`
         });
       } else {
         toast.info(`Maximum quantity reached`, {
@@ -166,6 +173,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
     onIncrement();
   };
   
+  // Effect to periodically pulse stock indicator for low stock
   useEffect(() => {
     if (isLowStock) {
       const interval = setInterval(() => {
@@ -177,42 +185,80 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
     }
   }, [isLowStock]);
 
+  // Effect to initialize countdownStock when inStock prop changes
   useEffect(() => {
     setCountdownStock(inStock);
+    setDisplayStock(inStock);
+    setStockPercentage(Math.min(100, (inStock / 200) * 100));
   }, [inStock]);
   
+  // Effect to simulate real-time stock decay
   useEffect(() => {
-    const fluctuateTimer = setInterval(() => {
-      if (inStock > 5 && Math.random() > 0.7) {
-        setCountdownStock(current => {
-          const newStock = current - 1;
-          
-          if (newStock === 3) {
-            toast.warning("Almost gone!", {
-              description: `Only 3 ${productName}s left in stock!`,
-              duration: 4000
-            });
-          } else if (newStock === 5) {
-            toast.warning("Selling fast!", { 
-              description: "This item is in high demand", 
-              duration: 3000 
-            });
-          }
-          
-          return newStock;
+    // Clear any existing intervals when component mounts or inStock changes
+    if (decrementInterval) {
+      clearInterval(decrementInterval);
+    }
+    
+    // Start a new interval to decrement stock in real-time
+    const decayInterval = window.setInterval(() => {
+      const now = Date.now();
+      const elapsedSecs = (now - lastUpdateTime) / 1000; 
+      
+      // Calculate decay rate - more aggressive for demo purposes
+      // For a realistic 24h decay, we'd use different math
+      const decayRate = countdownStock > 20 ? 0.05 : 0.02; // units per second
+      const stockToDecay = elapsedSecs * decayRate;
+      
+      // Update the stock with fractional decay (smoother animation)
+      setCountdownStock(prevStock => {
+        const newStock = Math.max(0, prevStock - stockToDecay);
+        return newStock;
+      });
+      
+      // Update the display stock (integer only) for UI
+      setDisplayStock(prev => {
+        // Convert countdown stock to integer for display
+        const newDisplay = Math.floor(countdownStock);
+        // Only update if different to avoid re-renders
+        return newDisplay !== prev ? newDisplay : prev;
+      });
+      
+      // Update stock percentage for progress bar
+      setStockPercentage(Math.min(100, (countdownStock / 200) * 100));
+      
+      // Update last update time
+      setLastUpdateTime(now);
+      
+      // Generate toast notifications on specific thresholds
+      if (Math.floor(countdownStock) === 3 && Math.floor(countdownStock) < Math.floor(countdownStock + stockToDecay)) {
+        toast.warning("Almost gone!", {
+          description: `Only 3 ${productName}s left in stock!`,
+          duration: 4000
+        });
+      } else if (Math.floor(countdownStock) === 5 && Math.floor(countdownStock) < Math.floor(countdownStock + stockToDecay)) {
+        toast.warning("Selling fast!", { 
+          description: "This item is in high demand", 
+          duration: 3000 
         });
       }
-    }, 60000);
+    }, 50); // Update very frequently (50ms) for smooth animation
     
-    return () => clearInterval(fluctuateTimer);
-  }, [inStock, productName]);
+    setDecrementInterval(decayInterval);
+    
+    // Clean up interval on unmount
+    return () => {
+      if (decayInterval) {
+        clearInterval(decayInterval);
+      }
+    };
+  }, [inStock, productName, countdownStock, lastUpdateTime]);
 
   return (
     <div className="space-y-2 font-aliexpress">
       <div className="flex items-center justify-between">
         <div className="flex items-center">
           <span className="text-sm font-medium text-gray-700">Quantity:</span>
-          {inStock <= 30 && (
+          {displayStock <= 30 && (
             <span className={`ml-2 text-xs ${stockInfo.textColor} inline-flex items-center ${stockInfo.animate ? 'animate-pulse' : ''}`}>
               {stockInfo.label}
             </span>
@@ -273,11 +319,11 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
         <div className="flex items-center justify-between text-xs">
           <div className={`${stockInfo.textColor} flex items-center`}>
             <span className={`w-2 h-2 ${stockInfo.color} rounded-full mr-1.5 ${stockInfo.animate ? 'animate-pulse' : ''}`}></span>
-            {countdownStock === 0 
+            {displayStock === 0 
               ? 'Currently out of stock' 
-              : countdownStock === 1 
+              : displayStock === 1 
                 ? 'Last item in stock!' 
-                : `${countdownStock} units available`}
+                : `${displayStock} units available`}
           </div>
           
           {effectiveMaxQuantity > 1 && (
