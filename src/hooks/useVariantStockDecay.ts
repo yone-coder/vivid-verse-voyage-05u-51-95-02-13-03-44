@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 
 export interface VariantStockInfo {
@@ -95,13 +96,13 @@ export function useVariantStockDecay({
           const elapsedMs = Date.now() - variant.startTime;
           const remainingPercentage = Math.max(0, 1 - (elapsedMs / variantDecayPeriod));
           
-          // Set initial stock based on elapsed time
+          // Set initial stock based on elapsed time - directly proportional to time elapsed
           initialStockInfo[variant.name].currentStock = variant.stock * remainingPercentage;
           initialStockInfo[variant.name].stockPercentage = remainingPercentage * 100;
           initialStockInfo[variant.name].timeRemaining = remainingPercentage * variantDecayPeriod;
           initialStockInfo[variant.name].isLowStock = initialStockInfo[variant.name].currentStock <= 15;
           
-          console.info(`Initialized variant ${variant.name} with elapsed time ${(elapsedMs / 3600000).toFixed(2)} hours, remaining stock: ${initialStockInfo[variant.name].currentStock.toFixed(2)}`);
+          console.info(`Initialized variant ${variant.name} with elapsed time ${(elapsedMs / 3600000).toFixed(2)} hours, remaining stock: ${initialStockInfo[variant.name].currentStock.toFixed(2)}, percentage: ${initialStockInfo[variant.name].stockPercentage.toFixed(2)}%`);
         } else {
           console.info(`Initialized variant: ${variant.name} with decay rate: ${hourlyDecayRate} units/period and decay period: ${variantDecayPeriod/3600000} hours`);
         }
@@ -163,10 +164,10 @@ export function useVariantStockDecay({
             // Calculate elapsed time since the start in milliseconds
             const elapsedMs = now - variant.startTime;
             
-            // Calculate the time remaining percentage
+            // Calculate the time remaining percentage - exactly proportional to time elapsed
             const remainingPercentage = Math.max(0, 1 - (elapsedMs / variant.decayPeriod));
             
-            // CHANGED: Calculate stock directly based on time percentage instead of decay rate
+            // Calculate stock directly based on time percentage
             // This makes stock directly proportional to the time remaining
             const newStock = variant.initialStock * remainingPercentage;
             
