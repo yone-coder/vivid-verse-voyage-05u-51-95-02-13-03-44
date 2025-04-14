@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
 import StickyBuyButton from "@/components/StickyBuyButton";
@@ -19,6 +19,12 @@ import ProductQuantitySelector from "@/components/product/ProductQuantitySelecto
 import ProductShipping from "@/components/product/ProductShipping";
 import ProductWarranty from "@/components/product/ProductWarranty";
 import ProductPaymentOptions from "@/components/product/ProductPaymentOptions";
+import ProductStockIndicator from "@/components/product/ProductStockIndicator";
+import ProductReviews from "@/components/product/ProductReviews";
+import FrequentlyBoughtTogether from "@/components/product/FrequentlyBoughtTogether";
+import ProductVariantImageSelector from "@/components/product/ProductVariantImageSelector";
+import ShareToSocial from "@/components/product/ShareToSocial";
+import ModernBuyButton from "@/components/ModernBuyButton";
 
 // Default product ID for the premium headphones product
 const DEFAULT_PRODUCT_ID = "aae97882-a3a1-4db5-b4f5-156705cd10ee"; // Premium Headphones product ID
@@ -39,6 +45,7 @@ const ProductDetail = () => {
   const [showLimitedOffersBand, setShowLimitedOffersBand] = useState(true);
   const [expanded, setExpanded] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
+  const [showModernUI, setShowModernUI] = useState(false);
 
   // Refs and hooks
   const isMobile = useIsMobile();
@@ -67,6 +74,15 @@ const ProductDetail = () => {
     { name: "Jet Black", price: colorPrices["Jet Black"], stock: 78, image: "", bestseller: false },
     { name: "Blue", price: colorPrices.Blue, stock: 42, image: "", bestseller: false },
     { name: "Red", price: colorPrices.Red, stock: 16, image: "", bestseller: false, limited: true }
+  ];
+
+  // Enhanced variant images for the image selector
+  const variantImages = [
+    { name: "Black", price: colorPrices.Black, stock: 48, image: "/placeholder.svg", color: "#222222" },
+    { name: "White", price: colorPrices.White, stock: 124, image: "/placeholder.svg", color: "#FFFFFF" },
+    { name: "Jet Black", price: colorPrices["Jet Black"], stock: 78, image: "/placeholder.svg", color: "#111111" },
+    { name: "Blue", price: colorPrices.Blue, stock: 42, image: "/placeholder.svg", color: "#1a73e8" },
+    { name: "Red", price: colorPrices.Red, stock: 16, image: "/placeholder.svg", color: "#ea4335" }
   ];
   
   // Use our stock decay hook with 12-hour decay period and localStorage persistence
@@ -159,6 +175,15 @@ const ProductDetail = () => {
     toast({
       title: "Stock Reset",
       description: "All product variants stock has been reset to initial values",
+    });
+  };
+
+  // Toggle between modern and classic UI
+  const toggleUI = () => {
+    setShowModernUI(!showModernUI);
+    toast({
+      title: `Switched to ${!showModernUI ? 'Modern' : 'Classic'} UI`,
+      description: `Now showing the ${!showModernUI ? 'modern' : 'classic'} buy button experience`,
     });
   };
 
@@ -279,7 +304,19 @@ const ProductDetail = () => {
   const totalPrice = (currentPrice * quantity) + warrantyPrice + (isExpressSelected ? productForTabs.shipping.express : 0);
   
   return (
-    <div className="flex flex-col min-h-screen bg-white">
+    <div className="flex flex-col min-h-screen bg-gray-100">
+      {/* Mode switcher button */}
+      <div className="fixed top-4 right-4 z-50">
+        <Button 
+          variant="outline" 
+          size="sm" 
+          onClick={toggleUI}
+          className="bg-white shadow-md"
+        >
+          {showModernUI ? 'Classic UI' : 'Modern UI'}
+        </Button>
+      </div>
+      
       {/* Limited Offers Band */}
       {showLimitedOffersBand && <LimitedOffersBand />}
       
@@ -289,7 +326,7 @@ const ProductDetail = () => {
       </div>
       
       <div className="flex-1">
-        <div className="bg-white p-1">
+        <div className="bg-white p-3 shadow-sm">
           <div className="flex items-center justify-between mb-0.5">
             {/* Badges section removed */}
           </div>
@@ -298,30 +335,32 @@ const ProductDetail = () => {
           <div className="flex items-center justify-between">
             <h1 className="text-lg font-medium">{product?.name}</h1>
             <div className="flex items-center">
-              <Heart className={`h-4 w-4 mr-1 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-400'}`} />
-              <span className="text-sm text-gray-500">{analytics?.viewCount || 1245}</span>
+              <ShareToSocial 
+                productName={product.name}
+                productImage={productImages[0] || "/placeholder.svg"}
+              />
             </div>
           </div>
           
-          <div className="flex items-center justify-between mt-1">
+          {/* Stock indicator */}
+          <ProductStockIndicator stock={currentStock} />
+          
+          <div className="flex items-center justify-between mt-3">
             <DynamicPriceDisplay selectedColor={selectedColor} />
           </div>
           
           <EnhancedRating />
           
-          <div className="mt-1">
-            <ProductColorVariants 
-              variants={productForTabs.variants}
-              selectedColor={selectedColor}
-              onColorChange={setSelectedColor}
-              variantStockInfo={variantStockInfo}
-              getTimeRemaining={getTimeRemaining}
-              activateVariant={activateVariant}
+          <div className="mt-4">
+            <ProductVariantImageSelector 
+              variants={variantImages}
+              selectedVariant={selectedColor}
+              onVariantChange={setSelectedColor}
             />
           </div>
         </div>
         
-        <div className="mt-1 mb-1 p-3 bg-white">
+        <div className="mt-2 p-3 bg-white shadow-sm">
           <div className="mt-2">
             <ProductQuantitySelector 
               quantity={quantity}
@@ -336,7 +375,7 @@ const ProductDetail = () => {
             />
           </div>
           
-          <div className="mt-2">
+          <div className="mt-3">
             <ProductShipping
               shippingInfo={productForTabs.shipping}
               isExpressSelected={isExpressSelected}
@@ -344,7 +383,7 @@ const ProductDetail = () => {
             />
           </div>
           
-          <div className="mt-2">
+          <div className="mt-3">
             <ProductWarranty
               warrantyOptions={productForTabs.warranty}
               selectedWarranty={selectedWarranty}
@@ -352,16 +391,48 @@ const ProductDetail = () => {
             />
           </div>
           
-          <div className="mt-2">
+          <div className="mt-3">
             <ProductPaymentOptions paymentOptions={productForTabs.payments} />
           </div>
+          
+          <div className="mt-4 flex gap-2">
+            <Button 
+              variant="outline" 
+              className="flex-1"
+              onClick={addToCart}
+            >
+              Add to Cart
+            </Button>
+            <Button 
+              className="flex-1 bg-gradient-to-r from-orange-500 to-red-500"
+              onClick={buyNow}
+            >
+              Buy Now
+            </Button>
+          </div>
         </div>
+        
+        {/* Frequently Bought Together Section */}
+        <FrequentlyBoughtTogether
+          mainProductId={product.id}
+          mainProductName={product.name}
+          mainProductImage={productImages[0] || "/placeholder.svg"}
+          mainProductPrice={colorPrices[selectedColor] || colorPrices.Black}
+        />
+        
+        {/* Reviews Section */}
+        <ProductReviews productId={product.id} />
       </div>
       
-      <StickyBuyButton 
-        selectedColor={selectedColor}
-        colorPrices={colorPrices}
-      />
+      {/* Conditional rendering of buy button based on selected UI */}
+      {showModernUI ? (
+        <ModernBuyButton productId={product.id} />
+      ) : (
+        <StickyBuyButton 
+          selectedColor={selectedColor}
+          colorPrices={colorPrices}
+        />
+      )}
     </div>
   );
 };
