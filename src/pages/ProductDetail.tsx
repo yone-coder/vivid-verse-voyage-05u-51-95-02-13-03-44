@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useProduct } from '@/hooks/useProduct';
@@ -36,12 +37,29 @@ const ProductDetail: React.FC = () => {
   const { toast } = useToast();
   const isMobile = useIsMobile();
   
-  // Stock decay simulation
+  // Define the color variants
+  const colorVariants = [
+    { name: "Black", stock: 48 },
+    { name: "White", stock: 124 },
+    { name: "Jet Black", stock: 78 }
+  ];
+  
+  // Stock decay simulation - now properly passing variants parameter
   const { 
     variantStockInfo, 
     activateVariant, 
     getTimeRemaining 
-  } = useVariantStockDecay();
+  } = useVariantStockDecay({ 
+    variants: colorVariants,
+    demoMode: true
+  });
+
+  // Console log for debugging
+  useEffect(() => {
+    if (selectedColor) {
+      console.info(`ProductDetail: Activating color variant: ${selectedColor}`);
+    }
+  }, [selectedColor]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -98,11 +116,10 @@ const ProductDetail: React.FC = () => {
 
   if (!product) return null;
 
-  const colors = [
-    { name: 'Black', hex: '#000000', stock: 0 },
-    { name: 'White', hex: '#FFFFFF', stock: 204 },
-    { name: 'Jet Black', hex: '#2C2C2C', stock: 204 }
-  ];
+  // Extract image URLs from product.product_images
+  const productImages = product.product_images 
+    ? product.product_images.map(image => image.src)
+    : [];
 
   return (
     <div className="pb-20">
@@ -118,7 +135,7 @@ const ProductDetail: React.FC = () => {
       <div className="container mx-auto px-0 md:px-4 py-0 md:py-6 relative">
         <div className="grid md:grid-cols-2 gap-8">
           {/* Image Gallery */}
-          <ProductImageGallery images={product.images} />
+          <ProductImageGallery images={productImages} />
           
           <div className="px-3 md:px-0">
             <h1 className="text-xl md:text-2xl font-bold mb-2">{product.name}</h1>
@@ -225,7 +242,17 @@ const ProductDetail: React.FC = () => {
         </div>
         
         <ProductTabs 
-          product={product} 
+          product={{
+            name: product.name,
+            description: product.description,
+            price: product.price,
+            discountPrice: product.discount_price || undefined,
+            rating: 4.5,
+            reviewCount: 128,
+            sold: 1024,
+            availability: "In Stock",
+            id: product.id
+          }} 
           activeTab={activeTab} 
           setActiveTab={setActiveTab} 
           isScrolled={isScrolled} 
