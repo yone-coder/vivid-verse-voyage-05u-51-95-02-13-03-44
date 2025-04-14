@@ -28,8 +28,6 @@ const DEFAULT_PRODUCT_ID = "aae97882-a3a1-4db5-b4f5-156705cd10ee"; // Premium He
 const ProductDetail = () => {
   // State variables
   const [activeTab, setActiveTab] = useState("description");
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isHeaderVisible, setIsHeaderVisible] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [isFavorite, setIsFavorite] = useState(false);
   const [showVariants, setShowVariants] = useState(true);
@@ -46,10 +44,7 @@ const ProductDetail = () => {
   const [showInfo, setShowInfo] = useState(false);
 
   // Refs and hooks
-  const headerRef = useRef<HTMLDivElement>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
-  const limitedOffersBandRef = useRef<HTMLDivElement>(null);
-  const lastScrollTop = useRef(0);
   const isMobile = useIsMobile();
   const { toast } = useToast();
   const { id: paramId } = useParams<{ id: string }>();
@@ -196,39 +191,6 @@ const ProductDetail = () => {
     });
   };
 
-  // Effects
-  useEffect(() => {
-    const handleScroll = () => {
-      if (headerRef.current && tabsRef.current) {
-        const scrollY = window.scrollY;
-        const headerHeight = headerRef.current.getBoundingClientRect().height;
-        const tabsPosition = tabsRef.current.getBoundingClientRect().top + scrollY;
-        
-        const isScrollingUp = scrollY < lastScrollTop.current;
-        
-        const isPastOverlay = scrollY > 0;
-        setIsScrolled(isPastOverlay);
-        
-        if (isPastOverlay) {
-          setIsHeaderVisible(true);
-        } else {
-          setIsHeaderVisible(false);
-        }
-        
-        if (scrollY > tabsPosition - 100) {
-          setShowLimitedOffersBand(false);
-        } else {
-          setShowLimitedOffersBand(true);
-        }
-        
-        lastScrollTop.current = scrollY;
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
   // Show loading state while product data is being fetched
   if (isLoading) {
     return (
@@ -347,47 +309,30 @@ const ProductDetail = () => {
   
   return (
     <div className="flex flex-col min-h-screen bg-white">
-      {/* Gallery Section without Header Overlay */}
-      <div ref={headerRef} className="relative w-full bg-transparent">
-        <ProductHeader 
-          isFavorite={isFavorite}
-          toggleFavorite={toggleFavorite}
-          handleShare={handleShare}
-          handleCartClick={handleCartClick}
-          isScrolled={false}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          handleSearch={handleSearch}
-        />
+      {/* Always visible sticky header */}
+      <ProductHeader 
+        isFavorite={isFavorite}
+        toggleFavorite={toggleFavorite}
+        handleShare={handleShare}
+        handleCartClick={handleCartClick}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        handleSearch={handleSearch}
+        activeTab={activeTab}
+        onTabChange={scrollToTab}
+        totalReviews={productForTabs.reviewCount}
+        hasQuestions={true}
+      />
+
+      {/* Limited Offers Band below header */}
+      {showLimitedOffersBand && <LimitedOffersBand />}
+      
+      {/* Gallery Section */}
+      <div className="relative w-full bg-transparent">
         <ProductImageGallery images={productImages.length > 0 ? productImages : ["/placeholder.svg"]} />
       </div>
-
-      {/* Fixed header when scrolled - visible as soon as we scroll past the overlay */}
-      <div 
-        className={`fixed top-0 left-0 right-0 z-30 transition-transform duration-300 ${
-          isHeaderVisible && isScrolled ? 'translate-y-0' : '-translate-y-full'
-        }`}
-      >
-        <ProductHeader 
-          isFavorite={isFavorite}
-          toggleFavorite={toggleFavorite}
-          handleShare={handleShare}
-          handleCartClick={handleCartClick}
-          isScrolled={true}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          handleSearch={handleSearch}
-          activeTab={activeTab}
-          onTabChange={scrollToTab}
-          totalReviews={productForTabs.reviewCount}
-          hasQuestions={true}
-        />
-
-        {/* Limited Offers Band below fixed header - only visible when scrolled */}
-        {showLimitedOffersBand && <LimitedOffersBand />}
-      </div>
       
-      <div className={`flex-1 ${isScrolled ? 'pt-0' : ''}`}>
+      <div className="flex-1">
         <div className="bg-white p-1">
           <div className="flex items-center justify-between mb-0.5">
             {/* Badges section removed */}
@@ -462,8 +407,8 @@ const ProductDetail = () => {
           product={productForTabs}
           activeTab={activeTab} 
           setActiveTab={setActiveTab} 
-          isScrolled={isScrolled} 
-          headerHeight={isScrolled ? 40 : 0}
+          isScrolled={false} 
+          headerHeight={0}
         />
       </div>
       
