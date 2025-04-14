@@ -33,10 +33,10 @@ const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
     { name: "Red", price: 229.99, stock: 16, image: "", bestseller: false, limited: true }
   ];
   
-  // Use our new stock decay hook
-  const { variantStockInfo, activateVariant } = useVariantStockDecay({
+  // Use our new stock decay hook with 5-minute decay period
+  const { variantStockInfo, activateVariant, getTimeRemaining } = useVariantStockDecay({
     variants: colorVariants,
-    decayPeriod: 24 * 60 * 60 * 1000 // 24 hours
+    decayPeriod: 5 * 60 * 1000 // 5 minutes in milliseconds
   });
   
   // Get the currently selected variant
@@ -99,6 +99,7 @@ const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
             onColorChange={handleColorChange}
             getColorHex={getColorHex}
             stockInfo={variantStockInfo[variant.name]}
+            getTimeRemaining={(name) => getTimeRemaining(name)}
           />
         ))}
       </div>

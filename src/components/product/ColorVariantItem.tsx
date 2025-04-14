@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
 import { VariantStockInfo } from "@/hooks/useVariantStockDecay";
+import { Progress } from "@/components/ui/progress";
 
 interface ProductVariant {
   name: string;
@@ -26,6 +27,7 @@ interface ColorVariantItemProps {
   onColorChange: (color: string) => void;
   getColorHex: (name: string) => string;
   stockInfo?: VariantStockInfo;
+  getTimeRemaining?: (variantName: string) => { minutes: number, seconds: number } | null;
 }
 
 const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
@@ -33,7 +35,8 @@ const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
   selectedColor,
   onColorChange,
   getColorHex,
-  stockInfo
+  stockInfo,
+  getTimeRemaining
 }) => {
   const isSelected = selectedColor === variant.name;
   
@@ -56,35 +59,29 @@ const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
                        isVeryLowStock ? "Almost gone!" :
                        isLowStock ? "Low stock" : null;
   
-  // Calculate time remaining if available
-  const hoursRemaining = stockInfo?.timeRemaining 
-    ? Math.ceil(stockInfo.timeRemaining / (1000 * 60 * 60)) 
-    : null;
-    
-  const timeRemainingText = hoursRemaining 
-    ? hoursRemaining <= 1 
-      ? "< 1 hour left" 
-      : `${hoursRemaining} hours left` 
+  // Get remaining time if available
+  const timeRemaining = getTimeRemaining ? getTimeRemaining(variant.name) : null;
+  
+  const timeRemainingText = timeRemaining 
+    ? `${timeRemaining.minutes}:${timeRemaining.seconds.toString().padStart(2, '0')} left`
     : null;
   
   // Get color for the stock level indicator
   const getStockLevelColor = () => {
     if (currentStock === 0) return "bg-gray-500"; // Grey — #9E9E9E
-    if (currentStock <= 3) return "bg-red-800";   // Dark Red — #C62828
-    if (currentStock <= 7) return "bg-red-400";   // Red — #EF5350
-    if (currentStock <= 15) return "bg-orange-500"; // Orange — #FB8C00
-    if (currentStock <= 30) return "bg-amber-400"; // Amber — #FFC107
-    if (currentStock <= 60) return "bg-yellow-300"; // Yellow — #FFEB3B
-    if (currentStock <= 90) return "bg-lime-600"; // Lime — #C0CA33
-    if (currentStock <= 130) return "bg-green-300"; // Light Green — #81C784
-    if (currentStock <= 180) return "bg-green-500"; // Green — #4CAF50
-    return "bg-teal-500"; // Teal — #26A69A
+    if (stockPercentage <= 5) return "bg-red-800";   // Dark Red — #C62828
+    if (stockPercentage <= 15) return "bg-red-400";   // Red — #EF5350
+    if (stockPercentage <= 30) return "bg-orange-500"; // Orange — #FB8C00
+    if (stockPercentage <= 50) return "bg-amber-400"; // Amber — #FFC107
+    if (stockPercentage <= 70) return "bg-yellow-300"; // Yellow — #FFEB3B
+    if (stockPercentage <= 85) return "bg-lime-600"; // Lime — #C0CA33
+    return "bg-green-500"; // Green — #4CAF50
   };
   
   const stockLevelColor = getStockLevelColor();
   const isActive = stockInfo?.isActive || false;
   
-  // Force re-render every second for smooth countdown when active
+  // Force re-render every animation frame for smooth countdown when active
   useEffect(() => {
     let animationFrame: number;
     
@@ -168,7 +165,16 @@ const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
               </div>
             )}
             
-            {/* Removed progress bar as requested */}
+            {/* Add real-time progress bar */}
+            {isActive && (
+              <div className="w-full mt-1">
+                <Progress 
+                  value={stockPercentage} 
+                  className="h-1 w-full"
+                  indicatorClassName={`${stockLevelColor} ${isLowStock ? 'animate-pulse' : ''}`}
+                />
+              </div>
+            )}
             
             {variant.bestseller && (
               <Badge 
@@ -199,9 +205,11 @@ const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
           <p className={isLowStock ? "text-red-500" : "text-gray-500"}>
             {currentStock > 0 ? `${currentStock} in stock` : "Out of stock"}
           </p>
-          {isActive && hoursRemaining && (
+          {isActive && timeRemaining && (
             <p className="text-amber-600">
-              {hoursRemaining <= 1 ? "Selling out soon!" : `${hoursRemaining}h remaining at current rate`}
+              {timeRemaining.minutes === 0 && timeRemaining.seconds < 30 
+                ? "Selling out soon!" 
+                : `${timeRemaining.minutes}:${timeRemaining.seconds.toString().padStart(2, '0')} remaining`}
             </p>
           )}
           {variant.bestseller && <p className="text-amber-600">Bestseller</p>}
