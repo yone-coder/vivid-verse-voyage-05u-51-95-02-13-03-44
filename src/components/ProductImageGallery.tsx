@@ -370,96 +370,58 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
           </CarouselContent>
           
           <div className={cn(
-            "absolute bottom-3 left-3 z-30",
-            viewMode === "immersive" && "opacity-0 hover:opacity-100 transition-opacity",
+            "absolute bottom-3 right-3 flex items-center gap-2 z-30 transition-opacity",
             focusMode && "opacity-0"
           )}>
-            <div className="bg-black/60 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs font-medium">
+            <div className="bg-black/60 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs font-medium mr-2">
               {currentIndex + 1} / {images.length}
             </div>
-          </div>
-          
-          <div className={cn(
-            "absolute left-2 top-1/2 -translate-y-1/2 z-10",
-            viewMode === "immersive" && "opacity-0 hover:opacity-100 transition-opacity",
-            focusMode && "opacity-0"
-          )}>
+
             <Button
-              variant="outline"
+              variant="ghost" 
               size="icon"
-              className="rounded-full bg-black/40 backdrop-blur-sm hover:bg-black/60 border-gray-200/10 shadow-sm h-9 w-9"
-              onClick={handlePrevious}
+              className="h-8 w-8 rounded-full bg-black/60 backdrop-blur-sm hover:bg-black/80 text-white"
+              onClick={handleRotate}
             >
-              <ChevronLeft className="h-5 w-5 text-white" />
-              <span className="sr-only">Previous slide</span>
+              <RotateCw className="h-4 w-4" />
             </Button>
-          </div>
-          
-          <div className={cn(
-            "absolute right-2 top-1/2 -translate-y-1/2 z-10",
-            viewMode === "immersive" && "opacity-0 hover:opacity-100 transition-opacity",
-            focusMode && "opacity-0"
-          )}>
+            
             <Button
-              variant="outline"
+              variant="ghost" 
               size="icon"
-              className="rounded-full bg-black/40 backdrop-blur-sm hover:bg-black/60 border-gray-200/10 shadow-sm h-9 w-9"
-              onClick={handleNext}
+              className="h-8 w-8 rounded-full bg-black/60 backdrop-blur-sm hover:bg-black/80 text-white"
+              onClick={handleFlip}
             >
-              <ChevronRight className="h-5 w-5 text-white" />
-              <span className="sr-only">Next slide</span>
+              <FlipHorizontal className="h-4 w-4" />
             </Button>
+            
+            <Button
+              variant="ghost" 
+              size="icon"
+              className={cn(
+                "h-8 w-8 rounded-full bg-black/60 backdrop-blur-sm hover:bg-black/80 text-white",
+                autoScrollEnabled && "bg-primary text-white"
+              )}
+              onClick={toggleAutoScroll}
+            >
+              {autoScrollEnabled ? 
+                <Pause className="h-4 w-4" /> : 
+                <Play className="h-4 w-4" />
+              }
+            </Button>
+            
+            <button
+              onClick={toggleFocusMode}
+              className={cn(
+                "h-8 w-8 flex items-center justify-center rounded-full bg-black/60 backdrop-blur-sm text-white hover:bg-black/80 transition-colors",
+                focusMode && "bg-primary text-white"
+              )}
+              aria-label={focusMode ? "Exit focus mode" : "Enter focus mode"}
+            >
+              <Focus size={16} />
+            </button>
           </div>
         </Carousel>
-        
-        <div className={cn(
-          "absolute bottom-3 right-3 flex items-center gap-2 z-30 transition-opacity",
-          focusMode && "opacity-0"
-        )}>
-          <Button
-            variant="ghost" 
-            size="icon"
-            className="h-8 w-8 rounded-full bg-black/60 backdrop-blur-sm hover:bg-black/80 text-white"
-            onClick={handleRotate}
-          >
-            <RotateCw className="h-4 w-4" />
-          </Button>
-          
-          <Button
-            variant="ghost" 
-            size="icon"
-            className="h-8 w-8 rounded-full bg-black/60 backdrop-blur-sm hover:bg-black/80 text-white"
-            onClick={handleFlip}
-          >
-            <FlipHorizontal className="h-4 w-4" />
-          </Button>
-          
-          <Button
-            variant="ghost" 
-            size="icon"
-            className={cn(
-              "h-8 w-8 rounded-full bg-black/60 backdrop-blur-sm hover:bg-black/80 text-white",
-              autoScrollEnabled && "bg-primary text-white"
-            )}
-            onClick={toggleAutoScroll}
-          >
-            {autoScrollEnabled ? 
-              <Pause className="h-4 w-4" /> : 
-              <Play className="h-4 w-4" />
-            }
-          </Button>
-          
-          <button
-            onClick={toggleFocusMode}
-            className={cn(
-              "h-8 w-8 flex items-center justify-center rounded-full bg-black/60 backdrop-blur-sm text-white hover:bg-black/80 transition-colors",
-              focusMode && "bg-primary text-white"
-            )}
-            aria-label={focusMode ? "Exit focus mode" : "Enter focus mode"}
-          >
-            <Focus size={16} />
-          </button>
-        </div>
       </div>
       
       <div className="flex items-center gap-1.5 px-1.5 pb-1.5 overflow-x-auto scrollbar-none">
