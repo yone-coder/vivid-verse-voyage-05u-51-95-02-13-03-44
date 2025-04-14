@@ -60,7 +60,7 @@ const ProductDetail = () => {
   const { data: product, isLoading } = useProduct(productId);
   const { data: analytics, isLoading: analyticsLoading } = useProductAnalytics(productId);
 
-  // Define our specific color variants with additional properties
+  // Updated color variants with consistent 256 stock
   const colorVariants = [
     { name: "Black", price: 199.99, stock: 256, image: "", bestseller: true },
     { name: "White", price: 199.99, stock: 256, image: "", bestseller: false },
