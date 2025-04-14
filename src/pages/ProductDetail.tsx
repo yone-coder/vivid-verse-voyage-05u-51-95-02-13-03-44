@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -166,22 +167,16 @@ const ProductDetail = () => {
     });
   };
 
-  // Synchronize with tab changes from the header
-  useEffect(() => {
-    const handleTabChange = (e: CustomEvent<{tabIndex: number}>) => {
-      // Scroll to the tab content when the header tab is clicked
-      const section = document.getElementById(`tab-section-${e.detail.tabIndex}`);
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+    
+    if (contentRef.current) {
+      const section = document.getElementById(tab);
       if (section) {
         section.scrollIntoView({ behavior: 'smooth' });
       }
-    };
-    
-    window.addEventListener('tabchange' as any, handleTabChange as any);
-    
-    return () => {
-      window.removeEventListener('tabchange' as any, handleTabChange as any);
-    };
-  }, []);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -618,6 +613,7 @@ const ProductDetail = () => {
             <ProductPaymentOptions paymentOptions={productForTabs.payments} />
           </div>
           
+          {/* Replace the ProductSectionCollapsible components with AliExpressTabs */}
           <AliExpressTabs tabs={tabsConfig} initialTab={0} />
         </div>
       </div>

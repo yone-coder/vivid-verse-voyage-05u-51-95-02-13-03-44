@@ -76,24 +76,7 @@ const AliExpressTabs = ({ initialTab = 0, tabs = [] }: AliExpressTabsProps) => {
 
   const handleTabClick = (index: number) => {
     setActiveTab(index);
-    
-    // Get the main layout component to sync the header tabs
-    const event = new CustomEvent('tabchange', { detail: { tabIndex: index } });
-    window.dispatchEvent(event);
   };
-
-  // Listen for tab changes from the header
-  useEffect(() => {
-    const handleExternalTabChange = (e: CustomEvent<{tabIndex: number}>) => {
-      setActiveTab(e.detail.tabIndex);
-    };
-    
-    window.addEventListener('tabchange' as any, handleExternalTabChange as any);
-    
-    return () => {
-      window.removeEventListener('tabchange' as any, handleExternalTabChange as any);
-    };
-  }, []);
 
   // Add CSS to hide scrollbar for Webkit browsers
   useEffect(() => {
@@ -114,7 +97,7 @@ const AliExpressTabs = ({ initialTab = 0, tabs = [] }: AliExpressTabsProps) => {
     <div className="w-screen -mx-4 flex flex-col bg-white border-t border-gray-100">
       {/* Header with full-width, edge-to-edge scrollable tabs */}
       <div 
-        className="sticky top-[var(--header-height)] z-30 w-full bg-white shadow-sm"
+        className="sticky top-[var(--header-height)] z-40 w-full bg-white shadow-sm"
         id="tabs-header"
       >
         <div className="w-full flex overflow-x-auto py-2 px-0 bg-white border-b border-gray-200 hide-scrollbar relative" 
@@ -125,7 +108,6 @@ const AliExpressTabs = ({ initialTab = 0, tabs = [] }: AliExpressTabsProps) => {
             <div
               key={tab.id}
               ref={(el) => (tabsRef.current[index] = el)}
-              id={`tab-section-${index}`}
               className={`flex-shrink-0 cursor-pointer px-4 whitespace-nowrap text-xs font-medium ${
                 activeTab === index ? 'text-red-500' : 'text-gray-600'
               }`}

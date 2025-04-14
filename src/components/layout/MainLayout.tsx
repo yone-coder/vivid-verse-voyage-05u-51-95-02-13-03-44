@@ -5,10 +5,9 @@ import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
 import MobileBottomNav from "@/components/layout/MobileBottomNav";
 import { Outlet, useLocation } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { Heart, Share } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import HeaderTabs from "@/components/product/HeaderTabs";
 
 export default function MainLayout() {
   const isMobile = useIsMobile();
@@ -19,7 +18,6 @@ export default function MainLayout() {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeTab, setActiveTab] = useState(0);
   
   const toggleFavorite = () => {
     setIsFavorite(!isFavorite);
@@ -66,11 +64,6 @@ export default function MainLayout() {
     }
   `;
   
-  // Handle tab changes that should be synchronized between header tabs and content tabs
-  const handleTabChange = (index: number) => {
-    setActiveTab(index);
-  };
-  
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <style dangerouslySetInnerHTML={{ __html: headerHeightStyle }} />
@@ -99,11 +92,6 @@ export default function MainLayout() {
           setSearchQuery={setSearchQuery}
           handleSearch={handleSearch}
         />
-      )}
-      
-      {/* Header tabs for product pages */}
-      {isProductPage && (
-        <HeaderTabs activeTab={activeTab} onTabChange={handleTabChange} />
       )}
       
       {isProductPage || isHomePage ? (
