@@ -23,10 +23,12 @@ const ProductSectionCollapsible = ({
     <div className="border-t border-gray-100 py-4">
       <h2 className="font-medium text-base mb-3">{title}</h2>
       
-      <div className="mb-2">
-        {/* Preview content - always visible */}
-        {previewContent}
-      </div>
+      {/* Preview content - only visible when collapsed */}
+      {!isExpanded && (
+        <div className="mb-2">
+          {previewContent}
+        </div>
+      )}
       
       <Collapsible
         open={isExpanded}
