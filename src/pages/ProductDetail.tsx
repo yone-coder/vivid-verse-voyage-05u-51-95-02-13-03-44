@@ -1,7 +1,7 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
-import ProductTabs from "@/components/ProductTabs";
 import StickyBuyButton from "@/components/StickyBuyButton";
 import { useProduct, useProductAnalytics } from "@/hooks/useProduct";
 import { useToast } from "@/hooks/use-toast";
@@ -11,7 +11,6 @@ import { useVariantStockDecay } from "@/hooks/useVariantStockDecay";
 import { Button } from "@/components/ui/button";
 
 // Product Components
-import ProductHeader from "@/components/product/ProductHeader";
 import DynamicPriceDisplay from "@/components/product/DynamicPriceDisplay";
 import EnhancedRating from "@/components/product/EnhancedRating";
 import LimitedOffersBand from "@/components/product/LimitedOffersBand";
@@ -26,7 +25,6 @@ const DEFAULT_PRODUCT_ID = "aae97882-a3a1-4db5-b4f5-156705cd10ee"; // Premium He
 
 const ProductDetail = () => {
   // State variables
-  const [activeTab, setActiveTab] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [isFavorite, setIsFavorite] = useState(false);
   const [showVariants, setShowVariants] = useState(true);
@@ -43,7 +41,6 @@ const ProductDetail = () => {
   const [showInfo, setShowInfo] = useState(false);
 
   // Refs and hooks
-  const tabsRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
   const { toast } = useToast();
   const { id: paramId } = useParams<{ id: string }>();
@@ -146,26 +143,6 @@ const ProductDetail = () => {
     toast({
       title: "Proceeding to checkout",
       description: `Processing order for ${quantity} x ${product?.name || "Product"} (${selectedColor})`,
-    });
-  };
-
-  // This function is called when a tab is clicked in the header
-  const handleTabClick = (tabId: string) => {
-    if (activeTab === tabId) {
-      setActiveTab("");
-    } else {
-      setActiveTab(tabId);
-      if (tabsRef.current) {
-        tabsRef.current.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
-  };
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    toast({
-      title: "Search submitted",
-      description: `Searching for: ${searchQuery}`,
     });
   };
 
@@ -303,22 +280,7 @@ const ProductDetail = () => {
   
   return (
     <div className="flex flex-col min-h-screen bg-white">
-      {/* Always visible sticky header */}
-      <ProductHeader 
-        isFavorite={isFavorite}
-        toggleFavorite={toggleFavorite}
-        handleShare={handleShare}
-        handleCartClick={handleCartClick}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        handleSearch={handleSearch}
-        activeTab={activeTab}
-        onTabChange={handleTabClick}
-        totalReviews={productForTabs.reviewCount}
-        hasQuestions={true}
-      />
-
-      {/* Limited Offers Band below header */}
+      {/* Limited Offers Band */}
       {showLimitedOffersBand && <LimitedOffersBand />}
       
       {/* Gallery Section */}
@@ -394,18 +356,6 @@ const ProductDetail = () => {
             <ProductPaymentOptions paymentOptions={productForTabs.payments} />
           </div>
         </div>
-      </div>
-      
-      {/* Show ProductTabs with previewMode=true to display compact versions */}
-      <div ref={tabsRef} className="mb-4">
-        <ProductTabs
-          product={productForTabs}
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          isScrolled={false}
-          headerHeight={0}
-          previewMode={true}
-        />
       </div>
       
       <StickyBuyButton 

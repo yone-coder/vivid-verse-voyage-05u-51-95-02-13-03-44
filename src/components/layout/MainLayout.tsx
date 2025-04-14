@@ -1,6 +1,5 @@
 
 import React from "react";
-import Header from "@/components/layout/Header";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Footer from "@/components/layout/Footer";
 import MobileBottomNav from "@/components/layout/MobileBottomNav";
@@ -75,13 +74,6 @@ export default function MainLayout() {
         </>
       ) : (
         <>
-          <Header 
-            isSearchOpen={isSearchOpen}
-            setIsSearchOpen={setIsSearchOpen}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            handleSearch={handleSearch}
-          />
           <main className="flex-grow pb-20">
             <Outlet />
           </main>

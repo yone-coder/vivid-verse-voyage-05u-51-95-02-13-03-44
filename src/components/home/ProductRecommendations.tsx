@@ -1,6 +1,5 @@
 
 import { Link } from "react-router-dom";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ProductCard } from "./ProductGrid";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ChevronRight } from "lucide-react";
@@ -18,6 +17,7 @@ const recommendedCategories = [
 export default function ProductRecommendations({ products }) {
   const isMobile = useIsMobile();
   const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
+  const [activeCategory, setActiveCategory] = useState("for-you");
   
   const toggleExpand = (categoryId: string) => {
     setExpandedCategories(prev => ({
@@ -36,21 +36,27 @@ export default function ProductRecommendations({ products }) {
           <Link to="#" className="text-xs text-orange-500 hover:underline">View More</Link>
         </div>
         
-        <Tabs defaultValue="for-you" className="w-full">
-          <TabsList className="bg-transparent mb-2 border-b w-full justify-start h-auto overflow-x-auto pb-0 gap-3">
+        <div className="mb-4">
+          <div className="flex overflow-x-auto space-x-4 pb-2">
             {recommendedCategories.map(category => (
-              <TabsTrigger 
+              <button
                 key={category.id}
-                value={category.id}
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-orange-500 bg-transparent data-[state=active]:bg-transparent data-[state=active]:text-orange-500 px-1 py-1 h-auto shadow-none text-xs"
+                onClick={() => setActiveCategory(category.id)}
+                className={`whitespace-nowrap px-3 py-1 rounded-full text-xs ${
+                  activeCategory === category.id 
+                    ? "bg-orange-500 text-white" 
+                    : "bg-gray-100 text-gray-700"
+                }`}
               >
                 {category.name}
-              </TabsTrigger>
+              </button>
             ))}
-          </TabsList>
-          
-          {recommendedCategories.map(category => (
-            <TabsContent key={category.id} value={category.id} className="mt-0">
+          </div>
+        </div>
+        
+        {recommendedCategories.map(category => (
+          category.id === activeCategory && (
+            <div key={category.id}>
               <div className={`grid grid-cols-2 ${isMobile ? 'md:grid-cols-3' : 'md:grid-cols-4 lg:grid-cols-5'} gap-2`}>
                 {products?.slice(0, isExpanded(category.id) ? (isMobile ? 6 : 10) : (isMobile ? 2 : 5)).map(product => (
                   <div key={product.id} className="h-full">
@@ -71,9 +77,9 @@ export default function ProductRecommendations({ products }) {
                   </Button>
                 </div>
               )}
-            </TabsContent>
-          ))}
-        </Tabs>
+            </div>
+          )
+        ))}
       </div>
     </div>
   );
