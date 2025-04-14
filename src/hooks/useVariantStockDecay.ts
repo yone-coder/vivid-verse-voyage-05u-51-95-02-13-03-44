@@ -1,15 +1,16 @@
-
 import { useState, useEffect, useRef } from 'react';
 
 export interface VariantStockInfo {
   initialStock: number;
   currentStock: number;
   stockPercentage: number;
-  decayRate: number; // Units per minute
+  decayRate: number; // Units per hour for 12-hour window
   timeRemaining: number; // in milliseconds
   isLowStock: boolean;
   isActive: boolean;
   startTime: number; // timestamp when the countdown started
+  lastRefilledAt?: number; // timestamp of the last refill
+  refillCooldown?: number; // cooldown period in milliseconds before next refill
 }
 
 interface UseVariantStockDecayProps {
@@ -19,6 +20,9 @@ interface UseVariantStockDecayProps {
   }>;
   decayPeriod?: number; // Time in milliseconds for full decay cycle (default 12 hours)
   demoMode?: boolean; // Accelerated decay for demo purposes
+  autoRefill?: boolean; // Enable automatic refill when stock runs out
+  refillCooldown?: number; // Time in milliseconds to wait before refilling (default 30 seconds)
+  refillPercentage?: number; // Percentage of initial stock to refill (default 70%)
 }
 
 // Helper function to generate a storage key for a specific variant
@@ -27,7 +31,10 @@ const getStorageKey = (variantName: string) => `variant_stock_${variantName.repl
 export function useVariantStockDecay({ 
   variants, 
   decayPeriod = 12 * 60 * 60 * 1000, // 12 hours in milliseconds
-  demoMode = true // Enable demo mode by default for slower decay
+  demoMode = true, // Enable demo mode by default for slower decay
+  autoRefill = true, // Enable automatic refill by default
+  refillCooldown = 30 * 1000, // 30 seconds cooldown before refilling
+  refillPercentage = 70 // Refill to 70% of initial stock
 }: UseVariantStockDecayProps) {
   const [variantStockInfo, setVariantStockInfo] = useState<Record<string, VariantStockInfo>>({});
   const [lastUpdate, setLastUpdate] = useState(Date.now());
@@ -70,7 +77,9 @@ export function useVariantStockDecay({
           timeRemaining: decayPeriod,
           isLowStock: variant.stock <= 15,
           isActive: false,
-          startTime: Date.now() // Record start time for accurate calculations
+          startTime: Date.now(), // Record start time for accurate calculations
+          lastRefilledAt: 0, // Initialize last refilled timestamp
+          refillCooldown: refillCooldown // Set refill cooldown period
         };
         
         console.info(`Initialized variant: ${variant.name} with decay rate: ${decayRate} units/12-hours`);
@@ -88,7 +97,7 @@ export function useVariantStockDecay({
     }
     
     initializedRef.current = true;
-  }, [variants, decayPeriod, variantStockInfo, demoMode]);
+  }, [variants, decayPeriod, variantStockInfo, demoMode, refillCooldown]);
 
   // Use requestAnimationFrame for smoother real-time updates
   useEffect(() => {
@@ -99,11 +108,36 @@ export function useVariantStockDecay({
         const newInfo = { ...prevInfo };
         let needsUpdate = false;
         
-        // Only decay active variants
+        // Process all variants for stock updates and potential refills
         Object.keys(newInfo).forEach(variantName => {
           const variant = newInfo[variantName];
           
-          if (variant.isActive && variant.currentStock > 0 && variant.timeRemaining > 0) {
+          // Check if this variant needs a refill (out of stock or nearly out)
+          if (autoRefill && 
+              variant.currentStock <= 0 && 
+              (!variant.lastRefilledAt || now - variant.lastRefilledAt > variant.refillCooldown!)) {
+            
+            // Calculate the refill amount based on the refill percentage
+            const refillAmount = Math.ceil(variant.initialStock * (refillPercentage / 100));
+            
+            // Refill the stock
+            newInfo[variantName] = {
+              ...variant,
+              currentStock: refillAmount,
+              stockPercentage: (refillAmount / variant.initialStock) * 100,
+              timeRemaining: (refillAmount / variant.initialStock) * decayPeriod,
+              isLowStock: refillAmount <= 15,
+              lastRefilledAt: now
+            };
+            
+            needsUpdate = true;
+            console.info(`Auto-refilled variant: ${variantName} with ${refillAmount} units (${refillPercentage}% of initial stock)`);
+            
+            // Save refill state to localStorage
+            localStorage.setItem(getStorageKey(variantName), JSON.stringify(newInfo[variantName]));
+          } 
+          // Process normal stock decay for active variants with stock
+          else if (variant.isActive && variant.currentStock > 0 && variant.timeRemaining > 0) {
             // Calculate elapsed time in hours since the start (for 12-hour window)
             const elapsedMs = now - variant.startTime;
             // Convert to the appropriate unit - now in hours for the 12-hour period
@@ -135,6 +169,11 @@ export function useVariantStockDecay({
                 isLowStock: newStock <= 15
               };
               
+              // Check if just ran out of stock
+              if (variant.currentStock > 0 && newStock <= 0) {
+                console.info(`Variant ${variantName} is now out of stock. Will refill after cooldown.`);
+              }
+              
               // Save updated state to localStorage immediately
               localStorage.setItem(getStorageKey(variantName), JSON.stringify(newInfo[variantName]));
             }
@@ -157,7 +196,7 @@ export function useVariantStockDecay({
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [decayPeriod]);
+  }, [decayPeriod, autoRefill, refillPercentage]);
 
   // Function to activate a variant (start its decay)
   const activateVariant = (variantName: string) => {
@@ -236,7 +275,8 @@ export function useVariantStockDecay({
         currentStock: variant.stock,
         stockPercentage: 100,
         timeRemaining: decayPeriod,
-        startTime: Date.now()
+        startTime: Date.now(),
+        lastRefilledAt: Date.now() // Reset the refill timestamp
       };
       
       // Save to localStorage
@@ -265,6 +305,7 @@ export function useVariantStockDecay({
             stockPercentage: 100,
             timeRemaining: decayPeriod,
             startTime: Date.now(),
+            lastRefilledAt: Date.now(), // Reset the refill timestamp
             isActive: updated[variant.name].isActive // Preserve active state
           };
           
@@ -281,11 +322,41 @@ export function useVariantStockDecay({
     });
   };
 
+  // Method to trigger manual refill for a variant
+  const refillVariant = (variantName: string, percentage: number = refillPercentage) => {
+    setVariantStockInfo(prev => {
+      if (!prev[variantName]) return prev;
+      
+      const variant = prev[variantName];
+      const refillAmount = Math.ceil(variant.initialStock * (percentage / 100));
+      
+      const updatedVariant = {
+        ...variant,
+        currentStock: refillAmount,
+        stockPercentage: (refillAmount / variant.initialStock) * 100,
+        timeRemaining: (refillAmount / variant.initialStock) * decayPeriod,
+        isLowStock: refillAmount <= 15,
+        lastRefilledAt: Date.now()
+      };
+      
+      // Save to localStorage
+      localStorage.setItem(getStorageKey(variantName), JSON.stringify(updatedVariant));
+      
+      console.info(`Manually refilled variant: ${variantName} with ${refillAmount} units (${percentage}% of initial stock)`);
+      
+      return {
+        ...prev,
+        [variantName]: updatedVariant
+      };
+    });
+  };
+
   return {
     variantStockInfo,
     activateVariant,
     getTimeRemaining,
     resetVariant,
-    resetAllVariants
+    resetAllVariants,
+    refillVariant
   };
 }
