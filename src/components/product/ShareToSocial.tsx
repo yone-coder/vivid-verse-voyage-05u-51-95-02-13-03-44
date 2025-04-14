@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { Share2, X, Check, Copy, Facebook, Twitter, WhatsApp, Instagram, Linkedin, Link } from 'lucide-react';
+import { Share2, X, Check, Copy, Facebook, Twitter, Link, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 
@@ -73,8 +72,8 @@ const ShareToSocial: React.FC<ShareToSocialProps> = ({
   const socialPlatforms = [
     { id: 'facebook', name: 'Facebook', icon: <Facebook size={18} /> },
     { id: 'twitter', name: 'Twitter', icon: <Twitter size={18} /> },
-    { id: 'whatsapp', name: 'WhatsApp', icon: <WhatsApp size={18} /> },
-    { id: 'linkedin', name: 'LinkedIn', icon: <Linkedin size={18} /> },
+    { id: 'messenger', name: 'Messenger', icon: <Send size={18} /> },
+    { id: 'linkedin', name: 'LinkedIn', icon: <Send size={18} /> },
   ];
   
   return (
