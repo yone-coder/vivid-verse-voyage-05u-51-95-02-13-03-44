@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useProduct } from '@/hooks/useProduct';
@@ -250,7 +249,6 @@ const ProductDetail: React.FC = () => {
             rating: 4.5,
             reviewCount: 128,
             sold: 1024,
-            availability: "In Stock",
             id: product.id
           }} 
           activeTab={activeTab} 
