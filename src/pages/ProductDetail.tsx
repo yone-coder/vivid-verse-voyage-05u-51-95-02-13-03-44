@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -613,8 +612,7 @@ const ProductDetail = () => {
             <ProductPaymentOptions paymentOptions={productForTabs.payments} />
           </div>
           
-          {/* Replace the ProductSectionCollapsible components with AliExpressTabs */}
-          <AliExpressTabs tabs={tabsConfig} initialTab={0} />
+          <AliExpressTabs tabs={tabsConfig} initialTab={0} className="mt-4" />
         </div>
       </div>
       
