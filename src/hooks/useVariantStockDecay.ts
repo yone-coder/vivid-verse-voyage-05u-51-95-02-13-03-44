@@ -211,6 +211,8 @@ export function useVariantStockDecay({
 
   // Function to activate a variant (start its decay)
   const activateVariant = (variantName: string) => {
+    console.info(`Activating variant: ${variantName}`);
+    
     setVariantStockInfo(prev => {
       const updated = { ...prev };
       
@@ -229,11 +231,11 @@ export function useVariantStockDecay({
       });
       
       // Make sure the variant is properly initialized before activating
-      if (!updated[variantName]) return updated;
+      if (!updated[variantName]) {
+        console.error(`Variant ${variantName} not found in stock info!`);
+        return updated;
+      }
 
-      // Find the variant's decay period in the variants array
-      const currentVariant = variants.find(v => v.name === variantName);
-      
       // Only update isActive flag, don't change the start time
       // This preserves the original start time configured for each variant
       const updatedVariant = {
@@ -246,7 +248,7 @@ export function useVariantStockDecay({
       // Save to localStorage
       localStorage.setItem(getStorageKey(variantName), JSON.stringify(updatedVariant));
       
-      console.info(`Activated variant: ${variantName} with decay rate: ${updatedVariant.decayRate} units/period and original start time: ${new Date(updatedVariant.startTime).toLocaleTimeString()}`);
+      console.info(`Activated variant: ${variantName} with decay rate: ${updatedVariant.decayRate} units/period and original start time: ${new Date(updatedVariant.startTime).toLocaleTimeString()}, current stock: ${Math.floor(updatedVariant.currentStock)}`);
       
       return updated;
     });

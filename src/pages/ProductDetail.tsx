@@ -132,10 +132,11 @@ const ProductDetail = () => {
 
   // Effect to activate the selected variant for real-time stock decay
   useEffect(() => {
-    if (selectedColor) {
+    if (selectedColor && activateVariant) {
+      console.log(`ProductDetail: Activating color variant: ${selectedColor}`);
       activateVariant(selectedColor);
     }
-  }, [selectedColor]);
+  }, [selectedColor, activateVariant]);
 
   // Event handlers
   const incrementQuantity = () => {

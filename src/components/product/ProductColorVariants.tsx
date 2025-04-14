@@ -60,18 +60,24 @@ const ProductColorVariants: React.FC<ProductColorVariantsProps> = ({
   
   // Get color hex code based on name
   const getColorHex = (name: string) => {
-    const colorMap = {
+    const colorMap: Record<string, string> = {
       "Black": "#000000",
       "White": "#FFFFFF",
       "Jet Black": "#0A0A0A",
       "Blue": "#0066CC",
       "Red": "#CC0000"
     };
-    return colorMap[name as keyof typeof colorMap] || "transparent";
+    return colorMap[name] || "transparent";
   };
   
   // Custom color change handler to update both parent and activate variant
   const handleColorChange = (color: string) => {
+    // Make sure to activate the variant when color changes
+    if (activateVariant) {
+      activateVariant(color);
+    }
+    
+    // Then notify parent component
     onColorChange(color);
   };
   
