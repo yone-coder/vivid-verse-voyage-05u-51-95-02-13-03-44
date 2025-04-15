@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Plus, Trash2, Edit, Eye, X, Check, Save, Pencil } from "lucide-react";
@@ -390,20 +391,20 @@ const AdminPanel: React.FC = () => {
       
       console.log(`Saving new name for product ${productId}: ${productToUpdate.name}`);
       
-      // First update the local state to disable editing mode
+      // First update the local state to disable editing mode and show immediate feedback
       setEditableProducts(prev => 
         prev.map(p => p.id === productId ? { ...p, isEditing: false } : p)
+      );
+      
+      // Update the local products state immediately for a responsive UI
+      setProducts(prev => 
+        prev.map(p => p.id === productId ? { ...p, name: productToUpdate.name } : p)
       );
       
       // Use the specialized function for updating product names
       const result = await updateProductName(productId, productToUpdate.name);
       
       console.log("Name update result:", result);
-      
-      // Update the local products state - even if result is empty, we'll use the edited name
-      setProducts(prev => 
-        prev.map(p => p.id === productId ? { ...p, name: productToUpdate.name } : p)
-      );
       
       toast({
         title: "Success",
@@ -421,6 +422,8 @@ const AdminPanel: React.FC = () => {
         description: "Failed to update product name. Please try again.",
       });
       
+      // On error, reset the state by fetching products again
+      await fetchProducts();
       cancelEditingProductName(productId);
     }
   };
