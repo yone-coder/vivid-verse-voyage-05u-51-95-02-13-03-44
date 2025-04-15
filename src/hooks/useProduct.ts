@@ -56,6 +56,8 @@ export function useProduct(productId: string) {
     },
     enabled: !!productId,
     staleTime: 0, // Always consider data stale to ensure fresh fetches
+    refetchOnWindowFocus: true, // Refetch when window regains focus
+    refetchOnMount: true, // Refetch whenever the component mounts
   });
 }
 

@@ -391,18 +391,19 @@ const AdminPanel: React.FC = () => {
       
       console.log(`Saving new name for product ${productId}: ${productToUpdate.name}`);
       
-      // First update the local state to disable editing mode and show immediate feedback
+      // Step 1: Update UI immediately to show the change
       setEditableProducts(prev => 
         prev.map(p => p.id === productId ? { ...p, isEditing: false } : p)
       );
       
-      // Update the local products state immediately for a responsive UI
+      // Step 2: Update local products state for immediate feedback
+      const newName = productToUpdate.name.trim();
       setProducts(prev => 
-        prev.map(p => p.id === productId ? { ...p, name: productToUpdate.name } : p)
+        prev.map(p => p.id === productId ? { ...p, name: newName } : p)
       );
       
-      // Use the specialized function for updating product names
-      const result = await updateProductName(productId, productToUpdate.name);
+      // Step 3: Send update to Supabase
+      const result = await updateProductName(productId, newName);
       
       console.log("Name update result:", result);
       
@@ -411,7 +412,7 @@ const AdminPanel: React.FC = () => {
         description: "Product name updated successfully",
       });
       
-      // Refresh products to ensure we have the latest data
+      // Step 4: Refresh products to ensure we have the latest data
       await fetchProducts();
       
     } catch (error) {

@@ -70,20 +70,27 @@ export const updateProductName = async (productId: string, newName: string) => {
       updates
     });
     
-    // Perform the update
-    const { error } = await supabase
+    // Perform the update with return: 'representation' to get back the updated data
+    const { data, error } = await supabase
       .from('products')
       .update(updates)
-      .eq('id', productId);
+      .eq('id', productId)
+      .select('*');
       
     if (error) {
       console.error("Error updating product name:", error);
       throw error;
     }
     
-    // If update was successful but no data was returned, that's okay
-    // Let's fetch the updated product to return it
-    const { data: updatedProduct, error: fetchError } = await supabase
+    console.log("Product name updated successfully:", data);
+    
+    // If we got data back, return it
+    if (data && data.length > 0) {
+      return data;
+    }
+    
+    // If no data returned, fetch the updated product explicitly
+    const { data: fetchedProduct, error: fetchError } = await supabase
       .from('products')
       .select('*')
       .eq('id', productId)
@@ -94,9 +101,10 @@ export const updateProductName = async (productId: string, newName: string) => {
       throw fetchError;
     }
     
-    console.log("Product name updated successfully:", updatedProduct);
+    console.log("Fetched updated product:", fetchedProduct);
     // Return as array to maintain compatibility with existing code
-    return [updatedProduct];
+    return [fetchedProduct];
+    
   } catch (error) {
     console.error("Exception during product name update:", error);
     throw error;
