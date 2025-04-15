@@ -82,7 +82,7 @@ export const updateProduct = async (productId: string, updates: Partial<any>) =>
       updates: updatesWithTimestamp
     });
     
-    // Use select() to get the result back for debugging
+    // Perform the update
     const { data, error } = await supabase
       .from('products')
       .update(updatesWithTimestamp)

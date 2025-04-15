@@ -390,22 +390,27 @@ const AdminPanel: React.FC = () => {
       
       console.log(`Saving new name for product ${productId}: ${productToUpdate.name}`);
       
-      const updates = { 
-        name: productToUpdate.name,
-      };
-      
-      console.log("Sending update object:", updates);
-      
-      const result = await updateProduct(productId, updates);
-      
-      console.log("Update result:", result);
-      
-      setProducts(prev => 
-        prev.map(p => p.id === productId ? { ...p, name: productToUpdate.name } : p)
-      );
-      
+      // First update the local state
       setEditableProducts(prev => 
         prev.map(p => p.id === productId ? { ...p, isEditing: false } : p)
+      );
+      
+      // Direct database update using Supabase
+      const { error } = await supabase
+        .from('products')
+        .update({ 
+          name: productToUpdate.name,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', productId);
+      
+      if (error) {
+        throw error;
+      }
+      
+      // Update the local products state
+      setProducts(prev => 
+        prev.map(p => p.id === productId ? { ...p, name: productToUpdate.name } : p)
       );
       
       toast({
@@ -413,6 +418,7 @@ const AdminPanel: React.FC = () => {
         description: "Product name updated successfully",
       });
       
+      // Refresh products to ensure we have the latest data
       await fetchProducts();
       
     } catch (error) {
