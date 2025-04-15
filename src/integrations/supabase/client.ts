@@ -64,6 +64,8 @@ export const updateProduct = async (productId: string, updates: any) => {
 };
 
 export const updateProductName = async (productId: string, newName: string) => {
+  console.log(`API call: Updating product ${productId} name to "${newName}"`);
+  
   const { data, error } = await supabase
     .from('products')
     .update({ name: newName })
@@ -75,6 +77,7 @@ export const updateProductName = async (productId: string, newName: string) => {
     throw error;
   }
 
+  console.log('Product name update response:', data);
   return data;
 };
 

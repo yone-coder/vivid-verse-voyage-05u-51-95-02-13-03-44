@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Plus, Trash2, Edit, Eye, X, Check, Save, Pencil } from "lucide-react";
@@ -391,28 +390,26 @@ const AdminPanel: React.FC = () => {
       
       console.log(`Saving new name for product ${productId}: ${productToUpdate.name}`);
       
-      // Step 1: Update UI immediately to show the change
+      // First update editing state to provide immediate feedback
       setEditableProducts(prev => 
         prev.map(p => p.id === productId ? { ...p, isEditing: false } : p)
       );
       
-      // Step 2: Update local products state for immediate feedback
+      // Send the update to Supabase with the new API function
       const newName = productToUpdate.name.trim();
+      await updateProductName(productId, newName);
+      
+      // Update local products state to reflect the change
       setProducts(prev => 
         prev.map(p => p.id === productId ? { ...p, name: newName } : p)
       );
-      
-      // Step 3: Send update to Supabase
-      const result = await updateProductName(productId, newName);
-      
-      console.log("Name update result:", result);
       
       toast({
         title: "Success",
         description: "Product name updated successfully",
       });
       
-      // Step 4: Refresh products to ensure we have the latest data
+      // Refresh products to ensure we have the latest data
       await fetchProducts();
       
     } catch (error) {
@@ -425,7 +422,6 @@ const AdminPanel: React.FC = () => {
       
       // On error, reset the state by fetching products again
       await fetchProducts();
-      cancelEditingProductName(productId);
     }
   };
 
