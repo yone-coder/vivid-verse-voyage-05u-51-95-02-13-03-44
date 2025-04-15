@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Plus, Trash2, Edit, Eye, X, Check, Save, Pencil } from "lucide-react";
-import { supabase, updateProduct, subscribeToProductChanges } from "@/integrations/supabase/client";
+import { supabase, updateProduct, subscribeToProductChanges, updateProductName } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -390,23 +390,19 @@ const AdminPanel: React.FC = () => {
       
       console.log(`Saving new name for product ${productId}: ${productToUpdate.name}`);
       
-      // First update the local state
+      // First update the local state to disable editing mode
       setEditableProducts(prev => 
         prev.map(p => p.id === productId ? { ...p, isEditing: false } : p)
       );
       
-      // Direct database update using Supabase
-      const { error } = await supabase
-        .from('products')
-        .update({ 
-          name: productToUpdate.name,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', productId);
+      // Use the specialized function for updating product names
+      const result = await updateProductName(productId, productToUpdate.name);
       
-      if (error) {
-        throw error;
+      if (!result || !result.length) {
+        throw new Error("Update returned no data");
       }
+      
+      console.log("Name update successful, result:", result);
       
       // Update the local products state
       setProducts(prev => 

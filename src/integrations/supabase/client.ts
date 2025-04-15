@@ -45,6 +45,51 @@ export const fetchProductById = async (productId: string) => {
   return data;
 };
 
+// Specialized function to update a product name
+export const updateProductName = async (productId: string, newName: string) => {
+  console.log(`updateProductName called with ID: ${productId}, newName: "${newName}"`);
+  
+  if (!productId) {
+    console.error("Product ID is missing");
+    throw new Error("Product ID is required");
+  }
+  
+  if (!newName || newName.trim() === '') {
+    console.error("Invalid product name:", newName);
+    throw new Error("Product name cannot be empty");
+  }
+  
+  try {
+    const updates = {
+      name: newName,
+      updated_at: new Date().toISOString()
+    };
+    
+    console.log("Sending direct name update to Supabase:", {
+      productId,
+      updates
+    });
+    
+    // Perform the update with returning the updated data
+    const { data, error } = await supabase
+      .from('products')
+      .update(updates)
+      .eq('id', productId)
+      .select();
+      
+    if (error) {
+      console.error("Error updating product name:", error);
+      throw error;
+    }
+    
+    console.log("Product name updated successfully:", data);
+    return data;
+  } catch (error) {
+    console.error("Exception during product name update:", error);
+    throw error;
+  }
+};
+
 // Function to update a product
 export const updateProduct = async (productId: string, updates: Partial<any>) => {
   console.log("Updating product with ID:", productId, "Updates:", updates);
