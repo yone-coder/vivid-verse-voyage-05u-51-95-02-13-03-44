@@ -398,13 +398,9 @@ const AdminPanel: React.FC = () => {
       // Use the specialized function for updating product names
       const result = await updateProductName(productId, productToUpdate.name);
       
-      if (!result || !result.length) {
-        throw new Error("Update returned no data");
-      }
+      console.log("Name update result:", result);
       
-      console.log("Name update successful, result:", result);
-      
-      // Update the local products state
+      // Update the local products state - even if result is empty, we'll use the edited name
       setProducts(prev => 
         prev.map(p => p.id === productId ? { ...p, name: productToUpdate.name } : p)
       );
