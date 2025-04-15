@@ -57,7 +57,7 @@ const ProductDetail = () => {
 
   // Define our specific color variants with additional properties
   const colorPrices = {
-    "Black": 179.99,
+    "Blk": 179.99,
     "White": 89.99,
     "Jet Black": 89.99,
     "Blue": 219.99,
