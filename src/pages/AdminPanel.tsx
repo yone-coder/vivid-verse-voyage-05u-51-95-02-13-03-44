@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Plus, Trash2, Edit, Eye } from "lucide-react";
@@ -392,8 +393,8 @@ const AdminPanel: React.FC = () => {
       const newName = productToUpdate.name.trim();
       console.log(`Saving new name for product ${productId}: ${newName}`);
       
-      // Show loading toast
-      const loadingToast = toast({
+      // Show loading toast - Fix: Remove the id property from the toast object
+      toast({
         title: "Updating...",
         description: "Saving product name changes",
       });
@@ -415,8 +416,8 @@ const AdminPanel: React.FC = () => {
         })
       );
       
+      // Fix: Create a new success toast instead of updating the previous one
       toast({
-        id: loadingToast.id,
         title: "Success",
         description: "Product name updated successfully",
         variant: "default",
