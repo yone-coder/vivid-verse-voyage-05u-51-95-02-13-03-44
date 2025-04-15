@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, Trash2, Edit, Eye, X, Check, Save, Pencil } from "lucide-react";
+import { Plus, Trash2, Edit, Eye } from "lucide-react";
 import { supabase, updateProduct, subscribeToProductChanges, updateProductName } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import ProductCard from "@/components/admin/ProductCard";
 
 interface Product {
   id: string;
@@ -392,44 +392,38 @@ const AdminPanel: React.FC = () => {
       const newName = productToUpdate.name.trim();
       console.log(`Saving new name for product ${productId}: ${newName}`);
       
-      // First update editing state to provide immediate feedback
-      setEditableProducts(prev => 
-        prev.map(p => p.id === productId ? { ...p, isEditing: false } : p)
-      );
-      
       // Show loading toast
-      toast({
+      const loadingToast = toast({
         title: "Updating...",
         description: "Saving product name changes",
       });
       
-      // Send the update to Supabase with the API function
-      try {
-        await updateProductName(productId, newName);
-        
-        // Update local products state to reflect the change immediately without waiting for fetchProducts
-        setProducts(prev => 
-          prev.map(p => p.id === productId ? { ...p, name: newName } : p)
-        );
-        
-        toast({
-          title: "Success",
-          description: "Product name updated successfully",
-        });
-      } catch (error) {
-        console.error('Error updating product name:', error);
-        toast({
-          variant: "destructive",
-          title: "Update Failed",
-          description: "Failed to update product name. Please try again.",
-        });
-        
-        // Reset editing state to reflect the failure
-        cancelEditingProductName(productId);
-      }
+      // Send the update to Supabase
+      const updatedData = await updateProductName(productId, newName);
+      console.log("Update successful:", updatedData);
       
-      // Refresh products to ensure we have the latest data
-      await fetchProducts();
+      // Update local products state to reflect the change immediately
+      setProducts(prev => 
+        prev.map(p => {
+          if (p.id === productId) {
+            return {
+              ...p,
+              name: newName
+            };
+          }
+          return p;
+        })
+      );
+      
+      toast({
+        id: loadingToast.id,
+        title: "Success",
+        description: "Product name updated successfully",
+        variant: "default",
+      });
+      
+      // Do one final fetch to ensure we have the latest data
+      fetchProducts();
       
     } catch (error) {
       console.error('Error in saveProductName function:', error);
@@ -439,8 +433,8 @@ const AdminPanel: React.FC = () => {
         description: "An unexpected error occurred. Please try again.",
       });
       
-      // On error, reset the state by fetching products again
-      await fetchProducts();
+      // Reset editing state to reflect the failure
+      cancelEditingProductName(productId);
     }
   };
 
@@ -466,83 +460,24 @@ const AdminPanel: React.FC = () => {
               <div className="col-span-full p-4">Loading products...</div>
             ) : (
               products.map((product) => {
-                const editableProduct = editableProducts.find(p => p.id === product.id);
+                const editableProduct = editableProducts.find(p => p.id === product.id) || {
+                  id: product.id,
+                  name: product.name,
+                  isEditing: false
+                };
                 
                 return (
-                  <Card key={product.id} className="overflow-hidden">
-                    <CardHeader className="pb-2">
-                      {editableProduct?.isEditing ? (
-                        <div className="flex items-center gap-2">
-                          <Input
-                            value={editableProduct.name}
-                            onChange={(e) => handleProductNameChange(product.id, e.target.value)}
-                            className="font-semibold"
-                          />
-                          <Button 
-                            size="icon" 
-                            variant="ghost"
-                            onClick={() => saveProductName(product.id)}
-                          >
-                            <Check className="h-4 w-4" />
-                          </Button>
-                          <Button 
-                            size="icon" 
-                            variant="ghost"
-                            onClick={() => cancelEditingProductName(product.id)}
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      ) : (
-                        <div className="flex items-center justify-between">
-                          <CardTitle className="line-clamp-1">{product.name}</CardTitle>
-                          <Button 
-                            size="icon" 
-                            variant="ghost"
-                            onClick={() => startEditingProductName(product.id)}
-                          >
-                            <Pencil className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      )}
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-gray-500 line-clamp-2 mb-2">{product.description}</p>
-                      <div className="flex items-baseline gap-2">
-                        <span className="font-medium">
-                          ${product.price.toFixed(2)}
-                        </span>
-                        {product.discount_price && (
-                          <span className="text-sm text-gray-500 line-through">
-                            ${product.discount_price.toFixed(2)}
-                          </span>
-                        )}
-                      </div>
-                      <div className="mt-2">
-                        <p className="text-xs text-gray-500">
-                          {product.product_images?.length || 0} images
-                        </p>
-                      </div>
-                    </CardContent>
-                    <CardFooter className="flex justify-between pt-0">
-                      <Button 
-                        size="sm" 
-                        variant="outline" 
-                        onClick={() => viewProduct(product.id)}
-                      >
-                        <Eye className="mr-1 h-4 w-4" />
-                        View
-                      </Button>
-                      <Button 
-                        size="sm" 
-                        variant="outline"
-                        onClick={() => handleProductSelect(product)}
-                      >
-                        <Edit className="mr-1 h-4 w-4" />
-                        Manage Images
-                      </Button>
-                    </CardFooter>
-                  </Card>
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    editableProduct={editableProduct}
+                    onStartEditing={startEditingProductName}
+                    onCancelEditing={cancelEditingProductName}
+                    onNameChange={handleProductNameChange}
+                    onSaveName={saveProductName}
+                    onManageImages={setSelectedProduct}
+                    onViewProduct={viewProduct}
+                  />
                 );
               })
             )}
