@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Plus, Trash2, Edit, Eye, X, Check, Save, Pencil } from "lucide-react";
@@ -388,16 +389,27 @@ const AdminPanel: React.FC = () => {
         return;
       }
       
-      console.log(`Saving new name for product ${productId}: ${productToUpdate.name}`);
+      const newName = productToUpdate.name.trim();
+      console.log(`Saving new name for product ${productId}: ${newName}`);
       
       // First update editing state to provide immediate feedback
       setEditableProducts(prev => 
         prev.map(p => p.id === productId ? { ...p, isEditing: false } : p)
       );
       
-      // Send the update to Supabase with the new API function
-      const newName = productToUpdate.name.trim();
-      await updateProductName(productId, newName);
+      // Show loading toast
+      toast({
+        title: "Updating...",
+        description: "Saving product name changes",
+      });
+      
+      // Send the update to Supabase with the API function
+      const data = await updateProductName(productId, newName);
+      console.log("Update response:", data);
+      
+      if (!data || data.length === 0) {
+        throw new Error("Failed to update product name - no data returned");
+      }
       
       // Update local products state to reflect the change
       setProducts(prev => 

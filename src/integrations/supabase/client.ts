@@ -66,6 +66,27 @@ export const updateProduct = async (productId: string, updates: any) => {
 export const updateProductName = async (productId: string, newName: string) => {
   console.log(`API call: Updating product ${productId} name to "${newName}"`);
   
+  // First verify the product exists to provide better error handling
+  const { data: existingProduct, error: fetchError } = await supabase
+    .from('products')
+    .select('id, name')
+    .eq('id', productId)
+    .single();
+  
+  if (fetchError) {
+    console.error(`Error finding product with ID ${productId}:`, fetchError);
+    throw fetchError;
+  }
+  
+  if (!existingProduct) {
+    const notFoundError = new Error(`Product with ID ${productId} not found`);
+    console.error(notFoundError);
+    throw notFoundError;
+  }
+  
+  console.log(`Current product name: "${existingProduct.name}", updating to: "${newName}"`);
+  
+  // Now update the product name
   const { data, error } = await supabase
     .from('products')
     .update({ name: newName })
