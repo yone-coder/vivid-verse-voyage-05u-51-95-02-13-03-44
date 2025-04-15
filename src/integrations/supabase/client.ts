@@ -49,6 +49,7 @@ export const fetchProductById = async (productId: string) => {
 export const updateProduct = async (productId: string, updates: Partial<any>) => {
   console.log("Updating product with ID:", productId, "Updates:", updates);
   
+  // Validate inputs
   if (!productId) {
     console.error("Product ID is missing");
     throw new Error("Product ID is required");
@@ -57,6 +58,16 @@ export const updateProduct = async (productId: string, updates: Partial<any>) =>
   if (!updates || Object.keys(updates).length === 0) {
     console.error("No updates provided");
     throw new Error("Updates are required");
+  }
+  
+  // Check specifically for name updates
+  if (updates.name !== undefined) {
+    console.log(`Updating product name to: "${updates.name}"`);
+    
+    if (typeof updates.name !== 'string' || updates.name.trim() === '') {
+      console.error("Invalid product name:", updates.name);
+      throw new Error("Product name cannot be empty");
+    }
   }
   
   try {
