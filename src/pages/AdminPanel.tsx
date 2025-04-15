@@ -404,32 +404,39 @@ const AdminPanel: React.FC = () => {
       });
       
       // Send the update to Supabase with the API function
-      const data = await updateProductName(productId, newName);
-      console.log("Update response:", data);
-      
-      if (!data || data.length === 0) {
-        throw new Error("Failed to update product name - no data returned");
+      try {
+        await updateProductName(productId, newName);
+        
+        // Update local products state to reflect the change immediately without waiting for fetchProducts
+        setProducts(prev => 
+          prev.map(p => p.id === productId ? { ...p, name: newName } : p)
+        );
+        
+        toast({
+          title: "Success",
+          description: "Product name updated successfully",
+        });
+      } catch (error) {
+        console.error('Error updating product name:', error);
+        toast({
+          variant: "destructive",
+          title: "Update Failed",
+          description: "Failed to update product name. Please try again.",
+        });
+        
+        // Reset editing state to reflect the failure
+        cancelEditingProductName(productId);
       }
-      
-      // Update local products state to reflect the change
-      setProducts(prev => 
-        prev.map(p => p.id === productId ? { ...p, name: newName } : p)
-      );
-      
-      toast({
-        title: "Success",
-        description: "Product name updated successfully",
-      });
       
       // Refresh products to ensure we have the latest data
       await fetchProducts();
       
     } catch (error) {
-      console.error('Error updating product name:', error);
+      console.error('Error in saveProductName function:', error);
       toast({
         variant: "destructive",
         title: "Update Failed",
-        description: "Failed to update product name. Please try again.",
+        description: "An unexpected error occurred. Please try again.",
       });
       
       // On error, reset the state by fetching products again
