@@ -52,6 +52,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
   const [isSaving, setIsSaving] = useState(false);
   
   const handleSave = async (productId: string) => {
+    if (!editableProduct.name || editableProduct.name.trim() === '') {
+      // Don't attempt to save empty names
+      return;
+    }
+    
     try {
       setIsSaving(true);
       await onSaveName(productId);
@@ -98,7 +103,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
               size="icon" 
               variant="ghost"
               onClick={() => handleSave(product.id)}
-              disabled={isSaving}
+              disabled={isSaving || !editableProduct.name || editableProduct.name.trim() === ''}
             >
               {isSaving ? (
                 <Loader2 className="h-4 w-4 animate-spin text-green-500" />

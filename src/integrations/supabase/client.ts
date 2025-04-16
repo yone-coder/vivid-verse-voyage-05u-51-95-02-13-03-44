@@ -66,8 +66,14 @@ export const updateProduct = async (productId: string, updates: any) => {
 export const updateProductName = async (productId: string, newName: string) => {
   console.log(`API call: Updating product ${productId} name to "${newName}"`);
   
+  if (!newName || newName.trim() === '') {
+    const validationError = new Error('Product name cannot be empty');
+    console.error(validationError);
+    throw validationError;
+  }
+  
   try {
-    // First verify the product exists to provide better error handling
+    // First fetch the complete product to ensure it exists
     const { data: existingProduct, error: fetchError } = await supabase
       .from('products')
       .select('*')
@@ -87,34 +93,29 @@ export const updateProductName = async (productId: string, newName: string) => {
     
     console.log(`Current product name: "${existingProduct.name}", updating to: "${newName}"`);
     
-    // Use a more reliable approach with maybeSingle for the update
-    const { data, error } = await supabase
+    // Perform a direct update without using maybeSingle or other fancy methods
+    // We'll use a simpler approach and handle the response carefully
+    const { error } = await supabase
       .from('products')
       .update({ name: newName })
-      .eq('id', productId)
-      .select()
-      .maybeSingle();
+      .eq('id', productId);
 
     if (error) {
       console.error('Error updating product name:', error);
       throw error;
     }
     
-    console.log('Product update response data:', data);
+    // Since we've confirmed the update was successful (no error),
+    // we'll return a complete product object based on the existing product
+    const updatedProduct = {
+      ...existingProduct,
+      name: newName,
+      updated_at: new Date().toISOString()
+    };
     
-    // If no data is returned, construct response based on what we know
-    if (!data) {
-      console.log('No data returned from update, returning constructed data');
-      // Use all fields from the existing product, just update the name and updated_at
-      return {
-        ...existingProduct,
-        name: newName,
-        updated_at: new Date().toISOString()
-      };
-    }
+    console.log('Product name update successful:', updatedProduct);
+    return updatedProduct;
     
-    console.log('Product name update successful with data:', data);
-    return data;
   } catch (error) {
     console.error('Error in updateProductName:', error);
     throw error;
