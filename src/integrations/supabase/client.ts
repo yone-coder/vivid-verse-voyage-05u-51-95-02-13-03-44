@@ -69,14 +69,33 @@ export const updateProduct = async (productId: string, updates: any) => {
 export const updateProductName = async (productId: string, newName: string) => {
   console.log(`API call: Updating product ${productId} name to "${newName}"`);
   
+  // Validate input first
   if (!newName || newName.trim() === '') {
     const validationError = new Error('Product name cannot be empty');
     console.error(validationError);
     throw validationError;
   }
   
+  // Verify the product exists before attempting to update
   try {
-    // Update the product name but don't use .single() which expects exactly one row
+    // First check if the product exists
+    const { data: existingProduct, error: fetchError } = await supabase
+      .from('products')
+      .select('id')
+      .eq('id', productId);
+      
+    if (fetchError) {
+      console.error('Error checking if product exists:', fetchError);
+      throw fetchError;
+    }
+    
+    if (!existingProduct || existingProduct.length === 0) {
+      const notFoundError = new Error(`Product with ID ${productId} not found`);
+      console.error(notFoundError);
+      throw notFoundError;
+    }
+    
+    // If we get here, the product exists - proceed with update
     const { data, error } = await supabase
       .from('products')
       .update({ name: newName })
@@ -91,15 +110,13 @@ export const updateProductName = async (productId: string, newName: string) => {
       throw error;
     }
     
-    // Check if we got at least one result back
     if (!data || data.length === 0) {
-      const notFoundError = new Error(`Product with ID ${productId} not found`);
-      console.error(notFoundError);
-      throw notFoundError;
+      const updateError = new Error(`Product update failed for ID ${productId}`);
+      console.error(updateError);
+      throw updateError;
     }
     
     console.log('Product name update successful:', data[0]);
-    // Return the first item from the array
     return data[0];
     
   } catch (error) {
