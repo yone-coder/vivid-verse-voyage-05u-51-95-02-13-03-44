@@ -393,7 +393,7 @@ const AdminPanel: React.FC = () => {
       const newName = productToUpdate.name.trim();
       console.log(`Saving new name for product ${productId}: ${newName}`);
       
-      // Show loading toast - Fix: Remove the id property from the toast object
+      // Show loading toast
       toast({
         title: "Updating...",
         description: "Saving product name changes",
@@ -416,7 +416,7 @@ const AdminPanel: React.FC = () => {
         })
       );
       
-      // Fix: Create a new success toast instead of updating the previous one
+      // Create a new success toast
       toast({
         title: "Success",
         description: "Product name updated successfully",
