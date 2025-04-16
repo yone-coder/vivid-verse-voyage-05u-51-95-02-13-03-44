@@ -70,7 +70,7 @@ export const updateProductName = async (productId: string, newName: string) => {
     // First verify the product exists to provide better error handling
     const { data: existingProduct, error: fetchError } = await supabase
       .from('products')
-      .select('id, name')
+      .select('*')  // Changed to fetch all fields not just id and name
       .eq('id', productId)
       .single();
     
@@ -109,10 +109,10 @@ export const updateProductName = async (productId: string, newName: string) => {
       return {
         id: productId,
         name: newName,
-        description: existingProduct.description || '',
-        price: existingProduct.price || 0,
-        discount_price: existingProduct.discount_price || null,
-        created_at: existingProduct.created_at || new Date().toISOString(),
+        description: existingProduct.description,
+        price: existingProduct.price,
+        discount_price: existingProduct.discount_price,
+        created_at: existingProduct.created_at,
         updated_at: new Date().toISOString()
       };
     }
