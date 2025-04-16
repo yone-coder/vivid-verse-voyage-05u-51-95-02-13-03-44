@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,6 +12,7 @@ interface Product {
   price: number;
   discount_price: number | null;
   product_images: ProductImage[];
+  created_at: string; // Added the missing property
 }
 
 interface ProductImage {
