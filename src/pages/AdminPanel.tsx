@@ -1,7 +1,8 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Plus, Trash2, Edit, Eye } from "lucide-react";
-import { supabase, updateProduct, subscribeToProductChanges, updateProductName } from "@/integrations/supabase/client";
+import { supabase, fetchAllProducts, updateProduct, subscribeToProductChanges, updateProductName } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -67,8 +68,8 @@ const AdminPanel: React.FC = () => {
   useEffect(() => {
     fetchProducts();
     
-    // Store the cleanup function returned by subscribeToProductChanges
-    const unsubscribe = subscribeToProductChanges(() => {
+    // Call subscribeToProductChanges and store the cleanup function
+    const cleanup = subscribeToProductChanges(() => {
       console.log("Real-time update received, refreshing products");
       fetchProducts();
     });
@@ -76,7 +77,7 @@ const AdminPanel: React.FC = () => {
     return () => {
       console.log("Cleaning up channel subscription");
       // Call the cleanup function directly 
-      unsubscribe();
+      cleanup();
     };
   }, []);
 
