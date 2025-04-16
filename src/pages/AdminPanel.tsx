@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Plus, Trash2, Edit, Eye } from "lucide-react";
@@ -20,7 +19,7 @@ interface Product {
   price: number;
   discount_price: number | null;
   product_images: ProductImage[];
-  created_at: string; // Added the missing property
+  created_at: string;
 }
 
 interface ProductImage {
@@ -401,32 +400,47 @@ const AdminPanel: React.FC = () => {
       });
       
       // Send the update to Supabase
-      const updatedData = await updateProductName(productId, newName);
-      console.log("Update successful:", updatedData);
+      const updatedProduct = await updateProductName(productId, newName);
+      console.log("Update successful:", updatedProduct);
       
-      // Update local products state to reflect the change immediately
-      setProducts(prev => 
-        prev.map(p => {
-          if (p.id === productId) {
-            return {
-              ...p,
-              name: newName
-            };
-          }
-          return p;
-        })
-      );
-      
-      // Create a new success toast
-      toast({
-        title: "Success",
-        description: "Product name updated successfully",
-        variant: "default",
-      });
-      
-      // Do one final fetch to ensure we have the latest data
-      fetchProducts();
-      
+      if (updatedProduct) {
+        // Update local products state to reflect the change immediately
+        setProducts(prev => 
+          prev.map(p => {
+            if (p.id === productId) {
+              return {
+                ...p,
+                name: updatedProduct.name
+              };
+            }
+            return p;
+          })
+        );
+        
+        // Update editable products state
+        setEditableProducts(prev => 
+          prev.map(p => {
+            if (p.id === productId) {
+              return {
+                ...p,
+                isEditing: false,
+                name: updatedProduct.name
+              };
+            }
+            return p;
+          })
+        );
+        
+        // Create a new success toast
+        toast({
+          title: "Success",
+          description: "Product name updated successfully",
+          variant: "default",
+        });
+        
+        // One final fetch to ensure we have the latest data
+        fetchProducts();
+      }
     } catch (error) {
       console.error('Error in saveProductName function:', error);
       toast({
