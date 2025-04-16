@@ -76,7 +76,7 @@ export const updateProductName = async (productId: string, newName: string) => {
   }
   
   try {
-    // Update the product name directly and return the updated record
+    // Update the product name and return the updated record
     const { data, error } = await supabase
       .from('products')
       .update({ name: newName })
@@ -109,7 +109,8 @@ export const updateProductName = async (productId: string, newName: string) => {
 
 // Real-time subscription function
 export const subscribeToProductChanges = (callback: (payload: any) => void) => {
-  const channel = supabase
+  // Create a channel for listening to product changes
+  const productChannel = supabase
     .channel('product-changes')
     .on(
       'postgres_changes',
@@ -124,7 +125,7 @@ export const subscribeToProductChanges = (callback: (payload: any) => void) => {
     )
     .subscribe();
 
-  // Enable realtime for the product_images table too
+  // Create a channel for listening to product image changes
   const imagesChannel = supabase
     .channel('product-images-changes')
     .on(
@@ -141,8 +142,9 @@ export const subscribeToProductChanges = (callback: (payload: any) => void) => {
     )
     .subscribe();
 
+  // Return a cleanup function that properly removes both channels
   return () => {
-    supabase.removeChannel(channel);
+    supabase.removeChannel(productChannel);
     supabase.removeChannel(imagesChannel);
   };
 };
