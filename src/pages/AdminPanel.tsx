@@ -20,6 +20,7 @@ interface Product {
   price: number;
   discount_price: number | null;
   product_images: ProductImage[];
+  created_at: string; // Added the missing property
 }
 
 interface ProductImage {
