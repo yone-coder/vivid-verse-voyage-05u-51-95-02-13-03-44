@@ -76,7 +76,7 @@ export const updateProductName = async (productId: string, newName: string) => {
   }
   
   try {
-    // Update the product name and return the updated record
+    // Update the product name but don't use .single() which expects exactly one row
     const { data, error } = await supabase
       .from('products')
       .update({ name: newName })
@@ -84,22 +84,23 @@ export const updateProductName = async (productId: string, newName: string) => {
       .select(`
         *,
         product_images (*)
-      `)
-      .single();
+      `);
     
     if (error) {
       console.error('Error updating product name:', error);
       throw error;
     }
     
-    if (!data) {
-      const notFoundError = new Error(`Product with ID ${productId} not found after update`);
+    // Check if we got at least one result back
+    if (!data || data.length === 0) {
+      const notFoundError = new Error(`Product with ID ${productId} not found`);
       console.error(notFoundError);
       throw notFoundError;
     }
     
-    console.log('Product name update successful:', data);
-    return data;
+    console.log('Product name update successful:', data[0]);
+    // Return the first item from the array
+    return data[0];
     
   } catch (error) {
     console.error('Error in updateProductName:', error);
