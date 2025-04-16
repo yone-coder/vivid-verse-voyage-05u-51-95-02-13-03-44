@@ -53,7 +53,10 @@ export const updateProduct = async (productId: string, updates: any) => {
     .from('products')
     .update(updates)
     .eq('id', productId)
-    .select();
+    .select(`
+      *,
+      product_images (*)
+    `);
 
   if (error) {
     console.error('Error updating product:', error);
@@ -73,48 +76,30 @@ export const updateProductName = async (productId: string, newName: string) => {
   }
   
   try {
-    // First fetch the complete product to ensure it exists
-    const { data: existingProduct, error: fetchError } = await supabase
-      .from('products')
-      .select('*')
-      .eq('id', productId)
-      .single();
-    
-    if (fetchError) {
-      console.error(`Error finding product with ID ${productId}:`, fetchError);
-      throw fetchError;
-    }
-    
-    if (!existingProduct) {
-      const notFoundError = new Error(`Product with ID ${productId} not found`);
-      console.error(notFoundError);
-      throw notFoundError;
-    }
-    
-    console.log(`Current product name: "${existingProduct.name}", updating to: "${newName}"`);
-    
-    // Perform a direct update without using maybeSingle or other fancy methods
-    // We'll use a simpler approach and handle the response carefully
-    const { error } = await supabase
+    // Update the product name directly and return the updated record
+    const { data, error } = await supabase
       .from('products')
       .update({ name: newName })
-      .eq('id', productId);
-
+      .eq('id', productId)
+      .select(`
+        *,
+        product_images (*)
+      `)
+      .single();
+    
     if (error) {
       console.error('Error updating product name:', error);
       throw error;
     }
     
-    // Since we've confirmed the update was successful (no error),
-    // we'll return a complete product object based on the existing product
-    const updatedProduct = {
-      ...existingProduct,
-      name: newName,
-      updated_at: new Date().toISOString()
-    };
+    if (!data) {
+      const notFoundError = new Error(`Product with ID ${productId} not found after update`);
+      console.error(notFoundError);
+      throw notFoundError;
+    }
     
-    console.log('Product name update successful:', updatedProduct);
-    return updatedProduct;
+    console.log('Product name update successful:', data);
+    return data;
     
   } catch (error) {
     console.error('Error in updateProductName:', error);
@@ -139,5 +124,25 @@ export const subscribeToProductChanges = (callback: (payload: any) => void) => {
     )
     .subscribe();
 
-  return channel;
+  // Enable realtime for the product_images table too
+  const imagesChannel = supabase
+    .channel('product-images-changes')
+    .on(
+      'postgres_changes',
+      {
+        event: '*',
+        schema: 'public',
+        table: 'product_images'
+      },
+      (payload) => {
+        // When a product image changes, we should trigger a refresh of the products
+        callback(payload);
+      }
+    )
+    .subscribe();
+
+  return () => {
+    supabase.removeChannel(channel);
+    supabase.removeChannel(imagesChannel);
+  };
 };
