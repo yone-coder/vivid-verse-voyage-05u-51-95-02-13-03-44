@@ -76,26 +76,8 @@ export const updateProductName = async (productId: string, newName: string) => {
     throw validationError;
   }
   
-  // Verify the product exists before attempting to update
   try {
-    // First check if the product exists
-    const { data: existingProduct, error: fetchError } = await supabase
-      .from('products')
-      .select('id')
-      .eq('id', productId);
-      
-    if (fetchError) {
-      console.error('Error checking if product exists:', fetchError);
-      throw fetchError;
-    }
-    
-    if (!existingProduct || existingProduct.length === 0) {
-      const notFoundError = new Error(`Product with ID ${productId} not found`);
-      console.error(notFoundError);
-      throw notFoundError;
-    }
-    
-    // If we get here, the product exists - proceed with update
+    // Update the product name directly - simplified approach
     const { data, error } = await supabase
       .from('products')
       .update({ name: newName })
@@ -107,15 +89,16 @@ export const updateProductName = async (productId: string, newName: string) => {
       throw error;
     }
     
-    // Check if we have data and it contains at least one item
     if (!data || data.length === 0) {
       const updateError = new Error(`Product update failed for ID ${productId}`);
       console.error(updateError);
       throw updateError;
     }
     
-    // Once we have the updated product, fetch it with its images for the complete object
-    const { data: productWithImages, error: fetchError2 } = await supabase
+    console.log('Basic product update successful, now fetching with images:', data[0]);
+    
+    // Fetch the complete product with images in a separate query
+    const { data: completeProduct, error: fetchError } = await supabase
       .from('products')
       .select(`
         *,
@@ -123,16 +106,15 @@ export const updateProductName = async (productId: string, newName: string) => {
       `)
       .eq('id', productId)
       .single();
-      
-    if (fetchError2) {
-      console.error('Error fetching updated product with images:', fetchError2);
-      // We'll still return the basic updated product even if getting images fails
-      console.log('Product name update successful (without images):', data[0]);
+    
+    if (fetchError) {
+      console.error('Error fetching complete product data:', fetchError);
+      // Return the basic product data if we can't fetch the complete data
       return data[0];
     }
     
-    console.log('Product name update successful:', productWithImages);
-    return productWithImages;
+    console.log('Product update complete with images:', completeProduct);
+    return completeProduct;
     
   } catch (error) {
     console.error('Error in updateProductName:', error);
