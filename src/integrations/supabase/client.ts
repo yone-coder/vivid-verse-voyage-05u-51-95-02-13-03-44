@@ -77,7 +77,20 @@ export const updateProductName = async (productId: string, newName: string) => {
   }
   
   try {
-    // Update the product name directly - simplified approach
+    // First check if the product exists before attempting to update
+    const { data: existingProduct, error: existingError } = await supabase
+      .from('products')
+      .select('id')
+      .eq('id', productId)
+      .single();
+    
+    if (existingError) {
+      console.error('Error checking if product exists:', existingError);
+      throw existingError;
+    }
+    
+    // If we get here, the product exists - proceed with update
+    // Using .single() was causing problems, switch to regular selection
     const { data, error } = await supabase
       .from('products')
       .update({ name: newName })
@@ -89,32 +102,17 @@ export const updateProductName = async (productId: string, newName: string) => {
       throw error;
     }
     
+    // Make sure we got data back
     if (!data || data.length === 0) {
-      const updateError = new Error(`Product update failed for ID ${productId}`);
+      const updateError = new Error(`No data returned after update for product ID ${productId}`);
       console.error(updateError);
       throw updateError;
     }
     
-    console.log('Basic product update successful, now fetching with images:', data[0]);
+    console.log('Basic product update successful:', data[0]);
     
-    // Fetch the complete product with images in a separate query
-    const { data: completeProduct, error: fetchError } = await supabase
-      .from('products')
-      .select(`
-        *,
-        product_images (*)
-      `)
-      .eq('id', productId)
-      .single();
-    
-    if (fetchError) {
-      console.error('Error fetching complete product data:', fetchError);
-      // Return the basic product data if we can't fetch the complete data
-      return data[0];
-    }
-    
-    console.log('Product update complete with images:', completeProduct);
-    return completeProduct;
+    // Fetch the complete product with images
+    return await fetchProductById(productId);
     
   } catch (error) {
     console.error('Error in updateProductName:', error);
