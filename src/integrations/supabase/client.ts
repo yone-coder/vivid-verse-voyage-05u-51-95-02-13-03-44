@@ -87,14 +87,14 @@ export const updateProductName = async (productId: string, newName: string) => {
     
     console.log(`Current product name: "${existingProduct.name}", updating to: "${newName}"`);
     
-    // Perform the update with explicit return=representation preference
+    // Perform the update with explicit ordering by id to satisfy PostgREST requirement
     const { data, error } = await supabase
       .from('products')
       .update({ name: newName })
       .eq('id', productId)
-      .select('id, name, description, price, discount_price, created_at, updated_at')
-      .limit(1)
-      .maybeSingle();
+      .order('id', { ascending: true }) // Add explicit ordering by primary key
+      .select()
+      .limit(1);
 
     if (error) {
       console.error('Error updating product name:', error);
@@ -104,7 +104,7 @@ export const updateProductName = async (productId: string, newName: string) => {
     console.log('Product update response data:', data);
     
     // If no data is returned, construct response based on what we know
-    if (!data) {
+    if (!data || data.length === 0) {
       console.log('No data returned from update, returning constructed data');
       return {
         id: productId,
@@ -117,8 +117,8 @@ export const updateProductName = async (productId: string, newName: string) => {
       };
     }
     
-    console.log('Product name update successful with data:', data);
-    return data;
+    console.log('Product name update successful with data:', data[0]);
+    return data[0]; // Return the first element since we're limiting to 1
   } catch (error) {
     console.error('Error in updateProductName:', error);
     throw error;

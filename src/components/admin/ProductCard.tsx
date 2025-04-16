@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Edit, Check, X, Eye, Image } from "lucide-react";
+import { Edit, Check, X, Eye, Image, Loader2 } from "lucide-react";
 
 interface Product {
   id: string;
@@ -12,7 +12,7 @@ interface Product {
   price: number;
   discount_price: number | null;
   product_images: ProductImage[];
-  created_at: string; // Added the missing property
+  created_at: string;
 }
 
 interface ProductImage {
@@ -92,6 +92,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
               onChange={(e) => onNameChange(product.id, e.target.value)}
               className="font-medium"
               autoFocus
+              disabled={isSaving}
             />
             <Button 
               size="icon" 
@@ -100,7 +101,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
               disabled={isSaving}
             >
               {isSaving ? (
-                <div className="h-4 w-4 animate-spin rounded-full border-t-2 border-green-500"></div>
+                <Loader2 className="h-4 w-4 animate-spin text-green-500" />
               ) : (
                 <Check className="h-4 w-4 text-green-500" />
               )}
