@@ -70,7 +70,7 @@ export const updateProductName = async (productId: string, newName: string) => {
     // First verify the product exists to provide better error handling
     const { data: existingProduct, error: fetchError } = await supabase
       .from('products')
-      .select('*')  // Changed to fetch all fields not just id and name
+      .select('*')
       .eq('id', productId)
       .single();
     
@@ -87,14 +87,13 @@ export const updateProductName = async (productId: string, newName: string) => {
     
     console.log(`Current product name: "${existingProduct.name}", updating to: "${newName}"`);
     
-    // Perform the update with explicit ordering by id to satisfy PostgREST requirement
+    // Use a more reliable approach with maybeSingle for the update
     const { data, error } = await supabase
       .from('products')
       .update({ name: newName })
       .eq('id', productId)
-      .order('id', { ascending: true }) // Add explicit ordering by primary key
       .select()
-      .limit(1);
+      .maybeSingle();
 
     if (error) {
       console.error('Error updating product name:', error);
@@ -104,21 +103,18 @@ export const updateProductName = async (productId: string, newName: string) => {
     console.log('Product update response data:', data);
     
     // If no data is returned, construct response based on what we know
-    if (!data || data.length === 0) {
+    if (!data) {
       console.log('No data returned from update, returning constructed data');
+      // Use all fields from the existing product, just update the name and updated_at
       return {
-        id: productId,
+        ...existingProduct,
         name: newName,
-        description: existingProduct.description,
-        price: existingProduct.price,
-        discount_price: existingProduct.discount_price,
-        created_at: existingProduct.created_at,
         updated_at: new Date().toISOString()
       };
     }
     
-    console.log('Product name update successful with data:', data[0]);
-    return data[0]; // Return the first element since we're limiting to 1
+    console.log('Product name update successful with data:', data);
+    return data;
   } catch (error) {
     console.error('Error in updateProductName:', error);
     throw error;
