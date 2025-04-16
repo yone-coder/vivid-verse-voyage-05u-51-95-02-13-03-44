@@ -100,24 +100,39 @@ export const updateProductName = async (productId: string, newName: string) => {
       .from('products')
       .update({ name: newName })
       .eq('id', productId)
-      .select(`
-        *,
-        product_images (*)
-      `);
+      .select();
     
     if (error) {
       console.error('Error updating product name:', error);
       throw error;
     }
     
+    // Check if we have data and it contains at least one item
     if (!data || data.length === 0) {
       const updateError = new Error(`Product update failed for ID ${productId}`);
       console.error(updateError);
       throw updateError;
     }
     
-    console.log('Product name update successful:', data[0]);
-    return data[0];
+    // Once we have the updated product, fetch it with its images for the complete object
+    const { data: productWithImages, error: fetchError2 } = await supabase
+      .from('products')
+      .select(`
+        *,
+        product_images (*)
+      `)
+      .eq('id', productId)
+      .single();
+      
+    if (fetchError2) {
+      console.error('Error fetching updated product with images:', fetchError2);
+      // We'll still return the basic updated product even if getting images fails
+      console.log('Product name update successful (without images):', data[0]);
+      return data[0];
+    }
+    
+    console.log('Product name update successful:', productWithImages);
+    return productWithImages;
     
   } catch (error) {
     console.error('Error in updateProductName:', error);
