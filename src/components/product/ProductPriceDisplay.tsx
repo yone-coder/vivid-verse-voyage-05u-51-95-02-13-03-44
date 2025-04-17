@@ -1,6 +1,5 @@
-
 import React from "react";
-import { TrendingDown, Truck, RefreshCw, PackageCheck, Shield, CalendarClock } from "lucide-react";
+import { TrendingDown, Truck, RefreshCw, Shield, CalendarClock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Badge } from "@/components/ui/badge";
@@ -70,13 +69,6 @@ const ProductPriceDisplay: React.FC<ProductPriceDisplayProps> = ({
             <span className="mx-1">•</span>
             <Shield className="mr-1 h-3 w-3" />
             <span>30 days</span>
-          </Badge>
-        </div>
-        
-        <div className="flex items-center">
-          <Badge variant="outline" className="bg-purple-50 px-2 py-0.5 rounded-md text-purple-600 border-purple-100 flex items-center">
-            <PackageCheck className="mr-1 h-3 w-3" />
-            <span className="font-medium">Buyer protection</span>
           </Badge>
         </div>
       </div>
