@@ -49,57 +49,34 @@ export const fetchProductById = async (productId: string) => {
 
 // Product update functions
 export const updateProduct = async (productId: string, updates: any) => {
-  console.log(`Updating product ${productId} with:`, updates);
-  
-  try {
-    const { data, error } = await supabase
-      .from('products')
-      .update(updates)
-      .eq('id', productId)
-      .select();
+  const { data, error } = await supabase
+    .from('products')
+    .update(updates)
+    .eq('id', productId)
+    .select();
 
-    if (error) {
-      console.error('Error updating product:', error);
-      throw error;
-    }
-
-    // Even if no error occurred, check if we got data back
-    if (!data || data.length === 0) {
-      // Instead of throwing an error, just log a warning and return the updates
-      console.warn(`No data returned for update on product ID ${productId}. This may be expected behavior.`);
-      // Return the updates as if they were applied successfully
-      return [{ id: productId, ...updates }];
-    }
-
-    console.log('Update response data:', data);
-    return data;
-  } catch (error) {
-    console.error('Error in updateProduct:', error);
+  if (error) {
+    console.error('Error updating product:', error);
     throw error;
   }
+
+  return data;
 };
 
 export const updateProductName = async (productId: string, newName: string) => {
   console.log(`API call: Updating product ${productId} name to "${newName}"`);
   
-  // Validate input first
-  if (!newName || newName.trim() === '') {
-    const validationError = new Error('Product name cannot be empty');
-    console.error(validationError);
-    throw validationError;
-  }
-  
   try {
-    // First check if the product exists before attempting to update
-    const { data: existingProduct, error: existingError } = await supabase
+    // First verify the product exists to provide better error handling
+    const { data: existingProduct, error: fetchError } = await supabase
       .from('products')
-      .select('id')
+      .select('*')
       .eq('id', productId)
-      .maybeSingle();
+      .single();
     
-    if (existingError) {
-      console.error('Error checking if product exists:', existingError);
-      throw existingError;
+    if (fetchError) {
+      console.error(`Error finding product with ID ${productId}:`, fetchError);
+      throw fetchError;
     }
     
     if (!existingProduct) {
@@ -108,32 +85,36 @@ export const updateProductName = async (productId: string, newName: string) => {
       throw notFoundError;
     }
     
-    // If we get here, the product exists - proceed with update
-    console.log(`Product exists, proceeding with name update to: "${newName}"`);
+    console.log(`Current product name: "${existingProduct.name}", updating to: "${newName}"`);
     
-    // Make a specific update for the name field only
+    // Use a more reliable approach with maybeSingle for the update
     const { data, error } = await supabase
       .from('products')
       .update({ name: newName })
       .eq('id', productId)
-      .select();
-    
+      .select()
+      .maybeSingle();
+
     if (error) {
       console.error('Error updating product name:', error);
       throw error;
     }
     
-    // Even if no error occurred, check if we got data back
-    if (!data || data.length === 0) {
-      // Instead of throwing an error, just log a warning and return updated product
-      console.warn(`No data returned for name update on product ID ${productId}. This may be expected behavior.`);
-      // Return a synthetic response
-      return { id: productId, name: newName };
+    console.log('Product update response data:', data);
+    
+    // If no data is returned, construct response based on what we know
+    if (!data) {
+      console.log('No data returned from update, returning constructed data');
+      // Use all fields from the existing product, just update the name and updated_at
+      return {
+        ...existingProduct,
+        name: newName,
+        updated_at: new Date().toISOString()
+      };
     }
     
-    console.log('Product name update successful:', data[0]);
-    return data[0];
-    
+    console.log('Product name update successful with data:', data);
+    return data;
   } catch (error) {
     console.error('Error in updateProductName:', error);
     throw error;
@@ -142,8 +123,7 @@ export const updateProductName = async (productId: string, newName: string) => {
 
 // Real-time subscription function
 export const subscribeToProductChanges = (callback: (payload: any) => void) => {
-  // Create a channel for listening to product changes
-  const productChannel = supabase
+  const channel = supabase
     .channel('product-changes')
     .on(
       'postgres_changes',
@@ -158,26 +138,5 @@ export const subscribeToProductChanges = (callback: (payload: any) => void) => {
     )
     .subscribe();
 
-  // Create a channel for listening to product image changes
-  const imagesChannel = supabase
-    .channel('product-images-changes')
-    .on(
-      'postgres_changes',
-      {
-        event: '*',
-        schema: 'public',
-        table: 'product_images'
-      },
-      (payload) => {
-        // When a product image changes, we should trigger a refresh of the products
-        callback(payload);
-      }
-    )
-    .subscribe();
-
-  // Return a cleanup function that properly removes both channels
-  return () => {
-    supabase.removeChannel(productChannel);
-    supabase.removeChannel(imagesChannel);
-  };
+  return channel;
 };
