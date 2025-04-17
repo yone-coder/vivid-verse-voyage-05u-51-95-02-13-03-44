@@ -1,54 +1,20 @@
+
 import { useState, useEffect } from 'react';
-import { ShoppingCart, Heart, Share2, Star, ChevronUp, ArrowRight } from 'lucide-react';
+import { ShoppingCart, Heart, Star, Truck, Clock, Users } from 'lucide-react';
+import { toast } from "sonner";
+import { useProduct } from '@/hooks/useProduct';
+import { useParams } from 'react-router-dom';
 
-interface StickyBuyButtonProps {
-  selectedColor?: string;
-  colorPrices?: Record<string, number>;
-  defaultPrice?: number;
-}
-
-const StickyBuyButton = ({ 
-  selectedColor = "Black", 
-  colorPrices = {
-    "Black": 79.99,
-    "White": 89.99,
-    "Jet Black": 89.99,
-    "Blue": 219.99,
-    "Red": 229.99
-  },
-  defaultPrice = 79.99
-}: StickyBuyButtonProps) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [quantity, setQuantity] = useState(1);
-  const [selectedVariant, setSelectedVariant] = useState(selectedColor);
+const StickyBuyButton = () => {
+  const { id } = useParams();
+  const { data: product } = useProduct(id || '');
+  
   const [isWishlist, setIsWishlist] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
-  const [animationProgress, setAnimationProgress] = useState(0);
-  const [recentPurchase, setRecentPurchase] = useState(false);
   const [likeCount, setLikeCount] = useState(156);
-
-  // Get current price based on selected color or default to Black's price
-  const currentPrice = colorPrices[selectedColor as keyof typeof colorPrices] || colorPrices.Black || defaultPrice;
-
-  // Product information - now using the current price based on color
-  const product = {
-    name: "Wireless Bluetooth Earbuds",
-    price: currentPrice * 1.2, // Original price is higher than the current price
-    salePrice: currentPrice,
-    discount: Math.round(((currentPrice * 1.2 - currentPrice) / (currentPrice * 1.2)) * 100),
-    rating: 4.7,
-    reviewCount: 2483,
-    orders: 5294,
-    variants: Object.keys(colorPrices),
-    shipping: "Free Shipping",
-    deliveryTime: "15-30 days",
-  };
-
-  // Update the selected variant when the selectedColor prop changes
-  useEffect(() => {
-    setSelectedVariant(selectedColor);
-  }, [selectedColor]);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [isBuying, setIsBuying] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -67,221 +33,134 @@ const StickyBuyButton = ({
     return () => window.removeEventListener('scroll', handleScroll);
   }, [lastScrollY]);
 
-  const incrementQuantity = () => {
-    setQuantity(quantity + 1);
-  };
-
-  const decrementQuantity = () => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1);
-    }
-  };
-
   const toggleWishlist = () => {
     setIsWishlist(!isWishlist);
     setLikeCount(prev => isWishlist ? prev - 1 : prev + 1);
+    
+    toast.success(isWishlist ? "Removed from wishlist" : "Added to wishlist", {
+      description: isWishlist ? "Item removed from your wishlist" : "Item added to your wishlist"
+    });
   };
 
-  const togglePanel = () => {
-    setIsOpen(!isOpen);
+  const handleAddToCart = () => {
+    setIsAddingToCart(true);
+    setTimeout(() => {
+      setIsAddingToCart(false);
+      toast.success("Added to cart", {
+        description: "Item has been added to your cart"
+      });
+    }, 500);
   };
 
-  const calculateTotal = () => {
-    return (product.salePrice * quantity).toFixed(2);
+  const handleBuyNow = () => {
+    setIsBuying(true);
+    setTimeout(() => {
+      setIsBuying(false);
+      toast.info("Redirecting to checkout", {
+        description: "Please wait while we prepare your order"
+      });
+    }, 500);
   };
+
+  if (!product) {
+    return null;
+  }
+
+  // Calculate discount percentage
+  const discountPercentage = product.price && product.discountPrice 
+    ? Math.round(((product.price - product.discountPrice) / product.price) * 100)
+    : 0;
 
   return (
-    <div className="font-sans">
+    <div className="font-sans w-full h-full">
       <div 
-        className={`fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200 transition-transform duration-300 z-50 ${
+        className={`fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200 z-50 transform transition-transform duration-300 ${
           isVisible ? 'translate-y-0' : 'translate-y-full'
         }`}
       >
-        <div className="px-3 pt-2 pb-0">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex flex-col">
-              <span className="text-red-500 font-bold text-lg">${product.salePrice}</span>
-              <div className="flex items-center">
-                <span className="text-gray-400 line-through text-xs">${product.price.toFixed(2)}</span>
-                <span className="text-red-500 text-xs ml-1">-{product.discount}%</span>
+        <div className="px-3 pt-2 pb-1">
+          <div className="flex items-center justify-between mb-1">
+            <div className="flex items-center">
+              <span className="text-red-500 font-bold text-base mr-1">
+                ${product.discountPrice?.toFixed(2) || product.price?.toFixed(2)}
+              </span>
+              {product.discountPrice && (
+                <>
+                  <span className="text-gray-400 line-through text-xs">${product.price?.toFixed(2)}</span>
+                  <span className="text-red-500 text-xs ml-1">-{discountPercentage}%</span>
+                </>
+              )}
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <div className="flex items-center bg-orange-50 rounded-full px-2 py-0.5">
+                <Star className="w-3 h-3 text-orange-500 fill-orange-500" />
+                <span className="text-xs text-orange-600 ml-0.5">4.8</span>
+              </div>
+              
+              <div className="flex items-center bg-blue-50 rounded-full px-2 py-0.5">
+                <Users className="w-3 h-3 text-blue-500" />
+                <span className="text-xs text-blue-600 ml-0.5">2.3k+</span>
               </div>
             </div>
-
-            <div className="flex items-center space-x-2">
-              <div className="relative">
-                <button 
-                  onClick={toggleWishlist}
-                  className="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-full"
-                >
-                  <Heart className={`w-5 h-5 ${isWishlist ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
-                  {likeCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 min-w-[16px] flex items-center justify-center px-1">
-                      {likeCount > 999 ? '999+' : likeCount}
-                    </span>
-                  )}
-                </button>
-              </div>
-              
-              <button 
-                onClick={togglePanel}
-                className="bg-gray-100 text-gray-700 px-3 py-2 rounded-full flex items-center justify-center"
-              >
-                <ShoppingCart className="w-5 h-5 mr-1" />
-                <span>Options</span>
-              </button>
-              
-              <button className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2 rounded-full font-medium shadow-sm hover:shadow-md transition-all whitespace-nowrap">
-                Buy Now
-              </button>
+          </div>
+          
+          <div className="flex items-center justify-between text-xs">
+            <div className="flex items-center">
+              <Truck className="w-3 h-3 text-green-600 mr-1" />
+              <span className="text-green-600">Free Shipping</span>
+              <span className="mx-1 text-gray-300">|</span>
+              <Clock className="w-3 h-3 text-gray-500 mr-1" />
+              <span className="text-gray-500">2-4 days delivery</span>
+            </div>
+            
+            <div className="text-orange-500">
+              In Stock
             </div>
           </div>
         </div>
-
-        <div 
-          className={`bg-white transition-all duration-300 overflow-hidden ${
-            isOpen ? 'max-h-96 border-t border-gray-200' : 'max-h-0'
-          }`}
-        >
-          <div className="p-4">
-            <div className="flex items-start mb-4">
-              <div className="bg-gray-200 w-16 h-16 rounded-md mr-3 flex-shrink-0"></div>
-              <div>
-                <h3 className="font-medium text-sm">{product.name}</h3>
-                <div className="flex items-center mt-1">
-                  <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                  <span className="text-xs ml-1">{product.rating}</span>
-                  <span className="text-xs text-gray-500 ml-2">{product.reviewCount} Reviews</span>
-                  <span className="text-xs text-gray-500 ml-2">{product.orders} Orders</span>
-                </div>
-                <div className="flex items-center mt-1">
-                  <span className="text-red-500 font-bold">${product.salePrice}</span>
-                  <span className="text-gray-400 line-through text-xs ml-2">${product.price.toFixed(2)}</span>
-                  <span className="text-red-500 text-xs ml-1">-{product.discount}%</span>
-                </div>
-              </div>
-            </div>
+        
+        <div className="px-3 pt-1 pb-2">
+          <div className="flex items-center justify-between gap-2">
+            <button 
+              onClick={toggleWishlist}
+              className={`flex items-center justify-center bg-gray-100 rounded-full py-2 px-3 flex-shrink-0 transition-all duration-200 ${
+                isWishlist ? 'bg-red-50' : 'hover:bg-gray-200'
+              }`}
+            >
+              <Heart className={`w-4 h-4 transition-colors ${
+                isWishlist ? 'fill-red-500 text-red-500' : 'text-gray-600'
+              }`} />
+              <span className={`text-xs ml-1 ${
+                isWishlist ? 'text-red-500' : 'text-gray-600'
+              }`}>{likeCount}</span>
+            </button>
             
-            <div className="mb-4">
-              <h4 className="text-sm font-medium mb-2">Color</h4>
-              <div className="flex flex-wrap gap-2">
-                {product.variants.map((variant) => (
-                  <button
-                    key={variant}
-                    className={`px-3 py-1 text-xs rounded-full border ${
-                      selectedVariant === variant
-                        ? 'border-red-500 text-red-500 bg-red-50'
-                        : 'border-gray-300 text-gray-700'
-                    }`}
-                    onClick={() => setSelectedVariant(variant)}
-                  >
-                    {variant}
-                  </button>
-                ))}
-              </div>
-            </div>
+            <button 
+              onClick={handleAddToCart}
+              disabled={isAddingToCart}
+              className={`flex-1 bg-gray-100 text-gray-700 py-2 rounded-full flex items-center justify-center text-sm transition-all duration-200 hover:bg-gray-200 ${
+                isAddingToCart ? 'opacity-75' : ''
+              }`}
+            >
+              <ShoppingCart className={`w-4 h-4 mr-1 ${
+                isAddingToCart ? 'animate-bounce' : ''
+              }`} />
+              <span>Cart</span>
+            </button>
             
-            <div className="mb-4">
-              <h4 className="text-sm font-medium mb-2">Quantity</h4>
-              <div className="flex items-center">
-                <button
-                  onClick={decrementQuantity}
-                  className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-l-md"
-                >
-                  -
-                </button>
-                <input
-                  type="number"
-                  value={quantity}
-                  readOnly
-                  className="w-12 h-8 text-center border-t border-b border-gray-300 text-sm"
-                />
-                <button
-                  onClick={incrementQuantity}
-                  className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-r-md"
-                >
-                  +
-                </button>
-              </div>
-            </div>
-            
-            <div className="mb-4">
-              <div className="flex items-center mb-1">
-                <span className="text-xs text-gray-600 mr-2">Shipping:</span>
-                <span className="text-xs text-green-600">{product.shipping}</span>
-              </div>
-              <div className="flex items-center">
-                <span className="text-xs text-gray-600 mr-2">Estimated Delivery:</span>
-                <span className="text-xs">{product.deliveryTime}</span>
-              </div>
-            </div>
-            
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">Total:</span>
-              <span className="text-red-500 font-bold">${calculateTotal()}</span>
-            </div>
-            
-            <div className="flex mt-4 space-x-2">
-              <button className="flex-1 bg-orange-50 border border-orange-500 text-orange-500 rounded-full py-2 font-medium whitespace-nowrap">
-                Add to Cart
-              </button>
-              <button className="flex-1 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-full py-2 font-medium whitespace-nowrap">
-                Buy Now
-              </button>
-            </div>
+            <button 
+              onClick={handleBuyNow}
+              disabled={isBuying}
+              className={`flex-1 bg-gradient-to-r from-orange-500 to-red-500 text-white py-2 rounded-full font-medium text-sm transition-all duration-200 hover:opacity-90 ${
+                isBuying ? 'opacity-75' : ''
+              }`}
+            >
+              <span className={isBuying ? 'animate-pulse' : ''}>Buy Now</span>
+            </button>
           </div>
         </div>
       </div>
-      
-      <button 
-        onClick={togglePanel}
-        className={`fixed bottom-20 right-4 bg-white shadow-md rounded-full p-2 z-50 transition-opacity duration-300 ${
-          isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
-        }`}
-      >
-        <ChevronUp className="w-5 h-5 text-gray-500" />
-      </button>
-      
-      <style dangerouslySetInnerHTML={{
-        __html: `
-          @keyframes shimmer {
-            0% {
-              background-position: -200% 0;
-            }
-            100% {
-              background-position: 200% 0;
-            }
-          }
-          .animate-shimmer {
-            animation: shimmer 2s infinite linear;
-          }
-          
-          @keyframes flash {
-            0%, 100% {
-              opacity: 0;
-            }
-            50% {
-              opacity: 0.3;
-            }
-          }
-          .animate-flash {
-            animation: flash 0.8s ease-in-out;
-          }
-          
-          @keyframes fadeIn {
-            0% {
-              opacity: 0;
-              transform: translateY(5px);
-            }
-            100% {
-              opacity: 1;
-              transform: translateY(0);
-            }
-          }
-          .animate-fadeIn {
-            animation: fadeIn 0.3s ease-out forwards;
-          }
-        `
-      }} />
     </div>
   );
 };
