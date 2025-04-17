@@ -1,9 +1,9 @@
+
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Truck, RotateCcw, Clock, ArrowRight } from "lucide-react";
+import { Truck } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
-import { Badge } from "@/components/ui/badge";
 
 interface ShippingInfo {
   free: boolean;
@@ -50,34 +50,30 @@ const ProductShipping: React.FC<ProductShippingProps> = ({
     <>
       <div className="flex items-center justify-between">
         <span className="text-sm font-medium text-gray-700">Shipping:</span>
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-2">
-            <div className="flex items-center space-x-1">
-              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 py-0 h-6">
-                <Truck className="h-3 w-3 text-green-600 mr-1" />
-                Free shipping
-                <span className="mx-1 text-gray-400">•</span>
-                <Clock className="h-3 w-3 text-green-600 mr-1" />
-                {isExpressSelected ? "3-5 days" : "7-14 days"}
-              </Badge>
-              <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 py-0 h-6">
-                <RotateCcw className="h-3 w-3 text-blue-600 mr-1" />
-                Free returns
-                <span className="mx-1 text-gray-400">•</span>
-                <span>30 days</span>
-              </Badge>
-            </div>
+        <div className="flex flex-col items-end">
+          <div className="flex items-center">
+            <Truck className="h-4 w-4 text-green-600 mr-1" />
+            <span className="text-sm text-green-600 font-medium">
+              {isExpressSelected 
+                ? `Express Shipping ($${shippingInfo.express})` 
+                : "Free Standard Shipping"}
+            </span>
           </div>
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="h-6 px-2 text-xs text-blue-600 -mr-2"
-            onClick={() => setShowDeliveryOptions(!showDeliveryOptions)}
-          >
-            {showDeliveryOptions ? 'Hide Options' : 'More Options'}
-            <ArrowRight className="ml-1 h-3 w-3" />
-          </Button>
+          <div className="text-xs text-gray-500 mt-0.5">
+            Estimated delivery: {isExpressSelected ? shippingInfo.expressEstimated : shippingInfo.estimated}
+          </div>
         </div>
+      </div>
+      
+      <div className="mt-2 flex justify-end">
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          className="h-7 px-2 text-xs text-blue-600"
+          onClick={() => setShowDeliveryOptions(!showDeliveryOptions)}
+        >
+          {showDeliveryOptions ? "Hide Options" : "More Delivery Options"}
+        </Button>
       </div>
       
       {showDeliveryOptions && (
