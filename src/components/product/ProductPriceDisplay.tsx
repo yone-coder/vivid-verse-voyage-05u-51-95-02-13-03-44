@@ -1,8 +1,9 @@
 
 import React from "react";
-import { TrendingDown, Timer, Truck, RefreshCw } from "lucide-react";
+import { TrendingDown, Truck, RefreshCw, PackageCheck, Shield, CalendarClock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Badge } from "@/components/ui/badge";
 
 interface ProductPriceDisplayProps {
   currentPrice: number;
@@ -52,19 +53,31 @@ const ProductPriceDisplay: React.FC<ProductPriceDisplayProps> = ({
         </div>
       </div>
       
-      {/* Shipping and price alert information */}
+      {/* Enhanced shipping and returns information */}
       <div className="mt-1 text-[10px] md:text-xs flex items-center justify-between flex-wrap gap-y-1">
-        <div className="flex items-center bg-green-50 px-2 py-1 rounded-md text-green-600">
-          <Truck className="mr-1 h-3.5 w-3.5" />
-          <span className="mr-2">Free shipping</span>
-          <span className="mr-2">•</span>
-          <RefreshCw className="mr-1 h-3 w-3" />
-          <span>Free returns</span>
+        <div className="flex items-center space-x-2">
+          <Badge variant="outline" className="bg-green-50 px-2 py-0.5 rounded-md text-green-600 border-green-100 flex items-center">
+            <Truck className="mr-1 h-3 w-3" />
+            <span className="font-medium">Free shipping</span>
+            <span className="mx-1">•</span>
+            <CalendarClock className="mr-1 h-3 w-3" />
+            <span>7-15 days</span>
+          </Badge>
+          
+          <Badge variant="outline" className="bg-blue-50 px-2 py-0.5 rounded-md text-blue-600 border-blue-100 flex items-center">
+            <RefreshCw className="mr-1 h-3 w-3" />
+            <span className="font-medium">Free returns</span>
+            <span className="mx-1">•</span>
+            <Shield className="mr-1 h-3 w-3" />
+            <span>30 days</span>
+          </Badge>
         </div>
         
-        <div className="flex items-center text-amber-600 font-semibold">
-          <Timer className="mr-1 h-3.5 w-3.5 animate-pulse" />
-          <span>Price may increase soon</span>
+        <div className="flex items-center">
+          <Badge variant="outline" className="bg-purple-50 px-2 py-0.5 rounded-md text-purple-600 border-purple-100 flex items-center">
+            <PackageCheck className="mr-1 h-3 w-3" />
+            <span className="font-medium">Buyer protection</span>
+          </Badge>
         </div>
       </div>
     </div>
