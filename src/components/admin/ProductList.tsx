@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { fetchAllProducts, updateProduct, updateProductName } from "@/integrations/supabase/client";
@@ -23,7 +22,6 @@ const ProductList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const { toast: uiToast } = useToast();
   
-  // Track which product is currently being edited
   const [editingProduct, setEditingProduct] = useState<string | null>(null);
   const [editFormData, setEditFormData] = useState({
     name: "",
@@ -58,7 +56,6 @@ const ProductList = () => {
   }, []);
 
   const handleDelete = async (id: string) => {
-    // This would be implemented with a deleteProduct function
     toast("Product deletion is not implemented yet", {
       description: "This feature will be available soon",
     });
@@ -85,7 +82,6 @@ const ProductList = () => {
 
   const saveProductChanges = async (id: string) => {
     try {
-      // Validate inputs
       if (!editFormData.name.trim()) {
         toast.error("Product name cannot be empty");
         return;
@@ -101,31 +97,24 @@ const ProductList = () => {
         return;
       }
 
-      console.log(`Saving product changes for ${id}:`, editFormData);
+      console.log(`Saving product name for ${id}: "${editFormData.name}"`);
+      const nameResult = await updateProductName(id, editFormData.name);
+      console.log(`Name update result:`, nameResult);
       
-      // First update the name separately using updateProductName
-      await updateProductName(id, editFormData.name);
-      console.log(`Name updated successfully to: ${editFormData.name}`);
-      
-      // Then update the rest of the fields
-      const updatedProduct = await updateProduct(id, {
+      console.log(`Updating other product fields for ${id}`);
+      const otherUpdates = {
         description: editFormData.description,
         price: parseFloat(editFormData.price),
         discount_price: editFormData.discount_price ? parseFloat(editFormData.discount_price) : null
-      });
+      };
       
-      console.log("Product updated successfully:", updatedProduct);
+      const updatedProduct = await updateProduct(id, otherUpdates);
+      console.log("Other fields update result:", updatedProduct);
 
-      // Update local state with the updated product
-      setProducts(products.map(product => 
-        product.id === id ? (Array.isArray(updatedProduct) ? updatedProduct[0] : updatedProduct) : product
-      ));
-      
       toast.success("Product updated successfully");
       setEditingProduct(null);
       
-      // Refresh the products list to ensure we have the latest data
-      loadProducts();
+      await loadProducts();
     } catch (error) {
       console.error('Error updating product:', error);
       toast.error("Failed to update product");
