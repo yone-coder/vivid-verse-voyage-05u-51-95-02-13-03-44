@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { ShoppingCart, Heart, Share2, Star, ChevronUp, ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface StickyBuyButtonProps {
   selectedColor?: string;
@@ -18,6 +19,7 @@ const StickyBuyButton = ({
   },
   defaultPrice = 79.99
 }: StickyBuyButtonProps) => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [selectedVariant, setSelectedVariant] = useState(selectedColor);
@@ -87,6 +89,10 @@ const StickyBuyButton = ({
     return (product.salePrice * quantity).toFixed(2);
   };
 
+  const handleBuyNow = () => {
+    navigate(`/checkout?color=${selectedVariant}&quantity=${quantity}&price=${currentPrice}`);
+  };
+
   return (
     <div className="font-sans">
       <div 
@@ -127,7 +133,10 @@ const StickyBuyButton = ({
                 <span>Options</span>
               </button>
               
-              <button className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2 rounded-full font-medium shadow-sm hover:shadow-md transition-all whitespace-nowrap">
+              <button 
+                onClick={handleBuyNow}
+                className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2 rounded-full font-medium shadow-sm hover:shadow-md transition-all whitespace-nowrap"
+              >
                 Buy Now
               </button>
             </div>
