@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -5,7 +6,7 @@ import StickyBuyButton from "@/components/StickyBuyButton";
 import { useProduct, useProductAnalytics } from "@/hooks/useProduct";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Heart, RotateCcw } from "lucide-react";
+import { Heart, RotateCcw, Clock, ArrowRight, Package, PackageCheck, Truck } from "lucide-react";
 import { useVariantStockDecay } from "@/hooks/useVariantStockDecay";
 import { Button } from "@/components/ui/button";
 import ProductTabs from "@/components/ProductTabs";
@@ -557,6 +558,21 @@ const ProductDetail = () => {
           
           <div className="flex items-center justify-between mt-1">
             <DynamicPriceDisplay selectedColor={selectedColor} />
+            <div className="flex items-center gap-1">
+              <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 py-0 h-6">
+                <Truck className="h-3 w-3 text-green-600 mr-1" />
+                Free shipping
+                <span className="mx-1 text-gray-400">•</span>
+                <Clock className="h-3 w-3 text-green-600 mr-1" />
+                {isExpressSelected ? "3-5 days" : "7-14 days"}
+              </Badge>
+              <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 py-0 h-6">
+                <PackageCheck className="h-3 w-3 text-blue-600 mr-1" />
+                Free returns
+                <span className="mx-1 text-gray-400">•</span>
+                <span>30 days</span>
+              </Badge>
+            </div>
           </div>
           
           <EnhancedRating />
