@@ -1,6 +1,7 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, Trash2, Edit, Eye } from "lucide-react";
+import { Plus, Trash2, Edit, Eye, X, Check, Save, Pencil } from "lucide-react";
 import { supabase, updateProduct, subscribeToProductChanges, updateProductName } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,7 +11,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import ProductCard from "@/components/admin/ProductCard";
 
 interface Product {
   id: string;
@@ -19,7 +19,6 @@ interface Product {
   price: number;
   discount_price: number | null;
   product_images: ProductImage[];
-  created_at: string;
 }
 
 interface ProductImage {
@@ -390,66 +389,42 @@ const AdminPanel: React.FC = () => {
         return;
       }
       
-      const newName = productToUpdate.name.trim();
-      console.log(`Saving new name for product ${productId}: ${newName}`);
+      console.log(`Saving new name for product ${productId}: ${productToUpdate.name}`);
       
-      // Show loading toast
+      // Step 1: Update UI immediately to show the change
+      setEditableProducts(prev => 
+        prev.map(p => p.id === productId ? { ...p, isEditing: false } : p)
+      );
+      
+      // Step 2: Update local products state for immediate feedback
+      const newName = productToUpdate.name.trim();
+      setProducts(prev => 
+        prev.map(p => p.id === productId ? { ...p, name: newName } : p)
+      );
+      
+      // Step 3: Send update to Supabase
+      const result = await updateProductName(productId, newName);
+      
+      console.log("Name update result:", result);
+      
       toast({
-        title: "Updating...",
-        description: "Saving product name changes",
+        title: "Success",
+        description: "Product name updated successfully",
       });
       
-      // Send the update to Supabase
-      const updatedProduct = await updateProductName(productId, newName);
-      console.log("Update successful:", updatedProduct);
+      // Step 4: Refresh products to ensure we have the latest data
+      await fetchProducts();
       
-      if (updatedProduct) {
-        // Update local products state to reflect the change immediately
-        setProducts(prev => 
-          prev.map(p => {
-            if (p.id === productId) {
-              return {
-                ...p,
-                name: updatedProduct.name
-              };
-            }
-            return p;
-          })
-        );
-        
-        // Update editable products state
-        setEditableProducts(prev => 
-          prev.map(p => {
-            if (p.id === productId) {
-              return {
-                ...p,
-                isEditing: false,
-                name: updatedProduct.name
-              };
-            }
-            return p;
-          })
-        );
-        
-        // Create a new success toast
-        toast({
-          title: "Success",
-          description: "Product name updated successfully",
-          variant: "default",
-        });
-        
-        // One final fetch to ensure we have the latest data
-        fetchProducts();
-      }
     } catch (error) {
-      console.error('Error in saveProductName function:', error);
+      console.error('Error updating product name:', error);
       toast({
         variant: "destructive",
         title: "Update Failed",
-        description: "An unexpected error occurred. Please try again.",
+        description: "Failed to update product name. Please try again.",
       });
       
-      // Reset editing state to reflect the failure
+      // On error, reset the state by fetching products again
+      await fetchProducts();
       cancelEditingProductName(productId);
     }
   };
@@ -476,24 +451,83 @@ const AdminPanel: React.FC = () => {
               <div className="col-span-full p-4">Loading products...</div>
             ) : (
               products.map((product) => {
-                const editableProduct = editableProducts.find(p => p.id === product.id) || {
-                  id: product.id,
-                  name: product.name,
-                  isEditing: false
-                };
+                const editableProduct = editableProducts.find(p => p.id === product.id);
                 
                 return (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    editableProduct={editableProduct}
-                    onStartEditing={startEditingProductName}
-                    onCancelEditing={cancelEditingProductName}
-                    onNameChange={handleProductNameChange}
-                    onSaveName={saveProductName}
-                    onManageImages={setSelectedProduct}
-                    onViewProduct={viewProduct}
-                  />
+                  <Card key={product.id} className="overflow-hidden">
+                    <CardHeader className="pb-2">
+                      {editableProduct?.isEditing ? (
+                        <div className="flex items-center gap-2">
+                          <Input
+                            value={editableProduct.name}
+                            onChange={(e) => handleProductNameChange(product.id, e.target.value)}
+                            className="font-semibold"
+                          />
+                          <Button 
+                            size="icon" 
+                            variant="ghost"
+                            onClick={() => saveProductName(product.id)}
+                          >
+                            <Check className="h-4 w-4" />
+                          </Button>
+                          <Button 
+                            size="icon" 
+                            variant="ghost"
+                            onClick={() => cancelEditingProductName(product.id)}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-between">
+                          <CardTitle className="line-clamp-1">{product.name}</CardTitle>
+                          <Button 
+                            size="icon" 
+                            variant="ghost"
+                            onClick={() => startEditingProductName(product.id)}
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      )}
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-gray-500 line-clamp-2 mb-2">{product.description}</p>
+                      <div className="flex items-baseline gap-2">
+                        <span className="font-medium">
+                          ${product.price.toFixed(2)}
+                        </span>
+                        {product.discount_price && (
+                          <span className="text-sm text-gray-500 line-through">
+                            ${product.discount_price.toFixed(2)}
+                          </span>
+                        )}
+                      </div>
+                      <div className="mt-2">
+                        <p className="text-xs text-gray-500">
+                          {product.product_images?.length || 0} images
+                        </p>
+                      </div>
+                    </CardContent>
+                    <CardFooter className="flex justify-between pt-0">
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        onClick={() => viewProduct(product.id)}
+                      >
+                        <Eye className="mr-1 h-4 w-4" />
+                        View
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => handleProductSelect(product)}
+                      >
+                        <Edit className="mr-1 h-4 w-4" />
+                        Manage Images
+                      </Button>
+                    </CardFooter>
+                  </Card>
                 );
               })
             )}

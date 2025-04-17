@@ -11,132 +11,185 @@ const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiO
 
 export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
-// Product fetch functions
+// Function to fetch all products from Supabase
 export const fetchAllProducts = async () => {
   const { data, error } = await supabase
     .from('products')
     .select(`
       *,
-      product_images (*)
+      product_images(*)
     `)
     .order('created_at', { ascending: false });
-
+  
   if (error) {
-    console.error('Error fetching products:', error);
+    console.error("Error fetching products:", error);
     throw error;
   }
-
-  return data || [];
+  
+  return data;
 };
 
+// Function to fetch a product by ID
 export const fetchProductById = async (productId: string) => {
   const { data, error } = await supabase
     .from('products')
-    .select(`
-      *,
-      product_images (*)
-    `)
+    .select('*, product_images(*)')
     .eq('id', productId)
     .single();
-
+    
   if (error) {
-    console.error(`Error fetching product with ID ${productId}:`, error);
+    console.error("Error fetching product:", error);
     throw error;
   }
-
+  
   return data;
 };
 
-// Product update functions
-export const updateProduct = async (productId: string, updates: any) => {
-  const { data, error } = await supabase
-    .from('products')
-    .update(updates)
-    .eq('id', productId)
-    .select();
-
-  if (error) {
-    console.error('Error updating product:', error);
-    throw error;
-  }
-
-  return data;
-};
-
+// Specialized function to update a product name
 export const updateProductName = async (productId: string, newName: string) => {
-  console.log(`API call: Updating product ${productId} name to "${newName}"`);
+  console.log(`updateProductName called with ID: ${productId}, newName: "${newName}"`);
+  
+  if (!productId) {
+    console.error("Product ID is missing");
+    throw new Error("Product ID is required");
+  }
+  
+  if (!newName || newName.trim() === '') {
+    console.error("Invalid product name:", newName);
+    throw new Error("Product name cannot be empty");
+  }
   
   try {
-    // First verify the product exists to provide better error handling
-    const { data: existingProduct, error: fetchError } = await supabase
+    const updates = {
+      name: newName,
+      updated_at: new Date().toISOString()
+    };
+    
+    console.log("Sending direct name update to Supabase:", {
+      productId,
+      updates
+    });
+    
+    // Perform the update with return: 'representation' to get back the updated data
+    const { data, error } = await supabase
+      .from('products')
+      .update(updates)
+      .eq('id', productId)
+      .select('*');
+      
+    if (error) {
+      console.error("Error updating product name:", error);
+      throw error;
+    }
+    
+    console.log("Product name updated successfully:", data);
+    
+    // If we got data back, return it
+    if (data && data.length > 0) {
+      return data;
+    }
+    
+    // If no data returned, fetch the updated product explicitly
+    const { data: fetchedProduct, error: fetchError } = await supabase
       .from('products')
       .select('*')
       .eq('id', productId)
       .single();
-    
+      
     if (fetchError) {
-      console.error(`Error finding product with ID ${productId}:`, fetchError);
+      console.error("Error fetching updated product:", fetchError);
       throw fetchError;
     }
     
-    if (!existingProduct) {
-      const notFoundError = new Error(`Product with ID ${productId} not found`);
-      console.error(notFoundError);
-      throw notFoundError;
-    }
+    console.log("Fetched updated product:", fetchedProduct);
+    // Return as array to maintain compatibility with existing code
+    return [fetchedProduct];
     
-    console.log(`Current product name: "${existingProduct.name}", updating to: "${newName}"`);
-    
-    // Use a more reliable approach with maybeSingle for the update
-    const { data, error } = await supabase
-      .from('products')
-      .update({ name: newName })
-      .eq('id', productId)
-      .select()
-      .maybeSingle();
-
-    if (error) {
-      console.error('Error updating product name:', error);
-      throw error;
-    }
-    
-    console.log('Product update response data:', data);
-    
-    // If no data is returned, construct response based on what we know
-    if (!data) {
-      console.log('No data returned from update, returning constructed data');
-      // Use all fields from the existing product, just update the name and updated_at
-      return {
-        ...existingProduct,
-        name: newName,
-        updated_at: new Date().toISOString()
-      };
-    }
-    
-    console.log('Product name update successful with data:', data);
-    return data;
   } catch (error) {
-    console.error('Error in updateProductName:', error);
+    console.error("Exception during product name update:", error);
     throw error;
   }
 };
 
-// Real-time subscription function
-export const subscribeToProductChanges = (callback: (payload: any) => void) => {
+// Function to update a product
+export const updateProduct = async (productId: string, updates: Partial<any>) => {
+  console.log("Updating product with ID:", productId, "Updates:", updates);
+  
+  // Validate inputs
+  if (!productId) {
+    console.error("Product ID is missing");
+    throw new Error("Product ID is required");
+  }
+  
+  if (!updates || Object.keys(updates).length === 0) {
+    console.error("No updates provided");
+    throw new Error("Updates are required");
+  }
+  
+  // Check specifically for name updates
+  if (updates.name !== undefined) {
+    console.log(`Updating product name to: "${updates.name}"`);
+    
+    if (typeof updates.name !== 'string' || updates.name.trim() === '') {
+      console.error("Invalid product name:", updates.name);
+      throw new Error("Product name cannot be empty");
+    }
+  }
+  
+  try {
+    // Add timestamp to the updates to ensure the change is detected
+    const updatesWithTimestamp = {
+      ...updates,
+      updated_at: new Date().toISOString()
+    };
+    
+    console.log("Sending update to Supabase:", {
+      productId,
+      updates: updatesWithTimestamp
+    });
+    
+    // Perform the update
+    const { data, error } = await supabase
+      .from('products')
+      .update(updatesWithTimestamp)
+      .eq('id', productId)
+      .select();
+      
+    if (error) {
+      console.error("Error updating product:", error);
+      throw error;
+    }
+    
+    console.log("Product updated successfully:", data);
+    return data;
+  } catch (error) {
+    console.error("Exception during product update:", error);
+    throw error;
+  }
+};
+
+// Function to subscribe to products changes
+export const subscribeToProductChanges = (callback: () => void) => {
+  console.log("Setting up real-time subscription for products table");
+  
+  // Create a channel for product changes
   const channel = supabase
     .channel('product-changes')
     .on(
       'postgres_changes',
-      {
-        event: '*',
-        schema: 'public',
-        table: 'products'
+      { 
+        event: '*', 
+        schema: 'public', 
+        table: 'products' 
       },
       (payload) => {
-        callback(payload);
+        console.log('Real-time product update received:', payload);
+        callback();
       }
     )
-    .subscribe();
-
+    .subscribe((status) => {
+      console.log('Realtime subscription status:', status);
+    });
+    
   return channel;
 };
