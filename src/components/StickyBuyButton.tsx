@@ -28,13 +28,11 @@ const StickyBuyButton = ({
   const [recentPurchase, setRecentPurchase] = useState(false);
   const [likeCount, setLikeCount] = useState(156);
 
-  // Get current price based on selected color or default to Black's price
   const currentPrice = colorPrices[selectedColor as keyof typeof colorPrices] || colorPrices.Black || defaultPrice;
 
-  // Product information - now using the current price based on color
   const product = {
     name: "Wireless Bluetooth Earbuds",
-    price: currentPrice * 1.2, // Original price is higher than the current price
+    price: currentPrice * 1.2,
     salePrice: currentPrice,
     discount: Math.round(((currentPrice * 1.2 - currentPrice) / (currentPrice * 1.2)) * 100),
     rating: 4.7,
@@ -45,7 +43,6 @@ const StickyBuyButton = ({
     deliveryTime: "15-30 days",
   };
 
-  // Update the selected variant when the selectedColor prop changes
   useEffect(() => {
     setSelectedVariant(selectedColor);
   }, [selectedColor]);
@@ -54,10 +51,10 @@ const StickyBuyButton = ({
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       
+      setIsVisible(true);
+      
       if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        setIsVisible(false);
-      } else {
-        setIsVisible(true);
+        // You can add custom behavior here if desired
       }
       
       setLastScrollY(currentScrollY);
