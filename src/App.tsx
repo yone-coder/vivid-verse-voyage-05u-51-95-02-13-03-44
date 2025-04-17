@@ -10,11 +10,14 @@ import NotFound from "./pages/NotFound";
 import ProductDetail from "./pages/ProductDetail";
 import SearchPage from "./pages/SearchPage";
 import AdminPanel from "./pages/AdminPanel";
-import Checkout from "./pages/Checkout";  // Add this import
+import Checkout from "./pages/Checkout";
 import MainLayout from "./components/layout/MainLayout";
 import { ThemeProvider } from "@/components/theme-provider";
 
 const queryClient = new QueryClient();
+
+// Using Nebula Lamp product ID as the default route
+const NEBULA_LAMP_ID = "f47ac10b-58cc-4372-a567-0e02b2c3d479";
 
 const App = () => (
   <React.StrictMode>
@@ -26,7 +29,7 @@ const App = () => (
           <BrowserRouter>
             <Routes>
               <Route element={<MainLayout />}>
-                <Route path="/" element={<Index />} />
+                <Route path="/" element={<Navigate to={`/product/${NEBULA_LAMP_ID}`} replace />} />
                 <Route path="/browse" element={<Index />} />
                 <Route path="/product/:id" element={<ProductDetail />} />
                 <Route path="/checkout" element={<Checkout />} />
