@@ -55,9 +55,7 @@ export function useProduct(productId: string) {
       return data;
     },
     enabled: !!productId,
-    staleTime: 0, // Always consider data stale to ensure fresh fetches
-    refetchOnWindowFocus: true, // Refetch when window regains focus
-    refetchOnMount: true, // Refetch whenever the component mounts
+    staleTime: 10000, // Consider data fresh for 10 seconds
   });
 }
 

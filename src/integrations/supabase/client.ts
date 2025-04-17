@@ -11,99 +11,99 @@ const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiO
 
 export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
-// Fetch all products from the database
-export async function fetchAllProducts() {
-  console.log("Fetching all products...");
-  const { data, error } = await supabase
-    .from('products')
-    .select(`
-      *,
-      product_images(*)
-    `);
-  
-  if (error) {
-    console.error("Error fetching products:", error);
-    throw error;
-  }
-  
-  return data || [];
-}
-
-// Fetch a single product by ID
-export async function fetchProductById(id: string) {
-  console.log(`Fetching product with ID: ${id}`);
+// Function to fetch all products from Supabase
+export const fetchAllProducts = async () => {
   const { data, error } = await supabase
     .from('products')
     .select(`
       *,
       product_images(*)
     `)
-    .eq('id', id)
+    .order('created_at', { ascending: false });
+  
+  if (error) {
+    console.error("Error fetching products:", error);
+    throw error;
+  }
+  
+  return data;
+};
+
+// Function to fetch a product by ID
+export const fetchProductById = async (productId: string) => {
+  const { data, error } = await supabase
+    .from('products')
+    .select('*, product_images(*)')
+    .eq('id', productId)
     .single();
-  
+    
   if (error) {
-    console.error(`Error fetching product ${id}:`, error);
+    console.error("Error fetching product:", error);
     throw error;
   }
   
   return data;
-}
+};
 
-// Update a product
-export async function updateProduct(id: string, updates: any) {
-  console.log(`Updating product ${id} with:`, updates);
-  const { data, error } = await supabase
+// Function to update a product
+export const updateProduct = async (productId: string, updates: Partial<any>) => {
+  console.log("Updating product with ID:", productId, "Updates:", updates);
+  
+  try {
+    // Add timestamp to the updates to ensure the change is detected
+    const updatesWithTimestamp = {
+      ...updates,
+      updated_at: new Date().toISOString()
+    };
+    
+    const { data, error } = await supabase
+      .from('products')
+      .update(updatesWithTimestamp)
+      .eq('id', productId)
+      .select();
+      
+    if (error) {
+      console.error("Error updating product:", error);
+      throw error;
+    }
+    
+    console.log("Product updated successfully:", data);
+    return data;
+  } catch (error) {
+    console.error("Exception during product update:", error);
+    throw error;
+  }
+};
+
+// Function to subscribe to products changes
+export const subscribeToProductChanges = (callback: () => void) => {
+  console.log("Setting up real-time subscription for products table");
+  
+  // Enable realtime for the products table if not already enabled
+  supabase
     .from('products')
-    .update(updates)
-    .eq('id', id)
-    .select();
-  
-  if (error) {
-    console.error(`Error updating product ${id}:`, error);
-    throw error;
-  }
-  
-  return data;
-}
-
-// Update just the product name
-export async function updateProductName(id: string, name: string) {
-  console.log(`Updating product name for ${id} to: ${name}`);
-  const { data, error } = await supabase
-    .from('products')
-    .update({ name })
-    .eq('id', id)
-    .select();
-  
-  if (error) {
-    console.error(`Error updating product name for ${id}:`, error);
-    throw error;
-  }
-  
-  return data;
-}
-
-// Subscribe to real-time changes on the products table
-export function subscribeToProductChanges(callback: () => void) {
-  console.log("Setting up real-time subscription for products");
-  
+    .on('UPDATE', (payload) => {
+      console.log('Product updated via legacy listener:', payload);
+      callback();
+    });
+    
   const channel = supabase
-    .channel('products-channel')
+    .channel('product-changes')
     .on(
       'postgres_changes',
-      {
-        event: '*', // Listen for all events (INSERT, UPDATE, DELETE)
-        schema: 'public',
-        table: 'products'
+      { 
+        event: '*', 
+        schema: 'public', 
+        table: 'products' 
       },
       (payload) => {
-        console.log('Real-time update received:', payload);
+        console.log('Real-time product update received:', payload);
         callback();
       }
     )
     .subscribe((status) => {
-      console.log('Subscription status:', status);
+      console.log('Realtime subscription status:', status);
     });
     
   return channel;
-}
+};

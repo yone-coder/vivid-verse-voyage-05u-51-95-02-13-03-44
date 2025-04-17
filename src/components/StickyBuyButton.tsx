@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { ShoppingCart, Heart, Share2, Star, ChevronUp, ArrowRight } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 
 interface StickyBuyButtonProps {
   selectedColor?: string;
@@ -19,7 +18,6 @@ const StickyBuyButton = ({
   },
   defaultPrice = 79.99
 }: StickyBuyButtonProps) => {
-  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [selectedVariant, setSelectedVariant] = useState(selectedColor);
@@ -30,11 +28,13 @@ const StickyBuyButton = ({
   const [recentPurchase, setRecentPurchase] = useState(false);
   const [likeCount, setLikeCount] = useState(156);
 
+  // Get current price based on selected color or default to Black's price
   const currentPrice = colorPrices[selectedColor as keyof typeof colorPrices] || colorPrices.Black || defaultPrice;
 
+  // Product information - now using the current price based on color
   const product = {
     name: "Wireless Bluetooth Earbuds",
-    price: currentPrice * 1.2,
+    price: currentPrice * 1.2, // Original price is higher than the current price
     salePrice: currentPrice,
     discount: Math.round(((currentPrice * 1.2 - currentPrice) / (currentPrice * 1.2)) * 100),
     rating: 4.7,
@@ -45,6 +45,7 @@ const StickyBuyButton = ({
     deliveryTime: "15-30 days",
   };
 
+  // Update the selected variant when the selectedColor prop changes
   useEffect(() => {
     setSelectedVariant(selectedColor);
   }, [selectedColor]);
@@ -53,10 +54,10 @@ const StickyBuyButton = ({
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       
-      setIsVisible(true);
-      
       if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        // You can add custom behavior here if desired
+        setIsVisible(false);
+      } else {
+        setIsVisible(true);
       }
       
       setLastScrollY(currentScrollY);
@@ -87,10 +88,6 @@ const StickyBuyButton = ({
 
   const calculateTotal = () => {
     return (product.salePrice * quantity).toFixed(2);
-  };
-
-  const handleBuyNow = () => {
-    navigate(`/checkout?color=${selectedVariant}&quantity=${quantity}&price=${currentPrice}`);
   };
 
   return (
@@ -133,10 +130,7 @@ const StickyBuyButton = ({
                 <span>Options</span>
               </button>
               
-              <button 
-                onClick={handleBuyNow}
-                className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2 rounded-full font-medium shadow-sm hover:shadow-md transition-all whitespace-nowrap"
-              >
+              <button className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2 rounded-full font-medium shadow-sm hover:shadow-md transition-all whitespace-nowrap">
                 Buy Now
               </button>
             </div>

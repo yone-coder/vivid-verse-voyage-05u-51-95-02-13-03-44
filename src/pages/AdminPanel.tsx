@@ -1,8 +1,7 @@
-
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Plus, Trash2, Edit, Eye, X, Check, Save, Pencil } from "lucide-react";
-import { supabase, updateProduct, subscribeToProductChanges, updateProductName } from "@/integrations/supabase/client";
+import { supabase, updateProduct, subscribeToProductChanges } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -391,29 +390,26 @@ const AdminPanel: React.FC = () => {
       
       console.log(`Saving new name for product ${productId}: ${productToUpdate.name}`);
       
-      // Step 1: Update UI immediately to show the change
+      const data = await updateProduct(productId, { 
+        name: productToUpdate.name,
+      });
+      
+      console.log('Product updated successfully in Supabase:', data);
+      
+      setProducts(prev => 
+        prev.map(p => p.id === productId ? { ...p, name: productToUpdate.name } : p)
+      );
+      
       setEditableProducts(prev => 
         prev.map(p => p.id === productId ? { ...p, isEditing: false } : p)
       );
-      
-      // Step 2: Update local products state for immediate feedback
-      const newName = productToUpdate.name.trim();
-      setProducts(prev => 
-        prev.map(p => p.id === productId ? { ...p, name: newName } : p)
-      );
-      
-      // Step 3: Send update to Supabase
-      const result = await updateProductName(productId, newName);
-      
-      console.log("Name update result:", result);
       
       toast({
         title: "Success",
         description: "Product name updated successfully",
       });
       
-      // Step 4: Refresh products to ensure we have the latest data
-      await fetchProducts();
+      fetchProducts();
       
     } catch (error) {
       console.error('Error updating product name:', error);
@@ -422,10 +418,6 @@ const AdminPanel: React.FC = () => {
         title: "Update Failed",
         description: "Failed to update product name. Please try again.",
       });
-      
-      // On error, reset the state by fetching products again
-      await fetchProducts();
-      cancelEditingProductName(productId);
     }
   };
 
