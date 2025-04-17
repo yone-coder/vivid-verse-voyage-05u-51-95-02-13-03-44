@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Link } from "react-router-dom";
 import {
@@ -9,7 +10,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Pencil, Save, Trash2, X } from "lucide-react";
 
 interface ProductCardProps {
   product: any;
@@ -30,10 +32,51 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onDelete, onNameUpda
     setIsEditing(false);
   };
 
+  const cancelEditing = () => {
+    setNewName(product.name);
+    setIsEditing(false);
+  };
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{product.name}</CardTitle>
+        {isEditing ? (
+          <div className="space-y-2">
+            <Input 
+              value={newName} 
+              onChange={handleNameChange} 
+              autoFocus
+              className="font-bold"
+            />
+            <div className="flex space-x-2">
+              <Button 
+                size="sm" 
+                variant="default" 
+                onClick={handleNameUpdate}
+              >
+                <Save className="h-4 w-4 mr-1" /> Save
+              </Button>
+              <Button 
+                size="sm" 
+                variant="outline" 
+                onClick={cancelEditing}
+              >
+                <X className="h-4 w-4 mr-1" /> Cancel
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <div className="flex justify-between items-center">
+            <CardTitle>{product.name}</CardTitle>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={() => setIsEditing(true)}
+            >
+              <Pencil className="h-4 w-4" />
+            </Button>
+          </div>
+        )}
         <CardDescription>Created at: {new Date(product.created_at).toLocaleDateString()}</CardDescription>
       </CardHeader>
       <CardContent>
