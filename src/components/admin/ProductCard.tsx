@@ -21,7 +21,7 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onDelete, onNameUpdate }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [newName, setNewName] = useState(product.name);
+  const [newName, setNewName] = useState(product.name || "");
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewName(e.target.value);
@@ -35,9 +35,18 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onDelete, onNameUpda
   };
 
   const cancelEditing = () => {
-    setNewName(product.name);
+    setNewName(product.name || "");
     setIsEditing(false);
   };
+
+  if (!product) {
+    return null;
+  }
+
+  // Format the created date if it exists
+  const formattedDate = product.created_at 
+    ? new Date(product.created_at).toLocaleDateString() 
+    : "Unknown date";
 
   return (
     <Card>
@@ -63,7 +72,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onDelete, onNameUpda
           </div>
         ) : (
           <div className="flex justify-between items-start">
-            <CardTitle>{product.name}</CardTitle>
+            <CardTitle>{product.name || "Unnamed Product"}</CardTitle>
             <Button 
               size="sm" 
               variant="ghost" 
@@ -74,12 +83,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onDelete, onNameUpda
             </Button>
           </div>
         )}
-        <CardDescription>Created at: {new Date(product.created_at).toLocaleDateString()}</CardDescription>
+        <CardDescription>Created at: {formattedDate}</CardDescription>
       </CardHeader>
       <CardContent>
-        <p>Price: ${product.price}</p>
+        <p>Price: ${product.price || "N/A"}</p>
         {product.discount_price && <p>Discount Price: ${product.discount_price}</p>}
-        <p className="line-clamp-2">{product.description}</p>
+        <p className="line-clamp-2">{product.description || "No description available"}</p>
       </CardContent>
       <CardFooter className="flex justify-between">
         <Link 

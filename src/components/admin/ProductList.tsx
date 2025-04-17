@@ -4,23 +4,28 @@ import { useToast } from "@/hooks/use-toast";
 import { fetchAllProducts, updateProductName } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Grid } from "lucide-react";
+import { Grid, AlertTriangle } from "lucide-react";
 import ProductCard from "./ProductCard";
 import { toast } from "sonner";
 
 const ProductList = () => {
   const [products, setProducts] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const { toast: uiToast } = useToast();
 
   const loadProducts = async () => {
     try {
       setIsLoading(true);
+      setError(null);
+      console.log("Fetching products...");
       const data = await fetchAllProducts();
+      console.log("Products fetched:", data);
       setProducts(data);
     } catch (error) {
       console.error("Error loading products:", error);
+      setError("Failed to load products. Please try again.");
       uiToast({
         title: "Error",
         description: "Failed to load products",
@@ -59,13 +64,13 @@ const ProductList = () => {
   };
 
   const filteredProducts = products.filter(product => 
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
+    product.name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Product Management</h1>
+        <h2 className="text-xl font-semibold">Product Management</h2>
         <Button onClick={loadProducts} variant="outline" size="sm">
           Refresh
         </Button>
@@ -79,6 +84,16 @@ const ProductList = () => {
           className="max-w-sm"
         />
       </div>
+
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-md p-4 flex items-start gap-3">
+          <AlertTriangle className="h-5 w-5 text-red-500 mt-0.5" />
+          <div>
+            <h3 className="font-medium text-red-800">Error loading products</h3>
+            <p className="text-red-700 text-sm">{error}</p>
+          </div>
+        </div>
+      )}
 
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
