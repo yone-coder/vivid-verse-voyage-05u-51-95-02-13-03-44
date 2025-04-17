@@ -29,7 +29,7 @@ const App = () => (
           <BrowserRouter>
             <Routes>
               <Route element={<MainLayout />}>
-                <Route path="/" element={<Navigate to={`/product/${NEBULA_LAMP_ID}`} replace />} />
+                <Route path="/" element={<ProductDetail />} />
                 <Route path="/browse" element={<Index />} />
                 <Route path="/product/:id" element={<ProductDetail />} />
                 <Route path="/checkout" element={<Checkout />} />
