@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Footer from "@/components/layout/Footer";
@@ -14,6 +13,7 @@ export default function MainLayout() {
   const location = useLocation();
   const isProductPage = location.pathname.includes('/product/');
   const isHomePage = location.pathname === "/";
+  const isCheckoutPage = location.pathname === "/checkout";
   const { toast } = useToast();
   const [isFavorite, setIsFavorite] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -40,7 +40,6 @@ export default function MainLayout() {
         });
       });
     } else {
-      // Fallback for browsers that don't support navigator.share
       navigator.clipboard.writeText(window.location.href);
       toast({
         title: "Link Copied",
@@ -57,7 +56,6 @@ export default function MainLayout() {
     });
   };
   
-  // Use the css variable approach for header height - using reduced height for AliExpress-like compact header
   const headerHeightStyle = `
     :root {
       --header-height: ${isMobile ? '44px' : '90px'};
@@ -68,33 +66,35 @@ export default function MainLayout() {
     <div className="min-h-screen flex flex-col bg-gray-50">
       <style dangerouslySetInnerHTML={{ __html: headerHeightStyle }} />
       
-      {/* Show dynamic header on product pages */}
-      {isProductPage && (
-        <Header 
-          isProductHeader={true}
-          isFavorite={isFavorite}
-          toggleFavorite={toggleFavorite}
-          handleShare={handleShare}
-          isSearchOpen={isSearchOpen}
-          setIsSearchOpen={setIsSearchOpen}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          handleSearch={handleSearch}
-        />
+      {!isCheckoutPage && (
+        <>
+          {isProductPage && (
+            <Header 
+              isProductHeader={true}
+              isFavorite={isFavorite}
+              toggleFavorite={toggleFavorite}
+              handleShare={handleShare}
+              isSearchOpen={isSearchOpen}
+              setIsSearchOpen={setIsSearchOpen}
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              handleSearch={handleSearch}
+            />
+          )}
+          
+          {!isProductPage && !isHomePage && (
+            <Header 
+              isSearchOpen={isSearchOpen}
+              setIsSearchOpen={setIsSearchOpen}
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              handleSearch={handleSearch}
+            />
+          )}
+        </>
       )}
       
-      {/* Show standard header for non-product pages */}
-      {!isProductPage && !isHomePage && (
-        <Header 
-          isSearchOpen={isSearchOpen}
-          setIsSearchOpen={setIsSearchOpen}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          handleSearch={handleSearch}
-        />
-      )}
-      
-      {isProductPage || isHomePage ? (
+      {isProductPage || isHomePage || isCheckoutPage ? (
         <main className="flex-grow relative">
           <Outlet />
         </main>
@@ -103,8 +103,9 @@ export default function MainLayout() {
           <Outlet />
         </main>
       )}
-      {!isMobile && !isHomePage && <Footer />}
-      {isMobile && !isProductPage && !isHomePage && <MobileBottomNav />}
+      
+      {!isMobile && !isHomePage && !isCheckoutPage && <Footer />}
+      {isMobile && !isProductPage && !isHomePage && !isCheckoutPage && <MobileBottomNav />}
     </div>
   );
 }
