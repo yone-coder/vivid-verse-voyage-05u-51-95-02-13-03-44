@@ -1,9 +1,9 @@
 
-import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { useProduct } from "@/hooks/useProduct";
-import { useToast } from "@/hooks/use-toast";
-import { updateProduct, updateProductName } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import { updateProduct } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,57 +16,96 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Pencil, Save, X, Image as ImageIcon } from "lucide-react";
+import { Pencil, Save, X, Image as ImageIcon, ArrowLeft } from "lucide-react";
 
 const ProductDetailsAdmin = () => {
   const { id = "" } = useParams();
-  const { data: product, isLoading } = useProduct(id);
-  const { toast } = useToast();
+  const { data: product, isLoading, refetch } = useProduct(id);
+  const navigate = useNavigate();
   
   const [isEditing, setIsEditing] = useState(false);
-  const [name, setName] = useState(product?.name || "");
-  const [description, setDescription] = useState(product?.description || "");
-  const [price, setPrice] = useState(product?.price?.toString() || "");
-  const [discountPrice, setDiscountPrice] = useState(product?.discount_price?.toString() || "");
+  const [formData, setFormData] = useState({
+    name: "",
+    description: "",
+    price: "",
+    discount_price: ""
+  });
+  const [isSaving, setIsSaving] = useState(false);
 
   // Update local state when product data loads
-  React.useEffect(() => {
+  useEffect(() => {
     if (product) {
-      setName(product.name);
-      setDescription(product.description || "");
-      setPrice(product.price?.toString() || "");
-      setDiscountPrice(product.discount_price?.toString() || "");
+      setFormData({
+        name: product.name || "",
+        description: product.description || "",
+        price: product.price?.toString() || "",
+        discount_price: product.discount_price?.toString() || ""
+      });
     }
   }, [product]);
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
   const handleSave = async () => {
     try {
+      setIsSaving(true);
+      
+      // Validate inputs
+      if (!formData.name.trim()) {
+        toast.error("Product name cannot be empty");
+        setIsSaving(false);
+        return;
+      }
+      
+      if (isNaN(Number(formData.price)) || Number(formData.price) <= 0) {
+        toast.error("Please enter a valid price");
+        setIsSaving(false);
+        return;
+      }
+      
+      if (formData.discount_price && (isNaN(Number(formData.discount_price)) || Number(formData.discount_price) < 0)) {
+        toast.error("Please enter a valid discount price");
+        setIsSaving(false);
+        return;
+      }
+
       await updateProduct(id, {
-        name,
-        description,
-        price: parseFloat(price),
-        discount_price: discountPrice ? parseFloat(discountPrice) : null
+        name: formData.name,
+        description: formData.description,
+        price: parseFloat(formData.price),
+        discount_price: formData.discount_price ? parseFloat(formData.discount_price) : null
       });
 
-      toast({
-        title: "Success",
-        description: "Product details updated successfully",
-      });
-      
+      toast.success("Product details updated successfully");
       setIsEditing(false);
+      refetch(); // Refresh data
     } catch (error) {
       console.error('Error updating product:', error);
-      toast({
-        title: "Error",
-        description: "Failed to update product details",
-        variant: "destructive",
+      toast.error("Failed to update product details");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const cancelEditing = () => {
+    if (product) {
+      // Reset form to original values
+      setFormData({
+        name: product.name || "",
+        description: product.description || "",
+        price: product.price?.toString() || "",
+        discount_price: product.discount_price?.toString() || ""
       });
     }
+    setIsEditing(false);
   };
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
+      <div className="flex justify-center items-center min-h-[50vh]">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
       </div>
     );
@@ -74,23 +113,41 @@ const ProductDetailsAdmin = () => {
 
   if (!product) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
+      <div className="flex flex-col items-center justify-center min-h-[50vh] p-4">
         <h1 className="text-2xl font-bold mb-4">Product Not Found</h1>
-        <p className="text-gray-500">The product you're looking for doesn't exist or has been removed.</p>
+        <p className="text-gray-500 mb-6">The product you're looking for doesn't exist or has been removed.</p>
+        <Button onClick={() => navigate('/admin')}>
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back to Products
+        </Button>
       </div>
     );
   }
 
   return (
     <div className="container mx-auto p-4 max-w-4xl">
+      <div className="mb-6 flex items-center">
+        <Button 
+          variant="outline" 
+          size="sm" 
+          onClick={() => navigate('/admin')}
+          className="mr-4"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back to Products
+        </Button>
+        <h1 className="text-2xl font-bold">Product Details</h1>
+      </div>
+      
       <Card>
         <CardHeader>
           <CardTitle className="flex justify-between items-center">
-            <span>Product Details</span>
+            <span>{isEditing ? 'Edit Product' : 'Product Information'}</span>
             <Button
               variant={isEditing ? "destructive" : "default"}
               size="sm"
-              onClick={() => setIsEditing(!isEditing)}
+              onClick={() => isEditing ? cancelEditing() : setIsEditing(true)}
+              disabled={isSaving}
             >
               {isEditing ? (
                 <>
@@ -106,7 +163,7 @@ const ProductDetailsAdmin = () => {
             </Button>
           </CardTitle>
           <CardDescription>
-            Manage your product information and pricing
+            {isEditing ? 'Make changes to product information' : 'View and manage product details'}
           </CardDescription>
         </CardHeader>
 
@@ -115,9 +172,10 @@ const ProductDetailsAdmin = () => {
             <Label htmlFor="name">Product Name</Label>
             <Input
               id="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              disabled={!isEditing}
+              name="name"
+              value={formData.name}
+              onChange={handleInputChange}
+              disabled={!isEditing || isSaving}
               className="w-full"
             />
           </div>
@@ -126,35 +184,39 @@ const ProductDetailsAdmin = () => {
             <Label htmlFor="description">Description</Label>
             <Textarea
               id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              disabled={!isEditing}
+              name="description"
+              value={formData.description}
+              onChange={handleInputChange}
+              disabled={!isEditing || isSaving}
               className="w-full min-h-[100px]"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="price">Regular Price</Label>
+              <Label htmlFor="price">Regular Price ($)</Label>
               <Input
                 id="price"
+                name="price"
                 type="number"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                disabled={!isEditing}
+                value={formData.price}
+                onChange={handleInputChange}
+                disabled={!isEditing || isSaving}
                 min="0"
                 step="0.01"
+                placeholder="0.00"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="discountPrice">Discount Price</Label>
+              <Label htmlFor="discount_price">Discount Price ($)</Label>
               <Input
-                id="discountPrice"
+                id="discount_price"
+                name="discount_price"
                 type="number"
-                value={discountPrice}
-                onChange={(e) => setDiscountPrice(e.target.value)}
-                disabled={!isEditing}
+                value={formData.discount_price}
+                onChange={handleInputChange}
+                disabled={!isEditing || isSaving}
                 min="0"
                 step="0.01"
                 placeholder="Optional"
@@ -162,27 +224,47 @@ const ProductDetailsAdmin = () => {
             </div>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-2 pt-4">
             <Label>Product Images</Label>
-            <div className="grid grid-cols-4 gap-4">
-              {product.product_images?.map((image) => (
-                <div key={image.id} className="relative group">
-                  <img
-                    src={image.src}
-                    alt={image.alt || "Product image"}
-                    className="w-full h-24 object-cover rounded-lg"
-                  />
-                </div>
-              ))}
-            </div>
+            {product.product_images && product.product_images.length > 0 ? (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {product.product_images.map((image: any) => (
+                  <div key={image.id} className="relative group">
+                    <img
+                      src={image.src}
+                      alt={image.alt || "Product image"}
+                      className="w-full h-32 object-cover rounded-lg"
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-gray-300 rounded-lg">
+                <ImageIcon className="h-10 w-10 text-gray-400 mb-2" />
+                <p className="text-gray-500">No images available for this product</p>
+              </div>
+            )}
           </div>
         </CardContent>
 
         {isEditing && (
           <CardFooter>
-            <Button onClick={handleSave} className="ml-auto">
-              <Save className="h-4 w-4 mr-2" />
-              Save Changes
+            <Button 
+              onClick={handleSave} 
+              className="ml-auto" 
+              disabled={isSaving}
+            >
+              {isSaving ? (
+                <span className="flex items-center">
+                  <div className="animate-spin h-4 w-4 mr-2 border-2 border-b-transparent rounded-full"></div>
+                  Saving...
+                </span>
+              ) : (
+                <>
+                  <Save className="h-4 w-4 mr-2" />
+                  Save Changes
+                </>
+              )}
             </Button>
           </CardFooter>
         )}

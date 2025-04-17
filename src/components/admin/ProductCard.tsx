@@ -1,4 +1,5 @@
-import React from "react";
+
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Card,
@@ -9,7 +10,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Pencil, Save, Trash2, X } from "lucide-react";
 
 interface ProductCardProps {
   product: any;
@@ -18,28 +20,66 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onDelete, onNameUpdate }) => {
-  const [isEditing, setIsEditing] = React.useState(false);
-  const [newName, setNewName] = React.useState(product.name);
+  const [isEditing, setIsEditing] = useState(false);
+  const [newName, setNewName] = useState(product.name);
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewName(e.target.value);
   };
 
   const handleNameUpdate = () => {
-    onNameUpdate(product.id, newName);
+    if (newName.trim() !== "") {
+      onNameUpdate(product.id, newName);
+      setIsEditing(false);
+    }
+  };
+
+  const cancelEditing = () => {
+    setNewName(product.name);
     setIsEditing(false);
   };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{product.name}</CardTitle>
+        {isEditing ? (
+          <div className="space-y-2">
+            <Input 
+              value={newName} 
+              onChange={handleNameChange} 
+              autoFocus
+              onKeyDown={(e) => e.key === 'Enter' && handleNameUpdate()}
+            />
+            <div className="flex gap-2">
+              <Button size="sm" onClick={handleNameUpdate}>
+                <Save className="h-4 w-4 mr-1" />
+                Save
+              </Button>
+              <Button size="sm" variant="outline" onClick={cancelEditing}>
+                <X className="h-4 w-4 mr-1" />
+                Cancel
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <div className="flex justify-between items-start">
+            <CardTitle>{product.name}</CardTitle>
+            <Button 
+              size="sm" 
+              variant="ghost" 
+              onClick={() => setIsEditing(true)}
+              className="h-8 w-8 p-0"
+            >
+              <Pencil className="h-4 w-4" />
+            </Button>
+          </div>
+        )}
         <CardDescription>Created at: {new Date(product.created_at).toLocaleDateString()}</CardDescription>
       </CardHeader>
       <CardContent>
         <p>Price: ${product.price}</p>
-        <p>Discount Price: ${product.discount_price}</p>
-        <p>{product.description}</p>
+        {product.discount_price && <p>Discount Price: ${product.discount_price}</p>}
+        <p className="line-clamp-2">{product.description}</p>
       </CardContent>
       <CardFooter className="flex justify-between">
         <Link 

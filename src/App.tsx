@@ -29,7 +29,7 @@ const App = () => (
                 <Route path="/" element={<Index />} />
                 <Route path="/browse" element={<Index />} />
                 <Route path="/product/:id" element={<ProductDetail />} />
-                <Route path="/admin" element={<AdminPanel />} />
+                <Route path="/admin/*" element={<AdminPanel />} />
                 <Route path="/search" element={<SearchPage />} />
                 <Route path="/categories" element={<NotFound />} />
                 <Route path="/cart" element={<NotFound />} />
