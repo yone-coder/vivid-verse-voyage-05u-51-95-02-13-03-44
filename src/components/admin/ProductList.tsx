@@ -97,26 +97,38 @@ const ProductList = () => {
         return;
       }
 
-      console.log(`Saving product name for ${id}: "${editFormData.name}"`);
-      const nameResult = await updateProductName(id, editFormData.name);
-      console.log(`Name update result:`, nameResult);
+      console.log(`Updating product name for ${id} to "${editFormData.name}"`);
+      try {
+        await updateProductName(id, editFormData.name);
+        console.log(`Name updated successfully to: ${editFormData.name}`);
+      } catch (nameError) {
+        console.error('Error updating product name:', nameError);
+        toast.error("Failed to update product name");
+        return;
+      }
       
-      console.log(`Updating other product fields for ${id}`);
-      const otherUpdates = {
-        description: editFormData.description,
-        price: parseFloat(editFormData.price),
-        discount_price: editFormData.discount_price ? parseFloat(editFormData.discount_price) : null
-      };
-      
-      const updatedProduct = await updateProduct(id, otherUpdates);
-      console.log("Other fields update result:", updatedProduct);
-
-      toast.success("Product updated successfully");
-      setEditingProduct(null);
-      
-      await loadProducts();
+      console.log(`Updating other product fields for ${id}:`, editFormData);
+      try {
+        const otherUpdates = {
+          description: editFormData.description,
+          price: parseFloat(editFormData.price),
+          discount_price: editFormData.discount_price ? parseFloat(editFormData.discount_price) : null
+        };
+        
+        console.log(`Updating other product fields for ${id}:`, otherUpdates);
+        await updateProduct(id, otherUpdates);
+        console.log("Other fields updated successfully");
+        
+        toast.success("Product updated successfully");
+        setEditingProduct(null);
+        
+        await loadProducts();
+      } catch (fieldError) {
+        console.error('Error updating product fields:', fieldError);
+        toast.error("Failed to update product fields");
+      }
     } catch (error) {
-      console.error('Error updating product:', error);
+      console.error('Error in saveProductChanges:', error);
       toast.error("Failed to update product");
     }
   };
