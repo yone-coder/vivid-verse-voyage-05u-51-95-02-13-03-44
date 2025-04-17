@@ -101,26 +101,31 @@ const ProductList = () => {
         return;
       }
 
-      await updateProduct(id, {
-        name: editFormData.name,
+      console.log(`Saving product changes for ${id}:`, editFormData);
+      
+      // First update the name separately using updateProductName
+      await updateProductName(id, editFormData.name);
+      console.log(`Name updated successfully to: ${editFormData.name}`);
+      
+      // Then update the rest of the fields
+      const updatedProduct = await updateProduct(id, {
         description: editFormData.description,
         price: parseFloat(editFormData.price),
         discount_price: editFormData.discount_price ? parseFloat(editFormData.discount_price) : null
       });
+      
+      console.log("Product updated successfully:", updatedProduct);
 
-      // Update local state
+      // Update local state with the updated product
       setProducts(products.map(product => 
-        product.id === id ? { 
-          ...product, 
-          name: editFormData.name,
-          description: editFormData.description,
-          price: parseFloat(editFormData.price),
-          discount_price: editFormData.discount_price ? parseFloat(editFormData.discount_price) : null
-        } : product
+        product.id === id ? (Array.isArray(updatedProduct) ? updatedProduct[0] : updatedProduct) : product
       ));
       
       toast.success("Product updated successfully");
       setEditingProduct(null);
+      
+      // Refresh the products list to ensure we have the latest data
+      loadProducts();
     } catch (error) {
       console.error('Error updating product:', error);
       toast.error("Failed to update product");

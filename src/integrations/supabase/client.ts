@@ -49,20 +49,20 @@ export const fetchProductById = async (productId: string) => {
 
 // Product update functions
 export const updateProduct = async (productId: string, updates: any) => {
+  console.log(`Updating product ${productId} with:`, updates);
+  
   const { data, error } = await supabase
     .from('products')
     .update(updates)
     .eq('id', productId)
-    .select(`
-      *,
-      product_images (*)
-    `);
+    .select();
 
   if (error) {
     console.error('Error updating product:', error);
     throw error;
   }
 
+  console.log('Update response data:', data);
   return data;
 };
 
@@ -90,7 +90,8 @@ export const updateProductName = async (productId: string, newName: string) => {
     }
     
     // If we get here, the product exists - proceed with update
-    // Using .single() was causing problems, switch to regular selection
+    console.log(`Product exists, proceeding with name update to: "${newName}"`);
+    
     const { data, error } = await supabase
       .from('products')
       .update({ name: newName })
@@ -109,7 +110,7 @@ export const updateProductName = async (productId: string, newName: string) => {
       throw updateError;
     }
     
-    console.log('Basic product update successful:', data[0]);
+    console.log('Product name update successful:', data[0]);
     
     // Fetch the complete product with images
     return await fetchProductById(productId);
