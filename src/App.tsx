@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -9,6 +10,7 @@ import NotFound from "./pages/NotFound";
 import ProductDetail from "./pages/ProductDetail";
 import SearchPage from "./pages/SearchPage";
 import AdminPanel from "./pages/AdminPanel";
+import Checkout from "./pages/Checkout";  // Add this import
 import MainLayout from "./components/layout/MainLayout";
 import { ThemeProvider } from "@/components/theme-provider";
 
