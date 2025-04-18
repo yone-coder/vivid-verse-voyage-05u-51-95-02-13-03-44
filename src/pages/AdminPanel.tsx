@@ -412,7 +412,7 @@ const AdminPanel: React.FC = () => {
       } else {
         console.warn("Update operation did not affect any rows");
         toast({
-          variant: "warning",
+          variant: "destructive",
           title: "Update Issue",
           description: "The update was sent but no changes were detected. Please refresh and try again.",
         });
