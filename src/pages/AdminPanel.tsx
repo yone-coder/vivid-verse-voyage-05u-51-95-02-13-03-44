@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Plus, Trash2, Edit, Eye, X, Check, Save, Pencil } from "lucide-react";
@@ -713,7 +714,7 @@ const AdminPanel: React.FC = () => {
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Edit Image</Dialog</DialogTitle>
+            <DialogTitle>Edit Image</DialogTitle>
             <DialogDescription>
               Update the details for this image
             </DialogDescription>
