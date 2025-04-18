@@ -50,13 +50,43 @@ export const updateProduct = async (productId: string, updates: Partial<any>) =>
   console.log("Updating product with ID:", productId, "Updates:", updates);
   
   try {
+    // Get the current product data from the database first
+    const { data: currentProduct, error: fetchError } = await supabase
+      .from('products')
+      .select('*')
+      .eq('id', productId)
+      .single();
+      
+    if (fetchError) {
+      console.error("Error fetching current product data:", fetchError);
+      throw fetchError;
+    }
+    
+    console.log("Current product data:", currentProduct);
+    
+    // Compare if there are actual changes
+    let hasChanges = false;
+    
+    Object.keys(updates).forEach(key => {
+      if (key !== 'updated_at' && JSON.stringify(updates[key]) !== JSON.stringify(currentProduct[key])) {
+        hasChanges = true;
+        console.log(`Field ${key} has changed. Old:`, currentProduct[key], "New:", updates[key]);
+      }
+    });
+    
+    if (!hasChanges) {
+      console.warn("No actual changes detected in the data being updated");
+      // Return a custom response to indicate no changes
+      return { noChanges: true };
+    }
+    
     // Add timestamp to the updates to ensure the change is detected
     const updatesWithTimestamp = {
       ...updates,
       updated_at: new Date().toISOString()
     };
     
-    // First log the complete update data to be sent
+    // First log the complete update payload to be sent
     console.log("Full update payload:", updatesWithTimestamp);
     
     const { data, error } = await supabase

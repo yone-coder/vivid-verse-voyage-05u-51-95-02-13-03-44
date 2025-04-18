@@ -388,17 +388,35 @@ const AdminPanel: React.FC = () => {
         return;
       }
       
-      console.log(`Saving new name for product ${productId}: ${productToUpdate.name}`);
+      const newName = productToUpdate.name.trim();
+      console.log(`Saving new name for product ${productId}: ${newName}`);
       
       const updateData = await updateProduct(productId, { 
-        name: productToUpdate.name.trim(),
+        name: newName,
       });
       
-      console.log('Product updated successfully in Supabase:', updateData);
+      console.log('Product update response:', updateData);
       
-      if (updateData && updateData.length > 0) {
+      // Check if there were no actual changes (new field we added to detect this case)
+      if (updateData && 'noChanges' in updateData && updateData.noChanges) {
+        console.log("No changes were made because the new name matches the existing name");
+        toast({
+          variant: "default",
+          title: "No Changes",
+          description: "The product name is already set to this value.",
+        });
+        
+        // Still mark as no longer editing
+        setEditableProducts(prev => 
+          prev.map(p => p.id === productId ? { ...p, isEditing: false } : p)
+        );
+        
+        return;
+      }
+      
+      if (updateData && Array.isArray(updateData) && updateData.length > 0) {
         setProducts(prev => 
-          prev.map(p => p.id === productId ? { ...p, name: productToUpdate.name.trim() } : p)
+          prev.map(p => p.id === productId ? { ...p, name: newName } : p)
         );
         
         setEditableProducts(prev => 
@@ -409,7 +427,7 @@ const AdminPanel: React.FC = () => {
           title: "Success",
           description: "Product name updated successfully",
         });
-      } else {
+      } else if (Array.isArray(updateData) && updateData.length === 0) {
         console.warn("Update operation did not affect any rows");
         toast({
           variant: "destructive",
@@ -418,6 +436,7 @@ const AdminPanel: React.FC = () => {
         });
       }
       
+      // Force a data refresh to ensure we're displaying the most up-to-date information
       fetchProducts();
       
     } catch (error) {
@@ -694,7 +713,7 @@ const AdminPanel: React.FC = () => {
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Edit Image</DialogTitle>
+            <DialogTitle>Edit Image</Dialog</DialogTitle>
             <DialogDescription>
               Update the details for this image
             </DialogDescription>
