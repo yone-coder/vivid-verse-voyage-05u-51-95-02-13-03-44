@@ -5,7 +5,12 @@ import { toast } from "sonner";
 import { useProduct } from '@/hooks/useProduct';
 import { useParams } from 'react-router-dom';
 
-const StickyBuyButton = ({ selectedColor, colorPrices }) => {
+interface StickyBuyButtonProps {
+  selectedColor: string;
+  colorPrices: Record<string, number>;
+}
+
+const StickyBuyButton = ({ selectedColor, colorPrices }: StickyBuyButtonProps) => {
   const { id } = useParams();
   const { data: product } = useProduct(id || '');
   
