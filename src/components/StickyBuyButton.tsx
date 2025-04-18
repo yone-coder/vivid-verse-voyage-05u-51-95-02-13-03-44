@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { useProduct } from '@/hooks/useProduct';
 import { useParams } from 'react-router-dom';
 
-const StickyBuyButton = () => {
+const StickyBuyButton = ({ selectedColor, colorPrices }) => {
   const { id } = useParams();
   const { data: product } = useProduct(id || '');
   
@@ -67,8 +67,8 @@ const StickyBuyButton = () => {
   }
 
   // Calculate discount percentage
-  const discountPercentage = product.price && product.discountPrice 
-    ? Math.round(((product.price - product.discountPrice) / product.price) * 100)
+  const discountPercentage = product.price && product.discount_price 
+    ? Math.round(((product.price - product.discount_price) / product.price) * 100)
     : 0;
 
   return (
@@ -82,9 +82,9 @@ const StickyBuyButton = () => {
           <div className="flex items-center justify-between mb-1">
             <div className="flex items-center">
               <span className="text-red-500 font-bold text-base mr-1">
-                ${product.discountPrice?.toFixed(2) || product.price?.toFixed(2)}
+                ${product.discount_price?.toFixed(2) || product.price?.toFixed(2)}
               </span>
-              {product.discountPrice && (
+              {product.discount_price && (
                 <>
                   <span className="text-gray-400 line-through text-xs">${product.price?.toFixed(2)}</span>
                   <span className="text-red-500 text-xs ml-1">-{discountPercentage}%</span>

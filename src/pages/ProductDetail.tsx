@@ -612,10 +612,7 @@ const ProductDetail = () => {
         </div>
       </div>
       
-      <StickyBuyButton 
-        selectedColor={selectedColor}
-        colorPrices={colorPrices}
-      />
+      <StickyBuyButton />
     </div>
   );
 };
