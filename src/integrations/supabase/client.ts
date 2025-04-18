@@ -56,6 +56,9 @@ export const updateProduct = async (productId: string, updates: Partial<any>) =>
       updated_at: new Date().toISOString()
     };
     
+    // First log the complete update data to be sent
+    console.log("Full update payload:", updatesWithTimestamp);
+    
     const { data, error } = await supabase
       .from('products')
       .update(updatesWithTimestamp)

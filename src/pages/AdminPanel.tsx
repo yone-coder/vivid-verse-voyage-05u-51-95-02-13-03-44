@@ -390,24 +390,33 @@ const AdminPanel: React.FC = () => {
       
       console.log(`Saving new name for product ${productId}: ${productToUpdate.name}`);
       
-      const data = await updateProduct(productId, { 
-        name: productToUpdate.name,
+      const updateData = await updateProduct(productId, { 
+        name: productToUpdate.name.trim(),
       });
       
-      console.log('Product updated successfully in Supabase:', data);
+      console.log('Product updated successfully in Supabase:', updateData);
       
-      setProducts(prev => 
-        prev.map(p => p.id === productId ? { ...p, name: productToUpdate.name } : p)
-      );
-      
-      setEditableProducts(prev => 
-        prev.map(p => p.id === productId ? { ...p, isEditing: false } : p)
-      );
-      
-      toast({
-        title: "Success",
-        description: "Product name updated successfully",
-      });
+      if (updateData && updateData.length > 0) {
+        setProducts(prev => 
+          prev.map(p => p.id === productId ? { ...p, name: productToUpdate.name.trim() } : p)
+        );
+        
+        setEditableProducts(prev => 
+          prev.map(p => p.id === productId ? { ...p, isEditing: false } : p)
+        );
+        
+        toast({
+          title: "Success",
+          description: "Product name updated successfully",
+        });
+      } else {
+        console.warn("Update operation did not affect any rows");
+        toast({
+          variant: "warning",
+          title: "Update Issue",
+          description: "The update was sent but no changes were detected. Please refresh and try again.",
+        });
+      }
       
       fetchProducts();
       
