@@ -108,11 +108,11 @@ export const updateProduct = async (productId: string, updates: Partial<any>) =>
   }
 };
 
-// Function to subscribe to products changes - updated to use the channel API
+// Function to subscribe to products changes - using the channel API
 export const subscribeToProductChanges = (callback: () => void) => {
   console.log("Setting up real-time subscription for products table");
   
-  // Use the channel API for subscriptions (the legacy .from().on() method is deprecated)
+  // Create a channel for subscription to products changes
   const channel = supabase
     .channel('product-changes')
     .on(

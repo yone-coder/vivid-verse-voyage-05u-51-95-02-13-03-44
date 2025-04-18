@@ -20,7 +20,7 @@ export function useProduct(productId: string) {
 
     console.log(`Setting up real-time subscription for product: ${productId}`);
     
-    // Use the channel API for real-time updates - the legacy .from().on() method is deprecated
+    // Create a channel for subscription to specific product changes
     const channel = supabase
       .channel(`product-${productId}`)
       .on(
