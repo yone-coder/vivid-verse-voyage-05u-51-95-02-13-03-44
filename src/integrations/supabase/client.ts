@@ -112,8 +112,7 @@ export const updateProduct = async (productId: string, updates: Partial<any>) =>
 export const subscribeToProductChanges = (callback: () => void) => {
   console.log("Setting up real-time subscription for products table");
   
-  // Remove the legacy .on method which is causing the error
-  // Instead, only use the channel API for subscriptions
+  // Use the channel API for subscriptions (the legacy .from().on() method is deprecated)
   const channel = supabase
     .channel('product-changes')
     .on(
