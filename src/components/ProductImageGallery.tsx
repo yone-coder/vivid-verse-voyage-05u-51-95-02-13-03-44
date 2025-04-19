@@ -370,8 +370,12 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                       >
                         Your browser does not support the video tag.
                       </video>
-                      <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-sm text-white p-1.5 rounded-full">
-                        <Video className="h-4 w-4" />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        {!isPlaying && (
+                          <div className="bg-black/60 backdrop-blur-sm text-white p-4 rounded-full">
+                            <Play className="h-8 w-8" />
+                          </div>
+                        )}
                       </div>
                     </div>
                   ) : (
@@ -464,7 +468,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
       </div>
       
       <div className="flex items-center gap-1.5 px-1.5 pb-1.5 overflow-x-auto scrollbar-none">
-        {images.map((image, index) => (
+        {[...Array(7)].map((_, index) => (
           <div
             key={index}
             className={cn(
@@ -472,23 +476,27 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
               "w-14 h-14 cursor-pointer",
               currentIndex === index 
                 ? "border-primary shadow-sm" 
-                : "border-gray-200 hover:border-gray-300"
+                : "border-gray-300 hover:border-gray-400"
             )}
             onClick={() => handleThumbnailClick(index)}
           >
-            {index === 0 && (
-              <div className="absolute top-1 right-1 bg-black/60 backdrop-blur-sm text-white p-0.5 rounded-full">
-                <Video className="h-2.5 w-2.5" />
+            {index === 0 ? (
+              <div className="relative w-full h-full">
+                <img 
+                  src={images[0]} 
+                  alt="Video thumbnail"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                  <Play className="h-4 w-4 text-white" />
+                </div>
               </div>
-            )}
-            <img 
-              src={image} 
-              alt={`Thumbnail ${index + 1}`} 
-              className="w-full h-full object-cover"
-            />
-            
-            {currentIndex === index && (
-              <div className="absolute inset-0 bg-primary/10"></div>
+            ) : (
+              <img 
+                src={images[index - 1]} 
+                alt={`Thumbnail ${index}`} 
+                className="w-full h-full object-cover"
+              />
             )}
             
             <span className="absolute bottom-0.5 right-0.5 text-[9px] bg-black/40 text-white px-0.5 rounded">
