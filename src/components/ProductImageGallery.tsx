@@ -94,6 +94,10 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
 
   const [openedThumbnailMenu, setOpenedThumbnailMenu] = useState<number | null>(null);
 
+  // Add new state for video playing
+  const [isPlaying, setIsPlaying] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
   useEffect(() => {
     const preloadImages = async () => {
       const preloaded = await Promise.all(
@@ -328,6 +332,18 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     setAutoScrollEnabled(prev => !prev);
   }, [autoScrollEnabled]);
 
+  // Video controls handler
+  const toggleVideo = () => {
+    if (videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
+
   return (
     <div ref={containerRef} className="flex flex-col gap-1 bg-transparent mb-0">
       <div className="relative w-full aspect-square overflow-hidden">
@@ -339,31 +355,47 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
           setApi={onApiChange}
         >
           <CarouselContent className="h-full">
-            {images.map((image, index) => (
+            {images.map((source, index) => (
               <CarouselItem key={index} className="h-full">
                 <div className="flex h-full w-full items-center justify-center overflow-hidden relative">
-                  <img
-                    ref={index === currentIndex ? imageRef : undefined}
-                    src={image}
-                    alt={`Product image ${index + 1}`}
-                    className="w-full h-full object-contain transition-transform"
-                    style={{ 
-                      transform: `
-                        rotate(${isRotated}deg)
-                        ${isFlipped ? 'scaleX(-1)' : ''}
-                        scale(${zoomLevel})
-                      `,
-                      transition: "transform 0.2s ease-out",
-                      filter: imageFilter !== "none" ? 
-                        imageFilter === "grayscale" ? "grayscale(1)" : 
-                        imageFilter === "sepia" ? "sepia(0.7)" : 
-                        imageFilter === "brightness" ? "brightness(1.2)" :
-                        imageFilter === "contrast" ? "contrast(1.2)" : "none"
-                        : "none"
-                    }}
-                    draggable={false}
-                    onClick={handleImageClick}
-                  />
+                  {index === 0 ? (
+                    // First item is video
+                    <video
+                      ref={videoRef}
+                      src="https://wkfzhcszhgewkvwukzes.supabase.co/storage/v1/object/public/product-videos/nebula-demo.mp4"
+                      className="w-full h-full object-contain cursor-pointer"
+                      onClick={toggleVideo}
+                      playsInline
+                      loop
+                      muted
+                    >
+                      Your browser does not support the video tag.
+                    </video>
+                  ) : (
+                    // Other items remain as images
+                    <img
+                      ref={index === currentIndex ? imageRef : undefined}
+                      src={source}
+                      alt={`Product image ${index + 1}`}
+                      className="w-full h-full object-contain transition-transform"
+                      style={{ 
+                        transform: `
+                          rotate(${isRotated}deg)
+                          ${isFlipped ? 'scaleX(-1)' : ''}
+                          scale(${zoomLevel})
+                        `,
+                        transition: "transform 0.2s ease-out",
+                        filter: imageFilter !== "none" ? 
+                          imageFilter === "grayscale" ? "grayscale(1)" : 
+                          imageFilter === "sepia" ? "sepia(0.7)" : 
+                          imageFilter === "brightness" ? "brightness(1.2)" :
+                          imageFilter === "contrast" ? "contrast(1.2)" : "none"
+                          : "none"
+                      }}
+                      draggable={false}
+                      onClick={handleImageClick}
+                    />
+                  )}
                 </div>
               </CarouselItem>
             ))}
