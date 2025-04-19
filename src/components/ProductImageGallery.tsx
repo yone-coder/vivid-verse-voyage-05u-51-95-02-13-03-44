@@ -21,7 +21,8 @@ import {
   ArrowLeft,
   Focus,
   Download,
-  ArrowUpToLine
+  ArrowUpToLine,
+  Video
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -94,7 +95,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
 
   const [openedThumbnailMenu, setOpenedThumbnailMenu] = useState<number | null>(null);
 
-  // Add new state for video playing
   const [isPlaying, setIsPlaying] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -332,7 +332,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     setAutoScrollEnabled(prev => !prev);
   }, [autoScrollEnabled]);
 
-  // Video controls handler
   const toggleVideo = () => {
     if (videoRef.current) {
       if (isPlaying) {
@@ -359,20 +358,23 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
               <CarouselItem key={index} className="h-full">
                 <div className="flex h-full w-full items-center justify-center overflow-hidden relative">
                   {index === 0 ? (
-                    // First item is video
-                    <video
-                      ref={videoRef}
-                      src="https://wkfzhcszhgewkvwukzes.supabase.co/storage/v1/object/public/product-videos/nebula-demo.mp4"
-                      className="w-full h-full object-contain cursor-pointer"
-                      onClick={toggleVideo}
-                      playsInline
-                      loop
-                      muted
-                    >
-                      Your browser does not support the video tag.
-                    </video>
+                    <div className="relative w-full h-full">
+                      <video
+                        ref={videoRef}
+                        src="https://wkfzhcszhgewkvwukzes.supabase.co/storage/v1/object/public/product-videos/nebula-demo.mp4"
+                        className="w-full h-full object-contain cursor-pointer"
+                        onClick={toggleVideo}
+                        playsInline
+                        loop
+                        muted
+                      >
+                        Your browser does not support the video tag.
+                      </video>
+                      <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-sm text-white p-1.5 rounded-full">
+                        <Video className="h-4 w-4" />
+                      </div>
+                    </div>
                   ) : (
-                    // Other items remain as images
                     <img
                       ref={index === currentIndex ? imageRef : undefined}
                       src={source}
@@ -474,6 +476,11 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             )}
             onClick={() => handleThumbnailClick(index)}
           >
+            {index === 0 && (
+              <div className="absolute top-1 right-1 bg-black/60 backdrop-blur-sm text-white p-0.5 rounded-full">
+                <Video className="h-2.5 w-2.5" />
+              </div>
+            )}
             <img 
               src={image} 
               alt={`Thumbnail ${index + 1}`} 
