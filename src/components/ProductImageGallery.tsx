@@ -116,6 +116,18 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     preloadImages();
   }, [images]);
 
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.addEventListener('play', () => {
+        setIsPlaying(true);
+      });
+      
+      videoRef.current.addEventListener('pause', () => {
+        setIsPlaying(false);
+      });
+    }
+  }, []);
+
   const onApiChange = useCallback((api: CarouselApi | null) => {
     if (!api) return;
     
@@ -371,12 +383,15 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                       >
                         Your browser does not support the video tag.
                       </video>
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        {!isPlaying && (
-                          <div className="bg-black/60 backdrop-blur-sm text-white p-4 rounded-full">
-                            <Play className="h-8 w-8" />
-                          </div>
+                      <div 
+                        className={cn(
+                          "absolute inset-0 flex items-center justify-center transition-opacity duration-500",
+                          isPlaying ? "opacity-0" : "opacity-100"
                         )}
+                      >
+                        <div className="bg-black/60 backdrop-blur-sm text-white p-4 rounded-full">
+                          <Play className="h-8 w-8" />
+                        </div>
                       </div>
                     </div>
                   ) : (
@@ -409,8 +424,8 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
           </CarouselContent>
           
           <div className={cn(
-            "absolute bottom-3 right-3 flex items-center gap-2 z-30 transition-opacity",
-            focusMode && "opacity-0"
+            "absolute bottom-3 right-3 flex items-center gap-2 z-30 transition-opacity duration-300",
+            (focusMode || (currentIndex === 0 && isPlaying)) && "opacity-0"
           )}>
             <Button
               variant="ghost" 
@@ -458,8 +473,8 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
           </div>
           
           <div className={cn(
-            "absolute bottom-3 left-3 z-30 transition-opacity flex items-center h-8",
-            focusMode && "opacity-0"
+            "absolute bottom-3 left-3 z-30 transition-opacity duration-300 flex items-center h-8",
+            (focusMode || (currentIndex === 0 && isPlaying)) && "opacity-0"
           )}>
             <div className="bg-black/60 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs font-medium">
               {currentIndex + 1} / {images.length}
@@ -488,7 +503,10 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                   alt="Video thumbnail"
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                <div className={cn(
+                  "absolute inset-0 flex items-center justify-center bg-black/40 transition-opacity duration-300",
+                  isPlaying && "opacity-0"
+                )}>
                   <Play className="h-4 w-4 text-white" />
                 </div>
               </div>
