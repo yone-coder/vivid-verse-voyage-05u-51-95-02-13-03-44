@@ -361,12 +361,13 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                     <div className="relative w-full h-full">
                       <video
                         ref={videoRef}
-                        src="https://wkfzhcszhgewkvwukzes.supabase.co/storage/v1/object/public/product-videos/nebula-demo.mp4"
+                        src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
                         className="w-full h-full object-contain cursor-pointer"
                         onClick={toggleVideo}
                         playsInline
                         loop
                         muted
+                        autoPlay
                       >
                         Your browser does not support the video tag.
                       </video>
