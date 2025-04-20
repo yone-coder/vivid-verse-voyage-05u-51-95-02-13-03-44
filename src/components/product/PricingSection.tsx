@@ -27,13 +27,13 @@ const PricingSection = () => {
 
   return (
     <div className="w-full bg-white rounded-none overflow-hidden">
-      {/* Discount banner */}
-      <div className="flex items-center justify-between bg-red-50 px-1 py-1">
-        <div className="flex items-center">
+      {/* Discount banner - full width, no padding */}
+      <div className="w-full flex items-center justify-between bg-red-50">
+        <div className="flex items-center px-2">
           <TrendingDown size={12} className="text-red-500" />
           <span className="text-xs font-semibold text-red-500 ml-1">Limited Time Offer</span>
         </div>
-        <div className="flex items-center">
+        <div className="flex items-center px-2">
           <Clock size={12} className="text-red-500" />
           <span className="text-xs font-medium text-red-500 ml-1">
             {timeLeft.hours}h:{timeLeft.minutes}m:{timeLeft.seconds}s
