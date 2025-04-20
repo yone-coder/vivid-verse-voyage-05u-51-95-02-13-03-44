@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Footer from "@/components/layout/Footer";
@@ -57,7 +56,6 @@ export default function MainLayout() {
     });
   };
   
-  // Use the css variable approach for header height - using reduced height for AliExpress-like compact header
   const headerHeightStyle = `
     :root {
       --header-height: ${isMobile ? '44px' : '90px'};
@@ -74,8 +72,7 @@ export default function MainLayout() {
           isFavorite={isFavorite}
           toggleFavorite={toggleFavorite}
           handleShare={handleShare}
-          isSearchOpen={isSearchOpen}
-          setSearchOpen={setIsSearchOpen}
+          handleCartClick={() => {}}
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           handleSearch={handleSearch}

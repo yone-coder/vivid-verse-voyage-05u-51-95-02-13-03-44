@@ -36,6 +36,7 @@ const ProductPageHeader: React.FC<ProductPageHeaderProps> = ({
 }) => {
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [open, setOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const isMobile = useIsMobile();
   
@@ -73,6 +74,16 @@ const ProductPageHeader: React.FC<ProductPageHeaderProps> = ({
   };
   
   useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      setIsScrolled(scrollPosition > 50);
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+  
+  useEffect(() => {
     const handleEscKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isSearchActive) {
         deactivateSearch();
@@ -84,7 +95,9 @@ const ProductPageHeader: React.FC<ProductPageHeaderProps> = ({
   }, [isSearchActive]);
 
   return (
-    <div className="py-2 sm:py-2.5 bg-white shadow-sm px-1.5 sm:px-2 w-full sticky top-0 z-30">
+    <div className={`py-2 sm:py-2.5 px-1.5 sm:px-2 w-full sticky top-0 z-30 transition-colors duration-200 ${
+      isScrolled ? 'bg-white shadow-sm' : 'bg-transparent'
+    }`}>
       <div className="flex items-center justify-between">
         {!isSearchActive && (
           <Link to="/">
