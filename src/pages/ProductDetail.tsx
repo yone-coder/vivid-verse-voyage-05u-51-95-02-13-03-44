@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
@@ -10,22 +9,17 @@ import { Heart } from "lucide-react";
 import { useVariantStockDecay } from "@/hooks/useVariantStockDecay";
 import AliExpressTabs from "@/components/product/AliExpressTabs";
 import CoreIdentity from "@/components/product/CoreIdentity";
-import { Button } from "@/components/ui/button"; // Add this import
-
-// Product Components
-import DynamicPriceDisplay from "@/components/product/DynamicPriceDisplay";
-import EnhancedRating from "@/components/product/EnhancedRating";
+import { Button } from "@/components/ui/button";
 import ProductColorVariants from "@/components/product/ProductColorVariants";
 import ProductQuantitySelector from "@/components/product/ProductQuantitySelector";
 import ProductShipping from "@/components/product/ProductShipping";
 import ProductWarranty from "@/components/product/ProductWarranty";
 import ProductPaymentOptions from "@/components/product/ProductPaymentOptions";
+import PricingSection from '@/components/product/PricingSection';
 
-// Default product ID for the premium headphones product
-const DEFAULT_PRODUCT_ID = "aae97882-a3a1-4db5-b4f5-156705cd10ee"; // Premium Headphones product ID
+const DEFAULT_PRODUCT_ID = "aae97882-a3a1-4db5-b4f5-156705cd10ee";
 
 const ProductDetail = () => {
-  // State variables
   const [quantity, setQuantity] = useState(1);
   const [isFavorite, setIsFavorite] = useState(false);
   const [showVariants, setShowVariants] = useState(true);
@@ -42,20 +36,16 @@ const ProductDetail = () => {
   const [activeTab, setActiveTab] = useState("");
   const [headerHeight, setHeaderHeight] = useState(44);
 
-  // Refs and hooks
   const isMobile = useIsMobile();
   const { toast } = useToast();
   const { id: paramId } = useParams<{ id: string }>();
   const contentRef = useRef<HTMLDivElement>(null);
 
-  // Use either the ID from URL params or the default product ID
   const productId = paramId || DEFAULT_PRODUCT_ID;
 
-  // Use real product data from Supabase
   const { data: product, isLoading } = useProduct(productId);
   const { data: analytics, isLoading: analyticsLoading } = useProductAnalytics(productId);
 
-  // Define our specific color variants with additional properties
   const colorPrices = {
     "Black": 79.99,
     "White": 89.99,
@@ -72,20 +62,17 @@ const ProductDetail = () => {
     { name: "Red", price: colorPrices.Red, stock: 16, image: "", bestseller: false, limited: true }
   ];
   
-  // Use our stock decay hook with 12-hour decay period and localStorage persistence
   const { variantStockInfo, activateVariant, getTimeRemaining, resetVariant, resetAllVariants } = useVariantStockDecay({
     variants: colorVariants,
-    decayPeriod: 12 * 60 * 60 * 1000 // 12 hours in milliseconds
+    decayPeriod: 12 * 60 * 60 * 1000
   });
 
-  // Effect to activate the selected variant for real-time stock decay
   useEffect(() => {
     if (selectedColor && activateVariant) {
       activateVariant(selectedColor);
     }
   }, [selectedColor, activateVariant]);
 
-  // Event handlers
   const incrementQuantity = () => {
     if (quantity < 10) {
       setQuantity(prev => prev + 1);
@@ -286,7 +273,6 @@ const ProductDetail = () => {
   
   const totalPrice = (currentPrice * quantity) + warrantyPrice + (isExpressSelected ? productForTabs.shipping.express : 0);
   
-  // Create the content for our tabs
   const descriptionContent = (
     <div className="text-sm text-gray-600">
       <p className="mb-4">{product.description}</p>
@@ -525,7 +511,6 @@ const ProductDetail = () => {
     </div>
   );
   
-  // Configure our tabs
   const tabsConfig = [
     { id: 0, name: 'Description', content: descriptionContent },
     { id: 1, name: 'Specifications', content: specificationsContent },
@@ -547,7 +532,7 @@ const ProductDetail = () => {
           <CoreIdentity />
           
           <div className="flex items-center justify-between mt-1">
-            <DynamicPriceDisplay selectedColor={selectedColor} />
+            <PricingSection />
           </div>
           
           <EnhancedRating />
