@@ -16,6 +16,7 @@ import ProductShipping from "@/components/product/ProductShipping";
 import ProductWarranty from "@/components/product/ProductWarranty";
 import ProductPaymentOptions from "@/components/product/ProductPaymentOptions";
 import PricingSection from '@/components/product/PricingSection';
+import ProductRatings from '@/components/product/ProductRatings';
 
 const DEFAULT_PRODUCT_ID = "aae97882-a3a1-4db5-b4f5-156705cd10ee";
 
@@ -535,7 +536,11 @@ const ProductDetail = () => {
             <PricingSection />
           </div>
           
-          <EnhancedRating />
+          <ProductRatings 
+            rating={4.8}
+            reviewCount={2543}
+            soldCount={5000}
+          />
           
           <div className="mt-1">
             <ProductColorVariants 
