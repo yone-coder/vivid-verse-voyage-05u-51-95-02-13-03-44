@@ -26,9 +26,9 @@ const PricingSection = () => {
   });
 
   return (
-    <div className="w-full bg-white rounded-md shadow-sm overflow-hidden">
+    <div className="w-full bg-white rounded-none overflow-hidden">
       {/* Discount banner */}
-      <div className="flex items-center justify-between bg-red-50 px-2 py-1">
+      <div className="flex items-center justify-between bg-red-50 px-1 py-1">
         <div className="flex items-center">
           <TrendingDown size={12} className="text-red-500" />
           <span className="text-xs font-semibold text-red-500 ml-1">Limited Time Offer</span>
@@ -41,8 +41,8 @@ const PricingSection = () => {
         </div>
       </div>
       
-      {/* Main price area with tighter, more consistent spacing */}
-      <div className="flex items-center justify-between px-2 py-1 w-full">
+      {/* Main price area with minimal padding */}
+      <div className="flex items-center justify-between px-1 py-1 w-full">
         <div className="flex items-center">
           <span className="text-sm font-semibold" style={{ color: primaryColor }}>{currency}</span>
           <span className="text-2xl font-bold leading-none" style={{ color: primaryColor }}>
@@ -53,13 +53,13 @@ const PricingSection = () => {
           </span>
         </div>
         
-        <div className="flex items-center ml-2">
+        <div className="flex items-center ml-1">
           <Clock size={14} className="text-gray-500 mr-1 flex-shrink-0" />
           <span className="text-sm text-gray-500 line-through">{currency}{originalPrice.toFixed(2)}</span>
         </div>
         
         {/* Discount badge */}
-        <div className="flex items-center ml-2">
+        <div className="flex items-center ml-1">
           <div 
             className="flex items-center px-1 py-0.5 rounded-sm text-white text-xs"
             style={{ backgroundColor: secondaryColor }}
@@ -70,7 +70,7 @@ const PricingSection = () => {
         </div>
         
         {/* Savings amount with scissors icon */}
-        <div className="flex items-center ml-2">
+        <div className="flex items-center ml-1">
           <Scissors size={14} className="text-green-500 mr-0.5 flex-shrink-0" />
           <span className="text-sm text-green-500 font-medium">Save {currency}{savings.toFixed(2)}</span>
         </div>
