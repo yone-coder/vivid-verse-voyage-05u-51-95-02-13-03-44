@@ -17,6 +17,7 @@ import ProductWarranty from "@/components/product/ProductWarranty";
 import ProductPaymentOptions from "@/components/product/ProductPaymentOptions";
 import PricingSection from '@/components/product/PricingSection';
 import ProductRatings from '@/components/product/ProductRatings';
+import StockIndicator from '@/components/product/StockIndicator';
 
 const DEFAULT_PRODUCT_ID = "aae97882-a3a1-4db5-b4f5-156705cd10ee";
 
