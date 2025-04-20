@@ -3,10 +3,10 @@ import React from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
+import ProductPageHeader from "@/components/product/ProductPageHeader";
 import MobileBottomNav from "@/components/layout/MobileBottomNav";
 import { Outlet, useLocation } from "react-router-dom";
 import { useState } from "react";
-import { Heart, Share } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 export default function MainLayout() {
@@ -68,15 +68,14 @@ export default function MainLayout() {
     <div className="min-h-screen flex flex-col bg-gray-50">
       <style dangerouslySetInnerHTML={{ __html: headerHeightStyle }} />
       
-      {/* Show dynamic header on product pages */}
+      {/* Show product header on product pages */}
       {isProductPage && (
-        <Header 
-          isProductHeader={true}
+        <ProductPageHeader 
           isFavorite={isFavorite}
           toggleFavorite={toggleFavorite}
           handleShare={handleShare}
           isSearchOpen={isSearchOpen}
-          setIsSearchOpen={setIsSearchOpen}
+          setSearchOpen={setIsSearchOpen}
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           handleSearch={handleSearch}
