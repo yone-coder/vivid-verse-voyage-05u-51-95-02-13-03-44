@@ -534,8 +534,7 @@ const ProductDetail = () => {
           
           <PricingSection />
           
-          
-<StockIndicator stockRemaining={4} isHovered={true} />
+         
           
           <div className="mt-1">
             <ProductColorVariants 
