@@ -541,7 +541,7 @@ const ProductDetail = () => {
             soldCount={5000}
           />
 
-<StockIndicator stockRemaining={product.stock} isHovered={hoveredState} />
+<StockIndicator stockRemaining={4} isHovered={true} />
           
           <div className="mt-1">
             <ProductColorVariants 
