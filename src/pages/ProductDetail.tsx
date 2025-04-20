@@ -529,7 +529,7 @@ const ProductDetail = () => {
       </div>
       
       <div className="flex-1">
-        <div className="bg-white p-1">
+        <div className="bg-white">
           <CoreIdentity />
           
           <PricingSection />
