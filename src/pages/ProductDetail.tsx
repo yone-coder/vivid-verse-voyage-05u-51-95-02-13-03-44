@@ -532,9 +532,7 @@ const ProductDetail = () => {
         <div className="bg-white p-1">
           <CoreIdentity />
           
-          <div className="flex items-center justify-between mt-1">
-            <PricingSection />
-          </div>
+          <PricingSection />
           
           <ProductRatings 
             rating={4.8}
