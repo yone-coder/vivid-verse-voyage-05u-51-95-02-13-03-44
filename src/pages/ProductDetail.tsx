@@ -540,6 +540,8 @@ const ProductDetail = () => {
             reviewCount={2543}
             soldCount={5000}
           />
+
+<StockIndicator stockRemaining={product.stock} isHovered={hoveredState} />
           
           <div className="mt-1">
             <ProductColorVariants 
