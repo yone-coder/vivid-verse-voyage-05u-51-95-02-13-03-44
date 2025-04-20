@@ -5,12 +5,10 @@ import StickyBuyButton from "@/components/StickyBuyButton";
 import { useProduct, useProductAnalytics } from "@/hooks/useProduct";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Heart, RotateCcw } from "lucide-react";
+import { Heart } from "lucide-react";
 import { useVariantStockDecay } from "@/hooks/useVariantStockDecay";
-import { Button } from "@/components/ui/button";
-import ProductTabs from "@/components/ProductTabs";
-import { Badge } from "@/components/ui/badge";
 import AliExpressTabs from "@/components/product/AliExpressTabs";
+import CoreIdentity from "@/components/product/CoreIdentity";
 
 // Product Components
 import DynamicPriceDisplay from "@/components/product/DynamicPriceDisplay";
@@ -544,16 +542,7 @@ const ProductDetail = () => {
       
       <div className="flex-1">
         <div className="bg-white p-1">
-          <div className="flex items-center justify-between mb-0.5">
-          </div>
-          
-          <div className="flex items-center justify-between">
-            <h1 className="text-lg font-medium">{product?.name}</h1>
-            <div className="flex items-center">
-              <Heart className={`h-4 w-4 mr-1 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-400'}`} />
-              <span className="text-sm text-gray-500">{analytics?.viewCount || 1245}</span>
-            </div>
-          </div>
+          <CoreIdentity />
           
           <div className="flex items-center justify-between mt-1">
             <DynamicPriceDisplay selectedColor={selectedColor} />
