@@ -187,3 +187,4 @@ const VideoControls = ({
 };
 
 export default VideoControls;
+
