@@ -22,9 +22,7 @@ import {
   Focus,
   Download,
   ArrowUpToLine,
-  Video,
-  Volume2,
-  VolumeX
+  Video
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -56,6 +54,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const [isFullscreenMode, setIsFullscreenMode] = useState(false);
   const [hoveredThumbnail, setHoveredThumbnail] = useState<number | null>(null);
   const [focusMode, setFocusMode] = useState(false);
+
   const [zoomLevel, setZoomLevel] = useState(1);
   const [showCompareMode, setShowCompareMode] = useState(false);
   const [compareIndex, setCompareIndex] = useState(0);
@@ -65,7 +64,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const [showOtherColors, setShowOtherColors] = useState<boolean>(false);
   const [showAllControls, setShowAllControls] = useState<boolean>(false);
   const [viewMode, setViewMode] = useState<"default" | "immersive">("default");
-  const [isMuted, setIsMuted] = useState(true);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
@@ -326,18 +324,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     setAutoScrollEnabled(prev => !prev);
   }, [autoScrollEnabled]);
 
-  const toggleMute = useCallback(() => {
-    if (videoRef.current) {
-      videoRef.current.muted = !videoRef.current.muted;
-      setIsMuted(!isMuted);
-      
-      toast({
-        title: videoRef.current.muted ? "Video muted" : "Video unmuted",
-        duration: 2000,
-      });
-    }
-  }, [isMuted, toast]);
-
   const toggleVideo = () => {
     if (videoRef.current) {
       if (isPlaying) {
@@ -372,7 +358,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                         onClick={toggleVideo}
                         playsInline
                         loop
-                        muted={isMuted}
+                        muted
                         autoPlay
                       >
                         Your browser does not support the video tag.
@@ -387,21 +373,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                           <Play className="h-8 w-8" />
                         </div>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleMute();
-                        }}
-                        className="absolute bottom-2 right-2 bg-black/60 hover:bg-black/80 transition-colors rounded-full"
-                      >
-                        {isMuted ? (
-                          <VolumeX className="h-5 w-5 text-white" />
-                        ) : (
-                          <Volume2 className="h-5 w-5 text-white" />
-                        )}
-                      </Button>
                     </div>
                   ) : (
                     <img
