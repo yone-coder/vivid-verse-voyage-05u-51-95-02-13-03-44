@@ -98,22 +98,22 @@ const ProductDetail = () => {
   };
 
   const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: product?.name || "Product",
-        text: `Check out this ${product?.name || "product"}!`,
-        url: window.location.href,
-      }).catch((error) => {
-        console.log('Error sharing:', error);
-      });
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-      toast({
-        title: "Link copied!",
-        description: "Product link copied to clipboard",
-      });
-    }
-  };
+  if (navigator.share) {
+    navigator.share({
+      title: product?.name || "Product",
+      text: `Check out this ${product?.name || "product"}!`,
+      url: window.location.href,
+    }).catch((error) => {
+      console.log('Error sharing:', error);
+    });
+  } else {
+    navigator.clipboard.writeText(window.location.href);
+    toast({
+      title: "Link copied!",
+      description: "Product link copied to clipboard",
+    });
+  }
+};
 
   const toggleFavorite = () => {
     setIsFavorite(!isFavorite);
