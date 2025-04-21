@@ -80,6 +80,8 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const [hoveredThumbnail, setHoveredThumbnail] = useState<number | null>(null);
   const [focusMode, setFocusMode] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
+  const [volume, setVolume] = useState(1);
+  const [playbackSpeed, setPlaybackSpeed] = useState(1);
 
   const [zoomLevel, setZoomLevel] = useState(1);
   const [showCompareMode, setShowCompareMode] = useState(false);
@@ -311,6 +313,38 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     }
   }, [focusMode, toggleFullscreen]);
 
+  const handleVolumeChange = useCallback(() => {
+    if (videoRef.current) {
+      const newMuted = !isMuted;
+      videoRef.current.muted = newMuted;
+      setIsMuted(newMuted);
+      if (!newMuted) {
+        videoRef.current.volume = volume;
+      }
+    }
+  }, [isMuted, volume]);
+
+  const handlePlaybackSpeedChange = useCallback(() => {
+    if (videoRef.current) {
+      const speeds = [0.5, 1, 1.5, 2];
+      const currentIndex = speeds.indexOf(playbackSpeed);
+      const nextIndex = (currentIndex + 1) % speeds.length;
+      const newSpeed = speeds[nextIndex];
+      videoRef.current.playbackRate = newSpeed;
+      setPlaybackSpeed(newSpeed);
+    }
+  }, [playbackSpeed]);
+
+  const handleVideoFullscreen = useCallback(() => {
+    if (videoRef.current) {
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else {
+        videoRef.current.requestFullscreen();
+      }
+    }
+  }, []);
+
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isFullscreenMode) {
@@ -390,21 +424,22 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                         playsInline
                         loop
                         muted={isMuted}
-                        autoPlay
-                      >
-                        Your browser does not support the video tag.
-                      </video>
-                      <div className={cn(
-                        "absolute bottom-3 right-3 flex items-center gap-2 z-30 transition-opacity duration-300",
-                        focusMode && "opacity-0"
-                      )}>
+                      />
+                      <div className="absolute bottom-3 left-3 flex items-center gap-2 z-30">
                         <Button
                           variant="ghost" 
                           size="icon"
                           className="h-8 w-8 rounded-full bg-black/60 backdrop-blur-sm hover:bg-black/80 text-white"
                           onClick={(e) => {
                             e.stopPropagation();
-                            toggleVideo();
+                            if (videoRef.current) {
+                              if (isPlaying) {
+                                videoRef.current.pause();
+                              } else {
+                                videoRef.current.play();
+                              }
+                              setIsPlaying(!isPlaying);
+                            }
                           }}
                         >
                           {isPlaying ? (
@@ -420,14 +455,40 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                           className="h-8 w-8 rounded-full bg-black/60 backdrop-blur-sm hover:bg-black/80 text-white"
                           onClick={(e) => {
                             e.stopPropagation();
-                            toggleMute();
+                            handleVolumeChange();
                           }}
                         >
                           {isMuted ? (
                             <VolumeX className="h-4 w-4" />
-                          ) : (
+                          ) : volume > 0.5 ? (
                             <Volume className="h-4 w-4" />
+                          ) : (
+                            <Volume className="h-4 w-4 opacity-50" />
                           )}
+                        </Button>
+
+                        <Button
+                          variant="ghost" 
+                          size="icon"
+                          className="h-8 w-8 rounded-full bg-black/60 backdrop-blur-sm hover:bg-black/80 text-white"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handlePlaybackSpeedChange();
+                          }}
+                        >
+                          <span className="text-xs font-medium">{playbackSpeed}x</span>
+                        </Button>
+
+                        <Button
+                          variant="ghost" 
+                          size="icon"
+                          className="h-8 w-8 rounded-full bg-black/60 backdrop-blur-sm hover:bg-black/80 text-white"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleVideoFullscreen();
+                          }}
+                        >
+                          <Maximize className="h-4 w-4" />
                         </Button>
                       </div>
                     </div>
