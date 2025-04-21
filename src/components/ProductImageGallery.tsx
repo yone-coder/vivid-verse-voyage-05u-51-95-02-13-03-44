@@ -53,6 +53,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
+import InfoBand from "@/components/product/InfoBand";
 
 interface ProductImageGalleryProps {
   images: string[];
@@ -483,6 +484,8 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
           </div>
         </Carousel>
       </div>
+      
+      <InfoBand />
       
       <GalleryThumbnails
         images={images}
