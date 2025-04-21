@@ -523,7 +523,7 @@ const ProductDetail = () => {
   ];
   
   return (
-    <div className="flex flex-col min-h-screen bg-white" ref={contentRef}>
+    <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
       <div className="relative w-full bg-transparent">
         <ProductImageGallery images={productImages.length > 0 ? productImages : ["/placeholder.svg"]} />
       </div>
