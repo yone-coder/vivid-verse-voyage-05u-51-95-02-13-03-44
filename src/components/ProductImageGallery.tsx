@@ -22,7 +22,9 @@ import {
   Focus,
   Download,
   ArrowUpToLine,
-  Video
+  Video,
+  Volume2,
+  VolumeX
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -77,7 +79,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const [isFullscreenMode, setIsFullscreenMode] = useState(false);
   const [hoveredThumbnail, setHoveredThumbnail] = useState<number | null>(null);
   const [focusMode, setFocusMode] = useState(false);
-
   const [zoomLevel, setZoomLevel] = useState(1);
   const [showCompareMode, setShowCompareMode] = useState(false);
   const [compareIndex, setCompareIndex] = useState(0);
@@ -87,6 +88,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const [showOtherColors, setShowOtherColors] = useState<boolean>(false);
   const [showAllControls, setShowAllControls] = useState<boolean>(false);
   const [viewMode, setViewMode] = useState<"default" | "immersive">("default");
+  const [isMuted, setIsMuted] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
@@ -308,6 +310,13 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     }
   }, [focusMode, toggleFullscreen]);
 
+  const toggleMute = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = !videoRef.current.muted;
+      setIsMuted(!isMuted);
+    }
+  };
+
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isFullscreenMode) {
@@ -377,7 +386,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                         ref={videoRef}
                         src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
                         className="w-full h-full object-contain cursor-pointer"
-                        onClick={toggleVideo}
                         playsInline
                         loop
                         muted
@@ -393,6 +401,34 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                       >
                         <div className="bg-black/60 backdrop-blur-sm text-white p-4 rounded-full">
                           <Play className="h-8 w-8" />
+                        </div>
+                      </div>
+                      
+                      <div className={cn(
+                        "absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2 z-30 transition-opacity duration-300",
+                        focusMode && "opacity-0"
+                      )}>
+                        <div className="flex items-center gap-2 bg-black/60 backdrop-blur-sm rounded-full p-1.5">
+                          <Button
+                            variant="ghost" 
+                            size="icon"
+                            className="h-8 w-8 rounded-full hover:bg-white/10"
+                            onClick={toggleVideo}
+                          >
+                            {isPlaying ? <Pause className="h-4 w-4 text-white" /> : <Play className="h-4 w-4 text-white" />}
+                          </Button>
+                          
+                          <Button
+                            variant="ghost" 
+                            size="icon"
+                            className="h-8 w-8 rounded-full hover:bg-white/10"
+                            onClick={toggleMute}
+                          >
+                            {isMuted ? 
+                              <VolumeX className="h-4 w-4 text-white" /> : 
+                              <Volume2 className="h-4 w-4 text-white" />
+                            }
+                          </Button>
                         </div>
                       </div>
                     </div>
