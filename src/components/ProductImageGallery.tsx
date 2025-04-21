@@ -27,6 +27,8 @@ import {
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 import GalleryThumbnails from "@/components/product/GalleryThumbnails";
 import InfoBand from "@/components/product/InfoBand";
 
@@ -69,6 +71,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const fullscreenRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const [openedThumbnailMenu, setOpenedThumbnailMenu] = useState<number | null>(null);
 
@@ -144,7 +147,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
       description: `Image filter: ${filter}`,
       duration: 2000,
     });
-  }, []);
+  }, [toast]);
 
   const resetEnhancements = useCallback(() => {
     setIsRotated(0);
@@ -157,7 +160,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
       description: "All image modifications have been reset",
       duration: 2000,
     });
-  }, []);
+  }, [toast]);
 
   const shareImage = useCallback((index: number) => {
     const image = images[index];
@@ -175,7 +178,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
         duration: 2000,
       });
     }
-  }, [images]);
+  }, [images, toast]);
 
   const toggleCompareMode = useCallback(() => {
     setShowCompareMode(prev => !prev);
@@ -189,7 +192,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
       description: viewMode === "default" ? "Showing image without distractions" : "Showing standard gallery view",
       duration: 2000,
     });
-  }, [viewMode]);
+  }, [viewMode, toast]);
 
   const handleThumbnailClick = useCallback((index: number) => {
     if (api) {
@@ -227,7 +230,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
       description: `Image ${index + 1} has been downloaded`,
       duration: 2000,
     });
-  }, [images]);
+  }, [images, toast]);
 
   const copyImageUrl = useCallback((index: number) => {
     const image = images[index];
@@ -241,7 +244,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
       description: "Image URL has been copied to clipboard",
       duration: 2000,
     });
-  }, [images]);
+  }, [images, toast]);
 
   const toggleThumbnailViewMode = useCallback(() => {
     setThumbnailViewMode(prev => prev === "row" ? "grid" : "row");
