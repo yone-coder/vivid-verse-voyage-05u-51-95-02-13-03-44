@@ -537,7 +537,7 @@ const ProductDetail = () => {
          
           
          
-            <ProductColorVariant/>
+            <ProductColorVariants/>
           
         
         
