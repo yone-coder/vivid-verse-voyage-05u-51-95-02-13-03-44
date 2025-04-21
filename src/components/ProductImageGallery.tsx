@@ -33,7 +33,6 @@ import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import GalleryThumbnails from "@/components/product/GalleryThumbnails";
 import InfoBand from "@/components/product/InfoBand";
-import VideoControls from "@/components/product/VideoControls";
 
 interface ProductImageGalleryProps {
   images: string[];
@@ -388,13 +387,21 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                           <Play className="h-8 w-8" />
                         </div>
                       </div>
-                      <VideoControls
-                        videoRef={videoRef}
-                        isPlaying={isPlaying}
-                        isMuted={isMuted}
-                        onPlayPause={toggleVideo}
-                        onMuteToggle={toggleMute}
-                      />
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleMute();
+                        }}
+                        className="absolute bottom-2 right-2 bg-black/60 hover:bg-black/80 transition-colors rounded-full"
+                      >
+                        {isMuted ? (
+                          <VolumeX className="h-5 w-5 text-white" />
+                        ) : (
+                          <Volume2 className="h-5 w-5 text-white" />
+                        )}
+                      </Button>
                     </div>
                   ) : (
                     <img
