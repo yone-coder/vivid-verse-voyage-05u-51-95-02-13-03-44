@@ -537,7 +537,9 @@ const ProductDetail = () => {
          
           
          
-            <ProductColorVariants/>
+         <div className="p-4"> {/* or whatever padding value you want */}
+  <ProductColorVariants/>
+</div>
           
         
         
