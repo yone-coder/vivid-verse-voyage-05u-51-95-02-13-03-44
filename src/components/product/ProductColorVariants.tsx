@@ -142,7 +142,7 @@ const ProductColorVariants = () => {
   const selectedStockInfo = getStockLevelInfo(selectedVariant.stock);
 
   return (
-    <div className="relative px-1 py-0.5 max-w-md mx-auto bg-white rounded-lg">
+    <div className="relative px-2 py-0.5 max-w-md mx-auto bg-white rounded-lg">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <Palette className="w-4 h-4 text-blue-500" />
