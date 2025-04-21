@@ -536,17 +536,10 @@ const ProductDetail = () => {
           
          
           
-          <div className="mt-1">
-            <ProductColorVariants 
-              variants={productForTabs.variants}
-              selectedColor={selectedColor}
-              onColorChange={setSelectedColor}
-              variantStockInfo={variantStockInfo}
-              getTimeRemaining={getTimeRemaining}
-              activateVariant={activateVariant}
-            />
-          </div>
-        </div>
+         
+            <ProductColorVariant/>
+          
+        
         
         <div className="mt-1 mb-1 p-3 bg-white">
           <div className="mt-2">
