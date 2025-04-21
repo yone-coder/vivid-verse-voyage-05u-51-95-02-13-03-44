@@ -27,9 +27,32 @@ import {
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useToast } from "@/hooks/use-toast";
-import { useNavigate } from "react-router-dom";
 import GalleryThumbnails from "@/components/product/GalleryThumbnails";
+import { 
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  HoverCard,
+  HoverCardTrigger,
+  HoverCardContent,
+} from "@/components/ui/hover-card";
+import { supabase } from "@/integrations/supabase/client";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "@/hooks/use-toast";
 import InfoBand from "@/components/product/InfoBand";
 
 interface ProductImageGalleryProps {
@@ -71,7 +94,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const fullscreenRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   const [openedThumbnailMenu, setOpenedThumbnailMenu] = useState<number | null>(null);
 
@@ -147,7 +169,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
       description: `Image filter: ${filter}`,
       duration: 2000,
     });
-  }, [toast]);
+  }, []);
 
   const resetEnhancements = useCallback(() => {
     setIsRotated(0);
@@ -160,7 +182,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
       description: "All image modifications have been reset",
       duration: 2000,
     });
-  }, [toast]);
+  }, []);
 
   const shareImage = useCallback((index: number) => {
     const image = images[index];
@@ -178,7 +200,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
         duration: 2000,
       });
     }
-  }, [images, toast]);
+  }, [images]);
 
   const toggleCompareMode = useCallback(() => {
     setShowCompareMode(prev => !prev);
@@ -192,7 +214,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
       description: viewMode === "default" ? "Showing image without distractions" : "Showing standard gallery view",
       duration: 2000,
     });
-  }, [viewMode, toast]);
+  }, [viewMode]);
 
   const handleThumbnailClick = useCallback((index: number) => {
     if (api) {
@@ -230,7 +252,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
       description: `Image ${index + 1} has been downloaded`,
       duration: 2000,
     });
-  }, [images, toast]);
+  }, [images]);
 
   const copyImageUrl = useCallback((index: number) => {
     const image = images[index];
@@ -244,7 +266,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
       description: "Image URL has been copied to clipboard",
       duration: 2000,
     });
-  }, [images, toast]);
+  }, [images]);
 
   const toggleThumbnailViewMode = useCallback(() => {
     setThumbnailViewMode(prev => prev === "row" ? "grid" : "row");
@@ -336,7 +358,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   };
 
   return (
-    <div className="flex flex-col gap-0 bg-transparent mb-0">
+    <div ref={containerRef} className="flex flex-col gap-1 bg-transparent mb-0">
       <div className="relative w-full aspect-square overflow-hidden">
         <Carousel
           className="w-full h-full"
@@ -402,19 +424,75 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
               </CarouselItem>
             ))}
           </CarouselContent>
+          
+          <div className={cn(
+            "absolute bottom-3 right-3 flex items-center gap-2 z-30 transition-opacity duration-300",
+            (focusMode || (currentIndex === 0 && isPlaying)) && "opacity-0"
+          )}>
+            <Button
+              variant="ghost" 
+              size="icon"
+              className="h-8 w-8 rounded-full bg-black/60 backdrop-blur-sm hover:bg-black/80 text-white"
+              onClick={handleRotate}
+            >
+              <RotateCw className="h-4 w-4" />
+            </Button>
+            
+            <Button
+              variant="ghost" 
+              size="icon"
+              className="h-8 w-8 rounded-full bg-black/60 backdrop-blur-sm hover:bg-black/80 text-white"
+              onClick={handleFlip}
+            >
+              <FlipHorizontal className="h-4 w-4" />
+            </Button>
+            
+            <Button
+              variant="ghost" 
+              size="icon"
+              className={cn(
+                "h-8 w-8 rounded-full bg-black/60 backdrop-blur-sm hover:bg-black/80 text-white",
+                autoScrollEnabled && "bg-primary text-white"
+              )}
+              onClick={toggleAutoScroll}
+            >
+              {autoScrollEnabled ? 
+                <Pause className="h-4 w-4" /> : 
+                <Play className="h-4 w-4" />
+              }
+            </Button>
+            
+            <button
+              onClick={toggleFocusMode}
+              className={cn(
+                "h-8 w-8 flex items-center justify-center rounded-full bg-black/60 backdrop-blur-sm text-white hover:bg-black/80 transition-colors",
+                focusMode && "bg-primary text-white"
+              )}
+              aria-label={focusMode ? "Exit focus mode" : "Enter focus mode"}
+            >
+              <Focus size={16} />
+            </button>
+          </div>
+          
+          <div className={cn(
+            "absolute bottom-3 left-3 z-30 transition-opacity duration-300 flex items-center h-8",
+            (focusMode || (currentIndex === 0 && isPlaying)) && "opacity-0"
+          )}>
+            <div className="bg-black/60 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs font-medium">
+              {currentIndex + 1} / {images.length}
+            </div>
+          </div>
         </Carousel>
       </div>
       
       <InfoBand />
       
-      <div className="mt-1">
-        <GalleryThumbnails
-          images={images}
-          currentIndex={currentIndex}
-          onThumbnailClick={handleThumbnailClick}
-          isPlaying={isPlaying}
-        />
-      </div>
+      <GalleryThumbnails
+        images={images}
+        currentIndex={currentIndex}
+        onThumbnailClick={handleThumbnailClick}
+        isPlaying={isPlaying}
+      />
       
       {isFullscreenMode && (
         <div 
