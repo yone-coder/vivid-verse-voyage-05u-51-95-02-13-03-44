@@ -79,10 +79,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const [isFullscreenMode, setIsFullscreenMode] = useState(false);
   const [hoveredThumbnail, setHoveredThumbnail] = useState<number | null>(null);
   const [focusMode, setFocusMode] = useState(false);
-  const [isMuted, setIsMuted] = useState(true);
-  const [volume, setVolume] = useState(1);
-  const [playbackSpeed, setPlaybackSpeed] = useState(1);
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
 
   const [zoomLevel, setZoomLevel] = useState(1);
   const [showCompareMode, setShowCompareMode] = useState(false);
@@ -279,16 +276,14 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   }, []);
 
   const toggleFullscreen = useCallback(() => {
-    if (videoRef.current) {
-      if (!document.fullscreenElement) {
-        videoRef.current.requestFullscreen();
-        setIsFullscreen(true);
-      } else {
-        document.exitFullscreen();
-        setIsFullscreen(false);
-      }
+    setIsFullscreenMode(prev => !prev);
+    
+    if (!isFullscreenMode) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
     }
-  }, []);
+  }, [isFullscreenMode]);
 
   const handleThumbnailMenuToggle = useCallback((index: number, isOpen: boolean) => {
     if (isOpen) {
@@ -367,29 +362,10 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
 
   const toggleMute = useCallback(() => {
     if (videoRef.current) {
-      const newMutedState = !videoRef.current.muted;
-      videoRef.current.muted = newMutedState;
-      setIsMuted(newMutedState);
+      videoRef.current.muted = !videoRef.current.muted;
+      setIsMuted(!isMuted);
     }
-  }, []);
-
-  const handleVolumeChange = useCallback((newVolume: number) => {
-    if (videoRef.current) {
-      videoRef.current.volume = newVolume;
-      setVolume(newVolume);
-      setIsMuted(newVolume === 0);
-    }
-  }, []);
-
-  const changePlaybackSpeed = useCallback(() => {
-    if (videoRef.current) {
-      const speeds = [0.5, 1, 1.5, 2];
-      const currentIndex = speeds.indexOf(playbackSpeed);
-      const nextIndex = (currentIndex + 1) % speeds.length;
-      videoRef.current.playbackRate = speeds[nextIndex];
-      setPlaybackSpeed(speeds[nextIndex]);
-    }
-  }, [playbackSpeed]);
+  }, [isMuted]);
 
   return (
     <div ref={containerRef} className="flex flex-col bg-transparent">
@@ -419,7 +395,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                         Your browser does not support the video tag.
                       </video>
                       <div className={cn(
-                        "absolute bottom-3 left-3 flex items-center gap-2 z-30 transition-opacity duration-300",
+                        "absolute bottom-3 right-3 flex items-center gap-2 z-30 transition-opacity duration-300",
                         focusMode && "opacity-0"
                       )}>
                         <Button
@@ -437,7 +413,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                             <Play className="h-4 w-4" />
                           )}
                         </Button>
-
+                        
                         <Button
                           variant="ghost" 
                           size="icon"
@@ -449,35 +425,9 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                         >
                           {isMuted ? (
                             <VolumeX className="h-4 w-4" />
-                          ) : volume > 0.5 ? (
-                            <Volume className="h-4 w-4" />
                           ) : (
-                            <Volume className="h-4 w-4 opacity-50" />
+                            <Volume className="h-4 w-4" />
                           )}
-                        </Button>
-
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 rounded-full bg-black/60 backdrop-blur-sm hover:bg-black/80 text-white"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            changePlaybackSpeed();
-                          }}
-                        >
-                          <span className="text-xs font-medium">{playbackSpeed}x</span>
-                        </Button>
-
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 rounded-full bg-black/60 backdrop-blur-sm hover:bg-black/80 text-white"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toggleFullscreen();
-                          }}
-                        >
-                          <Maximize className="h-4 w-4" />
                         </Button>
                       </div>
                     </div>
