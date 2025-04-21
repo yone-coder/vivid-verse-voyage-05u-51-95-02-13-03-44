@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { cn } from "@/lib/utils";
 import { Play } from "lucide-react";
@@ -17,7 +16,7 @@ const GalleryThumbnails = ({
   isPlaying = false
 }: GalleryThumbnailsProps) => {
   return (
-    <div className="flex items-center gap-1.5 px-1.5 pb-1.5 overflow-x-auto scrollbar-none">
+    <div className="flex items-center gap-1.5 px-1.5 pt-1.5 pb-1.5 overflow-x-auto scrollbar-none">
       {[...Array(Math.min(7, images.length))].map((_, index) => (
         <div
           key={index}
