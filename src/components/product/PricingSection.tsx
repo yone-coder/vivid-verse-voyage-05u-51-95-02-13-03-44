@@ -42,7 +42,7 @@ const PricingSection = () => {
       </div>
       
       {/* Main price area with minimal padding */}
-      <div className="flex items-center justify-between px-1 py-1 w-full">
+      <div className="flex items-center justify-between px-2 py-1 w-full">
         <div className="flex items-center">
           <span className="text-sm font-semibold" style={{ color: primaryColor }}>{currency}</span>
           <span className="text-2xl font-bold leading-none" style={{ color: primaryColor }}>
