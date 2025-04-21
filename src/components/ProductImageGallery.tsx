@@ -8,6 +8,8 @@ import {
 import { 
   Play,
   Pause,
+  Volume,
+  VolumeX,
   RotateCw,
   FlipHorizontal,
   ChevronLeft,
@@ -77,6 +79,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const [isFullscreenMode, setIsFullscreenMode] = useState(false);
   const [hoveredThumbnail, setHoveredThumbnail] = useState<number | null>(null);
   const [focusMode, setFocusMode] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
 
   const [zoomLevel, setZoomLevel] = useState(1);
   const [showCompareMode, setShowCompareMode] = useState(false);
@@ -346,7 +349,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     setAutoScrollEnabled(prev => !prev);
   }, [autoScrollEnabled]);
 
-  const toggleVideo = () => {
+  const toggleVideo = useCallback(() => {
     if (videoRef.current) {
       if (isPlaying) {
         videoRef.current.pause();
@@ -355,10 +358,17 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
       }
       setIsPlaying(!isPlaying);
     }
-  };
+  }, [isPlaying]);
+
+  const toggleMute = useCallback(() => {
+    if (videoRef.current) {
+      videoRef.current.muted = !videoRef.current.muted;
+      setIsMuted(!isMuted);
+    }
+  }, [isMuted]);
 
   return (
-    <div ref={containerRef} className="flex flex-col gap-1 bg-transparent mb-0">
+    <div ref={containerRef} className="flex flex-col bg-transparent">
       <div className="relative w-full aspect-square overflow-hidden">
         <Carousel
           className="w-full h-full"
@@ -377,23 +387,48 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                         ref={videoRef}
                         src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
                         className="w-full h-full object-contain cursor-pointer"
-                        onClick={toggleVideo}
                         playsInline
                         loop
-                        muted
+                        muted={isMuted}
                         autoPlay
                       >
                         Your browser does not support the video tag.
                       </video>
-                      <div 
-                        className={cn(
-                          "absolute inset-0 flex items-center justify-center transition-opacity duration-500",
-                          isPlaying ? "opacity-0" : "opacity-100"
-                        )}
-                      >
-                        <div className="bg-black/60 backdrop-blur-sm text-white p-4 rounded-full">
-                          <Play className="h-8 w-8" />
-                        </div>
+                      <div className={cn(
+                        "absolute bottom-3 right-3 flex items-center gap-2 z-30 transition-opacity duration-300",
+                        focusMode && "opacity-0"
+                      )}>
+                        <Button
+                          variant="ghost" 
+                          size="icon"
+                          className="h-8 w-8 rounded-full bg-black/60 backdrop-blur-sm hover:bg-black/80 text-white"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleVideo();
+                          }}
+                        >
+                          {isPlaying ? (
+                            <Pause className="h-4 w-4" />
+                          ) : (
+                            <Play className="h-4 w-4" />
+                          )}
+                        </Button>
+                        
+                        <Button
+                          variant="ghost" 
+                          size="icon"
+                          className="h-8 w-8 rounded-full bg-black/60 backdrop-blur-sm hover:bg-black/80 text-white"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleMute();
+                          }}
+                        >
+                          {isMuted ? (
+                            <VolumeX className="h-4 w-4" />
+                          ) : (
+                            <Volume className="h-4 w-4" />
+                          )}
+                        </Button>
                       </div>
                     </div>
                   ) : (
@@ -492,6 +527,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
         currentIndex={currentIndex}
         onThumbnailClick={handleThumbnailClick}
         isPlaying={isPlaying}
+        className="mt-1.5"
       />
       
       {isFullscreenMode && (
