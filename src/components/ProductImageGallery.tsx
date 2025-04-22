@@ -55,17 +55,16 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import InfoBand from "@/components/product/InfoBand";
 import VideoControls from "@/components/product/VideoControls";
-import ImageGalleryControls from "@/components/product/ImageGalleryControls";
-
+ 
 interface ProductImageGalleryProps {
   images: string[];
 }
-
+ 
 interface TouchPosition {
   x: number;
   y: number;
 }
-
+ 
 const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [api, setApi] = useState<CarouselApi | null>(null);
@@ -82,6 +81,11 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const [isMuted, setIsMuted] = useState(false);
   const [volume, setVolume] = useState(1);
 
+  // NEW: State for video controls synchronization
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [bufferedTime, setBufferedTime] = useState(0);
+
   const [zoomLevel, setZoomLevel] = useState(1);
   const [showCompareMode, setShowCompareMode] = useState(false);
   const [compareIndex, setCompareIndex] = useState(0);
@@ -91,19 +95,19 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const [showOtherColors, setShowOtherColors] = useState<boolean>(false);
   const [showAllControls, setShowAllControls] = useState<boolean>(false);
   const [viewMode, setViewMode] = useState<"default" | "immersive">("default");
-
+ 
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
   const touchStartPosition = useRef<TouchPosition | null>(null);
   const fullscreenRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
   const navigate = useNavigate();
-
+ 
   const [openedThumbnailMenu, setOpenedThumbnailMenu] = useState<number | null>(null);
-
+ 
   const [isPlaying, setIsPlaying] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
-
+ 
   useEffect(() => {
     const preloadImages = async () => {
       const preloaded = await Promise.all(
@@ -121,7 +125,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     
     preloadImages();
   }, [images]);
-
+ 
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.addEventListener('play', () => {
@@ -133,6 +137,61 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
       });
     }
   }, []);
+
+  // --- Start: Video event listeners for time/duration/buffer ---
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    // Callback wrappers to allow unregistering
+    const handleTimeUpdate = () => {
+      setCurrentTime(video.currentTime || 0);
+    };
+
+    const handleLoadedMetadata = () => {
+      setDuration(video.duration || 0);
+    };
+
+    const handleProgress = () => {
+      if (video.buffered.length) {
+        setBufferedTime(video.buffered.end(video.buffered.length - 1));
+      }
+    };
+
+    video.addEventListener('timeupdate', handleTimeUpdate);
+    video.addEventListener('loadedmetadata', handleLoadedMetadata);
+    video.addEventListener('progress', handleProgress);
+
+    // initialize with current values in case metadata loads before effect runs
+    setDuration(video.duration || 0);
+    setCurrentTime(video.currentTime || 0);
+    if (video.buffered.length) {
+      setBufferedTime(video.buffered.end(video.buffered.length - 1));
+    }
+
+    return () => {
+      video.removeEventListener('timeupdate', handleTimeUpdate);
+      video.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      video.removeEventListener('progress', handleProgress);
+    };
+  }, []);
+  // --- End: Video event listeners ---
+
+  // Seeking functionality and skip features
+  const handleSeek = (newTime: number) => {
+    if (videoRef.current) {
+      videoRef.current.currentTime = newTime;
+      setCurrentTime(newTime);
+    }
+  };
+
+  const handleSkipForward = () => {
+    handleSeek(Math.min(currentTime + 10, duration));
+  };
+
+  const handleSkipBackward = () => {
+    handleSeek(Math.max(currentTime - 10, 0));
+  };
 
   const onApiChange = useCallback((api: CarouselApi | null) => {
     if (!api) return;
@@ -414,6 +473,12 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                             onPlayPause={toggleVideo}
                             onMuteToggle={handleMuteToggle}
                             onVolumeChange={handleVolumeChange}
+                            currentTime={currentTime}
+                            duration={duration}
+                            bufferedTime={bufferedTime}
+                            onSeek={handleSeek}
+                            onSkipForward={() => handleSeek(Math.min(currentTime + 10, duration))}
+                            onSkipBackward={() => handleSeek(Math.max(currentTime - 10, 0))}
                           />
                         </div>
                       </div>
@@ -577,6 +642,12 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                   onPlayPause={toggleVideo}
                   onMuteToggle={handleMuteToggle}
                   onVolumeChange={handleVolumeChange}
+                  currentTime={currentTime}
+                  duration={duration}
+                  bufferedTime={bufferedTime}
+                  onSeek={handleSeek}
+                  onSkipForward={() => handleSeek(Math.min(currentTime + 10, duration))}
+                  onSkipBackward={() => handleSeek(Math.max(currentTime - 10, 0))}
                 />
               </div>
             </div>
@@ -586,5 +657,5 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     </div>
   );
 };
-
+ 
 export default ProductImageGallery;
