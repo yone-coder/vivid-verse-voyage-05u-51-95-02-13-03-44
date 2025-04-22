@@ -128,10 +128,10 @@ const ProductHeader = () => {
   // Back button
   const BackButton = () => (
     <div className="rounded-full transition-all duration-700 overflow-hidden"
-      style={{backgroundColor: progress > 0.5 ? 'transparent' : `rgba(0, 0, 0, ${0.1 * (1 - progress)})`}}>
+      style={{backgroundColor: `rgba(0, 0, 0, ${0.1 * (1 - progress)})`}}>
       <button className="h-7 w-7 rounded-full flex items-center justify-center transition-all duration-700"
         style={{
-          backgroundColor: progress > 0.5 ? 'transparent' : `rgba(0, 0, 0, ${(1 - progress) * 0.4})`
+          backgroundColor: `rgba(0, 0, 0, ${(1 - progress) * 0.4})`
         }}>
         <ChevronLeft 
           className="transition-all duration-700"
@@ -160,12 +160,12 @@ const ProductHeader = () => {
         
         <div className="flex gap-2">
           <div className="rounded-full transition-all duration-700"
-            style={{backgroundColor: progress > 0.5 ? 'transparent' : `rgba(0, 0, 0, ${0.1 * (1 - progress)})`}}>
+            style={{backgroundColor: `rgba(0, 0, 0, ${0.1 * (1 - progress)})`}}>
             <button 
               onClick={() => setIsFavorite(!isFavorite)}
               className="h-7 w-7 rounded-full flex items-center justify-center transition-all duration-700"
               style={{
-                backgroundColor: progress > 0.5 && !isFavorite ? 'transparent' : `rgba(0, 0, 0, ${(1 - progress) * 0.4})`
+                backgroundColor: `rgba(0, 0, 0, ${(1 - progress) * 0.4})`
               }}
             >
               <Heart 
@@ -181,11 +181,11 @@ const ProductHeader = () => {
           </div>
           
           <div className="rounded-full transition-all duration-700"
-            style={{backgroundColor: progress > 0.5 ? 'transparent' : `rgba(0, 0, 0, ${0.1 * (1 - progress)})`}}>
+            style={{backgroundColor: `rgba(0, 0, 0, ${0.1 * (1 - progress)})`}}>
             <button 
               className="h-7 w-7 rounded-full flex items-center justify-center transition-all duration-700"
               style={{
-                backgroundColor: progress > 0.5 ? 'transparent' : `rgba(0, 0, 0, ${(1 - progress) * 0.4})`
+                backgroundColor: `rgba(0, 0, 0, ${(1 - progress) * 0.4})`
               }}
             >
               <Share 
