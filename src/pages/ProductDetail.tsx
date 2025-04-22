@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import ProductHeader from "@/components/product/ProductHeader";
 import { useParams } from "react-router-dom";
 import ProductImageGallery from "@/components/ProductImageGallery";
 import StickyBuyButton from "@/components/StickyBuyButton";
@@ -524,61 +525,63 @@ const ProductDetail = () => {
   
   return (
     <div className="flex flex-col min-h-screen bg-white" ref={contentRef}>
-  <div className="relative w-full bg-transparent">
-    <ProductImageGallery images={productImages.length > 0 ? productImages : ["/placeholder.svg"]} />
-  </div>
+      <ProductHeader />
+      <div className="h-12 md:h-14"></div>
+      <div className="relative w-full bg-transparent">
+        <ProductImageGallery images={productImages.length > 0 ? productImages : ["/placeholder.svg"]} />
+      </div>
 
-  <div className="flex-1">
-    <div className="bg-white">
-      <CoreIdentity />
-      <PricingSection />
-      <ProductColorVariants />
+      <div className="flex-1">
+        <div className="bg-white">
+          <CoreIdentity />
+          <PricingSection />
+          <ProductColorVariants />
 
-      <div className="mt-1 mb-1 p-3 bg-white">
-        <div className="mt-2">
-          <ProductQuantitySelector 
-            quantity={quantity}
-            onIncrement={incrementQuantity}
-            onDecrement={decrementQuantity}
-            price={currentPrice}
-            maxQuantity={10}
-            minQuantity={1}
-            inStock={currentStock}
-            productName={product.name}
-            stockInfo={selectedVariantStockInfo}
-          />
-        </div>
+          <div className="mt-1 mb-1 p-3 bg-white">
+            <div className="mt-2">
+              <ProductQuantitySelector 
+                quantity={quantity}
+                onIncrement={incrementQuantity}
+                onDecrement={decrementQuantity}
+                price={currentPrice}
+                maxQuantity={10}
+                minQuantity={1}
+                inStock={currentStock}
+                productName={product.name}
+                stockInfo={selectedVariantStockInfo}
+              />
+            </div>
 
-        <div className="mt-2">
-          <ProductShipping
-            shippingInfo={productForTabs.shipping}
-            isExpressSelected={isExpressSelected}
-            onExpressChange={setIsExpressSelected}
-          />
-        </div>
+            <div className="mt-2">
+              <ProductShipping
+                shippingInfo={productForTabs.shipping}
+                isExpressSelected={isExpressSelected}
+                onExpressChange={setIsExpressSelected}
+              />
+            </div>
 
-        <div className="mt-2">
-          <ProductWarranty
-            warrantyOptions={productForTabs.warranty}
-            selectedWarranty={selectedWarranty}
-            onWarrantyChange={setSelectedWarranty}
-          />
-        </div>
+            <div className="mt-2">
+              <ProductWarranty
+                warrantyOptions={productForTabs.warranty}
+                selectedWarranty={selectedWarranty}
+                onWarrantyChange={setSelectedWarranty}
+              />
+            </div>
 
-        <div className="mt-2">
-          <ProductPaymentOptions paymentOptions={productForTabs.payments} />
-        </div>
+            <div className="mt-2">
+              <ProductPaymentOptions paymentOptions={productForTabs.payments} />
+            </div>
 
-        <AliExpressTabs tabs={tabsConfig} initialTab={0} className="mt-4" />
-      </div> {/* Close white box wrapper */}
-    </div> {/* Close bg-white wrapper */}
-  </div> {/* Close flex-1 */}
+            <AliExpressTabs tabs={tabsConfig} initialTab={0} className="mt-4" />
+          </div> {/* Close white box wrapper */}
+        </div> {/* Close bg-white wrapper */}
+      </div> {/* Close flex-1 */}
 
-  <StickyBuyButton 
-    selectedColor={selectedColor}
-    colorPrices={colorPrices}
-  />
-</div>
+      <StickyBuyButton 
+        selectedColor={selectedColor}
+        colorPrices={colorPrices}
+      />
+    </div>
   );
 };
 
