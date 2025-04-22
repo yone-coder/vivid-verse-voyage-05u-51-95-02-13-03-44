@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback, useRef } from 'react';
 import { 
   Play, 
@@ -85,36 +86,36 @@ const VideoControls = ({
   return (
     <div className="absolute inset-0 flex flex-col justify-end pointer-events-none">
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
-        <div className="flex items-center gap-4 pointer-events-auto">
+        <div className="flex items-center gap-6 pointer-events-auto">
           <button
-            className="h-12 w-12 rounded-full bg-black/70 hover:bg-black/90 text-white flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="h-10 w-10 rounded-full bg-black/70 hover:bg-black/90 text-white flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500"
             onClick={handleSkipBackward}
             aria-label="Skip Backward"
             tabIndex={0}
           >
-            <SkipBack className="h-6 w-6" />
+            <SkipBack className="h-5 w-5" />
           </button>
           
           <button
-            className="h-16 w-16 rounded-full bg-white/30 hover:bg-white/60 text-white flex items-center justify-center transition-colors shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="h-14 w-14 rounded-full bg-white/30 hover:bg-white/60 text-white flex items-center justify-center transition-colors shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
             onClick={handlePlayPause}
             aria-label={isPlaying ? "Pause" : "Play"}
             tabIndex={0}
           >
             {isPlaying ? (
-              <Pause className="h-8 w-8" />
+              <Pause className="h-7 w-7" />
             ) : (
-              <Play className="h-8 w-8" />
+              <Play className="h-7 w-7" />
             )}
           </button>
 
           <button
-            className="h-12 w-12 rounded-full bg-black/70 hover:bg-black/90 text-white flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="h-10 w-10 rounded-full bg-black/70 hover:bg-black/90 text-white flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500"
             onClick={handleSkipForward}
             aria-label="Skip Forward"
             tabIndex={0}
           >
-            <SkipForward className="h-6 w-6" />
+            <SkipForward className="h-5 w-5" />
           </button>
         </div>
       </div>
