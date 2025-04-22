@@ -81,6 +81,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const [focusMode, setFocusMode] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [volume, setVolume] = useState(1);
+
   const [zoomLevel, setZoomLevel] = useState(1);
   const [showCompareMode, setShowCompareMode] = useState(false);
   const [compareIndex, setCompareIndex] = useState(0);
@@ -90,8 +91,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const [showOtherColors, setShowOtherColors] = useState<boolean>(false);
   const [showAllControls, setShowAllControls] = useState<boolean>(false);
   const [viewMode, setViewMode] = useState<"default" | "immersive">("default");
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
@@ -125,15 +124,10 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
 
   useEffect(() => {
     if (videoRef.current) {
-      videoRef.current.addEventListener('timeupdate', () => {
-        setCurrentTime(videoRef.current?.currentTime || 0);
-      });
-      videoRef.current.addEventListener('loadedmetadata', () => {
-        setDuration(videoRef.current?.duration || 0);
-      });
       videoRef.current.addEventListener('play', () => {
         setIsPlaying(true);
       });
+      
       videoRef.current.addEventListener('pause', () => {
         setIsPlaying(false);
       });
@@ -334,12 +328,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     }
   };
 
-  const handleSeek = (time: number) => {
-    if (videoRef.current) {
-      videoRef.current.currentTime = time;
-    }
-  };
-
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isFullscreenMode) {
@@ -422,12 +410,9 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                           isPlaying={isPlaying}
                           isMuted={isMuted}
                           volume={volume}
-                          currentTime={currentTime}
-                          duration={duration}
                           onPlayPause={toggleVideo}
                           onMuteToggle={handleMuteToggle}
                           onVolumeChange={handleVolumeChange}
-                          onSeek={handleSeek}
                         />
                       )}
                     </div>
