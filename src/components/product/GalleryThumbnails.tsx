@@ -7,21 +7,16 @@ interface GalleryThumbnailsProps {
   currentIndex: number;
   onThumbnailClick: (index: number) => void;
   isPlaying?: boolean;
-  className?: string;
 }
 
 const GalleryThumbnails = ({
   images,
   currentIndex,
   onThumbnailClick,
-  isPlaying = false,
-  className
+  isPlaying = false
 }: GalleryThumbnailsProps) => {
   return (
-    <div className={cn(
-      "flex items-center gap-1.5 px-1.5 pt-1.5 pb-1.5 overflow-x-auto scrollbar-none",
-      className
-    )}>
+    <div className="flex items-center gap-1.5 px-1.5 pt-1.5 pb-1.5 overflow-x-auto scrollbar-none">
       {[...Array(Math.min(7, images.length))].map((_, index) => (
         <div
           key={index}
