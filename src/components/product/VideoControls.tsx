@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback, useRef } from 'react';
 import { 
   Play, 
@@ -12,17 +13,32 @@ import {
   Settings
 } from "lucide-react";
 
-const VideoControls = () => {
+interface VideoControlsProps {
+  isPlaying?: boolean;
+  isMuted?: boolean;
+  volume?: number;
+  onPlayPause?: () => void;
+  onMuteToggle?: () => void;
+  onVolumeChange?: (newVolume: number) => void;
+  currentTime?: number;
+  duration?: number;
+}
+
+const VideoControls = ({
+  isPlaying = false,
+  isMuted = false,
+  volume = 0.7,
+  onPlayPause = () => {},
+  onMuteToggle = () => {},
+  onVolumeChange = () => {},
+  currentTime = 45,
+  duration = 180
+}: VideoControlsProps) => {
   // State variables to track UI state
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
-  const [volume, setVolume] = useState(0.7);
-  const [currentTime, setCurrentTime] = useState(45);
-  const [duration, setDuration] = useState(180);
-  const [bufferedTime, setBufferedTime] = useState(90);
-  const [subtitlesEnabled, setSubtitlesEnabled] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isVolumeSliderVisible, setIsVolumeSliderVisible] = useState(false);
+  const [subtitlesEnabled, setSubtitlesEnabled] = useState(false);
+  const [bufferedTime, setBufferedTime] = useState(90);
   
   const controlsTimeoutRef = useRef(null);
 
@@ -43,22 +59,19 @@ const VideoControls = () => {
 
   // Event handlers
   const handlePlayPause = () => {
-    setIsPlaying(!isPlaying);
+    onPlayPause();
   };
 
   const handleVolumeChange = (newVolume) => {
-    setVolume(newVolume);
-    if (isMuted && newVolume > 0) {
-      setIsMuted(false);
-    }
+    onVolumeChange(newVolume);
   };
 
   const handleMuteToggle = () => {
-    setIsMuted(!isMuted);
+    onMuteToggle();
   };
 
   const handleSeek = (time) => {
-    setCurrentTime(time);
+    // External seek handler can be added here if needed
   };
 
   const handleSubtitlesToggle = () => {
@@ -66,11 +79,11 @@ const VideoControls = () => {
   };
 
   const handleSkipForward = () => {
-    setCurrentTime(Math.min(currentTime + 10, duration));
+    // External skip handler can be added here if needed
   };
 
   const handleSkipBackward = () => {
-    setCurrentTime(Math.max(currentTime - 10, 0));
+    // External skip backward handler can be added here if needed
   };
 
   const handleFullscreenToggle = () => {
