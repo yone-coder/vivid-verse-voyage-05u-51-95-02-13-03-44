@@ -129,7 +129,8 @@ const ProductHeader = () => {
   const BackButton = () => (
     <div className="rounded-full transition-all duration-700 overflow-hidden"
       style={{
-        backgroundColor: `rgba(0, 0, 0, ${0.1 + (progress * 0.85)})`
+        backgroundColor: `rgba(0, 0, 0, ${0.1 + (progress * 0.85)})`,
+        backdropFilter: `blur(${4 + (progress * 4)}px)`
       }}>
       <button className="h-7 w-7 rounded-full flex items-center justify-center transition-all duration-700"
         style={{
@@ -164,7 +165,8 @@ const ProductHeader = () => {
         <div className="flex gap-2">
           <div className="rounded-full transition-all duration-700"
             style={{
-              backgroundColor: `rgba(0, 0, 0, ${0.1 + (progress * 0.85)})`
+              backgroundColor: `rgba(0, 0, 0, ${0.1 + (progress * 0.85)})`,
+              backdropFilter: `blur(${4 + (progress * 4)}px)`
             }}>
             <button 
               onClick={() => setIsFavorite(!isFavorite)}
@@ -188,7 +190,8 @@ const ProductHeader = () => {
           
           <div className="rounded-full transition-all duration-700"
             style={{
-              backgroundColor: `rgba(0, 0, 0, ${0.1 + (progress * 0.85)})`
+              backgroundColor: `rgba(0, 0, 0, ${0.1 + (progress * 0.85)})`,
+              backdropFilter: `blur(${4 + (progress * 4)}px)`
             }}>
             <button 
               className="h-7 w-7 rounded-full flex items-center justify-center transition-all duration-700"
