@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback, useRef } from 'react';
 import { 
   Play, 
@@ -90,101 +91,109 @@ const VideoControls = ({
   };
 
   return (
-    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-4">
-      {/* Progress bar */}
-      <div className="w-full mb-4 px-1">
-        <div className="relative h-1 bg-gray-600 rounded overflow-hidden group">
-          {/* Buffered progress */}
-          <div 
-            className="absolute top-0 left-0 h-full bg-gray-400 bg-opacity-50" 
-            style={{ width: `${(bufferedTime / duration) * 100}%` }}
-          />
-          {/* Playback progress */}
-          <div 
-            className="absolute top-0 left-0 h-full bg-white" 
-            style={{ width: `${(currentTime / duration) * 100}%` }}
-          />
-          <input
-            type="range"
-            min={0}
-            max={duration}
-            step={0.1}
-            value={currentTime}
-            className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
-          />
-        </div>
-      </div>
-
-      {/* Main controls container */}
-      <div className="flex items-center justify-between">
-        {/* Left controls */}
-        <div className="flex items-center space-x-4">
+    <div className="absolute inset-0 flex flex-col justify-end pointer-events-none">
+      {/* Centered Play/Skip Group (pointer-events-auto for buttons) */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
+        <div className="flex items-center gap-8 pointer-events-auto">
           <button
-            className="h-10 w-10 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center"
-            onClick={onMuteToggle}
+            className="h-20 w-20 rounded-full bg-black/70 hover:bg-black/90 text-white flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500"
+            onClick={handleSkipBackward}
+            aria-label="Skip Backward"
+            tabIndex={0}
           >
-            {isMuted ? (
-              <VolumeX className="h-5 w-5" />
-            ) : volume < 0.3 ? (
-              <Volume className="h-5 w-5" />
-            ) : volume < 0.7 ? (
-              <Volume1 className="h-5 w-5" />
+            <SkipBack className="h-10 w-10" />
+          </button>
+          
+          <button
+            className="h-24 w-24 rounded-full bg-white/30 hover:bg-white/60 text-white flex items-center justify-center transition-colors shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+            onClick={handlePlayPause}
+            aria-label={isPlaying ? "Pause" : "Play"}
+            tabIndex={0}
+          >
+            {isPlaying ? (
+              <Pause className="h-14 w-14" />
             ) : (
-              <Volume2 className="h-5 w-5" />
+              <Play className="h-14 w-14" />
             )}
           </button>
 
-          {/* Time display */}
-          <div className="text-xs text-white">
-            {formatTime(currentTime)} / {formatTime(duration)}
+          <button
+            className="h-20 w-20 rounded-full bg-black/70 hover:bg-black/90 text-white flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500"
+            onClick={handleSkipForward}
+            aria-label="Skip Forward"
+            tabIndex={0}
+          >
+            <SkipForward className="h-10 w-10" />
+          </button>
+        </div>
+      </div>
+      
+      {/* Bottom Controls Bar */}
+      <div className="w-full bg-gradient-to-t from-black/90 to-transparent p-4 pointer-events-auto relative z-30">
+        {/* Progress bar */}
+        <div className="w-full mb-4 px-1">
+          <div className="relative h-1 bg-gray-600 rounded overflow-hidden group">
+            {/* Buffered progress */}
+            <div 
+              className="absolute top-0 left-0 h-full bg-gray-400 bg-opacity-50" 
+              style={{ width: `${(bufferedTime / duration) * 100}%` }}
+            />
+            {/* Playback progress */}
+            <div 
+              className="absolute top-0 left-0 h-full bg-white" 
+              style={{ width: `${(currentTime / duration) * 100}%` }}
+            />
+            <input
+              type="range"
+              min={0}
+              max={duration}
+              step={0.1}
+              value={currentTime}
+              className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
+              aria-label="Seek"
+            />
           </div>
         </div>
 
-        {/* Center controls - Play, Skip buttons */}
-        <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center space-x-4">
-          <button
-            className="h-8 w-8 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center"
-            onClick={() => {/* Skip backward logic */}}
-          >
-            <SkipBack className="h-5 w-5" />
-          </button>
+        <div className="flex items-center justify-between">
+          {/* Left controls */}
+          <div className="flex items-center space-x-4">
+            <button
+              className="h-10 w-10 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center"
+              onClick={handleMuteToggle}
+              aria-label={isMuted ? "Unmute" : "Mute"}
+              tabIndex={0}
+            >
+              {getVolumeIcon()}
+            </button>
+            {/* Time display */}
+            <div className="text-xs text-white">
+              {formatTime(currentTime)} / {formatTime(duration)}
+            </div>
+          </div>
 
-          <button
-            className="h-12 w-12 rounded-full bg-white/20 hover:bg-white/40 text-white flex items-center justify-center"
-            onClick={onPlayPause}
-          >
-            {isPlaying ? (
-              <Pause className="h-6 w-6" />
-            ) : (
-              <Play className="h-6 w-6" />
-            )}
-          </button>
+          {/* Right controls */}
+          <div className="flex items-center space-x-4">
+            {/* Settings */}
+            <button
+              className="h-8 w-8 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center"
+              onClick={() => setIsSettingsOpen(x => !x)}
+              aria-label="Settings"
+              tabIndex={0}
+            >
+              <Settings className="h-5 w-5" />
+            </button>
 
-          <button
-            className="h-8 w-8 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center"
-            onClick={() => {/* Skip forward logic */}}
-          >
-            <SkipForward className="h-5 w-5" />
-          </button>
-        </div>
-
-        {/* Right controls */}
-        <div className="flex items-center space-x-4">
-          {/* Settings */}
-          <button
-            className="h-8 w-8 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center"
-            onClick={() => {/* Settings logic */}}
-          >
-            <Settings className="h-5 w-5" />
-          </button>
-
-          {/* Fullscreen */}
-          <button
-            className="h-8 w-8 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center"
-            onClick={() => {/* Fullscreen logic */}}
-          >
-            <Maximize className="h-5 w-5" />
-          </button>
+            {/* Fullscreen */}
+            <button
+              className="h-8 w-8 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center"
+              onClick={handleFullscreenToggle}
+              aria-label="Fullscreen"
+              tabIndex={0}
+            >
+              <Maximize className="h-5 w-5" />
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -192,3 +201,4 @@ const VideoControls = ({
 };
 
 export default VideoControls;
+
