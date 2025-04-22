@@ -1,214 +1,70 @@
 
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React from 'react';
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import { 
   Play, 
-  Pause, 
+  Pause,
   Volume,
   Volume1,
   Volume2,
   VolumeX,
-  SkipForward,
-  SkipBack,
-  Maximize,
-  Settings
 } from "lucide-react";
-import { Progress } from "@/components/ui/progress";
-import { Slider } from "@/components/ui/slider";
 
 interface VideoControlsProps {
-  isPlaying?: boolean;
+  isPlaying: boolean;
   isMuted?: boolean;
   volume?: number;
-  onPlayPause?: () => void;
+  onPlayPause: () => void;
+  onVolumeChange?: (volume: number) => void;
   onMuteToggle?: () => void;
-  onVolumeChange?: (newVolume: number) => void;
-  currentTime?: number;
-  duration?: number;
-  onSeek?: (newTime: number) => void;
-  onSkipForward?: () => void;
-  onSkipBackward?: () => void;
-  onFullscreenToggle?: () => void;
-  bufferedTime?: number;
+  className?: string;
 }
 
 const VideoControls = ({
-  isPlaying = false,
+  isPlaying,
   isMuted = false,
-  volume = 0.7,
-  onPlayPause = () => {},
-  onMuteToggle = () => {},
-  onVolumeChange = () => {},
-  currentTime = 0,
-  duration = 0,
-  onSeek = () => {},
-  onSkipForward = () => {},
-  onSkipBackward = () => {},
-  onFullscreenToggle = () => {},
-  bufferedTime = 0
+  volume = 1,
+  onPlayPause,
+  onVolumeChange,
+  onMuteToggle,
+  className
 }: VideoControlsProps) => {
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [isVolumeSliderVisible, setIsVolumeSliderVisible] = useState(false);
-  const [subtitlesEnabled, setSubtitlesEnabled] = useState(false);
-  const [displayTime, setDisplayTime] = useState("0:00");
-  const [displayDuration, setDisplayDuration] = useState("0:00");
-  
-  const controlsTimeoutRef = useRef(null);
-
-  // Format time in MM:SS format
-  const formatTime = useCallback((timeInSeconds: number): string => {
-    if (isNaN(timeInSeconds) || !isFinite(timeInSeconds)) return "0:00";
-    
-    const minutes = Math.floor(timeInSeconds / 60);
-    const seconds = Math.floor(timeInSeconds % 60);
-    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-  }, []);
-
-  // Update formatted time display whenever currentTime or duration changes
-  useEffect(() => {
-    setDisplayTime(formatTime(currentTime));
-    setDisplayDuration(formatTime(duration));
-  }, [currentTime, duration, formatTime]);
-
-  const getVolumeIcon = useCallback(() => {
+  const getVolumeIcon = () => {
     if (isMuted || volume === 0) return <VolumeX className="h-4 w-4" />;
     if (volume < 0.3) return <Volume className="h-4 w-4" />;
     if (volume < 0.7) return <Volume1 className="h-4 w-4" />;
     return <Volume2 className="h-4 w-4" />;
-  }, [isMuted, volume]);
-
-  const handlePlayPause = () => {
-    onPlayPause();
   };
-
-  const handleVolumeChange = (newVolume: number) => {
-    onVolumeChange(newVolume);
-  };
-
-  const handleMuteToggle = () => {
-    onMuteToggle();
-  };
-
-  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newTime = parseFloat(e.target.value);
-    onSeek(newTime);
-  };
-
-  const handleSubtitlesToggle = () => {
-    setSubtitlesEnabled(!subtitlesEnabled);
-  };
-
-  const handleSkipForward = () => {
-    onSkipForward();
-  };
-
-  const handleSkipBackward = () => {
-    onSkipBackward();
-  };
-
-  const handleFullscreenToggle = () => {
-    onFullscreenToggle();
-  };
-
-  const progressPercentage = duration > 0 ? (currentTime / duration) * 100 : 0;
-  const bufferedPercentage = duration > 0 ? (bufferedTime / duration) * 100 : 0;
 
   return (
-    <div className="absolute inset-0 flex flex-col justify-end pointer-events-none">
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
-        <div className="flex items-center gap-12 pointer-events-auto">
-          <button
-            className="h-10 w-10 rounded-full bg-black/70 hover:bg-black/90 text-white flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500"
-            onClick={handleSkipBackward}
-            aria-label="Skip Backward"
-            tabIndex={0}
-          >
-            <SkipBack className="h-5 w-5" />
-          </button>
-          
-          <button
-            className="h-14 w-14 rounded-full bg-white/30 hover:bg-white/60 text-white flex items-center justify-center transition-colors shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-            onClick={handlePlayPause}
-            aria-label={isPlaying ? "Pause" : "Play"}
-            tabIndex={0}
-          >
-            {isPlaying ? (
-              <Pause className="h-7 w-7" />
-            ) : (
-              <Play className="h-7 w-7" />
-            )}
-          </button>
+    <div className={cn(
+      "absolute bottom-3 left-3 flex items-center gap-2 z-30",
+      className
+    )}>
+      <Button
+        variant="ghost"
+        size="icon"
+        className="h-8 w-8 rounded-full bg-black/60 backdrop-blur-sm hover:bg-black/80 text-white"
+        onClick={onPlayPause}
+      >
+        {isPlaying ? (
+          <Pause className="h-4 w-4" />
+        ) : (
+          <Play className="h-4 w-4" />
+        )}
+      </Button>
 
-          <button
-            className="h-10 w-10 rounded-full bg-black/70 hover:bg-black/90 text-white flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500"
-            onClick={handleSkipForward}
-            aria-label="Skip Forward"
-            tabIndex={0}
-          >
-            <SkipForward className="h-5 w-5" />
-          </button>
-        </div>
-      </div>
-      
-      <div className="w-full bg-gradient-to-t from-black/90 to-transparent p-4 pointer-events-auto relative z-30">
-        <div className="w-full mb-4 px-1">
-          <div className="relative h-1 bg-gray-600 rounded overflow-hidden group">
-            <div 
-              className="absolute top-0 left-0 h-full bg-gray-400 bg-opacity-50" 
-              style={{ width: `${bufferedPercentage}%` }}
-            />
-            <div 
-              className="absolute top-0 left-0 h-full bg-white" 
-              style={{ width: `${progressPercentage}%` }}
-            />
-            <input
-              type="range"
-              min={0}
-              max={duration || 100}
-              step={0.1}
-              value={currentTime}
-              onChange={handleSeek}
-              className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
-              aria-label="Seek"
-            />
-          </div>
-        </div>
-
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <button
-              className="h-10 w-10 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center"
-              onClick={handleMuteToggle}
-              aria-label={isMuted ? "Unmute" : "Mute"}
-              tabIndex={0}
-            >
-              {getVolumeIcon()}
-            </button>
-            <div className="text-xs text-white">
-              {displayTime} / {displayDuration}
-            </div>
-          </div>
-
-          <div className="flex items-center space-x-4">
-            <button
-              className="h-8 w-8 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center"
-              onClick={() => setIsSettingsOpen(x => !x)}
-              aria-label="Settings"
-              tabIndex={0}
-            >
-              <Settings className="h-5 w-5" />
-            </button>
-
-            <button
-              className="h-8 w-8 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center"
-              onClick={handleFullscreenToggle}
-              aria-label="Fullscreen"
-              tabIndex={0}
-            >
-              <Maximize className="h-5 w-5" />
-            </button>
-          </div>
-        </div>
-      </div>
+      {onVolumeChange && onMuteToggle && (
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 rounded-full bg-black/60 backdrop-blur-sm hover:bg-black/80 text-white"
+          onClick={onMuteToggle}
+        >
+          {getVolumeIcon()}
+        </Button>
+      )}
     </div>
   );
 };

@@ -55,7 +55,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import InfoBand from "@/components/product/InfoBand";
 import VideoControls from "@/components/product/VideoControls";
-import ImageGalleryControls from "@/components/product/ImageGalleryControls";
 
 interface ProductImageGalleryProps {
   images: string[];
@@ -253,7 +252,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     
     toast({
       title: "Image downloaded",
-      description: `Image ${index + 1} has been downloaded`,
+      description: `Image ${index + 1} has been downloaded",
       duration: 2000,
     });
   }, [images]);
@@ -405,18 +404,16 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                       >
                         Your browser does not support the video tag.
                       </video>
-                      <div className="absolute inset-0 pointer-events-none">
-                        <div className="pointer-events-auto h-full w-full flex items-end">
-                          <VideoControls
-                            isPlaying={isPlaying}
-                            isMuted={isMuted}
-                            volume={volume}
-                            onPlayPause={toggleVideo}
-                            onMuteToggle={handleMuteToggle}
-                            onVolumeChange={handleVolumeChange}
-                          />
-                        </div>
-                      </div>
+                      {currentIndex === 0 && (
+                        <VideoControls
+                          isPlaying={isPlaying}
+                          isMuted={isMuted}
+                          volume={volume}
+                          onPlayPause={toggleVideo}
+                          onMuteToggle={handleMuteToggle}
+                          onVolumeChange={handleVolumeChange}
+                        />
+                      )}
                     </div>
                   ) : (
                     <img
@@ -424,19 +421,18 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                       src={source}
                       alt={`Product image ${index + 1}`}
                       className="w-full h-full object-contain transition-transform"
-                      style={{
+                      style={{ 
                         transform: `
                           rotate(${isRotated}deg)
                           ${isFlipped ? 'scaleX(-1)' : ''}
                           scale(${zoomLevel})
                         `,
                         transition: "transform 0.2s ease-out",
-                        filter: imageFilter !== "none"
-                          ? imageFilter === "grayscale" ? "grayscale(1)"
-                            : imageFilter === "sepia" ? "sepia(0.7)"
-                              : imageFilter === "brightness" ? "brightness(1.2)"
-                                : imageFilter === "contrast" ? "contrast(1.2)"
-                                  : "none"
+                        filter: imageFilter !== "none" ? 
+                          imageFilter === "grayscale" ? "grayscale(1)" : 
+                          imageFilter === "sepia" ? "sepia(0.7)" : 
+                          imageFilter === "brightness" ? "brightness(1.2)" :
+                          imageFilter === "contrast" ? "contrast(1.2)" : "none"
                           : "none"
                       }}
                       draggable={false}
@@ -447,36 +443,77 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
               </CarouselItem>
             ))}
           </CarouselContent>
-
-          {currentIndex !== 0 && (
-            <ImageGalleryControls
-              currentIndex={currentIndex}
-              totalImages={images.length}
-              isRotated={isRotated}
-              isFlipped={isFlipped}
-              autoScrollEnabled={autoScrollEnabled}
-              focusMode={focusMode}
-              isPlaying={currentIndex === 0 && isPlaying}
-              showControls={!(focusMode || (currentIndex === 0 && isPlaying))}
-              onRotate={handleRotate}
-              onFlip={handleFlip}
-              onToggleAutoScroll={toggleAutoScroll}
-              onToggleFocusMode={toggleFocusMode}
-            />
-          )}
+          
+          <div className={cn(
+            "absolute bottom-3 right-3 flex items-center gap-2 z-30 transition-opacity duration-300",
+            (focusMode || (currentIndex === 0 && isPlaying)) && "opacity-0"
+          )}>
+            <Button
+              variant="ghost" 
+              size="icon"
+              className="h-8 w-8 rounded-full bg-black/60 backdrop-blur-sm hover:bg-black/80 text-white"
+              onClick={handleRotate}
+            >
+              <RotateCw className="h-4 w-4" />
+            </Button>
+            
+            <Button
+              variant="ghost" 
+              size="icon"
+              className="h-8 w-8 rounded-full bg-black/60 backdrop-blur-sm hover:bg-black/80 text-white"
+              onClick={handleFlip}
+            >
+              <FlipHorizontal className="h-4 w-4" />
+            </Button>
+            
+            <Button
+              variant="ghost" 
+              size="icon"
+              className={cn(
+                "h-8 w-8 rounded-full bg-black/60 backdrop-blur-sm hover:bg-black/80 text-white",
+                autoScrollEnabled && "bg-primary text-white"
+              )}
+              onClick={toggleAutoScroll}
+            >
+              {autoScrollEnabled ? 
+                <Pause className="h-4 w-4" /> : 
+                <Play className="h-4 w-4" />
+              }
+            </Button>
+            
+            <button
+              onClick={toggleFocusMode}
+              className={cn(
+                "h-8 w-8 flex items-center justify-center rounded-full bg-black/60 backdrop-blur-sm text-white hover:bg-black/80 transition-colors",
+                focusMode && "bg-primary text-white"
+              )}
+              aria-label={focusMode ? "Exit focus mode" : "Enter focus mode"}
+            >
+              <Focus size={16} />
+            </button>
+          </div>
+          
+          <div className={cn(
+            "absolute bottom-3 left-3 z-30 transition-opacity duration-300 flex items-center h-8",
+            (focusMode || (currentIndex === 0 && isPlaying)) && "opacity-0"
+          )}>
+            <div className="bg-black/60 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs font-medium">
+              {currentIndex + 1} / {images.length}
+            </div>
+          </div>
         </Carousel>
       </div>
-
+      
       <InfoBand />
-
+      
       <GalleryThumbnails
         images={images}
         currentIndex={currentIndex}
         onThumbnailClick={handleThumbnailClick}
         isPlaying={isPlaying}
       />
-
-      {isFullscreenMode && currentIndex !== 0 && (
+      
+      {isFullscreenMode && (
         <div 
           ref={fullscreenRef}
           className="fixed inset-0 bg-black z-50 flex items-center justify-center animate-fade-in"
@@ -488,97 +525,94 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
           >
             <ArrowUpToLine className="h-5 w-5" />
           </button>
+          
           <img 
             src={images[currentIndex]} 
             alt={`Product fullscreen image ${currentIndex + 1}`} 
             className="max-w-[90%] max-h-[90%] object-contain"
-            style={{
+            style={{ 
               transform: `
                 rotate(${isRotated}deg)
                 ${isFlipped ? 'scaleX(-1)' : ''}
                 scale(${zoomLevel})
               `,
-              filter: imageFilter !== "none"
-                ? imageFilter === "grayscale" ? "grayscale(1)"
-                  : imageFilter === "sepia" ? "sepia(0.7)"
-                    : imageFilter === "brightness" ? "brightness(1.2)"
-                      : imageFilter === "contrast" ? "contrast(1.2)"
-                        : "none"
+              filter: imageFilter !== "none" ? 
+                imageFilter === "grayscale" ? "grayscale(1)" : 
+                imageFilter === "sepia" ? "sepia(0.7)" : 
+                imageFilter === "brightness" ? "brightness(1.2)" :
+                imageFilter === "contrast" ? "contrast(1.2)" : "none"
                 : "none"
             }}
             onClick={(e) => e.stopPropagation()}
           />
-          <ImageGalleryControls
-            currentIndex={currentIndex}
-            totalImages={images.length}
-            isRotated={isRotated}
-            isFlipped={isFlipped}
-            autoScrollEnabled={autoScrollEnabled}
-            focusMode={focusMode}
-            variant="fullscreen"
-            onRotate={(e) => {
-              if (e) e.stopPropagation();
-              handleRotate();
-            }}
-            onFlip={(e) => {
-              if (e) e.stopPropagation();
-              handleFlip();
-            }}
-            onToggleAutoScroll={toggleAutoScroll}
-            onToggleFocusMode={toggleFocusMode}
-            onPrevious={(e) => {
-              if (e) e.stopPropagation();
-              handlePrevious();
-            }}
-            onNext={(e) => {
-              if (e) e.stopPropagation();
-              handleNext();
-            }}
-            onDownload={(e) => {
-              if (e) e.stopPropagation();
-              downloadImage(currentIndex);
-            }}
-          />
-        </div>
-      )}
-
-      {isFullscreenMode && currentIndex === 0 && (
-        <div 
-          ref={fullscreenRef}
-          className="fixed inset-0 bg-black z-50 flex items-center justify-center animate-fade-in"
-          onClick={toggleFullscreen}
-        >
-          <button 
-            className="absolute top-4 right-4 text-white bg-black/50 p-2 rounded-full hover:bg-black/70 transition-colors"
-            onClick={toggleFullscreen}
-          >
-            <ArrowUpToLine className="h-5 w-5" />
-          </button>
-          <div className="relative w-full h-full flex items-center justify-center">
-            <video
-              ref={videoRef}
-              src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-              className="max-w-[90%] max-h-[90%] object-contain"
-              onClick={toggleVideo}
-              playsInline
-              loop
-              muted={isMuted}
-              autoPlay
-              style={{ background: "black" }}
-            >
-              Your browser does not support the video tag.
-            </video>
-            <div className="absolute inset-0 pointer-events-none">
-              <div className="pointer-events-auto h-full w-full flex items-end">
-                <VideoControls
-                  isPlaying={isPlaying}
-                  isMuted={isMuted}
-                  volume={volume}
-                  onPlayPause={toggleVideo}
-                  onMuteToggle={handleMuteToggle}
-                  onVolumeChange={handleVolumeChange}
-                />
+          
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4">
+            <div className="flex items-center gap-2">
+              <Button 
+                variant="outline" 
+                size="icon" 
+                className="rounded-full bg-black/40 backdrop-blur-sm hover:bg-black/60 border-white/10"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePrevious();
+                }}
+              >
+                <ChevronLeft className="h-5 w-5 text-white" />
+              </Button>
+              
+              <div className="bg-black/40 backdrop-blur-sm text-white px-3 py-1.5 rounded-lg">
+                {currentIndex + 1} / {images.length}
               </div>
+              
+              <Button 
+                variant="outline" 
+                size="icon" 
+                className="rounded-full bg-black/40 backdrop-blur-sm hover:bg-black/60 border-white/10"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleNext();
+                }}
+              >
+                <ChevronRight className="h-5 w-5 text-white" />
+              </Button>
+            </div>
+            
+            <div className="flex items-center gap-2 bg-black/40 backdrop-blur-sm rounded-full p-1.5">
+              <Button
+                variant="ghost" 
+                size="icon"
+                className="h-8 w-8 rounded-full hover:bg-white/10"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleRotate();
+                }}
+              >
+                <RotateCw className="h-4 w-4 text-white" />
+              </Button>
+              
+              <Button
+                variant="ghost" 
+                size="icon"
+                className="h-8 w-8 rounded-full hover:bg-white/10"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleFlip();
+                }}
+              >
+                <FlipHorizontal className="h-4 w-4 text-white" />
+              </Button>
+              
+              <Button
+                variant="ghost" 
+                size="icon"
+                className="h-8 w-8 rounded-full hover:bg-white/10"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  downloadImage(currentIndex);
+                }}
+              >
+                <Download className="h-4 w-4 text-white" />
+              </Button>
             </div>
           </div>
         </div>
