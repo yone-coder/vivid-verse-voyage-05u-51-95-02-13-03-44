@@ -405,16 +405,18 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                       >
                         Your browser does not support the video tag.
                       </video>
-                      {currentIndex === 0 && (
-                        <VideoControls
-                          isPlaying={isPlaying}
-                          isMuted={isMuted}
-                          volume={volume}
-                          onPlayPause={toggleVideo}
-                          onMuteToggle={handleMuteToggle}
-                          onVolumeChange={handleVolumeChange}
-                        />
-                      )}
+                      <div className="absolute inset-0 pointer-events-none">
+                        <div className="pointer-events-auto h-full w-full flex items-end">
+                          <VideoControls
+                            isPlaying={isPlaying}
+                            isMuted={isMuted}
+                            volume={volume}
+                            onPlayPause={toggleVideo}
+                            onMuteToggle={handleMuteToggle}
+                            onVolumeChange={handleVolumeChange}
+                          />
+                        </div>
+                      </div>
                     </div>
                   ) : (
                     <img
@@ -422,18 +424,19 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                       src={source}
                       alt={`Product image ${index + 1}`}
                       className="w-full h-full object-contain transition-transform"
-                      style={{ 
+                      style={{
                         transform: `
                           rotate(${isRotated}deg)
                           ${isFlipped ? 'scaleX(-1)' : ''}
                           scale(${zoomLevel})
                         `,
                         transition: "transform 0.2s ease-out",
-                        filter: imageFilter !== "none" ? 
-                          imageFilter === "grayscale" ? "grayscale(1)" : 
-                          imageFilter === "sepia" ? "sepia(0.7)" : 
-                          imageFilter === "brightness" ? "brightness(1.2)" :
-                          imageFilter === "contrast" ? "contrast(1.2)" : "none"
+                        filter: imageFilter !== "none"
+                          ? imageFilter === "grayscale" ? "grayscale(1)"
+                            : imageFilter === "sepia" ? "sepia(0.7)"
+                              : imageFilter === "brightness" ? "brightness(1.2)"
+                                : imageFilter === "contrast" ? "contrast(1.2)"
+                                  : "none"
                           : "none"
                       }}
                       draggable={false}
@@ -444,34 +447,36 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
               </CarouselItem>
             ))}
           </CarouselContent>
-          
-          <ImageGalleryControls
-            currentIndex={currentIndex}
-            totalImages={images.length}
-            isRotated={isRotated}
-            isFlipped={isFlipped}
-            autoScrollEnabled={autoScrollEnabled}
-            focusMode={focusMode}
-            isPlaying={currentIndex === 0 && isPlaying}
-            showControls={!(focusMode || (currentIndex === 0 && isPlaying))}
-            onRotate={handleRotate}
-            onFlip={handleFlip}
-            onToggleAutoScroll={toggleAutoScroll}
-            onToggleFocusMode={toggleFocusMode}
-          />
+
+          {currentIndex !== 0 && (
+            <ImageGalleryControls
+              currentIndex={currentIndex}
+              totalImages={images.length}
+              isRotated={isRotated}
+              isFlipped={isFlipped}
+              autoScrollEnabled={autoScrollEnabled}
+              focusMode={focusMode}
+              isPlaying={currentIndex === 0 && isPlaying}
+              showControls={!(focusMode || (currentIndex === 0 && isPlaying))}
+              onRotate={handleRotate}
+              onFlip={handleFlip}
+              onToggleAutoScroll={toggleAutoScroll}
+              onToggleFocusMode={toggleFocusMode}
+            />
+          )}
         </Carousel>
       </div>
-      
+
       <InfoBand />
-      
+
       <GalleryThumbnails
         images={images}
         currentIndex={currentIndex}
         onThumbnailClick={handleThumbnailClick}
         isPlaying={isPlaying}
       />
-      
-      {isFullscreenMode && (
+
+      {isFullscreenMode && currentIndex !== 0 && (
         <div 
           ref={fullscreenRef}
           className="fixed inset-0 bg-black z-50 flex items-center justify-center animate-fade-in"
@@ -483,27 +488,26 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
           >
             <ArrowUpToLine className="h-5 w-5" />
           </button>
-          
           <img 
             src={images[currentIndex]} 
             alt={`Product fullscreen image ${currentIndex + 1}`} 
             className="max-w-[90%] max-h-[90%] object-contain"
-            style={{ 
+            style={{
               transform: `
                 rotate(${isRotated}deg)
                 ${isFlipped ? 'scaleX(-1)' : ''}
                 scale(${zoomLevel})
               `,
-              filter: imageFilter !== "none" ? 
-                imageFilter === "grayscale" ? "grayscale(1)" : 
-                imageFilter === "sepia" ? "sepia(0.7)" : 
-                imageFilter === "brightness" ? "brightness(1.2)" :
-                imageFilter === "contrast" ? "contrast(1.2)" : "none"
+              filter: imageFilter !== "none"
+                ? imageFilter === "grayscale" ? "grayscale(1)"
+                  : imageFilter === "sepia" ? "sepia(0.7)"
+                    : imageFilter === "brightness" ? "brightness(1.2)"
+                      : imageFilter === "contrast" ? "contrast(1.2)"
+                        : "none"
                 : "none"
             }}
             onClick={(e) => e.stopPropagation()}
           />
-          
           <ImageGalleryControls
             currentIndex={currentIndex}
             totalImages={images.length}
@@ -535,6 +539,48 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
               downloadImage(currentIndex);
             }}
           />
+        </div>
+      )}
+
+      {isFullscreenMode && currentIndex === 0 && (
+        <div 
+          ref={fullscreenRef}
+          className="fixed inset-0 bg-black z-50 flex items-center justify-center animate-fade-in"
+          onClick={toggleFullscreen}
+        >
+          <button 
+            className="absolute top-4 right-4 text-white bg-black/50 p-2 rounded-full hover:bg-black/70 transition-colors"
+            onClick={toggleFullscreen}
+          >
+            <ArrowUpToLine className="h-5 w-5" />
+          </button>
+          <div className="relative w-full h-full flex items-center justify-center">
+            <video
+              ref={videoRef}
+              src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+              className="max-w-[90%] max-h-[90%] object-contain"
+              onClick={toggleVideo}
+              playsInline
+              loop
+              muted={isMuted}
+              autoPlay
+              style={{ background: "black" }}
+            >
+              Your browser does not support the video tag.
+            </video>
+            <div className="absolute inset-0 pointer-events-none">
+              <div className="pointer-events-auto h-full w-full flex items-end">
+                <VideoControls
+                  isPlaying={isPlaying}
+                  isMuted={isMuted}
+                  volume={volume}
+                  onPlayPause={toggleVideo}
+                  onMuteToggle={handleMuteToggle}
+                  onVolumeChange={handleVolumeChange}
+                />
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>
