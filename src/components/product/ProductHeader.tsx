@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { ShoppingCart, Eye, Heart, Share, ChevronLeft, Search } from "lucide-react";
 
@@ -125,34 +124,19 @@ const ProductHeader = () => {
     );
   };
 
-  // Shared style calculations for all buttons
-  const getButtonContainerStyle = () => ({
-    backgroundColor: `rgba(0, 0, 0, ${0.1 + (progress * 0.85)})`,
-    backdropFilter: `blur(${4 + (progress * 4)}px)`
-  });
-
-  const getButtonStyle = () => ({
-    backgroundColor: `rgba(0, 0, 0, ${0.1 * (1 - progress)})`,
-    backdropFilter: `blur(${4 + (progress * 4)}px)`
-  });
-
-  const getIconStyle = (isActive = false) => ({
-    color: isActive 
-      ? '#f97316' 
-      : progress > 0.5 
-        ? `rgba(75, 85, 99, ${0.7 + (progress * 0.3)})` 
-        : `rgba(255, 255, 255, ${0.9 - (progress * 0.3)})`
-  });
-
   // Back button
   const BackButton = () => (
     <div className="rounded-full transition-all duration-700 overflow-hidden"
-      style={getButtonContainerStyle()}>
+      style={{backgroundColor: `rgba(0, 0, 0, ${0.1 * (1 - progress)})`}}>
       <button className="h-7 w-7 rounded-full flex items-center justify-center transition-all duration-700"
-        style={getButtonStyle()}>
+        style={{
+          backgroundColor: progress > 0.5 ? `rgba(0, 0, 0, ${(progress - 0.5) * 0.4})` : 'transparent'
+        }}>
         <ChevronLeft 
           className="transition-all duration-700"
-          style={getIconStyle()}
+          style={{
+            color: progress > 0.5 ? `rgba(75, 85, 99, ${0.7 + (progress * 0.3)})` : `rgba(255, 255, 255, ${0.9 - (progress * 0.2)})`
+          }}
           strokeWidth={2} 
           size={18} 
         />
@@ -175,11 +159,13 @@ const ProductHeader = () => {
         
         <div className="flex gap-2">
           <div className="rounded-full transition-all duration-700"
-            style={getButtonContainerStyle()}>
+            style={{backgroundColor: `rgba(0, 0, 0, ${0.1 * (1 - progress)})`}}>
             <button 
               onClick={() => setIsFavorite(!isFavorite)}
               className="h-7 w-7 rounded-full flex items-center justify-center transition-all duration-700"
-              style={getButtonStyle()}
+              style={{
+                backgroundColor: progress > 0.5 && !isFavorite ? `rgba(0, 0, 0, ${(progress - 0.5) * 0.4})` : 'transparent'
+              }}
             >
               <Heart 
                 className="transition-all duration-700"
@@ -194,14 +180,18 @@ const ProductHeader = () => {
           </div>
           
           <div className="rounded-full transition-all duration-700"
-            style={getButtonContainerStyle()}>
+            style={{backgroundColor: `rgba(0, 0, 0, ${0.1 * (1 - progress)})`}}>
             <button 
               className="h-7 w-7 rounded-full flex items-center justify-center transition-all duration-700"
-              style={getButtonStyle()}
+              style={{
+                backgroundColor: progress > 0.5 ? `rgba(0, 0, 0, ${(progress - 0.5) * 0.4})` : 'transparent'
+              }}
             >
               <Share 
                 className="transition-all duration-700"
-                style={getIconStyle()}
+                style={{
+                  color: progress > 0.5 ? `rgba(75, 85, 99, ${0.7 + (progress * 0.3)})` : `rgba(255, 255, 255, ${0.9 - (progress * 0.3)})`
+                }}
                 strokeWidth={1.5} 
                 size={18} 
               />
