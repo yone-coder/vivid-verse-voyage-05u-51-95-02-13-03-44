@@ -151,6 +151,7 @@ const VideoControls = ({
               step={0.1}
               value={currentTime}
               onChange={handleSeek}
+              onInput={handleSeek}
               className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
               aria-label="Seek"
             />
