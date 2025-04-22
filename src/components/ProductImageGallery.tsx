@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   Carousel,
@@ -23,18 +22,40 @@ import {
   Focus,
   Download,
   ArrowUpToLine,
-  Video,
-  Volume2,
-  VolumeX
+  Video
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useNavigate } from "react-router-dom";
 import GalleryThumbnails from "@/components/product/GalleryThumbnails";
+import { 
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  HoverCard,
+  HoverCardTrigger,
+  HoverCardContent,
+} from "@/components/ui/hover-card";
+import { supabase } from "@/integrations/supabase/client";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "@/hooks/use-toast";
 import InfoBand from "@/components/product/InfoBand";
 import VideoControls from "@/components/product/VideoControls";
-import { toast } from "@/hooks/use-toast";
+import ImageGalleryControls from "@/components/product/ImageGalleryControls";
 
 interface ProductImageGalleryProps {
   images: string[];
@@ -58,6 +79,9 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const [isFullscreenMode, setIsFullscreenMode] = useState(false);
   const [hoveredThumbnail, setHoveredThumbnail] = useState<number | null>(null);
   const [focusMode, setFocusMode] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const [volume, setVolume] = useState(1);
+
   const [zoomLevel, setZoomLevel] = useState(1);
   const [showCompareMode, setShowCompareMode] = useState(false);
   const [compareIndex, setCompareIndex] = useState(0);
@@ -67,8 +91,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const [showOtherColors, setShowOtherColors] = useState<boolean>(false);
   const [showAllControls, setShowAllControls] = useState<boolean>(false);
   const [viewMode, setViewMode] = useState<"default" | "immersive">("default");
-  const [isMuted, setIsMuted] = useState(true);
-  const [volume, setVolume] = useState(1);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
@@ -290,6 +312,22 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     }
   }, [focusMode, toggleFullscreen]);
 
+  const handleMuteToggle = () => {
+    if (videoRef.current) {
+      const newMutedState = !isMuted;
+      videoRef.current.muted = newMutedState;
+      setIsMuted(newMutedState);
+    }
+  };
+
+  const handleVolumeChange = (newVolume: number) => {
+    if (videoRef.current) {
+      videoRef.current.volume = newVolume;
+      setVolume(newVolume);
+      setIsMuted(newVolume === 0);
+    }
+  };
+
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isFullscreenMode) {
@@ -328,26 +366,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     setAutoScrollEnabled(prev => !prev);
   }, [autoScrollEnabled]);
 
-  const toggleMute = useCallback(() => {
-    if (videoRef.current) {
-      videoRef.current.muted = !videoRef.current.muted;
-      setIsMuted(!isMuted);
-      
-      toast({
-        title: videoRef.current.muted ? "Video muted" : "Video unmuted",
-        duration: 2000,
-      });
-    }
-  }, [isMuted]);
-
-  const handleVolumeChange = (newVolume: number) => {
-    if (videoRef.current) {
-      videoRef.current.volume = newVolume;
-      setVolume(newVolume);
-      setIsMuted(newVolume === 0);
-    }
-  };
-
   const toggleVideo = () => {
     if (videoRef.current) {
       if (isPlaying) {
@@ -360,7 +378,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   };
 
   return (
-    <div className="flex flex-col gap-0 bg-transparent mb-0">
+    <div ref={containerRef} className="flex flex-col gap-1 bg-transparent mb-0">
       <div className="relative w-full aspect-square overflow-hidden">
         <Carousel
           className="w-full h-full"
@@ -387,23 +405,16 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                       >
                         Your browser does not support the video tag.
                       </video>
-                      <div 
-                        className={cn(
-                          "absolute inset-0 flex items-center justify-center transition-opacity duration-500",
-                          isPlaying ? "opacity-0" : "opacity-100"
-                        )}
-                      >
-                        <div className="bg-black/60 backdrop-blur-sm text-white p-4 rounded-full">
-                          <Play className="h-8 w-8" />
-                        </div>
-                      </div>
-                      <VideoControls
-                        videoRef={videoRef}
-                        isPlaying={isPlaying}
-                        isMuted={isMuted}
-                        onPlayPause={toggleVideo}
-                        onMuteToggle={toggleMute}
-                      />
+                      {currentIndex === 0 && (
+                        <VideoControls
+                          isPlaying={isPlaying}
+                          isMuted={isMuted}
+                          volume={volume}
+                          onPlayPause={toggleVideo}
+                          onMuteToggle={handleMuteToggle}
+                          onVolumeChange={handleVolumeChange}
+                        />
+                      )}
                     </div>
                   ) : (
                     <img
@@ -433,19 +444,32 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
               </CarouselItem>
             ))}
           </CarouselContent>
+          
+          <ImageGalleryControls
+            currentIndex={currentIndex}
+            totalImages={images.length}
+            isRotated={isRotated}
+            isFlipped={isFlipped}
+            autoScrollEnabled={autoScrollEnabled}
+            focusMode={focusMode}
+            isPlaying={currentIndex === 0 && isPlaying}
+            showControls={!(focusMode || (currentIndex === 0 && isPlaying))}
+            onRotate={handleRotate}
+            onFlip={handleFlip}
+            onToggleAutoScroll={toggleAutoScroll}
+            onToggleFocusMode={toggleFocusMode}
+          />
         </Carousel>
       </div>
       
       <InfoBand />
       
-      <div className="mt-1">
-        <GalleryThumbnails
-          images={images}
-          currentIndex={currentIndex}
-          onThumbnailClick={handleThumbnailClick}
-          isPlaying={isPlaying}
-        />
-      </div>
+      <GalleryThumbnails
+        images={images}
+        currentIndex={currentIndex}
+        onThumbnailClick={handleThumbnailClick}
+        isPlaying={isPlaying}
+      />
       
       {isFullscreenMode && (
         <div 
@@ -480,75 +504,37 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             onClick={(e) => e.stopPropagation()}
           />
           
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4">
-            <div className="flex items-center gap-2">
-              <Button 
-                variant="outline" 
-                size="icon" 
-                className="rounded-full bg-black/40 backdrop-blur-sm hover:bg-black/60 border-white/10"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handlePrevious();
-                }}
-              >
-                <ChevronLeft className="h-5 w-5 text-white" />
-              </Button>
-              
-              <div className="bg-black/40 backdrop-blur-sm text-white px-3 py-1.5 rounded-lg">
-                {currentIndex + 1} / {images.length}
-              </div>
-              
-              <Button 
-                variant="outline" 
-                size="icon" 
-                className="rounded-full bg-black/40 backdrop-blur-sm hover:bg-black/60 border-white/10"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleNext();
-                }}
-              >
-                <ChevronRight className="h-5 w-5 text-white" />
-              </Button>
-            </div>
-            
-            <div className="flex items-center gap-2 bg-black/40 backdrop-blur-sm rounded-full p-1.5">
-              <Button
-                variant="ghost" 
-                size="icon"
-                className="h-8 w-8 rounded-full hover:bg-white/10"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleRotate();
-                }}
-              >
-                <RotateCw className="h-4 w-4 text-white" />
-              </Button>
-              
-              <Button
-                variant="ghost" 
-                size="icon"
-                className="h-8 w-8 rounded-full hover:bg-white/10"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleFlip();
-                }}
-              >
-                <FlipHorizontal className="h-4 w-4 text-white" />
-              </Button>
-              
-              <Button
-                variant="ghost" 
-                size="icon"
-                className="h-8 w-8 rounded-full hover:bg-white/10"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  downloadImage(currentIndex);
-                }}
-              >
-                <Download className="h-4 w-4 text-white" />
-              </Button>
-            </div>
-          </div>
+          <ImageGalleryControls
+            currentIndex={currentIndex}
+            totalImages={images.length}
+            isRotated={isRotated}
+            isFlipped={isFlipped}
+            autoScrollEnabled={autoScrollEnabled}
+            focusMode={focusMode}
+            variant="fullscreen"
+            onRotate={(e) => {
+              if (e) e.stopPropagation();
+              handleRotate();
+            }}
+            onFlip={(e) => {
+              if (e) e.stopPropagation();
+              handleFlip();
+            }}
+            onToggleAutoScroll={toggleAutoScroll}
+            onToggleFocusMode={toggleFocusMode}
+            onPrevious={(e) => {
+              if (e) e.stopPropagation();
+              handlePrevious();
+            }}
+            onNext={(e) => {
+              if (e) e.stopPropagation();
+              handleNext();
+            }}
+            onDownload={(e) => {
+              if (e) e.stopPropagation();
+              downloadImage(currentIndex);
+            }}
+          />
         </div>
       )}
     </div>
