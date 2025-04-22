@@ -54,6 +54,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import InfoBand from "@/components/product/InfoBand";
+import VideoControls from "@/components/product/VideoControls";
 
 interface ProductImageGalleryProps {
   images: string[];
@@ -77,6 +78,8 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const [isFullscreenMode, setIsFullscreenMode] = useState(false);
   const [hoveredThumbnail, setHoveredThumbnail] = useState<number | null>(null);
   const [focusMode, setFocusMode] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const [volume, setVolume] = useState(1);
 
   const [zoomLevel, setZoomLevel] = useState(1);
   const [showCompareMode, setShowCompareMode] = useState(false);
@@ -249,7 +252,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     
     toast({
       title: "Image downloaded",
-      description: `Image ${index + 1} has been downloaded`,
+      description: `Image ${index + 1} has been downloaded",
       duration: 2000,
     });
   }, [images]);
@@ -307,6 +310,22 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
       toggleFullscreen();
     }
   }, [focusMode, toggleFullscreen]);
+
+  const handleMuteToggle = () => {
+    if (videoRef.current) {
+      const newMutedState = !isMuted;
+      videoRef.current.muted = newMutedState;
+      setIsMuted(newMutedState);
+    }
+  };
+
+  const handleVolumeChange = (newVolume: number) => {
+    if (videoRef.current) {
+      videoRef.current.volume = newVolume;
+      setVolume(newVolume);
+      setIsMuted(newVolume === 0);
+    }
+  };
 
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
@@ -380,21 +399,21 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                         onClick={toggleVideo}
                         playsInline
                         loop
-                        muted
+                        muted={isMuted}
                         autoPlay
                       >
                         Your browser does not support the video tag.
                       </video>
-                      <div 
-                        className={cn(
-                          "absolute inset-0 flex items-center justify-center transition-opacity duration-500",
-                          isPlaying ? "opacity-0" : "opacity-100"
-                        )}
-                      >
-                        <div className="bg-black/60 backdrop-blur-sm text-white p-4 rounded-full">
-                          <Play className="h-8 w-8" />
-                        </div>
-                      </div>
+                      {currentIndex === 0 && (
+                        <VideoControls
+                          isPlaying={isPlaying}
+                          isMuted={isMuted}
+                          volume={volume}
+                          onPlayPause={toggleVideo}
+                          onMuteToggle={handleMuteToggle}
+                          onVolumeChange={handleVolumeChange}
+                        />
+                      )}
                     </div>
                   ) : (
                     <img
