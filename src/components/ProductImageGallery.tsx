@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { 
   Carousel,
@@ -8,6 +9,11 @@ import {
 import VideoControls from "@/components/product/VideoControls";
 import GalleryThumbnails from "@/components/product/GalleryThumbnails";
 import ImageGalleryControls from "@/components/product/ImageGalleryControls";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { useNavigate } from "react-router-dom";
+import { toast } from "@/hooks/use-toast";
+import { ArrowUpToLine } from "lucide-react";
+import InfoBand from "@/components/product/InfoBand";
 
 interface ProductImageGalleryProps {
   images: string[];
