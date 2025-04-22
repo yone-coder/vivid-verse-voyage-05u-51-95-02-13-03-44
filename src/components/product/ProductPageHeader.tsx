@@ -104,7 +104,7 @@ const ProductPageHeader: React.FC<ProductPageHeaderProps> = ({
             <Button 
               variant="ghost" 
               size="sm" 
-              className="text-gray-700 hover:bg-gray-100 h-6 w-6 sm:h-7 sm:w-7 rounded-full p-0"
+              className="text-gray-700 hover:bg-black/10 h-6 w-6 sm:h-7 sm:w-7 rounded-full p-0"
             >
               <ArrowLeft className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
             </Button>
@@ -141,7 +141,7 @@ const ProductPageHeader: React.FC<ProductPageHeaderProps> = ({
                         type="button"
                         variant="ghost"
                         size="sm"
-                        className="absolute right-1 sm:right-1.5 top-1/2 transform -translate-y-1/2 h-4 sm:h-5 w-4 sm:w-5 p-0 rounded-full"
+                        className="absolute right-1 sm:right-1.5 top-1/2 transform -translate-y-1/2 h-4 sm:h-5 w-4 sm:w-5 p-0 rounded-full hover:bg-black/10"
                         onClick={clearSearch}
                       >
                         <X className="h-2.5 w-2.5 sm:h-3 sm:w-3 text-gray-500" />
@@ -182,7 +182,7 @@ const ProductPageHeader: React.FC<ProductPageHeaderProps> = ({
             <Button 
               variant="ghost"
               size="sm" 
-              className="text-gray-700 hover:bg-gray-100 h-6 w-6 sm:h-7 sm:w-7 rounded-full p-0"
+              className="text-gray-700 hover:bg-black/10 h-6 w-6 sm:h-7 sm:w-7 rounded-full p-0"
               onClick={activateSearch}
             >
               <Search className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
@@ -191,7 +191,7 @@ const ProductPageHeader: React.FC<ProductPageHeaderProps> = ({
             <Button 
               variant="ghost"
               size="sm" 
-              className="text-gray-700 hover:bg-gray-100 h-6 w-6 sm:h-7 sm:w-7 rounded-full p-0"
+              className="text-gray-700 hover:bg-black/10 h-6 w-6 sm:h-7 sm:w-7 rounded-full p-0"
               onClick={toggleFavorite}
             >
               <Heart className={`h-3 w-3 sm:h-3.5 sm:w-3.5 ${isFavorite ? "fill-red-500 text-red-500" : ""}`} />
@@ -200,7 +200,7 @@ const ProductPageHeader: React.FC<ProductPageHeaderProps> = ({
             <Button 
               variant="ghost"
               size="sm" 
-              className="text-gray-700 hover:bg-gray-100 h-6 w-6 sm:h-7 sm:w-7 rounded-full p-0"
+              className="text-gray-700 hover:bg-black/10 h-6 w-6 sm:h-7 sm:w-7 rounded-full p-0"
               onClick={handleShare}
             >
               <Share className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
@@ -209,7 +209,7 @@ const ProductPageHeader: React.FC<ProductPageHeaderProps> = ({
             <Button 
               variant="ghost"
               size="sm" 
-              className="text-gray-700 hover:bg-gray-100 h-6 w-6 sm:h-7 sm:w-7 rounded-full p-0"
+              className="text-gray-700 hover:bg-black/10 h-6 w-6 sm:h-7 sm:w-7 rounded-full p-0"
               onClick={handleCartClick}
             >
               <ShoppingCart className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
@@ -219,7 +219,7 @@ const ProductPageHeader: React.FC<ProductPageHeaderProps> = ({
           <Button 
             variant="ghost"
             size="sm" 
-            className="text-gray-700 hover:bg-gray-100 h-6 w-6 sm:h-7 sm:w-7 rounded-full p-0"
+            className="text-gray-700 hover:bg-black/10 h-6 w-6 sm:h-7 sm:w-7 rounded-full p-0"
             onClick={deactivateSearch}
           >
             <X className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
