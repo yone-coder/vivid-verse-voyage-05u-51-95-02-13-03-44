@@ -93,10 +93,15 @@ const ProductVideoPlayer: React.FC<ProductVideoPlayerProps> = ({ src, poster, cl
     video.addEventListener("progress", onProgress);
     video.addEventListener("seeked", onSeeked);
     video.addEventListener("ended", onEnded);
+    video.addEventListener("timeupdate", () => {
+      // This provides a backup update method in addition to the animation frame
+      setCurrentTime(video.currentTime);
+    });
 
-    // Also set initial duration if already loaded
+    // Also set initial duration and current time if already loaded
     if (video.readyState >= 1) {
       setDuration(video.duration || 0);
+      setCurrentTime(video.currentTime);
     }
 
     // Clean up
@@ -108,6 +113,7 @@ const ProductVideoPlayer: React.FC<ProductVideoPlayerProps> = ({ src, poster, cl
       video.removeEventListener("progress", onProgress);
       video.removeEventListener("seeked", onSeeked);
       video.removeEventListener("ended", onEnded);
+      video.removeEventListener("timeupdate", () => {});
     };
   }, []);
 
