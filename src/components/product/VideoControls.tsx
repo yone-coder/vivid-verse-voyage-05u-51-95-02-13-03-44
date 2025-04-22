@@ -1,8 +1,7 @@
-
 import React, { useState, useCallback, useRef } from 'react';
 import { 
   Play, 
-  Pause,
+  Pause, 
   Volume,
   Volume1,
   Volume2,
@@ -34,7 +33,6 @@ const VideoControls = ({
   currentTime = 45,
   duration = 180
 }: VideoControlsProps) => {
-  // State variables to track UI state
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isVolumeSliderVisible, setIsVolumeSliderVisible] = useState(false);
   const [subtitlesEnabled, setSubtitlesEnabled] = useState(false);
@@ -42,14 +40,12 @@ const VideoControls = ({
   
   const controlsTimeoutRef = useRef(null);
 
-  // Helper function to format time as minutes:seconds
   const formatTime = useCallback((seconds) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = Math.floor(seconds % 60);
     return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
   }, []);
 
-  // Helper function to determine which volume icon to display
   const getVolumeIcon = useCallback(() => {
     if (isMuted || volume === 0) return <VolumeX className="h-4 w-4" />;
     if (volume < 0.3) return <Volume className="h-4 w-4" />;
@@ -57,7 +53,6 @@ const VideoControls = ({
     return <Volume2 className="h-4 w-4" />;
   }, [isMuted, volume]);
 
-  // Event handlers
   const handlePlayPause = () => {
     onPlayPause();
   };
@@ -71,7 +66,6 @@ const VideoControls = ({
   };
 
   const handleSeek = (time) => {
-    // External seek handler can be added here if needed
   };
 
   const handleSubtitlesToggle = () => {
@@ -79,11 +73,9 @@ const VideoControls = ({
   };
 
   const handleSkipForward = () => {
-    // External skip handler can be added here if needed
   };
 
   const handleSkipBackward = () => {
-    // External skip backward handler can be added here if needed
   };
 
   const handleFullscreenToggle = () => {
@@ -92,53 +84,48 @@ const VideoControls = ({
 
   return (
     <div className="absolute inset-0 flex flex-col justify-end pointer-events-none">
-      {/* Centered Play/Skip Group (pointer-events-auto for buttons) */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
-        <div className="flex items-center gap-8 pointer-events-auto">
+        <div className="flex items-center gap-4 pointer-events-auto">
           <button
-            className="h-20 w-20 rounded-full bg-black/70 hover:bg-black/90 text-white flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="h-12 w-12 rounded-full bg-black/70 hover:bg-black/90 text-white flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500"
             onClick={handleSkipBackward}
             aria-label="Skip Backward"
             tabIndex={0}
           >
-            <SkipBack className="h-10 w-10" />
+            <SkipBack className="h-6 w-6" />
           </button>
           
           <button
-            className="h-24 w-24 rounded-full bg-white/30 hover:bg-white/60 text-white flex items-center justify-center transition-colors shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="h-16 w-16 rounded-full bg-white/30 hover:bg-white/60 text-white flex items-center justify-center transition-colors shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
             onClick={handlePlayPause}
             aria-label={isPlaying ? "Pause" : "Play"}
             tabIndex={0}
           >
             {isPlaying ? (
-              <Pause className="h-14 w-14" />
+              <Pause className="h-8 w-8" />
             ) : (
-              <Play className="h-14 w-14" />
+              <Play className="h-8 w-8" />
             )}
           </button>
 
           <button
-            className="h-20 w-20 rounded-full bg-black/70 hover:bg-black/90 text-white flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="h-12 w-12 rounded-full bg-black/70 hover:bg-black/90 text-white flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500"
             onClick={handleSkipForward}
             aria-label="Skip Forward"
             tabIndex={0}
           >
-            <SkipForward className="h-10 w-10" />
+            <SkipForward className="h-6 w-6" />
           </button>
         </div>
       </div>
       
-      {/* Bottom Controls Bar */}
       <div className="w-full bg-gradient-to-t from-black/90 to-transparent p-4 pointer-events-auto relative z-30">
-        {/* Progress bar */}
         <div className="w-full mb-4 px-1">
           <div className="relative h-1 bg-gray-600 rounded overflow-hidden group">
-            {/* Buffered progress */}
             <div 
               className="absolute top-0 left-0 h-full bg-gray-400 bg-opacity-50" 
               style={{ width: `${(bufferedTime / duration) * 100}%` }}
             />
-            {/* Playback progress */}
             <div 
               className="absolute top-0 left-0 h-full bg-white" 
               style={{ width: `${(currentTime / duration) * 100}%` }}
@@ -156,7 +143,6 @@ const VideoControls = ({
         </div>
 
         <div className="flex items-center justify-between">
-          {/* Left controls */}
           <div className="flex items-center space-x-4">
             <button
               className="h-10 w-10 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center"
@@ -166,15 +152,12 @@ const VideoControls = ({
             >
               {getVolumeIcon()}
             </button>
-            {/* Time display */}
             <div className="text-xs text-white">
               {formatTime(currentTime)} / {formatTime(duration)}
             </div>
           </div>
 
-          {/* Right controls */}
           <div className="flex items-center space-x-4">
-            {/* Settings */}
             <button
               className="h-8 w-8 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center"
               onClick={() => setIsSettingsOpen(x => !x)}
@@ -184,7 +167,6 @@ const VideoControls = ({
               <Settings className="h-5 w-5" />
             </button>
 
-            {/* Fullscreen */}
             <button
               className="h-8 w-8 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center"
               onClick={handleFullscreenToggle}
@@ -201,4 +183,3 @@ const VideoControls = ({
 };
 
 export default VideoControls;
-
