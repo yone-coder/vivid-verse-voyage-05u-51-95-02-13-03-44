@@ -121,7 +121,37 @@ const VideoControls = ({
         <div className="flex items-center space-x-4">
           <button
             className="h-10 w-10 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center"
-            onClick={() => onPlayPause()}
+            onClick={onMuteToggle}
+          >
+            {isMuted ? (
+              <VolumeX className="h-5 w-5" />
+            ) : volume < 0.3 ? (
+              <Volume className="h-5 w-5" />
+            ) : volume < 0.7 ? (
+              <Volume1 className="h-5 w-5" />
+            ) : (
+              <Volume2 className="h-5 w-5" />
+            )}
+          </button>
+
+          {/* Time display */}
+          <div className="text-xs text-white">
+            {formatTime(currentTime)} / {formatTime(duration)}
+          </div>
+        </div>
+
+        {/* Center controls - Play, Skip buttons */}
+        <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center space-x-4">
+          <button
+            className="h-8 w-8 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center"
+            onClick={() => {/* Skip backward logic */}}
+          >
+            <SkipBack className="h-5 w-5" />
+          </button>
+
+          <button
+            className="h-12 w-12 rounded-full bg-white/20 hover:bg-white/40 text-white flex items-center justify-center"
+            onClick={onPlayPause}
           >
             {isPlaying ? (
               <Pause className="h-6 w-6" />
@@ -132,40 +162,10 @@ const VideoControls = ({
 
           <button
             className="h-8 w-8 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center"
-            onClick={() => {/* Skip backward logic */}}
-          >
-            <SkipBack className="h-5 w-5" />
-          </button>
-
-          <button
-            className="h-8 w-8 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center"
             onClick={() => {/* Skip forward logic */}}
           >
             <SkipForward className="h-5 w-5" />
           </button>
-
-          {/* Volume control */}
-          <div className="relative group">
-            <button
-              className="h-8 w-8 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center"
-              onClick={onMuteToggle}
-            >
-              {isMuted ? (
-                <VolumeX className="h-5 w-5" />
-              ) : volume < 0.3 ? (
-                <Volume className="h-5 w-5" />
-              ) : volume < 0.7 ? (
-                <Volume1 className="h-5 w-5" />
-              ) : (
-                <Volume2 className="h-5 w-5" />
-              )}
-            </button>
-          </div>
-
-          {/* Time display */}
-          <div className="text-xs text-white">
-            {formatTime(currentTime)} / {formatTime(duration)}
-          </div>
         </div>
 
         {/* Right controls */}
