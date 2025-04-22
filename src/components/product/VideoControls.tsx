@@ -22,6 +22,11 @@ interface VideoControlsProps {
   onVolumeChange?: (newVolume: number) => void;
   currentTime?: number;
   duration?: number;
+  onSeek?: (newTime: number) => void;
+  onSkipForward?: () => void;
+  onSkipBackward?: () => void;
+  onFullscreenToggle?: () => void;
+  bufferedTime?: number;
 }
 
 const VideoControls = ({
@@ -32,12 +37,16 @@ const VideoControls = ({
   onMuteToggle = () => {},
   onVolumeChange = () => {},
   currentTime = 45,
-  duration = 180
+  duration = 180,
+  onSeek = () => {},
+  onSkipForward = () => {},
+  onSkipBackward = () => {},
+  onFullscreenToggle = () => {},
+  bufferedTime = 90
 }: VideoControlsProps) => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isVolumeSliderVisible, setIsVolumeSliderVisible] = useState(false);
   const [subtitlesEnabled, setSubtitlesEnabled] = useState(false);
-  const [bufferedTime, setBufferedTime] = useState(90);
   
   const controlsTimeoutRef = useRef(null);
 
@@ -66,7 +75,9 @@ const VideoControls = ({
     onMuteToggle();
   };
 
-  const handleSeek = (time) => {
+  const handleSeek = (e) => {
+    const newTime = parseFloat(e.target.value);
+    onSeek(newTime);
   };
 
   const handleSubtitlesToggle = () => {
@@ -74,13 +85,15 @@ const VideoControls = ({
   };
 
   const handleSkipForward = () => {
+    onSkipForward();
   };
 
   const handleSkipBackward = () => {
+    onSkipBackward();
   };
 
   const handleFullscreenToggle = () => {
-    console.log("Toggle fullscreen");
+    onFullscreenToggle();
   };
 
   return (
@@ -137,6 +150,7 @@ const VideoControls = ({
               max={duration}
               step={0.1}
               value={currentTime}
+              onChange={handleSeek}
               className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
               aria-label="Seek"
             />
@@ -184,4 +198,3 @@ const VideoControls = ({
 };
 
 export default VideoControls;
-
