@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import ProductHeader from "@/components/product/ProductHeader";
 import { useParams } from "react-router-dom";
@@ -526,7 +527,7 @@ const ProductDetail = () => {
   return (
     <div className="flex flex-col min-h-screen bg-white" ref={contentRef}>
       <ProductHeader />
-      <div className="h-12 md:h-14"></div>
+      {/* Remove the spacing div that was here */}
       <div className="relative w-full bg-transparent">
         <ProductImageGallery images={productImages.length > 0 ? productImages : ["/placeholder.svg"]} />
       </div>
