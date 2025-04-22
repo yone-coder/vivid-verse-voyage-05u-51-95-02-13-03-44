@@ -22,6 +22,11 @@ interface VideoControlsProps {
   onVolumeChange?: (newVolume: number) => void;
   currentTime?: number;
   duration?: number;
+  onSeek?: (newTime: number) => void;
+  onSkipForward?: () => void;
+  onSkipBackward?: () => void;
+  bufferedTime?: number;
+  onFullscreenToggle?: () => void;
 }
 
 const VideoControls = ({
@@ -31,17 +36,19 @@ const VideoControls = ({
   onPlayPause = () => {},
   onMuteToggle = () => {},
   onVolumeChange = () => {},
-  currentTime = 45,
-  duration = 180
+  currentTime = 0,
+  duration = 0,
+  onSeek,
+  onSkipForward,
+  onSkipBackward,
+  bufferedTime = 0,
+  onFullscreenToggle = () => {},
 }: VideoControlsProps) => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isVolumeSliderVisible, setIsVolumeSliderVisible] = useState(false);
   const [subtitlesEnabled, setSubtitlesEnabled] = useState(false);
-  const [bufferedTime, setBufferedTime] = useState(90);
-  
-  const controlsTimeoutRef = useRef(null);
 
-  const formatTime = useCallback((seconds) => {
+  const formatTime = useCallback((seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = Math.floor(seconds % 60);
     return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
@@ -54,33 +61,12 @@ const VideoControls = ({
     return <Volume2 className="h-4 w-4" />;
   }, [isMuted, volume]);
 
-  const handlePlayPause = () => {
-    onPlayPause();
+  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (onSeek) onSeek(Number(e.target.value));
   };
 
-  const handleVolumeChange = (newVolume) => {
-    onVolumeChange(newVolume);
-  };
-
-  const handleMuteToggle = () => {
-    onMuteToggle();
-  };
-
-  const handleSeek = (time) => {
-  };
-
-  const handleSubtitlesToggle = () => {
-    setSubtitlesEnabled(!subtitlesEnabled);
-  };
-
-  const handleSkipForward = () => {
-  };
-
-  const handleSkipBackward = () => {
-  };
-
-  const handleFullscreenToggle = () => {
-    console.log("Toggle fullscreen");
+  const handleVolumeSlider = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onVolumeChange(Number(e.target.value));
   };
 
   return (
@@ -89,18 +75,20 @@ const VideoControls = ({
         <div className="flex items-center gap-12 pointer-events-auto">
           <button
             className="h-10 w-10 rounded-full bg-black/70 hover:bg-black/90 text-white flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500"
-            onClick={handleSkipBackward}
+            onClick={onSkipBackward}
             aria-label="Skip Backward"
             tabIndex={0}
+            type="button"
           >
             <SkipBack className="h-5 w-5" />
           </button>
           
           <button
             className="h-14 w-14 rounded-full bg-white/30 hover:bg-white/60 text-white flex items-center justify-center transition-colors shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-            onClick={handlePlayPause}
+            onClick={onPlayPause}
             aria-label={isPlaying ? "Pause" : "Play"}
             tabIndex={0}
+            type="button"
           >
             {isPlaying ? (
               <Pause className="h-7 w-7" />
@@ -111,9 +99,10 @@ const VideoControls = ({
 
           <button
             className="h-10 w-10 rounded-full bg-black/70 hover:bg-black/90 text-white flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500"
-            onClick={handleSkipForward}
+            onClick={onSkipForward}
             aria-label="Skip Forward"
             tabIndex={0}
+            type="button"
           >
             <SkipForward className="h-5 w-5" />
           </button>
@@ -125,11 +114,11 @@ const VideoControls = ({
           <div className="relative h-1 bg-gray-600 rounded overflow-hidden group">
             <div 
               className="absolute top-0 left-0 h-full bg-gray-400 bg-opacity-50" 
-              style={{ width: `${(bufferedTime / duration) * 100}%` }}
+              style={{ width: duration ? `${(bufferedTime / duration) * 100}%` : "0%" }}
             />
             <div 
               className="absolute top-0 left-0 h-full bg-white" 
-              style={{ width: `${(currentTime / duration) * 100}%` }}
+              style={{ width: duration ? `${(currentTime / duration) * 100}%` : "0%" }}
             />
             <input
               type="range"
@@ -139,6 +128,8 @@ const VideoControls = ({
               value={currentTime}
               className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
               aria-label="Seek"
+              onChange={handleSeek}
+              tabIndex={0}
             />
           </div>
         </div>
@@ -147,12 +138,24 @@ const VideoControls = ({
           <div className="flex items-center space-x-4">
             <button
               className="h-10 w-10 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center"
-              onClick={handleMuteToggle}
+              onClick={onMuteToggle}
               aria-label={isMuted ? "Unmute" : "Mute"}
               tabIndex={0}
+              type="button"
             >
               {getVolumeIcon()}
             </button>
+            <input
+              type="range"
+              min={0}
+              max={1}
+              step={0.01}
+              value={isMuted ? 0 : volume}
+              onChange={handleVolumeSlider}
+              className="w-20 h-2 accent-purple-500"
+              aria-label="Volume"
+            />
+
             <div className="text-xs text-white">
               {formatTime(currentTime)} / {formatTime(duration)}
             </div>
@@ -164,15 +167,17 @@ const VideoControls = ({
               onClick={() => setIsSettingsOpen(x => !x)}
               aria-label="Settings"
               tabIndex={0}
+              type="button"
             >
               <Settings className="h-5 w-5" />
             </button>
 
             <button
               className="h-8 w-8 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center"
-              onClick={handleFullscreenToggle}
+              onClick={onFullscreenToggle}
               aria-label="Fullscreen"
               tabIndex={0}
+              type="button"
             >
               <Maximize className="h-5 w-5" />
             </button>
@@ -184,4 +189,3 @@ const VideoControls = ({
 };
 
 export default VideoControls;
-

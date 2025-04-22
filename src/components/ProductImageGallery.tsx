@@ -104,6 +104,10 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const [isPlaying, setIsPlaying] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [bufferedTime, setBufferedTime] = useState(0);
+
   useEffect(() => {
     const preloadImages = async () => {
       const preloaded = await Promise.all(
@@ -133,6 +137,30 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
       });
     }
   }, []);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const onTimeUpdate = () => setCurrentTime(video.currentTime || 0);
+    const onLoadedMetadata = () => setDuration(video.duration || 0);
+    const onProgress = () => {
+      if (video.buffered.length > 0) {
+        setBufferedTime(video.buffered.end(video.buffered.length - 1));
+      }
+    };
+
+    video.addEventListener('timeupdate', onTimeUpdate);
+    video.addEventListener('loadedmetadata', onLoadedMetadata);
+    video.addEventListener('progress', onProgress);
+
+    // Clean up listeners on unmount
+    return () => {
+      video.removeEventListener('timeupdate', onTimeUpdate);
+      video.removeEventListener('loadedmetadata', onLoadedMetadata);
+      video.removeEventListener('progress', onProgress);
+    };
+  }, [videoRef.current]);
 
   const onApiChange = useCallback((api: CarouselApi | null) => {
     if (!api) return;
@@ -328,6 +356,39 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     }
   };
 
+  const handleSeek = (newTime: number) => {
+    if (videoRef.current) {
+      videoRef.current.currentTime = newTime;
+      setCurrentTime(newTime);
+    }
+  };
+
+  const handleSkipForward = () => {
+    if (videoRef.current) {
+      const newTime = Math.min((videoRef.current.currentTime || 0) + 10, duration);
+      videoRef.current.currentTime = newTime;
+      setCurrentTime(newTime);
+    }
+  };
+
+  const handleSkipBackward = () => {
+    if (videoRef.current) {
+      const newTime = Math.max((videoRef.current.currentTime || 0) - 10, 0);
+      videoRef.current.currentTime = newTime;
+      setCurrentTime(newTime);
+    }
+  };
+
+  const handleFullscreenVideo = () => {
+    if (videoRef.current) {
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else {
+        videoRef.current.requestFullscreen();
+      }
+    }
+  };
+
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isFullscreenMode) {
@@ -414,6 +475,13 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                             onPlayPause={toggleVideo}
                             onMuteToggle={handleMuteToggle}
                             onVolumeChange={handleVolumeChange}
+                            currentTime={currentTime}
+                            duration={duration}
+                            bufferedTime={bufferedTime}
+                            onSeek={handleSeek}
+                            onSkipForward={handleSkipForward}
+                            onSkipBackward={handleSkipBackward}
+                            onFullscreenToggle={handleFullscreenVideo}
                           />
                         </div>
                       </div>
@@ -577,6 +645,13 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                   onPlayPause={toggleVideo}
                   onMuteToggle={handleMuteToggle}
                   onVolumeChange={handleVolumeChange}
+                  currentTime={currentTime}
+                  duration={duration}
+                  bufferedTime={bufferedTime}
+                  onSeek={handleSeek}
+                  onSkipForward={handleSkipForward}
+                  onSkipBackward={handleSkipBackward}
+                  onFullscreenToggle={handleFullscreenVideo}
                 />
               </div>
             </div>
