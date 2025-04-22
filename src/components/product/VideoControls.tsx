@@ -86,7 +86,7 @@ const VideoControls = ({
   return (
     <div className="absolute inset-0 flex flex-col justify-end pointer-events-none">
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
-        <div className="flex items-center gap-6 pointer-events-auto">
+        <div className="flex items-center gap-8 pointer-events-auto">
           <button
             className="h-10 w-10 rounded-full bg-black/70 hover:bg-black/90 text-white flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500"
             onClick={handleSkipBackward}
