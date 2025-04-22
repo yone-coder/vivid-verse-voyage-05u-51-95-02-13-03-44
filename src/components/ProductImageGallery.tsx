@@ -252,7 +252,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     
     toast({
       title: "Image downloaded",
-      description: `Image ${index + 1} has been downloaded",
+      description: `Image ${index + 1} has been downloaded`,
       duration: 2000,
     });
   }, [images]);
