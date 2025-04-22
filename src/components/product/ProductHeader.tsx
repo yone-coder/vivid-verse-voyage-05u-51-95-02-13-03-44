@@ -128,10 +128,13 @@ const ProductHeader = () => {
   // Back button
   const BackButton = () => (
     <div className="rounded-full transition-all duration-700 overflow-hidden"
-      style={{backgroundColor: `rgba(0, 0, 0, ${0.1 * (1 - progress)})`}}>
+      style={{
+        backgroundColor: `rgba(0, 0, 0, ${0.1 + (progress * 0.85)})`
+      }}>
       <button className="h-7 w-7 rounded-full flex items-center justify-center transition-all duration-700"
         style={{
-          backgroundColor: `rgba(0, 0, 0, ${(1 - progress) * 0.4})`
+          backgroundColor: `rgba(0, 0, 0, ${(0.1 * (1 - progress)) + (progress * 0.4)})`,
+          backdropFilter: `blur(${4 + (progress * 4)}px)`
         }}>
         <ChevronLeft 
           className="transition-all duration-700"
@@ -160,12 +163,15 @@ const ProductHeader = () => {
         
         <div className="flex gap-2">
           <div className="rounded-full transition-all duration-700"
-            style={{backgroundColor: `rgba(0, 0, 0, ${0.1 * (1 - progress)})`}}>
+            style={{
+              backgroundColor: `rgba(0, 0, 0, ${0.1 + (progress * 0.85)})`
+            }}>
             <button 
               onClick={() => setIsFavorite(!isFavorite)}
               className="h-7 w-7 rounded-full flex items-center justify-center transition-all duration-700"
               style={{
-                backgroundColor: `rgba(0, 0, 0, ${(1 - progress) * 0.4})`
+                backgroundColor: `rgba(0, 0, 0, ${(0.1 * (1 - progress)) + (progress * 0.4)})`,
+                backdropFilter: `blur(${4 + (progress * 4)}px)`
               }}
             >
               <Heart 
@@ -181,11 +187,14 @@ const ProductHeader = () => {
           </div>
           
           <div className="rounded-full transition-all duration-700"
-            style={{backgroundColor: `rgba(0, 0, 0, ${0.1 * (1 - progress)})`}}>
+            style={{
+              backgroundColor: `rgba(0, 0, 0, ${0.1 + (progress * 0.85)})`
+            }}>
             <button 
               className="h-7 w-7 rounded-full flex items-center justify-center transition-all duration-700"
               style={{
-                backgroundColor: `rgba(0, 0, 0, ${(1 - progress) * 0.4})`
+                backgroundColor: `rgba(0, 0, 0, ${(0.1 * (1 - progress)) + (progress * 0.4)})`,
+                backdropFilter: `blur(${4 + (progress * 4)}px)`
               }}
             >
               <Share 
