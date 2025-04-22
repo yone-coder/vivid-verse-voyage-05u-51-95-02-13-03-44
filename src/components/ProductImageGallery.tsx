@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   Carousel,
@@ -29,11 +30,11 @@ import {
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import GalleryThumbnails from "@/components/product/GalleryThumbnails";
 import InfoBand from "@/components/product/InfoBand";
 import VideoControls from "@/components/product/VideoControls";
+import { toast } from "@/hooks/use-toast";
 
 interface ProductImageGalleryProps {
   images: string[];
@@ -67,6 +68,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const [showAllControls, setShowAllControls] = useState<boolean>(false);
   const [viewMode, setViewMode] = useState<"default" | "immersive">("default");
   const [isMuted, setIsMuted] = useState(true);
+  const [volume, setVolume] = useState(1);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
@@ -74,7 +76,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const fullscreenRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
   const navigate = useNavigate();
-  const { toast } = useToast();
 
   const [openedThumbnailMenu, setOpenedThumbnailMenu] = useState<number | null>(null);
 
@@ -150,7 +151,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
       description: `Image filter: ${filter}`,
       duration: 2000,
     });
-  }, [toast]);
+  }, []);
 
   const resetEnhancements = useCallback(() => {
     setIsRotated(0);
@@ -163,7 +164,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
       description: "All image modifications have been reset",
       duration: 2000,
     });
-  }, [toast]);
+  }, []);
 
   const shareImage = useCallback((index: number) => {
     const image = images[index];
@@ -181,7 +182,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
         duration: 2000,
       });
     }
-  }, [images, toast]);
+  }, [images]);
 
   const toggleCompareMode = useCallback(() => {
     setShowCompareMode(prev => !prev);
@@ -195,7 +196,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
       description: viewMode === "default" ? "Showing image without distractions" : "Showing standard gallery view",
       duration: 2000,
     });
-  }, [viewMode, toast]);
+  }, [viewMode]);
 
   const handleThumbnailClick = useCallback((index: number) => {
     if (api) {
@@ -233,7 +234,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
       description: `Image ${index + 1} has been downloaded`,
       duration: 2000,
     });
-  }, [images, toast]);
+  }, [images]);
 
   const copyImageUrl = useCallback((index: number) => {
     const image = images[index];
@@ -247,7 +248,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
       description: "Image URL has been copied to clipboard",
       duration: 2000,
     });
-  }, [images, toast]);
+  }, [images]);
 
   const toggleThumbnailViewMode = useCallback(() => {
     setThumbnailViewMode(prev => prev === "row" ? "grid" : "row");
@@ -337,7 +338,15 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
         duration: 2000,
       });
     }
-  }, [isMuted, toast]);
+  }, [isMuted]);
+
+  const handleVolumeChange = (newVolume: number) => {
+    if (videoRef.current) {
+      videoRef.current.volume = newVolume;
+      setVolume(newVolume);
+      setIsMuted(newVolume === 0);
+    }
+  };
 
   const toggleVideo = () => {
     if (videoRef.current) {
