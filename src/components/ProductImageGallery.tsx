@@ -405,16 +405,18 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                       >
                         Your browser does not support the video tag.
                       </video>
-                      {currentIndex === 0 && (
-                        <VideoControls
-                          isPlaying={isPlaying}
-                          isMuted={isMuted}
-                          volume={volume}
-                          onPlayPause={toggleVideo}
-                          onMuteToggle={handleMuteToggle}
-                          onVolumeChange={handleVolumeChange}
-                        />
-                      )}
+                      <div className="absolute inset-0 pointer-events-none">
+                        <div className="pointer-events-auto h-full w-full flex items-end">
+                          <VideoControls
+                            isPlaying={isPlaying}
+                            isMuted={isMuted}
+                            volume={volume}
+                            onPlayPause={toggleVideo}
+                            onMuteToggle={handleMuteToggle}
+                            onVolumeChange={handleVolumeChange}
+                          />
+                        </div>
+                      </div>
                     </div>
                   ) : (
                     <img
@@ -422,18 +424,19 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
                       src={source}
                       alt={`Product image ${index + 1}`}
                       className="w-full h-full object-contain transition-transform"
-                      style={{ 
+                      style={{
                         transform: `
                           rotate(${isRotated}deg)
                           ${isFlipped ? 'scaleX(-1)' : ''}
                           scale(${zoomLevel})
                         `,
                         transition: "transform 0.2s ease-out",
-                        filter: imageFilter !== "none" ? 
-                          imageFilter === "grayscale" ? "grayscale(1)" : 
-                          imageFilter === "sepia" ? "sepia(0.7)" : 
-                          imageFilter === "brightness" ? "brightness(1.2)" :
-                          imageFilter === "contrast" ? "contrast(1.2)" : "none"
+                        filter: imageFilter !== "none"
+                          ? imageFilter === "grayscale" ? "grayscale(1)"
+                            : imageFilter === "sepia" ? "sepia(0.7)"
+                              : imageFilter === "brightness" ? "brightness(1.2)"
+                                : imageFilter === "contrast" ? "contrast(1.2)"
+                                  : "none"
                           : "none"
                       }}
                       draggable={false}
@@ -483,27 +486,26 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
           >
             <ArrowUpToLine className="h-5 w-5" />
           </button>
-          
           <img 
             src={images[currentIndex]} 
             alt={`Product fullscreen image ${currentIndex + 1}`} 
             className="max-w-[90%] max-h-[90%] object-contain"
-            style={{ 
+            style={{
               transform: `
                 rotate(${isRotated}deg)
                 ${isFlipped ? 'scaleX(-1)' : ''}
                 scale(${zoomLevel})
               `,
-              filter: imageFilter !== "none" ? 
-                imageFilter === "grayscale" ? "grayscale(1)" : 
-                imageFilter === "sepia" ? "sepia(0.7)" : 
-                imageFilter === "brightness" ? "brightness(1.2)" :
-                imageFilter === "contrast" ? "contrast(1.2)" : "none"
+              filter: imageFilter !== "none"
+                ? imageFilter === "grayscale" ? "grayscale(1)"
+                  : imageFilter === "sepia" ? "sepia(0.7)"
+                    : imageFilter === "brightness" ? "brightness(1.2)"
+                      : imageFilter === "contrast" ? "contrast(1.2)"
+                        : "none"
                 : "none"
             }}
             onClick={(e) => e.stopPropagation()}
           />
-          
           <ImageGalleryControls
             currentIndex={currentIndex}
             totalImages={images.length}
