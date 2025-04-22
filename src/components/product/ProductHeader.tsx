@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { ShoppingCart, Eye, Heart, Share, ChevronLeft, Search } from "lucide-react";
 
@@ -45,7 +46,7 @@ const ProductHeader = () => {
     return (
       <div className="backdrop-blur-sm h-7 rounded-full px-2.5 flex items-center transition-all duration-700"
         style={{
-          backgroundColor: `rgba(0, 0, 0, ${0.1 + (progress * 0.85)})`,
+          backgroundColor: `rgba(255, 255, 255, ${0.1 + (progress * 0.85)})`,
           backdropFilter: `blur(${4 + (progress * 4)}px)`
         }}>
         <div className="flex items-center gap-1.5">
@@ -95,7 +96,7 @@ const ProductHeader = () => {
       <div className="relative flex-1 max-w-xs">
         <div className="relative flex items-center h-7 rounded-full transition-all duration-700"
           style={{
-            backgroundColor: `rgba(0, 0, 0, ${0.2 + (progress * 0.8)})`,
+            backgroundColor: `rgba(243, 244, 246, ${0.2 + (progress * 0.8)})`,
             boxShadow: `0 2px 4px rgba(0, 0, 0, ${0.02 + (progress * 0.03)})`
           }}>
           <div className="absolute left-2 flex items-center justify-center">
@@ -127,7 +128,7 @@ const ProductHeader = () => {
   // Back button
   const BackButton = () => (
     <div className="rounded-full transition-all duration-700 overflow-hidden"
-      style={{backgroundColor: `rgba(0, 0, 0, ${0.1 * (1 - progress)})`}}>
+      style={{backgroundColor: `rgba(255, 255, 255, ${0.1 * (1 - progress)})`}}>
       <button className="h-7 w-7 rounded-full flex items-center justify-center transition-all duration-700"
         style={{
           backgroundColor: progress > 0.5 ? `rgba(243, 244, 246, ${(progress - 0.5) * 0.4})` : 'transparent'
@@ -147,7 +148,7 @@ const ProductHeader = () => {
   return (
     <div className="py-2 px-3 w-full fixed top-0 left-0 right-0 z-30 transition-all duration-700"
       style={{
-        backgroundColor: `rgba(0, 0, 0, ${progress * 0.95})`,
+        backgroundColor: `rgba(255, 255, 255, ${progress * 0.95})`,
         backdropFilter: `blur(${progress * 8}px)`,
         boxShadow: `0 ${progress * 4}px ${progress * 8}px rgba(0, 0, 0, ${progress * 0.08})`
       }}>
@@ -159,7 +160,7 @@ const ProductHeader = () => {
         
         <div className="flex gap-2">
           <div className="rounded-full transition-all duration-700"
-            style={{backgroundColor: `rgba(0, 0, 0, ${0.1 * (1 - progress)})`}}>
+            style={{backgroundColor: `rgba(255, 255, 255, ${0.1 * (1 - progress)})`}}>
             <button 
               onClick={() => setIsFavorite(!isFavorite)}
               className="h-7 w-7 rounded-full flex items-center justify-center transition-all duration-700"
@@ -180,7 +181,7 @@ const ProductHeader = () => {
           </div>
           
           <div className="rounded-full transition-all duration-700"
-            style={{backgroundColor: `rgba(0, 0, 0, ${0.1 * (1 - progress)})`}}>
+            style={{backgroundColor: `rgba(255, 255, 255, ${0.1 * (1 - progress)})`}}>
             <button 
               className="h-7 w-7 rounded-full flex items-center justify-center transition-all duration-700"
               style={{
