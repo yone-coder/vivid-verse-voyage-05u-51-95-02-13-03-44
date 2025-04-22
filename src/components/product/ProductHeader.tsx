@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { ShoppingCart, Eye, Heart, Share, ChevronLeft, Search } from "lucide-react";
 
@@ -128,10 +127,10 @@ const ProductHeader = () => {
   // Back button
   const BackButton = () => (
     <div className="rounded-full transition-all duration-700 overflow-hidden"
-      style={{backgroundColor: `rgba(255, 255, 255, ${0.1 * (1 - progress)})`}}>
+      style={{backgroundColor: `rgba(0, 0, 0, ${0.1 * (1 - progress)})`}}>
       <button className="h-7 w-7 rounded-full flex items-center justify-center transition-all duration-700"
         style={{
-          backgroundColor: progress > 0.5 ? `rgba(243, 244, 246, ${(progress - 0.5) * 0.4})` : 'transparent'
+          backgroundColor: progress > 0.5 ? `rgba(0, 0, 0, ${(progress - 0.5) * 0.4})` : 'transparent'
         }}>
         <ChevronLeft 
           className="transition-all duration-700"
@@ -160,12 +159,12 @@ const ProductHeader = () => {
         
         <div className="flex gap-2">
           <div className="rounded-full transition-all duration-700"
-            style={{backgroundColor: `rgba(255, 255, 255, ${0.1 * (1 - progress)})`}}>
+            style={{backgroundColor: `rgba(0, 0, 0, ${0.1 * (1 - progress)})`}}>
             <button 
               onClick={() => setIsFavorite(!isFavorite)}
               className="h-7 w-7 rounded-full flex items-center justify-center transition-all duration-700"
               style={{
-                backgroundColor: progress > 0.5 && !isFavorite ? `rgba(243, 244, 246, ${(progress - 0.5) * 0.4})` : 'transparent'
+                backgroundColor: progress > 0.5 && !isFavorite ? `rgba(0, 0, 0, ${(progress - 0.5) * 0.4})` : 'transparent'
               }}
             >
               <Heart 
@@ -181,11 +180,11 @@ const ProductHeader = () => {
           </div>
           
           <div className="rounded-full transition-all duration-700"
-            style={{backgroundColor: `rgba(255, 255, 255, ${0.1 * (1 - progress)})`}}>
+            style={{backgroundColor: `rgba(0, 0, 0, ${0.1 * (1 - progress)})`}}>
             <button 
               className="h-7 w-7 rounded-full flex items-center justify-center transition-all duration-700"
               style={{
-                backgroundColor: progress > 0.5 ? `rgba(243, 244, 246, ${(progress - 0.5) * 0.4})` : 'transparent'
+                backgroundColor: progress > 0.5 ? `rgba(0, 0, 0, ${(progress - 0.5) * 0.4})` : 'transparent'
               }}
             >
               <Share 
