@@ -94,6 +94,11 @@ const ProductVideoPlayer: React.FC<ProductVideoPlayerProps> = ({ src, poster, cl
     video.addEventListener("seeked", onSeeked);
     video.addEventListener("ended", onEnded);
 
+    // Also set initial duration if already loaded
+    if (video.readyState >= 1) {
+      setDuration(video.duration || 0);
+    }
+
     // Clean up
     return () => {
       video.removeEventListener("play", onPlay);

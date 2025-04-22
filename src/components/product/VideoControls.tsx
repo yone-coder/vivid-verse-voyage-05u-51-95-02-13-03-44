@@ -1,4 +1,5 @@
-import React, { useState, useCallback, useRef } from 'react';
+
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { 
   Play, 
   Pause, 
@@ -37,25 +38,36 @@ const VideoControls = ({
   onPlayPause = () => {},
   onMuteToggle = () => {},
   onVolumeChange = () => {},
-  currentTime = 45,
-  duration = 180,
+  currentTime = 0,
+  duration = 0,
   onSeek = () => {},
   onSkipForward = () => {},
   onSkipBackward = () => {},
   onFullscreenToggle = () => {},
-  bufferedTime = 90
+  bufferedTime = 0
 }: VideoControlsProps) => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isVolumeSliderVisible, setIsVolumeSliderVisible] = useState(false);
   const [subtitlesEnabled, setSubtitlesEnabled] = useState(false);
+  const [displayTime, setDisplayTime] = useState("0:00");
+  const [displayDuration, setDisplayDuration] = useState("0:00");
   
   const controlsTimeoutRef = useRef(null);
 
-  const formatTime = useCallback((seconds) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = Math.floor(seconds % 60);
-    return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+  // Format time in MM:SS format
+  const formatTime = useCallback((timeInSeconds: number): string => {
+    if (isNaN(timeInSeconds) || !isFinite(timeInSeconds)) return "0:00";
+    
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = Math.floor(timeInSeconds % 60);
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   }, []);
+
+  // Update formatted time display whenever currentTime or duration changes
+  useEffect(() => {
+    setDisplayTime(formatTime(currentTime));
+    setDisplayDuration(formatTime(duration));
+  }, [currentTime, duration, formatTime]);
 
   const getVolumeIcon = useCallback(() => {
     if (isMuted || volume === 0) return <VolumeX className="h-4 w-4" />;
@@ -68,7 +80,7 @@ const VideoControls = ({
     onPlayPause();
   };
 
-  const handleVolumeChange = (newVolume) => {
+  const handleVolumeChange = (newVolume: number) => {
     onVolumeChange(newVolume);
   };
 
@@ -76,7 +88,7 @@ const VideoControls = ({
     onMuteToggle();
   };
 
-  const handleSeek = (e) => {
+  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newTime = parseFloat(e.target.value);
     onSeek(newTime);
   };
@@ -151,11 +163,10 @@ const VideoControls = ({
             <input
               type="range"
               min={0}
-              max={duration}
+              max={duration || 100}
               step={0.1}
               value={currentTime}
               onChange={handleSeek}
-              onInput={handleSeek}
               className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
               aria-label="Seek"
             />
@@ -173,7 +184,7 @@ const VideoControls = ({
               {getVolumeIcon()}
             </button>
             <div className="text-xs text-white">
-              {formatTime(currentTime)} / {formatTime(duration)}
+              {displayTime} / {displayDuration}
             </div>
           </div>
 
