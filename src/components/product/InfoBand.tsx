@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import {
   AlertCircle, 
@@ -167,17 +168,15 @@ const InfoBand = () => {
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
-    // Animation timing control
-    const fadeDelay = 5000; // How long each message displays
-    const fadeTime = 1000; // How long the fade transition takes
+    const slideDelay = 5000; // How long each message displays
+    const slideTime = 500; // How long the slide transition takes
 
     const intervalId = setInterval(() => {
-      // Start the fade out
+      // Start the slide up
       setIsVisible(false);
       
-      // After fade out completes, change the message and fade back in
+      // After slide completes, change the message and slide down
       setTimeout(() => {
-        // Get a random index that's different from the current one
         let nextIndex;
         do {
           nextIndex = Math.floor(Math.random() * infoBands.length);
@@ -185,8 +184,8 @@ const InfoBand = () => {
         
         setCurrentIndex(nextIndex);
         setIsVisible(true);
-      }, fadeTime);
-    }, fadeDelay);
+      }, slideTime);
+    }, slideDelay);
 
     return () => clearInterval(intervalId);
   }, [currentIndex, infoBands.length]);
@@ -195,9 +194,13 @@ const InfoBand = () => {
   const IconComponent = currentBand.icon;
 
   return (
-    <div className="w-full p-0">
+    <div className="w-full p-0 overflow-hidden">
       <div 
-        className={`${currentBand.color} w-full transition-opacity duration-1000 ${isVisible ? 'opacity-100' : 'opacity-0'}`}
+        className={`${currentBand.color} w-full transition-all duration-500 transform ${
+          isVisible 
+            ? 'translate-y-0 opacity-100' 
+            : '-translate-y-full opacity-0'
+        }`}
       >
         <div className="flex items-center justify-center py-1 px-4 text-white">
           <IconComponent className="mr-2 h-5 w-5" />
