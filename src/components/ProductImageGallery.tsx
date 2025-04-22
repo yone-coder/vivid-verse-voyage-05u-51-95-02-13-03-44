@@ -1,60 +1,12 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import {
+import { 
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselApi,
 } from "@/components/ui/carousel";
-import { 
-  Play,
-  Pause,
-  RotateCw,
-  FlipHorizontal,
-  ChevronLeft,
-  ChevronRight,
-  Share2,
-  Maximize,
-  Square,
-  X,
-  Undo2,
-  Filter,
-  ArrowLeft,
-  Focus,
-  Download,
-  ArrowUpToLine,
-  Video
-} from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { useIsMobile } from "@/hooks/use-mobile";
-import GalleryThumbnails from "@/components/product/GalleryThumbnails";
-import { 
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { 
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  HoverCard,
-  HoverCardTrigger,
-  HoverCardContent,
-} from "@/components/ui/hover-card";
-import { supabase } from "@/integrations/supabase/client";
-import { Link, useNavigate } from "react-router-dom";
-import { toast } from "@/hooks/use-toast";
-import InfoBand from "@/components/product/InfoBand";
 import VideoControls from "@/components/product/VideoControls";
+import GalleryThumbnails from "@/components/product/GalleryThumbnails";
 import ImageGalleryControls from "@/components/product/ImageGalleryControls";
 
 interface ProductImageGalleryProps {
@@ -453,11 +405,17 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
               <CarouselItem key={index} className="h-full">
                 <div className="flex h-full w-full items-center justify-center overflow-hidden relative">
                   {index === 0 ? (
-                    <div className="relative w-full h-full">
+                    <div className="relative w-full h-full flex items-center justify-center">
                       <video
                         ref={videoRef}
                         src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
                         className="w-full h-full object-contain cursor-pointer"
+                        style={{ 
+                          maxWidth: '100%', 
+                          maxHeight: '100%', 
+                          aspectRatio: '1/1', 
+                          objectFit: 'cover' 
+                        }}
                         onClick={toggleVideo}
                         playsInline
                         loop
