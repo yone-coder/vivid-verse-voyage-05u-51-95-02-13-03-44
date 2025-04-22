@@ -125,23 +125,34 @@ const ProductHeader = () => {
     );
   };
 
+  // Shared style calculations for all buttons
+  const getButtonContainerStyle = () => ({
+    backgroundColor: `rgba(0, 0, 0, ${0.1 + (progress * 0.85)})`,
+    backdropFilter: `blur(${4 + (progress * 4)}px)`
+  });
+
+  const getButtonStyle = () => ({
+    backgroundColor: `rgba(0, 0, 0, ${0.1 * (1 - progress)})`,
+    backdropFilter: `blur(${4 + (progress * 4)}px)`
+  });
+
+  const getIconStyle = (isActive = false) => ({
+    color: isActive 
+      ? '#f97316' 
+      : progress > 0.5 
+        ? `rgba(75, 85, 99, ${0.7 + (progress * 0.3)})` 
+        : `rgba(255, 255, 255, ${0.9 - (progress * 0.3)})`
+  });
+
   // Back button
   const BackButton = () => (
     <div className="rounded-full transition-all duration-700 overflow-hidden"
-      style={{
-        backgroundColor: `rgba(0, 0, 0, ${0.1 + (progress * 0.85)})`,
-        backdropFilter: `blur(${4 + (progress * 4)}px)`
-      }}>
+      style={getButtonContainerStyle()}>
       <button className="h-7 w-7 rounded-full flex items-center justify-center transition-all duration-700"
-        style={{
-          backgroundColor: `rgba(0, 0, 0, ${(0.1 * (1 - progress)) + (progress * 0.4)})`,
-          backdropFilter: `blur(${4 + (progress * 4)}px)`
-        }}>
+        style={getButtonStyle()}>
         <ChevronLeft 
           className="transition-all duration-700"
-          style={{
-            color: progress > 0.5 ? `rgba(75, 85, 99, ${0.7 + (progress * 0.3)})` : `rgba(255, 255, 255, ${0.9 - (progress * 0.2)})`
-          }}
+          style={getIconStyle()}
           strokeWidth={2} 
           size={18} 
         />
@@ -164,17 +175,11 @@ const ProductHeader = () => {
         
         <div className="flex gap-2">
           <div className="rounded-full transition-all duration-700"
-            style={{
-              backgroundColor: `rgba(0, 0, 0, ${0.1 + (progress * 0.85)})`,
-              backdropFilter: `blur(${4 + (progress * 4)}px)`
-            }}>
+            style={getButtonContainerStyle()}>
             <button 
               onClick={() => setIsFavorite(!isFavorite)}
               className="h-7 w-7 rounded-full flex items-center justify-center transition-all duration-700"
-              style={{
-                backgroundColor: `rgba(0, 0, 0, ${(0.1 * (1 - progress)) + (progress * 0.4)})`,
-                backdropFilter: `blur(${4 + (progress * 4)}px)`
-              }}
+              style={getButtonStyle()}
             >
               <Heart 
                 className="transition-all duration-700"
@@ -189,22 +194,14 @@ const ProductHeader = () => {
           </div>
           
           <div className="rounded-full transition-all duration-700"
-            style={{
-              backgroundColor: `rgba(0, 0, 0, ${0.1 + (progress * 0.85)})`,
-              backdropFilter: `blur(${4 + (progress * 4)}px)`
-            }}>
+            style={getButtonContainerStyle()}>
             <button 
               className="h-7 w-7 rounded-full flex items-center justify-center transition-all duration-700"
-              style={{
-                backgroundColor: `rgba(0, 0, 0, ${(0.1 * (1 - progress)) + (progress * 0.4)})`,
-                backdropFilter: `blur(${4 + (progress * 4)}px)`
-              }}
+              style={getButtonStyle()}
             >
               <Share 
                 className="transition-all duration-700"
-                style={{
-                  color: progress > 0.5 ? `rgba(75, 85, 99, ${0.7 + (progress * 0.3)})` : `rgba(255, 255, 255, ${0.9 - (progress * 0.3)})`
-                }}
+                style={getIconStyle()}
                 strokeWidth={1.5} 
                 size={18} 
               />
