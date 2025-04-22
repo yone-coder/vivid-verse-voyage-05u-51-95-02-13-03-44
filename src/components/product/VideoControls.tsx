@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useRef } from 'react';
 import { 
   Play, 
@@ -12,6 +11,8 @@ import {
   Maximize,
   Settings
 } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { Slider } from "@/components/ui/slider";
 
 interface VideoControlsProps {
   isPlaying?: boolean;
@@ -96,6 +97,9 @@ const VideoControls = ({
     onFullscreenToggle();
   };
 
+  const progressPercentage = duration > 0 ? (currentTime / duration) * 100 : 0;
+  const bufferedPercentage = duration > 0 ? (bufferedTime / duration) * 100 : 0;
+
   return (
     <div className="absolute inset-0 flex flex-col justify-end pointer-events-none">
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
@@ -138,11 +142,11 @@ const VideoControls = ({
           <div className="relative h-1 bg-gray-600 rounded overflow-hidden group">
             <div 
               className="absolute top-0 left-0 h-full bg-gray-400 bg-opacity-50" 
-              style={{ width: `${(bufferedTime / duration) * 100}%` }}
+              style={{ width: `${bufferedPercentage}%` }}
             />
             <div 
               className="absolute top-0 left-0 h-full bg-white" 
-              style={{ width: `${(currentTime / duration) * 100}%` }}
+              style={{ width: `${progressPercentage}%` }}
             />
             <input
               type="range"

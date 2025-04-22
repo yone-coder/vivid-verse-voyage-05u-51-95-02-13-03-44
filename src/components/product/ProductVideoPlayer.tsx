@@ -16,12 +16,39 @@ const ProductVideoPlayer: React.FC<ProductVideoPlayerProps> = ({ src, poster, cl
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [bufferedTime, setBufferedTime] = useState(0);
+  const requestRef = useRef<number | null>(null);
+
+  // Animation frame loop for smooth progress updates
+  const updateTimeDisplay = useCallback(() => {
+    if (videoRef.current) {
+      setCurrentTime(videoRef.current.currentTime);
+      requestRef.current = requestAnimationFrame(updateTimeDisplay);
+    }
+  }, []);
+
+  // Start/stop the animation frame loop based on play state
+  useEffect(() => {
+    if (isPlaying) {
+      requestRef.current = requestAnimationFrame(updateTimeDisplay);
+    } else if (requestRef.current) {
+      cancelAnimationFrame(requestRef.current);
+    }
+    
+    return () => {
+      if (requestRef.current) {
+        cancelAnimationFrame(requestRef.current);
+      }
+    };
+  }, [isPlaying, updateTimeDisplay]);
 
   // Play/Pause controls
   const handlePlayPause = useCallback(() => {
     if (!videoRef.current) return;
     if (videoRef.current.paused) {
-      videoRef.current.play();
+      videoRef.current.play()
+        .catch(error => {
+          console.error("Error playing video:", error);
+        });
     } else {
       videoRef.current.pause();
     }
@@ -34,7 +61,6 @@ const ProductVideoPlayer: React.FC<ProductVideoPlayerProps> = ({ src, poster, cl
 
     const onPlay = () => setIsPlaying(true);
     const onPause = () => setIsPlaying(false);
-    const onTimeUpdate = () => setCurrentTime(video.currentTime || 0);
     const onDurationChange = () => setDuration(video.duration || 0);
     const onVolumeChange = () => {
       setVolume(video.volume);
@@ -42,28 +68,41 @@ const ProductVideoPlayer: React.FC<ProductVideoPlayerProps> = ({ src, poster, cl
     };
     const onProgress = () => {
       try {
-        // buffered.end(0) is the last buffered time
         if (video.buffered.length > 0) {
           setBufferedTime(video.buffered.end(video.buffered.length - 1));
         }
-      } catch {}
+      } catch (error) {
+        console.error("Error updating buffer time:", error);
+      }
+    };
+    const onSeeked = () => {
+      setCurrentTime(video.currentTime);
+    };
+    const onEnded = () => {
+      setIsPlaying(false);
+      setCurrentTime(0);
+      if (video) {
+        video.currentTime = 0;
+      }
     };
 
     video.addEventListener("play", onPlay);
     video.addEventListener("pause", onPause);
-    video.addEventListener("timeupdate", onTimeUpdate);
     video.addEventListener("durationchange", onDurationChange);
     video.addEventListener("volumechange", onVolumeChange);
     video.addEventListener("progress", onProgress);
+    video.addEventListener("seeked", onSeeked);
+    video.addEventListener("ended", onEnded);
 
     // Clean up
     return () => {
       video.removeEventListener("play", onPlay);
       video.removeEventListener("pause", onPause);
-      video.removeEventListener("timeupdate", onTimeUpdate);
       video.removeEventListener("durationchange", onDurationChange);
       video.removeEventListener("volumechange", onVolumeChange);
       video.removeEventListener("progress", onProgress);
+      video.removeEventListener("seeked", onSeeked);
+      video.removeEventListener("ended", onEnded);
     };
   }, []);
 
@@ -122,6 +161,7 @@ const ProductVideoPlayer: React.FC<ProductVideoPlayerProps> = ({ src, poster, cl
         style={{ maxHeight: "480px" }}
         tabIndex={-1}
         controls={false}
+        preload="metadata"
       />
       <VideoControls
         isPlaying={isPlaying}
