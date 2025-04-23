@@ -47,7 +47,7 @@ const ImageGalleryControls: React.FC<ImageGalleryControlsProps> = ({
   if (!showControls) return null;
 
   const isFullscreen = variant === "fullscreen";
-  
+
   // For the main gallery view
   if (!isFullscreen) {
     return (
@@ -61,7 +61,7 @@ const ImageGalleryControls: React.FC<ImageGalleryControlsProps> = ({
           <Button
             variant="ghost" 
             size="icon"
-            className="h-8 w-8 rounded-full bg-black/60 backdrop-blur-sm hover:bg-black/80 text-white"
+            className="h-8 w-8 rounded-full bg-black/10 backdrop-blur text-white hover:bg-black/20"
             onClick={onRotate}
           >
             <RotateCw className="h-4 w-4" />
@@ -70,7 +70,7 @@ const ImageGalleryControls: React.FC<ImageGalleryControlsProps> = ({
           <Button
             variant="ghost" 
             size="icon"
-            className="h-8 w-8 rounded-full bg-black/60 backdrop-blur-sm hover:bg-black/80 text-white"
+            className="h-8 w-8 rounded-full bg-black/10 backdrop-blur text-white hover:bg-black/20"
             onClick={onFlip}
           >
             <FlipHorizontal className="h-4 w-4" />
@@ -80,7 +80,7 @@ const ImageGalleryControls: React.FC<ImageGalleryControlsProps> = ({
             variant="ghost" 
             size="icon"
             className={cn(
-              "h-8 w-8 rounded-full bg-black/60 backdrop-blur-sm hover:bg-black/80 text-white",
+              "h-8 w-8 rounded-full bg-black/10 backdrop-blur text-white hover:bg-black/20",
               autoScrollEnabled && "bg-primary text-white"
             )}
             onClick={onToggleAutoScroll}
@@ -94,7 +94,7 @@ const ImageGalleryControls: React.FC<ImageGalleryControlsProps> = ({
           <button
             onClick={onToggleFocusMode}
             className={cn(
-              "h-8 w-8 flex items-center justify-center rounded-full bg-black/60 backdrop-blur-sm text-white hover:bg-black/80 transition-colors",
+              "h-8 w-8 flex items-center justify-center rounded-full bg-black/10 backdrop-blur text-white hover:bg-black/20 transition-colors",
               focusMode && "bg-primary text-white"
             )}
             aria-label={focusMode ? "Exit focus mode" : "Enter focus mode"}
@@ -115,7 +115,7 @@ const ImageGalleryControls: React.FC<ImageGalleryControlsProps> = ({
       </>
     );
   }
-  
+
   // For fullscreen view
   return (
     <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4">
@@ -124,7 +124,7 @@ const ImageGalleryControls: React.FC<ImageGalleryControlsProps> = ({
           <Button 
             variant="outline" 
             size="icon" 
-            className="rounded-full bg-black/40 backdrop-blur-sm hover:bg-black/60 border-white/10"
+            className="rounded-full bg-black/10 backdrop-blur hover:bg-black/20 border-white/10"
             onClick={(e) => {
               e.stopPropagation();
               onPrevious(e);
@@ -140,7 +140,7 @@ const ImageGalleryControls: React.FC<ImageGalleryControlsProps> = ({
           <Button 
             variant="outline" 
             size="icon" 
-            className="rounded-full bg-black/40 backdrop-blur-sm hover:bg-black/60 border-white/10"
+            className="rounded-full bg-black/10 backdrop-blur hover:bg-black/20 border-white/10"
             onClick={(e) => {
               e.stopPropagation();
               onNext(e);
@@ -155,7 +155,7 @@ const ImageGalleryControls: React.FC<ImageGalleryControlsProps> = ({
         <Button
           variant="ghost" 
           size="icon"
-          className="h-8 w-8 rounded-full hover:bg-white/10"
+          className="h-8 w-8 rounded-full bg-black/10 backdrop-blur hover:bg-black/20"
           onClick={(e) => {
             e.stopPropagation();
             onRotate(e);
@@ -167,7 +167,7 @@ const ImageGalleryControls: React.FC<ImageGalleryControlsProps> = ({
         <Button
           variant="ghost" 
           size="icon"
-          className="h-8 w-8 rounded-full hover:bg-white/10"
+          className="h-8 w-8 rounded-full bg-black/10 backdrop-blur hover:bg-black/20"
           onClick={(e) => {
             e.stopPropagation();
             onFlip(e);
@@ -180,7 +180,7 @@ const ImageGalleryControls: React.FC<ImageGalleryControlsProps> = ({
           <Button
             variant="ghost" 
             size="icon"
-            className="h-8 w-8 rounded-full hover:bg-white/10"
+            className="h-8 w-8 rounded-full bg-black/10 backdrop-blur hover:bg-black/20"
             onClick={(e) => {
               e.stopPropagation();
               onDownload(e);
@@ -195,3 +195,4 @@ const ImageGalleryControls: React.FC<ImageGalleryControlsProps> = ({
 };
 
 export default ImageGalleryControls;
+
