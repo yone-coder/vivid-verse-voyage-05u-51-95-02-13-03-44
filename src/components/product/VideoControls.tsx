@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useRef } from 'react';
 import { 
   Play, 
@@ -74,7 +73,7 @@ const VideoControls = ({
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
         <div className="flex items-center gap-12 pointer-events-auto">
           <button
-            className="h-10 w-10 rounded-full bg-black/10 backdrop-blur flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 text-white hover:bg-black/20"
+            className="h-10 w-10 rounded-full bg-black/10 backdrop-blur-sm flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 text-white hover:bg-black/20"
             onClick={onSkipBackward}
             aria-label="Skip Backward"
             tabIndex={0}
@@ -84,7 +83,7 @@ const VideoControls = ({
           </button>
           
           <button
-            className="h-14 w-14 rounded-full bg-black/10 backdrop-blur flex items-center justify-center transition-colors shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white hover:bg-black/20"
+            className="h-14 w-14 rounded-full bg-black/10 backdrop-blur-sm flex items-center justify-center transition-colors shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white hover:bg-black/20"
             onClick={onPlayPause}
             aria-label={isPlaying ? "Pause" : "Play"}
             tabIndex={0}
@@ -98,7 +97,7 @@ const VideoControls = ({
           </button>
 
           <button
-            className="h-10 w-10 rounded-full bg-black/10 backdrop-blur flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 text-white hover:bg-black/20"
+            className="h-10 w-10 rounded-full bg-black/10 backdrop-blur-sm flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 text-white hover:bg-black/20"
             onClick={onSkipForward}
             aria-label="Skip Forward"
             tabIndex={0}
@@ -137,7 +136,7 @@ const VideoControls = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <button
-              className="h-10 w-10 rounded-full bg-black/10 backdrop-blur flex items-center justify-center hover:bg-black/20 text-white"
+              className="h-10 w-10 rounded-full bg-black/10 backdrop-blur-sm flex items-center justify-center hover:bg-black/20 text-white"
               onClick={onMuteToggle}
               aria-label={isMuted ? "Unmute" : "Mute"}
               tabIndex={0}
@@ -163,7 +162,7 @@ const VideoControls = ({
 
           <div className="flex items-center space-x-4">
             <button
-              className="h-8 w-8 rounded-full bg-black/10 backdrop-blur flex items-center justify-center hover:bg-black/20 text-white"
+              className="h-8 w-8 rounded-full bg-black/10 backdrop-blur-sm flex items-center justify-center hover:bg-black/20 text-white"
               onClick={() => setIsSettingsOpen(x => !x)}
               aria-label="Settings"
               tabIndex={0}
@@ -173,7 +172,7 @@ const VideoControls = ({
             </button>
 
             <button
-              className="h-8 w-8 rounded-full bg-black/10 backdrop-blur flex items-center justify-center hover:bg-black/20 text-white"
+              className="h-8 w-8 rounded-full bg-black/10 backdrop-blur-sm flex items-center justify-center hover:bg-black/20 text-white"
               onClick={onFullscreenToggle}
               aria-label="Fullscreen"
               tabIndex={0}
@@ -189,4 +188,3 @@ const VideoControls = ({
 };
 
 export default VideoControls;
-
