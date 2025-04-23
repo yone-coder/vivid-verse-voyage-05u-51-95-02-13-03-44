@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { ShoppingCart, Eye, Heart, Share, ChevronLeft, Search } from "lucide-react";
 
@@ -46,7 +45,7 @@ const ProductHeader = () => {
     return (
       <div className="backdrop-blur-sm h-7 rounded-full px-2.5 flex items-center transition-all duration-700"
         style={{
-          backgroundColor: `rgba(0, 0, 0, ${0.1 + (progress * 0.85)})`,
+          backgroundColor: `rgba(255, 255, 255, ${0.1 + (progress * 0.85)})`,
           backdropFilter: `blur(${4 + (progress * 4)}px)`
         }}>
         <div className="flex items-center gap-1.5">
@@ -127,29 +126,19 @@ const ProductHeader = () => {
 
   // Back button
   const BackButton = () => (
-    <div
-      className="backdrop-blur-sm rounded-full transition-all duration-700"
-      style={{
-        backgroundColor: `rgba(0, 0, 0, ${0.1 + (progress * 0.85)})`,
-        backdropFilter: `blur(${4 + (progress * 4)}px)`
-      }}
-    >
-      <button
-        className="h-7 w-7 rounded-full flex items-center justify-center transition-all duration-700"
+    <div className="rounded-full transition-all duration-700 overflow-hidden"
+      style={{backgroundColor: `rgba(0, 0, 0, ${0.1 * (1 - progress)})`}}>
+      <button className="h-7 w-7 rounded-full flex items-center justify-center transition-all duration-700"
         style={{
-          backgroundColor: progress < 0.5 ? "rgba(0,0,0,0.18)" : "transparent",
-        }}
-      >
+          backgroundColor: progress > 0.5 ? `rgba(0, 0, 0, ${(progress - 0.5) * 0.4})` : 'transparent'
+        }}>
         <ChevronLeft 
           className="transition-all duration-700"
           style={{
-            color:
-              progress > 0.5
-                ? `rgba(75, 85, 99, ${0.7 + (progress * 0.3)})`
-                : `rgba(255, 255, 255, ${0.9 - (progress * 0.2)})`
+            color: progress > 0.5 ? `rgba(75, 85, 99, ${0.7 + (progress * 0.3)})` : `rgba(255, 255, 255, ${0.9 - (progress * 0.2)})`
           }}
-          strokeWidth={2}
-          size={18}
+          strokeWidth={2} 
+          size={18} 
         />
       </button>
     </div>
@@ -169,31 +158,20 @@ const ProductHeader = () => {
         </div>
         
         <div className="flex gap-2">
-          <div
-            className="backdrop-blur-sm rounded-full transition-all duration-700"
-            style={{
-              backgroundColor: `rgba(0, 0, 0, ${0.1 + (progress * 0.85)})`,
-              backdropFilter: `blur(${4 + (progress * 4)}px)`
-            }}
-          >
+          <div className="rounded-full transition-all duration-700"
+            style={{backgroundColor: `rgba(0, 0, 0, ${0.1 * (1 - progress)})`}}>
             <button 
               onClick={() => setIsFavorite(!isFavorite)}
               className="h-7 w-7 rounded-full flex items-center justify-center transition-all duration-700"
               style={{
-                backgroundColor: progress < 0.5
-                  ? (isFavorite ? "rgba(249, 115, 22, 0.09)" : "rgba(0,0,0,0.18)")
-                  : "transparent",
+                backgroundColor: progress > 0.5 && !isFavorite ? `rgba(0, 0, 0, ${(progress - 0.5) * 0.4})` : 'transparent'
               }}
             >
               <Heart 
                 className="transition-all duration-700"
                 style={{
                   fill: isFavorite ? '#f97316' : 'transparent',
-                  color: isFavorite
-                    ? '#f97316'
-                    : progress > 0.5
-                      ? `rgba(75, 85, 99, ${0.7 + (progress * 0.3)})`
-                      : `rgba(255, 255, 255, ${0.9 - (progress * 0.3)})`
+                  color: isFavorite ? '#f97316' : progress > 0.5 ? `rgba(75, 85, 99, ${0.7 + (progress * 0.3)})` : `rgba(255, 255, 255, ${0.9 - (progress * 0.3)})`
                 }}
                 strokeWidth={1.5}
                 size={18}
@@ -201,25 +179,18 @@ const ProductHeader = () => {
             </button>
           </div>
           
-          <div
-            className="backdrop-blur-sm rounded-full transition-all duration-700"
-            style={{
-              backgroundColor: `rgba(0, 0, 0, ${0.1 + (progress * 0.85)})`,
-              backdropFilter: `blur(${4 + (progress * 4)}px)`
-            }}
-          >
+          <div className="rounded-full transition-all duration-700"
+            style={{backgroundColor: `rgba(0, 0, 0, ${0.1 * (1 - progress)})`}}>
             <button 
               className="h-7 w-7 rounded-full flex items-center justify-center transition-all duration-700"
               style={{
-                backgroundColor: progress < 0.5 ? "rgba(0,0,0,0.18)" : "transparent",
+                backgroundColor: progress > 0.5 ? `rgba(0, 0, 0, ${(progress - 0.5) * 0.4})` : 'transparent'
               }}
             >
               <Share 
                 className="transition-all duration-700"
                 style={{
-                  color: progress > 0.5
-                    ? `rgba(75, 85, 99, ${0.7 + (progress * 0.3)})`
-                    : `rgba(255, 255, 255, ${0.9 - (progress * 0.3)})`
+                  color: progress > 0.5 ? `rgba(75, 85, 99, ${0.7 + (progress * 0.3)})` : `rgba(255, 255, 255, ${0.9 - (progress * 0.3)})`
                 }}
                 strokeWidth={1.5} 
                 size={18} 
@@ -227,17 +198,10 @@ const ProductHeader = () => {
             </button>
           </div>
           
-          <div
-            className="backdrop-blur-sm rounded-full transition-all duration-700"
-            style={{
-              backgroundColor: progress < 0.5 ? "rgba(249, 115, 22, 0.11)" : `rgba(0, 0, 0, ${0.1 + (progress * 0.85)})`,
-              backdropFilter: `blur(${4 + (progress * 4)}px)`
-            }}
-          >
+          <div className="rounded-full">
             <button 
-              className="h-7 w-7 rounded-full flex items-center justify-center transition-all duration-700"
+              className="h-7 w-7 rounded-full flex items-center justify-center transition-all duration-700 bg-orange-500"
               style={{
-                backgroundColor: progress < 0.5 ? "#f97316" : "transparent",
                 transform: `scale(${1 + (progress * 0.05)})`,
                 boxShadow: `0 ${2 + (progress * 2)}px ${4 + (progress * 4)}px rgba(0, 0, 0, ${0.1 + (progress * 0.1)})`
               }}
@@ -245,7 +209,7 @@ const ProductHeader = () => {
               <ShoppingCart 
                 className="transition-all duration-700"
                 style={{
-                  color: progress < 0.5 ? 'white' : '#f97316',
+                  color: 'white',
                   transform: `scale(${1 - (progress * 0.05)})`
                 }}
                 strokeWidth={1.5} 
