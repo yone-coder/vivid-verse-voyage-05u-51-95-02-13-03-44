@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { ShoppingCart, Eye, Heart, Share, ChevronLeft, Search } from "lucide-react";
 
@@ -127,9 +128,10 @@ const ProductHeader = () => {
   // Back button
   const BackButton = () => (
     <div
-      className="rounded-full transition-all duration-700 overflow-hidden"
+      className="backdrop-blur-sm rounded-full transition-all duration-700"
       style={{
-        backgroundColor: progress < 0.5 ? "rgba(0,0,0,0.14)" : "transparent",
+        backgroundColor: `rgba(0, 0, 0, ${0.1 + (progress * 0.85)})`,
+        backdropFilter: `blur(${4 + (progress * 4)}px)`
       }}
     >
       <button
@@ -168,9 +170,10 @@ const ProductHeader = () => {
         
         <div className="flex gap-2">
           <div
-            className="rounded-full transition-all duration-700"
+            className="backdrop-blur-sm rounded-full transition-all duration-700"
             style={{
-              backgroundColor: progress < 0.5 ? "rgba(0,0,0,0.14)" : "transparent",
+              backgroundColor: `rgba(0, 0, 0, ${0.1 + (progress * 0.85)})`,
+              backdropFilter: `blur(${4 + (progress * 4)}px)`
             }}
           >
             <button 
@@ -199,9 +202,10 @@ const ProductHeader = () => {
           </div>
           
           <div
-            className="rounded-full transition-all duration-700"
+            className="backdrop-blur-sm rounded-full transition-all duration-700"
             style={{
-              backgroundColor: progress < 0.5 ? "rgba(0,0,0,0.14)" : "transparent",
+              backgroundColor: `rgba(0, 0, 0, ${0.1 + (progress * 0.85)})`,
+              backdropFilter: `blur(${4 + (progress * 4)}px)`
             }}
           >
             <button 
@@ -224,9 +228,10 @@ const ProductHeader = () => {
           </div>
           
           <div
-            className="rounded-full transition-all duration-700"
+            className="backdrop-blur-sm rounded-full transition-all duration-700"
             style={{
-              backgroundColor: progress < 0.5 ? "rgba(249, 115, 22, 0.11)" : "transparent",
+              backgroundColor: progress < 0.5 ? "rgba(249, 115, 22, 0.11)" : `rgba(0, 0, 0, ${0.1 + (progress * 0.85)})`,
+              backdropFilter: `blur(${4 + (progress * 4)}px)`
             }}
           >
             <button 
