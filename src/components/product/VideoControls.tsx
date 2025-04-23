@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useRef } from 'react';
 import { 
   Play, 
@@ -74,7 +73,8 @@ const VideoControls = ({
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
         <div className="flex items-center gap-12 pointer-events-auto">
           <button
-            className="h-10 w-10 rounded-full bg-black/70 hover:bg-black/90 text-white flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="h-10 w-10 rounded-full hover:bg-black/20 text-white flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500"
+            style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}
             onClick={onSkipBackward}
             aria-label="Skip Backward"
             tabIndex={0}
@@ -84,7 +84,8 @@ const VideoControls = ({
           </button>
           
           <button
-            className="h-14 w-14 rounded-full bg-white/30 hover:bg-white/60 text-white flex items-center justify-center transition-colors shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="h-14 w-14 rounded-full hover:bg-white/30 text-white flex items-center justify-center transition-colors shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+            style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}
             onClick={onPlayPause}
             aria-label={isPlaying ? "Pause" : "Play"}
             tabIndex={0}
@@ -98,7 +99,8 @@ const VideoControls = ({
           </button>
 
           <button
-            className="h-10 w-10 rounded-full bg-black/70 hover:bg-black/90 text-white flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="h-10 w-10 rounded-full hover:bg-black/20 text-white flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500"
+            style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}
             onClick={onSkipForward}
             aria-label="Skip Forward"
             tabIndex={0}
@@ -110,34 +112,11 @@ const VideoControls = ({
       </div>
       
       <div className="w-full bg-gradient-to-t from-black/90 to-transparent p-4 pointer-events-auto relative z-30">
-        <div className="w-full mb-4 px-1">
-          <div className="relative h-1 bg-gray-600 rounded overflow-hidden group">
-            <div 
-              className="absolute top-0 left-0 h-full bg-gray-400 bg-opacity-50" 
-              style={{ width: duration ? `${(bufferedTime / duration) * 100}%` : "0%" }}
-            />
-            <div 
-              className="absolute top-0 left-0 h-full bg-white" 
-              style={{ width: duration ? `${(currentTime / duration) * 100}%` : "0%" }}
-            />
-            <input
-              type="range"
-              min={0}
-              max={duration}
-              step={0.1}
-              value={currentTime}
-              className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
-              aria-label="Seek"
-              onChange={handleSeek}
-              tabIndex={0}
-            />
-          </div>
-        </div>
-
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
             <button
-              className="h-10 w-10 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center"
+              className="h-10 w-10 rounded-full hover:bg-black/20 text-white flex items-center justify-center"
+              style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}
               onClick={onMuteToggle}
               aria-label={isMuted ? "Unmute" : "Mute"}
               tabIndex={0}
@@ -163,7 +142,8 @@ const VideoControls = ({
 
           <div className="flex items-center space-x-4">
             <button
-              className="h-8 w-8 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center"
+              className="h-8 w-8 rounded-full hover:bg-black/20 text-white flex items-center justify-center"
+              style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}
               onClick={() => setIsSettingsOpen(x => !x)}
               aria-label="Settings"
               tabIndex={0}
@@ -173,7 +153,8 @@ const VideoControls = ({
             </button>
 
             <button
-              className="h-8 w-8 rounded-full bg-black/60 hover:bg-black/80 text-white flex items-center justify-center"
+              className="h-8 w-8 rounded-full hover:bg-black/20 text-white flex items-center justify-center"
+              style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}
               onClick={onFullscreenToggle}
               aria-label="Fullscreen"
               tabIndex={0}

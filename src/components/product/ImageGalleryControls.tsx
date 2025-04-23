@@ -1,6 +1,15 @@
 
 import React from "react";
-import { Play, Pause, RotateCw, FlipHorizontal, Focus, ChevronLeft, ChevronRight, Download } from "lucide-react";
+import { 
+  Play, 
+  Pause, 
+  RotateCw, 
+  FlipHorizontal, 
+  Focus, 
+  ChevronLeft, 
+  ChevronRight, 
+  Download 
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
@@ -52,7 +61,6 @@ const ImageGalleryControls: React.FC<ImageGalleryControlsProps> = ({
   if (!isFullscreen) {
     return (
       <>
-        {/* Right controls - action buttons */}
         <div className={cn(
           "absolute bottom-3 right-3 flex items-center gap-2 z-30 transition-opacity duration-300",
           (focusMode || (isPlaying)) && "opacity-0",
@@ -61,7 +69,8 @@ const ImageGalleryControls: React.FC<ImageGalleryControlsProps> = ({
           <Button
             variant="ghost" 
             size="icon"
-            className="h-8 w-8 rounded-full bg-black/60 backdrop-blur-sm hover:bg-black/80 text-white"
+            className="h-8 w-8 rounded-full hover:bg-black/20 text-white"
+            style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}
             onClick={onRotate}
           >
             <RotateCw className="h-4 w-4" />
@@ -70,7 +79,8 @@ const ImageGalleryControls: React.FC<ImageGalleryControlsProps> = ({
           <Button
             variant="ghost" 
             size="icon"
-            className="h-8 w-8 rounded-full bg-black/60 backdrop-blur-sm hover:bg-black/80 text-white"
+            className="h-8 w-8 rounded-full hover:bg-black/20 text-white"
+            style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}
             onClick={onFlip}
           >
             <FlipHorizontal className="h-4 w-4" />
@@ -80,9 +90,10 @@ const ImageGalleryControls: React.FC<ImageGalleryControlsProps> = ({
             variant="ghost" 
             size="icon"
             className={cn(
-              "h-8 w-8 rounded-full bg-black/60 backdrop-blur-sm hover:bg-black/80 text-white",
+              "h-8 w-8 rounded-full hover:bg-black/20 text-white",
               autoScrollEnabled && "bg-primary text-white"
             )}
+            style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}
             onClick={onToggleAutoScroll}
           >
             {autoScrollEnabled ? 
@@ -94,9 +105,10 @@ const ImageGalleryControls: React.FC<ImageGalleryControlsProps> = ({
           <button
             onClick={onToggleFocusMode}
             className={cn(
-              "h-8 w-8 flex items-center justify-center rounded-full bg-black/60 backdrop-blur-sm text-white hover:bg-black/80 transition-colors",
+              "h-8 w-8 flex items-center justify-center rounded-full hover:bg-black/20 text-white transition-colors",
               focusMode && "bg-primary text-white"
             )}
+            style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}
             aria-label={focusMode ? "Exit focus mode" : "Enter focus mode"}
           >
             <Focus size={16} />
@@ -124,7 +136,8 @@ const ImageGalleryControls: React.FC<ImageGalleryControlsProps> = ({
           <Button 
             variant="outline" 
             size="icon" 
-            className="rounded-full bg-black/40 backdrop-blur-sm hover:bg-black/60 border-white/10"
+            className="rounded-full hover:bg-black/20 border-white/10"
+            style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}
             onClick={(e) => {
               e.stopPropagation();
               onPrevious(e);
@@ -140,7 +153,8 @@ const ImageGalleryControls: React.FC<ImageGalleryControlsProps> = ({
           <Button 
             variant="outline" 
             size="icon" 
-            className="rounded-full bg-black/40 backdrop-blur-sm hover:bg-black/60 border-white/10"
+            className="rounded-full hover:bg-black/20 border-white/10"
+            style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}
             onClick={(e) => {
               e.stopPropagation();
               onNext(e);
@@ -156,6 +170,7 @@ const ImageGalleryControls: React.FC<ImageGalleryControlsProps> = ({
           variant="ghost" 
           size="icon"
           className="h-8 w-8 rounded-full hover:bg-white/10"
+          style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}
           onClick={(e) => {
             e.stopPropagation();
             onRotate(e);
@@ -168,6 +183,7 @@ const ImageGalleryControls: React.FC<ImageGalleryControlsProps> = ({
           variant="ghost" 
           size="icon"
           className="h-8 w-8 rounded-full hover:bg-white/10"
+          style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}
           onClick={(e) => {
             e.stopPropagation();
             onFlip(e);
@@ -181,6 +197,7 @@ const ImageGalleryControls: React.FC<ImageGalleryControlsProps> = ({
             variant="ghost" 
             size="icon"
             className="h-8 w-8 rounded-full hover:bg-white/10"
+            style={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}
             onClick={(e) => {
               e.stopPropagation();
               onDownload(e);
