@@ -1,4 +1,5 @@
-import React, { useState, useCallback, useRef } from 'react';
+
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { 
   Play, 
   Pause, 
@@ -28,6 +29,8 @@ interface VideoControlsProps {
   onFullscreenToggle?: () => void;
 }
 
+const AUTOHIDE_TIMEOUT = 5000;
+
 const VideoControls = ({
   isPlaying = false,
   isMuted = false,
@@ -47,6 +50,54 @@ const VideoControls = ({
   const [isVolumeSliderVisible, setIsVolumeSliderVisible] = useState(false);
   const [subtitlesEnabled, setSubtitlesEnabled] = useState(false);
 
+  // New: hide controls after inactivity
+  const [isVisible, setIsVisible] = useState(true);
+  const hideTimer = useRef<NodeJS.Timeout | null>(null);
+
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  const resetHideTimer = useCallback(() => {
+    setIsVisible(true);
+    if (hideTimer.current) clearTimeout(hideTimer.current);
+    hideTimer.current = setTimeout(() => {
+      setIsVisible(false);
+    }, AUTOHIDE_TIMEOUT);
+  }, []);
+
+  // Show when mouse over controls, hide after mouse leaves (with delay)
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+
+    const handleMouseMove = () => resetHideTimer();
+    const handleTouch = () => resetHideTimer();
+    const handleKeydown = () => resetHideTimer();
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("touchstart", handleTouch);
+    window.addEventListener("keydown", handleKeydown);
+
+    // Enable initially
+    resetHideTimer();
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("touchstart", handleTouch);
+      window.removeEventListener("keydown", handleKeydown);
+      if (hideTimer.current) clearTimeout(hideTimer.current);
+    };
+  }, [resetHideTimer]);
+
+  // Always show when relevant popups open (e.g., settings, slider), and pause autohide while interacting
+  useEffect(() => {
+    if (isSettingsOpen || isVolumeSliderVisible) {
+      setIsVisible(true);
+      if (hideTimer.current) clearTimeout(hideTimer.current);
+    } else {
+      resetHideTimer();
+    }
+  }, [isSettingsOpen, isVolumeSliderVisible, resetHideTimer]);
+
   const formatTime = useCallback((seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = Math.floor(seconds % 60);
@@ -62,14 +113,26 @@ const VideoControls = ({
 
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (onSeek) onSeek(Number(e.target.value));
+    resetHideTimer();
   };
 
   const handleVolumeSlider = (e: React.ChangeEvent<HTMLInputElement>) => {
     onVolumeChange(Number(e.target.value));
+    resetHideTimer();
   };
 
+  // Make the container pointer events off only if hidden
   return (
-    <div className="absolute inset-0 flex flex-col justify-end pointer-events-none">
+    <div 
+      ref={rootRef}
+      className={`absolute inset-0 flex flex-col justify-end z-20 transition-opacity duration-300 ${
+        isVisible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+      }`}
+      onMouseMove={resetHideTimer}
+      onTouchStart={resetHideTimer}
+      onMouseEnter={resetHideTimer}
+      tabIndex={-1}
+    >
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
         <div className="flex items-center gap-12 pointer-events-auto">
           <button
@@ -129,6 +192,10 @@ const VideoControls = ({
               aria-label="Seek"
               onChange={handleSeek}
               tabIndex={0}
+              onMouseDown={() => setIsVolumeSliderVisible(true)}
+              onMouseUp={() => setIsVolumeSliderVisible(false)}
+              onTouchStart={() => setIsVolumeSliderVisible(true)}
+              onTouchEnd={() => setIsVolumeSliderVisible(false)}
             />
           </div>
         </div>
@@ -153,6 +220,12 @@ const VideoControls = ({
               onChange={handleVolumeSlider}
               className="w-20 h-2 accent-purple-500"
               aria-label="Volume"
+              onFocus={() => setIsVolumeSliderVisible(true)}
+              onBlur={() => setIsVolumeSliderVisible(false)}
+              onMouseDown={() => setIsVolumeSliderVisible(true)}
+              onMouseUp={() => setIsVolumeSliderVisible(false)}
+              onTouchStart={() => setIsVolumeSliderVisible(true)}
+              onTouchEnd={() => setIsVolumeSliderVisible(false)}
             />
 
             <div className="text-xs text-white">
@@ -188,3 +261,4 @@ const VideoControls = ({
 };
 
 export default VideoControls;
+
