@@ -127,18 +127,18 @@ const ProductHeader = () => {
   // Back button
   const BackButton = () => (
     <div className="rounded-full transition-all duration-700 overflow-hidden"
-      style={{backgroundColor: `rgba(0, 0, 0, ${0.1 * (1 - progress)})`}}>
+      style={{ backgroundColor: `rgba(0, 0, 0, ${0.1 * (1 - progress)})` }}>
       <button className="h-7 w-7 rounded-full flex items-center justify-center transition-all duration-700"
         style={{
-          backgroundColor: progress > 0.5 ? `rgba(0, 0, 0, ${(progress - 0.5) * 0.4})` : 'transparent'
+          backgroundColor: 'transparent'
         }}>
-        <ChevronLeft 
+        <ChevronLeft
           className="transition-all duration-700"
           style={{
             color: progress > 0.5 ? `rgba(75, 85, 99, ${0.7 + (progress * 0.3)})` : `rgba(255, 255, 255, ${0.9 - (progress * 0.2)})`
           }}
-          strokeWidth={2} 
-          size={18} 
+          strokeWidth={2}
+          size={18}
         />
       </button>
     </div>
@@ -159,15 +159,15 @@ const ProductHeader = () => {
         
         <div className="flex gap-2">
           <div className="rounded-full transition-all duration-700"
-            style={{backgroundColor: `rgba(0, 0, 0, ${0.1 * (1 - progress)})`}}>
-            <button 
+            style={{ backgroundColor: `rgba(0, 0, 0, ${0.1 * (1 - progress)})` }}>
+            <button
               onClick={() => setIsFavorite(!isFavorite)}
               className="h-7 w-7 rounded-full flex items-center justify-center transition-all duration-700"
               style={{
-                backgroundColor: progress > 0.5 && !isFavorite ? `rgba(0, 0, 0, ${(progress - 0.5) * 0.4})` : 'transparent'
+                backgroundColor: 'transparent'
               }}
             >
-              <Heart 
+              <Heart
                 className="transition-all duration-700"
                 style={{
                   fill: isFavorite ? '#f97316' : 'transparent',
@@ -180,40 +180,40 @@ const ProductHeader = () => {
           </div>
           
           <div className="rounded-full transition-all duration-700"
-            style={{backgroundColor: `rgba(0, 0, 0, ${0.1 * (1 - progress)})`}}>
-            <button 
+            style={{ backgroundColor: `rgba(0, 0, 0, ${0.1 * (1 - progress)})` }}>
+            <button
               className="h-7 w-7 rounded-full flex items-center justify-center transition-all duration-700"
               style={{
-                backgroundColor: progress > 0.5 ? `rgba(0, 0, 0, ${(progress - 0.5) * 0.4})` : 'transparent'
+                backgroundColor: 'transparent'
               }}
             >
-              <Share 
+              <Share
                 className="transition-all duration-700"
                 style={{
                   color: progress > 0.5 ? `rgba(75, 85, 99, ${0.7 + (progress * 0.3)})` : `rgba(255, 255, 255, ${0.9 - (progress * 0.3)})`
                 }}
-                strokeWidth={1.5} 
-                size={18} 
+                strokeWidth={1.5}
+                size={18}
               />
             </button>
           </div>
           
           <div className="rounded-full">
-            <button 
+            <button
               className="h-7 w-7 rounded-full flex items-center justify-center transition-all duration-700 bg-orange-500"
               style={{
                 transform: `scale(${1 + (progress * 0.05)})`,
                 boxShadow: `0 ${2 + (progress * 2)}px ${4 + (progress * 4)}px rgba(0, 0, 0, ${0.1 + (progress * 0.1)})`
               }}
             >
-              <ShoppingCart 
+              <ShoppingCart
                 className="transition-all duration-700"
                 style={{
                   color: 'white',
                   transform: `scale(${1 - (progress * 0.05)})`
                 }}
-                strokeWidth={1.5} 
-                size={17} 
+                strokeWidth={1.5}
+                size={17}
               />
             </button>
           </div>
