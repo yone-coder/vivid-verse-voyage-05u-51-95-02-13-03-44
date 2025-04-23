@@ -64,6 +64,12 @@ const VideoControls = ({
     }, AUTOHIDE_TIMEOUT);
   }, []);
 
+  // Hides controls immediately (e.g. on backdrop click)
+  const hideControlsNow = useCallback(() => {
+    setIsVisible(false);
+    if (hideTimer.current) clearTimeout(hideTimer.current);
+  }, []);
+
   // Show when mouse over controls, hide after mouse leaves (with delay)
   useEffect(() => {
     const root = rootRef.current;
@@ -122,17 +128,29 @@ const VideoControls = ({
   };
 
   // Make the container pointer events off only if hidden
+  // The root overlay should *not* add any backdrop blur, only the bar and buttons.
   return (
     <div 
       ref={rootRef}
       className={`absolute inset-0 flex flex-col justify-end z-20 transition-opacity duration-700 ease-in-out ${
         isVisible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
       }`}
+      // Now only handle pointer interactions for autohide, not styles
       onMouseMove={resetHideTimer}
       onTouchStart={resetHideTimer}
+      // Hide controls immediately if you click/tap on root wrapper but not on controls
+      onClick={e => {
+        // avoid closing if click is on controls/buttons (they stop propagation)
+        if (e.target === rootRef.current) {
+          hideControlsNow();
+        }
+      }}
       onMouseEnter={resetHideTimer}
       tabIndex={-1}
+      style={{ background: "none" }} // Ensure: no root bg/blurring
     >
+      {/* Dark overlay region (but no blur) for clickable area */}
+      {/* Central controls */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20">
         <div className="flex items-center gap-12 pointer-events-auto">
           <button
@@ -141,6 +159,7 @@ const VideoControls = ({
             aria-label="Skip Backward"
             tabIndex={0}
             type="button"
+            onClickCapture={resetHideTimer}
           >
             <SkipBack className="h-5 w-5" />
           </button>
@@ -151,6 +170,7 @@ const VideoControls = ({
             aria-label={isPlaying ? "Pause" : "Play"}
             tabIndex={0}
             type="button"
+            onClickCapture={resetHideTimer}
           >
             {isPlaying ? (
               <Pause className="h-7 w-7" />
@@ -165,6 +185,7 @@ const VideoControls = ({
             aria-label="Skip Forward"
             tabIndex={0}
             type="button"
+            onClickCapture={resetHideTimer}
           >
             <SkipForward className="h-5 w-5" />
           </button>
@@ -197,6 +218,7 @@ const VideoControls = ({
               onMouseUp={() => setIsVolumeSliderVisible(false)}
               onTouchStart={() => setIsVolumeSliderVisible(true)}
               onTouchEnd={() => setIsVolumeSliderVisible(false)}
+              onClickCapture={resetHideTimer}
             />
           </div>
         </div>
@@ -209,6 +231,7 @@ const VideoControls = ({
               aria-label={isMuted ? "Unmute" : "Mute"}
               tabIndex={0}
               type="button"
+              onClickCapture={resetHideTimer}
             >
               {getVolumeIcon()}
             </button>
@@ -227,6 +250,7 @@ const VideoControls = ({
               onMouseUp={() => setIsVolumeSliderVisible(false)}
               onTouchStart={() => setIsVolumeSliderVisible(true)}
               onTouchEnd={() => setIsVolumeSliderVisible(false)}
+              onClickCapture={resetHideTimer}
             />
 
             <div className="text-xs text-white">
@@ -241,6 +265,7 @@ const VideoControls = ({
               aria-label="Settings"
               tabIndex={0}
               type="button"
+              onClickCapture={resetHideTimer}
             >
               <Settings className="h-5 w-5" />
             </button>
@@ -251,6 +276,7 @@ const VideoControls = ({
               aria-label="Fullscreen"
               tabIndex={0}
               type="button"
+              onClickCapture={resetHideTimer}
             >
               <Maximize className="h-5 w-5" />
             </button>
