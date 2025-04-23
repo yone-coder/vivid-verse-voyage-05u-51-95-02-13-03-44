@@ -45,7 +45,7 @@ const ProductHeader = () => {
     return (
       <div className="backdrop-blur-sm h-7 rounded-full px-2.5 flex items-center transition-all duration-700"
         style={{
-          backgroundColor: `rgba(255, 255, 255, ${0.1 + (progress * 0.85)})`,
+          backgroundColor: `rgba(0, 0, 0, ${0.1 + (progress * 0.85)})`,
           backdropFilter: `blur(${4 + (progress * 4)}px)`
         }}>
         <div className="flex items-center gap-1.5">
