@@ -125,7 +125,7 @@ const VideoControls = ({
   return (
     <div 
       ref={rootRef}
-      className={`absolute inset-0 flex flex-col justify-end z-20 transition-opacity duration-300 ${
+      className={`absolute inset-0 flex flex-col justify-end z-20 transition-opacity duration-700 ease-in-out ${
         isVisible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
       }`}
       onMouseMove={resetHideTimer}
@@ -171,7 +171,8 @@ const VideoControls = ({
         </div>
       </div>
       
-      <div className="w-full bg-gradient-to-t from-black/90 to-transparent p-4 pointer-events-auto relative z-30">
+      {/* Bar background is where we want the blur */}
+      <div className="w-full bg-gradient-to-t from-black/90 to-transparent p-4 pointer-events-auto relative z-30 backdrop-blur-sm">
         <div className="w-full mb-4 px-1">
           <div className="relative h-1 bg-gray-600 rounded overflow-hidden group">
             <div 
