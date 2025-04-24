@@ -540,17 +540,7 @@ const ProductDetail = () => {
 
           <div className="mt-1 mb-1 p-3 bg-white">
             <div className="mt-2">
-              <ProductQuantitySelector 
-                quantity={quantity}
-                onIncrement={incrementQuantity}
-                onDecrement={decrementQuantity}
-                price={currentPrice}
-                maxQuantity={10}
-                minQuantity={1}
-                inStock={currentStock}
-                productName={product.name}
-                stockInfo={selectedVariantStockInfo}
-              />
+              <ProductQuantitySelector/>
             </div>
 
             <div className="mt-2">
