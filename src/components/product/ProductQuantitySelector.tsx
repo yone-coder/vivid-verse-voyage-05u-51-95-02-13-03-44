@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { MinusIcon, PlusIcon } from "lucide-react";
+import { MinusIcon, PlusIcon, AlertTriangle, TrendingUp, ArrowUp, ArrowDown } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { VariantStockInfo } from "@/hooks/useVariantStockDecay";
+import { cn } from "@/lib/utils";
 
 interface ProductQuantitySelectorProps {
   quantity: number;
@@ -42,7 +43,12 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
   const [priceAnimation, setPriceAnimation] = useState(false);
   const [stockPulse, setStockPulse] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [animationTimestamp, setAnimationTimestamp] = useState(0);
+  const [recentStockChange, setRecentStockChange] = useState<number | null>(null);
+  const [lastUpdateTime, setLastUpdateTime] = useState<Date | null>(null);
+  const [priceChangeHistory, setPriceChangeHistory] = useState<Array<{ price: number; timestamp: Date }>>([]);
+  const [showPriceAlert, setShowPriceAlert] = useState(false);
+  const [priceIncreaseWarning, setPriceIncreaseWarning] = useState(false);
+  const [quantityChangeStreak, setQuantityChangeStreak] = useState(0);
   
   const displayStock = stockInfo?.currentStock !== undefined
     ? Math.floor(stockInfo.currentStock)
@@ -61,7 +67,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
                        isExtremelyLowStock ? `Only ${displayStock} left!` :
                        isVeryLowStock ? "Almost gone!" :
                        isLowStock ? "Low stock" : null;
-  
+
   const formatPrice = (value: number) => {
     return value.toFixed(2);
   };
@@ -169,9 +175,45 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
   };
   
   const stockLevelInfo = getStockLevelInfo();
-  
+
+  const handleStockChange = useCallback((newStock: number) => {
+    const change = newStock - displayStock;
+    if (change !== 0) {
+      setRecentStockChange(change);
+      setLastUpdateTime(new Date());
+      
+      if (change < 0) {
+        toast.warning(`Stock decreased by ${Math.abs(change)}`, {
+          description: `${displayStock - Math.abs(change)} units remaining`
+        });
+      }
+      
+      setTimeout(() => setRecentStockChange(null), 5000);
+    }
+  }, [displayStock]);
+
+  useEffect(() => {
+    if (stockInfo?.currentStock !== undefined) {
+      handleStockChange(Math.floor(stockInfo.currentStock));
+    }
+  }, [stockInfo?.currentStock, handleStockChange]);
+
+  useEffect(() => {
+    if (price > 0) {
+      setPriceChangeHistory(prev => [...prev, { price, timestamp: new Date() }]);
+      
+      if (priceChangeHistory.length > 1) {
+        const lastPrice = priceChangeHistory[priceChangeHistory.length - 2].price;
+        if (price > lastPrice) {
+          setPriceIncreaseWarning(true);
+          setTimeout(() => setPriceIncreaseWarning(false), 5000);
+        }
+      }
+    }
+  }, [price, priceChangeHistory]);
+
   const handleIncrementWithFeedback = () => {
-    if (isMaxQuantity) {
+    if (quantity >= maxQuantity || quantity >= displayStock) {
       setStockPulse(true);
       setTimeout(() => setStockPulse(false), 1000);
       
@@ -188,14 +230,39 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
     }
     
     setShowAnimation(true);
-    setTimeout(() => setShowAnimation(false), 300);
-    
     setPriceAnimation(true);
+    setQuantityChangeStreak(prev => prev + 1);
+    
+    if (quantityChangeStreak > 2) {
+      toast.info("Adding items quickly!", {
+        description: "You're on a roll! 🚀"
+      });
+    }
+    
+    setTimeout(() => setShowAnimation(false), 300);
     setTimeout(() => setPriceAnimation(false), 800);
     
     onIncrement();
   };
-  
+
+  const handleDecrementWithFeedback = () => {
+    if (quantity <= minQuantity) {
+      toast.error(`Minimum quantity is ${minQuantity}`, {
+        description: `Cannot decrease quantity further`
+      });
+      return;
+    }
+    
+    setShowAnimation(true);
+    setPriceAnimation(true);
+    setQuantityChangeStreak(0);
+    
+    setTimeout(() => setShowAnimation(false), 300);
+    setTimeout(() => setPriceAnimation(false), 800);
+    
+    onDecrement();
+  };
+
   useEffect(() => {
     if (isLowStock) {
       const interval = setInterval(() => {
@@ -234,75 +301,120 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
   }, [stockInfo, animationTimestamp]);
 
   return (
-    <div className="space-y-2 font-aliexpress">
+    <div className="space-y-2 font-aliexpress relative">
       <div className="flex items-center justify-between">
-        <div className="flex items-center">
+        <div className="flex items-center gap-2">
           <span className="text-sm font-medium text-gray-700">Quantity:</span>
           {displayStock <= 30 && (
-            <span className={`ml-2 text-xs ${stockLevelInfo.textColor} inline-flex items-center ${stockLevelInfo.animate ? 'animate-pulse' : ''}`}>
-              {stockLevelInfo.label}
-            </span>
+            <div className={cn(
+              "text-xs inline-flex items-center gap-1",
+              isExtremelyLowStock ? "text-red-600" : 
+              isVeryLowStock ? "text-orange-600" : 
+              "text-amber-600"
+            )}>
+              <AlertTriangle size={12} className={stockPulse ? "animate-pulse" : ""} />
+              {lowStockText}
+            </div>
           )}
         </div>
         
-        <div className="flex items-center">
-          <div className="flex items-center border border-gray-300 rounded-md overflow-hidden shadow-sm">
-            <Button 
-              onClick={onDecrement} 
-              variant="ghost" 
-              size="sm"
-              className={`h-8 px-2 rounded-none border-r border-gray-300 transition-all duration-300
-                ${isMinQuantity ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100'}`}
-              disabled={isMinQuantity}
-            >
-              <MinusIcon size={16} className="text-gray-600" />
-            </Button>
-            
-            <div className={`w-12 text-center font-medium ${showAnimation ? 'scale-110' : ''} transition-all duration-300`}>
-              {quantity}
+        {recentStockChange && (
+          <div className={cn(
+            "absolute -top-8 right-0 text-xs font-medium px-2 py-1 rounded-full transition-all duration-300",
+            recentStockChange < 0 ? "bg-red-100 text-red-600" : "bg-green-100 text-green-600"
+          )}>
+            <div className="flex items-center gap-1">
+              {recentStockChange < 0 ? <ArrowDown size={12} /> : <ArrowUp size={12} />}
+              {Math.abs(recentStockChange)} units {recentStockChange < 0 ? "sold" : "restocked"}
             </div>
-            
-            <Button 
-              onClick={handleIncrementWithFeedback} 
-              variant="ghost" 
-              size="sm"
-              className={`h-8 px-2 rounded-none border-l border-gray-300 transition-all duration-300
-                ${isMaxQuantity ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100'}`}
-              disabled={isMaxQuantity}
-            >
-              <PlusIcon size={16} className="text-gray-600" />
-            </Button>
           </div>
-        </div>
+        )}
       </div>
-      
-      {price > 0 && (
-        <div className="flex items-center justify-between text-sm">
-          <div className="flex items-center text-gray-700">
-            <span>Subtotal:</span>
+
+      <div className="flex items-center">
+        <div className="flex items-center border border-gray-300 rounded-md overflow-hidden shadow-sm">
+          <Button 
+            onClick={handleDecrementWithFeedback} 
+            variant="ghost" 
+            size="sm"
+            className={cn(
+              "h-8 px-2 rounded-none border-r border-gray-300 transition-all duration-300",
+              quantity <= minQuantity ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-100",
+              showAnimation && "scale-95"
+            )}
+            disabled={quantity <= minQuantity}
+          >
+            <MinusIcon size={16} className="text-gray-600" />
+          </Button>
+          
+          <div className={cn(
+            "w-12 text-center font-medium transition-all duration-300",
+            showAnimation ? "scale-110" : "",
+            quantity === maxQuantity ? "text-red-600" : ""
+          )}>
+            {quantity}
           </div>
-          <div className={`font-medium text-red-600 transition-all duration-500 ${priceAnimation ? 'scale-110' : ''}`}>
-            ${formatPrice(totalPrice)}
+          
+          <Button 
+            onClick={handleIncrementWithFeedback} 
+            variant="ghost" 
+            size="sm"
+            className={cn(
+              "h-8 px-2 rounded-none border-l border-gray-300 transition-all duration-300",
+              quantity >= maxQuantity || quantity >= displayStock ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-100",
+              showAnimation && "scale-95"
+            )}
+            disabled={quantity >= maxQuantity || quantity >= displayStock}
+          >
+            <PlusIcon size={16} className="text-gray-600" />
+          </Button>
+        </div>
+        
+        {price > 0 && (
+          <div className={cn(
+            "ml-4 text-sm font-medium",
+            priceAnimation ? "scale-110 text-green-600" : "text-gray-700",
+            "transition-all duration-300"
+          )}>
+            Subtotal: ${formatPrice(totalPrice)}
           </div>
+        )}
+      </div>
+
+      {priceIncreaseWarning && (
+        <div className="flex items-center gap-1 text-xs text-amber-600 bg-amber-50 px-2 py-1 rounded">
+          <TrendingUp size={12} />
+          Price increased due to high demand
         </div>
       )}
-      
+
       <div className="flex flex-col space-y-1">
         <div className="relative pt-1">
           <Progress 
             value={stockPercentage} 
             className="h-1.5 w-full"
-            indicatorClassName={`${stockLevelInfo.color} ${stockPulse ? 'animate-pulse' : ''} ${stockInfo?.isActive ? 'transition-all duration-300 ease-linear' : ''}`}
+            indicatorClassName={cn(
+              stockLevelInfo.color,
+              stockPulse ? "animate-pulse" : "",
+              stockInfo?.isActive ? "transition-all duration-300 ease-linear" : ""
+            )}
           />
         </div>
         
         <div className="flex items-center justify-between text-xs">
-          <div className={`${stockLevelInfo.textColor} flex items-center`}>
-            <span className={`w-2 h-2 ${stockLevelInfo.color} rounded-full mr-1.5 ${stockLevelInfo.animate ? 'animate-pulse' : ''}`}></span>
+          <div className={cn(
+            stockLevelInfo.textColor,
+            "flex items-center"
+          )}>
+            <span className={cn(
+              "w-2 h-2 rounded-full mr-1.5",
+              stockLevelInfo.color,
+              stockLevelInfo.animate ? "animate-pulse" : ""
+            )}></span>
             {displayStock === 0 
-              ? 'Currently out of stock' 
+              ? "Currently out of stock" 
               : displayStock === 1 
-                ? 'Last item in stock!' 
+                ? "Last item in stock!" 
                 : `${displayStock} units available`}
           </div>
           
@@ -315,7 +427,13 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
       </div>
       
       {stockLevelInfo.badge && (
-        <Badge variant="aliHot" className={`text-xs py-0.5 ${stockLevelInfo.animate ? 'animate-pulse' : ''}`}>
+        <Badge 
+          variant="aliHot" 
+          className={cn(
+            "text-xs py-0.5",
+            stockLevelInfo.animate ? "animate-pulse" : ""
+          )}
+        >
           {stockLevelInfo.badge}
         </Badge>
       )}
