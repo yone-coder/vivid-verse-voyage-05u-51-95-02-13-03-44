@@ -500,15 +500,15 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
 
       <InfoBand />
 
-       {/* Thumbnails - keep the gap/margin above */}
-  <div className="mt-1"> {/* or gap-1 if using flex gap */}
-    <GalleryThumbnails
-      images={images}
-      currentIndex={currentIndex}
-      onThumbnailClick={handleThumbnailClick}
-      isPlaying={isPlaying}
-    />
-  </div>
+       <div className="mt-1 w-full overflow-x-hidden">
+  <GalleryThumbnails
+    images={images}
+    currentIndex={currentIndex}
+    onThumbnailClick={handleThumbnailClick}
+    isPlaying={isPlaying}
+    className="flex-nowrap"  // or other appropriate classes
+  />
+</div>
 
       {isFullscreenMode && currentIndex !== 0 && (
         <div 
