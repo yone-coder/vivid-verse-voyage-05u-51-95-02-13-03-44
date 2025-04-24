@@ -16,7 +16,7 @@ const GalleryThumbnails = ({
   isPlaying = false
 }: GalleryThumbnailsProps) => {
   return (
-    <div className="flex items-center gap-1.5 px-1.5 pt-1.5 pb-1.5 overflow-x-auto scrollbar-none">
+    <div className="flex items-center gap-1.5 px-1.5 pt-1.5 pb-1.5 overflow-x-hidden w-full">
       {[...Array(Math.min(7, images.length))].map((_, index) => (
         <div
           key={index}
@@ -45,12 +45,12 @@ const GalleryThumbnails = ({
             </div>
           ) : (
             <img 
-              src={images[index - 1]} 
+              src={images[index]} 
               alt={`Thumbnail ${index}`} 
               className="w-full h-full object-cover"
             />
           )}
-          
+
           <span className="absolute bottom-0.5 right-0.5 text-[9px] bg-black/40 text-white px-0.5 rounded">
             {index + 1}
           </span>
