@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { MinusIcon, PlusIcon } from "lucide-react";
+import { MinusIcon, PlusIcon, AlertCircleIcon, CheckCircleIcon, PackageIcon } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -18,15 +18,6 @@ interface ProductQuantitySelectorProps {
   stockInfo?: VariantStockInfo;
 }
 
-interface StockLevelInfo {
-  level: string;
-  color: string;
-  textColor: string;
-  label: string;
-  animate: boolean;
-  badge: string | null;
-}
-
 const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
   quantity,
   onIncrement,
@@ -38,285 +29,228 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
   productName = "item",
   stockInfo
 }) => {
-  const [showAnimation, setShowAnimation] = useState(false);
+  const [quantityAnimation, setQuantityAnimation] = useState(false);
   const [priceAnimation, setPriceAnimation] = useState(false);
-  const [stockPulse, setStockPulse] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [animationTimestamp, setAnimationTimestamp] = useState(0);
-  
+  const [showTooltip, setShowTooltip] = useState(false);
+
   const displayStock = stockInfo?.currentStock !== undefined
     ? Math.floor(stockInfo.currentStock)
     : inStock;
+
+  const effectiveMaxQuantity = Math.min(maxQuantity, displayStock);
+  const isMaxQuantity = quantity >= effectiveMaxQuantity;
+  const isMinQuantity = quantity <= minQuantity;
   
   const stockPercentage = stockInfo?.stockPercentage !== undefined
     ? stockInfo.stockPercentage
     : Math.min(100, (displayStock / 200) * 100);
-  
-  const isLowStock = displayStock < 20;
-  const isVeryLowStock = displayStock < 8;
-  const isExtremelyLowStock = displayStock < 4;
-  
-  const lowStockText = displayStock === 0 ? "Sold out" :
-                       displayStock === 1 ? "Last one!" :
-                       isExtremelyLowStock ? `Only ${displayStock} left!` :
-                       isVeryLowStock ? "Almost gone!" :
-                       isLowStock ? "Low stock" : null;
-  
-  const formatPrice = (value: number) => {
-    return value.toFixed(2);
-  };
 
-  const totalPrice = price * quantity;
-  const isMaxQuantity = quantity >= maxQuantity || quantity >= displayStock;
-  const isMinQuantity = quantity <= minQuantity;
-  
-  const effectiveMaxQuantity = Math.min(maxQuantity, displayStock);
-  
-  const getStockLevelInfo = (): StockLevelInfo => {
-    const currentStock = displayStock;
-    
-    if (currentStock === 0) {
+  const getStockStatus = () => {
+    if (displayStock === 0) {
       return {
-        level: 'out-of-stock',
-        color: 'bg-gray-500',
-        textColor: 'text-gray-500',
-        label: 'Out of Stock',
-        animate: false,
-        badge: 'SOLD OUT'
+        level: "out-of-stock",
+        color: "bg-gray-300",
+        textColor: "text-gray-500",
+        indicator: "bg-gray-400",
+        message: "Out of Stock",
+        badge: "SOLD OUT",
+        badgeVariant: "destructive",
+        showBadge: true,
+        urgent: false,
+        icon: <AlertCircleIcon size={14} className="text-gray-500" />
       };
-    } else if (currentStock <= 3) {
+    } else if (displayStock <= 5) {
       return {
-        level: 'extremely-low',
-        color: 'bg-red-800',
-        textColor: 'text-red-800',
-        label: 'Extremely Low Stock!',
-        animate: true,
-        badge: 'LAST FEW ITEMS!'
+        level: "critical",
+        color: "bg-red-500",
+        textColor: "text-red-600",
+        indicator: "bg-red-500",
+        message: `Only ${displayStock} left!`,
+        badge: "LAST CHANCE",
+        badgeVariant: "destructive",
+        showBadge: true,
+        urgent: true,
+        icon: <AlertCircleIcon size={14} className="text-red-500" />
       };
-    } else if (currentStock <= 7) {
+    } else if (displayStock <= 15) {
       return {
-        level: 'very-low',
-        color: 'bg-red-400',
-        textColor: 'text-red-400',
-        label: 'Very Low Stock!',
-        animate: true,
-        badge: 'ALMOST GONE!'
+        level: "low",
+        color: "bg-orange-400",
+        textColor: "text-orange-600",
+        indicator: "bg-orange-400",
+        message: "Low stock",
+        badge: "SELLING FAST",
+        badgeVariant: "warning",
+        showBadge: true,
+        urgent: false,
+        icon: <AlertCircleIcon size={14} className="text-orange-400" />
       };
-    } else if (currentStock <= 15) {
+    } else if (displayStock <= 50) {
       return {
-        level: 'low',
-        color: 'bg-orange-500',
-        textColor: 'text-orange-500',
-        label: 'Low Stock',
-        animate: true,
-        badge: 'SELLING FAST!'
-      };
-    } else if (currentStock <= 30) {
-      return {
-        level: 'below-medium',
-        color: 'bg-amber-400',
-        textColor: 'text-amber-500',
-        label: 'Limited Stock',
-        animate: false,
-        badge: 'POPULAR ITEM'
-      };
-    } else if (currentStock <= 60) {
-      return {
-        level: 'medium',
-        color: 'bg-yellow-300',
-        textColor: 'text-yellow-600',
-        label: 'Medium Stock',
-        animate: false,
-        badge: null
-      };
-    } else if (currentStock <= 90) {
-      return {
-        level: 'above-medium',
-        color: 'bg-lime-600',
-        textColor: 'text-lime-600',
-        label: 'Good Stock',
-        animate: false,
-        badge: null
-      };
-    } else if (currentStock <= 130) {
-      return {
-        level: 'high',
-        color: 'bg-green-300',
-        textColor: 'text-green-500',
-        label: 'High Stock',
-        animate: false,
-        badge: null
-      };
-    } else if (currentStock <= 180) {
-      return {
-        level: 'very-high',
-        color: 'bg-green-500',
-        textColor: 'text-green-600',
-        label: 'Very High Stock',
-        animate: false,
-        badge: null
+        level: "medium",
+        color: "bg-yellow-300",
+        textColor: "text-yellow-700",
+        indicator: "bg-yellow-300",
+        message: "Limited availability",
+        badge: "POPULAR",
+        badgeVariant: "default",
+        showBadge: true,
+        urgent: false,
+        icon: <PackageIcon size={14} className="text-yellow-600" />
       };
     } else {
       return {
-        level: 'overstocked',
-        color: 'bg-teal-500',
-        textColor: 'text-teal-600',
-        label: 'Fully Stocked',
-        animate: false,
-        badge: 'PLENTY AVAILABLE'
+        level: "high",
+        color: "bg-green-400",
+        textColor: "text-green-600",
+        indicator: "bg-green-400",
+        message: "In stock",
+        badge: null,
+        badgeVariant: "default",
+        showBadge: false,
+        urgent: false,
+        icon: <CheckCircleIcon size={14} className="text-green-500" />
       };
     }
   };
-  
-  const stockLevelInfo = getStockLevelInfo();
-  
-  const handleIncrementWithFeedback = () => {
+
+  const stockStatus = getStockStatus();
+  const formatPrice = (value) => value.toFixed(2);
+  const totalPrice = price * quantity;
+
+  const handleIncrement = () => {
     if (isMaxQuantity) {
-      setStockPulse(true);
-      setTimeout(() => setStockPulse(false), 1000);
+      setShowTooltip(true);
+      setTimeout(() => setShowTooltip(false), 3000);
       
-      if (displayStock <= maxQuantity) {
-        toast.warning(`Limited stock available`, {
-          description: `Only ${displayStock} ${productName}${displayStock !== 1 ? 's' : ''} left in stock.`
-        });
-      } else {
-        toast.info(`Maximum quantity reached`, {
-          description: `You can only purchase up to ${maxQuantity} of this item at once.`
-        });
-      }
+      const reason = displayStock <= maxQuantity 
+        ? `Only ${displayStock} ${productName}${displayStock !== 1 ? 's' : ''} available`
+        : `Maximum of ${maxQuantity} per order`;
+        
+      toast.warning(`Cannot add more items`, {
+        description: reason
+      });
       return;
     }
-    
-    setShowAnimation(true);
-    setTimeout(() => setShowAnimation(false), 300);
-    
-    setPriceAnimation(true);
-    setTimeout(() => setPriceAnimation(false), 800);
-    
+
+    setQuantityAnimation(true);
+    setTimeout(() => setQuantityAnimation(false), 300);
+
+    if (price > 0) {
+      setPriceAnimation(true);
+      setTimeout(() => setPriceAnimation(false), 800);
+    }
+
     onIncrement();
   };
-  
-  useEffect(() => {
-    if (isLowStock) {
-      const interval = setInterval(() => {
-        setStockPulse(true);
-        setTimeout(() => setStockPulse(false), 1000);
-      }, 5000);
-      
-      return () => clearInterval(interval);
-    }
-  }, [isLowStock]);
 
-  useEffect(() => {
-    if (stockInfo?.isActive) {
-      let animationFrameId: number;
-      
-      const updateAnimation = (timestamp: number) => {
-        if (!animationTimestamp) {
-          setAnimationTimestamp(timestamp);
-        }
-        
-        if (stockInfo?.stockPercentage !== undefined) {
-          setProgress(stockInfo.stockPercentage);
-        }
-        
-        animationFrameId = requestAnimationFrame(updateAnimation);
-      };
-      
-      animationFrameId = requestAnimationFrame(updateAnimation);
-      
-      return () => {
-        if (animationFrameId) {
-          cancelAnimationFrame(animationFrameId);
-        }
-      };
+  const handleDecrement = () => {
+    if (!isMinQuantity) {
+      setQuantityAnimation(true);
+      setTimeout(() => setQuantityAnimation(false), 300);
+
+      if (price > 0) {
+        setPriceAnimation(true);
+        setTimeout(() => setPriceAnimation(false), 800);
+      }
+
+      onDecrement();
     }
-  }, [stockInfo, animationTimestamp]);
+  };
 
   return (
-    <div className="space-y-2 font-aliexpress">
+    <div className="space-y-4 font-sans">
+      {/* Quantity Controls */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center">
-          <span className="text-sm font-medium text-gray-700">Quantity:</span>
-          {displayStock <= 30 && (
-            <span className={`ml-2 text-xs ${stockLevelInfo.textColor} inline-flex items-center ${stockLevelInfo.animate ? 'animate-pulse' : ''}`}>
-              {stockLevelInfo.label}
-            </span>
+        <div className="flex flex-col gap-1">
+          <span className="text-sm font-medium text-gray-700">Quantity</span>
+          {displayStock > 0 && (
+            <div className="flex items-center gap-1">
+              {stockStatus.icon}
+              <span className={`text-xs ${stockStatus.textColor} ${stockStatus.urgent ? 'animate-pulse font-semibold' : ''}`}>
+                {stockStatus.message}
+              </span>
+            </div>
           )}
         </div>
-        
-        <div className="flex items-center">
-          <div className="flex items-center border border-gray-300 rounded-md overflow-hidden shadow-sm">
-            <Button 
-              onClick={onDecrement} 
-              variant="ghost" 
-              size="sm"
-              className={`h-8 px-2 rounded-none border-r border-gray-300 transition-all duration-300
-                ${isMinQuantity ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100'}`}
+
+        <div className="relative">
+          <div className="flex items-center rounded-lg border bg-white shadow-sm">
+            <Button
+              onClick={handleDecrement}
+              variant="ghost"
+              size="icon"
               disabled={isMinQuantity}
+              className={`h-10 w-10 rounded-l-lg border-r p-0 ${isMinQuantity ? 'opacity-40' : 'hover:bg-gray-50'}`}
             >
-              <MinusIcon size={16} className="text-gray-600" />
+              <MinusIcon size={16} />
             </Button>
             
-            <div className={`w-12 text-center font-medium ${showAnimation ? 'scale-110' : ''} transition-all duration-300`}>
+            <div className={`flex h-10 w-12 items-center justify-center font-medium transition-all duration-200 ${quantityAnimation ? 'scale-110 text-blue-600' : ''}`}>
               {quantity}
             </div>
             
-            <Button 
-              onClick={handleIncrementWithFeedback} 
-              variant="ghost" 
-              size="sm"
-              className={`h-8 px-2 rounded-none border-l border-gray-300 transition-all duration-300
-                ${isMaxQuantity ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100'}`}
+            <Button
+              onClick={handleIncrement}
+              variant="ghost"
+              size="icon"
               disabled={isMaxQuantity}
+              className={`h-10 w-10 rounded-r-lg border-l p-0 ${isMaxQuantity ? 'opacity-40' : 'hover:bg-gray-50'}`}
             >
-              <PlusIcon size={16} className="text-gray-600" />
+              <PlusIcon size={16} />
             </Button>
           </div>
+          
+          {showTooltip && (
+            <div className="absolute -right-2 top-12 z-10 w-44 rounded-md bg-white p-2 text-xs shadow-lg ring-1 ring-black ring-opacity-5">
+              {displayStock <= maxQuantity 
+                ? `Limited inventory: only ${displayStock} available`
+                : `Maximum ${maxQuantity} per order allowed`}
+              <div className="absolute -top-1 right-4 h-2 w-2 rotate-45 bg-white"></div>
+            </div>
+          )}
         </div>
       </div>
-      
-      {price > 0 && (
-        <div className="flex items-center justify-between text-sm">
-          <div className="flex items-center text-gray-700">
-            <span>Subtotal:</span>
-          </div>
-          <div className={`font-medium text-red-600 transition-all duration-500 ${priceAnimation ? 'scale-110' : ''}`}>
-            ${formatPrice(totalPrice)}
-          </div>
-        </div>
-      )}
-      
-      <div className="flex flex-col space-y-1">
-        <div className="relative pt-1">
+
+      {/* Stock Status Bar */}
+      <div className="space-y-1">
+        <div className="relative">
           <Progress 
             value={stockPercentage} 
-            className="h-1.5 w-full"
-            indicatorClassName={`${stockLevelInfo.color} ${stockPulse ? 'animate-pulse' : ''} ${stockInfo?.isActive ? 'transition-all duration-300 ease-linear' : ''}`}
+            className="h-2 w-full overflow-hidden rounded-full bg-gray-100"
+            indicatorClassName={`${stockStatus.color} ${stockStatus.urgent ? 'animate-pulse' : ''} transition-all duration-300`}
           />
         </div>
         
         <div className="flex items-center justify-between text-xs">
-          <div className={`${stockLevelInfo.textColor} flex items-center`}>
-            <span className={`w-2 h-2 ${stockLevelInfo.color} rounded-full mr-1.5 ${stockLevelInfo.animate ? 'animate-pulse' : ''}`}></span>
+          <div className="flex items-center gap-1 text-gray-600">
             {displayStock === 0 
-              ? 'Currently out of stock' 
-              : displayStock === 1 
-                ? 'Last item in stock!' 
-                : `${displayStock} units available`}
+              ? 'Currently unavailable'
+              : `${displayStock} ${displayStock === 1 ? 'unit' : 'units'} available`}
           </div>
           
-          {effectiveMaxQuantity > 1 && (
-            <div className="text-gray-500 flex items-center gap-1">
-              Buy up to {effectiveMaxQuantity} at once
+          {effectiveMaxQuantity > 1 && displayStock > 0 && (
+            <div className="text-gray-500">
+              Limit: {effectiveMaxQuantity} per order
             </div>
           )}
         </div>
       </div>
-      
-      {stockLevelInfo.badge && (
-        <Badge variant="aliHot" className={`text-xs py-0.5 ${stockLevelInfo.animate ? 'animate-pulse' : ''}`}>
-          {stockLevelInfo.badge}
+
+      {/* Price Calculation */}
+      {price > 0 && (
+        <div className="flex items-center justify-between rounded-lg bg-gray-50 p-2">
+          <span className="text-sm text-gray-600">Subtotal:</span>
+          <div className={`font-medium text-lg transition-all duration-300 ${priceAnimation ? 'scale-110 text-blue-600' : 'text-gray-900'}`}>
+            ${formatPrice(totalPrice)}
+          </div>
+        </div>
+      )}
+
+      {/* Badge for Limited Stock */}
+      {stockStatus.showBadge && (
+        <Badge variant={stockStatus.badgeVariant} className={`px-2 py-1 text-xs ${stockStatus.urgent ? 'animate-pulse' : ''}`}>
+          {stockStatus.badge}
         </Badge>
       )}
     </div>
