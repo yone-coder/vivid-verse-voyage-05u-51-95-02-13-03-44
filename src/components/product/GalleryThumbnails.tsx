@@ -16,7 +16,7 @@ const GalleryThumbnails = ({
   isPlaying = false
 }: GalleryThumbnailsProps) => {
   return (
-    <div className="flex items-center gap-1.5 px-1.5 pt-1.5 pb-1.5 overflow-x-hidden w-full">
+    <div className="flex items-center gap-1.5 px-1.5 pt-1.5 pb-1.5 overflow-x-auto w-full scrollbar-hide">
       {[...Array(Math.min(7, images.length))].map((_, index) => (
         <div
           key={index}
