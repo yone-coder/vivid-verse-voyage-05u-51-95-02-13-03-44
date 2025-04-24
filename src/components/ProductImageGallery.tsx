@@ -500,13 +500,12 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
 
       <InfoBand />
 
-       <div className="mt-1 w-full overflow-x-hidden">
+      <div className="mt-1 w-full">  {/* Removed overflow-x-hidden */}
   <GalleryThumbnails
     images={images}
     currentIndex={currentIndex}
     onThumbnailClick={handleThumbnailClick}
     isPlaying={isPlaying}
-    className="flex-nowrap"  // or other appropriate classes
   />
 </div>
 
