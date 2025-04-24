@@ -396,7 +396,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   };
 
   return (
-    <div ref={containerRef} className="flex flex-col gap-1 bg-transparent mb-0">
+    <div ref={containerRef} className="flex flex-col bg-transparent">
       <div className="relative w-full aspect-square overflow-hidden">
         <Carousel
           className="w-full h-full"
@@ -500,12 +500,15 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
 
       <InfoBand />
 
-      <GalleryThumbnails
-        images={images}
-        currentIndex={currentIndex}
-        onThumbnailClick={handleThumbnailClick}
-        isPlaying={isPlaying}
-      />
+       {/* Thumbnails - keep the gap/margin above */}
+  <div className="mt-1"> {/* or gap-1 if using flex gap */}
+    <GalleryThumbnails
+      images={images}
+      currentIndex={currentIndex}
+      onThumbnailClick={handleThumbnailClick}
+      isPlaying={isPlaying}
+    />
+  </div>
 
       {isFullscreenMode && currentIndex !== 0 && (
         <div 
