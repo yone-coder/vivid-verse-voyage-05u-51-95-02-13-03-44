@@ -15,7 +15,7 @@ interface ProductVariant {
   name: string;
   price: number;
   stock: number;
-  image: string;
+  image?: string; // Made optional with the ? operator
   bestseller?: boolean;
   limited?: boolean;
 }

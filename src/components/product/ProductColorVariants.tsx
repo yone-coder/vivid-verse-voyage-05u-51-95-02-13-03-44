@@ -7,12 +7,12 @@ const ProductColorVariants = () => {
   const [selectedColor, setSelectedColor] = useState("Black");
 
   const colorVariants = [
-    { name: "Black", price: 79.99, stock: 256, bestseller: true },
-    { name: "White", price: 89.99, stock: 124, bestseller: false },
-    { name: "Navy Blue", price: 84.99, stock: 55, bestseller: false },
-    { name: "Forest Green", price: 89.99, stock: 180, bestseller: false },
-    { name: "Jet Black", price: 89.99, stock: 18, bestseller: false },
-    { name: "Red", price: 89.99, stock: 0, bestseller: false }
+    { name: "Black", price: 79.99, stock: 256, bestseller: true, image: "" },
+    { name: "White", price: 89.99, stock: 124, bestseller: false, image: "" },
+    { name: "Navy Blue", price: 84.99, stock: 55, bestseller: false, image: "" },
+    { name: "Forest Green", price: 89.99, stock: 180, bestseller: false, image: "" },
+    { name: "Jet Black", price: 89.99, stock: 18, bestseller: false, image: "" },
+    { name: "Red", price: 89.99, stock: 0, bestseller: false, image: "" }
   ];
 
   const TOTAL_CAPACITY = 256;
