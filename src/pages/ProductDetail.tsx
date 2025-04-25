@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import ProductHeader from "@/components/product/ProductHeader";
 import { useParams } from "react-router-dom";
@@ -100,22 +99,22 @@ const ProductDetail = () => {
   };
 
   const handleShare = () => {
-  if (navigator.share) {
-    navigator.share({
-      title: product?.name || "Product",
-      text: `Check out this ${product?.name || "product"}!`,
-      url: window.location.href,
-    }).catch((error) => {
-      console.log('Error sharing:', error);
-    });
-  } else {
-    navigator.clipboard.writeText(window.location.href);
-    toast({
-      title: "Link copied!",
-      description: "Product link copied to clipboard",
-    });
-  }
-};
+    if (navigator.share) {
+      navigator.share({
+        title: product?.name || "Product",
+        text: `Check out this ${product?.name || "product"}!`,
+        url: window.location.href,
+      }).catch((error) => {
+        console.log('Error sharing:', error);
+      });
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      toast({
+        title: "Link copied!",
+        description: "Product link copied to clipboard",
+      });
+    }
+  };
 
   const toggleFavorite = () => {
     setIsFavorite(!isFavorite);
@@ -527,7 +526,6 @@ const ProductDetail = () => {
   return (
     <div className="flex flex-col min-h-screen bg-white" ref={contentRef}>
       <ProductHeader />
-      {/* Remove the spacing div that was here */}
       <div className="relative w-full bg-transparent">
         <ProductImageGallery images={productImages.length > 0 ? productImages : ["/placeholder.svg"]} />
       </div>
@@ -540,7 +538,17 @@ const ProductDetail = () => {
 
           <div className="mt-1 mb-1 p-3 bg-white">
             <div className="mt-2">
-              <ProductQuantitySelector/>
+              <ProductQuantitySelector 
+                quantity={quantity}
+                onIncrement={incrementQuantity}
+                onDecrement={decrementQuantity}
+                price={currentPrice}
+                maxQuantity={10}
+                minQuantity={1}
+                inStock={currentStock}
+                productName={product?.name}
+                stockInfo={selectedVariantStockInfo}
+              />
             </div>
 
             <div className="mt-2">

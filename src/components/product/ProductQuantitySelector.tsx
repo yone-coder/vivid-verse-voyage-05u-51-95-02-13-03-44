@@ -54,7 +54,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
         indicator: "bg-gray-400",
         message: "Out of Stock",
         badge: "SOLD OUT",
-        badgeVariant: "destructive",
+        badgeVariant: "destructive" as const,
         showBadge: true,
         urgent: false,
         icon: <AlertCircleIcon size={14} className="text-gray-500" />
@@ -67,7 +67,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
         indicator: "bg-red-500",
         message: `Only ${displayStock} left!`,
         badge: "LAST CHANCE",
-        badgeVariant: "destructive",
+        badgeVariant: "destructive" as const,
         showBadge: true,
         urgent: true,
         icon: <AlertCircleIcon size={14} className="text-red-500" />
@@ -80,7 +80,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
         indicator: "bg-orange-400",
         message: "Low stock",
         badge: "SELLING FAST",
-        badgeVariant: "warning",
+        badgeVariant: "warning" as const,
         showBadge: true,
         urgent: false,
         icon: <AlertCircleIcon size={14} className="text-orange-400" />
@@ -93,7 +93,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
         indicator: "bg-yellow-300",
         message: "Limited availability",
         badge: "POPULAR",
-        badgeVariant: "default",
+        badgeVariant: "default" as const,
         showBadge: true,
         urgent: false,
         icon: <PackageIcon size={14} className="text-yellow-600" />
@@ -106,7 +106,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
         indicator: "bg-green-400",
         message: "In stock",
         badge: null,
-        badgeVariant: "default",
+        badgeVariant: "default" as const,
         showBadge: false,
         urgent: false,
         icon: <CheckCircleIcon size={14} className="text-green-500" />
@@ -248,7 +248,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
       )}
 
       {/* Badge for Limited Stock */}
-      {stockStatus.showBadge && (
+      {stockStatus.showBadge && stockStatus.badge && (
         <Badge variant={stockStatus.badgeVariant} className={`px-2 py-1 text-xs ${stockStatus.urgent ? 'animate-pulse' : ''}`}>
           {stockStatus.badge}
         </Badge>
