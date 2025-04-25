@@ -534,47 +534,30 @@ const ProductDetail = () => {
         <div className="bg-white">
           <CoreIdentity />
           <PricingSection />
-          <div className="p-3">
-            <ProductColorVariants />
-
-            <div className="mt-3">
-              <ProductQuantitySelector 
-                quantity={quantity}
-                onIncrement={incrementQuantity}
-                onDecrement={decrementQuantity}
-                price={currentPrice}
-                maxQuantity={10}
-                minQuantity={1}
-                inStock={currentStock}
-                productName={product?.name}
-                stockInfo={selectedVariantStockInfo}
-              />
-            </div>
-
-            <div className="mt-3">
-              <ProductShipping
-                shippingInfo={productForTabs.shipping}
-                isExpressSelected={isExpressSelected}
-                onExpressChange={setIsExpressSelected}
-              />
-            </div>
-
-            <div className="mt-3">
-              <ProductWarranty
-                warrantyOptions={productForTabs.warranty}
-                selectedWarranty={selectedWarranty}
-                onWarrantyChange={setSelectedWarranty}
-              />
-            </div>
-
-            <div className="mt-3">
-              <ProductPaymentOptions paymentOptions={productForTabs.payments} />
-            </div>
-
-            <div className="mt-3">
-              <AliExpressTabs tabs={tabsConfig} initialTab={0} />
-            </div>
-          </div>
+          <ProductColorVariants />
+          <ProductQuantitySelector 
+            quantity={quantity}
+            onIncrement={incrementQuantity}
+            onDecrement={decrementQuantity}
+            price={currentPrice}
+            maxQuantity={10}
+            minQuantity={1}
+            inStock={currentStock}
+            productName={product?.name}
+            stockInfo={selectedVariantStockInfo}
+          />
+          <ProductShipping
+            shippingInfo={productForTabs.shipping}
+            isExpressSelected={isExpressSelected}
+            onExpressChange={setIsExpressSelected}
+          />
+          <ProductWarranty
+            warrantyOptions={productForTabs.warranty}
+            selectedWarranty={selectedWarranty}
+            onWarrantyChange={setSelectedWarranty}
+          />
+          <ProductPaymentOptions paymentOptions={productForTabs.payments} />
+          <AliExpressTabs tabs={tabsConfig} initialTab={0} />
         </div>
       </div>
 
