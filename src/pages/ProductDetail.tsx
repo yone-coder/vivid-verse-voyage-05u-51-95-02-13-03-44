@@ -534,10 +534,10 @@ const ProductDetail = () => {
         <div className="bg-white">
           <CoreIdentity />
           <PricingSection />
-          <ProductColorVariants />
+          <div className="p-3">
+            <ProductColorVariants />
 
-          <div className="mt-1 mb-1 p-3 bg-white">
-            <div className="mt-0">
+            <div className="mt-3">
               <ProductQuantitySelector 
                 quantity={quantity}
                 onIncrement={incrementQuantity}
@@ -551,7 +551,7 @@ const ProductDetail = () => {
               />
             </div>
 
-            <div className="mt-2">
+            <div className="mt-3">
               <ProductShipping
                 shippingInfo={productForTabs.shipping}
                 isExpressSelected={isExpressSelected}
@@ -559,7 +559,7 @@ const ProductDetail = () => {
               />
             </div>
 
-            <div className="mt-2">
+            <div className="mt-3">
               <ProductWarranty
                 warrantyOptions={productForTabs.warranty}
                 selectedWarranty={selectedWarranty}
@@ -567,11 +567,13 @@ const ProductDetail = () => {
               />
             </div>
 
-            <div className="mt-2">
+            <div className="mt-3">
               <ProductPaymentOptions paymentOptions={productForTabs.payments} />
             </div>
 
-            <AliExpressTabs tabs={tabsConfig} initialTab={0} className="mt-4" />
+            <div className="mt-3">
+              <AliExpressTabs tabs={tabsConfig} initialTab={0} />
+            </div>
           </div>
         </div>
       </div>

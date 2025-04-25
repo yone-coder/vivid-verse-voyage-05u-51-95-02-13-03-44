@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 
@@ -13,7 +12,7 @@ const ProductPaymentOptions: React.FC<ProductPaymentOptionsProps> = ({
 
   return (
     <div>
-      <div className="flex items-center justify-between text-sm font-medium">
+      <div className="flex items-center justify-between text-sm font-medium mb-2">
         <span className="text-gray-700">Payment Options:</span>
         <Button 
           variant="ghost" 
@@ -25,7 +24,7 @@ const ProductPaymentOptions: React.FC<ProductPaymentOptionsProps> = ({
         </Button>
       </div>
   
-      <div className="mt-1 flex flex-wrap gap-1">
+      <div className="flex flex-wrap gap-1">
         <div className="w-8 h-5 bg-white rounded flex items-center justify-center" style={{ border: "1px solid #ddd" }}>
           <img 
             src="/lovable-uploads/f3efe2eb-c3db-48bd-abc7-c65456fdc028.png" 

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Minus, Plus } from 'lucide-react';
@@ -17,7 +16,7 @@ const NewQuantitySelector: React.FC<NewQuantitySelectorProps> = ({
   onDecrement 
 }) => {
   return (
-    <div className="flex w-full items-center bg-gray-100 rounded-lg overflow-hidden px-0">
+    <div className="flex w-full items-center bg-gray-100 rounded-lg overflow-hidden">
       <Button 
         variant="ghost" 
         size="icon" 
