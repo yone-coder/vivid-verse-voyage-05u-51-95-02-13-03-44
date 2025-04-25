@@ -15,7 +15,7 @@ interface ProductVariant {
   name: string;
   price: number;
   stock: number;
-  image?: string; // Made optional with the ? operator
+  image: string;
   bestseller?: boolean;
   limited?: boolean;
 }
@@ -38,6 +38,7 @@ const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
 }) => {
   const isSelected = selectedColor === variant.name;
   
+  // Use live stock data if available, otherwise fall back to static stock
   const currentStock = stockInfo?.currentStock !== undefined 
     ? Math.floor(stockInfo.currentStock) 
     : variant.stock;
@@ -62,8 +63,8 @@ const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
             className={cn(
               "relative flex flex-col items-center p-1 rounded-md transition-all duration-200",
               isSelected 
-                ? 'ring-2 ring-[#FF4D4F] bg-red-50/30' 
-                : 'hover:bg-gray-50',
+                ? 'ring-2 ring-blue-500 bg-blue-50' 
+                : 'hover:bg-gray-100',
               currentStock === 0 && "opacity-50 cursor-not-allowed"
             )}
             onClick={() => currentStock > 0 && onColorChange(variant.name)}
@@ -71,26 +72,23 @@ const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
             disabled={currentStock === 0}
           >
             <div 
-              className={cn(
-                "w-10 h-10 rounded-full overflow-hidden mb-1",
-                isSelected ? "ring-2 ring-[#FF4D4F]" : "border border-gray-200",
-                variant.name === 'White' && "border border-gray-200"
-              )}
+              className="w-10 h-10 rounded-full overflow-hidden border border-gray-200 mb-1"
               style={{
-                backgroundColor: getColorHex(variant.name)
+                backgroundColor: getColorHex(variant.name),
+                border: variant.name === 'White' ? '1px solid #E0E0E0' : 'none'
               }}
             >
-              {variant.image && (
+              {variant.image ? (
                 <img 
                   src={variant.image} 
                   alt={variant.name} 
                   className="w-full h-full object-cover" 
                 />
-              )}
+              ) : null}
               
               {currentStock === 0 && (
-                <div className="absolute inset-0 bg-white/80 flex items-center justify-center">
-                  <span className="text-[9px] font-medium text-[#FF4D4F]">Sold out</span>
+                <div className="absolute inset-0 bg-white bg-opacity-70 flex items-center justify-center">
+                  <span className="text-[9px] font-medium text-red-500">Sold out</span>
                 </div>
               )}
             </div>
@@ -99,17 +97,13 @@ const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
               {variant.name}
             </span>
             
-            <span className="text-[10px] text-[#FF4D4F] font-medium truncate w-full text-center">
+            <span className="text-[10px] text-blue-600 font-medium truncate w-full text-center">
               ${variant.price.toFixed(2)}
             </span>
             
             {isLowStock && (
               <div className="mt-0.5 flex items-center justify-center">
-                <span className={cn(
-                  "text-[8px] flex items-center",
-                  isExtremelyLowStock ? "text-[#FF4D4F]" : "text-orange-500",
-                  isActive && isExtremelyLowStock && "animate-pulse"
-                )}>
+                <span className={`text-[8px] ${isExtremelyLowStock ? 'text-red-600' : 'text-red-500'} flex items-center ${isActive && isExtremelyLowStock ? 'animate-pulse' : ''}`}>
                   <AlertTriangle className="w-2 h-2 mr-0.5" />
                   {lowStockText}
                 </span>
@@ -118,7 +112,7 @@ const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
             
             {variant.bestseller && (
               <Badge 
-                className="absolute -top-1 -left-1 text-[7px] py-0 px-1 bg-[#FFA500] hover:bg-[#FFA500] border-none"
+                className="absolute -top-1 -left-1 text-[7px] py-0 px-1 bg-amber-400 hover:bg-amber-400"
               >
                 BEST
               </Badge>
@@ -126,7 +120,7 @@ const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
             
             {variant.limited && (
               <Badge 
-                className="absolute -top-1 -left-1 text-[7px] py-0 px-1 bg-[#FF4D4F] hover:bg-[#FF4D4F] border-none"
+                className="absolute -top-1 -left-1 text-[7px] py-0 px-1 bg-red-500 hover:bg-red-500"
               >
                 LIMITED
               </Badge>
@@ -134,21 +128,19 @@ const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
             
             {isSelected && (
               <Check 
-                className="absolute top-0 right-0 w-4 h-4 text-[#FF4D4F] bg-white rounded-full p-0.5 shadow-sm" 
+                className="absolute top-0 right-0 w-4 h-4 text-blue-500 bg-white rounded-full p-0.5 shadow-sm" 
               />
             )}
           </button>
         </TooltipTrigger>
         <TooltipContent side="bottom" className="text-xs p-2">
           <p className="font-medium">{variant.name}</p>
-          <p className="text-[#FF4D4F]">${variant.price.toFixed(2)}</p>
-          <p className={cn(
-            isLowStock ? "text-[#FF4D4F]" : "text-gray-500"
-          )}>
+          <p className="text-blue-600">${variant.price.toFixed(2)}</p>
+          <p className={isLowStock ? "text-red-500" : "text-gray-500"}>
             {currentStock > 0 ? `${currentStock} in stock` : "Out of stock"}
           </p>
-          {variant.bestseller && <p className="text-[#FFA500]">Bestseller</p>}
-          {variant.limited && <p className="text-[#FF4D4F]">Limited Edition</p>}
+          {variant.bestseller && <p className="text-amber-600">Bestseller</p>}
+          {variant.limited && <p className="text-red-600">Limited Edition</p>}
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
