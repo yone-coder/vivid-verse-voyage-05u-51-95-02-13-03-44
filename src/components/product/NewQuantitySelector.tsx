@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Plus, Minus, ChevronDown, ChevronUp, DollarSign, Gift, Award, Package, Info, HelpCircle, Check, Star } from 'lucide-react';
 
@@ -32,8 +33,8 @@ const NewQuantitySelector: React.FC<NewQuantitySelectorProps> = ({
   const [toastMessage, setToastMessage] = useState('');
   const [showFloatingNumber, setShowFloatingNumber] = useState(false);
   const [floatingNumber, setFloatingNumber] = useState('+1');
-  const [incrementHoldInterval, setIncrementHoldInterval] = useState(null);
-  const [decrementHoldInterval, setDecrementHoldInterval] = useState(null);
+  const [incrementHoldInterval, setIncrementHoldInterval] = useState<ReturnType<typeof setInterval> | null>(null);
+  const [decrementHoldInterval, setDecrementHoldInterval] = useState<ReturnType<typeof setInterval> | null>(null);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isInfoTooltipVisible, setIsInfoTooltipVisible] = useState(false);
   const [showBulkConfirmation, setShowBulkConfirmation] = useState(false);
@@ -118,17 +119,17 @@ const NewQuantitySelector: React.FC<NewQuantitySelectorProps> = ({
   };
 
   // Input change handlers
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value) || 0;
     handleQuantityChange(value);
   };
 
-  const handleSliderChange = (e) => {
+  const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     handleQuantityChange(parseInt(e.target.value));
   };
 
   // Preset selection handler
-  const handlePresetSelection = (preset) => {
+  const handlePresetSelection = (preset: number | 'Max') => {
     handleQuantityChange(preset === 'Max' ? MAX_QUANTITY : preset);
     setIsPresetDropdownOpen(false);
   };
@@ -455,7 +456,8 @@ const NewQuantitySelector: React.FC<NewQuantitySelectorProps> = ({
         </div>
       </div>
 
-      <style jsx>{`
+      <style>
+        {`
         @keyframes float-up {
           0% {
             opacity: 1;
@@ -466,7 +468,8 @@ const NewQuantitySelector: React.FC<NewQuantitySelectorProps> = ({
             transform: translateX(-50%) translateY(-30px);
           }
         }
-      `}</style>
+        `}
+      </style>
     </div>
   );
 };
