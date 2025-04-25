@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Palette, AlertCircle, CheckCircle, XCircle, AlertTriangle } from "lucide-react";
 
@@ -32,10 +33,10 @@ const ColorVariantItem = ({
         <span className="text-sm font-medium truncate flex-grow text-gray-700">{variant.name}</span>
       </div>
       
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-1.5">
+      <div className="flex items-center justify-center">
+        <div className="flex items-center gap-1 flex-nowrap">
           <span className="text-sm font-bold text-[#FF4747]">${variant.price.toFixed(2)}</span>
-          <span className="text-xs line-through text-[#aaadb0] opacity-70">${(variant.price * 1.25).toFixed(2)}</span>
+          <span className="text-[10px] line-through text-[#aaadb0] opacity-70">${(variant.price * 1.25).toFixed(2)}</span>
         </div>
       </div>
     </div>
