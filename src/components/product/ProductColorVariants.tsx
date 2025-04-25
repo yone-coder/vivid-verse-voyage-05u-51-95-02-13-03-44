@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Palette, AlertCircle, CheckCircle, XCircle, AlertTriangle } from "lucide-react";
 
@@ -11,29 +12,29 @@ const ColorVariantItem = ({
   
   return (
     <div 
-      className={`border rounded-md p-2 cursor-pointer transition-all relative
+      className={`border rounded-lg p-2 cursor-pointer transition-all relative
         ${isSelected
-          ? "border-blue-500 bg-blue-50 shadow-md" 
-          : "border-gray-200 hover:border-blue-300 hover:shadow-lg hover:scale-105"}
+          ? "border-[#FF4747] bg-red-50/30 shadow-sm" 
+          : "border-gray-200 hover:border-red-200 hover:shadow hover:scale-[1.02]"}
         ${variant.stock === 0 ? "opacity-70" : ""}
-        transform transition-transform duration-200 ease-in-out hover:bg-blue-50/30`}
+        transform transition-transform duration-150 ease-in-out hover:bg-red-50/10`}
       onClick={() => onColorChange(variant.name)}
     >
       {variant.bestseller && (
-        <span className="absolute -top-2 right-2 bg-yellow-100 text-yellow-800 text-xs px-1.5 py-0.5 rounded text-center flex-shrink-0">
+        <span className="absolute -top-2 right-2 bg-[#FF4747] text-white text-[10px] px-1.5 py-0.5 rounded-full font-medium">
           Best
         </span>
       )}
       <div className="flex items-center mb-1">
         <div 
-          className="w-4 h-4 rounded-full border border-gray-300 mr-2 transition-all duration-200"
+          className="w-4 h-4 rounded-full border shadow-sm mr-2 transition-all duration-200"
           style={{ backgroundColor: getColorHex(variant.name) }}
         />
-        <span className="text-sm font-medium truncate flex-grow">{variant.name}</span>
+        <span className="text-sm font-medium truncate flex-grow text-gray-700">{variant.name}</span>
       </div>
       
       <div className="flex items-center justify-between">
-        <span className="text-sm font-bold">${variant.price.toFixed(2)}</span>
+        <span className="text-sm font-bold text-[#FF4747]">${variant.price.toFixed(2)}</span>
       </div>
     </div>
   );
@@ -142,12 +143,12 @@ const ProductColorVariants = () => {
   const selectedStockInfo = getStockLevelInfo(selectedVariant.stock);
 
   return (
-   <div className="px-2 py-0.5 relative max-w-md mx-auto bg-white rounded-lg">
+   <div className="px-2 py-0.5 relative max-w-md mx-auto">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <Palette className="w-4 h-4 text-blue-500" />
-          <span className="text-sm font-medium">Product Variants</span>
-          <span className="text-xs text-blue-500 font-medium">
+          <Palette className="w-4 h-4 text-[#FF4747]" />
+          <span className="text-sm font-medium text-gray-800">Product Variants</span>
+          <span className="text-xs text-[#FF4747] font-medium">
             ({colorVariants.length} Options)
           </span>
         </div>
@@ -178,35 +179,36 @@ const ProductColorVariants = () => {
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
             <div className={`w-2 h-2 rounded-full animate-pulse ${selectedStockInfo.progressColor}`}></div>
-            <span className="text-sm font-medium">
+            <span className="text-sm font-medium text-gray-700">
               {selectedVariant.stock} units available
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${selectedStockInfo.badgeColor} ${selectedStockInfo.urgency === "high" ? 'animate-pulse' : ''}`}>
+            <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium 
+              ${selectedStockInfo.badgeColor} 
+              ${selectedStockInfo.urgency === "high" ? 'animate-pulse' : ''}`}>
               {selectedStockInfo.label}
             </span>
           </div>
         </div>
         
-        <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden relative">
+        <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden relative">
           <div 
-            className={`h-3 rounded-full transition-all duration-500 ease-out ${selectedStockInfo.progressColor}`}
+            className={`h-2 rounded-full transition-all duration-500 ease-out ${selectedStockInfo.progressColor}`}
             style={{ width: `${stockPercentage}%` }}
           ></div>
         </div>
-        
       </div>
       
       {/* Marketing message based on stock level */}
       <div className={`mt-3 p-2 rounded-md text-xs flex items-center gap-2 ${
         selectedStockInfo.urgency === "high" 
-          ? "bg-red-50 border border-red-200 text-red-700" 
+          ? "bg-red-50 border border-red-100 text-red-700" 
           : selectedStockInfo.urgency === "medium"
-          ? "bg-orange-50 border border-orange-200 text-orange-700"
+          ? "bg-orange-50 border border-orange-100 text-orange-700"
           : selectedStockInfo.urgency === "low"
-          ? "bg-yellow-50 border border-yellow-200 text-yellow-700"
-          : "bg-blue-50 border border-blue-200 text-blue-700"
+          ? "bg-yellow-50 border border-yellow-100 text-yellow-700"
+          : "bg-blue-50 border border-blue-100 text-blue-700"
       }`}>
         {selectedStockInfo.icon}
         <span>{selectedStockInfo.message}</span>
