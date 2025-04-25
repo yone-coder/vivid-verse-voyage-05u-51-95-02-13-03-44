@@ -572,9 +572,9 @@ const ProductDetail = () => {
             </div>
 
             <AliExpressTabs tabs={tabsConfig} initialTab={0} className="mt-4" />
-          </div> {/* Close white box wrapper */}
-        </div> {/* Close bg-white wrapper */}
-      </div> {/* Close flex-1 */}
+          </div>
+        </div>
+      </div>
 
       <StickyBuyButton 
         selectedColor={selectedColor}
