@@ -17,11 +17,11 @@ const NewQuantitySelector: React.FC<NewQuantitySelectorProps> = ({
   onDecrement 
 }) => {
   return (
-    <div className="flex w-full items-center bg-gray-100 rounded-lg overflow-hidden">
+    <div className="flex w-full items-center bg-gray-100 rounded-lg overflow-hidden px-0">
       <Button 
         variant="ghost" 
         size="icon" 
-        className="w-1/4 flex items-center justify-center" 
+        className="flex-grow flex items-center justify-center" 
         onClick={onDecrement} 
         disabled={quantity <= 1}
       >
@@ -33,7 +33,7 @@ const NewQuantitySelector: React.FC<NewQuantitySelectorProps> = ({
       <Button 
         variant="ghost" 
         size="icon" 
-        className="w-1/4 flex items-center justify-center" 
+        className="flex-grow flex items-center justify-center" 
         onClick={onIncrement} 
         disabled={quantity >= stockRemaining || quantity >= 10}
       >
