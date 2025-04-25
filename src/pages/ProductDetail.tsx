@@ -537,7 +537,7 @@ const ProductDetail = () => {
           <ProductColorVariants />
 
           <div className="mt-1 mb-1 p-3 bg-white">
-            <div className="mt-1">
+            <div className="mt-0">
               <ProductQuantitySelector 
                 quantity={quantity}
                 onIncrement={incrementQuantity}
