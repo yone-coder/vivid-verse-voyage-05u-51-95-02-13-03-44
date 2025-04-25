@@ -33,9 +33,9 @@ const ColorVariantItem = ({
       </div>
       
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           <span className="text-sm font-bold text-[#FF4747]">${variant.price.toFixed(2)}</span>
-          <span className="text-sm line-through text-[#aaadb0]">${(variant.price * 1.25).toFixed(2)}</span>
+          <span className="text-xs line-through text-[#aaadb0] opacity-70">${(variant.price * 1.25).toFixed(2)}</span>
         </div>
       </div>
     </div>
