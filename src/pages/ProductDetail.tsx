@@ -1,23 +1,22 @@
 import React, { useState, useEffect, useRef } from "react";
-import ProductHeader from "@/components/product/ProductHeader";
+import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { useParams } from "react-router-dom";
-import ProductImageGallery from "@/components/ProductImageGallery";
-import StickyBuyButton from "@/components/StickyBuyButton";
 import { useProduct, useProductAnalytics } from "@/hooks/useProduct";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Heart } from "lucide-react";
+import ProductHeader from "@/components/product/ProductHeader";
+import ProductImageGallery from "@/components/ProductImageGallery";
+import StickyBuyButton from "@/components/StickyBuyButton";
 import { useVariantStockDecay } from "@/hooks/useVariantStockDecay";
 import AliExpressTabs from "@/components/product/AliExpressTabs";
 import CoreIdentity from "@/components/product/CoreIdentity";
-import { Button } from "@/components/ui/button";
+import PricingSection from '@/components/product/PricingSection';
 import ProductColorVariants from "@/components/product/ProductColorVariants";
 import ProductQuantitySelector from "@/components/product/ProductQuantitySelector";
 import ProductShipping from "@/components/product/ProductShipping";
 import ProductWarranty from "@/components/product/ProductWarranty";
 import ProductPaymentOptions from "@/components/product/ProductPaymentOptions";
-import PricingSection from '@/components/product/PricingSection';
-import StockIndicator from '@/components/product/StockIndicator';
 
 const DEFAULT_PRODUCT_ID = "aae97882-a3a1-4db5-b4f5-156705cd10ee";
 
@@ -75,8 +74,17 @@ const ProductDetail = () => {
     }
   }, [selectedColor, activateVariant]);
 
-  const incrementQuantity = () => {
+  const triggerHaptic = async () => {
+    try {
+      await Haptics.impact({ style: ImpactStyle.Light });
+    } catch (error) {
+      console.log('Haptics not available');
+    }
+  };
+
+  const incrementQuantity = async () => {
     if (quantity < 10) {
+      await triggerHaptic();
       setQuantity(prev => prev + 1);
       if (quantity === 9) {
         setMaxQuantityReached(true);
@@ -89,8 +97,9 @@ const ProductDetail = () => {
     }
   };
 
-  const decrementQuantity = () => {
+  const decrementQuantity = async () => {
     if (quantity > 1) {
+      await triggerHaptic();
       setQuantity(prev => prev - 1);
       if (maxQuantityReached) {
         setMaxQuantityReached(false);
@@ -98,7 +107,8 @@ const ProductDetail = () => {
     }
   };
 
-  const handleShare = () => {
+  const handleShare = async () => {
+    await triggerHaptic();
     if (navigator.share) {
       navigator.share({
         title: product?.name || "Product",
@@ -116,7 +126,8 @@ const ProductDetail = () => {
     }
   };
 
-  const toggleFavorite = () => {
+  const toggleFavorite = async () => {
+    await triggerHaptic();
     setIsFavorite(!isFavorite);
     toast({
       title: isFavorite ? "Removed from favorites" : "Added to favorites",
@@ -124,14 +135,16 @@ const ProductDetail = () => {
     });
   };
 
-  const addToCart = () => {
+  const addToCart = async () => {
+    await triggerHaptic();
     toast({
       title: "Added to cart",
       description: `${quantity} x ${product?.name || "Product"} (${selectedColor}) added to your cart`,
     });
   };
 
-  const buyNow = () => {
+  const buyNow = async () => {
+    await triggerHaptic();
     toast({
       title: "Proceeding to checkout",
       description: `Processing order for ${quantity} x ${product?.name || "Product"} (${selectedColor})`,
@@ -524,13 +537,13 @@ const ProductDetail = () => {
   ];
   
   return (
-    <div className="flex flex-col min-h-screen bg-white" ref={contentRef}>
+    <div className="flex flex-col min-h-screen bg-white overscroll-none" ref={contentRef}>
       <ProductHeader />
       <div className="relative w-full bg-transparent">
         <ProductImageGallery images={productImages.length > 0 ? productImages : ["/placeholder.svg"]} />
       </div>
 
-      <div className="flex-1">
+      <div className="flex-1 overscroll-none">
         <div className="bg-white">
           <CoreIdentity />
           <PricingSection />
