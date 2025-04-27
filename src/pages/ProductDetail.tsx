@@ -5,6 +5,7 @@ import { useProduct, useProductAnalytics } from "@/hooks/useProduct";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Heart } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import ProductHeader from "@/components/product/ProductHeader";
 import ProductImageGallery from "@/components/ProductImageGallery";
 import StickyBuyButton from "@/components/StickyBuyButton";
