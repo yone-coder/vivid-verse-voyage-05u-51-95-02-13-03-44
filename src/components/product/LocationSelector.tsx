@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { ChevronDown, Search, MapPin, Edit, X, Check, Globe, Building, Mail, History, Star } from 'lucide-react';
 
@@ -8,7 +9,6 @@ const LocationSelector = () => {
   const [countryOpen, setCountryOpen] = useState(false);
   const [cityOpen, setCityOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  // Removed headerMenuOpen state
   const [recentLocations, setRecentLocations] = useState([
     { country: 'United States', city: 'San Francisco', zipCode: '94103' },
     { country: 'United Kingdom', city: 'London', zipCode: 'EC1A 1BB' }
@@ -46,7 +46,6 @@ const LocationSelector = () => {
     setCountryOpen(false);
     setCityOpen(false);
     setActiveTab('edit');
-    // Removed headerMenuOpen reset
   };
 
   const addToRecentLocations = () => {
@@ -90,8 +89,6 @@ const LocationSelector = () => {
     setActiveTab('edit');
   };
 
-  // Removed handleQuickAdd and handleShare functions
-
   const filteredCountries = searchTerm 
     ? countries.filter(c => c.toLowerCase().includes(searchTerm.toLowerCase()))
     : countries;
@@ -102,8 +99,8 @@ const LocationSelector = () => {
 
   return (
     <div className="flex flex-col w-full">
-      {/* Enhanced Header - Always visible - Removed border-b and shadow */}
-      <div className="flex flex-row items-center justify-between p-2">
+      {/* Enhanced Header - Always visible */}
+      <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <div className="text-red-500 flex-shrink-0">
             <MapPin size={12} />
@@ -142,7 +139,7 @@ const LocationSelector = () => {
       
       {/* Edit Panel */}
       {isEditMode && (
-        <div className="flex flex-col bg-white p-2">
+        <div className="flex flex-col bg-white">
           {/* Tabs */}
           <div className="flex border-b border-gray-200 mb-2">
             <button 
