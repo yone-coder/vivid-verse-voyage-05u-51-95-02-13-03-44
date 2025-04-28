@@ -26,8 +26,8 @@ const ProductWarranty: React.FC<ProductWarrantyProps> = ({
   const formatPrice = (price: number) => price.toFixed(2);
 
   return (
-    <div>
-      <div className="flex items-center justify-between">
+    <div className="px-3 py-2">
+      <div className="flex items-center justify-between mb-1">
         <span className="text-sm font-medium text-gray-700">Warranty:</span>
         <Button 
           variant="ghost" 
@@ -40,7 +40,7 @@ const ProductWarranty: React.FC<ProductWarrantyProps> = ({
       </div>
       
       {showWarrantyOptions && (
-        <div className="mt-2 p-3 bg-gray-50 rounded-md border border-gray-200">
+        <div className="mt-1 p-3 bg-gray-50 rounded-md border border-gray-200">
           <RadioGroup 
             value={selectedWarranty}
             onValueChange={onWarrantyChange}

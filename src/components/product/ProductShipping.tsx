@@ -47,8 +47,8 @@ const ProductShipping: React.FC<ProductShippingProps> = ({
   };
 
   return (
-    <>
-      <div className="flex items-center justify-between">
+    <div className="px-3 py-2">
+      <div className="flex items-center justify-between mb-1">
         <span className="text-sm font-medium text-gray-700">Shipping:</span>
         <div className="flex flex-col items-end">
           <div className="flex items-center">
@@ -65,7 +65,7 @@ const ProductShipping: React.FC<ProductShippingProps> = ({
         </div>
       </div>
       
-      <div className="mt-2 flex justify-end">
+      <div className="flex justify-end">
         <Button 
           variant="ghost" 
           size="sm" 
@@ -100,7 +100,7 @@ const ProductShipping: React.FC<ProductShippingProps> = ({
           </RadioGroup>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

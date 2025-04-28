@@ -547,7 +547,7 @@ const ProductDetail = () => {
       </div>
 
       <div className="flex-1 overscroll-none">
-        <div className="bg-white">
+        <div className="bg-white space-y-2">
           <CoreIdentity />
           <PricingSection />
           <ProductColorVariants />

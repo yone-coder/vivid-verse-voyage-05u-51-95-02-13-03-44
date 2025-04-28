@@ -26,9 +26,9 @@ const PricingSection = () => {
   });
 
   return (
-    <div className="w-full bg-white rounded-none overflow-hidden">
+    <div className="w-full bg-white rounded-none overflow-hidden px-3 py-2">
       {/* Discount banner */}
-      <div className="flex items-center justify-between bg-red-50 w-full px-1 py-0.5">
+      <div className="flex items-center justify-between bg-red-50 w-full px-2 py-1 mb-2 rounded">
         <div className="flex items-center">
           <TrendingDown size={12} className="text-red-500" />
           <span className="text-xs font-semibold text-red-500 ml-1">Limited Time Offer</span>
@@ -41,8 +41,8 @@ const PricingSection = () => {
         </div>
       </div>
       
-      {/* Main price area with minimal padding */}
-      <div className="flex items-center justify-between px-2 py-1 w-full">
+      {/* Main price area with consistent padding */}
+      <div className="flex items-center justify-between w-full">
         <div className="flex items-center">
           <span className="text-sm font-semibold" style={{ color: primaryColor }}>{currency}</span>
           <span className="text-2xl font-bold leading-none" style={{ color: primaryColor }}>
