@@ -563,9 +563,8 @@ const ProductDetail = () => {
             stockInfo={selectedVariantStockInfo}
           />
           <LocationSelector />
-          <div className="px-4">
-            <ShippingOptionsComponent />
-          </div>
+          <ShippingOptionsComponent />
+         
           <ProductShipping
             shippingInfo={productForTabs.shipping}
             isExpressSelected={isExpressSelected}
