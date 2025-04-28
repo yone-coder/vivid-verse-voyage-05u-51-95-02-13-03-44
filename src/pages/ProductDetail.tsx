@@ -549,19 +549,19 @@ const ProductDetail = () => {
 
       <div className="flex-1 overscroll-none">
         <div className="bg-white space-y-0">
-          <div className="px-4 py-2">
+          <div className="px-2 py-0.5">
             <CoreIdentity />
           </div>
           
-          <div className="px-4 py-2">
+          <div className="px-2 py-0.5">
             <PricingSection />
           </div>
           
-          <div className="px-4 py-2">
+          <div className="px-2 py-0.5">
             <ProductColorVariants />
           </div>
           
-          <div className="px-4 py-2">
+          <div className="px-2 py-0.5">
             <ProductQuantitySelector 
               quantity={quantity}
               onIncrement={incrementQuantity}
@@ -575,15 +575,15 @@ const ProductDetail = () => {
             />
           </div>
           
-          <div className="px-4 py-2">
+          <div className="px-2 py-0.5">
             <LocationSelector />
           </div>
           
-          <div className="px-4 py-2">
+          <div className="px-2 py-0.5">
             <ShippingOptionsComponent />
           </div>
          
-          <div className="px-4 py-2">
+          <div className="px-2 py-0.5">
             <ProductShipping
               shippingInfo={productForTabs.shipping}
               isExpressSelected={isExpressSelected}
@@ -591,7 +591,7 @@ const ProductDetail = () => {
             />
           </div>
           
-          <div className="px-4 py-2">
+          <div className="px-2 py-0.5">
             <ProductWarranty
               warrantyOptions={productForTabs.warranty}
               selectedWarranty={selectedWarranty}
