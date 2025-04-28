@@ -20,7 +20,6 @@ import ProductWarranty from "@/components/product/ProductWarranty";
 import ProductPaymentOptions from "@/components/product/ProductPaymentOptions";
 import LocationSelector from "@/components/product/LocationSelector";
 import ShippingOptionsComponent from '@/components/product/ShippingOptionsComponent';
-import ProductPriceDisplay from '@/components/product/ProductPriceDisplay';
 
 const DEFAULT_PRODUCT_ID = "aae97882-a3a1-4db5-b4f5-156705cd10ee";
 
@@ -552,11 +551,6 @@ const ProductDetail = () => {
           <CoreIdentity />
           
           <PricingSection />
-
-          <ProductPriceDisplay 
-            currentPrice={currentPrice}
-            originalPrice={originalPrice}
-          />
           
           <ProductColorVariants />
           
