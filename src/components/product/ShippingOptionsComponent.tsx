@@ -7,14 +7,14 @@ import {
 } from 'lucide-react';
 
 const ShippingOptionsComponent = () => {
-  const [selectedOption, setSelectedOption] = useState(1);
-  const [savedOptions, setSavedOptions] = useState([]);
+  const [selectedOption, setSelectedOption] = useState<number>(1);
+  const [savedOptions, setSavedOptions] = useState<number[]>([]);
   const [timeLeft, setTimeLeft] = useState({ hours: 1, minutes: 20 });
-  const [expanded, setExpanded] = useState(false);
-  const [showAllOptions, setShowAllOptions] = useState(false);
-  const [country, setCountry] = useState('United States');
-  const [showTooltip, setShowTooltip] = useState(null);
-  const [expandedDetails, setExpandedDetails] = useState(null);
+  const [expanded, setExpanded] = useState<boolean>(false);
+  const [showAllOptions, setShowAllOptions] = useState<boolean>(false);
+  const [country, setCountry] = useState<string>('United States');
+  const [showTooltip, setShowTooltip] = useState<string | null>(null);
+  const [expandedDetails, setExpandedDetails] = useState<number | null>(null);
 
   // Carrier logos as image URLs
   const carrierLogos = {
@@ -63,18 +63,18 @@ const ShippingOptionsComponent = () => {
     deliveryDates.economy.max.setDate(baseDate.getDate() + 10);
 
     // Format dates for display
-    const formatDate = (date) => {
+    const formatDate = (date: Date) => {
       const month = date.toLocaleString('default', { month: 'short' });
       return `${month} ${date.getDate()}`;
     };
 
     // Calculate time remaining for today's dispatch
-    const getTimeRemaining = (cutoffTime) => {
+    const getTimeRemaining = (cutoffTime: string) => {
       const [hours, minutes] = cutoffTime.split(':').map(Number);
       const cutoff = new Date();
       cutoff.setHours(hours, minutes, 0, 0);
       const now = new Date();
-      const diff = cutoff - now;
+      const diff = cutoff.getTime() - now.getTime();
       
       if (diff <= 0) return null; // Past cutoff time
       
@@ -192,7 +192,7 @@ const ShippingOptionsComponent = () => {
   const selectedShipping = shippingOptions.find(option => option.id === selectedOption);
 
   // Toggle save option to favorites
-  const toggleSave = (id) => {
+  const toggleSave = (id: number) => {
     if (savedOptions.includes(id)) {
       setSavedOptions(savedOptions.filter(optionId => optionId !== id));
     } else {
@@ -201,7 +201,7 @@ const ShippingOptionsComponent = () => {
   };
 
   // Toggle expanded details for an option
-  const toggleDetails = (e, id) => {
+  const toggleDetails = (e: React.MouseEvent, id: number) => {
     e.stopPropagation();
     setExpandedDetails(expandedDetails === id ? null : id);
   };
@@ -225,12 +225,12 @@ const ShippingOptionsComponent = () => {
   }, []);
 
   // Calculate the time remaining until cutoff for each shipping option
-  const calculateCutoffTime = (cutoffTime) => {
+  const calculateCutoffTime = (cutoffTime: string) => {
     const [hours, minutes] = cutoffTime.split(':').map(Number);
     const cutoff = new Date();
     cutoff.setHours(hours, minutes, 0, 0);
     const now = new Date();
-    const diff = cutoff - now;
+    const diff = cutoff.getTime() - now.getTime();
     
     if (diff <= 0) return { expired: true }; // Past cutoff time
     
@@ -252,7 +252,7 @@ const ShippingOptionsComponent = () => {
   }, []);
 
   // Render tooltip
-  const renderTooltip = (content) => {
+  const renderTooltip = (content: React.ReactNode) => {
     return (
       <div className="absolute z-10 bg-white shadow-lg rounded border border-gray-200 p-2 text-xs w-48 bottom-full mb-2">
         {content}
@@ -270,7 +270,7 @@ const ShippingOptionsComponent = () => {
   };
 
   // Render mini timer
-  const renderMiniTimer = (option) => {
+  const renderMiniTimer = (option: any) => {
     const timeRemaining = calculateCutoffTime(option.cutoffTime);
     
     if (timeRemaining.expired) {
@@ -292,7 +292,7 @@ const ShippingOptionsComponent = () => {
   };
 
   // Render star rating
-  const renderRating = (rating, count) => {
+  const renderRating = (rating: number, count: number) => {
     return (
       <div className="flex items-center">
         <span className="text-amber-500 flex items-center">
@@ -367,9 +367,9 @@ const ShippingOptionsComponent = () => {
                           src={option.carrierLogoUrl} 
                           alt={`${option.carrier} logo`} 
                           className="h-4 mr-1" 
-                          onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src = "/api/placeholder/40/20";
+                          onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = "/api/placeholder/40/20";
                           }}
                         />
                         <span>{option.carrier}</span>
