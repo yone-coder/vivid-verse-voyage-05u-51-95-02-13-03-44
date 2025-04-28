@@ -195,9 +195,9 @@ const ProductColorVariants = () => {
           </div>
         </div>
         
-        <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden relative">
+        <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden relative">
           <div 
-            className={`h-2 rounded-full transition-all duration-500 ease-out ${selectedStockInfo.progressColor}`}
+            className={`h-1.5 rounded-full transition-all duration-500 ease-out ${selectedStockInfo.progressColor}`}
             style={{ width: `${stockPercentage}%` }}
           ></div>
         </div>
