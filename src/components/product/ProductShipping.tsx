@@ -47,7 +47,7 @@ const ProductShipping: React.FC<ProductShippingProps> = ({
   };
 
   return (
-    <div className="px-3 py-2">
+    <div className="px-3 py-1.5">
       <div className="flex items-center justify-between mb-1">
         <span className="text-sm font-medium text-gray-700">Shipping:</span>
         <div className="flex flex-col items-end">
@@ -69,7 +69,7 @@ const ProductShipping: React.FC<ProductShippingProps> = ({
         <Button 
           variant="ghost" 
           size="sm" 
-          className="h-7 px-2 text-xs text-blue-600"
+          className="h-6 px-2 text-xs text-blue-600"
           onClick={() => setShowDeliveryOptions(!showDeliveryOptions)}
         >
           {showDeliveryOptions ? "Hide Options" : "More Delivery Options"}
@@ -77,12 +77,12 @@ const ProductShipping: React.FC<ProductShippingProps> = ({
       </div>
       
       {showDeliveryOptions && (
-        <div className="mt-1 p-3 bg-gray-50 rounded-md border border-gray-200">
+        <div className="mt-1 p-2 bg-gray-50 rounded-md border border-gray-200">
           <RadioGroup 
             value={deliveryMethod}
             onValueChange={handleShippingChange}
           >
-            <div className="flex items-start space-x-2 mb-2">
+            <div className="flex items-start space-x-2 mb-1.5">
               <RadioGroupItem value="standard" id="standard" className="mt-1" />
               <label htmlFor="standard" className="text-sm cursor-pointer flex-1">
                 <div className="font-medium">Standard Shipping (Free)</div>

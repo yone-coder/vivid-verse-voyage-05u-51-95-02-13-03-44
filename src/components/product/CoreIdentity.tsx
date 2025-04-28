@@ -21,7 +21,7 @@ const CoreIdentity = () => {
   }, []);
   
   return (
-    <div className="w-full px-3 py-2">
+    <div className="w-full px-3 py-1.5">
       {/* Sub-Row 1.1: Title + Badge - Fixed to be in same line */}
       <div className="flex items-center justify-between mb-1">
         <h2 

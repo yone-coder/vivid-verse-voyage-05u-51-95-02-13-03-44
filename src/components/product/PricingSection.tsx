@@ -26,9 +26,9 @@ const PricingSection = () => {
   });
 
   return (
-    <div className="w-full bg-white rounded-none overflow-hidden px-3 py-2">
+    <div className="w-full bg-white rounded-none overflow-hidden px-3 py-1.5">
       {/* Discount banner */}
-      <div className="flex items-center justify-between bg-red-50 w-full px-2 py-1 mb-2 rounded">
+      <div className="flex items-center justify-between bg-red-50 w-full px-2 py-0.5 mb-1.5 rounded">
         <div className="flex items-center">
           <TrendingDown size={12} className="text-red-500" />
           <span className="text-xs font-semibold text-red-500 ml-1">Limited Time Offer</span>

@@ -14,13 +14,13 @@ const ProductPaymentOptions: React.FC<ProductPaymentOptionsProps> = ({
   const displayedOptions = isExpanded ? paymentOptions : paymentOptions.slice(0, 2);
 
   return (
-    <div className="px-3 py-2">
+    <div className="px-3 py-1.5">
       <div className="flex items-center justify-between mb-1">
         <span className="text-sm font-medium text-gray-700">Payment Options:</span>
         <Button
           variant="ghost"
           size="sm"
-          className="h-7 px-2 text-xs text-blue-600"
+          className="h-6 px-2 text-xs text-blue-600"
           onClick={() => setIsExpanded(!isExpanded)}
         >
           {isExpanded ? (
@@ -37,7 +37,7 @@ const ProductPaymentOptions: React.FC<ProductPaymentOptionsProps> = ({
 
       <div className="mt-1">
         {displayedOptions.map((option, index) => (
-          <div key={index} className="flex items-center py-1">
+          <div key={index} className="flex items-center py-0.5">
             <CreditCard className="h-3.5 w-3.5 text-gray-500 mr-1.5" />
             <span className="text-sm text-gray-700">{option}</span>
           </div>

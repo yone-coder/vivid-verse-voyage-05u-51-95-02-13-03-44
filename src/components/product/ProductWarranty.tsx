@@ -26,13 +26,13 @@ const ProductWarranty: React.FC<ProductWarrantyProps> = ({
   const formatPrice = (price: number) => price.toFixed(2);
 
   return (
-    <div className="px-3 py-2">
+    <div className="px-3 py-1.5">
       <div className="flex items-center justify-between mb-1">
         <span className="text-sm font-medium text-gray-700">Warranty:</span>
         <Button 
           variant="ghost" 
           size="sm" 
-          className="h-7 px-2 text-xs text-blue-600"
+          className="h-6 px-2 text-xs text-blue-600"
           onClick={() => setShowWarrantyOptions(!showWarrantyOptions)}
         >
           {selectedWarranty === "none" ? "Add Warranty" : `${selectedOption?.name} (${selectedOption?.duration})`}
@@ -40,12 +40,12 @@ const ProductWarranty: React.FC<ProductWarrantyProps> = ({
       </div>
       
       {showWarrantyOptions && (
-        <div className="mt-1 p-3 bg-gray-50 rounded-md border border-gray-200">
+        <div className="mt-1 p-2 bg-gray-50 rounded-md border border-gray-200">
           <RadioGroup 
             value={selectedWarranty}
             onValueChange={onWarrantyChange}
           >
-            <div className="flex items-start space-x-2 mb-2">
+            <div className="flex items-start space-x-2 mb-1.5">
               <RadioGroupItem value="none" id="none" className="mt-1" />
               <label htmlFor="none" className="text-sm cursor-pointer flex-1">
                 <div className="font-medium">No additional warranty</div>
@@ -54,7 +54,7 @@ const ProductWarranty: React.FC<ProductWarrantyProps> = ({
             </div>
             
             {warrantyOptions.map((option) => (
-              <div key={option.name.toLowerCase()} className="flex items-start space-x-2 mb-2">
+              <div key={option.name.toLowerCase()} className="flex items-start space-x-2 mb-1.5">
                 <RadioGroupItem value={option.name.toLowerCase()} id={option.name.toLowerCase()} className="mt-1" />
                 <label htmlFor={option.name.toLowerCase()} className="text-sm cursor-pointer flex-1">
                   <div className="font-medium">
