@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { 
   Truck, Plane, Clock, Heart, AlertTriangle, 
@@ -322,12 +321,11 @@ const ShippingOptionsComponent = () => {
             
             return (
               <div 
-  key={option.id}
-  className={`flex items-center justify-between px-2 py-1 w-full rounded-md ${isSelected ? 'border-2 border-red-500 bg-red-50' : 'border border-gray-200'}`}
-                  transition-all hover:shadow-sm cursor-pointer relative`}
+                key={option.id}
+                className={`flex flex-col items-center justify-between px-2 py-1 w-full rounded-md ${isSelected ? 'border-2 border-red-500 bg-red-50' : 'border border-gray-200'} transition-all hover:shadow-sm cursor-pointer relative`}
                 onClick={() => setSelectedOption(option.id)}
               >
-                <div className="flex justify-between items-center">
+                <div className="flex justify-between items-center w-full">
                   <div className="flex items-center">
                     <div className={`mr-1.5 ${isSelected ? 'text-red-600' : 'text-gray-600'}`}>{option.icon}</div>
                     <div>
@@ -376,13 +374,13 @@ const ShippingOptionsComponent = () => {
                   </div>
                 </div>
                 
-                <div className="flex justify-between items-center mt-1.5">
+                <div className="flex justify-between items-center mt-1.5 w-full">
                   {renderMiniTimer(option)}
                   
                   {renderRating(option.rating, option.ratingCount)}
                 </div>
                 
-                <div className="flex flex-wrap items-center mt-1.5 gap-x-2 gap-y-1">
+                <div className="flex flex-wrap items-center mt-1.5 gap-x-2 gap-y-1 w-full">
                   {option.badge && (
                     <span className={`text-xs px-1 py-0.5 rounded inline-flex items-center
                       ${option.badge === 'Free' ? 'bg-green-100 text-green-600' : 
@@ -447,7 +445,7 @@ const ShippingOptionsComponent = () => {
                 </div>
                 
                 {isExpanded && (
-                  <div className="mt-2 pt-2 border-t border-gray-200 text-xs text-gray-700">
+                  <div className="mt-2 pt-2 border-t border-gray-200 text-xs text-gray-700 w-full">
                     <div className="grid grid-cols-2 gap-1">
                       <div className="flex items-center">
                         <Clock size={10} className="text-gray-500 mr-1" />
