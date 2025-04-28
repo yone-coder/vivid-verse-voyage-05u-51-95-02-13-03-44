@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { 
   Truck, Plane, Clock, Heart, AlertTriangle, 
@@ -286,7 +287,7 @@ const ShippingOptionsComponent = () => {
   };
 
   return (
-    <div className="w-full font-sans">
+    <div className="w-full max-w-md font-sans">
       <div className="px-4">
         <div className="flex justify-between items-center mb-3">
           <div className="flex items-center">
