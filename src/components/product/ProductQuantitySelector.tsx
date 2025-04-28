@@ -35,7 +35,7 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
   };
 
   return (
-    <div className="w-full px-4 py-3 border-b border-gray-100">
+    <div className="w-full px-2 py-0.5 border-b border-gray-100">
       <NewQuantitySelector
         quantity={quantity}
         onQuantityChange={handleQuantityChange}

@@ -572,15 +572,15 @@ const ProductDetail = () => {
             stockInfo={selectedColor ? variantStockInfo[selectedColor] : undefined}
           />
           
-          <div className="w-full px-4 py-3 border-b border-gray-100">
+          <div className="w-full px-2 py-0.5 border-b border-gray-100">
             <LocationSelector />
           </div>
           
-          <div className="w-full px-4 py-3 border-b border-gray-100">
+          <div className="w-full px-2 py-0.5 border-b border-gray-100">
             <ShippingOptionsComponent />
           </div>
          
-          <div className="w-full px-4 py-3 border-b border-gray-100">
+          <div className="w-full px-2 py-0.5 border-b border-gray-100">
             <ProductShipping
               shippingInfo={productForTabs.shipping}
               isExpressSelected={isExpressSelected}
@@ -596,7 +596,7 @@ const ProductDetail = () => {
           
           <ProductPaymentOptions paymentOptions={productForTabs.payments} />
           
-          <div className="px-4 py-3">
+          <div className="px-2 py-0.5">
             <AliExpressTabs tabs={tabsConfig} initialTab={0} />
           </div>
         </div>

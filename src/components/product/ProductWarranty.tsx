@@ -26,7 +26,7 @@ const ProductWarranty: React.FC<ProductWarrantyProps> = ({
   const formatPrice = (price: number) => price.toFixed(2);
 
   return (
-    <div className="w-full px-4 py-3 border-b border-gray-100">
+    <div className="w-full px-2 py-0.5 border-b border-gray-100">
       <div className="flex items-center justify-between mb-2">
         <span className="text-sm font-medium text-gray-700">Warranty:</span>
         <Button 

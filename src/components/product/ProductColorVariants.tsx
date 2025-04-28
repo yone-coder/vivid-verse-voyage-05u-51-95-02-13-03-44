@@ -146,7 +146,7 @@ const ProductColorVariants = () => {
   const selectedStockInfo = getStockLevelInfo(selectedVariant.stock);
 
   return (
-   <div className="w-full px-4 py-3 border-b border-gray-100">
+   <div className="w-full px-2 py-0.5 border-b border-gray-100">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <Palette className="w-4 h-4 text-[#FF4747]" />
