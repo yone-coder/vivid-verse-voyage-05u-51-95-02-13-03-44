@@ -66,14 +66,16 @@ const AdminPanel: React.FC = () => {
   useEffect(() => {
     fetchProducts();
     
-    const channel = subscribeToProductChanges(() => {
+    // Fix: Store the cleanup function, not the channel directly
+    const cleanupSubscription = subscribeToProductChanges(() => {
       console.log("Real-time update received, refreshing products");
       fetchProducts();
     });
       
     return () => {
       console.log("Cleaning up channel subscription");
-      supabase.removeChannel(channel);
+      // Call the cleanup function directly rather than trying to remove it as a channel
+      cleanupSubscription();
     };
   }, []);
 
