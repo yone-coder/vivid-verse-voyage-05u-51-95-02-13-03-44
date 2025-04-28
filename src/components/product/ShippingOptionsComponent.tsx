@@ -322,8 +322,8 @@ const ShippingOptionsComponent = () => {
             
             return (
               <div 
-                key={option.id}
-                className={`flex flex-col p-2 rounded-md ${isSelected ? 'border-2 border-red-500 bg-red-50' : 'border border-gray-200'} 
+  key={option.id}
+  className={`flex items-center justify-between px-2 py-1 w-full rounded-md ${isSelected ? 'border-2 border-red-500 bg-red-50' : 'border border-gray-200'}`}
                   transition-all hover:shadow-sm cursor-pointer relative`}
                 onClick={() => setSelectedOption(option.id)}
               >
