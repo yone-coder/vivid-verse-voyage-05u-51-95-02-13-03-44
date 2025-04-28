@@ -20,7 +20,7 @@ const ProductSectionCollapsible = ({
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
 
   return (
-    <div className="border-t border-gray-100 py-4">
+    <div className="py-4">
       <Collapsible
         open={isExpanded}
         onOpenChange={setIsExpanded}
@@ -70,4 +70,3 @@ const ProductSectionCollapsible = ({
 };
 
 export default ProductSectionCollapsible;
-

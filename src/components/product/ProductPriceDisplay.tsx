@@ -21,7 +21,7 @@ const ProductPriceDisplay: React.FC<ProductPriceDisplayProps> = ({
   const discountPercentage = Math.round((discountAmount / originalPrice) * 100);
   
   return (
-    <div className="flex flex-col w-full px-2 py-0.5 border-b border-gray-100">
+    <div className="flex flex-col w-full px-2 py-0.5">
       {/* Main price display section */}
       <div className={cn(
         "flex", 
