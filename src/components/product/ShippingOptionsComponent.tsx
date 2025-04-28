@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { 
   Truck, Plane, Clock, Heart, AlertTriangle, 
@@ -16,7 +15,6 @@ const ShippingOptionsComponent = () => {
   const [showTooltip, setShowTooltip] = useState<string | null>(null);
   const [expandedDetails, setExpandedDetails] = useState<number | null>(null);
 
-  // Carrier logos as image URLs
   const carrierLogos = {
     DHL: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/DHL_logo.svg/640px-DHL_logo.svg.png",
     FedEx: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/FedEx_Express.svg/640px-FedEx_Express.svg.png",
@@ -24,12 +22,9 @@ const ShippingOptionsComponent = () => {
     USPS: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/USPS_Eagle_Symbol.svg/640px-USPS_Eagle_Symbol.svg.png"
   };
 
-  // Shipping methods with dynamic delivery dates
   const getShippingOptions = () => {
-    // Create a base date to work with
     const baseDate = new Date();
     
-    // Create delivery date ranges for each shipping method
     const deliveryDates = {
       express: {
         min: new Date(baseDate.getTime()),
@@ -49,7 +44,6 @@ const ShippingOptionsComponent = () => {
       }
     };
     
-    // Set the dates properly
     deliveryDates.express.min.setDate(baseDate.getDate() + 1);
     deliveryDates.express.max.setDate(baseDate.getDate() + 2);
     
@@ -62,13 +56,11 @@ const ShippingOptionsComponent = () => {
     deliveryDates.economy.min.setDate(baseDate.getDate() + 5);
     deliveryDates.economy.max.setDate(baseDate.getDate() + 10);
 
-    // Format dates for display
     const formatDate = (date: Date) => {
       const month = date.toLocaleString('default', { month: 'short' });
       return `${month} ${date.getDate()}`;
     };
 
-    // Calculate time remaining for today's dispatch
     const getTimeRemaining = (cutoffTime: string) => {
       const [hours, minutes] = cutoffTime.split(':').map(Number);
       const cutoff = new Date();
@@ -76,7 +68,7 @@ const ShippingOptionsComponent = () => {
       const now = new Date();
       const diff = cutoff.getTime() - now.getTime();
       
-      if (diff <= 0) return null; // Past cutoff time
+      if (diff <= 0) return null;
       
       const hoursLeft = Math.floor(diff / (1000 * 60 * 60));
       const minutesLeft = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
@@ -191,7 +183,6 @@ const ShippingOptionsComponent = () => {
   const shippingOptions = getShippingOptions();
   const selectedShipping = shippingOptions.find(option => option.id === selectedOption);
 
-  // Toggle save option to favorites
   const toggleSave = (id: number) => {
     if (savedOptions.includes(id)) {
       setSavedOptions(savedOptions.filter(optionId => optionId !== id));
@@ -200,13 +191,11 @@ const ShippingOptionsComponent = () => {
     }
   };
 
-  // Toggle expanded details for an option
   const toggleDetails = (e: React.MouseEvent, id: number) => {
     e.stopPropagation();
     setExpandedDetails(expandedDetails === id ? null : id);
   };
 
-  // Countdown timer effect
   useEffect(() => {
     const interval = setInterval(() => {
       setTimeLeft(prev => {
@@ -219,12 +208,11 @@ const ShippingOptionsComponent = () => {
           return { hours: 0, minutes: 0 };
         }
       });
-    }, 60000); // Update every minute
+    }, 60000);
 
     return () => clearInterval(interval);
   }, []);
 
-  // Calculate the time remaining until cutoff for each shipping option
   const calculateCutoffTime = (cutoffTime: string) => {
     const [hours, minutes] = cutoffTime.split(':').map(Number);
     const cutoff = new Date();
@@ -232,7 +220,7 @@ const ShippingOptionsComponent = () => {
     const now = new Date();
     const diff = cutoff.getTime() - now.getTime();
     
-    if (diff <= 0) return { expired: true }; // Past cutoff time
+    if (diff <= 0) return { expired: true };
     
     const hoursLeft = Math.floor(diff / (1000 * 60 * 60));
     const minutesLeft = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
@@ -244,14 +232,12 @@ const ShippingOptionsComponent = () => {
     };
   };
 
-  // Close tooltip when clicking outside
   useEffect(() => {
     const handleClickOutside = () => setShowTooltip(null);
     document.addEventListener('click', handleClickOutside);
     return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
-  // Render tooltip
   const renderTooltip = (content: React.ReactNode) => {
     return (
       <div className="absolute z-10 bg-white shadow-lg rounded border border-gray-200 p-2 text-xs w-48 bottom-full mb-2">
@@ -261,15 +247,12 @@ const ShippingOptionsComponent = () => {
     );
   };
 
-  // Filter to display options based on showAllOptions state
   const displayOptions = showAllOptions ? shippingOptions : [shippingOptions[0]];
 
-  // Toggle show all options
   const toggleShowAllOptions = () => {
     setShowAllOptions(!showAllOptions);
   };
 
-  // Render mini timer
   const renderMiniTimer = (option: any) => {
     const timeRemaining = calculateCutoffTime(option.cutoffTime);
     
@@ -282,7 +265,6 @@ const ShippingOptionsComponent = () => {
       );
     }
     
-    // Hours and minutes remaining (removed progress bar)
     return (
       <div className="flex items-center text-green-600 text-xs">
         <Clock size={10} className="mr-0.5" />
@@ -291,7 +273,6 @@ const ShippingOptionsComponent = () => {
     );
   };
 
-  // Render star rating
   const renderRating = (rating: number, count: number) => {
     return (
       <div className="flex items-center">
@@ -305,9 +286,8 @@ const ShippingOptionsComponent = () => {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto font-sans bg-white rounded-lg shadow-sm border border-gray-200">
-      {/* Simple header with shipping info - removed gradient header bar */}
-      <div className="flex justify-between items-center p-3 border-b border-gray-200">
+    <div className="w-full font-sans bg-white border-t border-gray-100 py-4">
+      <div className="flex justify-between items-center px-4 pb-3 border-b border-gray-100">
         <div className="flex items-center">
           <ShoppingBag size={14} className="mr-1 text-red-500" />
           <span className="text-xs font-medium">Shipping to {country}</span>
@@ -318,9 +298,8 @@ const ShippingOptionsComponent = () => {
         </div>
       </div>
       
-      <div className="p-3">
-        {/* Compact header */}
-        <div className="flex justify-between items-center mb-2">
+      <div className="px-4 pt-3">
+        <div className="flex justify-between items-center mb-3">
           <div className="flex items-center">
             <Truck size={16} className="text-red-500 mr-1" />
             <h2 className="font-medium text-sm text-gray-800">Delivery Options</h2>
@@ -334,8 +313,7 @@ const ShippingOptionsComponent = () => {
           )}
         </div>
         
-        {/* Enhanced shipping options list */}
-        <div className="space-y-2 mt-2">
+        <div className="space-y-3">
           {displayOptions.map(option => {
             const isSelected = selectedOption === option.id;
             const isSaved = savedOptions.includes(option.id);
@@ -361,7 +339,6 @@ const ShippingOptionsComponent = () => {
                         )}
                       </div>
                       
-                      {/* Carrier info with PNG logos */}
                       <div className="flex items-center text-xs text-gray-500">
                         <img 
                           src={option.carrierLogoUrl} 
@@ -389,7 +366,6 @@ const ShippingOptionsComponent = () => {
                       </div>
                     </div>
                     
-                    {/* Savings indicator */}
                     {option.savings > 0 && (
                       <div className="text-xs text-green-600 flex items-center">
                         <DollarSign size={10} className="mr-0.5" />
@@ -399,16 +375,12 @@ const ShippingOptionsComponent = () => {
                   </div>
                 </div>
                 
-                {/* Second row with mini-timer, ratings and badges */}
                 <div className="flex justify-between items-center mt-1.5">
-                  {/* Left side - Mini timer (removed progress bar) */}
                   {renderMiniTimer(option)}
                   
-                  {/* Right side - Star rating */}
                   {renderRating(option.rating, option.ratingCount)}
                 </div>
                 
-                {/* Badges row */}
                 <div className="flex flex-wrap items-center mt-1.5 gap-x-2 gap-y-1">
                   {option.badge && (
                     <span className={`text-xs px-1 py-0.5 rounded inline-flex items-center
@@ -460,7 +432,6 @@ const ShippingOptionsComponent = () => {
                     </div>
                   )}
                   
-                  {/* Interactive details icon */}
                   <button 
                     className="text-xs flex items-center text-blue-600 ml-auto"
                     onClick={(e) => toggleDetails(e, option.id)}
@@ -474,7 +445,6 @@ const ShippingOptionsComponent = () => {
                   </button>
                 </div>
                 
-                {/* Expandable details */}
                 {isExpanded && (
                   <div className="mt-2 pt-2 border-t border-gray-200 text-xs text-gray-700">
                     <div className="grid grid-cols-2 gap-1">
@@ -506,9 +476,8 @@ const ShippingOptionsComponent = () => {
           })}
         </div>
         
-        {/* View more/less button */}
         <button 
-          className="w-full flex items-center justify-center mt-2 text-xs text-red-500 py-2 border border-red-200 rounded-md hover:bg-red-50"
+          className="w-full flex items-center justify-center mt-3 text-xs text-red-500 py-2 border border-red-200 rounded-md hover:bg-red-50"
           onClick={toggleShowAllOptions}
         >
           {showAllOptions ? (
@@ -524,8 +493,7 @@ const ShippingOptionsComponent = () => {
           )}
         </button>
         
-        {/* Footer information - super compact */}
-        <div className="mt-2 flex justify-between items-center text-xs">
+        <div className="mt-3 flex justify-between items-center text-xs">
           <div className="text-red-600 flex items-center">
             <Globe size={12} className="mr-0.5" />
             <span>Free shipping over $35</span>
