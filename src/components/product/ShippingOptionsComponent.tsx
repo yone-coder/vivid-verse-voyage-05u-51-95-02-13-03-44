@@ -288,7 +288,7 @@ const ShippingOptionsComponent = () => {
 
   return (
     <div className="w-full max-w-md font-sans">
-      <div className="px-4">
+      <div className="p-3 px-2 mt-1">
         <div className="flex justify-between items-center mb-3">
           <div className="flex items-center">
             <Truck size={16} className="text-red-500 mr-1" />
