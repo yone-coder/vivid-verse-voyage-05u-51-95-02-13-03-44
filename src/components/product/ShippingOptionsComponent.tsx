@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { 
   Truck, Plane, Clock, Heart, AlertTriangle, 
@@ -286,7 +287,7 @@ const ShippingOptionsComponent = () => {
   };
 
   return (
-    <div className="w-full font-sans bg-white border-t border-gray-100 py-4">
+    <div className="w-full font-sans bg-white py-4">
       <div className="flex justify-between items-center px-4 pb-3 border-b border-gray-100">
         <div className="flex items-center">
           <ShoppingBag size={14} className="mr-1 text-red-500" />
@@ -298,7 +299,7 @@ const ShippingOptionsComponent = () => {
         </div>
       </div>
       
-      <div className="px-4 pt-3">
+      <div className="px-4">
         <div className="flex justify-between items-center mb-3">
           <div className="flex items-center">
             <Truck size={16} className="text-red-500 mr-1" />
