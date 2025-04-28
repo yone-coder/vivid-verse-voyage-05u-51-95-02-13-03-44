@@ -48,7 +48,7 @@ const ProductShipping: React.FC<ProductShippingProps> = ({
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-1">
+      <div className="flex items-center justify-between mb-2">
         <span className="text-sm font-medium text-gray-700">Shipping:</span>
         <div className="flex flex-col items-end">
           <div className="flex items-center">
@@ -77,12 +77,12 @@ const ProductShipping: React.FC<ProductShippingProps> = ({
       </div>
       
       {showDeliveryOptions && (
-        <div className="mt-1 p-2 bg-gray-50 rounded-md border border-gray-200">
+        <div className="mt-2 p-2 bg-gray-50 rounded-md border border-gray-200">
           <RadioGroup 
             value={deliveryMethod}
             onValueChange={handleShippingChange}
           >
-            <div className="flex items-start space-x-2 mb-1.5">
+            <div className="flex items-start space-x-2 mb-2">
               <RadioGroupItem value="standard" id="standard" className="mt-1" />
               <label htmlFor="standard" className="text-sm cursor-pointer flex-1">
                 <div className="font-medium">Standard Shipping (Free)</div>

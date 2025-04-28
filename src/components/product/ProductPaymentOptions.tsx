@@ -15,7 +15,7 @@ const ProductPaymentOptions: React.FC<ProductPaymentOptionsProps> = ({
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-1">
+      <div className="flex items-center justify-between mb-2">
         <span className="text-sm font-medium text-gray-700">Payment Options:</span>
         <Button
           variant="ghost"
@@ -35,7 +35,7 @@ const ProductPaymentOptions: React.FC<ProductPaymentOptionsProps> = ({
         </Button>
       </div>
 
-      <div className="mt-1">
+      <div className="mt-2">
         {displayedOptions.map((option, index) => (
           <div key={index} className="flex items-center py-0.5">
             <CreditCard className="h-3.5 w-3.5 text-gray-500 mr-1.5" />

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { 
   Truck, Plane, Clock, Heart, AlertTriangle, 
@@ -288,8 +287,8 @@ const ShippingOptionsComponent = () => {
 
   return (
     <div className="w-full max-w-md font-sans">
-      <div className="p-3 px-2 mt-1">
-        <div className="flex justify-between items-center mb-3">
+      <div className="mt-1">
+        <div className="flex justify-between items-center mb-2">
           <div className="flex items-center">
             <Truck size={16} className="text-red-500 mr-1" />
             <h2 className="font-medium text-sm text-gray-800">Delivery Options</h2>
