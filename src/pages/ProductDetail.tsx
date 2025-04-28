@@ -18,6 +18,7 @@ import ProductQuantitySelector from "@/components/product/ProductQuantitySelecto
 import ProductShipping from "@/components/product/ProductShipping";
 import ProductWarranty from "@/components/product/ProductWarranty";
 import ProductPaymentOptions from "@/components/product/ProductPaymentOptions";
+import LocationSelector from "@/components/product/LocationSelector";
 
 const DEFAULT_PRODUCT_ID = "aae97882-a3a1-4db5-b4f5-156705cd10ee";
 
@@ -560,6 +561,9 @@ const ProductDetail = () => {
             productName={product?.name}
             stockInfo={selectedVariantStockInfo}
           />
+          <div className="border-t border-gray-100 mt-4 pt-4">
+            <LocationSelector />
+          </div>
           <ProductShipping
             shippingInfo={productForTabs.shipping}
             isExpressSelected={isExpressSelected}
