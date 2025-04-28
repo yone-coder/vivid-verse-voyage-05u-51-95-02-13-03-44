@@ -173,7 +173,7 @@ const NewQuantitySelector: React.FC<NewQuantitySelectorProps> = ({
   };
 
   return (
-    <div className="w-full max-w-md bg-white rounded p-3 relative mt-1 px-2">
+    <div className="w-full max-w-md bg-white rounded p-2 relative mt-0.5 px-0">
   {/* Floating number animation */}
   {showFloatingNumber && (
     <div 
@@ -192,8 +192,8 @@ const NewQuantitySelector: React.FC<NewQuantitySelectorProps> = ({
 
   {/* Toast notification */}
   {showToast && (
-    <div className="absolute top-0 left-0 right-0 transform -translate-y-full p-2">
-      <div className="bg-orange-500 text-white p-2 rounded shadow-md text-center text-sm flex items-center justify-center">
+    <div className="absolute top-0 left-0 right-0 transform -translate-y-full p-0.5">
+      <div className="bg-orange-500 text-white p-0.5 rounded shadow-md text-center text-sm flex items-center justify-center">
         <Award size={16} className="mr-1" />
         {toastMessage}
       </div>
@@ -202,22 +202,22 @@ const NewQuantitySelector: React.FC<NewQuantitySelectorProps> = ({
 
   {/* Bulk order confirmation popup */}
   {showBulkConfirmation && (
-    <div className="absolute bottom-0 left-0 right-0 transform translate-y-full p-2 z-30">
-      <div className="bg-blue-600 text-white p-3 rounded shadow-lg text-sm flex items-start">
+    <div className="absolute bottom-0 left-0 right-0 transform translate-y-full p-0.5 z-30">
+      <div className="bg-blue-600 text-white p-2 rounded shadow-lg text-sm flex items-start">
         <Info size={18} className="mr-2 flex-shrink-0 mt-0.5" />
         <div>
           <div className="font-bold mb-1">Bulk Order Selected</div>
           <div className="text-blue-100 text-xs mb-2">You've selected {quantity} units (Tier {PRICE_TIERS.indexOf(activeTier) + 1} pricing)</div>
           <div className="flex gap-2">
             <button 
-              className="bg-white text-blue-600 px-3 py-1 rounded text-xs font-medium hover:bg-blue-50"
+              className="bg-white text-blue-600 px-3 py-0.5 rounded text-xs font-medium hover:bg-blue-50"
               onClick={() => setShowBulkConfirmation(false)}
             >
               <Check size={12} className="inline mr-1" />
               Confirm
             </button>
             <button 
-              className="bg-blue-700 text-white px-3 py-1 rounded text-xs font-medium hover:bg-blue-800"
+              className="bg-blue-700 text-white px-3 py-0.5 rounded text-xs font-medium hover:bg-blue-800"
               onClick={() => {
                 handleQuantityChange(Math.max(1, quantity - getNextDiscountThreshold()));
                 setShowBulkConfirmation(false);
@@ -232,7 +232,7 @@ const NewQuantitySelector: React.FC<NewQuantitySelectorProps> = ({
   )}
 
   {/* Modified header with "Quantity" and "You have selected" pushed to far edges */}
-  <div className="flex items-center justify-between mb-3">
+  <div className="flex items-center justify-between mb-2">
     <div className="flex items-center">
       <h3 className="text-sm font-semibold text-gray-800">Quantity</h3>
       <div className="relative ml-2">
@@ -244,7 +244,7 @@ const NewQuantitySelector: React.FC<NewQuantitySelectorProps> = ({
           <HelpCircle size={14} />
         </button>
         {isInfoTooltipVisible && (
-          <div className="absolute z-20 bg-gray-800 text-white p-2 rounded shadow-lg text-xs w-56 left-0 top-6">
+          <div className="absolute z-20 bg-gray-800 text-white p-1 rounded shadow-lg text-xs w-56 left-0 top-6">
             <div className="font-semibold mb-1">About Bulk Pricing</div>
             <p className="mb-1">Our tiered pricing system offers discounts based on quantity purchased.</p>
             <ul className="text-gray-300 text-xs">
@@ -268,7 +268,7 @@ const NewQuantitySelector: React.FC<NewQuantitySelectorProps> = ({
   </div>
 
   {/* Main quantity selector controls */}
-  <div className="flex items-center gap-3 mb-3">
+  <div className="flex items-center gap-2 mb-2">
     <div className="flex border border-gray-300 rounded h-8">
       <button
         className="flex-shrink-0 bg-red-50 hover:bg-red-100 w-8 h-full flex items-center justify-center transition-colors border-r border-gray-300"
@@ -315,7 +315,7 @@ const NewQuantitySelector: React.FC<NewQuantitySelectorProps> = ({
   </div>
 
   {/* Slider control */}
-  <div className="mb-4 relative">
+  <div className="mb-2 relative">
     <div className="h-1 bg-gray-200 rounded-full mb-1 relative overflow-hidden">
       <div 
         className="h-full bg-gradient-to-r from-orange-400 to-orange-600"
@@ -340,65 +340,65 @@ const NewQuantitySelector: React.FC<NewQuantitySelectorProps> = ({
   </div>
 
   {/* Discount cards with expand/collapse functionality */}
-  <div className="mb-3 text-xs">
-    <h4 className="font-medium text-orange-600 mb-2 flex items-center">
+  <div className="mb-2 text-xs">
+    <h4 className="font-medium text-orange-600 mb-1 flex items-center">
       <Gift size={14} className="text-orange-500 mr-1" />
       Select Bundle Option
       <span className="ml-1 text-xs bg-orange-100 text-orange-700 px-1 rounded">Save more</span>
     </h4>
 
     {/* First row of cards - always visible */}
-    <div className="grid grid-cols-3 gap-1 mb-1">
+    <div className="grid grid-cols-3 gap-0.5 mb-0.5">
       {PRICE_TIERS.filter(tier => tier.discount > 0).slice(0, 3).map((tier, index) => (
         <div 
           key={index}
-          className={`rounded p-1 text-center cursor-pointer transition-all border ${quantity >= tier.min ? 'bg-orange-50 border-orange-400' : 'bg-gray-50 border-gray-200'}`}
+          className={`rounded p-0.5 text-center cursor-pointer transition-all border ${quantity >= tier.min ? 'bg-orange-50 border-orange-400' : 'bg-gray-50 border-gray-200'}`}
           onClick={() => handleQuantityChange(tier.min)}
         >
           <div className="text-xs">{tier.min}+ pcs</div>
           <div className="font-semibold text-orange-600 text-xs">Only ${tier.price.toFixed(2)} each</div>
-          <div className="bg-orange-500 text-white text-xs rounded-sm px-1 mt-1 font-medium">Now {tier.discount}% Off!</div>
+          <div className="bg-orange-500 text-white text-xs rounded-sm px-0.5 mt-0.5 font-medium">Now {tier.discount}% Off!</div>
         </div>
       ))}
     </div>
 
     {/* Expanded section with additional cards */}
     {isExpanded && (
-      <div className="grid grid-cols-3 gap-1 mt-1">
+      <div className="grid grid-cols-3 gap-0.5 mt-0.5">
         {/* Additional bundle options */}
         <div 
-          className={`rounded p-1 text-center cursor-pointer transition-all border ${quantity >= 200 ? 'bg-orange-50 border-orange-400' : 'bg-gray-50 border-gray-200'}`}
+          className={`rounded p-0.5 text-center cursor-pointer transition-all border ${quantity >= 200 ? 'bg-orange-50 border-orange-400' : 'bg-gray-50 border-gray-200'}`}
           onClick={() => handleQuantityChange(200)}
         >
           <div className="text-xs">200+ pcs</div>
           <div className="font-semibold text-orange-600 text-xs">Only $6.75 each</div>
-          <div className="bg-orange-500 text-white text-xs rounded-sm px-1 mt-1 font-medium">Now 32.5% Off!</div>
+          <div className="bg-orange-500 text-white text-xs rounded-sm px-0.5 mt-0.5 font-medium">Now 32.5% Off!</div>
         </div>
 
         <div 
-          className={`rounded p-1 text-center cursor-pointer transition-all border ${quantity >= 250 ? 'bg-orange-50 border-orange-400' : 'bg-gray-50 border-gray-200'}`}
+          className={`rounded p-0.5 text-center cursor-pointer transition-all border ${quantity >= 250 ? 'bg-orange-50 border-orange-400' : 'bg-gray-50 border-gray-200'}`}
           onClick={() => handleQuantityChange(250)}
         >
           <div className="text-xs">250+ pcs</div>
           <div className="font-semibold text-orange-600 text-xs">Only $6.50 each</div>
-          <div className="bg-orange-500 text-white text-xs rounded-sm px-1 mt-1 font-medium">Now 35% Off!</div>
+          <div className="bg-orange-500 text-white text-xs rounded-sm px-0.5 mt-0.5 font-medium">Now 35% Off!</div>
         </div>
 
         <div 
-          className="rounded p-1 text-center cursor-pointer transition-all border bg-gray-50 border-gray-200"
+          className="rounded p-0.5 text-center cursor-pointer transition-all border bg-gray-50 border-gray-200"
           onClick={() => {
             // Open custom quantity dialog or similar functionality
           }}
         >
           <div className="text-xs">Custom</div>
           <div className="font-semibold text-blue-600 text-xs">Quote</div>
-          <div className="bg-blue-500 text-white text-xs rounded-sm px-1 mt-1 font-medium">Contact us</div>
+          <div className="bg-blue-500 text-white text-xs rounded-sm px-0.5 mt-0.5 font-medium">Contact us</div>
         </div>
       </div>
     )}
 
     {/* View more / View less button */}
-    <div className="text-center mt-2">
+    <div className="text-center mt-1">
       <button 
         className="text-red-500 text-xs font-medium flex items-center justify-center mx-auto"
         onClick={() => setIsExpanded(!isExpanded)}
@@ -410,7 +410,7 @@ const NewQuantitySelector: React.FC<NewQuantitySelectorProps> = ({
   </div>
 
   {/* Dynamic information and suggestions */}
-  <div className="bg-orange-50 border border-orange-200 p-2 rounded mb-3 text-xs">
+  <div className="bg-orange-50 border border-orange-200 p-1 rounded mb-2 text-xs">
     {activeTier.discount > 0 ? (
       <div className="flex items-center">
         <DollarSign size={14} className="text-orange-600 mr-1 flex-shrink-0" />
@@ -430,7 +430,7 @@ const NewQuantitySelector: React.FC<NewQuantitySelectorProps> = ({
   </div>
 
   {/* Current selection summary */}
-  <div className="flex items-center justify-between p-2 rounded border border-gray-200">
+  <div className="flex items-center justify-between p-1 rounded border border-gray-200">
     <div>
       <div className="text-xs text-gray-500">Current selection:</div>
       <div className="font-medium text-sm">
