@@ -26,8 +26,8 @@ const ProductWarranty: React.FC<ProductWarrantyProps> = ({
   const formatPrice = (price: number) => price.toFixed(2);
 
   return (
-    <div className="px-3 py-1.5">
-      <div className="flex items-center justify-between mb-1">
+    <div className="w-full px-4 py-3 border-b border-gray-100">
+      <div className="flex items-center justify-between mb-2">
         <span className="text-sm font-medium text-gray-700">Warranty:</span>
         <Button 
           variant="ghost" 
@@ -40,12 +40,12 @@ const ProductWarranty: React.FC<ProductWarrantyProps> = ({
       </div>
       
       {showWarrantyOptions && (
-        <div className="mt-1 p-2 bg-gray-50 rounded-md border border-gray-200">
+        <div className="mt-2 p-3 bg-gray-50 rounded-md border border-gray-200">
           <RadioGroup 
             value={selectedWarranty}
             onValueChange={onWarrantyChange}
           >
-            <div className="flex items-start space-x-2 mb-1.5">
+            <div className="flex items-start space-x-2 mb-2">
               <RadioGroupItem value="none" id="none" className="mt-1" />
               <label htmlFor="none" className="text-sm cursor-pointer flex-1">
                 <div className="font-medium">No additional warranty</div>
@@ -54,7 +54,7 @@ const ProductWarranty: React.FC<ProductWarrantyProps> = ({
             </div>
             
             {warrantyOptions.map((option) => (
-              <div key={option.name.toLowerCase()} className="flex items-start space-x-2 mb-1.5">
+              <div key={option.name.toLowerCase()} className="flex items-start space-x-2 mb-2">
                 <RadioGroupItem value={option.name.toLowerCase()} id={option.name.toLowerCase()} className="mt-1" />
                 <label htmlFor={option.name.toLowerCase()} className="text-sm cursor-pointer flex-1">
                   <div className="font-medium">

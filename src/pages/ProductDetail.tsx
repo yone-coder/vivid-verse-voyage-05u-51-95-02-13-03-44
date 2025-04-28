@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { useParams } from "react-router-dom";
@@ -21,6 +20,7 @@ import ProductWarranty from "@/components/product/ProductWarranty";
 import ProductPaymentOptions from "@/components/product/ProductPaymentOptions";
 import LocationSelector from "@/components/product/LocationSelector";
 import ShippingOptionsComponent from '@/components/product/ShippingOptionsComponent';
+import ProductPriceDisplay from '@/components/product/ProductPriceDisplay';
 
 const DEFAULT_PRODUCT_ID = "aae97882-a3a1-4db5-b4f5-156705cd10ee";
 
@@ -549,41 +549,38 @@ const ProductDetail = () => {
 
       <div className="flex-1 overscroll-none">
         <div className="bg-white space-y-0">
-          <div className="px-2 py-0.5">
-            <CoreIdentity />
-          </div>
+          <CoreIdentity />
           
-          <div className="px-2 py-0.5">
-            <PricingSection />
-          </div>
+          <PricingSection />
+
+          <ProductPriceDisplay 
+            currentPrice={currentPrice}
+            originalPrice={originalPrice}
+          />
           
-          <div className="px-2 py-0.5">
-            <ProductColorVariants />
-          </div>
+          <ProductColorVariants />
           
-          <div className="px-2 py-0.5">
-            <ProductQuantitySelector 
-              quantity={quantity}
-              onIncrement={incrementQuantity}
-              onDecrement={decrementQuantity}
-              price={currentPrice}
-              maxQuantity={10}
-              minQuantity={1}
-              inStock={currentStock}
-              productName={product?.name}
-              stockInfo={selectedVariantStockInfo}
-            />
-          </div>
+          <ProductQuantitySelector 
+            quantity={quantity}
+            onIncrement={incrementQuantity}
+            onDecrement={decrementQuantity}
+            price={currentPrice}
+            maxQuantity={10}
+            minQuantity={1}
+            inStock={selectedColor ? variantStockInfo[selectedColor]?.currentStock : 0}
+            productName={product?.name}
+            stockInfo={selectedColor ? variantStockInfo[selectedColor] : undefined}
+          />
           
-          <div className="px-2 py-0.5">
+          <div className="w-full px-4 py-3 border-b border-gray-100">
             <LocationSelector />
           </div>
           
-          <div className="px-2 py-0.5">
+          <div className="w-full px-4 py-3 border-b border-gray-100">
             <ShippingOptionsComponent />
           </div>
          
-          <div className="px-2 py-0.5">
+          <div className="w-full px-4 py-3 border-b border-gray-100">
             <ProductShipping
               shippingInfo={productForTabs.shipping}
               isExpressSelected={isExpressSelected}
@@ -591,19 +588,15 @@ const ProductDetail = () => {
             />
           </div>
           
-          <div className="px-2 py-0.5">
-            <ProductWarranty
-              warrantyOptions={productForTabs.warranty}
-              selectedWarranty={selectedWarranty}
-              onWarrantyChange={setSelectedWarranty}
-            />
-          </div>
+          <ProductWarranty
+            warrantyOptions={productForTabs.warranty}
+            selectedWarranty={selectedWarranty}
+            onWarrantyChange={setSelectedWarranty}
+          />
           
-          <div className="px-4 py-2">
-            <ProductPaymentOptions paymentOptions={productForTabs.payments} />
-          </div>
+          <ProductPaymentOptions paymentOptions={productForTabs.payments} />
           
-          <div className="px-4 py-0">
+          <div className="px-4 py-3">
             <AliExpressTabs tabs={tabsConfig} initialTab={0} />
           </div>
         </div>

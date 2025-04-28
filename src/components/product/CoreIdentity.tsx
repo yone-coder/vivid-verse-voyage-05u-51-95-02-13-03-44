@@ -21,9 +21,9 @@ const CoreIdentity = () => {
   }, []);
   
   return (
-    <div className="w-full">
+    <div className="w-full px-4 py-3 border-b border-gray-100">
       {/* Sub-Row 1.1: Title + Badge - Fixed to be in same line */}
-      <div className="flex items-center justify-between mb-1">
+      <div className="flex items-center justify-between mb-2">
         <h2 
           className={`font-bold text-orange-600 cursor-pointer transition-all duration-300 ${isTitleExpanded ? '' : 'truncate'}`}
           style={isTitleExpanded ? {} : { maxWidth: '75%' }}

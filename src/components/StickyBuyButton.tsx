@@ -83,8 +83,8 @@ const StickyBuyButton = ({ selectedColor, colorPrices }: StickyBuyButtonProps) =
           isVisible ? 'translate-y-0' : 'translate-y-full'
         }`}
       >
-        <div className="px-3 pt-2 pb-1">
-          <div className="flex items-center justify-between mb-1">
+        <div className="px-4 pt-3 pb-2">
+          <div className="flex items-center justify-between mb-2">
             <div className="flex items-center">
               <span className="text-red-500 font-bold text-base mr-1">
                 ${product.discount_price?.toFixed(2) || product.price?.toFixed(2)}
@@ -125,7 +125,7 @@ const StickyBuyButton = ({ selectedColor, colorPrices }: StickyBuyButtonProps) =
           </div>
         </div>
         
-        <div className="px-3 pt-1 pb-2">
+        <div className="px-4 pt-1 pb-3">
           <div className="flex items-center justify-between gap-2">
             <button 
               onClick={toggleWishlist}

@@ -35,11 +35,13 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
   };
 
   return (
-    <NewQuantitySelector
-      quantity={quantity}
-      onQuantityChange={handleQuantityChange}
-      basePrice={price}
-    />
+    <div className="w-full px-4 py-3 border-b border-gray-100">
+      <NewQuantitySelector
+        quantity={quantity}
+        onQuantityChange={handleQuantityChange}
+        basePrice={price}
+      />
+    </div>
   );
 };
 
