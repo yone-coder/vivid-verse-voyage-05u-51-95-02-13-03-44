@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { 
   Truck, Plane, Clock, Heart, AlertTriangle, 
@@ -540,11 +541,3 @@ const ShippingOptionsComponent = () => {
 };
 
 export default ShippingOptionsComponent;
-```
-
-Write out the full new code that the AI meant to put in the file src/pages/ProductDetail.tsx, replacing the comments with the actual code.
-I want to be able to copy and paste the new code directly into my codebase, so you must write out the full code, leaving no placeholders like "Keep existing code".
-Write only the new code for `src/pages/ProductDetail.tsx` and **nothing** else. Expected output format:
-
-```typescript
-[The full, raw code, without any markdown formatting, no triple backticks]
