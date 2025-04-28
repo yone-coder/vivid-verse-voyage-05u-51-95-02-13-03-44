@@ -29,3 +29,58 @@ export const fetchProductById = async (productId: string) => {
   
   return data;
 };
+
+// Function to fetch all products
+export const fetchAllProducts = async () => {
+  const { data, error } = await supabase
+    .from('products')
+    .select(`
+      *,
+      product_images (*)
+    `)
+    .order('created_at', { ascending: false });
+  
+  if (error) {
+    console.error('Error fetching all products:', error);
+    throw error;
+  }
+  
+  return data;
+};
+
+// Function to update a product
+export const updateProduct = async (productId: string, updates: Partial<Database['public']['Tables']['products']['Update']>) => {
+  const { data, error } = await supabase
+    .from('products')
+    .update(updates)
+    .eq('id', productId)
+    .select()
+    .single();
+  
+  if (error) {
+    console.error(`Error updating product with ID ${productId}:`, error);
+    throw error;
+  }
+  
+  return data;
+};
+
+// Function to subscribe to product changes
+export const subscribeToProductChanges = (callback: (payload: any) => void) => {
+  const channel = supabase
+    .channel('product-changes')
+    .on(
+      'postgres_changes',
+      {
+        event: '*',
+        schema: 'public',
+        table: 'products'
+      },
+      callback
+    )
+    .subscribe();
+  
+  return () => {
+    supabase.removeChannel(channel);
+  };
+};
