@@ -287,17 +287,6 @@ const ShippingOptionsComponent = () => {
 
   return (
     <div className="w-full font-sans">
-      <div className="flex justify-between items-center px-2 py-1 pb-3 border-b border-gray-100">
-        <div className="flex items-center">
-          <ShoppingBag size={14} className="mr-1 text-red-500" />
-          <span className="text-xs font-medium">Shipping to {country}</span>
-        </div>
-        <div className="text-xs flex items-center">
-          <Clock size={12} className="mr-1 text-red-500" />
-          <span>{timeLeft.hours}h {timeLeft.minutes}m left</span>
-        </div>
-      </div>
-      
       <div className="px-4">
         <div className="flex justify-between items-center mb-3">
           <div className="flex items-center">
