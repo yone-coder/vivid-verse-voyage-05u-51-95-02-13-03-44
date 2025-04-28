@@ -147,7 +147,7 @@ const ProductColorVariants = () => {
 
   return (
    <div className="w-full px-2 py-0.5 border-b border-gray-100">
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           <Palette className="w-4 h-4 text-[#FF4747]" />
           <span className="text-sm font-medium text-gray-800">Product Variants</span>
@@ -165,7 +165,7 @@ const ProductColorVariants = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-2 mb-4">
+      <div className="grid grid-cols-3 gap-2 mb-3">
         {colorVariants.map((variant) => (
           <ColorVariantItem
             key={variant.name}
@@ -178,8 +178,8 @@ const ProductColorVariants = () => {
       </div>
       
       {/* Stock level indicator for the selected color - with name removed */}
-      <div className="mt-4 mb-2">
-        <div className="flex items-center justify-between mb-2">
+      <div className="mt-2 mb-1">
+        <div className="flex items-center justify-between mb-1">
           <div className="flex items-center gap-2">
             <div className={`w-2 h-2 rounded-full animate-pulse ${selectedStockInfo.progressColor}`}></div>
             <span className="text-sm font-medium text-gray-700">
@@ -204,7 +204,7 @@ const ProductColorVariants = () => {
       </div>
       
       {/* Marketing message based on stock level */}
-      <div className={`mt-3 p-2 rounded-md text-xs flex items-center gap-2 ${
+      <div className={`mt-2 p-1.5 rounded-md text-xs flex items-center gap-2 ${
         selectedStockInfo.urgency === "high" 
           ? "bg-red-50 border border-red-100 text-red-700" 
           : selectedStockInfo.urgency === "medium"

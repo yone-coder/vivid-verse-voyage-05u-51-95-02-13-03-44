@@ -72,7 +72,7 @@ const ColorVariantItem: React.FC<ColorVariantItemProps> = ({
             disabled={currentStock === 0}
           >
             <div 
-              className="w-10 h-10 rounded-full overflow-hidden border border-gray-200 mb-1"
+              className="w-10 h-10 rounded-full overflow-hidden border border-gray-200 mb-0.5"
               style={{
                 backgroundColor: getColorHex(variant.name),
                 border: variant.name === 'White' ? '1px solid #E0E0E0' : 'none'
