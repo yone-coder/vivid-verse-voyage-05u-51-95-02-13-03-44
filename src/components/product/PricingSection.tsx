@@ -26,7 +26,7 @@ const PricingSection = () => {
   });
 
   return (
-    <div className="w-full bg-white rounded-none overflow-hidden px-3 py-1.5">
+    <div className="w-full bg-white rounded-none overflow-hidden">
       {/* Discount banner */}
       <div className="flex items-center justify-between bg-red-50 w-full px-2 py-0.5 mb-1.5 rounded">
         <div className="flex items-center">

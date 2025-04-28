@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { useParams } from "react-router-dom";
@@ -547,36 +548,64 @@ const ProductDetail = () => {
       </div>
 
       <div className="flex-1 overscroll-none">
-        <div className="bg-white space-y-1.5">
-          <CoreIdentity />
-          <PricingSection />
-          <ProductColorVariants />
-          <ProductQuantitySelector 
-            quantity={quantity}
-            onIncrement={incrementQuantity}
-            onDecrement={decrementQuantity}
-            price={currentPrice}
-            maxQuantity={10}
-            minQuantity={1}
-            inStock={currentStock}
-            productName={product?.name}
-            stockInfo={selectedVariantStockInfo}
-          />
-          <LocationSelector />
-          <ShippingOptionsComponent />
+        <div className="bg-white space-y-0">
+          <div className="px-4 py-2">
+            <CoreIdentity />
+          </div>
+          
+          <div className="px-4 py-2">
+            <PricingSection />
+          </div>
+          
+          <div className="px-4 py-2">
+            <ProductColorVariants />
+          </div>
+          
+          <div className="px-4 py-2">
+            <ProductQuantitySelector 
+              quantity={quantity}
+              onIncrement={incrementQuantity}
+              onDecrement={decrementQuantity}
+              price={currentPrice}
+              maxQuantity={10}
+              minQuantity={1}
+              inStock={currentStock}
+              productName={product?.name}
+              stockInfo={selectedVariantStockInfo}
+            />
+          </div>
+          
+          <div className="px-4 py-2">
+            <LocationSelector />
+          </div>
+          
+          <div className="px-4 py-2">
+            <ShippingOptionsComponent />
+          </div>
          
-          <ProductShipping
-            shippingInfo={productForTabs.shipping}
-            isExpressSelected={isExpressSelected}
-            onExpressChange={setIsExpressSelected}
-          />
-          <ProductWarranty
-            warrantyOptions={productForTabs.warranty}
-            selectedWarranty={selectedWarranty}
-            onWarrantyChange={setSelectedWarranty}
-          />
-          <ProductPaymentOptions paymentOptions={productForTabs.payments} />
-          <AliExpressTabs tabs={tabsConfig} initialTab={0} />
+          <div className="px-4 py-2">
+            <ProductShipping
+              shippingInfo={productForTabs.shipping}
+              isExpressSelected={isExpressSelected}
+              onExpressChange={setIsExpressSelected}
+            />
+          </div>
+          
+          <div className="px-4 py-2">
+            <ProductWarranty
+              warrantyOptions={productForTabs.warranty}
+              selectedWarranty={selectedWarranty}
+              onWarrantyChange={setSelectedWarranty}
+            />
+          </div>
+          
+          <div className="px-4 py-2">
+            <ProductPaymentOptions paymentOptions={productForTabs.payments} />
+          </div>
+          
+          <div className="px-4 py-0">
+            <AliExpressTabs tabs={tabsConfig} initialTab={0} />
+          </div>
         </div>
       </div>
 

@@ -47,7 +47,7 @@ const ProductShipping: React.FC<ProductShippingProps> = ({
   };
 
   return (
-    <div className="px-3 py-1.5">
+    <div>
       <div className="flex items-center justify-between mb-1">
         <span className="text-sm font-medium text-gray-700">Shipping:</span>
         <div className="flex flex-col items-end">

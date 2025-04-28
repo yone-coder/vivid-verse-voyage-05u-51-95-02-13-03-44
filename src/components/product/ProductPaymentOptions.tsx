@@ -14,7 +14,7 @@ const ProductPaymentOptions: React.FC<ProductPaymentOptionsProps> = ({
   const displayedOptions = isExpanded ? paymentOptions : paymentOptions.slice(0, 2);
 
   return (
-    <div className="px-3 py-1.5">
+    <div>
       <div className="flex items-center justify-between mb-1">
         <span className="text-sm font-medium text-gray-700">Payment Options:</span>
         <Button
