@@ -287,8 +287,8 @@ const ShippingOptionsComponent = () => {
   };
 
   return (
-    <div className="w-full font-sans bg-white py-4">
-      <div className="flex justify-between items-center px-1 pb-3 border-b border-gray-100">
+    <div className="w-full font-sans">
+      <div className="flex justify-between items-center px-2 py-1 pb-3 border-b border-gray-100">
         <div className="flex items-center">
           <ShoppingBag size={14} className="mr-1 text-red-500" />
           <span className="text-xs font-medium">Shipping to {country}</span>
