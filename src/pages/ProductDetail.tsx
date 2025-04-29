@@ -15,10 +15,6 @@ import CoreIdentity from "@/components/product/CoreIdentity";
 import PricingSection from '@/components/product/PricingSection';
 import ProductColorVariants from "@/components/product/ProductColorVariants";
 import ProductQuantitySelector from "@/components/product/ProductQuantitySelector";
-import ProductShipping from "@/components/product/ProductShipping";
-import ProductWarranty from "@/components/product/ProductWarranty";
-import ProductPaymentOptions from "@/components/product/ProductPaymentOptions";
-import LocationSelector from "@/components/product/LocationSelector";
 import ShippingOptionsComponent from '@/components/product/ShippingOptionsComponent';
 
 const DEFAULT_PRODUCT_ID = "aae97882-a3a1-4db5-b4f5-156705cd10ee";
@@ -286,11 +282,6 @@ const ProductDetail = () => {
     ? Math.floor(selectedVariantStockInfo.currentStock)
     : (currentVariant ? currentVariant.stock : 0);
   
-  const warrantyOption = productForTabs.warranty.find(w => w.name.toLowerCase() === selectedWarranty);
-  const warrantyPrice = warrantyOption ? warrantyOption.price : 0;
-  
-  const totalPrice = (currentPrice * quantity) + warrantyPrice + (isExpressSelected ? productForTabs.shipping.express : 0);
-  
   const descriptionContent = (
     <div className="text-sm text-gray-600">
       <p className="mb-4">{product.description}</p>
@@ -333,210 +324,9 @@ const ProductDetail = () => {
     </div>
   );
   
-  const reviewsContent = (
-    <div className="space-y-4">
-      <div className="flex flex-col md:flex-row gap-6 mb-6">
-        <div className="md:w-1/3 bg-gray-50 p-4 rounded-lg">
-          <div className="flex flex-col items-center">
-            <div className="text-4xl font-bold text-purple-700">{productForTabs.rating}</div>
-            <div className="text-amber-400 flex mb-1">
-              {'★'.repeat(Math.floor(productForTabs.rating))}
-              {productForTabs.rating % 1 !== 0 && '☆'}
-              {'☆'.repeat(5 - Math.ceil(productForTabs.rating))}
-            </div>
-            <div className="text-sm text-gray-500">{productForTabs.reviewCount} verified ratings</div>
-          </div>
-        </div>
-        
-        <div className="md:w-2/3">
-          <div className="space-y-4">
-            {[...Array(2)].map((_, index) => (
-              <div key={index} className="bg-white border border-gray-200 rounded-lg p-4">
-                <div className="flex items-center">
-                  <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 font-medium mr-3">
-                    {["JS", "AK"][index]}
-                  </div>
-                  <div>
-                    <div className="font-medium">{["John S.", "Alyssa K."][index]}</div>
-                    <div className="text-xs text-gray-500">
-                      {new Date(Date.now() - index * 5 * 86400000).toLocaleDateString()}
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="mt-2">
-                  <div className="flex items-center mb-1">
-                    <div className="text-amber-400 text-sm">
-                      {'★'.repeat(5 - Math.min(2, index))}
-                      {'☆'.repeat(Math.min(2, index))}
-                    </div>
-                  </div>
-                  
-                  <p className="mt-1 text-sm text-gray-700">
-                    {index === 0 && "This product exceeded my expectations! The colors are vibrant and realistic, truly creating an immersive experience. The remote makes it easy to change modes and the bluetooth speaker is an awesome bonus feature."}
-                    {index === 1 && "The color is absolutely stunning. My only complaint is the battery life is about 4 hours instead of the advertised 6. Still a great purchase overall."}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-          
-          <Button className="w-full py-2 mt-4 border border-gray-300 bg-white hover:bg-gray-50 text-gray-700">
-            View All Reviews
-          </Button>
-        </div>
-      </div>
-    </div>
-  );
-  
-  const shippingContent = (
-    <div className="space-y-4">
-      <div className="bg-gray-50 p-4 rounded-lg">
-        <h3 className="font-medium mb-2">Shipping Information</h3>
-        <div className="space-y-2 text-sm">
-          <div className="flex justify-between">
-            <span className="text-gray-600">Standard Shipping:</span>
-            <span className="font-medium">{productForTabs.shipping.free ? 'Free' : '$4.99'}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-600">Estimated Delivery:</span>
-            <span className="font-medium">{productForTabs.shipping.estimated}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-600">Express Shipping:</span>
-            <span className="font-medium">${productForTabs.shipping.express}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-600">Express Delivery:</span>
-            <span className="font-medium">{productForTabs.shipping.expressEstimated}</span>
-          </div>
-        </div>
-      </div>
-      
-      <div className="border border-gray-200 rounded-lg p-4">
-        <h3 className="font-medium mb-2">Shipping Details</h3>
-        <p className="text-sm text-gray-600 mb-4">
-          We ship worldwide to over 200 countries and regions. Shipping methods, times, and costs vary based on your location and product selection.
-        </p>
-        <div className="text-sm space-y-1">
-          <p><span className="font-medium">Processing Time:</span> 1-2 business days</p>
-          <p><span className="font-medium">Tracking:</span> Available for all orders</p>
-          <p><span className="font-medium">Customs:</span> May be subject to import duties</p>
-        </div>
-      </div>
-    </div>
-  );
-  
-  const returnPolicyContent = (
-    <div className="space-y-4">
-      <div className="bg-gray-50 p-4 rounded-lg">
-        <h3 className="font-medium mb-2">Return Policy</h3>
-        <p className="text-sm text-gray-600">
-          We offer {productForTabs.shipping.returns} on all eligible items.
-        </p>
-      </div>
-      
-      <div className="border border-gray-200 rounded-lg p-4">
-        <h3 className="font-medium mb-2">Return Process</h3>
-        <div className="space-y-3">
-          <div className="flex items-start">
-            <div className="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 font-bold mr-2">1</div>
-            <div className="text-sm">
-              <p className="font-medium">Contact Customer Service</p>
-              <p className="text-gray-600">Reach out to our customer service team to initiate a return.</p>
-            </div>
-          </div>
-          
-          <div className="flex items-start">
-            <div className="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 font-bold mr-2">2</div>
-            <div className="text-sm">
-              <p className="font-medium">Package Your Item</p>
-              <p className="text-gray-600">Securely pack the item in its original packaging if possible.</p>
-            </div>
-          </div>
-          
-          <div className="flex items-start">
-            <div className="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 font-bold mr-2">3</div>
-            <div className="text-sm">
-              <p className="font-medium">Ship It Back</p>
-              <p className="text-gray-600">Use the provided return label or follow the instructions.</p>
-            </div>
-          </div>
-          
-          <div className="flex items-start">
-            <div className="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 font-bold mr-2">4</div>
-            <div className="text-sm">
-              <p className="font-medium">Receive Your Refund</p>
-              <p className="text-gray-600">Refunds are processed within 7-14 days of receiving the return.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-  
-  const qAndAContent = (
-    <div className="space-y-4">
-      <div className="bg-gray-50 p-4 rounded-lg">
-        <h3 className="font-medium mb-2">Frequently Asked Questions</h3>
-        <p className="text-sm text-gray-600">Find answers to common questions about {product.name}.</p>
-      </div>
-      
-      <div className="space-y-3">
-        {[
-          { question: "How long does the battery last?", answer: "The battery can last up to 6 hours on a single charge, depending on usage and settings." },
-          { question: "Is this waterproof?", answer: "The product is IP65 rated, which means it's water-resistant but not fully waterproof. It can handle light splashes but should not be submerged." },
-          { question: "Can I connect multiple devices?", answer: "Yes, you can connect up to 2 devices simultaneously via Bluetooth." },
-          { question: "Is there a warranty?", answer: "Yes, we offer a standard 12-month warranty with options to extend." }
-        ].map((qa, index) => (
-          <div key={index} className="border border-gray-200 rounded-lg p-4">
-            <h4 className="font-medium text-purple-700 mb-1">{qa.question}</h4>
-            <p className="text-sm text-gray-600">{qa.answer}</p>
-          </div>
-        ))}
-      </div>
-      
-      <Button className="w-full py-2 mt-2 border border-gray-300 bg-white hover:bg-gray-50 text-gray-700">
-        Ask a Question
-      </Button>
-    </div>
-  );
-  
-  const recommendationsContent = (
-    <div className="space-y-4">
-      <h3 className="font-medium mb-2">Similar Products</h3>
-      <div className="grid grid-cols-2 gap-3">
-        {[...Array(4)].map((_, index) => (
-          <div key={index} className="border border-gray-200 rounded-lg p-2">
-            <img 
-              src={productImages[0] || "/placeholder.svg"} 
-              alt={`Recommendation ${index + 1}`} 
-              className="w-full h-32 object-cover rounded-md mb-2" 
-            />
-            <div className="text-sm font-medium line-clamp-2">Similar {product.name} Option {index + 1}</div>
-            <div className="text-xs text-gray-500 mt-1">$49.99 - $89.99</div>
-            <div className="text-xs text-amber-500 flex items-center mt-1">
-              {'★'.repeat(5)}
-              <span className="text-gray-500 ml-1">(124)</span>
-            </div>
-          </div>
-        ))}
-      </div>
-      
-      <Button className="w-full py-2 mt-2 border border-gray-300 bg-white hover:bg-gray-50 text-gray-700">
-        View More
-      </Button>
-    </div>
-  );
-  
   const tabsConfig = [
     { id: 0, name: 'Description', content: descriptionContent },
     { id: 1, name: 'Specifications', content: specificationsContent },
-    { id: 2, name: 'Reviews', content: reviewsContent },
-    { id: 3, name: 'Q&As', content: qAndAContent },
-    { id: 4, name: 'Shipping', content: shippingContent },
-    { id: 5, name: 'Return Policy', content: returnPolicyContent },
-    { id: 6, name: 'Recommendations', content: recommendationsContent },
   ];
   
   return (
@@ -567,28 +357,8 @@ const ProductDetail = () => {
           />
           
           <div className="w-full px-2 py-0.5 border-b border-gray-100">
-            <LocationSelector />
-          </div>
-          
-          <div className="w-full px-2 py-0.5 border-b border-gray-100">
             <ShippingOptionsComponent />
           </div>
-         
-          <div className="w-full px-2 py-0.5 border-b border-gray-100">
-            <ProductShipping
-              shippingInfo={productForTabs.shipping}
-              isExpressSelected={isExpressSelected}
-              onExpressChange={setIsExpressSelected}
-            />
-          </div>
-          
-          <ProductWarranty
-            warrantyOptions={productForTabs.warranty}
-            selectedWarranty={selectedWarranty}
-            onWarrantyChange={setSelectedWarranty}
-          />
-          
-          <ProductPaymentOptions paymentOptions={productForTabs.payments} />
           
           <div className="px-2 py-0.5">
             <AliExpressTabs tabs={tabsConfig} initialTab={0} />
