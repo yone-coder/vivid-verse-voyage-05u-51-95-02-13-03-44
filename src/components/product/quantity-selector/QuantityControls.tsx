@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Plus, Minus } from 'lucide-react';
 
@@ -23,18 +22,21 @@ const QuantityControls: React.FC<QuantityControlsProps> = ({
   startDecrementing,
   stopDecrementing
 }) => {
+  const isMin = quantity <= minQuantity;
+  const isMax = quantity >= maxQuantity;
+
   return (
-    <div className="flex border border-gray-300 rounded h-8">
+    <div className="relative w-[90px] h-7 rounded-md border border-gray-300 overflow-hidden flex items-center text-xs bg-white">
       <button
-        className="flex-shrink-0 bg-red-50 hover:bg-red-100 w-8 h-full flex items-center justify-center transition-colors border-r border-gray-300"
         onMouseDown={startDecrementing}
         onMouseUp={stopDecrementing}
         onMouseLeave={stopDecrementing}
         onTouchStart={startDecrementing}
         onTouchEnd={stopDecrementing}
-        disabled={quantity <= minQuantity}
+        disabled={isMin}
+        className={`w-6 h-full flex items-center justify-center ${isMin ? 'text-gray-300' : 'text-gray-700 hover:bg-gray-100'}`}
       >
-        <Minus size={16} className={quantity <= minQuantity ? "text-gray-300" : "text-gray-700"} />
+        <Minus size={14} />
       </button>
 
       <input
@@ -43,19 +45,19 @@ const QuantityControls: React.FC<QuantityControlsProps> = ({
         max={maxQuantity}
         value={quantity}
         onChange={onInputChange}
-        className="w-12 h-full text-center focus:outline-none text-sm bg-white"
+        className="w-full h-full text-center text-sm focus:outline-none bg-transparent px-1"
       />
 
       <button
-        className="flex-shrink-0 bg-red-50 hover:bg-red-100 w-8 h-full flex items-center justify-center transition-colors border-l border-gray-300"
         onMouseDown={startIncrementing}
         onMouseUp={stopIncrementing}
         onMouseLeave={stopIncrementing}
         onTouchStart={startIncrementing}
         onTouchEnd={stopIncrementing}
-        disabled={quantity >= maxQuantity}
+        disabled={isMax}
+        className={`w-6 h-full flex items-center justify-center ${isMax ? 'text-gray-300' : 'text-gray-700 hover:bg-gray-100'}`}
       >
-        <Plus size={16} className={quantity >= maxQuantity ? "text-gray-300" : "text-gray-700"} />
+        <Plus size={14} />
       </button>
     </div>
   );
