@@ -76,36 +76,33 @@ const ProductHeader = () => {
       </div>
 
       {/* AliExpress-style Tabs Navigation */}
-     <div 
+    <div
   className="w-full transition-all duration-700 overflow-hidden"
   style={{
-    maxHeight: progress > 0.3 ? '40px' : '0px',
+    maxHeight: progress > 0.3 ? "40px" : "0px",
     opacity: progress,
     backgroundColor: `rgba(255, 255, 255, ${progress * 0.98})`,
     backdropFilter: `blur(${progress * 8}px)`,
   }}
 >
   <div className="w-full px-4 overflow-x-auto no-scrollbar">
-    <div className="flex space-x-4 items-center">
-      {tabs.map(tab => (
+    <div className="flex items-center">
+      {tabs.map((tab) => (
         <button
           key={tab.id}
-          className={`relative px-4 py-2 text-xs font-medium whitespace-nowrap transition-all duration-200 ${
-            activeTab === tab.id 
-              ? "text-red-500" 
+          className={`flex-1 relative px-2 py-2 text-xs font-medium whitespace-nowrap text-center transition-all duration-200 ${
+            activeTab === tab.id
+              ? "text-red-500"
               : "text-gray-600 hover:text-gray-900"
           }`}
+          style={{
+            flexBasis: "25%", // Ensures each tab takes up 1/4th of the width
+          }}
           onClick={() => setActiveTab(tab.id)}
         >
           {tab.label}
           {activeTab === tab.id && (
-            <div 
-              className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-500 rounded-full"
-              style={{
-                marginBottom: 0, 
-                paddingBottom: 0 // Ensures flush positioning
-              }}
-            ></div>
+            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-500 rounded-full"></div>
           )}
         </button>
       ))}
