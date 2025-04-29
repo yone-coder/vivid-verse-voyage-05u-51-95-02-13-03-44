@@ -1,12 +1,10 @@
-
 import React from "react";
 import NewQuantitySelector from "./NewQuantitySelector";
 import { VariantStockInfo } from "@/hooks/useVariantStockDecay";
 
 interface ProductQuantitySelectorProps {
   quantity: number;
-  onIncrement: () => void;
-  onDecrement: () => void;
+  onQuantityChange: (quantity: number) => void;
   price?: number;
   maxQuantity?: number;
   minQuantity?: number;
@@ -17,32 +15,26 @@ interface ProductQuantitySelectorProps {
 
 const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
   quantity,
-  onIncrement,
-  onDecrement,
+  onQuantityChange,
   price = 0,
-  maxQuantity = 10,
-  minQuantity = 1,
-  inStock = 999,
-  productName = "item",
-  stockInfo
-}) => {
-  const handleQuantityChange = (newQuantity: number) => {
-    if (newQuantity > quantity) {
-      onIncrement();
-    } else if (newQuantity < quantity) {
-      onDecrement();
-    }
-  };
-
-  return (
-    <div className="w-full px-2 py-0.5 border-b border-gray-100">
-      <NewQuantitySelector
-        quantity={quantity}
-        onQuantityChange={handleQuantityChange}
-        basePrice={price}
-      />
-    </div>
-  );
-};
+  maxQuantity,
+  minQuantity,
+  inStock,
+  productName,
+  stockInfo,
+}) => (
+  <div className="w-full px-2 py-0.5 border-b border-gray-100">
+    <NewQuantitySelector
+      quantity={quantity}
+      onQuantityChange={onQuantityChange}
+      basePrice={price}
+      maxQuantity={maxQuantity}
+      minQuantity={minQuantity}
+      inStock={inStock}
+      productName={productName}
+      stockInfo={stockInfo}
+    />
+  </div>
+);
 
 export default ProductQuantitySelector;
