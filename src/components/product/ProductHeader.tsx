@@ -26,13 +26,14 @@ const ProductHeader = () => {
 
   return (
     <div 
-      className="fixed top-0 left-0 right-0 z-30 transition-all duration-700"
+      className="fixed top-0 left-0 right-0 z-30 flex flex-col transition-all duration-700"
       style={{
         backgroundColor: `rgba(255, 255, 255, ${progress * 0.95})`,
         backdropFilter: `blur(${progress * 8}px)`,
         boxShadow: `0 ${progress * 4}px ${progress * 8}px rgba(0, 0, 0, ${progress * 0.08})`
       }}
     >
+      {/* Main Header */}
       <div className="py-2 px-3">
         <div className="flex items-center justify-between max-w-6xl mx-auto">
           <div className="flex items-center gap-2 flex-1">
@@ -69,19 +70,20 @@ const ProductHeader = () => {
 
       {/* Tabs Navigation */}
       <div 
-        className="w-full transition-all duration-500 overflow-hidden"
+        className="w-full bg-white transition-all duration-300 overflow-hidden"
         style={{
-          maxHeight: progress > 0.5 ? '40px' : '0px',
-          opacity: progress > 0.5 ? 1 : 0,
-          borderBottom: progress > 0.5 ? '1px solid #e5e7eb' : 'none'
+          maxHeight: progress > 0.3 ? '44px' : '0px', // Lower threshold and increased height
+          opacity: progress > 0.3 ? 1 : 0,
+          borderBottom: '1px solid #e5e7eb',
+          transform: `translateY(${progress > 0.3 ? '0' : '-100%'})` // Added transform for more visible entry
         }}
       >
-        <div className="max-w-6xl mx-auto px-3">
-          <div className="flex space-x-4 overflow-x-auto scrollbar-hide">
+        <div className="max-w-6xl mx-auto px-3 py-1">
+          <div className="flex space-x-6 overflow-x-auto">
             {tabs.map(tab => (
               <button
                 key={tab.id}
-                className={`py-2 px-1 text-sm font-medium whitespace-nowrap transition-all duration-300 border-b-2 ${
+                className={`py-2 px-2 text-sm font-medium whitespace-nowrap transition-all duration-300 border-b-2 ${
                   activeTab === tab.id 
                     ? "border-blue-500 text-blue-600" 
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
