@@ -70,7 +70,7 @@ const ProductHeader = () => {
 
       {/* Tabs Navigation */}
       <div 
-        className="w-full bg-white transition-all duration-300 overflow-hidden"
+        className="w-full bg-white transition-all duration-500 overflow-hidden"
         style={{
           maxHeight: progress > 0.3 ? '44px' : '0px', // Lower threshold and increased height
           opacity: progress > 0.3 ? 1 : 0,
