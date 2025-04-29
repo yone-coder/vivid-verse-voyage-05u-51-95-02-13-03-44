@@ -30,11 +30,7 @@ const BundleOptions: React.FC<BundleOptionsProps> = ({
         </div>
       </div>
 
-      <h4 className="font-medium text-orange-600 mb-1 flex items-center">
-        <Gift size={14} className="text-orange-500 mr-1" />
-        Select Bundle Option
-        <span className="ml-1 text-xs bg-orange-100 text-orange-700 px-1 rounded">Save more</span>
-      </h4>
+     
 
       {/* First row of cards - always visible */}
       <div className="grid grid-cols-3 gap-0.5 mb-0.5">
