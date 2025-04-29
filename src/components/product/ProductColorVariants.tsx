@@ -1,6 +1,6 @@
-
 import React, { useState } from "react";
-import { Palette, AlertCircle, CheckCircle, XCircle, AlertTriangle } from "lucide-react";
+import { Palette, AlertCircle, CheckCircle, XCircle, AlertTriangle, ChevronDown, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const ColorVariantItem = ({ 
   variant, 
@@ -46,6 +46,8 @@ const ColorVariantItem = ({
 const ProductColorVariants = () => {
   // State for selected color
   const [selectedColor, setSelectedColor] = useState("Black");
+  // State to track whether to show all colors or just the first three
+  const [showAllColors, setShowAllColors] = useState(false);
 
   // Mock stock data with various stock levels
   const colorVariants = [
@@ -59,11 +61,21 @@ const ProductColorVariants = () => {
 
   const TOTAL_CAPACITY = 256; // Maximum stock
   
+  // Display only the first three colors initially, or all if showAllColors is true
+  const displayedColorVariants = showAllColors 
+    ? colorVariants 
+    : colorVariants.slice(0, 3);
+  
   // Get the currently selected variant
   const selectedVariant = colorVariants.find((v) => v.name === selectedColor) || colorVariants[0];
 
   // Calculate stock percentage for the selected variant
   const stockPercentage = Math.min(100, Math.max(0, (selectedVariant.stock / TOTAL_CAPACITY) * 100));
+  
+  // Toggle between showing all colors or just the first three
+  const toggleShowAllColors = () => {
+    setShowAllColors(!showAllColors);
+  };
   
   // Determine stock level based on the provided thresholds
   const getStockLevelInfo = (stock) => {
@@ -166,7 +178,7 @@ const ProductColorVariants = () => {
       </div>
 
       <div className="grid grid-cols-3 gap-2 mb-3">
-        {colorVariants.map((variant) => (
+        {displayedColorVariants.map((variant) => (
           <ColorVariantItem
             key={variant.name}
             variant={variant}
@@ -176,6 +188,28 @@ const ProductColorVariants = () => {
           />
         ))}
       </div>
+      
+      {/* View More/Less Button - only shown when there are more than 3 color variants */}
+      {colorVariants.length > 3 && (
+        <div className="flex justify-center mb-3">
+          <Button 
+            variant="ghost"
+            size="sm"
+            className="h-7 px-3 text-xs text-blue-600 hover:bg-blue-50"
+            onClick={toggleShowAllColors}
+          >
+            {showAllColors ? (
+              <>
+                View Less <ChevronDown className="ml-1 h-3 w-3" />
+              </>
+            ) : (
+              <>
+                View More Colors <ChevronRight className="ml-1 h-3 w-3" />
+              </>
+            )}
+          </Button>
+        </div>
+      )}
       
       {/* Stock level indicator for the selected color - with name removed */}
       <div className="mt-2 mb-1">
