@@ -1,5 +1,6 @@
+
 import React, { useState } from "react";
-import { Palette, AlertCircle, CheckCircle, XCircle, AlertTriangle, ChevronDown } from "lucide-react";
+import { Palette, AlertCircle, CheckCircle, XCircle, AlertTriangle, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const ColorVariantItem = ({ 
@@ -185,7 +186,10 @@ const ProductColorVariants = () => {
             onClick={toggleShowAllColors}
           >
             {showAllColors ? 'View less' : 'View more'}
-            <ChevronDown size={12} className="ml-1" />
+            {showAllColors ? 
+              <ChevronUp size={12} className="ml-1" /> : 
+              <ChevronDown size={12} className="ml-1" />
+            }
           </button>
         </div>
       )}

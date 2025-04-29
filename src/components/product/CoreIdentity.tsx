@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from 'react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 
 const CoreIdentity = () => {
   const [isTitleExpanded, setIsTitleExpanded] = useState(false);
@@ -59,9 +60,7 @@ const CoreIdentity = () => {
               style={{ display: "inline-flex", verticalAlign: "baseline" }}
             >
               <span style={{ verticalAlign: "baseline" }}>See less</span>
-              <svg className="w-3 h-3 ml-1 transform rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style={{ verticalAlign: "middle" }}>
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-              </svg>
+              <ChevronUp className="w-3 h-3 ml-1" style={{ verticalAlign: "middle" }} />
             </button>
             <button 
               className="text-xs font-medium ml-2 transition-all duration-300 bg-blue-100 text-blue-700 hover:bg-blue-200 py-1 px-2 rounded inline-flex items-center"
@@ -84,9 +83,7 @@ const CoreIdentity = () => {
               >
                 <span className="text-gray-700 text-sm mr-0.5 align-middle">...</span>
                 <span className="text-red-600 hover:text-red-700 align-middle">Read more</span>
-                <svg className="w-3 h-3 ml-0.5 text-red-600 align-middle" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-                </svg>
+                <ChevronDown className="w-3 h-3 ml-0.5 text-red-600 align-middle" />
               </button>
             </div>
           </div>
