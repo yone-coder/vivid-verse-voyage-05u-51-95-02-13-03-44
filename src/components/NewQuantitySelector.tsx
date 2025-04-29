@@ -36,7 +36,7 @@ const NewQuantitySelector: React.FC<NewQuantitySelectorProps> = ({
           size="icon" 
           className="flex-grow flex items-center justify-center" 
           onClick={onIncrement} 
-          disabled={quantity >= stockRemaining || quantity >= 10}
+          disabled={quantity >= stockRemaining || quantity >= 250}
         >
           <Plus className="h-4 w-4" />
         </Button>

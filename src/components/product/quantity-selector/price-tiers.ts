@@ -1,4 +1,3 @@
-
 // Define price tiers and their thresholds
 export const PRICE_TIERS = [
   { min: 1, max: 2, price: 10.00, discount: 0 },
@@ -9,7 +8,7 @@ export const PRICE_TIERS = [
   { min: 100, max: Infinity, price: 7.00, discount: 30 }
 ];
 
-export const MAX_QUANTITY = 250; // Updated max quantity to 250
+export const MAX_QUANTITY = 250; // Maximum quantity is 250
 
 export const findActiveTier = (quantity: number) => {
   return PRICE_TIERS.find(tier => quantity >= tier.min && quantity <= tier.max) || PRICE_TIERS[0];
