@@ -73,34 +73,34 @@ const ProductHeader = () => {
       </div>
 
       {/* Tabs Navigation */}
-      <div 
-        className="w-full transition-all duration-700 overflow-hidden"
-        style={{
-          maxHeight: progress > 0.3 ? '44px' : '0px',
-          opacity: progress,
-          backgroundColor: `rgba(255, 255, 255, ${progress * 0.95})`,
-          backdropFilter: `blur(${progress * 8}px)`,
-          borderBottom: `1px solid rgba(229, 231, 235, ${progress * 0.95})`,
-        }}
-      >
-        <div className="max-w-6xl mx-auto px-3 py-1">
-          <div className="flex space-x-6 overflow-x-auto">
-            {tabs.map(tab => (
-              <button
-                key={tab.id}
-                className={`py-2 px-2 text-sm font-medium whitespace-nowrap transition-all duration-300 border-b-2 ${
-                  activeTab === tab.id 
-                    ? "border-blue-500 text-blue-600" 
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                }`}
-                onClick={() => setActiveTab(tab.id)}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
+     <div 
+  className="w-full transition-all duration-700 overflow-hidden"
+  style={{
+    maxHeight: progress > 0.3 ? '36px' : '0px', // Reduced from 44px to 36px
+    opacity: progress,
+    backgroundColor: `rgba(255, 255, 255, ${progress * 0.95})`,
+    backdropFilter: `blur(${progress * 8}px)`,
+    borderBottom: `1px solid rgba(229, 231, 235, ${progress * 0.95})`,
+  }}
+>
+  <div className="max-w-6xl mx-auto px-3 py-0"> {/* Changed py-1 to py-0 */}
+    <div className="flex space-x-6 overflow-x-auto">
+      {tabs.map(tab => (
+        <button
+          key={tab.id}
+          className={`py-1 px-2 text-sm font-medium whitespace-nowrap transition-all duration-300 border-b-2 ${
+            activeTab === tab.id 
+              ? "border-blue-500 text-blue-600" 
+              : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+          }`}
+          onClick={() => setActiveTab(tab.id)}
+        >
+          {tab.label}
+        </button>
+      ))}
+    </div>
+  </div>
+</div>
     </div>
   );
 };
