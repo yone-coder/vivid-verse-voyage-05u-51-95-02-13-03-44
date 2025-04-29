@@ -48,9 +48,7 @@ const BundleOptions: React.FC<BundleOptionsProps> = ({
               }`}
               onClick={() => handleQuantityChange(tier.min)}
             >
-              <div className="text-xs font-medium">
-                {tier.min}{tier.max ? `-${tier.max}` : '+'} pcs
-              </div>
+             <div className="text-xs font-medium">{tier.min}{tier.max ? `-${tier.max}` : '+'} pcs</div>
               <div className="font-semibold text-orange-600 text-xs">
                 ${tier.price.toFixed(2)} each
               </div>
