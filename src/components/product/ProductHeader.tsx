@@ -26,23 +26,23 @@ const ProductHeader = () => {
 
   return (
     <div 
-      className="fixed top-0 left-0 right-0 z-30 flex flex-col transition-all duration-300"
+      className="fixed top-0 left-0 right-0 z-30 flex flex-col transition-all duration-700"
       style={{
-        boxShadow: progress > 0.1 ? "0 1px 4px rgba(0, 0, 0, 0.1)" : "none"
+        boxShadow: `0 ${progress * 4}px ${progress * 8}px rgba(0, 0, 0, ${progress * 0.08})`
       }}
     >
       {/* Main Header */}
       <div 
-        className="py-2 px-4 w-full transition-all duration-300"
+        className="py-2 px-3 w-full transition-all duration-700"
         style={{
-          backgroundColor: "white",
-          height: "52px"
+          backgroundColor: `rgba(255, 255, 255, ${progress * 0.95})`,
+          backdropFilter: `blur(${progress * 8}px)`,
         }}
       >
         <div className="flex items-center justify-between max-w-6xl mx-auto">
           <div className="flex items-center gap-2 flex-1">
             <BackButton progress={progress} />
-            {progress < 0.3 ? (
+            {progress < 0.5 ? (
               <LiveBadge progress={progress} />
             ) : (
               <SearchBar 
@@ -53,13 +53,13 @@ const ProductHeader = () => {
             )}
           </div>
 
-          <div className="flex gap-1">
+          <div className="flex gap-2">
             <HeaderActionButton 
               Icon={Heart} 
               active={isFavorite} 
               onClick={toggleFavorite} 
               progress={progress} 
-              activeColor="#ff4646" // AliExpress red
+              activeColor="#f43f5e" // Changed to more vibrant red
             />
 
             <HeaderActionButton 
@@ -72,28 +72,33 @@ const ProductHeader = () => {
         </div>
       </div>
 
-      {/* Tabs Navigation */}
+      {/* AliExpress-style Tabs Navigation */}
       <div 
-        className="w-full transition-all duration-300 overflow-hidden"
+        className="w-full transition-all duration-700 overflow-hidden"
         style={{
-          height: progress > 0.3 ? '40px' : '0px',
-          backgroundColor: "white",
-          borderBottom: "1px solid #f2f2f2"
+          maxHeight: progress > 0.3 ? '40px' : '0px',
+          opacity: progress,
+          backgroundColor: `rgba(255, 255, 255, ${progress * 0.98})`,
+          backdropFilter: `blur(${progress * 8}px)`,
+          borderBottom: `1px solid rgba(229, 231, 235, ${progress * 0.5})`,
         }}
       >
         <div className="max-w-6xl mx-auto px-4">
-          <div className="flex overflow-x-auto hide-scrollbar">
+          <div className="flex space-x-0 overflow-x-auto no-scrollbar">
             {tabs.map(tab => (
               <button
                 key={tab.id}
-                className={`flex-1 py-2 px-1 text-xs font-medium whitespace-nowrap transition-all duration-300 ${
+                className={`relative px-4 py-2 text-xs font-medium whitespace-nowrap transition-all duration-200 ${
                   activeTab === tab.id 
-                    ? "text-red-500 border-t-2 border-red-500" 
-                    : "text-gray-600"
+                    ? "text-red-500" 
+                    : "text-gray-600 hover:text-gray-900"
                 }`}
                 onClick={() => setActiveTab(tab.id)}
               >
                 {tab.label}
+                {activeTab === tab.id && (
+                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-500 rounded-full"></div>
+                )}
               </button>
             ))}
           </div>
