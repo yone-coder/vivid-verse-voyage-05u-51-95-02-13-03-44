@@ -26,23 +26,23 @@ const ProductHeader = () => {
 
   return (
     <div 
-      className="fixed top-0 left-0 right-0 z-30 flex flex-col transition-all duration-700"
+      className="fixed top-0 left-0 right-0 z-30 flex flex-col transition-all duration-300"
       style={{
-        boxShadow: `0 ${progress * 4}px ${progress * 8}px rgba(0, 0, 0, ${progress * 0.08})`
+        boxShadow: progress > 0.1 ? "0 1px 4px rgba(0, 0, 0, 0.1)" : "none"
       }}
     >
       {/* Main Header */}
       <div 
-        className="py-2 px-3 w-full transition-all duration-700"
+        className="py-2 px-4 w-full transition-all duration-300"
         style={{
-          backgroundColor: `rgba(255, 255, 255, ${progress * 0.95})`,
-          backdropFilter: `blur(${progress * 8}px)`,
+          backgroundColor: "white",
+          height: "52px"
         }}
       >
         <div className="flex items-center justify-between max-w-6xl mx-auto">
           <div className="flex items-center gap-2 flex-1">
             <BackButton progress={progress} />
-            {progress < 0.5 ? (
+            {progress < 0.3 ? (
               <LiveBadge progress={progress} />
             ) : (
               <SearchBar 
@@ -53,13 +53,13 @@ const ProductHeader = () => {
             )}
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex gap-1">
             <HeaderActionButton 
               Icon={Heart} 
               active={isFavorite} 
               onClick={toggleFavorite} 
               progress={progress} 
-              activeColor="#f97316" 
+              activeColor="#ff4646" // AliExpress red
             />
 
             <HeaderActionButton 
@@ -73,34 +73,32 @@ const ProductHeader = () => {
       </div>
 
       {/* Tabs Navigation */}
-     <div 
-  className="w-full transition-all duration-700 overflow-hidden"
-  style={{
-    maxHeight: progress > 0.3 ? '36px' : '0px', // Reduced from 44px to 36px
-    opacity: progress,
-    backgroundColor: `rgba(255, 255, 255, ${progress * 0.95})`,
-    backdropFilter: `blur(${progress * 8}px)`,
-    borderBottom: `1px solid rgba(229, 231, 235, ${progress * 0.95})`,
-  }}
->
-  <div className="max-w-6xl mx-auto px-3 py-0"> {/* Changed py-1 to py-0 */}
-    <div className="flex space-x-6 overflow-x-auto">
-      {tabs.map(tab => (
-        <button
-          key={tab.id}
-          className={`py-1 px-2 text-sm font-medium whitespace-nowrap transition-all duration-300 border-b-2 ${
-            activeTab === tab.id 
-              ? "border-blue-500 text-blue-600" 
-              : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-          }`}
-          onClick={() => setActiveTab(tab.id)}
-        >
-          {tab.label}
-        </button>
-      ))}
-    </div>
-  </div>
-</div>
+      <div 
+        className="w-full transition-all duration-300 overflow-hidden"
+        style={{
+          height: progress > 0.3 ? '40px' : '0px',
+          backgroundColor: "white",
+          borderBottom: "1px solid #f2f2f2"
+        }}
+      >
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="flex overflow-x-auto hide-scrollbar">
+            {tabs.map(tab => (
+              <button
+                key={tab.id}
+                className={`flex-1 py-2 px-1 text-xs font-medium whitespace-nowrap transition-all duration-300 ${
+                  activeTab === tab.id 
+                    ? "text-red-500 border-t-2 border-red-500" 
+                    : "text-gray-600"
+                }`}
+                onClick={() => setActiveTab(tab.id)}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
