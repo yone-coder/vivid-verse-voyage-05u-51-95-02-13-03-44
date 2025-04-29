@@ -18,14 +18,14 @@ const ProductHeader = () => {
   };
 
   const tabs = [
-  { id: "overview", label: "Overview", icon: "📋" },
-  { id: "specifications", label: "Specifications", icon: "📏" },
-  { id: "description", label: "Description", icon: "📝" },
-  { id: "reviews", label: `Reviews (248)`, icon: "⭐" },
-  { id: "qna", label: "Q&A (56)", icon: "❓" },
-  { id: "shipping", label: "Shipping", icon: "🚚" },
-  { id: "returns", label: "Returns", icon: "🔄" },
-  { id: "related", label: "Related", icon: "🔍" }
+  { id: "overview", label: "Overview" },
+  { id: "specifications", label: "Specifications" },
+  { id: "description", label: "Description" },
+  { id: "reviews", label: "Reviews (248)" },
+  { id: "qna", label: "Q&A (56)" },
+  { id: "shipping", label: "Shipping" },
+  { id: "returns", label: "Returns" },
+  { id: "related", label: "Related" }
 ];
   return (
     <div 
