@@ -12,6 +12,8 @@ interface ProductQuantitySelectorProps {
   inStock?: number;
   productName?: string;
   stockInfo?: VariantStockInfo;
+  onIncrement?: () => void;
+  onDecrement?: () => void;
 }
 
 const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
@@ -23,6 +25,8 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
   inStock,
   productName,
   stockInfo,
+  onIncrement,
+  onDecrement,
 }) => (
   <div className="w-full px-2 py-0.5 border-b border-gray-100">
     <NewQuantitySelector
@@ -34,6 +38,8 @@ const ProductQuantitySelector: React.FC<ProductQuantitySelectorProps> = ({
       inStock={inStock}
       productName={productName}
       stockInfo={stockInfo}
+      onIncrement={onIncrement}
+      onDecrement={onDecrement}
     />
   </div>
 );

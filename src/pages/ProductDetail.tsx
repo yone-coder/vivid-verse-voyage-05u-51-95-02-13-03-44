@@ -216,6 +216,8 @@ const ProductDetail = () => {
             inStock={selectedColor ? variantStockInfo[selectedColor]?.currentStock : 0}
             productName={product?.name}
             stockInfo={selectedColor ? variantStockInfo[selectedColor] : undefined}
+            onIncrement={incrementQuantity}
+            onDecrement={decrementQuantity}
           />
           
           <div className="w-full px-2 py-0.5 border-b border-gray-100">
