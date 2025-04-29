@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { useParams } from "react-router-dom";
@@ -17,6 +18,7 @@ import ProductQuantitySelector from "@/components/product/ProductQuantitySelecto
 import ShippingOptionsComponent from '@/components/product/ShippingOptionsComponent';
 
 const DEFAULT_PRODUCT_ID = "aae97882-a3a1-4db5-b4f5-156705cd10ee";
+const MAX_QUANTITY = 250;
 
 const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
@@ -80,10 +82,10 @@ const ProductDetail = () => {
   };
 
   const incrementQuantity = async () => {
-    if (quantity < 10) {
+    if (quantity < MAX_QUANTITY) {
       await triggerHaptic();
       setQuantity(prev => prev + 1);
-      if (quantity === 9) {
+      if (quantity === MAX_QUANTITY - 1) {
         setMaxQuantityReached(true);
         toast({
           title: "Maximum quantity reached",
@@ -211,7 +213,7 @@ const ProductDetail = () => {
             quantity={quantity}
             onQuantityChange={(newQuantity) => setQuantity(newQuantity)}
             price={currentPrice}
-            maxQuantity={10}
+            maxQuantity={MAX_QUANTITY}
             minQuantity={1}
             inStock={selectedColor ? variantStockInfo[selectedColor]?.currentStock : 0}
             productName={product?.name}
