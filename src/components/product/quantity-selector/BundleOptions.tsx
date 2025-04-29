@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { Gift, ChevronUp, ChevronDown } from 'lucide-react';
+import { Gift, ChevronUp, ChevronDown, Package, Clock } from 'lucide-react';
 import { PRICE_TIERS } from './price-tiers';
 
 interface BundleOptionsProps {
@@ -18,6 +17,19 @@ const BundleOptions: React.FC<BundleOptionsProps> = ({
 }) => {
   return (
     <div className="mb-2 text-xs">
+      {/* New Header section */}
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-1">
+          <Package size={16} className="text-orange-500" />
+          <h3 className="font-medium text-sm">Bundle Deals</h3>
+          <div className="bg-orange-100 text-orange-600 text-xs px-1.5 py-0.5 rounded-full font-medium">Save up to 40%</div>
+        </div>
+        <div className="text-xs text-gray-500 flex items-center">
+          <Clock size={12} className="mr-0.5" />
+          Limited time offer
+        </div>
+      </div>
+
       <h4 className="font-medium text-orange-600 mb-1 flex items-center">
         <Gift size={14} className="text-orange-500 mr-1" />
         Select Bundle Option
