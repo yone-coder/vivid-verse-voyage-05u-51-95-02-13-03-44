@@ -28,13 +28,17 @@ const ProductHeader = () => {
     <div 
       className="fixed top-0 left-0 right-0 z-30 flex flex-col transition-all duration-700"
       style={{
-        backgroundColor: `rgba(255, 255, 255, ${progress * 0.95})`,
-        backdropFilter: `blur(${progress * 8}px)`,
         boxShadow: `0 ${progress * 4}px ${progress * 8}px rgba(0, 0, 0, ${progress * 0.08})`
       }}
     >
       {/* Main Header */}
-      <div className="py-2 px-3">
+      <div 
+        className="py-2 px-3 w-full transition-all duration-700"
+        style={{
+          backgroundColor: `rgba(255, 255, 255, ${progress * 0.95})`,
+          backdropFilter: `blur(${progress * 8}px)`,
+        }}
+      >
         <div className="flex items-center justify-between max-w-6xl mx-auto">
           <div className="flex items-center gap-2 flex-1">
             <BackButton progress={progress} />
@@ -70,13 +74,13 @@ const ProductHeader = () => {
 
       {/* Tabs Navigation */}
       <div 
-        className="w-full transition-all duration-300 overflow-hidden"
+        className="w-full transition-all duration-700 overflow-hidden"
         style={{
-          maxHeight: progress > 0.3 ? '44px' : '0px', // Lower threshold and increased height
-          opacity: progress > 0.3 ? Math.min(1, (progress - 0.3) * 3) : 0, // Gradual opacity based on scroll
+          maxHeight: progress > 0.3 ? '44px' : '0px',
+          opacity: progress,
           backgroundColor: `rgba(255, 255, 255, ${progress * 0.95})`,
           backdropFilter: `blur(${progress * 8}px)`,
-          borderBottom: `1px solid rgba(229, 231, 235, ${progress * 0.9})`, // Gradual border opacity
+          borderBottom: `1px solid rgba(229, 231, 235, ${progress * 0.95})`,
         }}
       >
         <div className="max-w-6xl mx-auto px-3 py-1">
