@@ -100,7 +100,7 @@ const ColorVariantsGrid = ({
   getColorHex
 }) => {
   return (
-    <div className="grid grid-cols-3 gap-2 mb-3">
+    <div className="grid grid-cols-3 gap-2 mb-1">
       {displayedColorVariants.map((variant) => (
         <ColorVariantItem
           key={variant.name}
