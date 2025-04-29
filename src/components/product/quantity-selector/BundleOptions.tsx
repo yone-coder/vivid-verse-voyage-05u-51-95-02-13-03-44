@@ -34,13 +34,11 @@ const BundleOptions: React.FC<BundleOptionsProps> = ({
         </div>
       </div>
 
-      {/* Price Tier Grid */}
+      {/* Grid of bundle options */}
       <div className="grid grid-cols-3 gap-1.5 mb-3">
         {visibleTiers.map((tier, index) => {
           const isSelected =
-            quantity >= tier.min &&
-            (tier.max === null || quantity <= tier.max);
-
+            quantity >= tier.min && (tier.max === null || quantity <= tier.max);
           return (
             <div
               key={index}
@@ -52,19 +50,16 @@ const BundleOptions: React.FC<BundleOptionsProps> = ({
               onClick={() => onQuantityChange(tier.min)}
             >
               <div className="text-xs font-medium">
-                {tier.min}
-                {tier.max ? `-${tier.max}` : '+'} pcs
+                {tier.max ? `${tier.min}-${tier.max}` : `${tier.min}+`} pcs
               </div>
               <div className="font-semibold text-orange-600 text-xs">
                 ${tier.price.toFixed(2)} each
               </div>
-
               {tier.discount > 0 && (
                 <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs rounded-full px-1.5 py-0.5 mt-1 font-medium">
                   {tier.discount}% Off
                 </div>
               )}
-
               {isSelected && (
                 <div className="absolute -top-1 -right-1 bg-orange-500 rounded-full p-0.5">
                   <Star size={12} className="text-white" />
@@ -75,7 +70,7 @@ const BundleOptions: React.FC<BundleOptionsProps> = ({
         })}
       </div>
 
-      {/* View more / less */}
+      {/* View more / View less */}
       <div className="text-center mt-1">
         <button
           className="text-red-500 text-xs font-medium flex items-center justify-center mx-auto"
