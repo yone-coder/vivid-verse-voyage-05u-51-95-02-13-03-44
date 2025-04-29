@@ -87,7 +87,7 @@ const ProductHeader = () => {
   }}
 >
   <div className="w-full px-4 overflow-x-auto no-scrollbar">
-    <div className="flex space-x-4">
+    <div className="flex space-x-4 items-center" style={{ paddingBottom: 0, marginBottom: 0 }}>
       {tabs.map(tab => (
         <button
           key={tab.id}
@@ -100,7 +100,10 @@ const ProductHeader = () => {
         >
           {tab.label}
           {activeTab === tab.id && (
-            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-500 rounded-full"></div>
+            <div 
+              className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-500 rounded-full" 
+              style={{ marginBottom: 0 }} 
+            ></div>
           )}
         </button>
       ))}
