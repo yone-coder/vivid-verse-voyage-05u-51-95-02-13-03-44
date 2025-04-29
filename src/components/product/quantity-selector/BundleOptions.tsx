@@ -64,18 +64,9 @@ const BundleOptions: React.FC<BundleOptionsProps> = ({
               <div className="text-orange-600 font-semibold text-xs">
                 ${tier.price.toFixed(2)} each
               </div>
-              <div
-  className={`text-xs rounded-full px-1.5 py-0.5 mt-1 font-medium ${
-    tier.discount > 0
-      ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white'
-      : 'bg-gray-200 text-gray-600'
-  }`}
->
-  {tier.discount}% Off
-</div>
-                  {tier.discount}% Off
-                </div>
-              )}
+              <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs rounded-full px-1.5 py-0.5 mt-1 font-medium">
+                {tier.discount}% Off
+              </div>
               {isSelected && (
                 <div className="absolute -top-1 -right-1 bg-orange-500 rounded-full p-0.5">
                   <Star size={12} className="text-white" />
