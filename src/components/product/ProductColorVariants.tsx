@@ -44,12 +44,9 @@ const ColorVariantItem = ({
 };
 
 const ProductColorVariants = () => {
-  // State for selected color
   const [selectedColor, setSelectedColor] = useState("Black");
-  // State to track whether to show all colors or just the first three
   const [showAllColors, setShowAllColors] = useState(false);
 
-  // Mock stock data with various stock levels
   const colorVariants = [
     { name: "Black", price: 79.99, stock: 256, bestseller: true },
     { name: "White", price: 89.99, stock: 124, bestseller: false },
@@ -59,25 +56,20 @@ const ProductColorVariants = () => {
     { name: "Red", price: 89.99, stock: 0, bestseller: false }
   ];
 
-  const TOTAL_CAPACITY = 256; // Maximum stock
-  
-  // Display only the first three colors initially, or all if showAllColors is true
+  const TOTAL_CAPACITY = 256;
+
   const displayedColorVariants = showAllColors 
     ? colorVariants 
     : colorVariants.slice(0, 3);
-  
-  // Get the currently selected variant
+
   const selectedVariant = colorVariants.find((v) => v.name === selectedColor) || colorVariants[0];
 
-  // Calculate stock percentage for the selected variant
   const stockPercentage = Math.min(100, Math.max(0, (selectedVariant.stock / TOTAL_CAPACITY) * 100));
-  
-  // Toggle between showing all colors or just the first three
+
   const toggleShowAllColors = () => {
     setShowAllColors(!showAllColors);
   };
-  
-  // Determine stock level based on the provided thresholds
+
   const getStockLevelInfo = (stock) => {
     if (stock === 0) {
       return {
@@ -136,7 +128,6 @@ const ProductColorVariants = () => {
     }
   };
 
-  // Get color hex code based on name
   const getColorHex = (name) => {
     const colorMap = {
       "Black": "#000000",
@@ -149,12 +140,10 @@ const ProductColorVariants = () => {
     return colorMap[name] || "#CCCCCC";
   };
 
-  // Handle color change
   const handleColorChange = (color) => {
     setSelectedColor(color);
   };
 
-  // Get stock level info for selected variant
   const selectedStockInfo = getStockLevelInfo(selectedVariant.stock);
 
   return (
@@ -189,29 +178,18 @@ const ProductColorVariants = () => {
         ))}
       </div>
       
-      {/* View More/Less Button - only shown when there are more than 3 color variants */}
       {colorVariants.length > 3 && (
-        <div className="flex justify-center mb-3">
-          <Button 
-            variant="ghost"
-            size="sm"
-            className="h-7 px-3 text-xs text-blue-600 hover:bg-blue-50"
+        <div className="text-center mt-1">
+          <button 
+            className="text-red-500 text-xs font-medium flex items-center justify-center mx-auto"
             onClick={toggleShowAllColors}
           >
-            {showAllColors ? (
-              <>
-                View Less <ChevronDown className="ml-1 h-3 w-3" />
-              </>
-            ) : (
-              <>
-                View More Colors <ChevronRight className="ml-1 h-3 w-3" />
-              </>
-            )}
-          </Button>
+            {showAllColors ? 'View less' : 'View more colors'}
+            {showAllColors ? <ChevronDown size={12} className="ml-1" /> : <ChevronRight size={12} className="ml-1" />}
+          </button>
         </div>
       )}
       
-      {/* Stock level indicator for the selected color - with name removed */}
       <div className="mt-2 mb-1">
         <div className="flex items-center justify-between mb-1">
           <div className="flex items-center gap-2">
@@ -237,7 +215,6 @@ const ProductColorVariants = () => {
         </div>
       </div>
       
-      {/* Marketing message based on stock level */}
       <div className={`mt-2 p-1.5 rounded-md text-xs flex items-center gap-2 ${
         selectedStockInfo.urgency === "high" 
           ? "bg-red-50 border border-red-100 text-red-700" 
