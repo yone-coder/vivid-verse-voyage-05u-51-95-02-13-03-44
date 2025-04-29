@@ -77,36 +77,36 @@ const ProductHeader = () => {
 
       {/* AliExpress-style Tabs Navigation */}
       <div 
-        className="w-full transition-all duration-700 overflow-hidden"
-        style={{
-          maxHeight: progress > 0.3 ? '40px' : '0px',
-          opacity: progress,
-          backgroundColor: `rgba(255, 255, 255, ${progress * 0.98})`,
-          backdropFilter: `blur(${progress * 8}px)`,
-          borderBottom: `1px solid rgba(229, 231, 235, ${progress * 0.5})`,
-        }}
-      >
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="flex space-x-0 overflow-x-auto no-scrollbar">
-            {tabs.map(tab => (
-              <button
-                key={tab.id}
-                className={`relative px-4 py-2 text-xs font-medium whitespace-nowrap transition-all duration-200 ${
-                  activeTab === tab.id 
-                    ? "text-red-500" 
-                    : "text-gray-600 hover:text-gray-900"
-                }`}
-                onClick={() => setActiveTab(tab.id)}
-              >
-                {tab.label}
-                {activeTab === tab.id && (
-                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-500 rounded-full"></div>
-                )}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
+  className="w-full transition-all duration-700 overflow-hidden"
+  style={{
+    maxHeight: progress > 0.3 ? '40px' : '0px',
+    opacity: progress,
+    backgroundColor: `rgba(255, 255, 255, ${progress * 0.98})`,
+    backdropFilter: `blur(${progress * 8}px)`,
+    borderBottom: `1px solid rgba(229, 231, 235, ${progress * 0.5})`,
+  }}
+>
+  <div className="w-full px-4 overflow-x-auto no-scrollbar">
+    <div className="flex space-x-4">
+      {tabs.map(tab => (
+        <button
+          key={tab.id}
+          className={`relative px-4 py-2 text-xs font-medium whitespace-nowrap transition-all duration-200 ${
+            activeTab === tab.id 
+              ? "text-red-500" 
+              : "text-gray-600 hover:text-gray-900"
+          }`}
+          onClick={() => setActiveTab(tab.id)}
+        >
+          {tab.label}
+          {activeTab === tab.id && (
+            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-red-500 rounded-full"></div>
+          )}
+        </button>
+      ))}
+    </div>
+  </div>
+</div>
     </div>
   );
 };
