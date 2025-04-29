@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { useParams } from "react-router-dom";
@@ -210,8 +209,7 @@ const ProductDetail = () => {
           
           <ProductQuantitySelector 
             quantity={quantity}
-            onIncrement={incrementQuantity}
-            onDecrement={decrementQuantity}
+            onQuantityChange={(newQuantity) => setQuantity(newQuantity)}
             price={currentPrice}
             maxQuantity={10}
             minQuantity={1}
