@@ -70,12 +70,13 @@ const ProductHeader = () => {
 
       {/* Tabs Navigation */}
       <div 
-        className="w-full bg-white transition-all duration-500 overflow-hidden"
+        className="w-full transition-all duration-300 overflow-hidden"
         style={{
           maxHeight: progress > 0.3 ? '44px' : '0px', // Lower threshold and increased height
-          opacity: progress > 0.3 ? 1 : 0,
-          borderBottom: '1px solid #e5e7eb',
-          transform: `translateY(${progress > 0.3 ? '0' : '-100%'})` // Added transform for more visible entry
+          opacity: progress > 0.3 ? Math.min(1, (progress - 0.3) * 3) : 0, // Gradual opacity based on scroll
+          backgroundColor: `rgba(255, 255, 255, ${progress * 0.95})`,
+          backdropFilter: `blur(${progress * 8}px)`,
+          borderBottom: `1px solid rgba(229, 231, 235, ${progress * 0.9})`, // Gradual border opacity
         }}
       >
         <div className="max-w-6xl mx-auto px-3 py-1">
@@ -83,7 +84,7 @@ const ProductHeader = () => {
             {tabs.map(tab => (
               <button
                 key={tab.id}
-                className={`py-2 px-2 text-sm font-medium whitespace-nowrap transition-all duration-500 border-b-2 ${
+                className={`py-2 px-2 text-sm font-medium whitespace-nowrap transition-all duration-300 border-b-2 ${
                   activeTab === tab.id 
                     ? "border-blue-500 text-blue-600" 
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
