@@ -1,5 +1,11 @@
 import React from 'react';
-import { Gift, ChevronUp, ChevronDown, Package, Clock, Star } from 'lucide-react';
+import {
+  ChevronUp,
+  ChevronDown,
+  Package,
+  Clock,
+  Star
+} from 'lucide-react';
 import { PRICE_TIERS } from './price-tiers';
 
 interface BundleOptionsProps {
@@ -25,34 +31,37 @@ const BundleOptions: React.FC<BundleOptionsProps> = ({
           <Package size={16} className="text-orange-500" />
           <h3 className="font-medium text-sm">Bundle Deals</h3>
           <div className="bg-orange-100 text-orange-600 text-xs px-1.5 py-0.5 rounded-full font-medium">
-            Save up to 40%
+            Save up to 30%
           </div>
         </div>
         <div className="text-xs text-gray-500 flex items-center">
-          <Clock size={12} className="mr-0.5" />
+          <Clock size={12} className="mr-1" />
           Limited time offer
         </div>
       </div>
 
-      {/* Grid of bundle options */}
+      {/* Tiers grid */}
       <div className="grid grid-cols-3 gap-1.5 mb-3">
         {visibleTiers.map((tier, index) => {
           const isSelected =
-            quantity >= tier.min && (tier.max === null || quantity <= tier.max);
+            quantity >= tier.min && quantity <= tier.max;
+          const rangeLabel =
+            tier.max === Infinity
+              ? `${tier.min}+`
+              : `${tier.min}-${tier.max}`;
+
           return (
             <div
               key={index}
-              className={`rounded-lg p-2 text-center cursor-pointer transition-all border relative ${
+              className={`rounded-lg p-2 text-center cursor-pointer border relative transition-all ${
                 isSelected
-                  ? 'bg-orange-50 border-orange-400 shadow-sm'
+                  ? 'bg-orange-50 border-orange-500 shadow-sm'
                   : 'bg-gray-50 border-gray-200'
               }`}
               onClick={() => onQuantityChange(tier.min)}
             >
-              <div className="text-xs font-medium">
-                {tier.max ? `${tier.min}-${tier.max}` : `${tier.min}+`} pcs
-              </div>
-              <div className="font-semibold text-orange-600 text-xs">
+              <div className="text-xs font-medium">{rangeLabel} pcs</div>
+              <div className="text-orange-600 font-semibold text-xs">
                 ${tier.price.toFixed(2)} each
               </div>
               {tier.discount > 0 && (
@@ -70,11 +79,11 @@ const BundleOptions: React.FC<BundleOptionsProps> = ({
         })}
       </div>
 
-      {/* View more / View less */}
+      {/* Toggle button */}
       <div className="text-center mt-1">
         <button
-          className="text-red-500 text-xs font-medium flex items-center justify-center mx-auto"
           onClick={toggleExpand}
+          className="text-red-500 text-xs font-medium flex items-center justify-center mx-auto"
         >
           {isExpanded ? 'View less' : 'View more'}
           {isExpanded ? (
