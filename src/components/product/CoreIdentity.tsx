@@ -49,44 +49,43 @@ const CoreIdentity = () => {
         </span>
       </div>
       
-      {/* Sub-Row 1.2: Description with proper truncation and See less button in same line */}
-      <div className="relative">
+      {/* Sub-Row 1.2: Description with proper truncation */}
+      <div className="relative mb-2">
         {isDescriptionExpanded ? (
           <div className="text-sm text-gray-700">
             <span style={{ wordBreak: "break-word" }}>{description}</span>
-            <button 
-              className="text-xs text-red-600 font-medium ml-1 transition-all duration-300 hover:text-red-700 inline-flex items-center align-middle"
-              onClick={() => setIsDescriptionExpanded(false)}
-              style={{ display: "inline-flex", verticalAlign: "baseline" }}
-            >
-              <span style={{ verticalAlign: "baseline" }}>See less</span>
-              <ChevronUp className="w-3 h-3 ml-1" style={{ verticalAlign: "middle" }} />
-            </button>
-            <button 
-              className="text-xs font-medium ml-2 transition-all duration-300 bg-blue-100 text-blue-700 hover:bg-blue-200 py-1 px-2 rounded inline-flex items-center"
-              onClick={() => alert('Full product description')}
-              style={{ verticalAlign: "baseline" }}
-            >
-              <span>Full Description</span>
-              <svg className="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style={{ verticalAlign: "middle" }}>
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-              </svg>
-            </button>
+            {/* Moving See less button to a separate div below */}
           </div>
         ) : (
-          <div className="relative">
-            <p className="text-sm text-gray-700 overflow-hidden align-middle" style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>{description}</p>
-            <div className="absolute bottom-0 right-0 flex items-center bg-white pl-1">
-              <button 
-                className="text-xs inline-flex items-center align-middle"
-                onClick={() => setIsDescriptionExpanded(true)}
-              >
-                <span className="text-gray-700 text-sm mr-0.5 align-middle">...</span>
-                <span className="text-red-600 hover:text-red-700 align-middle">Read more</span>
-                <ChevronDown className="w-3 h-3 ml-0.5 text-red-600 align-middle" />
-              </button>
-            </div>
-          </div>
+          <p className="text-sm text-gray-700 overflow-hidden" style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>
+            {description}
+          </p>
+        )}
+      </div>
+      
+      {/* New Read more/less button centered at the bottom */}
+      <div className="text-center mt-1">
+        <button 
+          className={`text-xs text-red-600 font-medium flex items-center justify-center mx-auto transition-all duration-300 hover:text-red-700`}
+          onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
+        >
+          {isDescriptionExpanded ? 'See less' : 'Read more'}
+          {isDescriptionExpanded ? 
+            <ChevronUp className="w-3 h-3 ml-1" /> : 
+            <ChevronDown className="w-3 h-3 ml-1" />
+          }
+        </button>
+        
+        {isDescriptionExpanded && (
+          <button 
+            className="text-xs font-medium mt-2 transition-all duration-300 bg-blue-100 text-blue-700 hover:bg-blue-200 py-1 px-2 rounded inline-flex items-center mx-auto"
+            onClick={() => alert('Full product description')}
+          >
+            <span>Full Description</span>
+            <svg className="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+          </button>
         )}
       </div>
     </div>
