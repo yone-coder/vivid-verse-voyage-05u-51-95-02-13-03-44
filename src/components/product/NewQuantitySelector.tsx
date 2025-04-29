@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Package } from 'lucide-react';
 import { VariantStockInfo } from "@/hooks/useVariantStockDecay";

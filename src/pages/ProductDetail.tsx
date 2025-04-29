@@ -80,10 +80,10 @@ const ProductDetail = () => {
   };
 
   const incrementQuantity = async () => {
-    if (quantity < 10) {
+    if (quantity < 250) {
       await triggerHaptic();
       setQuantity(prev => prev + 1);
-      if (quantity === 9) {
+      if (quantity === 249) {
         setMaxQuantityReached(true);
         toast({
           title: "Maximum quantity reached",
@@ -211,7 +211,7 @@ const ProductDetail = () => {
             quantity={quantity}
             onQuantityChange={(newQuantity) => setQuantity(newQuantity)}
             price={currentPrice}
-            maxQuantity={10}
+            maxQuantity={250}
             minQuantity={1}
             inStock={selectedColor ? variantStockInfo[selectedColor]?.currentStock : 0}
             productName={product?.name}
