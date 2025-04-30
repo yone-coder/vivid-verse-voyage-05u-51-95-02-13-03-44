@@ -26,7 +26,7 @@ const QuantityControls: React.FC<QuantityControlsProps> = ({
   const isMax = quantity >= maxQuantity;
 
   return (
-    <div className="relative w-[72px] h-6 border border-gray-300 bg-white flex items-center text-xs">
+    <div className="relative w-[72px] h-6 rounded-full border border-gray-200 overflow-hidden flex items-center text-xs bg-gray-50 shadow-inner">
       <button
         onMouseDown={startDecrementing}
         onMouseUp={stopDecrementing}
@@ -34,8 +34,8 @@ const QuantityControls: React.FC<QuantityControlsProps> = ({
         onTouchStart={startDecrementing}
         onTouchEnd={stopDecrementing}
         disabled={isMin}
-        className={`w-5 h-full border-r border-gray-300 flex items-center justify-center ${
-          isMin ? 'text-gray-300' : 'text-gray-700'
+        className={`w-5 h-full flex items-center justify-center transition-colors ${
+          isMin ? 'text-gray-300' : 'text-gray-700 hover:bg-white'
         }`}
       >
         <Minus size={10} />
@@ -47,7 +47,7 @@ const QuantityControls: React.FC<QuantityControlsProps> = ({
         max={maxQuantity}
         value={quantity}
         onChange={onInputChange}
-        className="w-full h-full text-center text-xs focus:outline-none bg-transparent px-0.5"
+        className="w-full h-full text-center text-xs focus:outline-none bg-transparent px-0.5 text-gray-800"
       />
 
       <button
@@ -57,8 +57,8 @@ const QuantityControls: React.FC<QuantityControlsProps> = ({
         onTouchStart={startIncrementing}
         onTouchEnd={stopIncrementing}
         disabled={isMax}
-        className={`w-5 h-full border-l border-gray-300 flex items-center justify-center ${
-          isMax ? 'text-gray-300' : 'text-gray-700'
+        className={`w-5 h-full flex items-center justify-center transition-colors ${
+          isMax ? 'text-gray-300' : 'text-gray-700 hover:bg-white'
         }`}
       >
         <Plus size={10} />
