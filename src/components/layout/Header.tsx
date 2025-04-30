@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { 
@@ -35,6 +34,7 @@ import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import AliExpressLogo from "@/components/ui/AliExpressLogo";
 
 const Header = ({ 
   isProductHeader, 
@@ -497,6 +497,7 @@ const Header = ({
             <div className="flex items-center space-x-3 whitespace-nowrap pb-1">
               <div className="flex flex-col items-center">
                 <Badge variant="aliSuper" className="text-[8px] px-2 py-0.5 rounded-sm">SUPER DEALS</Badge>
+                <AliExpressLogo className="w-5 h-5" width={24} height={24} />
               </div>
               <div className="text-[10px]">Flash Deals</div>
               <div className="text-[10px]">Top Selection</div>
