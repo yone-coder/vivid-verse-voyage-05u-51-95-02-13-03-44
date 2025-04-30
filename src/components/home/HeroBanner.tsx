@@ -41,22 +41,25 @@ export default function HeroBanner() {
   }, []);
 
   return (
-    <div className="relative w-full aspect-[3/1] overflow-hidden">
+    <div className="relative w-full overflow-hidden">
       {banners.map((banner, index) => (
         <div
           key={banner.id}
-          className={`absolute inset-0 bg-cover bg-center transition-opacity duration-700 ${
+          className={`absolute inset-0 w-full transition-opacity duration-700 ${
             index === activeIndex ? 'opacity-100' : 'opacity-0'
           }`}
-          style={{ backgroundImage: `url(${banner.image})` }}
         >
-          {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/30 to-transparent"></div>
-
-          {/* Banner Content */}
-          <div className="relative z-10 h-full flex items-center justify-center flex-col text-white text-center px-4">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold">{banner.title}</h2>
-            <p className="text-sm sm:text-base mt-2">{banner.subtitle}</p>
+          {/* Image will determine the container size */}
+          <img 
+            src={banner.image} 
+            alt={banner.title}
+            className="w-full h-auto object-cover"
+          />
+          
+          {/* Content overlay */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/30 to-transparent flex items-center justify-center flex-col text-white text-center px-4">
+            <h2 className="font-bold text-balance">{banner.title}</h2>
+            <p className="mt-2 text-balance">{banner.subtitle}</p>
             <Button className="mt-4 bg-orange-500 hover:bg-orange-600 text-white">
               {banner.cta}
             </Button>
@@ -65,12 +68,12 @@ export default function HeroBanner() {
       ))}
 
       {/* Carousel Indicators */}
-      <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-20">
+      <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
         {banners.map((_, index) => (
           <button
             key={index}
-            className={`h-1 rounded-full transition-all ${
-              activeIndex === index ? 'bg-orange-500 w-4' : 'bg-gray-300 w-2'
+            className={`rounded-full transition-all ${
+              activeIndex === index ? 'bg-orange-500 w-4 h-1' : 'bg-gray-300 w-2 h-1'
             }`}
             onClick={() => setActiveIndex(index)}
           />
