@@ -31,7 +31,7 @@ const SelectionSummary: React.FC<SelectionSummaryProps> = ({ quantity, activeTie
         </div>
         <div className="flex items-center gap-1">
           <span className="text-xs text-gray-600">Total:</span>
-          <span className="text-sm font-bold text-orange-600">${totalPrice}</span>
+          <span className="text-lg font-bold text-orange-600">${totalPrice}</span>
         </div>
       </div>
 
