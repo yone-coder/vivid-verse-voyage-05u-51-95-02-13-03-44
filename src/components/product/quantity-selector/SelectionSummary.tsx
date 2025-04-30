@@ -1,18 +1,17 @@
 import React, { useMemo } from 'react';
-import { Percent, TrendingUp, CheckCircle, Gift } from 'lucide-react';
+import { Percent, TrendingUp } from 'lucide-react';
 import { PRICE_TIERS } from './price-tiers';
 
 // Theme configuration for consistent styling
 const theme = {
   orange: {
     text: 'text-orange-600',
-    bg: 'bg-orange-100',
+    bg: 'bg-orange-200',
     gradient: 'from-orange-50 to-amber-50',
     border: 'border-orange-100',
   },
   green: {
     text: 'text-green-600',
-    bg: 'bg-green-100',
   },
 };
 
@@ -43,56 +42,38 @@ const SelectionSummary: React.FC<SelectionSummaryProps> = ({ quantity, activeTie
   // Memoize total price
   const totalPrice = useMemo(() => (quantity * activeTier.price).toFixed(2), [quantity, activeTier]);
 
-  // Determine shipping status
-  const shippingText = `Free shipping ${quantity >= 50 ? 'included' : `at ${50 - quantity} more`}`;
-
   return (
-    <section
+    <div
       className={`bg-gradient-to-r ${theme.orange.gradient} rounded-lg p-2 mb-3 border ${theme.orange.border}`}
       aria-label="Order summary"
     >
-      {/* Top Row: Quantity and Total Price */}
       <div className="flex justify-between items-start">
         <div>
           <div className="text-sm font-medium text-gray-700">
             Selected: <span className={theme.orange.text}>{quantity} pcs</span>
           </div>
           <div className="text-xs text-gray-500">
-            Unit price: <span className={`font-medium ${theme.orange.text}`}>${activeTier.price.toFixed(2)}</span>
+            Unit price:{' '}
+            <span className={`font-medium ${theme.orange.text}`}>
+              ${activeTier.price.toFixed(2)}
+            </span>
           </div>
         </div>
         <div className="text-right">
           <div className="text-xs text-gray-500">Total price:</div>
-          <div className={`text-lg font-bold ${theme.orange.text}`}>${totalPrice}</div>
+          <div className={`text-lg font-bold ${theme.orange.text}`}>
+            ${totalPrice}
+          </div>
         </div>
       </div>
 
-      {/* Middle Row: Discount and Shipping */}
-      <div className="mt-1 flex items-center justify-between flex-wrap gap-2">
-        {activeTier.discount > 0 && (
+      {activeTier.discount > 0 && (
+        <div className="mt-1 flex items-center justify-between">
           <Badge icon={Percent} text={`${activeTier.discount}% discount applied`} />
-        )}
-        <Badge icon={CheckCircle} text={shippingText} color="green" />
-      </div>
-
-      {/* Bottom Row: Savings or Next Tier CTA */}
-      <div className="mt-1 flex justify-between items-center">
-        {activeTier.discount > 0 ? (
           <Badge icon={TrendingUp} text={`Saving $${savings}`} color="green" />
-        ) : (
-          <div className="text-xs text-gray-500">
-            Add {activeTier.itemsForNextTier} more for next tier discount
-          </div>
-        )}
-      </div>
-
-      {/* Bonus Row: Free Gift */}
-      {quantity >= 100 && (
-        <div className="mt-1">
-          <Badge icon={Gift} text="Free gift included!" />
         </div>
       )}
-    </section>
+    </div>
   );
 };
 
