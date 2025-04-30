@@ -184,10 +184,7 @@ const NewQuantitySelector: React.FC<NewQuantitySelectorProps> = ({
         </div>
 
         {/* Units selected message moved to the far right */}
-        <div className="text-blue-700 text-sm flex items-center">
-          <Package size={16} className="mr-1 text-blue-600" />
-          <span>You have selected <strong>{quantity}</strong> {quantity === 1 ? 'unit' : 'units'}</span>
-        </div>
+       
       </div>
 
       {/* Main quantity selector controls */}
