@@ -46,7 +46,7 @@ export default function CompactAliExpressHeader() {
     <div className="absolute top-0 left-0 w-full z-50 bg-transparent">
   
       {/* Main Header */}
-      <div className="flex items-center justify-between px-1 py-0.5 bg-white shadow-sm">
+      <div className="flex items-center justify-between px-1 py-0.5 ">
         {/* Logo on the left */}
         <div className="flex items-center">
           <div className="mr-0">
