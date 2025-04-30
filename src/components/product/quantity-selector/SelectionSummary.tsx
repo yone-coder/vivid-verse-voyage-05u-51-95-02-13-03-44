@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Tag, Percent, CheckCircle, TrendingUp, ArrowRight, Gift } from 'lucide-react';
+import { Tag, Percent, CheckCircle, TrendingUp, ArrowRight } from 'lucide-react';
 import { PRICE_TIERS } from './price-tiers';
 
 interface SelectionSummaryProps {
@@ -71,17 +71,6 @@ const SelectionSummary: React.FC<SelectionSummaryProps> = ({ quantity, activeTie
           <div className="w-full text-center text-gray-500 flex items-center justify-center">
             <ArrowRight size={10} className="mr-0.5" />
             Add {itemsForNextTier} more for {nextTier?.discount}% off
-          </div>
-        )}
-      </div>
-
-      {/* Bonus benefits row */}
-      <div className="flex justify-between items-center text-xs pt-1 border-t border-orange-100 mt-1">
-        <div className="flex-1"></div>
-        {quantity >= 100 && (
-          <div className="flex items-center text-purple-600">
-            <Gift size={10} className="mr-0.5" />
-            Free gift included
           </div>
         )}
       </div>
