@@ -1,6 +1,5 @@
-import { useState, useRef, useEffect } from 'react';
 import { Search, X, Mic, Bell, QrCode } from 'lucide-react';
-import Logo from './Logo'; // Import the new Logo component
+import Logo from './Logo';
 
 export default function CompactAliExpressHeader() {
   const [activeTab, setActiveTab] = useState('All');
@@ -10,20 +9,13 @@ export default function CompactAliExpressHeader() {
   const searchRef = useRef(null);
 
   const categories = [
-    'All',
-    'Women',
-    'Men',
-    'Electronics',
-    'Home',
-    'Beauty',
-    'Kids',
-    'Sports',
+    'All', 'Women', 'Men', 'Electronics', 'Home', 'Beauty', 'Kids', 'Sports',
   ];
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
-        // No changes here
+        // Close the search bar if clicked outside
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -43,24 +35,15 @@ export default function CompactAliExpressHeader() {
   };
 
   return (
-    <div className="absolute top-0 left-0 w-full z-50 bg-transparent">
-  
+    <div className="fixed top-0 left-0 w-full z-10 bg-transparent">
       {/* Main Header */}
-      <div className="flex items-center justify-between px-1 py-0.5 bg-white shadow-sm">
+      <div className="flex items-center justify-between py-4 px-8">
         {/* Logo on the left */}
-        <div className="flex items-center">
-          <div className="mr-0">
-            <Logo /> {/* Replace SVG with Logo component */}
-          </div>
-        </div>
-
+        <Logo />
+        
         {/* Search bar in the middle */}
         <div className="flex-1 max-w-xs mx-2 relative" ref={searchRef}>
-          <div
-            className={`flex items-center bg-gray-100 rounded-full ${
-              isSearchFocused ? 'border border-orange-500' : 'border border-gray-200'
-            }`}
-          >
+          <div className={`flex items-center bg-gray-100 rounded-full ${isSearchFocused ? 'border border-orange-500' : 'border border-gray-200'}`}>
             <Search className="ml-2 h-4 w-4 text-orange-500" />
             <input
               className="py-1 px-2 text-xs outline-none bg-gray-100 placeholder-gray-400 w-full"
@@ -70,9 +53,7 @@ export default function CompactAliExpressHeader() {
               onFocus={handleSearchFocus}
             />
             <div
-              className={`cursor-pointer mx-1 rounded-full ${
-                voiceSearchActive ? 'bg-orange-100' : ''
-              }`}
+              className={`cursor-pointer mx-1 rounded-full ${voiceSearchActive ? 'bg-orange-100' : ''}`}
               onClick={handleVoiceSearch}
             >
               <Mic className="h-4 w-4 text-orange-500" />
@@ -101,7 +82,6 @@ export default function CompactAliExpressHeader() {
           </div>
         </div>
       </div>
-
       {/* Tab Navigation */}
       <div className="flex overflow-x-auto no-scrollbar bg-white mt-[-6px]">
         {categories.map((category) => (
@@ -118,25 +98,6 @@ export default function CompactAliExpressHeader() {
           </button>
         ))}
       </div>
-
-      {/* Voice search overlay */}
-      {voiceSearchActive && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20">
-          <div className="bg-white p-4 rounded-xl w-64 flex flex-col items-center">
-            <div className="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center mb-2 animate-pulse">
-              <Mic className="h-6 w-6 text-orange-500" />
-            </div>
-            <p className="text-sm mb-1">Listening...</p>
-            <p className="text-xs text-gray-500 mb-2">Speak now to search</p>
-            <button
-              className="text-xs px-4 py-1 bg-orange-500 text-white rounded-full"
-              onClick={handleVoiceSearch}
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
