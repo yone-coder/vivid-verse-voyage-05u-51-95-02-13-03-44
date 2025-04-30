@@ -10,7 +10,7 @@ export default function CompactAliExpressHeader() {
   const searchRef = useRef(null);
 
   const categories = [
-    'Altttl',
+    'All',
     'Women',
     'Men',
     'Electronics',
