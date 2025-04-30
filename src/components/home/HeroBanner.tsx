@@ -1,9 +1,6 @@
-
 import { useState, useEffect } from 'react';
-import { Button } from "@/components/ui/button";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { ArrowRight } from "lucide-react";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { Button } from "@/components/ui/button"; // Ensure your Button component is available
+import { useIsMobile } from "@/hooks/use-mobile"; // Assuming you have a mobile hook for responsiveness
 
 const banners = [
   {
@@ -35,62 +32,45 @@ const banners = [
 export default function HeroBanner() {
   const [activeIndex, setActiveIndex] = useState(0);
   const isMobile = useIsMobile();
-  
+
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveIndex((current) => (current + 1) % banners.length);
-    }, 5000);
+    }, 5000); // 5 seconds transition time for banner change
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <div className="relative">
-      <Carousel className="w-full" setApi={(api) => {
-        api?.on("select", () => {
-          const selectedIndex = api.selectedScrollSnap();
-          setActiveIndex(selectedIndex);
-        });
-      }}>
-        <CarouselContent>
-          {banners.map((banner, index) => (
-            <CarouselItem key={banner.id}>
-              <div className="relative h-[160px] md:h-[250px] lg:h-[300px] overflow-hidden rounded-none md:rounded-lg mx-0 md:mx-4 mt-0 md:mt-4">
-                <div className={`absolute inset-0 bg-gradient-to-r ${banner.color} opacity-30`}></div>
-                <img 
-                  src={banner.image} 
-                  alt={banner.title} 
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 flex items-center">
-                  <div className="container mx-auto px-4">
-                    <div className="max-w-lg">
-                      <h2 className="text-xl md:text-3xl font-extrabold text-white mb-0.5 md:mb-2 drop-shadow-md">{banner.title}</h2>
-                      <p className="text-white text-xs md:text-base mb-2 md:mb-4 max-w-md drop-shadow-md font-medium">{banner.subtitle}</p>
-                      <Button className="bg-white text-black hover:bg-gray-100 font-medium text-xs md:text-sm rounded-full h-7 md:h-auto">
-                        {banner.cta} <ArrowRight className="w-3 h-3 md:w-3.5 md:h-3.5 ml-1" />
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        {!isMobile && (
-          <>
-            <CarouselPrevious className="left-6 bg-white/80 hover:bg-white hidden md:flex" />
-            <CarouselNext className="right-6 bg-white/80 hover:bg-white hidden md:flex" />
-          </>
-        )}
-      </Carousel>
-      
-      {/* Indicators */}
-      <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5">
+    <div className="relative w-full h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden">
+      {banners.map((banner, index) => (
+        <div
+          key={banner.id}
+          className={`absolute inset-0 bg-cover bg-center transition-opacity duration-700 ${
+            index === activeIndex ? 'opacity-100' : 'opacity-0'
+          }`}
+          style={{ backgroundImage: `url(${banner.image})` }}
+        >
+          {/* Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/30 to-transparent"></div>
+
+          {/* Banner Content */}
+          <div className="relative z-10 h-full flex items-center justify-center flex-col text-white text-center px-4">
+            <h2 className="text-2xl md:text-4xl font-bold">{banner.title}</h2>
+            <p className="text-sm md:text-base mt-2">{banner.subtitle}</p>
+            <Button className="mt-4 bg-orange-500 hover:bg-orange-600 text-white">
+              {banner.cta}
+            </Button>
+          </div>
+        </div>
+      ))}
+
+      {/* Carousel Indicators */}
+      <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-20">
         {banners.map((_, index) => (
           <button
             key={index}
             className={`h-1 rounded-full transition-all ${
-              activeIndex === index ? "bg-orange-500 w-5" : "bg-gray-300 w-2.5"
+              activeIndex === index ? 'bg-orange-500 w-5' : 'bg-gray-300 w-2.5'
             }`}
             onClick={() => setActiveIndex(index)}
           />
