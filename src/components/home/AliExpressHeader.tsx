@@ -161,7 +161,7 @@ export default function CompactAliExpressHeader() {
       </div>
       
       {/* Tab Navigation */}
-      <div className="flex overflow-x-auto no-scrollbar bg-white border-b mt-[-4px] border-gray-200">
+      <div className="flex overflow-x-auto no-scrollbar bg-white border-b mt-[-6px] border-gray-200">
         {categories.map((category) => (
           <button 
             key={category} 
