@@ -1,3 +1,4 @@
+
 import React, { useMemo } from 'react';
 import { Tag, Percent, CheckCircle, TrendingUp, ArrowRight } from 'lucide-react';
 import { PRICE_TIERS } from './price-tiers';
@@ -14,8 +15,8 @@ const calculateSavings = (quantity: number, tier: typeof PRICE_TIERS[0]) => {
 };
 
 const SelectionSummary: React.FC<SelectionSummaryProps> = ({ quantity, activeTier }) => {
-  const nextTier = PRICE_TIERS.find(tier => tier.minQuantity > quantity);
-  const itemsForNextTier = nextTier ? nextTier.minQuantity - quantity : 0;
+  const nextTier = PRICE_TIERS.find(tier => tier.min > quantity);
+  const itemsForNextTier = nextTier ? nextTier.min - quantity : 0;
   const totalPrice = (quantity * activeTier.price).toFixed(2);
   const originalPrice = (quantity * PRICE_TIERS[0].price).toFixed(2);
 

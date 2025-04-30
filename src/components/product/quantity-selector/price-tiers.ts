@@ -1,3 +1,4 @@
+
 // Define price tiers and their thresholds
 export const PRICE_TIERS = [
   { min: 1, max: 2, price: 10.00, discount: 0 },
