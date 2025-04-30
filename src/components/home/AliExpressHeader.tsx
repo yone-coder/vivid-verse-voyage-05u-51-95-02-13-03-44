@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from 'react';
 import { Search, X, Mic, Bell, QrCode } from 'lucide-react';
 
@@ -48,8 +49,12 @@ export default function CompactAliExpressHeader() {
       <div className="flex items-center justify-between px-3 py-2 bg-white shadow-sm">
         {/* Logo on the left */}
         <div className="flex items-center">
-          <div className="text-orange-500 font-bold text-lg mr-1">
-            AliExpress
+          <div className="mr-1">
+            <img 
+              src="/public/lovable-uploads/2102d3a1-ec6e-4c76-8ee0-549c3ae3d54e.png" 
+              alt="Mima Logo" 
+              className="h-8 w-8" 
+            />
           </div>
         </div>
         
