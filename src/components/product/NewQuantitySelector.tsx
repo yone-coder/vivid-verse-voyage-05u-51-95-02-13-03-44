@@ -184,11 +184,7 @@ const NewQuantitySelector: React.FC<NewQuantitySelectorProps> = ({
         </div>
 
         {/* Units selected message moved to the far right */}
-       
-      </div>
-
-      {/* Main quantity selector controls */}
-      <div className="flex items-center gap-2 mb-2">
+<div className="flex items-center gap-2 mb-2">
         <QuantityControls
           quantity={quantity}
           minQuantity={minQuantity}
@@ -203,6 +199,11 @@ const NewQuantitySelector: React.FC<NewQuantitySelectorProps> = ({
         {/* Enhanced Unit price indicator with discount percentage */}
         <UnitPriceIndicator price={activeTier.price} discount={activeTier.discount} />
       </div>
+       
+      </div>
+
+      {/* Main quantity selector controls */}
+      
 
       {/* Slider control */}
       <QuantitySlider 
