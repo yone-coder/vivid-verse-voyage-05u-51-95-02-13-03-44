@@ -53,7 +53,7 @@ export default function CompactAliExpressHeader() {
             <img 
               src="/public/lovable-uploads/2102d3a1-ec6e-4c76-8ee0-549c3ae3d54e.png" 
               alt="Mima Logo" 
-              className="h-8 w-8" 
+              className="h-12 w-12" 
             />
           </div>
         </div>
