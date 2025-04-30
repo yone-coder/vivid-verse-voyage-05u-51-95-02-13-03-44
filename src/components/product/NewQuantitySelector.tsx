@@ -160,70 +160,68 @@ const NewQuantitySelector: React.FC<NewQuantitySelectorProps> = ({
 
   return (
     <div className="w-full max-w-md bg-white rounded p-2 relative mt-0.5 px-0">
-      {/* Floating animation components */}
-      <FloatingNumber show={showFloatingNumber} value={floatingNumber} />
-      <ToastNotification show={showToast} message={toastMessage} />
-      <BulkConfirmation 
-        show={showBulkConfirmation} 
-        quantity={quantity} 
-        activeTierIndex={PRICE_TIERS.indexOf(activeTier)} 
-        onClose={() => setShowBulkConfirmation(false)}
-        onReduce={handleBulkConfirmationReduce}
-      />
+  {/* Floating animation components */}
+  <FloatingNumber show={showFloatingNumber} value={floatingNumber} />
+  <ToastNotification show={showToast} message={toastMessage} />
+  <BulkConfirmation 
+    show={showBulkConfirmation} 
+    quantity={quantity} 
+    activeTierIndex={PRICE_TIERS.indexOf(activeTier)} 
+    onClose={() => setShowBulkConfirmation(false)}
+    onReduce={handleBulkConfirmationReduce}
+  />
 
-      {/* Header with "Quantity" label and info tooltip */}
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-1">
-          <h3 className="text-sm font-semibold text-gray-800">Quantity</h3>
-          <InfoTooltip 
-            show={isInfoTooltipVisible}
-            onMouseEnter={() => setIsInfoTooltipVisible(true)}
-            onMouseLeave={() => setIsInfoTooltipVisible(false)}
-          />
-        </div>
-        
-        {/* Unit price indicator moved to header row */}
-        <UnitPriceIndicator price={activeTier.price} discount={activeTier.discount} />
-      </div>
-
-      {/* Quantity controls in their own row */}
-      <div className="flex items-center justify-between mb-3">
-        <QuantityControls
-          quantity={quantity}
-          minQuantity={minQuantity}
-          maxQuantity={maxQuantity}
-          onInputChange={handleInputChange}
-          startIncrementing={startIncrementing}
-          stopIncrementing={stopIncrementing}
-          startDecrementing={startDecrementing}
-          stopDecrementing={stopDecrementing}
+  {/* Single row with label, tooltip, controls, and price indicator */}
+  <div className="flex items-center justify-between mb-3">
+    <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1">
+        <h3 className="text-sm font-semibold text-gray-800">Quantity</h3>
+        <InfoTooltip 
+          show={isInfoTooltipVisible}
+          onMouseEnter={() => setIsInfoTooltipVisible(true)}
+          onMouseLeave={() => setIsInfoTooltipVisible(false)}
         />
       </div>
-
-      {/* Slider control */}
-      <QuantitySlider 
-        quantity={quantity} 
-        maxQuantity={maxQuantity} 
-        onChange={handleSliderChange} 
-      />
-
-      {/* Discount cards with expand/collapse functionality */}
-      <BundleOptions 
+      
+      <QuantityControls
         quantity={quantity}
-        isExpanded={isExpanded}
-        onQuantityChange={handleQuantityChange}
-        toggleExpand={() => setIsExpanded(!isExpanded)}
+        minQuantity={minQuantity}
+        maxQuantity={maxQuantity}
+        onInputChange={handleInputChange}
+        startIncrementing={startIncrementing}
+        stopIncrementing={stopIncrementing}
+        startDecrementing={startDecrementing}
+        stopDecrementing={stopDecrementing}
       />
-
-      {/* Dynamic information and suggestions */}
-      <StatusNotification quantity={quantity} activeTier={activeTier} />
-
-      {/* Current selection summary */}
-      <SelectionSummary quantity={quantity} activeTier={activeTier} />
-
-      {/* CSS for animations */}
-      <FloatingNumberStyles />
     </div>
+    
+    <UnitPriceIndicator price={activeTier.price} discount={activeTier.discount} />
+  </div>
+
+  {/* Slider control */}
+  <QuantitySlider 
+    quantity={quantity} 
+    maxQuantity={maxQuantity} 
+    onChange={handleSliderChange} 
+  />
+
+  {/* Discount cards with expand/collapse functionality */}
+  <BundleOptions 
+    quantity={quantity}
+    isExpanded={isExpanded}
+    onQuantityChange={handleQuantityChange}
+    toggleExpand={() => setIsExpanded(!isExpanded)}
+  />
+
+  {/* Dynamic information and suggestions */}
+  <StatusNotification quantity={quantity} activeTier={activeTier} />
+
+  {/* Current selection summary */}
+  <SelectionSummary quantity={quantity} activeTier={activeTier} />
+
+  {/* CSS for animations */}
+  <FloatingNumberStyles />
+</div>
   );
 };
 
