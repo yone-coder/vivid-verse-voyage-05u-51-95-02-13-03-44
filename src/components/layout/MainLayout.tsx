@@ -66,8 +66,7 @@ export default function MainLayout() {
     <div className="min-h-screen flex flex-col bg-gray-50">
       <style dangerouslySetInnerHTML={{ __html: headerHeightStyle }} />
       
-      {/* No more product header */}
-      
+      {/* No header for home page (handled by AliExpressHeader) or product pages */}
       {!isProductPage && !isHomePage && (
         <Header 
           isSearchOpen={isSearchOpen}

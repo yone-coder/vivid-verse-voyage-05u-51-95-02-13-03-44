@@ -1,6 +1,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { fetchAllProducts } from "@/integrations/supabase/client";
+import AliExpressHeader from "@/components/home/AliExpressHeader";
 import HeroBanner from "@/components/home/HeroBanner";
 import SpaceSavingCategories from "@/components/home/SpaceSavingCategories";
 import FlashDeals from "@/components/home/FlashDeals";
@@ -37,6 +38,11 @@ export default function Index() {
 
   return (
     <div className="flex-grow pb-20 md:pb-0">
+      {/* AliExpress Style Header */}
+      <div className="mb-1 sticky top-0 z-50">
+        <AliExpressHeader />
+      </div>
+      
       {/* Hero Banner Carousel */}
       <div className="mb-1">
         <HeroBanner />
