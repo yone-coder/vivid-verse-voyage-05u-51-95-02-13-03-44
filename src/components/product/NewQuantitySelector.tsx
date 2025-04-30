@@ -159,7 +159,7 @@ const NewQuantitySelector: React.FC<NewQuantitySelectorProps> = ({
   };
 
   return (
-    <div className="w-full max-w-md bg-white rounded p-2 relative mt-0.5 px-0">
+  <div className="w-full max-w-md bg-white rounded p-2 relative mt-0.5 px-0">
   {/* Floating animation components */}
   <FloatingNumber show={showFloatingNumber} value={floatingNumber} />
   <ToastNotification show={showToast} message={toastMessage} />
@@ -171,18 +171,20 @@ const NewQuantitySelector: React.FC<NewQuantitySelectorProps> = ({
     onReduce={handleBulkConfirmationReduce}
   />
 
-  {/* Single row with label, tooltip, controls, and price indicator */}
+  {/* Single row with label, tooltip, controls, and price indicator with equal spacing */}
   <div className="flex items-center justify-between mb-3">
-    <div className="flex items-center gap-2">
-      <div className="flex items-center gap-1">
-        <h3 className="text-sm font-semibold text-gray-800">Quantity</h3>
-        <InfoTooltip 
-          show={isInfoTooltipVisible}
-          onMouseEnter={() => setIsInfoTooltipVisible(true)}
-          onMouseLeave={() => setIsInfoTooltipVisible(false)}
-        />
-      </div>
+    <div className="flex items-center justify-between w-full">
+      {/* Label and tooltip */}
+      <h3 className="text-sm font-semibold text-gray-800">Quantity</h3>
       
+      {/* Info tooltip */}
+      <InfoTooltip 
+        show={isInfoTooltipVisible}
+        onMouseEnter={() => setIsInfoTooltipVisible(true)}
+        onMouseLeave={() => setIsInfoTooltipVisible(false)}
+      />
+      
+      {/* Quantity controls */}
       <QuantityControls
         quantity={quantity}
         minQuantity={minQuantity}
@@ -193,9 +195,10 @@ const NewQuantitySelector: React.FC<NewQuantitySelectorProps> = ({
         startDecrementing={startDecrementing}
         stopDecrementing={stopDecrementing}
       />
+      
+      {/* Unit price indicator */}
+      <UnitPriceIndicator price={activeTier.price} discount={activeTier.discount} />
     </div>
-    
-    <UnitPriceIndicator price={activeTier.price} discount={activeTier.discount} />
   </div>
 
   {/* Slider control */}
