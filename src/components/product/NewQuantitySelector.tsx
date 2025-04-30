@@ -1,4 +1,4 @@
-
+,
 import React, { useState, useEffect, useRef } from 'react';
 import { Package } from 'lucide-react';
 import { VariantStockInfo } from "@/hooks/useVariantStockDecay";
@@ -173,32 +173,43 @@ const NewQuantitySelector: React.FC<NewQuantitySelectorProps> = ({
       />
 
       {/* Header with "Quantity" and "You have selected" pushed to far edges */}
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center">
-          <h3 className="text-sm font-semibold text-gray-800">Quantity</h3>
-          <InfoTooltip 
-            show={isInfoTooltipVisible}
-            onMouseEnter={() => setIsInfoTooltipVisible(true)}
-            onMouseLeave={() => setIsInfoTooltipVisible(false)}
-          />
-        </div>
+      {/* Header row - stays horizontal on all screens */}
+<div className="flex items-center justify-between mb-2 w-full">
+  {/* Left side - Quantity label + tooltip */}
+  <div className="flex items-center shrink-0">
+    <h3 className="text-sm font-semibold text-gray-800 mr-1">Quantity</h3>
+    <InfoTooltip 
+      show={isInfoTooltipVisible}
+      onMouseEnter={() => setIsInfoTooltipVisible(true)}
+      onMouseLeave={() => setIsInfoTooltipVisible(false)}
+    />
+  </div>
 
-        {/* Units selected message moved to the far right */}
-<div className="flex items-center gap-2 mb-2">
-        <QuantityControls
-          quantity={quantity}
-          minQuantity={minQuantity}
-          maxQuantity={maxQuantity}
-          onInputChange={handleInputChange}
-          startIncrementing={startIncrementing}
-          stopIncrementing={stopIncrementing}
-          startDecrementing={startDecrementing}
-          stopDecrementing={stopDecrementing}
-        />
+  {/* Right side - Units selected message */}
+  <div className="text-xs text-gray-500 whitespace-nowrap ml-2">
+    You have selected {quantity} {quantity === 1 ? 'unit' : 'units'}
+  </div>
+</div>
 
-        {/* Enhanced Unit price indicator with discount percentage */}
-        <UnitPriceIndicator price={activeTier.price} discount={activeTier.discount} />
-      </div>
+{/* Controls row - stays horizontal with proper spacing */}
+<div className="flex items-center gap-2 w-full">
+  <QuantityControls
+    quantity={quantity}
+    minQuantity={minQuantity}
+    maxQuantity={maxQuantity}
+    onInputChange={handleInputChange}
+    startIncrementing={startIncrementing}
+    stopIncrementing={stopIncrementing}
+    startDecrementing={startDecrementing}
+    stopDecrementing={stopDecrementing}
+  />
+
+  <UnitPriceIndicator 
+    price={activeTier.price} 
+    discount={activeTier.discount} 
+    className="shrink-0" 
+  />
+</div>
        
       </div>
 
