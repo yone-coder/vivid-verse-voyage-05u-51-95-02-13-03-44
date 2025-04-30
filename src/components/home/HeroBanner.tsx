@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Button } from "@/components/ui/button"; // Ensure your Button component is available
-import { useIsMobile } from "@/hooks/use-mobile"; // Assuming you have a mobile hook for responsiveness
+import { Button } from "@/components/ui/button";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const banners = [
   {
@@ -36,12 +36,12 @@ export default function HeroBanner() {
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveIndex((current) => (current + 1) % banners.length);
-    }, 5000); // 5 seconds transition time for banner change
+    }, 5000);
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <div className="relative w-full h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden">
+    <div className="relative w-full aspect-[3/1] overflow-hidden">
       {banners.map((banner, index) => (
         <div
           key={banner.id}
@@ -55,8 +55,8 @@ export default function HeroBanner() {
 
           {/* Banner Content */}
           <div className="relative z-10 h-full flex items-center justify-center flex-col text-white text-center px-4">
-            <h2 className="text-2xl md:text-4xl font-bold">{banner.title}</h2>
-            <p className="text-sm md:text-base mt-2">{banner.subtitle}</p>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold">{banner.title}</h2>
+            <p className="text-sm sm:text-base mt-2">{banner.subtitle}</p>
             <Button className="mt-4 bg-orange-500 hover:bg-orange-600 text-white">
               {banner.cta}
             </Button>
@@ -70,7 +70,7 @@ export default function HeroBanner() {
           <button
             key={index}
             className={`h-1 rounded-full transition-all ${
-              activeIndex === index ? 'bg-orange-500 w-5' : 'bg-gray-300 w-2.5'
+              activeIndex === index ? 'bg-orange-500 w-4' : 'bg-gray-300 w-2'
             }`}
             onClick={() => setActiveIndex(index)}
           />
