@@ -1,5 +1,5 @@
-
 import React from 'react';
+import { Tag, Percent } from 'lucide-react';
 
 interface UnitPriceIndicatorProps {
   price: number;
@@ -8,13 +8,18 @@ interface UnitPriceIndicatorProps {
 
 const UnitPriceIndicator: React.FC<UnitPriceIndicatorProps> = ({ price, discount }) => {
   return (
-    <div className="bg-orange-50 border border-orange-200 rounded px-2 h-8 flex items-center text-xs">
-      <div className="flex flex-col items-center">
-        <div className="flex items-center">
-          <span className="text-orange-700 font-medium">
-            Only ${price.toFixed(2)} each – Now {discount}% Off!
-          </span>
+    <div className="bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-100 rounded-lg p-2 h-8 flex items-center text-xs">
+      <div className="flex items-center gap-1">
+        <div className="bg-orange-100 text-orange-600 px-1.5 py-0.5 rounded-full flex items-center">
+          <Tag size={10} className="mr-0.5" />
+          ${price.toFixed(2)}/pc
         </div>
+        {discount > 0 && (
+          <div className="bg-orange-200 text-orange-600 px-1.5 py-0.5 rounded-full flex items-center">
+            <Percent size={10} className="mr-0.5" />
+            {discount}% off
+          </div>
+        )}
       </div>
     </div>
   );
