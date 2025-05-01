@@ -1,14 +1,12 @@
-
 import { useState, useRef, useEffect } from 'react';
 import { Search, X, Mic, Bell, QrCode } from 'lucide-react';
-import Logo from './Logo'; // Import the Logo component
+import Logo from './Logo'; // Import the new Logo component
 
 export default function CompactAliExpressHeader() {
   const [activeTab, setActiveTab] = useState('All');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [voiceSearchActive, setVoiceSearchActive] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
   const searchRef = useRef(null);
 
   const categories = [
@@ -29,16 +27,7 @@ export default function CompactAliExpressHeader() {
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
-
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 100);
-    };
-    window.addEventListener('scroll', handleScroll);
-    
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      window.removeEventListener('scroll', handleScroll);
-    };
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   const handleSearchFocus = () => {
@@ -54,13 +43,13 @@ export default function CompactAliExpressHeader() {
   };
 
   return (
-    <div className={`w-full bg-transparent transition-all ${isScrolled ? 'fixed top-0 left-0 w-full z-50 bg-white shadow-md' : ''}`}>
+    <div className="flex flex-col w-full relative">
       {/* Main Header */}
-      <div className="flex items-center justify-between px-1 py-0.5">
+      <div className="flex items-center justify-between px-1 py-0.5 bg-white shadow-sm">
         {/* Logo on the left */}
         <div className="flex items-center">
           <div className="mr-0">
-            <Logo />
+            <Logo /> {/* Replace SVG with Logo component */}
           </div>
         </div>
 
@@ -113,7 +102,7 @@ export default function CompactAliExpressHeader() {
       </div>
 
       {/* Tab Navigation */}
-      <div className="flex overflow-x-auto no-scrollbar">
+      <div className="flex overflow-x-auto no-scrollbar bg-white mt-[-6px]">
         {categories.map((category) => (
           <button
             key={category}
@@ -150,4 +139,3 @@ export default function CompactAliExpressHeader() {
     </div>
   );
 }
-

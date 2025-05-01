@@ -63,7 +63,7 @@ export default function MainLayout() {
   `;
   
   return (
-    <div className={`min-h-screen flex flex-col bg-gray-50 ${isHomePage ? 'pt-0' : ''}`}>
+    <div className="min-h-screen flex flex-col bg-gray-50">
       <style dangerouslySetInnerHTML={{ __html: headerHeightStyle }} />
       
       {/* No header for home page (handled by AliExpressHeader) or product pages */}
