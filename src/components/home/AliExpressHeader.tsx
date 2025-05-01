@@ -61,7 +61,7 @@ export default function AliExpressHeaderWithStates() {
   };
 
   return (
-    <div 
+    <header 
       className="fixed top-0 left-0 right-0 z-50 flex flex-col transition-all duration-700"
       style={{
         boxShadow: `0 ${progress * 4}px ${progress * 8}px rgba(0, 0, 0, ${progress * 0.08})`
@@ -238,8 +238,14 @@ export default function AliExpressHeaderWithStates() {
         </div>
       )}
       
-      {/* Add empty space to push content below header */}
-      <div className="h-[56px]"></div>
-    </div>
+      {/* Add necessary padding to push content below the header based on scroll position */}
+      <div 
+        aria-hidden="true"
+        className="w-full transition-all duration-300" 
+        style={{ 
+          height: progress > 0.3 ? "84px" : "44px" // Adjusts based on whether tabs are showing
+        }}
+      />
+    </header>
   );
 }
