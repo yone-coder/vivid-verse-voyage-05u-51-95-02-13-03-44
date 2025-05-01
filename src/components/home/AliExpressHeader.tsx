@@ -2,13 +2,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Search, X, Mic, Bell, QrCode, ChevronDown } from 'lucide-react';
 import { useScrollProgress } from '@/hooks/useScrollProgress';
-
-// Mock Logo component
-const Logo = () => (
-  <div className="flex items-center">
-    <div className="text-orange-500 font-bold text-lg">AliExpress</div>
-  </div>
-);
+import Logo from './Logo';
 
 export default function AliExpressHeaderWithStates() {
   // Use the scroll progress hook to match product header behavior
@@ -96,7 +90,7 @@ export default function AliExpressHeaderWithStates() {
             </button>
           ) : (
             <div className="mr-0">
-              <Logo />
+              <Logo width={28} height={28} className="text-orange-500" />
             </div>
           )}
         </div>
