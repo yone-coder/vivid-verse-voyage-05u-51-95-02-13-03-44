@@ -82,7 +82,7 @@ export default function AliExpressHeaderWithStates() {
   };
 
   return (
-    <div className="flex flex-col w-full absolute top-0 left-0 right-0 z-50">
+    <div className="w-full fixed top-0 left-0 right-0 z-50">
       {/* Main Header - Transparent or Regular based on state */}
       <div 
         className={`flex items-center justify-between px-1 py-2 transition-all duration-500 ${
@@ -247,6 +247,9 @@ export default function AliExpressHeaderWithStates() {
           </div>
         </div>
       )}
+      
+      {/* Add empty space to push content below header */}
+      <div className="h-[56px]"></div>
     </div>
   );
 }
