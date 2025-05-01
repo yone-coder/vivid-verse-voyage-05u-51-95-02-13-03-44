@@ -238,14 +238,7 @@ export default function AliExpressHeaderWithStates() {
         </div>
       )}
       
-      {/* Add necessary padding to push content below the header based on scroll position */}
-      <div 
-        aria-hidden="true"
-        className="w-full transition-all duration-300" 
-        style={{ 
-          height: progress > 0.3 ? "84px" : "44px" // Adjusts based on whether tabs are showing
-        }}
-      />
+      
     </header>
   );
 }
