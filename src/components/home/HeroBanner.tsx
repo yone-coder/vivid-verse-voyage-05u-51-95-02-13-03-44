@@ -54,7 +54,7 @@ export default function HeroBanner() {
         <CarouselContent>
           {banners.map((banner, index) => (
             <CarouselItem key={banner.id}>
-              <div className="relative h-[160px] md:h-[250px] lg:h-[300px] overflow-hidden rounded-none md:rounded-lg mx-0 md:mx-4 mt-0 md:mt-4">
+              <div className="relative h-[180px] md:h-[250px] lg:h-[300px] overflow-hidden rounded-none">
                 <div className={`absolute inset-0 bg-gradient-to-r ${banner.color} opacity-30`}></div>
                 <img 
                   src={banner.image} 

@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from 'react';
 import { Search, X, Mic, Bell, QrCode, ChevronDown } from 'lucide-react';
 
@@ -44,13 +45,17 @@ export default function AliExpressHeaderWithStates() {
     setIsOpen(!isOpen);
   };
 
-  // Effect to toggle header state every 5 seconds
+  // Effect to detect scroll position and toggle header transparency
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      setIsTransparent(prev => !prev);
-    }, 5000);
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      setIsTransparent(scrollPosition < 50);
+    };
     
-    return () => clearInterval(intervalId);
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Initialize based on current scroll position
+    
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   // Click outside handler
@@ -77,7 +82,7 @@ export default function AliExpressHeaderWithStates() {
   };
 
   return (
-    <div className="flex flex-col w-full relative">
+    <div className="flex flex-col w-full absolute top-0 left-0 right-0 z-50">
       {/* Main Header - Transparent or Regular based on state */}
       <div 
         className={`flex items-center justify-between px-1 py-2 transition-all duration-500 ${
@@ -242,9 +247,6 @@ export default function AliExpressHeaderWithStates() {
           </div>
         </div>
       )}
-
-      {/* Background image for demonstration purposes */}
-      {/* Removed as per request */}
     </div>
   );
 }

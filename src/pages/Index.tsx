@@ -38,14 +38,10 @@ export default function Index() {
 
   return (
     <div className="flex-grow pb-20 md:pb-0">
-      {/* AliExpress Style Header */}
-      <div className="mb-1 sticky top-0 z-50">
-        <AliExpressHeader />
-      </div>
-      
-      {/* Hero Banner Carousel */}
-      <div className="mb-1">
+      {/* Hero Banner Carousel with Header Overlay */}
+      <div className="relative">
         <HeroBanner />
+        <AliExpressHeader />
       </div>
       
       {/* Benefits Banner with improved layout */}
