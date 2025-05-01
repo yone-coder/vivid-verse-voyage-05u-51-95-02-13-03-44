@@ -3,7 +3,6 @@ import { useState, useRef, useEffect } from 'react';
 import { Search, X, Mic, Bell, QrCode, ChevronDown } from 'lucide-react';
 import { useScrollProgress } from '@/hooks/useScrollProgress';
 import Logo from './Logo';
-import CategoryPanel from './CategoryPanel';
 
 export default function AliExpressHeaderWithStates() {
   // Use the scroll progress hook to match product header behavior
@@ -11,7 +10,6 @@ export default function AliExpressHeaderWithStates() {
   
   // State for the header toggle
   const [isOpen, setIsOpen] = useState(false);
-  const [isPanelOpen, setIsPanelOpen] = useState(false);
   
   // States from the original component
   const [activeTab, setActiveTab] = useState('All');
@@ -37,11 +35,6 @@ export default function AliExpressHeaderWithStates() {
   // Toggle panel state
   const togglePanel = () => {
     setIsOpen(!isOpen);
-  };
-  
-  // Toggle category panel
-  const toggleCategoryPanel = () => {
-    setIsPanelOpen(!isPanelOpen);
   };
 
   // Click outside handler
@@ -87,12 +80,12 @@ export default function AliExpressHeaderWithStates() {
         <div className="flex items-center">
           {progress < 0.5 ? (
             <button 
-              onClick={toggleCategoryPanel}
+              onClick={togglePanel}
               className="tab-button flex items-center justify-center space-x-1 py-2 px-4 font-medium text-sm bg-black bg-opacity-30 text-white rounded-full transition-all duration-200 focus:outline-none"
             >
               <span>{activeTab}</span>
               <ChevronDown 
-                className={`w-4 h-4 transition-transform duration-300 ${isPanelOpen ? 'rotate-180' : ''}`} 
+                className={`w-4 h-4 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} 
               />
             </button>
           ) : (
@@ -225,14 +218,6 @@ export default function AliExpressHeaderWithStates() {
           </div>
         </div>
       )}
-
-      {/* Category Panel - this was properly connected but needed to pass the right props */}
-      <CategoryPanel 
-        isOpen={isPanelOpen} 
-        onClose={() => setIsPanelOpen(false)} 
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-      />
 
       {/* Voice search overlay */}
       {voiceSearchActive && (
