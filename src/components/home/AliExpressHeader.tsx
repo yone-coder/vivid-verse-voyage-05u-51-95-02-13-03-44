@@ -8,6 +8,7 @@ export default function CompactAliExpressHeader() {
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [voiceSearchActive, setVoiceSearchActive] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const searchRef = useRef(null);
 
   const categories = [
@@ -28,7 +29,16 @@ export default function CompactAliExpressHeader() {
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 100);
+    };
+    window.addEventListener('scroll', handleScroll);
+    
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
   const handleSearchFocus = () => {
@@ -44,7 +54,7 @@ export default function CompactAliExpressHeader() {
   };
 
   return (
-    <div className="w-full bg-transparent">
+    <div className={`w-full bg-transparent transition-all ${isScrolled ? 'fixed top-0 left-0 w-full z-50 bg-white shadow-md' : ''}`}>
       {/* Main Header */}
       <div className="flex items-center justify-between px-1 py-0.5">
         {/* Logo on the left */}
@@ -140,3 +150,4 @@ export default function CompactAliExpressHeader() {
     </div>
   );
 }
+

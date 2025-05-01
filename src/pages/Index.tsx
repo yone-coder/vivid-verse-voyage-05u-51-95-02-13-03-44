@@ -37,13 +37,13 @@ export default function Index() {
   }
 
   return (
-    <div className="flex-grow pb-20 md:pb-0" style={{ marginTop: "-1px" }}>
+    <div className="flex-grow pb-20 md:pb-0" style={{ marginTop: "0" }}>
       {/* Hero Banner Carousel */}
       <div className="relative">
         <HeroBanner />
         
-        {/* AliExpress Style Header */}
-        <div className="absolute top-0 left-0 w-full z-50">
+        {/* AliExpress Style Header - positioned absolutely for initial view */}
+        <div className="absolute top-0 left-0 w-full">
           <AliExpressHeader />
         </div>
       </div>
