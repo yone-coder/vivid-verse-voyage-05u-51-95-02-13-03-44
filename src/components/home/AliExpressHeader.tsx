@@ -113,7 +113,7 @@ export default function AliExpressHeaderWithStates() {
                 isSearchFocused ? 'border border-orange-500' : 'border border-gray-200'
               }`}
             >
-              <Search className="ml-2 h-4 w-4 text-orange-500" />
+              <Search className="ml-2 h-3.5 w-3.5 text-orange-500" />
               <input
                 className="py-1 px-2 text-xs outline-none bg-gray-100 placeholder-gray-400 w-full"
                 placeholder="Search on AliExpress"
@@ -127,7 +127,7 @@ export default function AliExpressHeaderWithStates() {
                 }`}
                 onClick={handleVoiceSearch}
               >
-                <Mic className="h-4 w-4 text-orange-500" />
+                <Mic className="h-3.5 w-3.5 text-orange-500" />
               </div>
               {searchQuery && (
                 <div
@@ -141,33 +141,33 @@ export default function AliExpressHeaderWithStates() {
           </div>
         )}
 
-        {/* Icons on the right */}
+        {/* Icons on the right - Updated sizes to match product header (h-4 w-4) with appropriate background transparency */}
         <div className="flex items-center space-x-3">
           {progress < 0.5 ? (
             <>
-              <div className="cursor-pointer bg-black bg-opacity-30 p-2 rounded-full">
-                <Search className="h-5 w-5 text-white" />
+              <div className="cursor-pointer bg-black bg-opacity-40 p-1.5 rounded-full">
+                <Search className="h-4 w-4 text-white" />
               </div>
-              <div className="cursor-pointer relative bg-black bg-opacity-30 p-2 rounded-full">
-                <Bell className="h-5 w-5 text-white" />
+              <div className="cursor-pointer relative bg-black bg-opacity-40 p-1.5 rounded-full">
+                <Bell className="h-4 w-4 text-white" />
                 <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs rounded-full h-3.5 w-3.5 flex items-center justify-center">
                   2
                 </span>
               </div>
-              <div className="cursor-pointer bg-black bg-opacity-30 p-2 rounded-full">
-                <QrCode className="h-5 w-5 text-white" />
+              <div className="cursor-pointer bg-black bg-opacity-40 p-1.5 rounded-full">
+                <QrCode className="h-4 w-4 text-white" />
               </div>
             </>
           ) : (
             <>
               <div className="cursor-pointer relative">
-                <Bell className="h-5 w-5 text-gray-600" />
+                <Bell className="h-4 w-4 text-gray-600" />
                 <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs rounded-full h-3.5 w-3.5 flex items-center justify-center">
                   2
                 </span>
               </div>
               <div className="cursor-pointer">
-                <QrCode className="h-5 w-5 text-gray-600" />
+                <QrCode className="h-4 w-4 text-gray-600" />
               </div>
             </>
           )}
