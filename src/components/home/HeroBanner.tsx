@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -26,7 +27,7 @@ export default function HeroBanner() {
   }, []);
 
   return (
-    <div className="relative w-full overflow-hidden" style={{marginTop: "-1px"}}>
+    <div className="relative w-full overflow-hidden" style={{marginTop: "0"}}>
       {/* Container with minimum height that will expand with content */}
       <div className="relative w-full min-h-[200px]">
         {banners.map((banner, index) => (

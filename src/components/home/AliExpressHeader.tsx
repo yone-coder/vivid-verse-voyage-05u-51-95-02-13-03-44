@@ -44,9 +44,9 @@ export default function CompactAliExpressHeader() {
   };
 
   return (
-    <div className="absolute top-0 left-0 w-full z-50 bg-transparent">
+    <div className="w-full bg-transparent">
       {/* Main Header */}
-      <div className="flex items-center justify-between px-1 py-0.5 ">
+      <div className="flex items-center justify-between px-1 py-0.5">
         {/* Logo on the left */}
         <div className="flex items-center">
           <div className="mr-0">
@@ -103,7 +103,7 @@ export default function CompactAliExpressHeader() {
       </div>
 
       {/* Tab Navigation */}
-      <div className="flex overflow-x-auto no-scrollbar mt-[-6px]">
+      <div className="flex overflow-x-auto no-scrollbar">
         {categories.map((category) => (
           <button
             key={category}
