@@ -226,7 +226,7 @@ export default function AliExpressHeaderWithStates() {
         </div>
       )}
 
-      {/* Category Panel */}
+      {/* Category Panel - this was properly connected but needed to pass the right props */}
       <CategoryPanel 
         isOpen={isPanelOpen} 
         onClose={() => setIsPanelOpen(false)} 
