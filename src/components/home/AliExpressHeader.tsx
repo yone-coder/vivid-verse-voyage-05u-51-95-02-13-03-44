@@ -1,6 +1,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { Search, X, Mic, Bell, QrCode, ChevronDown } from 'lucide-react';
+import { useScrollProgress } from '@/hooks/useScrollProgress';
 
 // Mock Logo component
 const Logo = () => (
@@ -10,8 +11,10 @@ const Logo = () => (
 );
 
 export default function AliExpressHeaderWithStates() {
+  // Use the scroll progress hook to match product header behavior
+  const { progress } = useScrollProgress();
+  
   // State for the header toggle
-  const [isTransparent, setIsTransparent] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
   
   // States from the original component
@@ -23,11 +26,6 @@ export default function AliExpressHeaderWithStates() {
   
   // To simulate different backgrounds for demo purposes
   const [bgColor, setBgColor] = useState('#333');
-  
-  // Change background color when header state changes
-  useEffect(() => {
-    setBgColor(isTransparent ? '#333' : '#f5f5f5');
-  }, [isTransparent]);
 
   const categories = [
     'All',
@@ -44,19 +42,6 @@ export default function AliExpressHeaderWithStates() {
   const togglePanel = () => {
     setIsOpen(!isOpen);
   };
-
-  // Effect to detect scroll position and toggle header transparency
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY;
-      setIsTransparent(scrollPosition < 50);
-    };
-    
-    window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Initialize based on current scroll position
-    
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   // Click outside handler
   useEffect(() => {
@@ -82,21 +67,24 @@ export default function AliExpressHeaderWithStates() {
   };
 
   return (
-    <div className="w-full fixed top-0 left-0 right-0 z-50">
-      {/* Main Header - Transparent or Regular based on state */}
+    <div 
+      className="fixed top-0 left-0 right-0 z-50 flex flex-col transition-all duration-700"
+      style={{
+        boxShadow: `0 ${progress * 4}px ${progress * 8}px rgba(0, 0, 0, ${progress * 0.08})`
+      }}
+    >
+      {/* Main Header - Using scroll progress for dynamic transparency */}
       <div 
-        className={`flex items-center justify-between px-1 py-2 transition-all duration-500 ${
-          isTransparent 
-            ? 'bg-transparent text-white' 
-            : 'bg-white text-gray-800 shadow-sm'
-        }`}
+        className="flex items-center justify-between px-1 py-2 transition-all duration-700"
         style={{
-          backgroundImage: isTransparent ? 'linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0))' : 'none'
+          backgroundColor: `rgba(255, 255, 255, ${progress * 0.95})`,
+          backdropFilter: `blur(${progress * 8}px)`,
+          backgroundImage: progress < 0.5 ? 'linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0))' : 'none'
         }}
       >
         {/* Left section with dropdown in transparent mode, logo in regular mode */}
         <div className="flex items-center">
-          {isTransparent ? (
+          {progress < 0.5 ? (
             <button 
               onClick={togglePanel}
               className="tab-button flex items-center justify-center space-x-1 py-2 px-4 font-medium text-sm bg-black bg-opacity-30 text-white rounded-full transition-all duration-200 focus:outline-none"
@@ -114,7 +102,7 @@ export default function AliExpressHeaderWithStates() {
         </div>
 
         {/* Middle section - different for each state */}
-        {isTransparent ? (
+        {progress < 0.5 ? (
           <div className="flex-1 flex justify-center">
             {/* Empty space in transparent mode to maintain spacing */}
           </div>
@@ -155,7 +143,7 @@ export default function AliExpressHeaderWithStates() {
 
         {/* Icons on the right */}
         <div className="flex items-center space-x-3">
-          {isTransparent ? (
+          {progress < 0.5 ? (
             <>
               <div className="cursor-pointer bg-black bg-opacity-30 p-2 rounded-full">
                 <Search className="h-5 w-5 text-white" />
@@ -186,9 +174,17 @@ export default function AliExpressHeaderWithStates() {
         </div>
       </div>
 
-      {/* Only show tabs in non-transparent mode */}
-      {!isTransparent && (
-        <div className="flex overflow-x-auto no-scrollbar bg-white mt-[-6px]">
+      {/* Only show tabs in non-transparent mode (scrolled down) */}
+      <div
+        className="w-full transition-all duration-700 overflow-hidden"
+        style={{
+          maxHeight: progress > 0.3 ? "40px" : "0px",
+          opacity: progress,
+          backgroundColor: `rgba(255, 255, 255, ${progress * 0.98})`,
+          backdropFilter: `blur(${progress * 8}px)`,
+        }}
+      >
+        <div className="flex overflow-x-auto no-scrollbar bg-white">
           {categories.map((category) => (
             <button
               key={category}
@@ -203,10 +199,10 @@ export default function AliExpressHeaderWithStates() {
             </button>
           ))}
         </div>
-      )}
+      </div>
 
       {/* Panel that opens when the transparent header button is clicked */}
-      {isTransparent && isOpen && (
+      {progress < 0.5 && isOpen && (
         <div className="bg-white text-gray-800 p-4 shadow-md rounded-b-lg">
           <div className="grid grid-cols-2 gap-4">
             {categories.map((category) => (

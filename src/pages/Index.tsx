@@ -1,4 +1,3 @@
-
 import { useQuery } from "@tanstack/react-query";
 import { fetchAllProducts } from "@/integrations/supabase/client";
 import AliExpressHeader from "@/components/home/AliExpressHeader";
@@ -38,11 +37,11 @@ export default function Index() {
 
   return (
     <div className="flex-grow pb-20 md:pb-0">
-      {/* AliExpressHeader now outside of the Hero Banner container */}
+      {/* AliExpressHeader component with improved scroll behavior */}
       <AliExpressHeader />
       
-      {/* Hero Banner without header overlay */}
-      <div className="pt-0">
+      {/* Hero Banner with appropriate spacing */}
+      <div className="relative">
         <HeroBanner />
       </div>
       
