@@ -1,6 +1,7 @@
+
 import { useState, useRef, useEffect } from 'react';
 import { Search, X, Mic, Bell, QrCode } from 'lucide-react';
-import Logo from './Logo'; // Import the new Logo component
+import Logo from './Logo'; // Import the Logo component
 
 export default function CompactAliExpressHeader() {
   const [activeTab, setActiveTab] = useState('All');
@@ -43,14 +44,13 @@ export default function CompactAliExpressHeader() {
   };
 
   return (
-    <div className="absolute top-0 left-0 w-full z-50 bg-transparent">
-  
+    <div className="relative w-full z-50 bg-transparent">
       {/* Main Header */}
       <div className="flex items-center justify-between px-1 py-0.5 ">
         {/* Logo on the left */}
         <div className="flex items-center">
           <div className="mr-0">
-            <Logo /> {/* Replace SVG with Logo component */}
+            <Logo />
           </div>
         </div>
 

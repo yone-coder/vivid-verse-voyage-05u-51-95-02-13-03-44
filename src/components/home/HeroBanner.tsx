@@ -28,7 +28,7 @@ export default function HeroBanner() {
   return (
     <div className="relative w-full overflow-hidden">
       {/* Container with minimum height that will expand with content */}
-      <div className="relative w-full min-h-[200px]">
+      <div className="relative w-full min-h-[200px] mt-0">
         {banners.map((banner, index) => (
           <div
             key={banner.id}
