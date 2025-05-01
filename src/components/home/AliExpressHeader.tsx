@@ -64,7 +64,7 @@ export default function AliExpressHeaderWithStates() {
     <header 
       className="fixed top-0 left-0 right-0 z-50 flex flex-col transition-all duration-700"
       style={{
-        boxShadow: `0 ${progress * 4}px ${progress * 8}px rgba(0, 0, 0, ${progress * 0.08})`
+        
       }}
     >
       {/* Main Header - Using scroll progress for dynamic transparency */}
