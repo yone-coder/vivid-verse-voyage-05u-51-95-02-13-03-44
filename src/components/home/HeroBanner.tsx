@@ -31,8 +31,8 @@ export default function HeroBanner() {
   const [showPromo, setShowPromo] = useState(true);
   const [progress, setProgress] = useState(0);
   const isMobile = useIsMobile();
-  const intervalRef = useRef(null);
-  const progressIntervalRef = useRef(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const slideDuration = 5000;
 
   const startSlideTimer = () => {
@@ -82,7 +82,7 @@ export default function HeroBanner() {
             {banners.map((banner) => (
               <CarouselItem key={banner.id}>
                 <div className="relative h-[180px] md:h-[250px] lg:h-[300px] overflow-hidden rounded-none">
-                  <div className={`absolute inset-0 bg-gradient-to-r ${banner.color} opacity-30`} />
+                  {/* Gradient overlay removed */}
                   <img
                     src={banner.image}
                     alt={`Banner ${banner.id}`}
