@@ -51,50 +51,47 @@ export default function HeroBanner() {
   const [progress, setProgress] = useState(0);
   const isMobile = useIsMobile();
   const intervalRef = useRef(null);
-  const animationRef = useRef(null);
+  const progressIntervalRef = useRef(null);
   const slideDuration = 5000; // 5 seconds per slide
   
-  const resetSlideTimer = () => {
-    // Clear existing timers
+  // Setup slide rotation and progress animation
+  const startSlideTimer = () => {
+    // Clear any existing intervals
     if (intervalRef.current) clearInterval(intervalRef.current);
-    if (animationRef.current) cancelAnimationFrame(animationRef.current);
+    if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
     
-    // Reset progress
+    // Reset progress to 0
     setProgress(0);
     
-    // Animation for progress
-    let startTime;
-    const animate = (timestamp) => {
-      if (!startTime) startTime = timestamp;
-      const elapsed = timestamp - startTime;
-      const newProgress = Math.min(100, (elapsed / slideDuration) * 100);
-      setProgress(newProgress);
-      
-      if (elapsed < slideDuration) {
-        animationRef.current = requestAnimationFrame(animate);
-      }
-    };
+    // Create progress interval that updates every 50ms
+    const progressStep = (50 / slideDuration) * 100; // Calculate % to increase every 50ms
+    progressIntervalRef.current = setInterval(() => {
+      setProgress(prevProgress => {
+        if (prevProgress >= 100) return 100;
+        return prevProgress + progressStep;
+      });
+    }, 50);
     
-    animationRef.current = requestAnimationFrame(animate);
-    
-    // Setup next slide timer
+    // Create slide rotation interval
     intervalRef.current = setInterval(() => {
-      setActiveIndex((current) => (current + 1) % banners.length);
+      setProgress(0); // Reset progress
+      setActiveIndex(current => (current + 1) % banners.length);
     }, slideDuration);
   };
 
   useEffect(() => {
-    resetSlideTimer();
+    startSlideTimer();
     
     return () => {
+      // Cleanup intervals on unmount or when activeIndex changes
       if (intervalRef.current) clearInterval(intervalRef.current);
-      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+      if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
     };
   }, [activeIndex]);
 
   const handleDotClick = (index) => {
     setActiveIndex(index);
-    resetSlideTimer();
+    // Progress will reset via the useEffect that watches activeIndex
   };
 
   return (
@@ -177,7 +174,7 @@ export default function HeroBanner() {
                   className="absolute inset-0 bg-orange-500 rounded-full origin-left"
                   style={{
                     width: `${progress}%`,
-                    transition: 'width 0.1s linear'
+                    transition: 'width 0.05s linear'
                   }}
                 ></div>
               )}
