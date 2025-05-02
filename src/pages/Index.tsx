@@ -45,15 +45,7 @@ export default function Index() {
         <HeroBanner />
       </div>
 
-      {/* Benefits Banner with improved layout */}
-      <div className="mb-1 bg-white">
-        <BenefitsBanner />
-      </div>
-
-      {/* Featured Categories - replaced with SpaceSavingCategories */}
-      <div className="bg-white mb-1">
-        <SpaceSavingCategories />
-      </div>
+      
 
       {/* Flash Deals Section */}
       <div className="mb-1">
