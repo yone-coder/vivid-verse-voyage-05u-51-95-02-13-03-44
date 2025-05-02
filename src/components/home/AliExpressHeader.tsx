@@ -49,100 +49,89 @@ export default function AliExpressHeaderWithStates() {
   >
     {/* Left */}
     <div className="flex items-center">
-      <div>
-        {progress < 0.5 ? (
-          <button
-            onClick={togglePanel}
-            className="flex items-center space-x-1 h-8 px-3 text-sm font-medium bg-black bg-opacity-30 text-white rounded-full"
-          >
-            <span>{activeTab}</span>
-            <ChevronDown
-              className={`w-4 h-4 transition-transform duration-300 ${
-                isOpen ? 'rotate-180' : ''
-              }`}
-            />
-          </button>
-        ) : (
-          <Logo width={28} height={28} className="text-orange-500" />
-        )}
-      </div>
+      {progress < 0.5 ? (
+        <button
+          onClick={togglePanel}
+          className="flex items-center space-x-1 h-8 px-3 text-sm font-medium bg-black bg-opacity-30 text-white rounded-full"
+        >
+          <span>{activeTab}</span>
+          <ChevronDown
+            className={`w-4 h-4 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+          />
+        </button>
+      ) : (
+        <Logo width={28} height={28} className="text-orange-500" />
+      )}
     </div>
 
-    {/* Center */}
-    <div
-      className="flex-1 transition-all duration-500 mx-2 relative"
-      style={{
-        maxWidth: progress >= 0.5 ? '320px' : '0px',
-        opacity: progress,
-      }}
-      ref={searchRef}
-    >
-      <div
-        className={`flex items-center bg-gray-100 rounded-full ${
-          isSearchFocused
-            ? 'border border-orange-500'
-            : 'border border-gray-200'
-        }`}
-      >
-        <Search className="ml-2 h-3.5 w-3.5 text-orange-500" />
-        <input
-          className="py-1 px-2 text-xs outline-none bg-gray-100 placeholder-gray-400 w-full"
-          placeholder="Search on AliExpress"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          onFocus={handleSearchFocus}
-        />
+    {/* Center + Right */}
+    <div className="flex flex-1 items-center justify-end gap-2 mx-2 transition-all duration-500">
+      {/* Search bar (only show in second state) */}
+      {progress >= 0.5 && (
         <div
-          className={`cursor-pointer mx-1 rounded-full ${
-            voiceSearchActive ? 'bg-orange-100' : ''
-          }`}
-          onClick={handleVoiceSearch}
+          className="flex-grow transition-all duration-500 max-w-sm"
+          ref={searchRef}
         >
-          <Mic className="h-3.5 w-3.5 text-orange-500" />
-        </div>
-        {searchQuery && (
           <div
-            className="cursor-pointer mr-2 rounded-full hover:bg-gray-200"
-            onClick={handleClearSearch}
+            className={`flex items-center bg-gray-100 rounded-full ${
+              isSearchFocused ? 'border border-orange-500' : 'border border-gray-200'
+            }`}
           >
-            <X className="h-3 w-3 text-gray-500" />
+            <Search className="ml-2 h-3.5 w-3.5 text-orange-500" />
+            <input
+              className="py-1 px-2 text-xs outline-none bg-gray-100 placeholder-gray-400 w-full"
+              placeholder="Search on AliExpress"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onFocus={handleSearchFocus}
+            />
+            <div
+              className={`cursor-pointer mx-1 rounded-full ${voiceSearchActive ? 'bg-orange-100' : ''}`}
+              onClick={handleVoiceSearch}
+            >
+              <Mic className="h-3.5 w-3.5 text-orange-500" />
+            </div>
+            {searchQuery && (
+              <div
+                className="cursor-pointer mr-2 rounded-full hover:bg-gray-200"
+                onClick={handleClearSearch}
+              >
+                <X className="h-3 w-3 text-gray-500" />
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Right icons */}
+      <div className="flex items-center space-x-2 min-w-[96px] justify-end">
+        {/* Search icon (only in first state) */}
+        {progress < 0.5 && (
+          <div className="cursor-pointer bg-black bg-opacity-40 p-1 rounded-full">
+            <Search className="h-4 w-4 text-white" />
           </div>
         )}
-      </div>
-    </div>
 
-    {/* Right */}
-    <div className="flex items-center space-x-2 min-w-[96px] justify-end">
-      {/* Search icon placeholder */}
-      <div
-        className={`transition-all duration-300 w-6 h-6 flex items-center justify-center rounded-full ${
-          progress < 0.5
-            ? 'opacity-100 pointer-events-auto bg-black bg-opacity-40'
-            : 'opacity-0 pointer-events-none'
-        }`}
-      >
-        <Search className="h-4 w-4 text-white" />
-      </div>
+        {/* Bell */}
+        <div className="cursor-pointer relative hover:bg-black hover:bg-opacity-30 p-1 rounded-full">
+          <Bell
+            className={`h-4 w-4 transition-colors ${
+              progress < 0.5 ? 'text-white' : 'text-gray-600'
+            }`}
+          />
+          <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] rounded-full h-3.5 w-3.5 flex items-center justify-center">
+            2
+          </span>
+        </div>
 
-      {/* Bell */}
-      <div className="cursor-pointer relative hover:bg-black hover:bg-opacity-30 p-1 rounded-full">
-        <Bell
-          className={`h-4 w-4 transition-colors ${
-            progress < 0.5 ? 'text-white' : 'text-gray-600'
-          }`}
-        />
-        <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] rounded-full h-3.5 w-3.5 flex items-center justify-center">
-          2
-        </span>
-      </div>
-
-      {/* QR */}
-      <div className="cursor-pointer hover:bg-black hover:bg-opacity-30 p-1 rounded-full">
-        <QrCode
-          className={`h-4 w-4 transition-colors ${
-            progress < 0.5 ? 'text-white' : 'text-gray-600'
-          }`}
-        />
+        {/* QR Code */}
+        <div className="cursor-pointer hover:bg-black hover:bg-opacity-30 p-1 rounded-full">
+          <QrCode
+            className={`h-4 w-4 transition-colors ${
+              progress < 0.5 ? 'text-white' : 'text-gray-600'
+            }`}
+          />
+        </div>
       </div>
     </div>
   </div>
