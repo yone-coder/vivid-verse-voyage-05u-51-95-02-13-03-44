@@ -65,7 +65,7 @@ export default function HeroBanner() {
 
   return (
     <>
-      <div className="relative">
+      <div className={`relative bg-gradient-to-r ${banners[activeIndex].color} transition-colors duration-500`}>
         <Carousel
           className="w-full"
           currentIndex={activeIndex}
@@ -81,14 +81,14 @@ export default function HeroBanner() {
           <CarouselContent>
             {banners.map((banner) => (
               <CarouselItem key={banner.id}>
-                <div className={`relative h-[180px] md:h-[250px] lg:h-[300px] bg-gradient-to-r ${banner.color} flex items-center`}>
+                <div className="relative h-[180px] md:h-[250px] lg:h-[300px] flex items-center">
                   <div className="container mx-auto px-4">
                     <div className="max-w-lg">
                       <h2 className="text-xl md:text-3xl font-extrabold text-white mb-0.5 md:mb-2 drop-shadow-md">
                         {banner.text}
                       </h2>
                       <p className="text-white text-xs md:text-base mb-2 md:mb-4 max-w-md drop-shadow-md font-medium">
-                        Don't miss out on amazing savings.
+                        Don’t miss out on amazing savings.
                       </p>
                       <Button className="bg-white text-black hover:bg-gray-100 font-medium text-xs md:text-sm rounded-full h-7 md:h-auto">
                         Shop Now
@@ -100,6 +100,7 @@ export default function HeroBanner() {
               </CarouselItem>
             ))}
           </CarouselContent>
+
           {!isMobile && (
             <>
               <CarouselPrevious 
@@ -118,6 +119,7 @@ export default function HeroBanner() {
           )}
         </Carousel>
 
+        {/* Animated Dots */}
         <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5">
           {banners.map((_, index) => (
             <button
@@ -140,6 +142,7 @@ export default function HeroBanner() {
         </div>
       </div>
 
+      {/* Promo Items */}
       {showPromo && (
         <div className="bg-white border-b border-gray-100 shadow-sm">
           <div className="max-w-screen-xl mx-auto px-2">
