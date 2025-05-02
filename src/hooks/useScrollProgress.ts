@@ -9,10 +9,7 @@ export const useScrollProgress = () => {
     const onScroll = () => {
       setScrollY(window.scrollY || window.pageYOffset || 0);
     };
-    
-    // Initialize scroll position
     onScroll();
-    
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);

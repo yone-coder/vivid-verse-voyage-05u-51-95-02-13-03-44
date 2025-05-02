@@ -1,4 +1,3 @@
-
 import { useQuery } from "@tanstack/react-query";
 import { fetchAllProducts } from "@/integrations/supabase/client";
 import AliExpressHeader from "@/components/home/AliExpressHeader";
@@ -37,78 +36,77 @@ export default function Index() {
   }
 
   return (
-    <div className="flex-grow">
-      {/* AliExpressHeader component with fixed position */}
+    <div className="flex-grow pb-20 md:pb-0">
+      {/* AliExpressHeader component with improved scroll behavior */}
       <AliExpressHeader />
       
-      {/* Content with proper padding-top to account for the fixed header */}
-      <div className="pt-[44px]">
-        {/* Hero Banner */}
+      {/* Hero Banner with appropriate spacing */}
+      <div className="relative">
         <HeroBanner />
-        
-        {/* Benefits Banner with improved layout */}
-        <div className="mb-1 bg-white">
-          <BenefitsBanner />
-        </div>
-        
-        {/* Featured Categories - replaced with SpaceSavingCategories */}
-        <div className="bg-white mb-1">
-          <SpaceSavingCategories />
-        </div>
-        
-        {/* Flash Deals Section */}
-        <div className="mb-1">
-          <FlashDeals />
-        </div>
-        
-        {/* Enhanced Popular Searches */}
-        <div className="mb-1 bg-white">
-          <PopularSearches />
-        </div>
-        
-        {/* Super Deals */}
-        <div className="mb-1">
-          <SuperDeals />
-        </div>
-        
-        {/* Secondary Flash Deals - Replaced New Arrivals */}
-        <div className="bg-white mb-1">
-          <SecondaryFlashDeals />
-        </div>
-        
-        {/* Top Brands */}
-        <div className="bg-white mb-1">
-          <TopBrands />
-        </div>
-        
-        {/* Duplicate Limited Offers section (replacing Trending Products) */}
-        <div className="mb-1">
-          <SecondaryFlashDeals />
-        </div>
-        
-        {/* Recommended Products */}
-        <div className="bg-white mb-1">
-          <ProductRecommendations products={products || []} />
-        </div>
-        
-        {/* Recently Viewed - Updated Component */}
-        <div className="bg-white mb-1">
-          <RecentlyViewed />
-        </div>
-        
-        {/* Enhanced Newsletter */}
-        <div className="mb-1">
-          <Newsletter />
-        </div>
-        
-        {/* All Products Grid with Filters */}
-        <div className="bg-white pb-16 md:pb-6">
-          <ProductGrid products={products || []} isLoading={isLoading} />
-        </div>
-        
-        {/* Extra bottom padding for mobile to account for fixed navigation */}
-        {isMobile && <div className="h-16"></div>}
       </div>
+      
+      {/* Benefits Banner with improved layout */}
+      <div className="mb-1 bg-white">
+        <BenefitsBanner />
+      </div>
+      
+      {/* Featured Categories - replaced with SpaceSavingCategories */}
+      <div className="bg-white mb-1">
+        <SpaceSavingCategories />
+      </div>
+      
+      {/* Flash Deals Section */}
+      <div className="mb-1">
+        <FlashDeals />
+      </div>
+      
+      {/* Enhanced Popular Searches */}
+      <div className="mb-1 bg-white">
+        <PopularSearches />
+      </div>
+      
+      {/* Super Deals */}
+      <div className="mb-1">
+        <SuperDeals />
+      </div>
+      
+      {/* Secondary Flash Deals - Replaced New Arrivals */}
+      <div className="bg-white mb-1">
+        <SecondaryFlashDeals />
+      </div>
+      
+      {/* Top Brands */}
+      <div className="bg-white mb-1">
+        <TopBrands />
+      </div>
+      
+      {/* Duplicate Limited Offers section (replacing Trending Products) */}
+      <div className="mb-1">
+        <SecondaryFlashDeals />
+      </div>
+      
+      {/* Recommended Products */}
+      <div className="bg-white mb-1">
+        <ProductRecommendations products={products || []} />
+      </div>
+      
+      {/* Recently Viewed - Updated Component */}
+      <div className="bg-white mb-1">
+        <RecentlyViewed />
+      </div>
+      
+      {/* Enhanced Newsletter */}
+      <div className="mb-1">
+        <Newsletter />
+      </div>
+      
+      {/* All Products Grid with Filters */}
+      <div className="bg-white pb-16 md:pb-6">
+        <ProductGrid products={products || []} isLoading={isLoading} />
+      </div>
+      
+      {/* Extra bottom padding for mobile to account for fixed navigation */}
+      {isMobile && <div className="h-16"></div>}
     </div>
   );
 }
