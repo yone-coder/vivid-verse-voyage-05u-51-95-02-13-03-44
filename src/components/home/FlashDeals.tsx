@@ -97,6 +97,9 @@ export default function FlashDeals() {
               <Zap className="w-3.5 h-3.5 mr-1" />
               Flash Sale
             </div>
+            <span className="text-[11px] text-gray-600 font-medium">
+              {flashProducts.length} deals available
+            </span>
           </div>
           <Link
             to="#"
