@@ -151,21 +151,23 @@ export default function AliExpressHeaderWithStates() {
     backdropFilter: `blur(${progress * 8}px)`,
   }}
 >
-  {/* Scrollable tabs with right padding */}
-  <div className="flex overflow-x-auto no-scrollbar pr-14">
-    {categories.map((category) => (
-      <button
-        key={category}
-        className={`whitespace-nowrap px-3 py-1 text-xs font-medium transition-all border-b-2 ${
-          activeTab === category
-            ? 'border-orange-500 text-orange-500'
-            : 'border-transparent text-gray-600 hover:text-gray-900'
-        }`}
-        onClick={() => setActiveTab(category)}
-      >
-        {category}
-      </button>
-    ))}
+  {/* Scrollable area wrapper with max-width */}
+  <div className="pr-[48px]">
+    <div className="flex overflow-x-auto no-scrollbar">
+      {categories.map((category) => (
+        <button
+          key={category}
+          className={`whitespace-nowrap px-3 py-1 text-xs font-medium transition-all border-b-2 ${
+            activeTab === category
+              ? 'border-orange-500 text-orange-500'
+              : 'border-transparent text-gray-600 hover:text-gray-900'
+          }`}
+          onClick={() => setActiveTab(category)}
+        >
+          {category}
+        </button>
+      ))}
+    </div>
   </div>
 
   {/* Separator + Icon */}
