@@ -7,37 +7,18 @@ import {
   CarouselNext,
   CarouselPrevious
 } from "@/components/ui/carousel";
-import { ArrowRight, Clock, Gift, Truck, X } from "lucide-react";
+import { ArrowRight, Clock, Gift, Truck } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const banners = [
-  {
-    id: 1,
-    title: "MEGA SALE",
-    subtitle: "Up to 70% OFF on thousands of items",
-    image: "/api/placeholder/1200/400",
-    color: "from-orange-500 to-red-500",
-    cta: "Shop Now"
-  },
-  {
-    id: 2,
-    title: "NEW ARRIVALS",
-    subtitle: "Fresh tech and trending products",
-    image: "/api/placeholder/1200/400",
-    color: "from-cyan-500 to-blue-500",
-    cta: "Discover"
-  },
-  {
-    id: 3,
-    title: "FLASH DEALS",
-    subtitle: "Time-limited offers - Hurry!",
-    image: "/api/placeholder/1200/400",
-    color: "from-orange-400 to-red-400",
-    cta: "Grab Deals"
-  }
+  { id: 1, image: "/api/placeholder/1200/400?1", color: "from-orange-500 to-red-500" },
+  { id: 2, image: "/api/placeholder/1200/400?2", color: "from-cyan-500 to-blue-500" },
+  { id: 3, image: "/api/placeholder/1200/400?3", color: "from-orange-400 to-red-400" },
+  { id: 4, image: "/api/placeholder/1200/400?4", color: "from-purple-500 to-pink-500" },
+  { id: 5, image: "/api/placeholder/1200/400?5", color: "from-green-400 to-teal-500" },
+  { id: 6, image: "/api/placeholder/1200/400?6", color: "from-yellow-400 to-orange-500" }
 ];
 
-// AliExpress-style promo items
 const promoItems = [
   { id: 1, icon: <Truck className="w-3.5 h-3.5 text-orange-500" />, text: "Free Shipping" },
   { id: 2, icon: <Gift className="w-3.5 h-3.5 text-pink-500" />, text: "New User Bonus" },
@@ -52,46 +33,34 @@ export default function HeroBanner() {
   const isMobile = useIsMobile();
   const intervalRef = useRef(null);
   const progressIntervalRef = useRef(null);
-  const slideDuration = 5000; // 5 seconds per slide
-  
-  // Setup slide rotation and progress animation
+  const slideDuration = 5000;
+
   const startSlideTimer = () => {
-    // Clear any existing intervals
     if (intervalRef.current) clearInterval(intervalRef.current);
     if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
-    
-    // Reset progress to 0
     setProgress(0);
-    
-    // Create progress interval that updates every 50ms
-    const progressStep = (50 / slideDuration) * 100; // Calculate % to increase every 50ms
+    const progressStep = (50 / slideDuration) * 100;
+
     progressIntervalRef.current = setInterval(() => {
-      setProgress(prevProgress => {
-        if (prevProgress >= 100) return 100;
-        return prevProgress + progressStep;
-      });
+      setProgress(prev => (prev >= 100 ? 100 : prev + progressStep));
     }, 50);
-    
-    // Create slide rotation interval
+
     intervalRef.current = setInterval(() => {
-      setProgress(0); // Reset progress
+      setProgress(0);
       setActiveIndex(current => (current + 1) % banners.length);
     }, slideDuration);
   };
 
   useEffect(() => {
     startSlideTimer();
-    
     return () => {
-      // Cleanup intervals on unmount or when activeIndex changes
       if (intervalRef.current) clearInterval(intervalRef.current);
       if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
     };
   }, [activeIndex]);
 
-  const handleDotClick = (index) => {
+  const handleDotClick = (index: number) => {
     setActiveIndex(index);
-    // Progress will reset via the useEffect that watches activeIndex
   };
 
   return (
@@ -116,25 +85,9 @@ export default function HeroBanner() {
                   <div className={`absolute inset-0 bg-gradient-to-r ${banner.color} opacity-30`} />
                   <img
                     src={banner.image}
-                    alt={banner.title}
+                    alt={`Banner ${banner.id}`}
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="container mx-auto px-4">
-                      <div className="max-w-lg">
-                        <h2 className="text-xl md:text-3xl font-extrabold text-white mb-0.5 md:mb-2 drop-shadow-md">
-                          {banner.title}
-                        </h2>
-                        <p className="text-white text-xs md:text-base mb-2 md:mb-4 max-w-md drop-shadow-md font-medium">
-                          {banner.subtitle}
-                        </p>
-                        <Button className="bg-white text-black hover:bg-gray-100 font-medium text-xs md:text-sm rounded-full h-7 md:h-auto">
-                          {banner.cta}
-                          <ArrowRight className="w-3 h-3 md:w-3.5 md:h-3.5 ml-1" />
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </CarouselItem>
             ))}
@@ -142,13 +95,13 @@ export default function HeroBanner() {
           {!isMobile && (
             <>
               <CarouselPrevious 
-                className="left-6 bg-white/80 hover:bg-white hidden md:flex" 
+                className="left-6 bg-white/80 hover:bg-white hidden md:flex"
                 onClick={() => {
                   setActiveIndex((current) => (current - 1 + banners.length) % banners.length);
                 }}
               />
               <CarouselNext 
-                className="right-6 bg-white/80 hover:bg-white hidden md:flex" 
+                className="right-6 bg-white/80 hover:bg-white hidden md:flex"
                 onClick={() => {
                   setActiveIndex((current) => (current + 1) % banners.length);
                 }}
@@ -165,10 +118,7 @@ export default function HeroBanner() {
               className="relative h-1 rounded-full bg-gray-300 w-5 overflow-hidden"
               onClick={() => handleDotClick(index)}
             >
-              {/* Background for inactive dots */}
               <div className="absolute inset-0 bg-gray-300 rounded-full"></div>
-              
-              {/* Animated fill for active dot */}
               {activeIndex === index && (
                 <div 
                   className="absolute inset-0 bg-orange-500 rounded-full origin-left"
@@ -183,7 +133,6 @@ export default function HeroBanner() {
         </div>
       </div>
 
-      {/* AliExpress-Style Promotional Banner - Single Row, Mobile-Friendly */}
       {showPromo && (
         <div className="bg-white border-b border-gray-100 shadow-sm">
           <div className="max-w-screen-xl mx-auto px-2">
