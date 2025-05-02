@@ -127,7 +127,6 @@ export default function FlashDeals() {
                     <div className="absolute top-0 left-0 bg-orange-500 text-white text-[10px] px-1.5 py-0.5 rounded-br-md font-medium">
                       {Math.round(((product.price - product.discountPrice) / product.price) * 100)}% OFF
                     </div>
-                    {/* Countdown Timer */}
                     <div className="absolute bottom-0 left-0 w-full bg-black/60 text-white text-[10px] flex justify-center py-0.5">
                       {[timeLeft.hours, timeLeft.minutes, timeLeft.seconds].map((unit, i) => (
                         <span key={i} className="mx-0.5">
@@ -138,8 +137,10 @@ export default function FlashDeals() {
                     </div>
                   </div>
                   <div>
-                    <div className="text-orange-500 font-semibold text-sm">US ${product.discountPrice.toFixed(2)}</div>
-                    <div className="text-xs text-gray-500 line-through">US ${product.price.toFixed(2)}</div>
+                    <div className="flex items-baseline gap-1">
+                      <div className="text-orange-500 font-semibold text-sm">${product.discountPrice.toFixed(2)}</div>
+                      <div className="text-[10px] text-gray-500 line-through">${product.price.toFixed(2)}</div>
+                    </div>
                     <div className="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden mt-1 mb-0.5">
                       <div
                         className="h-full bg-orange-500 rounded-full"
