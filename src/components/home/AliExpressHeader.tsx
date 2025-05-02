@@ -171,18 +171,13 @@ export default function AliExpressHeaderWithStates() {
   </div>
 
   {/* Separator + Icon */}
-  <div
-    className="absolute top-0 right-0 h-full flex items-center pl-2 pr-3 z-10 space-x-2"
-    style={{
-      backgroundColor: `rgba(255, 255, 255, ${progress * 0.98})`,
-      backdropFilter: `blur(${progress * 8}px)`,
-    }}
-  >
-    <div className="h-5 w-px bg-gray-300" />
-    <div className="cursor-pointer p-1 rounded hover:bg-gray-100">
-      <LayoutGrid className="h-4 w-4 text-gray-500" />
-    </div>
+ {/* Separator + Icon */}
+<div className="absolute top-0 right-0 h-full flex items-center pl-2 pr-3 z-10 space-x-2">
+  <div className="h-5 w-px bg-gray-300" />
+  <div className="cursor-pointer p-1 rounded hover:bg-gray-100">
+    <LayoutGrid className="h-4 w-4 text-gray-500" />
   </div>
+</div>
 </div>
 
       {/* Dropdown Panel */}
