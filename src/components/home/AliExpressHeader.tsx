@@ -61,12 +61,12 @@ export default function AliExpressHeaderWithStates() {
   };
 
   return (
-    <header 
-      className="fixed top-0 left-0 right-0 z-50 flex flex-col transition-all duration-700"
-      style={{
-        
-      }}
-    >
+   <header 
+  className="fixed top-0 left-0 right-0 z-50 flex flex-col transition-all duration-700"
+  style={{
+    minHeight: '56px', // Adjust this value to match your second state's height
+  }}
+>
       {/* Main Header - Using scroll progress for dynamic transparency */}
       <div 
         className="flex items-center justify-between px-1 py-2 transition-all duration-700"
