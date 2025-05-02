@@ -21,90 +21,90 @@ export default function Index() {
     queryKey: ['products'],
     queryFn: fetchAllProducts,
   });
-  
+
   const isMobile = useIsMobile();
   const [isReady, setIsReady] = useState(false);
-  
+
   useEffect(() => {
     if (isMobile !== undefined) {
       setIsReady(true);
     }
   }, [isMobile]);
-  
+
   if (!isReady) {
     return null; // Prevent flash while detecting mobile
   }
 
   return (
-     <div className="flex flex-col min-h-screen bg-white overscroll-none">
+    <div className="flex flex-col min-h-screen bg-white overscroll-none overflow-x-hidden">
       {/* AliExpressHeader component with improved scroll behavior */}
       <AliExpressHeader />
-      
+
       {/* Hero Banner with appropriate spacing */}
-           <div className="relative w-full bg-transparent">
+      <div className="relative w-full bg-transparent">
         <HeroBanner />
       </div>
-      
+
       {/* Benefits Banner with improved layout */}
       <div className="mb-1 bg-white">
         <BenefitsBanner />
       </div>
-      
+
       {/* Featured Categories - replaced with SpaceSavingCategories */}
       <div className="bg-white mb-1">
         <SpaceSavingCategories />
       </div>
-      
+
       {/* Flash Deals Section */}
       <div className="mb-1">
         <FlashDeals />
       </div>
-      
+
       {/* Enhanced Popular Searches */}
       <div className="mb-1 bg-white">
         <PopularSearches />
       </div>
-      
+
       {/* Super Deals */}
       <div className="mb-1">
         <SuperDeals />
       </div>
-      
+
       {/* Secondary Flash Deals - Replaced New Arrivals */}
       <div className="bg-white mb-1">
         <SecondaryFlashDeals />
       </div>
-      
+
       {/* Top Brands */}
       <div className="bg-white mb-1">
         <TopBrands />
       </div>
-      
+
       {/* Duplicate Limited Offers section (replacing Trending Products) */}
       <div className="mb-1">
         <SecondaryFlashDeals />
       </div>
-      
+
       {/* Recommended Products */}
       <div className="bg-white mb-1">
         <ProductRecommendations products={products || []} />
       </div>
-      
+
       {/* Recently Viewed - Updated Component */}
       <div className="bg-white mb-1">
         <RecentlyViewed />
       </div>
-      
+
       {/* Enhanced Newsletter */}
       <div className="mb-1">
         <Newsletter />
       </div>
-      
+
       {/* All Products Grid with Filters */}
       <div className="bg-white pb-16 md:pb-6">
         <ProductGrid products={products || []} isLoading={isLoading} />
       </div>
-      
+
       {/* Extra bottom padding for mobile to account for fixed navigation */}
       {isMobile && <div className="h-16"></div>}
     </div>
