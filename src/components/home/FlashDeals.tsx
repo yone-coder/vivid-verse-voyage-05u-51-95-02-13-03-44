@@ -125,7 +125,7 @@ export default function FlashDeals() {
             WebkitOverflowScrolling: 'touch'
           }}
         >
-          <div className="flex pl-4">
+          <div className="flex pl-2">
             {flashProducts.map((product, index) => (
               <div
                 key={product.id}
