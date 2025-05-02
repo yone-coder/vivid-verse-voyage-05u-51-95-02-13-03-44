@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
@@ -35,7 +34,7 @@ const banners = [
 export default function HeroBanner() {
   const [activeIndex, setActiveIndex] = useState(0);
   const isMobile = useIsMobile();
-  
+
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveIndex((current) => (current + 1) % banners.length);
@@ -54,15 +53,17 @@ export default function HeroBanner() {
         <CarouselContent>
           {banners.map((banner, index) => (
             <CarouselItem key={banner.id}>
-              <div className="relative h-[180px] md:h-[250px] lg:h-[300px] overflow-hidden rounded-none">
+              <div className="relative h-[200px] md:h-[280px] lg:h-[330px] overflow-hidden rounded-none">
+                {/* Content starts at top of viewport - notice we removed rounded corners and margin */}
                 <div className={`absolute inset-0 bg-gradient-to-r ${banner.color} opacity-30`}></div>
                 <img 
                   src={banner.image} 
                   alt={banner.title} 
                   className="w-full h-full object-cover"
                 />
+                {/* Added padding-top to push content below the header */}
                 <div className="absolute inset-0 flex items-center">
-                  <div className="container mx-auto px-4">
+                  <div className="container mx-auto px-4 pt-10 md:pt-12"> {/* Added top padding */}
                     <div className="max-w-lg">
                       <h2 className="text-xl md:text-3xl font-extrabold text-white mb-0.5 md:mb-2 drop-shadow-md">{banner.title}</h2>
                       <p className="text-white text-xs md:text-base mb-2 md:mb-4 max-w-md drop-shadow-md font-medium">{banner.subtitle}</p>
@@ -83,7 +84,7 @@ export default function HeroBanner() {
           </>
         )}
       </Carousel>
-      
+
       {/* Indicators */}
       <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5">
         {banners.map((_, index) => (
