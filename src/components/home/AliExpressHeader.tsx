@@ -6,7 +6,6 @@ import Logo from './Logo';
 export default function AliExpressHeaderWithStates() {
   const { progress } = useScrollProgress();
 
-  const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('All');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -17,7 +16,6 @@ export default function AliExpressHeaderWithStates() {
     'All', 'Women', 'Men', 'Electronics', 'Home', 'Beauty', 'Kids', 'Sports',
   ];
 
-  const togglePanel = () => setIsOpen(!isOpen);
   const handleSearchFocus = () => setIsSearchFocused(true);
   const handleClearSearch = () => setSearchQuery('');
   const handleVoiceSearch = () => setVoiceSearchActive(!voiceSearchActive);
@@ -50,17 +48,10 @@ export default function AliExpressHeaderWithStates() {
         {/* Left */}
         <div className="flex items-center">
           {progress < 0.5 ? (
-            <button
-              onClick={togglePanel}
-              className="flex items-center space-x-1 h-8 px-3 text-sm font-medium bg-black bg-opacity-30 text-white rounded-full"
-            >
+            <div className="flex items-center space-x-1 h-8 px-3 text-sm font-medium bg-black bg-opacity-30 text-white rounded-full">
               <span>{activeTab}</span>
-              <ChevronDown
-                className={`w-4 h-4 transition-transform duration-300 ${
-                  isOpen ? 'rotate-180' : ''
-                }`}
-              />
-            </button>
+              <ChevronDown className="w-4 h-4" />
+            </div>
           ) : (
             <Logo width={28} height={28} className="text-orange-500" />
           )}
@@ -159,30 +150,6 @@ export default function AliExpressHeaderWithStates() {
           ))}
         </div>
       </div>
-
-      {/* Dropdown Panel */}
-      {progress < 0.5 && isOpen && (
-        <div className="bg-white text-gray-800 p-4 shadow-md rounded-b-lg">
-          <div className="grid grid-cols-2 gap-4">
-            {categories.map((category) => (
-              <button
-                key={category}
-                className={`py-2 px-4 text-sm font-medium rounded ${
-                  activeTab === category
-                    ? 'bg-orange-100 text-orange-500'
-                    : 'text-gray-600 hover:bg-gray-100'
-                }`}
-                onClick={() => {
-                  setActiveTab(category);
-                  setIsOpen(false);
-                }}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
 
       {/* Voice Search Overlay */}
       {voiceSearchActive && (
