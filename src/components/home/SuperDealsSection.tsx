@@ -1,193 +1,126 @@
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Clock, ArrowRight } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
-import React, { useRef } from 'react';
-import { ChevronRight, Tv, Smartphone, Coffee, Headphones, Watch, Speaker, Star } from 'lucide-react';
+const flashProducts = [
+  {
+    id: 101,
+    name: "Wireless Earbuds with Noise Cancellation",
+    image: "https://placehold.co/300x300/6D28D9/FFF?text=Earbuds",
+    price: 79.99,
+    discountPrice: 39.99,
+    rating: 4.7,
+    ratingCount: 235,
+    sold: 1253,
+    stock: 45
+  },
+  // ... more products
+];
 
-const SuperDeals = () => {
-  const scrollContainerRef = useRef(null);
-  
-  const allDeals = [
-    {
-      id: 1,
-      title: 'Smart 4K TV 55-inch',
-      currentPrice: 499.99,
-      originalPrice: 699.99,
-      discount: 29,
-      color: 'bg-blue-500',
-      icon: <Tv size={24} color="white" />,
-      shortLabel: 'Smart TV'
-    },
-    {
-      id: 2,
-      title: 'Robot Vacuum Cleaner',
-      currentPrice: 189.99,
-      originalPrice: 299.99,
-      discount: 37,
-      color: 'bg-green-500',
-      icon: <Smartphone size={24} color="white" />,
-      shortLabel: 'Robot Vacuum'
-    },
-    {
-      id: 3,
-      title: 'Coffee Machine with Grinder',
-      currentPrice: 129.99,
-      originalPrice: 199.99,
-      discount: 35,
-      color: 'bg-purple-500',
-      icon: <Coffee size={24} color="white" />,
-      shortLabel: 'Coffee Machine'
-    },
-    {
-      id: 4,
-      title: 'Wireless Earbuds Pro',
-      currentPrice: 89.99,
-      originalPrice: 149.99,
-      discount: 40,
-      color: 'bg-red-500',
-      icon: <Headphones size={24} color="white" />,
-      shortLabel: 'Earbuds'
-    },
-    {
-      id: 5,
-      title: 'Smart Watch Series 5',
-      currentPrice: 199.99,
-      originalPrice: 279.99,
-      discount: 29,
-      color: 'bg-yellow-500',
-      icon: <Watch size={24} color="white" />,
-      shortLabel: 'Smart Watch'
-    },
-    {
-      id: 6,
-      title: 'Bluetooth Speaker Portable',
-      currentPrice: 59.99,
-      originalPrice: 99.99,
-      discount: 40,
-      color: 'bg-indigo-500',
-      icon: <Speaker size={24} color="white" />,
-      shortLabel: 'Speaker'
-    },
-    {
-      id: 7,
-      title: 'Air Fryer 5.5L',
-      currentPrice: 79.99,
-      originalPrice: 129.99,
-      discount: 38,
-      color: 'bg-pink-500',
-      icon: <Coffee size={24} color="white" />,
-      shortLabel: 'Air Fryer'
-    },
-    {
-      id: 8,
-      title: 'Gaming Keyboard RGB',
-      currentPrice: 49.99,
-      originalPrice: 89.99,
-      discount: 44,
-      color: 'bg-blue-400',
-      icon: <Smartphone size={24} color="white" />,
-      shortLabel: 'Keyboard'
-    },
-    {
-      id: 9,
-      title: 'Wireless Charging Pad',
-      currentPrice: 19.99,
-      originalPrice: 39.99,
-      discount: 50,
-      color: 'bg-gray-500',
-      icon: <Smartphone size={24} color="white" />,
-      shortLabel: 'Charger'
-    }
-  ];
+export default function FlashDeals() {
+  const isMobile = useIsMobile();
+  const scrollRef = useRef(null);
 
-  // Group deals into columns of 3
-  const groupedDeals = [];
-  for (let i = 0; i < allDeals.length; i += 3) {
-    groupedDeals.push(allDeals.slice(i, i + 3));
-  }
+  const [timeLeft, setTimeLeft] = useState({
+    hours: 5,
+    minutes: 30,
+    seconds: 0
+  });
 
-  // Function to render a product card
-  const renderProductCard = (deal) => (
-    <div key={deal.id} className="border border-gray-200 rounded-lg mb-3 overflow-hidden hover:shadow-md transition-shadow">
-      <div className="flex items-center">
-        <div className="relative">
-          <div className="absolute top-0 left-0 bg-orange-500 text-white px-2 py-1 text-xs font-bold rounded-br">
-            SUPER
-          </div>
-          <div className={`${deal.color} p-2 w-24 h-24 flex items-center justify-center`}>
-            <div className="flex flex-col items-center">
-              {deal.icon}
-              <span className="text-xs font-medium text-white mt-1 text-center">
-                {deal.shortLabel}
-              </span>
-            </div>
-          </div>
-        </div>
-        
-        <div className="p-2 flex-1 min-w-0">
-          <h3 className="font-medium text-gray-800 text-xs mb-1 whitespace-nowrap overflow-hidden text-ellipsis pr-1" title={deal.title}>
-            {deal.title}
-          </h3>
-          <div className="flex flex-col">
-            <span className="text-base font-bold text-orange-500">
-              US ${deal.currentPrice}
-            </span>
-            <span className="text-gray-500 line-through text-xs">
-              US ${deal.originalPrice}
-            </span>
-            <span className="mt-1 bg-orange-100 text-orange-800 text-xs font-medium px-2 py-0.5 rounded inline-block w-fit">
-              {deal.discount}% OFF
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev.seconds > 0) {
+          return { ...prev, seconds: prev.seconds - 1 };
+        } else if (prev.minutes > 0) {
+          return { ...prev, minutes: prev.minutes - 1, seconds: 59 };
+        } else if (prev.hours > 0) {
+          return { hours: prev.hours - 1, minutes: 59, seconds: 59 };
+        }
+        return { hours: 5, minutes: 30, seconds: 0 };
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
 
   return (
     <div className="w-full bg-white">
-      {/* Header with enhanced styling and reduced bottom padding */}
-      <div className="px-4 py-1.5">
-        <div className="flex justify-between items-center mb-0.5">
-          <div className="flex items-center gap-1">
-            <Star className="h-3.5 w-3.5 text-orange-500" strokeWidth={2.5} fill="#FEF7CD" />
-            <h2 className="text-sm font-medium">Super Deals</h2>
+      <div className="px-4 py-2">
+        <div className="flex justify-between items-center mb-1">
+          <div className="flex items-center">
+            <h2 className="text-sm font-bold text-orange-500 mr-2">Flash Sale</h2>
+            <div className="flex items-center gap-1">
+              <Clock className="h-3 w-3 text-orange-500" />
+              <div className="text-xs font-medium">
+                {[timeLeft.hours, timeLeft.minutes, timeLeft.seconds].map((unit, i) => (
+                  <span key={i}>
+                    <span className="inline-flex items-center justify-center bg-gray-900 text-white h-4 w-5 rounded text-[10px]">
+                      {unit.toString().padStart(2, '0')}
+                    </span>
+                    {i < 2 && <span className="text-gray-500 mx-0.5">:</span>}
+                  </span>
+                ))}
+              </div>
+            </div>
           </div>
-          <button className="flex items-center text-orange-500 hover:text-orange-600 transition-colors text-xs">
-            More <ChevronRight size={16} />
-          </button>
+          <Link to="#" className="text-xs text-orange-500 hover:underline flex items-center">
+            More <ArrowRight className="h-3 w-3 ml-0.5" />
+          </Link>
         </div>
       </div>
 
-      {/* Scroll container with proper padding effect */}
       <div className="relative">
-        <div 
-          className="overflow-x-auto scrollbar-hide scroll-smooth snap-x snap-mandatory"
-          style={{ 
+        <div
+          ref={scrollRef}
+          className="overflow-x-auto scroll-smooth scrollbar-hide snap-x snap-mandatory"
+          style={{
             scrollPaddingLeft: '1rem',
-            scrollbarWidth: 'none', 
-            msOverflowStyle: 'none',
             WebkitOverflowScrolling: 'touch'
           }}
-          ref={scrollContainerRef}
         >
           <div className="flex pl-4">
-            {/* Actual content columns */}
-            {groupedDeals.map((column, colIndex) => (
-              <div 
-                key={`column-${colIndex}`}
-                className="flex-none w-64 snap-start"
-                style={{ marginRight: colIndex < groupedDeals.length - 1 ? '1rem' : '0' }}
+            {flashProducts.map((product, index) => (
+              <div
+                key={product.id}
+                className="w-[110px] md:w-[130px] flex-shrink-0 snap-start mr-2"
               >
-                {column.map(deal => renderProductCard(deal))}
+                <Link to={`/product/${product.id}`}>
+                  <div className="relative aspect-square overflow-hidden bg-gray-50 rounded-md mb-1.5">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="h-full w-full object-cover hover:scale-105 transition-transform duration-300"
+                      loading="lazy"
+                    />
+                    <div className="absolute top-0 left-0 bg-orange-500 text-white text-[10px] px-1.5 py-0.5 rounded-br-md font-medium">
+                      {Math.round(((product.price - product.discountPrice) / product.price) * 100)}% OFF
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-orange-500 font-semibold text-sm">US ${product.discountPrice.toFixed(2)}</div>
+                    <div className="text-xs text-gray-500 line-through">US ${product.price.toFixed(2)}</div>
+                    <div className="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden mt-1 mb-0.5">
+                      <div
+                        className="h-full bg-orange-500 rounded-full"
+                        style={{
+                          width: `${100 - (product.stock / (product.stock + product.sold) * 100)}%`
+                        }}
+                      />
+                    </div>
+                    <div className="text-[10px] text-gray-500">
+                      {product.stock} left
+                    </div>
+                  </div>
+                </Link>
               </div>
             ))}
-            
-            {/* Right padding spacer */}
-            <div className="flex-none w-4"></div>
+            <div className="flex-none w-4" />
           </div>
         </div>
       </div>
     </div>
   );
-};
-
-export default SuperDeals;
+}
