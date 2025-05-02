@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Search, X, Mic, Bell, QrCode, ChevronDown } from 'lucide-react';
+import { Search, X, Mic, Bell, QrCode, ChevronDown, Globe } from 'lucide-react';
 import { useScrollProgress } from '@/hooks/useScrollProgress';
 import Logo from './Logo';
 
@@ -95,6 +95,11 @@ export default function AliExpressHeaderWithStates() {
               >
                 <Mic className="h-3.5 w-3.5 text-orange-500" />
               </div>
+              {progress < 0.5 && (
+                <div className="cursor-pointer mx-1 rounded-full hover:bg-gray-200 p-0.5">
+                  <QrCode className="h-3.5 w-3.5 text-orange-500" />
+                </div>
+              )}
               {searchQuery && (
                 <div
                   className="cursor-pointer mr-2 rounded-full hover:bg-gray-200"
@@ -109,6 +114,11 @@ export default function AliExpressHeaderWithStates() {
 
         {/* Right: Icons */}
         <div className="flex items-center space-x-2 flex-shrink-0">
+          {progress < 0.5 && (
+            <div className="cursor-pointer bg-black bg-opacity-40 p-1 rounded-full">
+              <Globe className="h-4 w-4 text-white" />
+            </div>
+          )}
           <div className="cursor-pointer relative hover:bg-black hover:bg-opacity-30 p-1 rounded-full">
             <Bell
               className={`h-4 w-4 ${
@@ -118,13 +128,6 @@ export default function AliExpressHeaderWithStates() {
             <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] rounded-full h-3.5 w-3.5 flex items-center justify-center">
               2
             </span>
-          </div>
-          <div className="cursor-pointer hover:bg-black hover:bg-opacity-30 p-1 rounded-full">
-            <QrCode
-              className={`h-4 w-4 ${
-                progress < 0.5 ? 'text-white' : 'text-gray-600'
-              }`}
-            />
           </div>
         </div>
       </div>
