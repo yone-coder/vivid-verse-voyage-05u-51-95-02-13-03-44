@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Search, X, Mic, Bell, QrCode, ChevronDown } from 'lucide-react';
+import { Search, X, Mic, Bell, QrCode } from 'lucide-react';
 import { useScrollProgress } from '@/hooks/useScrollProgress';
 import Logo from './Logo';
 
@@ -50,7 +50,6 @@ export default function AliExpressHeaderWithStates() {
           {progress < 0.5 ? (
             <div className="flex items-center space-x-1 h-8 px-3 text-sm font-medium bg-black bg-opacity-30 text-white rounded-full">
               <span>{activeTab}</span>
-              <ChevronDown className="w-4 h-4" />
             </div>
           ) : (
             <Logo width={28} height={28} className="text-orange-500" />
