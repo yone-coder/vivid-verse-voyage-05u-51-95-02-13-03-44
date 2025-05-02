@@ -79,11 +79,9 @@ export default function FlashDeals() {
         } else if (prev.hours > 0) {
           return { hours: prev.hours - 1, minutes: 59, seconds: 59 };
         }
-        // Reset timer when it reaches 0
         return { hours: 5, minutes: 30, seconds: 0 };
       });
     }, 1000);
-
     return () => clearInterval(timer);
   }, []);
 
@@ -116,9 +114,12 @@ export default function FlashDeals() {
         </div>
       </div>
 
-      {/* Edge-to-edge scroll container */}
+      {/* Edge-to-edge scroll with fake paddings */}
       <div className="overflow-x-auto scrollbar-hide -mx-3 px-3">
         <div className="flex gap-2 pb-2">
+          {/* Fake left padding */}
+          <div className="w-3 shrink-0" />
+
           {flashProducts.map((product) => (
             <div key={product.id} className="w-[110px] md:w-[130px] flex-shrink-0">
               <Link to={`/product/${product.id}`}>
@@ -149,6 +150,9 @@ export default function FlashDeals() {
               </Link>
             </div>
           ))}
+
+          {/* Fake right padding */}
+          <div className="w-3 shrink-0" />
         </div>
       </div>
     </div>
