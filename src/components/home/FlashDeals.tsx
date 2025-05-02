@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Clock, Lightning, ChevronRight } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -90,14 +90,38 @@ export default function FlashDeals() {
 
   return (
     <div className="w-full bg-white">
-      <div className="px-2 py-2">
-        <div className="flex justify-between items-center mb-1">
-          <div className="flex items-center">
-            <h2 className="text-sm font-bold text-orange-500 mr-2">Flash Sale</h2>
+      {/* Enhanced AliExpress-style Header */}
+      <div className="bg-gradient-to-r from-red-600 to-orange-500 text-white px-2 py-3 rounded-t-md">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center space-x-2">
+            <Lightning className="h-4 w-4 text-yellow-300" />
+            <h2 className="text-base font-bold">FLASH DEALS</h2>
+            <div className="flex items-center bg-white/20 rounded-full px-2 py-0.5 text-xs">
+              <Clock className="h-3 w-3 mr-1" />
+              <span className="font-medium">Ends in:</span>
+            </div>
           </div>
-          <Link to="#" className="text-xs text-orange-500 hover:underline flex items-center">
-            More <ArrowRight className="h-3 w-3 ml-0.5" />
+          <Link to="/flash-deals" className="text-xs text-white hover:underline flex items-center">
+            View All <ChevronRight className="h-3 w-3" />
           </Link>
+        </div>
+        
+        <div className="flex items-center justify-center mt-2">
+          <div className="flex items-center space-x-1">
+            {[timeLeft.hours, timeLeft.minutes, timeLeft.seconds].map((unit, i) => (
+              <div key={i} className="flex items-center">
+                <div className="bg-white text-orange-600 font-bold rounded px-1.5 py-0.5 text-sm min-w-6 text-center">
+                  {unit.toString().padStart(2, '0')}
+                </div>
+                {i < 2 && <span className="text-white font-bold mx-0.5">:</span>}
+              </div>
+            ))}
+          </div>
+        </div>
+        
+        <div className="mt-2 text-xs text-center text-white/80">
+          <span className="bg-yellow-500 text-white px-1.5 py-0.5 rounded mr-1">UP TO 70% OFF</span>
+          <span>Limited time offers - Don't miss out!</span>
         </div>
       </div>
 
@@ -110,7 +134,7 @@ export default function FlashDeals() {
             WebkitOverflowScrolling: 'touch'
           }}
         >
-          <div className="flex pl-2">
+          <div className="flex pl-2 py-2">
             {flashProducts.map((product) => (
               <div
                 key={product.id}
