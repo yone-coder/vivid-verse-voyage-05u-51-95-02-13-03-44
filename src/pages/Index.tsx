@@ -36,7 +36,7 @@ export default function Index() {
   }
 
   return (
-        <div className="flex flex-col min-h-screen bg-white overscroll-none">
+    <div className="flex-grow pb-20 md:pb-0">
       {/* AliExpressHeader component with improved scroll behavior */}
       <AliExpressHeader />
       
