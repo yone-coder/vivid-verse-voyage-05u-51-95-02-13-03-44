@@ -142,38 +142,44 @@ export default function AliExpressHeaderWithStates() {
       </div>
 
       {/* Tabs */}
-      <div
-        className="relative w-full transition-all duration-700 overflow-hidden"
-        style={{
-          maxHeight: progress > 0.3 ? '40px' : '0px',
-          opacity: progress > 0.3 ? 1 : 0,
-          backgroundColor: `rgba(255, 255, 255, ${progress * 0.98})`,
-          backdropFilter: `blur(${progress * 8}px)`,
-        }}
+<div
+  className="relative w-full transition-all duration-700 overflow-hidden"
+  style={{
+    maxHeight: progress > 0.3 ? '40px' : '0px',
+    opacity: progress > 0.3 ? 1 : 0,
+    backgroundColor: `rgba(255, 255, 255, ${progress * 0.98})`,
+    backdropFilter: `blur(${progress * 8}px)`,
+  }}
+>
+  <div className="flex overflow-x-auto no-scrollbar pr-10">
+    {categories.map((category) => (
+      <button
+        key={category}
+        className={`whitespace-nowrap px-3 py-1 text-xs font-medium transition-all border-b-2 ${
+          activeTab === category
+            ? 'border-orange-500 text-orange-500'
+            : 'border-transparent text-gray-600 hover:text-gray-900'
+        }`}
+        onClick={() => setActiveTab(category)}
       >
-        <div className="flex overflow-x-auto no-scrollbar bg-white pr-10">
-          {categories.map((category) => (
-            <button
-              key={category}
-              className={`whitespace-nowrap px-3 py-1 text-xs font-medium transition-all border-b-2 ${
-                activeTab === category
-                  ? 'border-orange-500 text-orange-500'
-                  : 'border-transparent text-gray-600 hover:text-gray-900'
-              }`}
-              onClick={() => setActiveTab(category)}
-            >
-              {category}
-            </button>
-          ))}
-        </div>
+        {category}
+      </button>
+    ))}
+  </div>
 
-        {/* Grid Icon on the right */}
-        <div className="absolute top-0 right-0 h-full flex items-center bg-gradient-to-l from-white px-2 z-10">
-          <div className="cursor-pointer p-1 rounded hover:bg-gray-100">
-            <Grid className="h-4 w-4 text-gray-500" />
-          </div>
-        </div>
-      </div>
+  {/* Grid Icon on the right */}
+  <div
+    className="absolute top-0 right-0 h-full flex items-center px-2 z-10"
+    style={{
+      backgroundColor: `rgba(255, 255, 255, ${progress * 0.98})`,
+      backdropFilter: `blur(${progress * 8}px)`,
+    }}
+  >
+    <div className="cursor-pointer p-1 rounded hover:bg-gray-100">
+      <Grid className="h-4 w-4 text-gray-500" />
+    </div>
+  </div>
+</div>
 
       {/* Dropdown Panel */}
       {progress < 0.5 && isOpen && (
