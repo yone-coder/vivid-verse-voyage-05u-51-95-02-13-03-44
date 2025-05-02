@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Zap } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -13,7 +13,7 @@ const flashProducts = [
     rating: 4.7,
     ratingCount: 235,
     sold: 1253,
-    stock: 45
+    stock: 45,
   },
   {
     id: 102,
@@ -24,7 +24,7 @@ const flashProducts = [
     rating: 4.7,
     ratingCount: 235,
     sold: 1253,
-    stock: 45
+    stock: 45,
   },
   {
     id: 103,
@@ -35,7 +35,7 @@ const flashProducts = [
     rating: 4.7,
     ratingCount: 235,
     sold: 1253,
-    stock: 45
+    stock: 45,
   },
   {
     id: 104,
@@ -46,7 +46,7 @@ const flashProducts = [
     rating: 4.7,
     ratingCount: 235,
     sold: 1253,
-    stock: 45
+    stock: 45,
   },
   {
     id: 105,
@@ -57,7 +57,7 @@ const flashProducts = [
     rating: 4.7,
     ratingCount: 235,
     sold: 1253,
-    stock: 45
+    stock: 45,
   },
 ];
 
@@ -68,12 +68,12 @@ export default function FlashDeals() {
   const [timeLeft, setTimeLeft] = useState({
     hours: 5,
     minutes: 30,
-    seconds: 0
+    seconds: 0,
   });
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setTimeLeft(prev => {
+      setTimeLeft((prev) => {
         if (prev.seconds > 0) {
           return { ...prev, seconds: prev.seconds - 1 };
         } else if (prev.minutes > 0) {
@@ -90,31 +90,30 @@ export default function FlashDeals() {
 
   return (
     <div className="w-full bg-white">
-      {/* Enhanced AliExpress-style Header */}
-      <div className="bg-gradient-to-r from-orange-600 to-red-500 px-3 py-3">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center">
-            <Zap className="h-4 w-4 text-yellow-300 mr-1.5 animate-pulse" />
-            <h2 className="text-base font-bold text-white mr-2">FLASH SALE</h2>
-            <div className="bg-white/20 rounded-md px-2 py-0.5 flex items-center">
-              <span className="text-xs font-medium text-white">Ends in:</span>
-              <div className="flex ml-1.5">
-                {[
-                  {value: timeLeft.hours, label: "h"}, 
-                  {value: timeLeft.minutes, label: "m"}, 
-                  {value: timeLeft.seconds, label: "s"}
-                ].map((unit, i) => (
-                  <div key={i} className="flex items-center">
-                    <div className="bg-white text-red-500 rounded px-1.5 text-xs font-bold">
-                      {unit.value.toString().padStart(2, '0')}
-                    </div>
-                    <span className="text-white text-xs mx-1">{unit.label}</span>
-                  </div>
+      <div className="px-2 py-2">
+        <div className="flex justify-between items-center mb-1">
+          <div className="flex items-center space-x-2">
+            <div className="bg-[#FF4747] text-white text-xs font-semibold px-2 py-0.5 rounded-sm uppercase tracking-wide">
+              Flash Sale
+            </div>
+            <div className="flex items-center text-[11px] text-gray-700 font-medium space-x-1">
+              <span>Ends in</span>
+              <div className="flex space-x-1">
+                {[timeLeft.hours, timeLeft.minutes, timeLeft.seconds].map((unit, i) => (
+                  <span
+                    key={i}
+                    className="bg-black text-white px-1 py-0.5 rounded-sm text-[10px] font-mono"
+                  >
+                    {unit.toString().padStart(2, "0")}
+                  </span>
                 ))}
               </div>
             </div>
           </div>
-          <Link to="/flash-deals" className="text-xs text-white hover:underline flex items-center bg-white/20 rounded-full px-2 py-1">
+          <Link
+            to="#"
+            className="text-xs text-[#FF4747] hover:underline flex items-center font-medium"
+          >
             More <ArrowRight className="h-3 w-3 ml-0.5" />
           </Link>
         </div>
@@ -125,11 +124,11 @@ export default function FlashDeals() {
           ref={scrollRef}
           className="overflow-x-auto scroll-smooth scrollbar-hide snap-x snap-mandatory"
           style={{
-            scrollPaddingLeft: '1rem',
-            WebkitOverflowScrolling: 'touch'
+            scrollPaddingLeft: "1rem",
+            WebkitOverflowScrolling: "touch",
           }}
         >
-          <div className="flex pl-2 pt-2">
+          <div className="flex pl-2">
             {flashProducts.map((product) => (
               <div
                 key={product.id}
@@ -143,13 +142,16 @@ export default function FlashDeals() {
                       className="h-full w-full object-cover hover:scale-105 transition-transform duration-300"
                       loading="lazy"
                     />
-                    <div className="absolute top-0 left-0 bg-orange-500 text-white text-[10px] px-1.5 py-0.5 rounded-br-md font-medium">
-                      {Math.round(((product.price - product.discountPrice) / product.price) * 100)}% OFF
+                    <div className="absolute top-0 left-0 bg-[#FF4747] text-white text-[10px] px-1.5 py-0.5 rounded-br-md font-medium">
+                      {Math.round(
+                        ((product.price - product.discountPrice) / product.price) * 100
+                      )}
+                      % OFF
                     </div>
                     <div className="absolute bottom-0 left-0 w-full bg-black/60 text-white text-[10px] flex justify-center py-0.5">
                       {[timeLeft.hours, timeLeft.minutes, timeLeft.seconds].map((unit, i) => (
                         <span key={i} className="mx-0.5">
-                          <span>{unit.toString().padStart(2, '0')}</span>
+                          <span>{unit.toString().padStart(2, "0")}</span>
                           {i < 2 && <span className="mx-0.5">:</span>}
                         </span>
                       ))}
@@ -157,20 +159,24 @@ export default function FlashDeals() {
                   </div>
                   <div>
                     <div className="flex items-baseline gap-1">
-                      <div className="text-orange-500 font-semibold text-sm">${product.discountPrice.toFixed(2)}</div>
-                      <div className="text-[10px] text-gray-500 line-through">${product.price.toFixed(2)}</div>
+                      <div className="text-[#FF4747] font-semibold text-sm">
+                        ${product.discountPrice.toFixed(2)}
+                      </div>
+                      <div className="text-[10px] text-gray-500 line-through">
+                        ${product.price.toFixed(2)}
+                      </div>
                     </div>
                     <div className="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden mt-1 mb-0.5">
                       <div
-                        className="h-full bg-orange-500 rounded-full"
+                        className="h-full bg-[#FF4747] rounded-full"
                         style={{
-                          width: `${100 - (product.stock / (product.stock + product.sold) * 100)}%`
+                          width: `${
+                            100 - (product.stock / (product.stock + product.sold)) * 100
+                          }%`,
                         }}
                       />
                     </div>
-                    <div className="text-[10px] text-gray-500">
-                      {product.stock} left
-                    </div>
+                    <div className="text-[10px] text-gray-500">{product.stock} left</div>
                   </div>
                 </Link>
               </div>
