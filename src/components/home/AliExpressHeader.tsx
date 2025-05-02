@@ -7,6 +7,7 @@ import {
   QrCode,
   ChevronDown,
   ChevronRight,
+  Grid,
 } from 'lucide-react';
 import { useScrollProgress } from '@/hooks/useScrollProgress';
 import Logo from './Logo';
@@ -142,7 +143,7 @@ export default function AliExpressHeaderWithStates() {
 
       {/* Tabs */}
       <div
-        className="w-full transition-all duration-700 overflow-hidden"
+        className="relative w-full transition-all duration-700 overflow-hidden"
         style={{
           maxHeight: progress > 0.3 ? '40px' : '0px',
           opacity: progress > 0.3 ? 1 : 0,
@@ -150,7 +151,7 @@ export default function AliExpressHeaderWithStates() {
           backdropFilter: `blur(${progress * 8}px)`,
         }}
       >
-        <div className="flex overflow-x-auto no-scrollbar bg-white">
+        <div className="flex overflow-x-auto no-scrollbar bg-white pr-10">
           {categories.map((category) => (
             <button
               key={category}
@@ -164,6 +165,13 @@ export default function AliExpressHeaderWithStates() {
               {category}
             </button>
           ))}
+        </div>
+
+        {/* Grid Icon on the right */}
+        <div className="absolute top-0 right-0 h-full flex items-center bg-gradient-to-l from-white px-2 z-10">
+          <div className="cursor-pointer p-1 rounded hover:bg-gray-100">
+            <Grid className="h-4 w-4 text-gray-500" />
+          </div>
         </div>
       </div>
 
