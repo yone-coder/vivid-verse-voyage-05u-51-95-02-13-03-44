@@ -3,6 +3,7 @@ import {
   Search,
   X,
   Mic,
+  Bell,
   QrCode,
   ChevronDown,
   ChevronRight,
@@ -102,11 +103,9 @@ export default function AliExpressHeaderWithStates() {
               >
                 <Mic className="h-3.5 w-3.5 text-orange-500" />
               </div>
-              {progress < 0.5 && (
-                <div className="cursor-pointer mx-1 rounded-full hover:bg-gray-200 p-0.5">
-                  <QrCode className="h-3.5 w-3.5 text-orange-500" />
-                </div>
-              )}
+              <div className="cursor-pointer mx-1 rounded-full hover:bg-gray-200 p-0.5">
+                <QrCode className="h-3.5 w-3.5 text-orange-500" />
+              </div>
               {searchQuery && (
                 <div
                   className="cursor-pointer mr-2 rounded-full hover:bg-gray-200"
@@ -119,21 +118,23 @@ export default function AliExpressHeaderWithStates() {
           </div>
         </div>
 
-        {/* Right: Flag or Icons */}
+        {/* Right: Flag icon + ChevronRight (always), Bell only if progress >= 0.5 */}
         <div className="flex items-center space-x-2 flex-shrink-0">
-          {progress < 0.5 ? (
-            <div className="flex items-center bg-black bg-opacity-40 rounded-full px-2 py-0.5 cursor-pointer space-x-1">
-              <img
-                src="https://flagcdn.com/us.svg"
-                alt="US Flag"
-                className="w-4 h-4 rounded-full object-cover"
-              />
-              <span className="text-white text-xs font-medium">NY</span>
-              <ChevronRight className="w-3.5 h-3.5 text-white" />
-            </div>
-          ) : (
+          <div className="flex items-center bg-black bg-opacity-40 px-2 py-1 rounded-full space-x-1">
+            <img
+              src="https://flagcdn.com/us.svg"
+              alt="USA"
+              className="h-4 w-4 rounded-full object-cover"
+            />
+            <span className="text-white text-xs font-medium">NY</span>
+            <ChevronRight className="h-3.5 w-3.5 text-white" />
+          </div>
+          {progress >= 0.5 && (
             <div className="cursor-pointer relative hover:bg-black hover:bg-opacity-30 p-1 rounded-full">
-              <QrCode className="h-4 w-4 text-gray-600" />
+              <Bell className="h-4 w-4 text-gray-600" />
+              <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] rounded-full h-3.5 w-3.5 flex items-center justify-center">
+                2
+              </span>
             </div>
           )}
         </div>
