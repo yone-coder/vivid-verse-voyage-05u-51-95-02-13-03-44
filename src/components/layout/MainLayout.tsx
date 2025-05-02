@@ -57,6 +57,7 @@ export default function MainLayout() {
   };
   
   // Different header height when on home page vs other pages
+  // Setting to 0 for home page since the AliExpressHeader handles its own spacing
   const headerHeight = isHomePage ? '0px' : (isMobile ? '44px' : '90px');
   
   return (
