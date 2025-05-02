@@ -114,11 +114,11 @@ export default function FlashDeals() {
         </div>
       </div>
 
-      {/* Edge-to-edge scroll with fake paddings */}
-      <div className="overflow-x-auto scrollbar-hide -mx-3 px-3">
+      {/* Edge-to-edge scroll container with fake paddings */}
+      <div className="overflow-x-auto scrollbar-hide px-[12px] -mx-[12px]">
         <div className="flex gap-2 pb-2">
           {/* Fake left padding */}
-          <div className="w-3 shrink-0" />
+          <div className="w-[12px] shrink-0" />
 
           {flashProducts.map((product) => (
             <div key={product.id} className="w-[110px] md:w-[130px] flex-shrink-0">
@@ -152,7 +152,7 @@ export default function FlashDeals() {
           ))}
 
           {/* Fake right padding */}
-          <div className="w-3 shrink-0" />
+          <div className="w-[12px] shrink-0" />
         </div>
       </div>
     </div>
