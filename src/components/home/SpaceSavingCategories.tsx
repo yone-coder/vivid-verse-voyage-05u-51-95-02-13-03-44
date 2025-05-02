@@ -1,35 +1,35 @@
 import React from 'react';
 
-const SpaceSavingCategories = () => {
+const AliExpressCategories = () => {
   const imageSeeds = {
-  'Electronics': 1060,     // Electronics setup
-  'Home & Kitchen': 1084,  // Kitchen interior
-  'Fashion': 1027,         // Fashionable attire
-  'Beauty': 1062,          // Beauty products
-  'Sports': 1044,          // Sports activity
-  'Toys & Games': 1069,    // Toys
-  'Jewelry': 1081,         // Jewelry close-up
-  'Automotive': 1076,      // Car
-  'Books': 1050,           // Stack of books
-  'Pets': 1025,            // Pet (dog)
-  'Food': 1080,            // Food dish
-  'Audio': 1083,           // Headphones
-  'Computers': 1051,       // Computer setup
-  'Photography': 1061,     // Camera
-  'Watches': 1079,         // Watch
-  'Coffee': 1060,          // Coffee cup
-  'Movies': 1032,          // Film reel
-  'Travel': 1035,          // Scenic travel
-  'Music': 1085,           // Musical instruments
-  'Health': 1039,          // Health-related
-  'Finance': 1082,         // Financial theme
-  'Apparel': 1033,         // Clothing
-  'Business': 1043,        // Business setting
-  'Outdoor': 1011,         // Outdoor scene
-  'Adventure': 1036,       // Adventure activity
-  'Seasonal': 1018,        // Seasonal imagery
-  'Crafts': 1068           // Craft materials
-};
+    'Electronics': 1060,
+    'Home & Kitchen': 1084,
+    'Fashion': 1027,
+    'Beauty': 1062,
+    'Sports': 1044,
+    'Toys & Games': 1069,
+    'Jewelry': 1081,
+    'Automotive': 1076,
+    'Books': 1050,
+    'Pets': 1025,
+    'Food': 1080,
+    'Audio': 1083,
+    'Computers': 1051,
+    'Photography': 1061,
+    'Watches': 1079,
+    'Coffee': 1060,
+    'Movies': 1032,
+    'Travel': 1035,
+    'Music': 1085,
+    'Health': 1039,
+    'Finance': 1082,
+    'Apparel': 1033,
+    'Business': 1043,
+    'Outdoor': 1011,
+    'Adventure': 1036,
+    'Seasonal': 1018,
+    'Crafts': 1068
+  };
 
   const getCategoryImageUrl = (category) => {
     const seed = imageSeeds[category.name];
@@ -37,72 +37,67 @@ const SpaceSavingCategories = () => {
   };
 
   const categories = [
-    { name: 'Electronics', shortName: 'Electronics', color: 'bg-blue-100 text-blue-600' },
-    { name: 'Home & Kitchen', shortName: 'Home', color: 'bg-green-100 text-green-600' },
-    { name: 'Fashion', shortName: 'Fashion', color: 'bg-purple-100 text-purple-600' },
-    { name: 'Beauty', shortName: 'Beauty', color: 'bg-pink-100 text-pink-600' },
-    { name: 'Sports', shortName: 'Sports', color: 'bg-yellow-100 text-yellow-600' },
-    { name: 'Toys & Games', shortName: 'Toys', color: 'bg-indigo-100 text-indigo-600' },
-    { name: 'Jewelry', shortName: 'Jewelry', color: 'bg-red-100 text-red-600' },
-    { name: 'Automotive', shortName: 'Auto', color: 'bg-gray-100 text-gray-600' },
-    { name: 'Books', shortName: 'Books', color: 'bg-amber-100 text-amber-600' },
-    { name: 'Pets', shortName: 'Pets', color: 'bg-lime-100 text-lime-600' },
-    { name: 'Food', shortName: 'Food', color: 'bg-orange-100 text-orange-600' },
-    { name: 'Audio', shortName: 'Audio', color: 'bg-cyan-100 text-cyan-600' },
-    { name: 'Computers', shortName: 'Tech', color: 'bg-blue-100 text-blue-600' },
-    { name: 'Photography', shortName: 'Photo', color: 'bg-violet-100 text-violet-600' },
-    { name: 'Watches', shortName: 'Watches', color: 'bg-slate-100 text-slate-600' },
-    { name: 'Coffee', shortName: 'Coffee', color: 'bg-amber-100 text-amber-600' },
-    { name: 'Movies', shortName: 'Movies', color: 'bg-red-100 text-red-600' },
-    { name: 'Travel', shortName: 'Travel', color: 'bg-sky-100 text-sky-600' },
-    { name: 'Music', shortName: 'Music', color: 'bg-indigo-100 text-indigo-600' },
-    { name: 'Health', shortName: 'Health', color: 'bg-green-100 text-green-600' },
-    { name: 'Finance', shortName: 'Finance', color: 'bg-emerald-100 text-emerald-600' },
-    { name: 'Apparel', shortName: 'Apparel', color: 'bg-purple-100 text-purple-600' },
-    { name: 'Business', shortName: 'Business', color: 'bg-blue-100 text-blue-600' },
-    { name: 'Outdoor', shortName: 'Outdoor', color: 'bg-green-100 text-green-600' },
-    { name: 'Adventure', shortName: 'Adventure', color: 'bg-orange-100 text-orange-600' },
-    { name: 'Seasonal', shortName: 'Seasonal', color: 'bg-teal-100 text-teal-600' },
-    { name: 'Crafts', shortName: 'Crafts', color: 'bg-purple-100 text-purple-600' }
+    { name: 'Electronics', shortName: 'Electronics' },
+    { name: 'Home & Kitchen', shortName: 'Home' },
+    { name: 'Fashion', shortName: 'Fashion' },
+    { name: 'Beauty', shortName: 'Beauty' },
+    { name: 'Sports', shortName: 'Sports' },
+    { name: 'Toys & Games', shortName: 'Toys' },
+    { name: 'Jewelry', shortName: 'Jewelry' },
+    { name: 'Automotive', shortName: 'Auto' },
+    { name: 'Books', shortName: 'Books' },
+    { name: 'Pets', shortName: 'Pets' },
+    { name: 'Food', shortName: 'Food' },
+    { name: 'Audio', shortName: 'Audio' },
+    { name: 'Computers', shortName: 'Tech' },
+    { name: 'Photography', shortName: 'Photo' },
+    { name: 'Watches', shortName: 'Watches' },
+    { name: 'Coffee', shortName: 'Coffee' },
+    { name: 'Movies', shortName: 'Movies' },
+    { name: 'Travel', shortName: 'Travel' },
+    { name: 'Music', shortName: 'Music' },
+    { name: 'Health', shortName: 'Health' },
+    { name: 'Finance', shortName: 'Finance' },
+    { name: 'Apparel', shortName: 'Apparel' },
+    { name: 'Business', shortName: 'Business' },
+    { name: 'Outdoor', shortName: 'Outdoor' },
+    { name: 'Adventure', shortName: 'Adventure' },
+    { name: 'Seasonal', shortName: 'Seasonal' },
+    { name: 'Crafts', shortName: 'Crafts' }
   ];
 
+  // For simultaneously scrollable rows, we don't need to split the categories
+
   const CategoryItem = ({ category }) => (
-    <div className={`flex items-center rounded-full py-0 ${category.color} hover:opacity-90 transition-opacity cursor-pointer flex-shrink-0 overflow-hidden`}>
-      <div className="h-8 w-8 flex-shrink-0 bg-white rounded-full overflow-hidden">
+    <div className="flex flex-col items-center w-14 flex-shrink-0 active:opacity-80 transition-opacity touch-manipulation">
+      <div className="w-11 h-11 rounded-lg overflow-hidden bg-gray-50 mb-1 shadow-sm">
         <img
           src={getCategoryImageUrl(category)}
           alt={category.name}
           className="h-full w-full object-cover"
         />
       </div>
-      <span className="text-sm font-medium px-3 pr-4">
+      <span className="text-xs font-normal text-gray-600 text-center truncate w-full leading-tight">
         {category.shortName || category.name}
       </span>
     </div>
   );
 
   return (
-    <div className="w-full">
-      <div className="flex justify-between items-center px-3 pt-3 pb-2">
-        <h2 className="text-lg font-bold">Categories</h2>
-        <a href="#" className="text-orange-500 text-sm">View All</a>
+    <div className="w-full bg-gray-50">
+      <div className="flex justify-between items-center px-4 py-2 border-b border-gray-100 bg-white">
+        <h2 className="text-sm font-medium text-gray-700">Categories</h2>
+        <a href="#" className="text-red-500 hover:text-red-600 active:text-red-700 text-xs font-medium">View All</a>
       </div>
 
-      <div className="overflow-x-auto pb-3 scrollbar-hide no-scrollbar">
-        <div className="flex flex-col space-y-3 px-3" style={{ minWidth: "700px" }}>
-          <div className="flex space-x-2">
-            {categories.slice(0, 9).map((category, index) => (
-              <CategoryItem key={index} category={category} />
-            ))}
-          </div>
-          <div className="flex space-x-2">
-            {categories.slice(9, 18).map((category, index) => (
-              <CategoryItem key={index} category={category} />
-            ))}
-          </div>
-          <div className="flex space-x-2">
-            {categories.slice(18).map((category, index) => (
-              <CategoryItem key={index} category={category} />
+      <div className="py-2 bg-white">
+        {/* Edge-to-edge scrollable container with pl-2 */}
+        <div className="overflow-x-auto overscroll-x-contain no-scrollbar pl-2 scroll-smooth -webkit-overflow-scrolling-touch">
+          <div className="grid grid-flow-col auto-cols-max gap-3 pr-4" style={{ gridTemplateRows: 'repeat(2, auto)' }}>
+            {categories.map((category, index) => (
+              <div key={index} className="pb-1" style={{ gridRow: index % 2 === 0 ? '1' : '2' }}>
+                <CategoryItem category={category} />
+              </div>
             ))}
           </div>
         </div>
@@ -111,4 +106,4 @@ const SpaceSavingCategories = () => {
   );
 };
 
-export default SpaceSavingCategories;
+export default AliExpressCategories;
