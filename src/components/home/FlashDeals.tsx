@@ -1,6 +1,4 @@
-
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { Clock, ArrowRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -70,7 +68,7 @@ export default function FlashDeals() {
     minutes: 30,
     seconds: 0
   });
-  
+
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft(prev => {
@@ -85,10 +83,10 @@ export default function FlashDeals() {
         return { hours: 5, minutes: 30, seconds: 0 };
       });
     }, 1000);
-    
+
     return () => clearInterval(timer);
   }, []);
-  
+
   return (
     <div className="py-3 bg-white">
       <div className="container mx-auto px-3">
@@ -116,8 +114,11 @@ export default function FlashDeals() {
             More <ArrowRight className="h-3 w-3 ml-0.5" />
           </Link>
         </div>
-        
-        <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-hide">
+      </div>
+
+      {/* Edge-to-edge scroll container */}
+      <div className="overflow-x-auto scrollbar-hide -mx-3 px-3">
+        <div className="flex gap-2 pb-2">
           {flashProducts.map((product) => (
             <div key={product.id} className="w-[110px] md:w-[130px] flex-shrink-0">
               <Link to={`/product/${product.id}`}>
