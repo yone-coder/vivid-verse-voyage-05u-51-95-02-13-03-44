@@ -81,7 +81,7 @@ export default function FlashDeals() {
         } else if (prev.hours > 0) {
           return { hours: prev.hours - 1, minutes: 59, seconds: 59 };
         }
-        return { hours: 5, minutes: 30, seconds: 0 }; // Reset
+        return { hours: 5, minutes: 30, seconds: 0 };
       });
     }, 1000);
 
@@ -137,7 +137,7 @@ export default function FlashDeals() {
                     </div>
                   </div>
                   <div>
-                    <div className="flex items-baseline gap-1">
+                    <div className="flex justify-between items-baseline">
                       <div className="text-orange-500 font-semibold text-sm">${product.discountPrice.toFixed(2)}</div>
                       <div className="text-[10px] text-gray-500 line-through">${product.price.toFixed(2)}</div>
                     </div>
