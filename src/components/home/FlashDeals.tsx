@@ -114,12 +114,8 @@ export default function FlashDeals() {
         </div>
       </div>
 
-      {/* Scroll container with snapping */}
-      <div className="overflow-x-auto scrollbar-hide px-[12px] -mx-[12px] snap-x snap-mandatory">
-        <div className="flex gap-2 pb-2">
-          {/* Fake left padding */}
-          <div className="w-[12px] shrink-0" />
-
+      <div className="overflow-x-auto scrollbar-hide snap-x snap-mandatory">
+        <div className="flex gap-2 px-3 pb-2">
           {flashProducts.map((product) => (
             <div key={product.id} className="w-[110px] md:w-[130px] flex-shrink-0 snap-start">
               <Link to={`/product/${product.id}`}>
@@ -150,9 +146,6 @@ export default function FlashDeals() {
               </Link>
             </div>
           ))}
-
-          {/* Fake right padding */}
-          <div className="w-[12px] shrink-0" />
         </div>
       </div>
     </div>
