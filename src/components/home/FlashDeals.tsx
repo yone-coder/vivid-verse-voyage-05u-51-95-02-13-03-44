@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Clock, Zap, ChevronRight } from "lucide-react";
+import { ArrowRight, Zap } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -91,14 +91,31 @@ export default function FlashDeals() {
   return (
     <div className="w-full bg-white">
       {/* Enhanced AliExpress-style Header */}
-      <div className="bg-gradient-to-r from-red-500 to-orange-500 text-white px-4 py-3">
+      <div className="bg-gradient-to-r from-orange-600 to-red-500 px-3 py-3">
         <div className="flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <Zap className="h-5 w-5 text-yellow-300" />
-            <h2 className="text-lg font-bold">FLASH DEALS</h2>
+          <div className="flex items-center">
+            <Zap className="h-4 w-4 text-yellow-300 mr-1.5 animate-pulse" />
+            <h2 className="text-base font-bold text-white mr-2">FLASH SALE</h2>
+            <div className="bg-white/20 rounded-md px-2 py-0.5 flex items-center">
+              <span className="text-xs font-medium text-white">Ends in:</span>
+              <div className="flex ml-1.5">
+                {[
+                  {value: timeLeft.hours, label: "h"}, 
+                  {value: timeLeft.minutes, label: "m"}, 
+                  {value: timeLeft.seconds, label: "s"}
+                ].map((unit, i) => (
+                  <div key={i} className="flex items-center">
+                    <div className="bg-white text-red-500 rounded px-1.5 text-xs font-bold">
+                      {unit.value.toString().padStart(2, '0')}
+                    </div>
+                    <span className="text-white text-xs mx-1">{unit.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-          <Link to="/flash-deals" className="text-sm text-white hover:underline flex items-center">
-            View More <ChevronRight className="h-4 w-4" />
+          <Link to="/flash-deals" className="text-xs text-white hover:underline flex items-center bg-white/20 rounded-full px-2 py-1">
+            More <ArrowRight className="h-3 w-3 ml-0.5" />
           </Link>
         </div>
       </div>
@@ -112,7 +129,7 @@ export default function FlashDeals() {
             WebkitOverflowScrolling: 'touch'
           }}
         >
-          <div className="flex pl-2 py-2">
+          <div className="flex pl-2 pt-2">
             {flashProducts.map((product) => (
               <div
                 key={product.id}
