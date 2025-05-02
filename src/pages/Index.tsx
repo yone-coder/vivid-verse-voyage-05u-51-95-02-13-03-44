@@ -1,3 +1,4 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { fetchAllProducts } from "@/integrations/supabase/client";
 import AliExpressHeader from "@/components/home/AliExpressHeader";
@@ -37,11 +38,11 @@ export default function Index() {
 
   return (
     <div className="flex-grow pb-20 md:pb-0">
-      {/* AliExpressHeader component with improved scroll behavior */}
+      {/* AliExpressHeader component with fixed position */}
       <AliExpressHeader />
       
-      {/* Hero Banner with appropriate spacing */}
-      <div className="relative">
+      {/* Hero Banner with appropriate spacing for fixed header */}
+      <div className="pt-[44px]">
         <HeroBanner />
       </div>
       

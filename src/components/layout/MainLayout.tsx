@@ -56,15 +56,16 @@ export default function MainLayout() {
     });
   };
   
-  const headerHeightStyle = `
-    :root {
-      --header-height: ${isMobile ? '44px' : '90px'};
-    }
-  `;
+  // Different header height when on home page vs other pages
+  const headerHeight = isHomePage ? '0px' : (isMobile ? '44px' : '90px');
   
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <style dangerouslySetInnerHTML={{ __html: headerHeightStyle }} />
+      <style dangerouslySetInnerHTML={{ __html: `
+        :root {
+          --header-height: ${headerHeight};
+        }
+      `}} />
       
       {/* No header for home page (handled by AliExpressHeader) or product pages */}
       {!isProductPage && !isHomePage && (
@@ -77,15 +78,20 @@ export default function MainLayout() {
         />
       )}
       
-      {isProductPage || isHomePage ? (
+      {isProductPage ? (
+        <main className="flex-grow relative">
+          <Outlet />
+        </main>
+      ) : isHomePage ? (
         <main className="flex-grow relative">
           <Outlet />
         </main>
       ) : (
-        <main className="flex-grow pb-20">
+        <main className="flex-grow pb-20 pt-[var(--header-height)]">
           <Outlet />
         </main>
       )}
+      
       {!isMobile && !isHomePage && <Footer />}
       {isMobile && !isProductPage && !isHomePage && <MobileBottomNav />}
     </div>
