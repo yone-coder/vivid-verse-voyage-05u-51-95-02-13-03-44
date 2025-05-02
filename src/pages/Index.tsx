@@ -41,7 +41,7 @@ export default function Index() {
       <AliExpressHeader />
       
       {/* Hero Banner with appropriate spacing */}
-      <div className="relative">
+           <div className="relative w-full bg-transparent">
         <HeroBanner />
       </div>
       
