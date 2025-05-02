@@ -113,25 +113,25 @@ export default function HeroBanner() {
         </div>
       </div>
 
-      {/* AliExpress-Style Promotional Banner */}
+      {/* AliExpress-Style Promotional Banner (Mobile Optimized) */}
       {showPromo && (
-        <div className="relative z-10 bg-[#E1251B] text-white text-sm md:text-base shadow-sm">
-          <div className="max-w-screen-xl mx-auto flex items-center justify-between px-4 py-2">
-            <div className="flex items-center gap-2 font-semibold tracking-tight">
-              <Truck className="w-4 h-4 text-white" />
-              <span>
+        <div className="relative z-10 bg-[#E1251B] text-white text-xs md:text-sm shadow-sm">
+          <div className="max-w-screen-xl mx-auto flex flex-col sm:flex-row items-center justify-between px-3 py-1.5 gap-2 sm:gap-0">
+            <div className="flex items-center gap-1.5 sm:gap-2 font-semibold leading-tight text-center sm:text-left">
+              <Truck className="w-4 h-4 shrink-0 text-white" />
+              <span className="leading-snug">
                 Free shipping on orders over <span className="text-yellow-300">$50</span>
               </span>
               <a
                 href="/promos/free-shipping"
-                className="ml-2 underline hover:text-yellow-200 transition"
+                className="underline hover:text-yellow-200 transition whitespace-nowrap"
               >
                 Learn More
               </a>
             </div>
             <button
               onClick={() => setShowPromo(false)}
-              className="hover:bg-white/10 p-1 rounded-full"
+              className="hover:bg-white/10 p-1 rounded-full sm:ml-4"
               aria-label="Close promo"
             >
               <X className="w-4 h-4 text-white" />
