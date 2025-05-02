@@ -37,12 +37,12 @@ export default function Index() {
   }
 
   return (
-    <div className="flex-grow pb-20 md:pb-0">
+    <div className="flex-grow">
       {/* AliExpressHeader component with fixed position */}
       <AliExpressHeader />
       
       {/* Content with proper padding-top to account for the fixed header */}
-      <div className="pt-[84px]">
+      <div className="pt-[44px]">
         {/* Hero Banner */}
         <HeroBanner />
         
