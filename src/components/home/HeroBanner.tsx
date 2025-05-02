@@ -1,7 +1,12 @@
-
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious
+} from "@/components/ui/carousel";
 import { ArrowRight } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -35,7 +40,7 @@ const banners = [
 export default function HeroBanner() {
   const [activeIndex, setActiveIndex] = useState(0);
   const isMobile = useIsMobile();
-  
+
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveIndex((current) => (current + 1) % banners.length);
@@ -45,29 +50,37 @@ export default function HeroBanner() {
 
   return (
     <div className="relative">
-      <Carousel className="w-full" setApi={(api) => {
-        api?.on("select", () => {
-          const selectedIndex = api.selectedScrollSnap();
-          setActiveIndex(selectedIndex);
-        });
-      }}>
+      <Carousel
+        className="w-full"
+        setApi={(api) => {
+          api?.on("select", () => {
+            const selectedIndex = api.selectedScrollSnap();
+            setActiveIndex(selectedIndex);
+          });
+        }}
+      >
         <CarouselContent>
           {banners.map((banner, index) => (
             <CarouselItem key={banner.id}>
               <div className="relative h-[180px] md:h-[250px] lg:h-[300px] overflow-hidden rounded-none">
                 <div className={`absolute inset-0 bg-gradient-to-r ${banner.color} opacity-30`}></div>
-                <img 
-                  src={banner.image} 
-                  alt={banner.title} 
+                <img
+                  src={banner.image}
+                  alt={banner.title}
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 flex items-center">
                   <div className="container mx-auto px-4">
                     <div className="max-w-lg">
-                      <h2 className="text-xl md:text-3xl font-extrabold text-white mb-0.5 md:mb-2 drop-shadow-md">{banner.title}</h2>
-                      <p className="text-white text-xs md:text-base mb-2 md:mb-4 max-w-md drop-shadow-md font-medium">{banner.subtitle}</p>
+                      <h2 className="text-xl md:text-3xl font-extrabold text-white mb-0.5 md:mb-2 drop-shadow-md">
+                        {banner.title}
+                      </h2>
+                      <p className="text-white text-xs md:text-base mb-2 md:mb-4 max-w-md drop-shadow-md font-medium">
+                        {banner.subtitle}
+                      </p>
                       <Button className="bg-white text-black hover:bg-gray-100 font-medium text-xs md:text-sm rounded-full h-7 md:h-auto">
-                        {banner.cta} <ArrowRight className="w-3 h-3 md:w-3.5 md:h-3.5 ml-1" />
+                        {banner.cta}
+                        <ArrowRight className="w-3 h-3 md:w-3.5 md:h-3.5 ml-1" />
                       </Button>
                     </div>
                   </div>
@@ -83,7 +96,14 @@ export default function HeroBanner() {
           </>
         )}
       </Carousel>
-      
+
+      {/* Promotional band below the hero banner */}
+      <div className="w-full bg-yellow-400 text-center py-1.5 md:py-2">
+        <p className="text-sm md:text-base font-medium text-black">
+          Free shipping on orders over $50! Limited time offer.
+        </p>
+      </div>
+
       {/* Indicators */}
       <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5">
         {banners.map((_, index) => (
