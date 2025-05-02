@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Search, X, Mic, Bell, QrCode } from 'lucide-react';
 import Logo from './Logo';
 
-export default function AliExpressHeaderStatic() {
+export default function AliExpressHeaderCompact() {
   const [activeTab, setActiveTab] = useState('All');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -28,73 +28,66 @@ export default function AliExpressHeaderStatic() {
   }, []);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 flex flex-col">
-      {/* Top Bar */}
-      <div className="flex items-center justify-between px-2 h-[44px] bg-white shadow-sm">
-        {/* Left */}
-        <div className="flex items-center">
-          <Logo width={28} height={28} className="text-orange-500" />
-        </div>
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm" style={{ height: '44px' }}>
+      <div className="flex items-center justify-between w-full h-full px-2 space-x-2 overflow-hidden">
+        {/* Left: Logo */}
+        <Logo width={24} height={24} className="text-orange-500 flex-shrink-0" />
 
-        {/* Center */}
-        <div className="flex flex-1 mx-2">
-          <div className="flex-grow" ref={searchRef}>
+        {/* Center: Search */}
+        <div className="flex flex-1 items-center" ref={searchRef}>
+          <div
+            className={`flex items-center w-full bg-gray-100 rounded-full text-xs h-7 ${
+              isSearchFocused ? 'border border-orange-500' : 'border border-gray-200'
+            }`}
+          >
+            <Search className="ml-2 h-3.5 w-3.5 text-orange-500" />
+            <input
+              className="px-2 py-0.5 text-xs bg-gray-100 placeholder-gray-400 outline-none w-full"
+              placeholder="Search on AliExpress"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onFocus={handleSearchFocus}
+            />
             <div
-              className={`flex items-center w-full bg-gray-100 rounded-full ${
-                isSearchFocused
-                  ? 'border border-orange-500'
-                  : 'border border-gray-200'
+              className={`cursor-pointer mx-1 rounded-full ${
+                voiceSearchActive ? 'bg-orange-100' : ''
               }`}
+              onClick={handleVoiceSearch}
             >
-              <Search className="ml-2 h-3.5 w-3.5 text-orange-500" />
-              <input
-                className="py-1 px-2 text-xs outline-none bg-gray-100 placeholder-gray-400 w-full"
-                placeholder="Search on AliExpress"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onFocus={handleSearchFocus}
-              />
-              <div
-                className={`cursor-pointer mx-1 rounded-full ${
-                  voiceSearchActive ? 'bg-orange-100' : ''
-                }`}
-                onClick={handleVoiceSearch}
-              >
-                <Mic className="h-3.5 w-3.5 text-orange-500" />
-              </div>
-              {searchQuery && (
-                <div
-                  className="cursor-pointer mr-2 rounded-full hover:bg-gray-200"
-                  onClick={handleClearSearch}
-                >
-                  <X className="h-3 w-3 text-gray-500" />
-                </div>
-              )}
+              <Mic className="h-3.5 w-3.5 text-orange-500" />
             </div>
+            {searchQuery && (
+              <div
+                className="cursor-pointer mr-2 rounded-full hover:bg-gray-200"
+                onClick={handleClearSearch}
+              >
+                <X className="h-3 w-3 text-gray-500" />
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Right */}
-        <div className="flex items-center space-x-2 flex-shrink-0">
-          <div className="cursor-pointer relative hover:bg-gray-100 p-1 rounded-full">
+        {/* Right: Icons */}
+        <div className="flex items-center space-x-1 flex-shrink-0">
+          <div className="relative p-1 rounded-full hover:bg-gray-100">
             <Bell className="h-4 w-4 text-gray-600" />
             <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] rounded-full h-3.5 w-3.5 flex items-center justify-center">
               2
             </span>
           </div>
-          <div className="cursor-pointer hover:bg-gray-100 p-1 rounded-full">
+          <div className="p-1 rounded-full hover:bg-gray-100">
             <QrCode className="h-4 w-4 text-gray-600" />
           </div>
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="h-10 bg-white shadow-sm">
-        <div className="flex overflow-x-auto no-scrollbar bg-white h-full">
+      {/* Optional: Scrollable Tabs in Bottom Border */}
+      <div className="absolute bottom-0 left-0 right-0 h-5 bg-white border-t border-gray-200 overflow-x-auto no-scrollbar text-xs">
+        <div className="flex">
           {categories.map((category) => (
             <button
               key={category}
-              className={`whitespace-nowrap px-3 py-1 text-xs font-medium transition-all border-b-2 ${
+              className={`px-2 py-0.5 border-b-2 whitespace-nowrap ${
                 activeTab === category
                   ? 'border-orange-500 text-orange-500'
                   : 'border-transparent text-gray-600 hover:text-gray-900'
