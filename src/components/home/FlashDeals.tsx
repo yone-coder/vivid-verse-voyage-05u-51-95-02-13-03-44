@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Clock, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -60,7 +59,6 @@ const flashProducts = [
     sold: 1253,
     stock: 45
   },
-  // ... more products
 ];
 
 export default function FlashDeals() {
@@ -83,7 +81,7 @@ export default function FlashDeals() {
         } else if (prev.hours > 0) {
           return { hours: prev.hours - 1, minutes: 59, seconds: 59 };
         }
-        return { hours: 5, minutes: 30, seconds: 0 };
+        return { hours: 5, minutes: 30, seconds: 0 }; // Reset
       });
     }, 1000);
 
@@ -96,19 +94,6 @@ export default function FlashDeals() {
         <div className="flex justify-between items-center mb-1">
           <div className="flex items-center">
             <h2 className="text-sm font-bold text-orange-500 mr-2">Flash Sale</h2>
-            <div className="flex items-center gap-1">
-              <Clock className="h-3 w-3 text-orange-500" />
-              <div className="text-xs font-medium">
-                {[timeLeft.hours, timeLeft.minutes, timeLeft.seconds].map((unit, i) => (
-                  <span key={i}>
-                    <span className="inline-flex items-center justify-center bg-gray-900 text-white h-4 w-5 rounded text-[10px]">
-                      {unit.toString().padStart(2, '0')}
-                    </span>
-                    {i < 2 && <span className="text-gray-500 mx-0.5">:</span>}
-                  </span>
-                ))}
-              </div>
-            </div>
           </div>
           <Link to="#" className="text-xs text-orange-500 hover:underline flex items-center">
             More <ArrowRight className="h-3 w-3 ml-0.5" />
@@ -126,7 +111,7 @@ export default function FlashDeals() {
           }}
         >
           <div className="flex pl-2">
-            {flashProducts.map((product, index) => (
+            {flashProducts.map((product) => (
               <div
                 key={product.id}
                 className="w-[110px] md:w-[130px] flex-shrink-0 snap-start mr-2"
@@ -141,6 +126,15 @@ export default function FlashDeals() {
                     />
                     <div className="absolute top-0 left-0 bg-orange-500 text-white text-[10px] px-1.5 py-0.5 rounded-br-md font-medium">
                       {Math.round(((product.price - product.discountPrice) / product.price) * 100)}% OFF
+                    </div>
+                    {/* Countdown Timer */}
+                    <div className="absolute bottom-0 left-0 w-full bg-black/60 text-white text-[10px] flex justify-center py-0.5">
+                      {[timeLeft.hours, timeLeft.minutes, timeLeft.seconds].map((unit, i) => (
+                        <span key={i} className="mx-0.5">
+                          <span>{unit.toString().padStart(2, '0')}</span>
+                          {i < 2 && <span className="mx-0.5">:</span>}
+                        </span>
+                      ))}
                     </div>
                   </div>
                   <div>
