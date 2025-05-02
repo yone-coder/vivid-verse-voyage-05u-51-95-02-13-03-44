@@ -113,25 +113,28 @@ export default function HeroBanner() {
         </div>
       </div>
 
-      {/* Ultra-sleek promotional banner */}
+      {/* AliExpress-Style Promotional Banner */}
       {showPromo && (
-        <div className="relative bg-gradient-to-r from-yellow-300 via-yellow-200 to-yellow-100 shadow-md">
-          <div className="max-w-screen-xl mx-auto flex items-center justify-between px-4 py-2 text-sm md:text-base font-medium text-black">
-            <div className="flex items-center gap-2">
-              <Truck className="w-4 h-4 md:w-5 md:h-5 text-orange-500" />
+        <div className="relative z-10 bg-[#E1251B] text-white text-sm md:text-base shadow-sm">
+          <div className="max-w-screen-xl mx-auto flex items-center justify-between px-4 py-2">
+            <div className="flex items-center gap-2 font-semibold tracking-tight">
+              <Truck className="w-4 h-4 text-white" />
               <span>
-                Free shipping on orders over <strong>$50</strong>. Limited time only!
+                Free shipping on orders over <span className="text-yellow-300">$50</span>
               </span>
-              <a href="/promos/free-shipping" className="ml-2 text-blue-700 underline hover:text-blue-900 transition-colors">
-                Learn more
+              <a
+                href="/promos/free-shipping"
+                className="ml-2 underline hover:text-yellow-200 transition"
+              >
+                Learn More
               </a>
             </div>
             <button
               onClick={() => setShowPromo(false)}
-              className="p-1 rounded-full hover:bg-black/5 transition"
-              aria-label="Dismiss"
+              className="hover:bg-white/10 p-1 rounded-full"
+              aria-label="Close promo"
             >
-              <X className="w-4 h-4 text-gray-700" />
+              <X className="w-4 h-4 text-white" />
             </button>
           </div>
         </div>
