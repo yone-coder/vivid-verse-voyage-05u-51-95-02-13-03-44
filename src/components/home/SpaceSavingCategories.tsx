@@ -35,9 +35,7 @@ const SpaceSavingCategories = () => {
     };
 
     const seed = imageSeeds[category.name] || parseInt(category.imageId, 10);
-    return `/api/placeholder/80/80?text=${category.shortName.charAt(0)}`;
-    // Note: In a real environment, you could use:
-    // return `https://picsum.photos/seed/${seed}/80/80`;
+    return `https://picsum.photos/seed/${seed}/80/80`;
   };
 
   const categories = [
@@ -70,7 +68,6 @@ const SpaceSavingCategories = () => {
     { name: 'Crafts', shortName: 'Crafts', color: 'bg-purple-100 text-purple-600', imageId: '27' }
   ];
 
-  // Function to render the category with rounded image
   const CategoryItem = ({ category }) => {
     return (
       <div 
@@ -99,21 +96,18 @@ const SpaceSavingCategories = () => {
 
       <div className="overflow-x-auto pb-3 scrollbar-hide no-scrollbar">
         <div className="flex flex-col space-y-3 px-3" style={{ minWidth: "700px" }}>
-          {/* Row 1 */}
           <div className="flex space-x-2">
             {categories.slice(0, 9).map((category, index) => (
               <CategoryItem key={index} category={category} />
             ))}
           </div>
 
-          {/* Row 2 */}
           <div className="flex space-x-2">
             {categories.slice(9, 18).map((category, index) => (
               <CategoryItem key={index} category={category} />
             ))}
           </div>
 
-          {/* Row 3 */}
           <div className="flex space-x-2">
             {categories.slice(18).map((category, index) => (
               <CategoryItem key={index} category={category} />
