@@ -7,7 +7,7 @@ import {
   CarouselNext,
   CarouselPrevious
 } from "@/components/ui/carousel";
-import { ArrowRight, Truck, X } from "lucide-react";
+import { ArrowRight, Clock, Gift, Truck, X } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const banners = [
@@ -35,6 +35,14 @@ const banners = [
     color: "from-orange-400 to-red-400",
     cta: "Grab Deals"
   }
+];
+
+// AliExpress-style promo items
+const promoItems = [
+  { id: 1, icon: <Truck className="w-3.5 h-3.5 text-orange-500" />, text: "Free Shipping" },
+  { id: 2, icon: <Gift className="w-3.5 h-3.5 text-pink-500" />, text: "New User Bonus" },
+  { id: 3, icon: <Clock className="w-3.5 h-3.5 text-blue-500" />, text: "24h Flash Deals" },
+  { id: 4, icon: <ArrowRight className="w-3.5 h-3.5 text-purple-500" />, text: "View All" }
 ];
 
 export default function HeroBanner() {
@@ -113,29 +121,30 @@ export default function HeroBanner() {
         </div>
       </div>
 
-      {/* AliExpress-Style Promotional Banner (Mobile Optimized) */}
+      {/* AliExpress-Style Promotional Banner - Single Row, Mobile-Friendly */}
       {showPromo && (
-        <div className="relative z-10 bg-[#E1251B] text-white text-xs md:text-sm shadow-sm">
-          <div className="max-w-screen-xl mx-auto flex flex-col sm:flex-row items-center justify-between px-3 py-1.5 gap-2 sm:gap-0">
-            <div className="flex items-center gap-1.5 sm:gap-2 font-semibold leading-tight text-center sm:text-left">
-              <Truck className="w-4 h-4 shrink-0 text-white" />
-              <span className="leading-snug">
-                Free shipping on orders over <span className="text-yellow-300">$50</span>
-              </span>
-              <a
-                href="/promos/free-shipping"
-                className="underline hover:text-yellow-200 transition whitespace-nowrap"
-              >
-                Learn More
-              </a>
+        <div className="bg-white border-b border-gray-100 shadow-sm">
+          <div className="max-w-screen-xl mx-auto px-2">
+            <div className="overflow-x-auto scrollbar-hide">
+              <div className="flex items-center py-2 min-w-max">
+                {promoItems.map((item, index) => (
+                  <a 
+                    key={item.id}
+                    href="#"
+                    className={`flex items-center flex-shrink-0 ${
+                      index < promoItems.length - 1 
+                        ? "pr-3 mr-3 border-r border-gray-200" 
+                        : ""
+                    }`}
+                  >
+                    <div className="flex items-center gap-1.5">
+                      <span className="flex-shrink-0">{item.icon}</span>
+                      <span className="text-xs font-medium text-gray-700">{item.text}</span>
+                    </div>
+                  </a>
+                ))}
+              </div>
             </div>
-            <button
-              onClick={() => setShowPromo(false)}
-              className="hover:bg-white/10 p-1 rounded-full sm:ml-4"
-              aria-label="Close promo"
-            >
-              <X className="w-4 h-4 text-white" />
-            </button>
           </div>
         </div>
       )}
