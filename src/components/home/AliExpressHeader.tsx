@@ -34,7 +34,7 @@ export default function AliExpressHeaderWithStates() {
   const handleVoiceSearch = () => setVoiceSearchActive(!voiceSearchActive);
 
   return (
-  <header className="fixed top-0 left-0 right-0 z-50 flex flex-col transition-all duration-700">
+ <header className="fixed top-0 left-0 right-0 z-50 flex flex-col transition-all duration-700">
   <div
     className="flex items-center justify-between px-2 transition-all duration-700"
     style={{
@@ -70,14 +70,18 @@ export default function AliExpressHeaderWithStates() {
 
     {/* Center */}
     <div
-      className={`transition-all duration-300 mx-2 relative ${
-        progress < 0.5 ? 'flex-1 max-w-xs' : 'flex-1 max-w-sm'
-      }`}
+      className="flex-1 transition-all duration-500 mx-2 relative"
+      style={{
+        maxWidth: progress >= 0.5 ? '320px' : '0px',
+        opacity: progress,
+      }}
       ref={searchRef}
     >
       <div
         className={`flex items-center bg-gray-100 rounded-full ${
-          isSearchFocused ? 'border border-orange-500' : 'border border-gray-200'
+          isSearchFocused
+            ? 'border border-orange-500'
+            : 'border border-gray-200'
         }`}
       >
         <Search className="ml-2 h-3.5 w-3.5 text-orange-500" />
@@ -108,16 +112,19 @@ export default function AliExpressHeaderWithStates() {
     </div>
 
     {/* Right */}
-    <div className="flex items-center space-x-2">
+    <div className="flex items-center space-x-2 min-w-[96px] justify-end">
+      {/* Search icon placeholder */}
       <div
-        className={`cursor-pointer hover:bg-black hover:bg-opacity-30 p-1 rounded-full transition-all duration-300 ${
+        className={`transition-all duration-300 w-6 h-6 flex items-center justify-center rounded-full ${
           progress < 0.5
-            ? 'opacity-100 pointer-events-auto w-auto'
-            : 'opacity-0 pointer-events-none w-0'
+            ? 'opacity-100 pointer-events-auto bg-black bg-opacity-40'
+            : 'opacity-0 pointer-events-none'
         }`}
       >
         <Search className="h-4 w-4 text-white" />
       </div>
+
+      {/* Bell */}
       <div className="cursor-pointer relative hover:bg-black hover:bg-opacity-30 p-1 rounded-full">
         <Bell
           className={`h-4 w-4 transition-colors ${
@@ -128,6 +135,8 @@ export default function AliExpressHeaderWithStates() {
           2
         </span>
       </div>
+
+      {/* QR */}
       <div className="cursor-pointer hover:bg-black hover:bg-opacity-30 p-1 rounded-full">
         <QrCode
           className={`h-4 w-4 transition-colors ${
