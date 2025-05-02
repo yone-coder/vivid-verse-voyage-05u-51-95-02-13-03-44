@@ -2,34 +2,34 @@ import React from 'react';
 
 const SpaceSavingCategories = () => {
   const imageSeeds = {
-    'Electronics': 180,
-    'Home & Kitchen': 1080,
-    'Fashion': 1027,
-    'Beauty': 1062,
-    'Sports': 1044,
-    'Toys & Games': 1069,
-    'Jewelry': 1084,
-    'Automotive': 1076,
-    'Books': 1050,
-    'Pets': 1025,
-    'Food': 1081,
-    'Audio': 1083,
-    'Computers': 1051,
-    'Photography': 1061,
-    'Watches': 1079,
-    'Coffee': 1060,
-    'Movies': 1032,
-    'Travel': 1035,
-    'Music': 1085,
-    'Health': 1039,
-    'Finance': 1082,
-    'Apparel': 1033,
-    'Business': 1043,
-    'Outdoor': 1011,
-    'Adventure': 1036,
-    'Seasonal': 1018,
-    'Crafts': 1068
-  };
+  'Electronics': 1060,     // Electronics setup
+  'Home & Kitchen': 1084,  // Kitchen interior
+  'Fashion': 1027,         // Fashionable attire
+  'Beauty': 1062,          // Beauty products
+  'Sports': 1044,          // Sports activity
+  'Toys & Games': 1069,    // Toys
+  'Jewelry': 1081,         // Jewelry close-up
+  'Automotive': 1076,      // Car
+  'Books': 1050,           // Stack of books
+  'Pets': 1025,            // Pet (dog)
+  'Food': 1080,            // Food dish
+  'Audio': 1083,           // Headphones
+  'Computers': 1051,       // Computer setup
+  'Photography': 1061,     // Camera
+  'Watches': 1079,         // Watch
+  'Coffee': 1060,          // Coffee cup
+  'Movies': 1032,          // Film reel
+  'Travel': 1035,          // Scenic travel
+  'Music': 1085,           // Musical instruments
+  'Health': 1039,          // Health-related
+  'Finance': 1082,         // Financial theme
+  'Apparel': 1033,         // Clothing
+  'Business': 1043,        // Business setting
+  'Outdoor': 1011,         // Outdoor scene
+  'Adventure': 1036,       // Adventure activity
+  'Seasonal': 1018,        // Seasonal imagery
+  'Crafts': 1068           // Craft materials
+};
 
   const getCategoryImageUrl = (category) => {
     const seed = imageSeeds[category.name];
