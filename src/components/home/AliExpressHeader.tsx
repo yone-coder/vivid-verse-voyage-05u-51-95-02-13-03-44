@@ -41,9 +41,10 @@ export default function AliExpressHeaderWithStates() {
       height: '44px',
       backgroundColor: `rgba(255, 255, 255, ${progress * 0.95})`,
       backdropFilter: `blur(${progress * 8}px)`,
-      backgroundImage: progress < 0.5
-        ? 'linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0))'
-        : 'none',
+      backgroundImage:
+        progress < 0.5
+          ? 'linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0))'
+          : 'none',
     }}
   >
     {/* Left */}
@@ -56,7 +57,9 @@ export default function AliExpressHeaderWithStates() {
           >
             <span>{activeTab}</span>
             <ChevronDown
-              className={`w-4 h-4 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+              className={`w-4 h-4 transition-transform duration-300 ${
+                isOpen ? 'rotate-180' : ''
+              }`}
             />
           </button>
         ) : (
@@ -66,46 +69,51 @@ export default function AliExpressHeaderWithStates() {
     </div>
 
     {/* Center */}
-    {progress < 0.5 ? (
-      <div className="flex-1 flex justify-center" />
-    ) : (
-      <div className="flex-1 max-w-xs mx-2 relative" ref={searchRef}>
+    <div
+      className={`transition-all duration-300 mx-2 relative ${
+        progress < 0.5 ? 'flex-1 max-w-xs' : 'flex-1 max-w-sm'
+      }`}
+      ref={searchRef}
+    >
+      <div
+        className={`flex items-center bg-gray-100 rounded-full ${
+          isSearchFocused ? 'border border-orange-500' : 'border border-gray-200'
+        }`}
+      >
+        <Search className="ml-2 h-3.5 w-3.5 text-orange-500" />
+        <input
+          className="py-1 px-2 text-xs outline-none bg-gray-100 placeholder-gray-400 w-full"
+          placeholder="Search on AliExpress"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          onFocus={handleSearchFocus}
+        />
         <div
-          className={`flex items-center bg-gray-100 rounded-full ${
-            isSearchFocused ? 'border border-orange-500' : 'border border-gray-200'
+          className={`cursor-pointer mx-1 rounded-full ${
+            voiceSearchActive ? 'bg-orange-100' : ''
           }`}
+          onClick={handleVoiceSearch}
         >
-          <Search className="ml-2 h-3.5 w-3.5 text-orange-500" />
-          <input
-            className="py-1 px-2 text-xs outline-none bg-gray-100 placeholder-gray-400 w-full"
-            placeholder="Search on AliExpress"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onFocus={handleSearchFocus}
-          />
-          <div
-            className={`cursor-pointer mx-1 rounded-full ${voiceSearchActive ? 'bg-orange-100' : ''}`}
-            onClick={handleVoiceSearch}
-          >
-            <Mic className="h-3.5 w-3.5 text-orange-500" />
-          </div>
-          {searchQuery && (
-            <div
-              className="cursor-pointer mr-2 rounded-full hover:bg-gray-200"
-              onClick={handleClearSearch}
-            >
-              <X className="h-3 w-3 text-gray-500" />
-            </div>
-          )}
+          <Mic className="h-3.5 w-3.5 text-orange-500" />
         </div>
+        {searchQuery && (
+          <div
+            className="cursor-pointer mr-2 rounded-full hover:bg-gray-200"
+            onClick={handleClearSearch}
+          >
+            <X className="h-3 w-3 text-gray-500" />
+          </div>
+        )}
       </div>
-    )}
+    </div>
 
     {/* Right */}
     <div className="flex items-center space-x-2">
       <div
         className={`cursor-pointer hover:bg-black hover:bg-opacity-30 p-1 rounded-full transition-all duration-300 ${
-          progress < 0.5 ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+          progress < 0.5
+            ? 'opacity-100 pointer-events-auto w-auto'
+            : 'opacity-0 pointer-events-none w-0'
         }`}
       >
         <Search className="h-4 w-4 text-white" />
