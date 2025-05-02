@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tag, Flame, Sparkles, Percent } from 'lucide-react';
+import { Flame, Sparkles, Percent, Clock } from 'lucide-react';
 
 const AliExpressCategories = () => {
   const imageSeeds = {
@@ -37,49 +37,55 @@ const AliExpressCategories = () => {
     return `https://picsum.photos/id/${seed}/80/80`;
   };
 
+  // Updated categories with more promotional tags
   const categories = [
-    { name: 'Electronics', shortName: 'Electronics', tags: ['Hot', '20% Off'], isPopular: true, itemCount: '25K+' },
-    { name: 'Home & Kitchen', shortName: 'Home', tags: ['New'], isPopular: false, itemCount: '18K+' },
-    { name: 'Fashion', shortName: 'Fashion', tags: ['Sale'], isPopular: true, itemCount: '32K+' },
-    { name: 'Beauty', shortName: 'Beauty', tags: ['Trending'], isPopular: true, itemCount: '15K+' },
-    { name: 'Sports', shortName: 'Sports', tags: ['30% Off'], isPopular: false, itemCount: '12K+' },
-    { name: 'Toys & Games', shortName: 'Toys', tags: ['Kids'], isPopular: false, itemCount: '9K+' },
-    { name: 'Jewelry', shortName: 'Jewelry', tags: ['Luxury'], isPopular: false, itemCount: '7K+' },
-    { name: 'Automotive', shortName: 'Auto', tags: ['Tools'], isPopular: false, itemCount: '11K+' },
-    { name: 'Books', shortName: 'Books', tags: ['2 for 1'], isPopular: false, itemCount: '14K+' },
-    { name: 'Pets', shortName: 'Pets', tags: ['New'], isPopular: false, itemCount: '5K+' },
-    { name: 'Food', shortName: 'Food', tags: ['Organic'], isPopular: false, itemCount: '8K+' },
-    { name: 'Audio', shortName: 'Audio', tags: ['Premium'], isPopular: false, itemCount: '6K+' },
-    { name: 'Computers', shortName: 'Tech', tags: ['Hot', '15% Off'], isPopular: true, itemCount: '21K+' },
-    { name: 'Photography', shortName: 'Photo', tags: ['Pro'], isPopular: false, itemCount: '4K+' },
-    { name: 'Watches', shortName: 'Watches', tags: ['Luxury'], isPopular: false, itemCount: '3K+' },
-    { name: 'Coffee', shortName: 'Coffee', tags: ['Artisan'], isPopular: false, itemCount: '2K+' },
-    { name: 'Movies', shortName: 'Movies', tags: ['Digital'], isPopular: false, itemCount: '10K+' },
-    { name: 'Travel', shortName: 'Travel', tags: ['Deals'], isPopular: false, itemCount: '9K+' },
-    { name: 'Music', shortName: 'Music', tags: ['Vinyl'], isPopular: false, itemCount: '7K+' },
-    { name: 'Health', shortName: 'Health', tags: ['Wellness'], isPopular: false, itemCount: '13K+' },
-    { name: 'Finance', shortName: 'Finance', tags: ['Tools'], isPopular: false, itemCount: '2K+' },
-    { name: 'Apparel', shortName: 'Apparel', tags: ['Sale', 'Hot'], isPopular: true, itemCount: '28K+' },
-    { name: 'Business', shortName: 'Business', tags: ['Office'], isPopular: false, itemCount: '6K+' },
-    { name: 'Outdoor', shortName: 'Outdoor', tags: ['Adventure'], isPopular: false, itemCount: '11K+' },
-    { name: 'Adventure', shortName: 'Adventure', tags: ['Gear'], isPopular: false, itemCount: '8K+' },
-    { name: 'Seasonal', shortName: 'Seasonal', tags: ['Limited'], isPopular: false, itemCount: '5K+' },
-    { name: 'Crafts', shortName: 'Crafts', tags: ['DIY'], isPopular: false, itemCount: '9K+' }
+    { name: 'Electronics', shortName: 'Electronics', tags: ['Hot', '20% Off'], isPopular: true },
+    { name: 'Home & Kitchen', shortName: 'Home', tags: ['New'], isPopular: false },
+    { name: 'Fashion', shortName: 'Fashion', tags: ['Sale'], isPopular: true },
+    { name: 'Beauty', shortName: 'Beauty', tags: ['Trending'], isPopular: true },
+    { name: 'Sports', shortName: 'Sports', tags: ['30% Off'], isPopular: false },
+    { name: 'Toys & Games', shortName: 'Toys', tags: ['New'], isPopular: false },
+    { name: 'Jewelry', shortName: 'Jewelry', tags: ['Premium'], isPopular: false },
+    { name: 'Automotive', shortName: 'Auto', tags: ['Hot Deal'], isPopular: false },
+    { name: 'Books', shortName: 'Books', tags: ['2 for 1'], isPopular: false },
+    { name: 'Pets', shortName: 'Pets', tags: ['New'], isPopular: false },
+    { name: 'Food', shortName: 'Food', tags: ['Special'], isPopular: false },
+    { name: 'Audio', shortName: 'Audio', tags: ['Premium'], isPopular: false },
+    { name: 'Computers', shortName: 'Tech', tags: ['Hot', '15% Off'], isPopular: true },
+    { name: 'Photography', shortName: 'Photo', tags: ['Sale'], isPopular: false },
+    { name: 'Watches', shortName: 'Watches', tags: ['Premium'], isPopular: false },
+    { name: 'Coffee', shortName: 'Coffee', tags: ['Special'], isPopular: false },
+    { name: 'Movies', shortName: 'Movies', tags: ['Hot'], isPopular: false },
+    { name: 'Travel', shortName: 'Travel', tags: ['Deal'], isPopular: false },
+    { name: 'Music', shortName: 'Music', tags: ['Limited'], isPopular: false },
+    { name: 'Health', shortName: 'Health', tags: ['Trending'], isPopular: false },
+    { name: 'Finance', shortName: 'Finance', tags: ['New'], isPopular: false },
+    { name: 'Apparel', shortName: 'Apparel', tags: ['Sale', 'Hot'], isPopular: true },
+    { name: 'Business', shortName: 'Business', tags: ['Deal'], isPopular: false },
+    { name: 'Outdoor', shortName: 'Outdoor', tags: ['Hot'], isPopular: false },
+    { name: 'Adventure', shortName: 'Adventure', tags: ['Limited'], isPopular: false },
+    { name: 'Seasonal', shortName: 'Seasonal', tags: ['Limited'], isPopular: false },
+    { name: 'Crafts', shortName: 'Crafts', tags: ['Special'], isPopular: false }
   ];
 
   const getTagIcon = (tag) => {
     switch (tag.toLowerCase()) {
       case 'hot':
+      case 'hot deal':
         return <Flame size={10} className="mr-0.5" />;
       case 'new':
         return <Sparkles size={10} className="mr-0.5" />;
       case 'sale':
+      case 'deal':
       case '20% off':
       case '30% off':
       case '15% off':
+      case '2 for 1':
         return <Percent size={10} className="mr-0.5" />;
+      case 'limited':
+        return <Clock size={10} className="mr-0.5" />;
       default:
-        return <Tag size={10} className="mr-0.5" />;
+        return null;
     }
   };
 
@@ -96,24 +102,30 @@ const AliExpressCategories = () => {
             <span className="text-[8px] font-bold text-white">POPULAR</span>
           </div>
         )}
+        
+        {/* Moved tags to bottom left of thumbnail */}
+        {category.tags.length > 0 && (
+          <div className="absolute bottom-0 left-0 flex flex-wrap gap-0.5 p-0.5">
+            {category.tags.map((tag, idx) => (
+              <div key={idx} className={`flex items-center px-1 rounded-sm text-[7px] font-medium ${
+                tag.toLowerCase() === 'hot' || tag.toLowerCase().includes('hot') ? 'bg-red-100 text-red-600' : 
+                tag.toLowerCase() === 'new' ? 'bg-blue-100 text-blue-600' : 
+                tag.toLowerCase().includes('off') || tag.toLowerCase() === 'sale' || tag.toLowerCase() === 'deal' ? 'bg-green-100 text-green-600' :
+                tag.toLowerCase() === 'limited' ? 'bg-purple-100 text-purple-600' :
+                tag.toLowerCase() === 'trending' ? 'bg-yellow-100 text-yellow-600' :
+                tag.toLowerCase() === 'premium' || tag.toLowerCase() === 'special' ? 'bg-amber-100 text-amber-600' :
+                'bg-gray-100 text-gray-600'
+              }`}>
+                {getTagIcon(tag)}
+                {tag}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
       <span className="text-xs font-medium text-gray-700 text-center truncate w-full leading-tight">
         {category.shortName || category.name}
       </span>
-      <div className="flex flex-wrap justify-center gap-1 mt-0.5 w-full">
-        {category.tags.map((tag, idx) => (
-          <div key={idx} className={`flex items-center px-1 rounded-sm text-[7px] font-medium ${
-            tag.toLowerCase() === 'hot' ? 'bg-red-100 text-red-600' : 
-            tag.toLowerCase() === 'new' ? 'bg-blue-100 text-blue-600' : 
-            tag.toLowerCase().includes('off') || tag.toLowerCase() === 'sale' ? 'bg-green-100 text-green-600' : 
-            'bg-gray-100 text-gray-600'
-          }`}>
-            {getTagIcon(tag)}
-            {tag}
-          </div>
-        ))}
-      </div>
-      <span className="text-[8px] text-gray-400 mt-0.5">{category.itemCount}</span>
     </div>
   );
 
