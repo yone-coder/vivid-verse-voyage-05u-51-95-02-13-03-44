@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
+import { ArrowRight, Clock, Gift, Truck } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
 import {
   Carousel,
@@ -7,16 +9,14 @@ import {
   CarouselNext,
   CarouselPrevious
 } from "@/components/ui/carousel";
-import { ArrowRight, Clock, Gift, Truck } from "lucide-react";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 const banners = [
-  { id: 1, image: "/api/placeholder/1200/400?1", color: "from-orange-500 to-red-500" },
-  { id: 2, image: "/api/placeholder/1200/400?2", color: "from-cyan-500 to-blue-500" },
-  { id: 3, image: "/api/placeholder/1200/400?3", color: "from-orange-400 to-red-400" },
-  { id: 4, image: "/api/placeholder/1200/400?4", color: "from-purple-500 to-pink-500" },
-  { id: 5, image: "/api/placeholder/1200/400?5", color: "from-green-400 to-teal-500" },
-  { id: 6, image: "/api/placeholder/1200/400?6", color: "from-yellow-400 to-orange-500" }
+  { id: 1, color: "from-orange-500 to-red-500", text: "Hot Deals" },
+  { id: 2, color: "from-cyan-500 to-blue-500", text: "Fresh Drops" },
+  { id: 3, color: "from-purple-500 to-pink-500", text: "Limited Time" },
+  { id: 4, color: "from-green-400 to-teal-500", text: "Eco Picks" },
+  { id: 5, color: "from-yellow-400 to-orange-500", text: "Top Rated" },
+  { id: 6, color: "from-indigo-400 to-blue-700", text: "Editor's Choice" }
 ];
 
 const promoItems = [
@@ -81,13 +81,21 @@ export default function HeroBanner() {
           <CarouselContent>
             {banners.map((banner) => (
               <CarouselItem key={banner.id}>
-                <div className="relative h-[180px] md:h-[250px] lg:h-[300px] overflow-hidden rounded-none">
-                  {/* Gradient overlay removed */}
-                  <img
-                    src={banner.image}
-                    alt={`Banner ${banner.id}`}
-                    className="w-full h-full object-cover"
-                  />
+                <div className={`relative h-[180px] md:h-[250px] lg:h-[300px] bg-gradient-to-r ${banner.color} flex items-center`}>
+                  <div className="container mx-auto px-4">
+                    <div className="max-w-lg">
+                      <h2 className="text-xl md:text-3xl font-extrabold text-white mb-0.5 md:mb-2 drop-shadow-md">
+                        {banner.text}
+                      </h2>
+                      <p className="text-white text-xs md:text-base mb-2 md:mb-4 max-w-md drop-shadow-md font-medium">
+                        Don't miss out on amazing savings.
+                      </p>
+                      <Button className="bg-white text-black hover:bg-gray-100 font-medium text-xs md:text-sm rounded-full h-7 md:h-auto">
+                        Shop Now
+                        <ArrowRight className="w-3 h-3 md:w-3.5 md:h-3.5 ml-1" />
+                      </Button>
+                    </div>
+                  </div>
                 </div>
               </CarouselItem>
             ))}
@@ -110,7 +118,6 @@ export default function HeroBanner() {
           )}
         </Carousel>
 
-        {/* Animated Indicators */}
         <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5">
           {banners.map((_, index) => (
             <button
