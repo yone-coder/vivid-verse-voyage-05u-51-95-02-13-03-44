@@ -34,7 +34,7 @@ export default function AliExpressHeaderWithStates() {
   const handleVoiceSearch = () => setVoiceSearchActive(!voiceSearchActive);
 
   return (
-   <header className="fixed top-0 left-0 right-0 z-50 flex flex-col transition-all duration-700">
+  <header className="fixed top-0 left-0 right-0 z-50 flex flex-col transition-all duration-700">
   <div
     className="flex items-center justify-between px-2 transition-all duration-700"
     style={{
@@ -103,12 +103,12 @@ export default function AliExpressHeaderWithStates() {
 
     {/* Right */}
     <div className="flex items-center space-x-2">
-      <div className="cursor-pointer hover:bg-black hover:bg-opacity-30 p-1 rounded-full">
-        <Search
-          className={`h-4 w-4 transition-colors ${
-            progress < 0.5 ? 'text-white' : 'text-gray-600'
-          }`}
-        />
+      <div
+        className={`cursor-pointer hover:bg-black hover:bg-opacity-30 p-1 rounded-full transition-all duration-300 ${
+          progress < 0.5 ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+      >
+        <Search className="h-4 w-4 text-white" />
       </div>
       <div className="cursor-pointer relative hover:bg-black hover:bg-opacity-30 p-1 rounded-full">
         <Bell
