@@ -102,37 +102,33 @@ export default function AliExpressHeaderWithStates() {
     )}
 
     {/* Right */}
-    <div className="flex items-center space-x-2">
-      {progress < 0.5 ? (
-        <>
-          <div className="cursor-pointer hover:bg-black hover:bg-opacity-30 p-1 rounded-full">
-            <Search className="h-4 w-4 text-white" />
-          </div>
-          <div className="cursor-pointer relative hover:bg-black hover:bg-opacity-30 p-1 rounded-full">
-            <Bell className="h-4 w-4 text-white" />
-            <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] rounded-full h-3.5 w-3.5 flex items-center justify-center">
-              2
-            </span>
-          </div>
-          <div className="cursor-pointer hover:bg-black hover:bg-opacity-30 p-1 rounded-full">
-            <QrCode className="h-4 w-4 text-white" />
-          </div>
-        </>
-      ) : (
-        <>
-          <div className="cursor-pointer relative">
-            <Bell className="h-4 w-4 text-gray-600" />
-            <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] rounded-full h-3.5 w-3.5 flex items-center justify-center">
-              2
-            </span>
-          </div>
-          <div className="cursor-pointer">
-            <QrCode className="h-4 w-4 text-gray-600" />
-          </div>
-        </>
-      )}
-    </div>
+   {/* Right */}
+<div className="flex items-center space-x-2">
+  <div className="cursor-pointer hover:bg-black hover:bg-opacity-30 p-1 rounded-full">
+    <Search
+      className={`h-4 w-4 transition-colors ${
+        progress < 0.5 ? 'text-white' : 'text-gray-600'
+      }`}
+    />
   </div>
+  <div className="cursor-pointer relative hover:bg-black hover:bg-opacity-30 p-1 rounded-full">
+    <Bell
+      className={`h-4 w-4 transition-colors ${
+        progress < 0.5 ? 'text-white' : 'text-gray-600'
+      }`}
+    />
+    <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] rounded-full h-3.5 w-3.5 flex items-center justify-center">
+      2
+    </span>
+  </div>
+  <div className="cursor-pointer hover:bg-black hover:bg-opacity-30 p-1 rounded-full">
+    <QrCode
+      className={`h-4 w-4 transition-colors ${
+        progress < 0.5 ? 'text-white' : 'text-gray-600'
+      }`}
+    />
+  </div>
+</div>
 
   {/* Tabs */}
   <div
