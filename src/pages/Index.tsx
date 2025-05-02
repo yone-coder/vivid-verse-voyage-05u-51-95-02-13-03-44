@@ -95,15 +95,7 @@ export default function Index() {
         <RecentlyViewed />
       </div>
 
-      {/* Enhanced Newsletter */}
-      <div className="mb-1">
-        <Newsletter />
-      </div>
-
-      {/* All Products Grid with Filters */}
-      <div className="bg-white pb-16 md:pb-6">
-        <ProductGrid products={products || []} isLoading={isLoading} />
-      </div>
+      
 
       {/* Extra bottom padding for mobile to account for fixed navigation */}
       {isMobile && <div className="h-16"></div>}
