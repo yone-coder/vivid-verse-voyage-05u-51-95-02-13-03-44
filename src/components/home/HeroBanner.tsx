@@ -7,7 +7,7 @@ import {
   CarouselNext,
   CarouselPrevious
 } from "@/components/ui/carousel";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Truck, X } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const banners = [
@@ -39,6 +39,7 @@ const banners = [
 
 export default function HeroBanner() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [showPromo, setShowPromo] = useState(true);
   const isMobile = useIsMobile();
 
   useEffect(() => {
@@ -112,12 +113,29 @@ export default function HeroBanner() {
         </div>
       </div>
 
-      {/* Promotional banner below carousel */}
-      <div className="w-full bg-yellow-400 text-center py-1.5 md:py-2">
-        <p className="text-sm md:text-base font-medium text-black">
-          Free shipping on orders over $50! Limited time offer.
-        </p>
-      </div>
+      {/* Ultra-sleek promotional banner */}
+      {showPromo && (
+        <div className="relative bg-gradient-to-r from-yellow-300 via-yellow-200 to-yellow-100 shadow-md">
+          <div className="max-w-screen-xl mx-auto flex items-center justify-between px-4 py-2 text-sm md:text-base font-medium text-black">
+            <div className="flex items-center gap-2">
+              <Truck className="w-4 h-4 md:w-5 md:h-5 text-orange-500" />
+              <span>
+                Free shipping on orders over <strong>$50</strong>. Limited time only!
+              </span>
+              <a href="/promos/free-shipping" className="ml-2 text-blue-700 underline hover:text-blue-900 transition-colors">
+                Learn more
+              </a>
+            </div>
+            <button
+              onClick={() => setShowPromo(false)}
+              className="p-1 rounded-full hover:bg-black/5 transition"
+              aria-label="Dismiss"
+            >
+              <X className="w-4 h-4 text-gray-700" />
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 }
