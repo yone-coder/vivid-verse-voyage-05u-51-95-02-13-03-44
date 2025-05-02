@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Zap } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -13,7 +13,7 @@ const flashProducts = [
     rating: 4.7,
     ratingCount: 235,
     sold: 1253,
-    stock: 45,
+    stock: 45
   },
   {
     id: 102,
@@ -24,7 +24,7 @@ const flashProducts = [
     rating: 4.7,
     ratingCount: 235,
     sold: 1253,
-    stock: 45,
+    stock: 45
   },
   {
     id: 103,
@@ -35,7 +35,7 @@ const flashProducts = [
     rating: 4.7,
     ratingCount: 235,
     sold: 1253,
-    stock: 45,
+    stock: 45
   },
   {
     id: 104,
@@ -46,7 +46,7 @@ const flashProducts = [
     rating: 4.7,
     ratingCount: 235,
     sold: 1253,
-    stock: 45,
+    stock: 45
   },
   {
     id: 105,
@@ -57,8 +57,8 @@ const flashProducts = [
     rating: 4.7,
     ratingCount: 235,
     sold: 1253,
-    stock: 45,
-  },
+    stock: 45
+  }
 ];
 
 export default function FlashDeals() {
@@ -68,7 +68,7 @@ export default function FlashDeals() {
   const [timeLeft, setTimeLeft] = useState({
     hours: 5,
     minutes: 30,
-    seconds: 0,
+    seconds: 0
   });
 
   useEffect(() => {
@@ -81,7 +81,7 @@ export default function FlashDeals() {
         } else if (prev.hours > 0) {
           return { hours: prev.hours - 1, minutes: 59, seconds: 59 };
         }
-        return { hours: 5, minutes: 30, seconds: 0 }; // Reset
+        return { hours: 5, minutes: 30, seconds: 0 };
       });
     }, 1000);
 
@@ -93,21 +93,9 @@ export default function FlashDeals() {
       <div className="px-2 py-2">
         <div className="flex justify-between items-center mb-1">
           <div className="flex items-center space-x-2">
-            <div className="bg-[#FF4747] text-white text-xs font-semibold px-2 py-0.5 rounded-sm uppercase tracking-wide">
+            <div className="flex items-center bg-[#FF4747] text-white text-xs font-semibold px-2 py-0.5 rounded-sm uppercase tracking-wide">
+              <Zap className="w-3.5 h-3.5 mr-1" />
               Flash Sale
-            </div>
-            <div className="flex items-center text-[11px] text-gray-700 font-medium space-x-1">
-              <span>Ends in</span>
-              <div className="flex space-x-1">
-                {[timeLeft.hours, timeLeft.minutes, timeLeft.seconds].map((unit, i) => (
-                  <span
-                    key={i}
-                    className="bg-black text-white px-1 py-0.5 rounded-sm text-[10px] font-mono"
-                  >
-                    {unit.toString().padStart(2, "0")}
-                  </span>
-                ))}
-              </div>
             </div>
           </div>
           <Link
@@ -125,7 +113,7 @@ export default function FlashDeals() {
           className="overflow-x-auto scroll-smooth scrollbar-hide snap-x snap-mandatory"
           style={{
             scrollPaddingLeft: "1rem",
-            WebkitOverflowScrolling: "touch",
+            WebkitOverflowScrolling: "touch"
           }}
         >
           <div className="flex pl-2">
@@ -172,7 +160,7 @@ export default function FlashDeals() {
                         style={{
                           width: `${
                             100 - (product.stock / (product.stock + product.sold)) * 100
-                          }%`,
+                          }%`
                         }}
                       />
                     </div>
