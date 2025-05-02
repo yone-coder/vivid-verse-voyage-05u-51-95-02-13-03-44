@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import {
   Carousel,
@@ -15,7 +15,7 @@ const banners = [
     id: 1,
     title: "MEGA SALE",
     subtitle: "Up to 70% OFF on thousands of items",
-    image: "https://placehold.co/1200x400/FF6B6B/FFF?text=MEGA+SALE",
+    image: "/api/placeholder/1200/400",
     color: "from-orange-500 to-red-500",
     cta: "Shop Now"
   },
@@ -23,7 +23,7 @@ const banners = [
     id: 2,
     title: "NEW ARRIVALS",
     subtitle: "Fresh tech and trending products",
-    image: "https://placehold.co/1200x400/4ECDC4/FFF?text=NEW+ARRIVALS",
+    image: "/api/placeholder/1200/400",
     color: "from-cyan-500 to-blue-500",
     cta: "Discover"
   },
@@ -31,7 +31,7 @@ const banners = [
     id: 3,
     title: "FLASH DEALS",
     subtitle: "Time-limited offers - Hurry!",
-    image: "https://placehold.co/1200x400/FF9A8B/FFF?text=FLASH+DEALS",
+    image: "/api/placeholder/1200/400",
     color: "from-orange-400 to-red-400",
     cta: "Grab Deals"
   }
@@ -48,24 +48,67 @@ const promoItems = [
 export default function HeroBanner() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [showPromo, setShowPromo] = useState(true);
+  const [progress, setProgress] = useState(0);
   const isMobile = useIsMobile();
+  const intervalRef = useRef(null);
+  const animationRef = useRef(null);
+  const slideDuration = 5000; // 5 seconds per slide
+  
+  const resetSlideTimer = () => {
+    // Clear existing timers
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    if (animationRef.current) cancelAnimationFrame(animationRef.current);
+    
+    // Reset progress
+    setProgress(0);
+    
+    // Animation for progress
+    let startTime;
+    const animate = (timestamp) => {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      const newProgress = Math.min(100, (elapsed / slideDuration) * 100);
+      setProgress(newProgress);
+      
+      if (elapsed < slideDuration) {
+        animationRef.current = requestAnimationFrame(animate);
+      }
+    };
+    
+    animationRef.current = requestAnimationFrame(animate);
+    
+    // Setup next slide timer
+    intervalRef.current = setInterval(() => {
+      setActiveIndex((current) => (current + 1) % banners.length);
+    }, slideDuration);
+  };
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveIndex((current) => (current + 1) % banners.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
+    resetSlideTimer();
+    
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+    };
+  }, [activeIndex]);
+
+  const handleDotClick = (index) => {
+    setActiveIndex(index);
+    resetSlideTimer();
+  };
 
   return (
     <>
       <div className="relative">
         <Carousel
           className="w-full"
+          currentIndex={activeIndex}
           setApi={(api) => {
             api?.on("select", () => {
               const selectedIndex = api.selectedScrollSnap();
-              setActiveIndex(selectedIndex);
+              if (selectedIndex !== activeIndex) {
+                setActiveIndex(selectedIndex);
+              }
             });
           }}
         >
@@ -101,22 +144,44 @@ export default function HeroBanner() {
           </CarouselContent>
           {!isMobile && (
             <>
-              <CarouselPrevious className="left-6 bg-white/80 hover:bg-white hidden md:flex" />
-              <CarouselNext className="right-6 bg-white/80 hover:bg-white hidden md:flex" />
+              <CarouselPrevious 
+                className="left-6 bg-white/80 hover:bg-white hidden md:flex" 
+                onClick={() => {
+                  setActiveIndex((current) => (current - 1 + banners.length) % banners.length);
+                }}
+              />
+              <CarouselNext 
+                className="right-6 bg-white/80 hover:bg-white hidden md:flex" 
+                onClick={() => {
+                  setActiveIndex((current) => (current + 1) % banners.length);
+                }}
+              />
             </>
           )}
         </Carousel>
 
-        {/* Indicators */}
+        {/* Animated Indicators */}
         <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5">
           {banners.map((_, index) => (
             <button
               key={index}
-              className={`h-1 rounded-full transition-all ${
-                activeIndex === index ? "bg-orange-500 w-5" : "bg-gray-300 w-2.5"
-              }`}
-              onClick={() => setActiveIndex(index)}
-            />
+              className="relative h-1 rounded-full bg-gray-300 w-5 overflow-hidden"
+              onClick={() => handleDotClick(index)}
+            >
+              {/* Background for inactive dots */}
+              <div className="absolute inset-0 bg-gray-300 rounded-full"></div>
+              
+              {/* Animated fill for active dot */}
+              {activeIndex === index && (
+                <div 
+                  className="absolute inset-0 bg-orange-500 rounded-full origin-left"
+                  style={{
+                    width: `${progress}%`,
+                    transition: 'width 0.1s linear'
+                  }}
+                ></div>
+              )}
+            </button>
           ))}
         </div>
       </div>
