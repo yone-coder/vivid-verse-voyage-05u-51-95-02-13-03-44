@@ -35,8 +35,9 @@ export default function AliExpressHeaderWithStates() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 flex flex-col transition-all duration-700">
+      {/* Main Header Section */}
       <div
-        className="flex items-center justify-between px-2 transition-all duration-700"
+        className="flex items-center justify-between px-2 w-full transition-all duration-700"
         style={{
           height: '44px',
           backgroundColor: `rgba(255, 255, 255, ${progress * 0.95})`,
@@ -44,6 +45,8 @@ export default function AliExpressHeaderWithStates() {
           backgroundImage: progress < 0.5
             ? 'linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0))'
             : 'none',
+          willChange: 'transform', // Optimize for animations
+          transform: 'translateZ(0)', // Force GPU acceleration
         }}
       >
         {/* Left */}
@@ -142,6 +145,8 @@ export default function AliExpressHeaderWithStates() {
           opacity: progress,
           backgroundColor: `rgba(255, 255, 255, ${progress * 0.98})`,
           backdropFilter: `blur(${progress * 8}px)`,
+          willChange: 'transform, max-height', // Optimize for animations
+          transform: 'translateZ(0)', // Force GPU acceleration
         }}
       >
         <div className="flex overflow-x-auto no-scrollbar bg-white">
@@ -187,7 +192,7 @@ export default function AliExpressHeaderWithStates() {
 
       {/* Voice Search Overlay */}
       {voiceSearchActive && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-60">
           <div className="bg-white p-4 rounded-xl w-64 flex flex-col items-center">
             <div className="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center mb-2 animate-pulse">
               <Mic className="h-6 w-6 text-orange-500" />
