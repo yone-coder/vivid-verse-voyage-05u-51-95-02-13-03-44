@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Clock, Lightning, ChevronRight } from "lucide-react";
+import { ArrowRight, Clock, Zap, ChevronRight } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -91,12 +91,12 @@ export default function FlashDeals() {
   return (
     <div className="w-full bg-white">
       {/* Enhanced AliExpress-style Header */}
-      <div className="bg-gradient-to-r from-red-600 to-orange-500 text-white px-2 py-3 rounded-t-md">
+      <div className="bg-gradient-to-r from-red-500 to-orange-500 text-white px-2 py-3">
         <div className="flex justify-between items-center">
-          <div className="flex items-center space-x-2">
-            <Lightning className="h-4 w-4 text-yellow-300" />
+          <div className="flex items-center gap-2">
+            <Zap className="h-4 w-4 text-yellow-300" />
             <h2 className="text-base font-bold">FLASH DEALS</h2>
-            <div className="flex items-center bg-white/20 rounded-full px-2 py-0.5 text-xs">
+            <div className="flex items-center bg-white bg-opacity-20 rounded-full px-2 py-0.5 text-xs">
               <Clock className="h-3 w-3 mr-1" />
               <span className="font-medium">Ends in:</span>
             </div>
@@ -107,10 +107,10 @@ export default function FlashDeals() {
         </div>
         
         <div className="flex items-center justify-center mt-2">
-          <div className="flex items-center space-x-1">
+          <div className="flex items-center gap-1">
             {[timeLeft.hours, timeLeft.minutes, timeLeft.seconds].map((unit, i) => (
               <div key={i} className="flex items-center">
-                <div className="bg-white text-orange-600 font-bold rounded px-1.5 py-0.5 text-sm min-w-6 text-center">
+                <div className="bg-white text-orange-600 font-bold rounded px-1.5 py-0.5 text-sm w-6 text-center">
                   {unit.toString().padStart(2, '0')}
                 </div>
                 {i < 2 && <span className="text-white font-bold mx-0.5">:</span>}
@@ -119,7 +119,7 @@ export default function FlashDeals() {
           </div>
         </div>
         
-        <div className="mt-2 text-xs text-center text-white/80">
+        <div className="mt-2 text-xs text-center text-white">
           <span className="bg-yellow-500 text-white px-1.5 py-0.5 rounded mr-1">UP TO 70% OFF</span>
           <span>Limited time offers - Don't miss out!</span>
         </div>
