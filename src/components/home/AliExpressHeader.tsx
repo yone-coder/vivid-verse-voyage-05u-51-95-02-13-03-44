@@ -1,91 +1,61 @@
-
 import { useState, useRef, useEffect } from 'react';
 import { Search, X, Mic, Bell, QrCode, ChevronDown } from 'lucide-react';
 import { useScrollProgress } from '@/hooks/useScrollProgress';
 import Logo from './Logo';
 
 export default function AliExpressHeaderWithStates() {
-  // Use the scroll progress hook to match product header behavior
   const { progress } = useScrollProgress();
-  
-  // State for the header toggle
+
   const [isOpen, setIsOpen] = useState(false);
-  
-  // States from the original component
   const [activeTab, setActiveTab] = useState('All');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [voiceSearchActive, setVoiceSearchActive] = useState(false);
   const searchRef = useRef(null);
-  
-  // To simulate different backgrounds for demo purposes
-  const [bgColor, setBgColor] = useState('#333');
 
   const categories = [
-    'All',
-    'Women',
-    'Men',
-    'Electronics',
-    'Home',
-    'Beauty',
-    'Kids',
-    'Sports',
+    'All', 'Women', 'Men', 'Electronics', 'Home', 'Beauty', 'Kids', 'Sports',
   ];
 
-  // Toggle panel state
-  const togglePanel = () => {
-    setIsOpen(!isOpen);
-  };
+  const togglePanel = () => setIsOpen(!isOpen);
 
-  // Click outside handler
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (searchRef.current && !searchRef.current.contains(event.target)) {
-        // No changes here
+        // Do nothing for now
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleSearchFocus = () => {
-    setIsSearchFocused(true);
-  };
-
-  const handleClearSearch = () => {
-    setSearchQuery('');
-  };
-
-  const handleVoiceSearch = () => {
-    setVoiceSearchActive(!voiceSearchActive);
-  };
+  const handleSearchFocus = () => setIsSearchFocused(true);
+  const handleClearSearch = () => setSearchQuery('');
+  const handleVoiceSearch = () => setVoiceSearchActive(!voiceSearchActive);
 
   return (
-   <header 
-  className="fixed top-0 left-0 right-0 z-50 flex flex-col transition-all duration-700"
-  style={{
-    minHeight: '56px', // Adjust this value to match your second state's height
-  }}
->
-      {/* Main Header - Using scroll progress for dynamic transparency */}
-      <div 
-        className="flex items-center justify-between px-1 py-2 transition-all duration-700"
+    <header className="fixed top-0 left-0 right-0 z-50 flex flex-col transition-all duration-700">
+      <div
+        className="flex items-center justify-between px-2 transition-all duration-700"
         style={{
+          height: '44px',
           backgroundColor: `rgba(255, 255, 255, ${progress * 0.95})`,
           backdropFilter: `blur(${progress * 8}px)`,
-          backgroundImage: progress < 0.5 ? 'linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0))' : 'none'
+          backgroundImage: progress < 0.5
+            ? 'linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0))'
+            : 'none',
         }}
       >
-        {/* Left section with dropdown in transparent mode, logo in regular mode */}
+        {/* Left */}
         <div className="flex items-center">
           {progress < 0.5 ? (
-            <button 
+            <button
               onClick={togglePanel}
-              className="tab-button flex items-center justify-center space-x-1 py-2 px-4 font-medium text-sm bg-black bg-opacity-30 text-white rounded-full transition-all duration-200 focus:outline-none"
+              className="flex items-center space-x-1 h-8 px-3 text-sm font-medium bg-black bg-opacity-30 text-white rounded-full"
             >
               <span>{activeTab}</span>
-              <ChevronDown 
-                className={`w-4 h-4 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} 
+              <ChevronDown
+                className={`w-4 h-4 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
               />
             </button>
           ) : (
@@ -95,11 +65,9 @@ export default function AliExpressHeaderWithStates() {
           )}
         </div>
 
-        {/* Middle section - different for each state */}
+        {/* Center */}
         {progress < 0.5 ? (
-          <div className="flex-1 flex justify-center">
-            {/* Empty space in transparent mode to maintain spacing */}
-          </div>
+          <div className="flex-1 flex justify-center" />
         ) : (
           <div className="flex-1 max-w-xs mx-2 relative" ref={searchRef}>
             <div
@@ -116,9 +84,7 @@ export default function AliExpressHeaderWithStates() {
                 onFocus={handleSearchFocus}
               />
               <div
-                className={`cursor-pointer mx-1 rounded-full ${
-                  voiceSearchActive ? 'bg-orange-100' : ''
-                }`}
+                className={`cursor-pointer mx-1 rounded-full ${voiceSearchActive ? 'bg-orange-100' : ''}`}
                 onClick={handleVoiceSearch}
               >
                 <Mic className="h-3.5 w-3.5 text-orange-500" />
@@ -135,20 +101,20 @@ export default function AliExpressHeaderWithStates() {
           </div>
         )}
 
-        {/* Icons on the right - Updated sizes to match product header (h-4 w-4) with appropriate background transparency */}
-        <div className="flex items-center space-x-3">
+        {/* Right */}
+        <div className="flex items-center space-x-2">
           {progress < 0.5 ? (
             <>
-              <div className="cursor-pointer bg-black bg-opacity-40 p-1.5 rounded-full">
+              <div className="cursor-pointer bg-black bg-opacity-40 p-1 rounded-full">
                 <Search className="h-4 w-4 text-white" />
               </div>
-              <div className="cursor-pointer relative bg-black bg-opacity-40 p-1.5 rounded-full">
+              <div className="cursor-pointer relative bg-black bg-opacity-40 p-1 rounded-full">
                 <Bell className="h-4 w-4 text-white" />
-                <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs rounded-full h-3.5 w-3.5 flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] rounded-full h-3.5 w-3.5 flex items-center justify-center">
                   2
                 </span>
               </div>
-              <div className="cursor-pointer bg-black bg-opacity-40 p-1.5 rounded-full">
+              <div className="cursor-pointer bg-black bg-opacity-40 p-1 rounded-full">
                 <QrCode className="h-4 w-4 text-white" />
               </div>
             </>
@@ -156,7 +122,7 @@ export default function AliExpressHeaderWithStates() {
             <>
               <div className="cursor-pointer relative">
                 <Bell className="h-4 w-4 text-gray-600" />
-                <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-xs rounded-full h-3.5 w-3.5 flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] rounded-full h-3.5 w-3.5 flex items-center justify-center">
                   2
                 </span>
               </div>
@@ -168,11 +134,11 @@ export default function AliExpressHeaderWithStates() {
         </div>
       </div>
 
-      {/* Only show tabs in non-transparent mode (scrolled down) */}
+      {/* Tabs */}
       <div
         className="w-full transition-all duration-700 overflow-hidden"
         style={{
-          maxHeight: progress > 0.3 ? "40px" : "0px",
+          maxHeight: progress > 0.3 ? '40px' : '0px',
           opacity: progress,
           backgroundColor: `rgba(255, 255, 255, ${progress * 0.98})`,
           backdropFilter: `blur(${progress * 8}px)`,
@@ -195,7 +161,7 @@ export default function AliExpressHeaderWithStates() {
         </div>
       </div>
 
-      {/* Panel that opens when the transparent header button is clicked */}
+      {/* Dropdown Panel */}
       {progress < 0.5 && isOpen && (
         <div className="bg-white text-gray-800 p-4 shadow-md rounded-b-lg">
           <div className="grid grid-cols-2 gap-4">
@@ -219,7 +185,7 @@ export default function AliExpressHeaderWithStates() {
         </div>
       )}
 
-      {/* Voice search overlay */}
+      {/* Voice Search Overlay */}
       {voiceSearchActive && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20">
           <div className="bg-white p-4 rounded-xl w-64 flex flex-col items-center">
@@ -237,8 +203,6 @@ export default function AliExpressHeaderWithStates() {
           </div>
         </div>
       )}
-      
-      
     </header>
   );
 }
