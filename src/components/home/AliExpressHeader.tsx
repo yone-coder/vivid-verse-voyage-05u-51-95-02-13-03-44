@@ -169,7 +169,7 @@ export default function AliExpressHeaderWithStates() {
 
   {/* Grid Icon on the right */}
   <div
-    className="absolute top-0 right-0 h-full flex items-center px-2 z-10"
+    className="absolute top-0 right-0 h-full flex items-center px-0.5 z-10"
     style={{
       backgroundColor: `rgba(255, 255, 255, ${progress * 0.98})`,
       backdropFilter: `blur(${progress * 8}px)`,
