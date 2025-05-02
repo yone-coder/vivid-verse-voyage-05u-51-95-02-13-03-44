@@ -142,7 +142,6 @@ export default function AliExpressHeaderWithStates() {
       </div>
 
       {/* Tabs */}
-{/* Tabs */}
 <div
   className="relative w-full transition-all duration-700 overflow-hidden"
   style={{
@@ -152,7 +151,8 @@ export default function AliExpressHeaderWithStates() {
     backdropFilter: `blur(${progress * 8}px)`,
   }}
 >
-  <div className="flex overflow-x-auto no-scrollbar pr-12">
+  {/* Scrollable tabs with right padding */}
+  <div className="flex overflow-x-auto no-scrollbar pr-14">
     {categories.map((category) => (
       <button
         key={category}
@@ -168,7 +168,7 @@ export default function AliExpressHeaderWithStates() {
     ))}
   </div>
 
-  {/* Grid Icon with separator */}
+  {/* Separator + Icon */}
   <div
     className="absolute top-0 right-0 h-full flex items-center pl-2 pr-3 z-10 space-x-2"
     style={{
