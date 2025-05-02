@@ -1,4 +1,5 @@
 import React from 'react';
+import { Tag, Flame, Sparkles, Percent } from 'lucide-react';
 
 const AliExpressCategories = () => {
   const imageSeeds = {
@@ -37,61 +38,88 @@ const AliExpressCategories = () => {
   };
 
   const categories = [
-    { name: 'Electronics', shortName: 'Electronics' },
-    { name: 'Home & Kitchen', shortName: 'Home' },
-    { name: 'Fashion', shortName: 'Fashion' },
-    { name: 'Beauty', shortName: 'Beauty' },
-    { name: 'Sports', shortName: 'Sports' },
-    { name: 'Toys & Games', shortName: 'Toys' },
-    { name: 'Jewelry', shortName: 'Jewelry' },
-    { name: 'Automotive', shortName: 'Auto' },
-    { name: 'Books', shortName: 'Books' },
-    { name: 'Pets', shortName: 'Pets' },
-    { name: 'Food', shortName: 'Food' },
-    { name: 'Audio', shortName: 'Audio' },
-    { name: 'Computers', shortName: 'Tech' },
-    { name: 'Photography', shortName: 'Photo' },
-    { name: 'Watches', shortName: 'Watches' },
-    { name: 'Coffee', shortName: 'Coffee' },
-    { name: 'Movies', shortName: 'Movies' },
-    { name: 'Travel', shortName: 'Travel' },
-    { name: 'Music', shortName: 'Music' },
-    { name: 'Health', shortName: 'Health' },
-    { name: 'Finance', shortName: 'Finance' },
-    { name: 'Apparel', shortName: 'Apparel' },
-    { name: 'Business', shortName: 'Business' },
-    { name: 'Outdoor', shortName: 'Outdoor' },
-    { name: 'Adventure', shortName: 'Adventure' },
-    { name: 'Seasonal', shortName: 'Seasonal' },
-    { name: 'Crafts', shortName: 'Crafts' }
+    { name: 'Electronics', shortName: 'Electronics', tags: ['Hot', '20% Off'], isPopular: true, itemCount: '25K+' },
+    { name: 'Home & Kitchen', shortName: 'Home', tags: ['New'], isPopular: false, itemCount: '18K+' },
+    { name: 'Fashion', shortName: 'Fashion', tags: ['Sale'], isPopular: true, itemCount: '32K+' },
+    { name: 'Beauty', shortName: 'Beauty', tags: ['Trending'], isPopular: true, itemCount: '15K+' },
+    { name: 'Sports', shortName: 'Sports', tags: ['30% Off'], isPopular: false, itemCount: '12K+' },
+    { name: 'Toys & Games', shortName: 'Toys', tags: ['Kids'], isPopular: false, itemCount: '9K+' },
+    { name: 'Jewelry', shortName: 'Jewelry', tags: ['Luxury'], isPopular: false, itemCount: '7K+' },
+    { name: 'Automotive', shortName: 'Auto', tags: ['Tools'], isPopular: false, itemCount: '11K+' },
+    { name: 'Books', shortName: 'Books', tags: ['2 for 1'], isPopular: false, itemCount: '14K+' },
+    { name: 'Pets', shortName: 'Pets', tags: ['New'], isPopular: false, itemCount: '5K+' },
+    { name: 'Food', shortName: 'Food', tags: ['Organic'], isPopular: false, itemCount: '8K+' },
+    { name: 'Audio', shortName: 'Audio', tags: ['Premium'], isPopular: false, itemCount: '6K+' },
+    { name: 'Computers', shortName: 'Tech', tags: ['Hot', '15% Off'], isPopular: true, itemCount: '21K+' },
+    { name: 'Photography', shortName: 'Photo', tags: ['Pro'], isPopular: false, itemCount: '4K+' },
+    { name: 'Watches', shortName: 'Watches', tags: ['Luxury'], isPopular: false, itemCount: '3K+' },
+    { name: 'Coffee', shortName: 'Coffee', tags: ['Artisan'], isPopular: false, itemCount: '2K+' },
+    { name: 'Movies', shortName: 'Movies', tags: ['Digital'], isPopular: false, itemCount: '10K+' },
+    { name: 'Travel', shortName: 'Travel', tags: ['Deals'], isPopular: false, itemCount: '9K+' },
+    { name: 'Music', shortName: 'Music', tags: ['Vinyl'], isPopular: false, itemCount: '7K+' },
+    { name: 'Health', shortName: 'Health', tags: ['Wellness'], isPopular: false, itemCount: '13K+' },
+    { name: 'Finance', shortName: 'Finance', tags: ['Tools'], isPopular: false, itemCount: '2K+' },
+    { name: 'Apparel', shortName: 'Apparel', tags: ['Sale', 'Hot'], isPopular: true, itemCount: '28K+' },
+    { name: 'Business', shortName: 'Business', tags: ['Office'], isPopular: false, itemCount: '6K+' },
+    { name: 'Outdoor', shortName: 'Outdoor', tags: ['Adventure'], isPopular: false, itemCount: '11K+' },
+    { name: 'Adventure', shortName: 'Adventure', tags: ['Gear'], isPopular: false, itemCount: '8K+' },
+    { name: 'Seasonal', shortName: 'Seasonal', tags: ['Limited'], isPopular: false, itemCount: '5K+' },
+    { name: 'Crafts', shortName: 'Crafts', tags: ['DIY'], isPopular: false, itemCount: '9K+' }
   ];
 
-  // For simultaneously scrollable rows, we don't need to split the categories
+  const getTagIcon = (tag) => {
+    switch (tag.toLowerCase()) {
+      case 'hot':
+        return <Flame size={10} className="mr-0.5" />;
+      case 'new':
+        return <Sparkles size={10} className="mr-0.5" />;
+      case 'sale':
+      case '20% off':
+      case '30% off':
+      case '15% off':
+        return <Percent size={10} className="mr-0.5" />;
+      default:
+        return <Tag size={10} className="mr-0.5" />;
+    }
+  };
 
   const CategoryItem = ({ category }) => (
-    <div className="flex flex-col items-center w-14 flex-shrink-0 active:opacity-80 transition-opacity touch-manipulation">
-      <div className="w-11 h-11 rounded-lg overflow-hidden bg-gray-50 mb-1 shadow-sm">
+    <div className="flex flex-col items-center w-16 flex-shrink-0 active:opacity-80 transition-opacity touch-manipulation">
+      <div className="relative w-14 h-14 rounded-lg overflow-hidden bg-gray-50 mb-1 shadow-sm">
         <img
           src={getCategoryImageUrl(category)}
           alt={category.name}
           className="h-full w-full object-cover"
         />
+        {category.isPopular && (
+          <div className="absolute top-0 left-0 w-full h-4 bg-gradient-to-b from-red-500/70 to-transparent flex items-start justify-center">
+            <span className="text-[8px] font-bold text-white">POPULAR</span>
+          </div>
+        )}
       </div>
-      <span className="text-xs font-normal text-gray-600 text-center truncate w-full leading-tight">
+      <span className="text-xs font-medium text-gray-700 text-center truncate w-full leading-tight">
         {category.shortName || category.name}
       </span>
+      <div className="flex flex-wrap justify-center gap-1 mt-0.5 w-full">
+        {category.tags.map((tag, idx) => (
+          <div key={idx} className={`flex items-center px-1 rounded-sm text-[7px] font-medium ${
+            tag.toLowerCase() === 'hot' ? 'bg-red-100 text-red-600' : 
+            tag.toLowerCase() === 'new' ? 'bg-blue-100 text-blue-600' : 
+            tag.toLowerCase().includes('off') || tag.toLowerCase() === 'sale' ? 'bg-green-100 text-green-600' : 
+            'bg-gray-100 text-gray-600'
+          }`}>
+            {getTagIcon(tag)}
+            {tag}
+          </div>
+        ))}
+      </div>
+      <span className="text-[8px] text-gray-400 mt-0.5">{category.itemCount}</span>
     </div>
   );
 
   return (
-    <div className="w-full bg-gray-50">
-      <div className="flex justify-between items-center px-4 py-2 border-b border-gray-100 bg-white">
-        <h2 className="text-sm font-medium text-gray-700">Categories</h2>
-        <a href="#" className="text-red-500 hover:text-red-600 active:text-red-700 text-xs font-medium">View All</a>
-      </div>
-
-      <div className="py-2 bg-white">
-        {/* Edge-to-edge scrollable container with pl-2 */}
+    <div className="w-full bg-white">
+      <div className="py-3 bg-white">
         <div className="overflow-x-auto overscroll-x-contain no-scrollbar pl-2 scroll-smooth -webkit-overflow-scrolling-touch">
           <div className="grid grid-flow-col auto-cols-max gap-3 pr-4" style={{ gridTemplateRows: 'repeat(2, auto)' }}>
             {categories.map((category, index) => (
