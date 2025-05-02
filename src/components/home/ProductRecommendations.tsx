@@ -37,7 +37,7 @@ export default function ProductRecommendations({ products }) {
         </div>
         
         <div className="mb-4">
-          <div className="flex overflow-x-auto space-x-4 pb-2">
+          <div className="flex overflow-x-auto space-x-4 pb-2 hide-scrollbar">
             {recommendedCategories.map(category => (
               <button
                 key={category.id}
