@@ -97,9 +97,10 @@ export default function FlashDeals() {
               <Zap className="w-3.5 h-3.5 mr-1" />
               Flash Sale
             </div>
-            <span className="text-[11px] text-gray-600 font-medium">
-              {flashProducts.length} deals available
-            </span>
+            <div className="flex items-center space-x-1 text-[11px] text-gray-500 font-medium">
+              <span className="w-1.5 h-1.5 bg-[#FF4747] rounded-full" />
+              <span>{flashProducts.length} deals available</span>
+            </div>
           </div>
           <Link
             to="#"
