@@ -92,7 +92,7 @@ export default function FlashDeals() {
 
   return (
     <div className="w-full bg-white">
-      <div className="px-4 py-2">
+      <div className="px-2 py-2">
         <div className="flex justify-between items-center mb-1">
           <div className="flex items-center">
             <h2 className="text-sm font-bold text-orange-500 mr-2">Flash Sale</h2>
