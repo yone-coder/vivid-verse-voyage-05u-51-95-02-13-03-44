@@ -1,53 +1,23 @@
-import { useState, useRef, useEffect } from 'react';
-import { Search, X, Mic, Bell, QrCode, ChevronDown } from 'lucide-react';
-import { useScrollProgress } from '@/hooks/useScrollProgress';
-import Logo from './Logo';
+import { useState, useRef, useEffect } from 'react'; import { Search, X, Mic, Bell, QrCode, ChevronDown } from 'lucide-react'; import { useScrollProgress } from '@/hooks/useScrollProgress'; import Logo from './Logo';
 
-export default function AliExpressHeaderWithStates() {
-  const { progress } = useScrollProgress();
+export default function AliExpressHeaderWithStates() { const { progress } = useScrollProgress();
 
-  const [isOpen, setIsOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('All');
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [voiceSearchActive, setVoiceSearchActive] = useState(false);
-  const searchRef = useRef(null);
+const [isOpen, setIsOpen] = useState(false); const [activeTab, setActiveTab] = useState('All'); const [isSearchFocused, setIsSearchFocused] = useState(false); const [searchQuery, setSearchQuery] = useState(''); const [voiceSearchActive, setVoiceSearchActive] = useState(false); const searchRef = useRef(null);
 
-  const categories = [
-    'All', 'Women', 'Men', 'Electronics', 'Home', 'Beauty', 'Kids', 'Sports',
-  ];
-
-  const togglePanel = () => setIsOpen(!isOpen);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (searchRef.current && !searchRef.current.contains(event.target)) {
-        // Do nothing for now
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  const handleSearchFocus = () => setIsSearchFocused(true);
-  const handleClearSearch = () => setSearchQuery('');
-  const handleVoiceSearch = () => setVoiceSearchActive(!voiceSearchActive);
-
-  return (
- import { useState, useRef } from 'react'; import { Search, ChevronDown, Bell, QrCode, Mic, X } from 'lucide-react'; import Logo from './Logo'; // Assume you have a Logo component
-
-export default function Header({ progress, categories }) { const [activeTab, setActiveTab] = useState(categories[0]); const [isOpen, setIsOpen] = useState(false); const [searchQuery, setSearchQuery] = useState(''); const [isSearchFocused, setIsSearchFocused] = useState(false); const [voiceSearchActive, setVoiceSearchActive] = useState(false); const searchRef = useRef(null);
+const categories = [ 'All', 'Women', 'Men', 'Electronics', 'Home', 'Beauty', 'Kids', 'Sports', ];
 
 const togglePanel = () => setIsOpen(!isOpen); const handleSearchFocus = () => setIsSearchFocused(true); const handleVoiceSearch = () => setVoiceSearchActive(!voiceSearchActive); const handleClearSearch = () => setSearchQuery('');
 
-return ( <header className="fixed top-0 left-0 right-0 z-50 flex flex-col transition-all duration-700"> {/* Top Bar /} <div className="flex items-center justify-between px-2 transition-all duration-700" style={{ height: '44px', backgroundColor: rgba(255, 255, 255, ${progress * 0.95}), backdropFilter: blur(${progress * 8}px), backgroundImage: progress < 0.5 ? 'linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0))' : 'none', }} > {/ Left */} <div className="flex items-center"> {progress < 0.5 ? ( <button
+useEffect(() => { const handleClickOutside = (event) => { if (searchRef.current && !searchRef.current.contains(event.target)) { setIsSearchFocused(false); } }; document.addEventListener('mousedown', handleClickOutside); return () => document.removeEventListener('mousedown', handleClickOutside); }, []);
+
+return ( <header className="fixed top-0 left-0 right-0 z-50 flex flex-col transition-all duration-700"> <div className="flex items-center justify-between px-2 transition-all duration-700" style={{ height: '44px', backgroundColor: rgba(255, 255, 255, ${progress * 0.95}), backdropFilter: blur(${progress * 8}px), backgroundImage: progress < 0.5 ? 'linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0))' : 'none', }} > {/* Left */} <div className="flex items-center"> {progress < 0.5 ? ( <button
 onClick={togglePanel}
 className="flex items-center space-x-1 h-8 px-3 text-sm font-medium bg-black bg-opacity-30 text-white rounded-full"
 > <span>{activeTab}</span> <ChevronDown className={w-4 h-4 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}} /> </button> ) : ( <Logo width={28} height={28} className="text-orange-500" /> )} </div>
 
 {/* Center (Search Bar) */}
     <div className="flex items-center flex-1 mx-2">
-      {progress >= 0.5 && (
+      {(progress >= 0.5 || isSearchFocused) && (
         <div className="flex flex-grow transition-all duration-500" ref={searchRef}>
           <div
             className={`flex items-center w-full bg-gray-100 rounded-full ${
@@ -105,7 +75,7 @@ className="flex items-center space-x-1 h-8 px-3 text-sm font-medium bg-black bg-
     className="w-full transition-all duration-700 overflow-hidden"
     style={{
       maxHeight: progress > 0.3 ? '40px' : '0px',
-      opacity: progress,
+      opacity: progress > 0.3 ? 1 : 0,
       backgroundColor: `rgba(255, 255, 255, ${progress * 0.98})`,
       backdropFilter: `blur(${progress * 8}px)`,
     }}
@@ -173,6 +143,3 @@ className="flex items-center space-x-1 h-8 px-3 text-sm font-medium bg-black bg-
 
 ); }
 
-
-  );
-}
