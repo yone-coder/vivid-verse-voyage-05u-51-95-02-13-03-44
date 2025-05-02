@@ -45,6 +45,9 @@ export default function Index() {
         <HeroBanner />
       </div>
 
+<div className="mb-1">
+        <SpaceSavingCategories />
+      </div>
       
 
       {/* Flash Deals Section */}
