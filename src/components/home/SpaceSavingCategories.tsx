@@ -37,51 +37,43 @@ const AliExpressCategories = () => {
     return `https://picsum.photos/id/${seed}/80/80`;
   };
 
-  // Updated categories with more promotional tags
+  // Updated categories with less tags and no percentage-based ones
   const categories = [
-    { name: 'Electronics', shortName: 'Electronics', tags: ['Hot', '20% Off'], isPopular: true },
+    { name: 'Electronics', shortName: 'Electronics', tags: ['Hot'], isPopular: true },
     { name: 'Home & Kitchen', shortName: 'Home', tags: ['New'], isPopular: false },
-    { name: 'Fashion', shortName: 'Fashion', tags: ['Sale'], isPopular: true },
+    { name: 'Fashion', shortName: 'Fashion', tags: [], isPopular: true },
     { name: 'Beauty', shortName: 'Beauty', tags: ['Trending'], isPopular: true },
-    { name: 'Sports', shortName: 'Sports', tags: ['30% Off'], isPopular: false },
-    { name: 'Toys & Games', shortName: 'Toys', tags: ['New'], isPopular: false },
+    { name: 'Sports', shortName: 'Sports', tags: [], isPopular: false },
+    { name: 'Toys & Games', shortName: 'Toys', tags: [], isPopular: false },
     { name: 'Jewelry', shortName: 'Jewelry', tags: ['Premium'], isPopular: false },
-    { name: 'Automotive', shortName: 'Auto', tags: ['Hot Deal'], isPopular: false },
-    { name: 'Books', shortName: 'Books', tags: ['2 for 1'], isPopular: false },
+    { name: 'Automotive', shortName: 'Auto', tags: [], isPopular: false },
+    { name: 'Books', shortName: 'Books', tags: [], isPopular: false },
     { name: 'Pets', shortName: 'Pets', tags: ['New'], isPopular: false },
-    { name: 'Food', shortName: 'Food', tags: ['Special'], isPopular: false },
+    { name: 'Food', shortName: 'Food', tags: [], isPopular: false },
     { name: 'Audio', shortName: 'Audio', tags: ['Premium'], isPopular: false },
-    { name: 'Computers', shortName: 'Tech', tags: ['Hot', '15% Off'], isPopular: true },
-    { name: 'Photography', shortName: 'Photo', tags: ['Sale'], isPopular: false },
-    { name: 'Watches', shortName: 'Watches', tags: ['Premium'], isPopular: false },
-    { name: 'Coffee', shortName: 'Coffee', tags: ['Special'], isPopular: false },
+    { name: 'Computers', shortName: 'Tech', tags: ['Hot'], isPopular: true },
+    { name: 'Photography', shortName: 'Photo', tags: [], isPopular: false },
+    { name: 'Watches', shortName: 'Watches', tags: [], isPopular: false },
+    { name: 'Coffee', shortName: 'Coffee', tags: [], isPopular: false },
     { name: 'Movies', shortName: 'Movies', tags: ['Hot'], isPopular: false },
-    { name: 'Travel', shortName: 'Travel', tags: ['Deal'], isPopular: false },
+    { name: 'Travel', shortName: 'Travel', tags: [], isPopular: false },
     { name: 'Music', shortName: 'Music', tags: ['Limited'], isPopular: false },
-    { name: 'Health', shortName: 'Health', tags: ['Trending'], isPopular: false },
-    { name: 'Finance', shortName: 'Finance', tags: ['New'], isPopular: false },
-    { name: 'Apparel', shortName: 'Apparel', tags: ['Sale', 'Hot'], isPopular: true },
-    { name: 'Business', shortName: 'Business', tags: ['Deal'], isPopular: false },
-    { name: 'Outdoor', shortName: 'Outdoor', tags: ['Hot'], isPopular: false },
+    { name: 'Health', shortName: 'Health', tags: [], isPopular: false },
+    { name: 'Finance', shortName: 'Finance', tags: [], isPopular: false },
+    { name: 'Apparel', shortName: 'Apparel', tags: ['Hot'], isPopular: true },
+    { name: 'Business', shortName: 'Business', tags: [], isPopular: false },
+    { name: 'Outdoor', shortName: 'Outdoor', tags: [], isPopular: false },
     { name: 'Adventure', shortName: 'Adventure', tags: ['Limited'], isPopular: false },
-    { name: 'Seasonal', shortName: 'Seasonal', tags: ['Limited'], isPopular: false },
+    { name: 'Seasonal', shortName: 'Seasonal', tags: [], isPopular: false },
     { name: 'Crafts', shortName: 'Crafts', tags: ['Special'], isPopular: false }
   ];
 
   const getTagIcon = (tag) => {
     switch (tag.toLowerCase()) {
       case 'hot':
-      case 'hot deal':
         return <Flame size={10} className="mr-0.5" />;
       case 'new':
         return <Sparkles size={10} className="mr-0.5" />;
-      case 'sale':
-      case 'deal':
-      case '20% off':
-      case '30% off':
-      case '15% off':
-      case '2 for 1':
-        return <Percent size={10} className="mr-0.5" />;
       case 'limited':
         return <Clock size={10} className="mr-0.5" />;
       default:
@@ -103,18 +95,17 @@ const AliExpressCategories = () => {
           </div>
         )}
         
-        {/* Moved tags to bottom left of thumbnail */}
+        {/* Full width centered tags at the bottom of thumbnail */}
         {category.tags.length > 0 && (
-          <div className="absolute bottom-0 left-0 flex flex-wrap gap-0.5 p-0.5">
+          <div className="absolute bottom-0 left-0 right-0 flex justify-center w-full">
             {category.tags.map((tag, idx) => (
-              <div key={idx} className={`flex items-center px-1 rounded-sm text-[7px] font-medium ${
-                tag.toLowerCase() === 'hot' || tag.toLowerCase().includes('hot') ? 'bg-red-100 text-red-600' : 
-                tag.toLowerCase() === 'new' ? 'bg-blue-100 text-blue-600' : 
-                tag.toLowerCase().includes('off') || tag.toLowerCase() === 'sale' || tag.toLowerCase() === 'deal' ? 'bg-green-100 text-green-600' :
-                tag.toLowerCase() === 'limited' ? 'bg-purple-100 text-purple-600' :
-                tag.toLowerCase() === 'trending' ? 'bg-yellow-100 text-yellow-600' :
-                tag.toLowerCase() === 'premium' || tag.toLowerCase() === 'special' ? 'bg-amber-100 text-amber-600' :
-                'bg-gray-100 text-gray-600'
+              <div key={idx} className={`flex items-center justify-center w-full px-1 py-0.5 text-[7px] font-bold ${
+                tag.toLowerCase() === 'hot' ? 'bg-red-500/80 text-white' : 
+                tag.toLowerCase() === 'new' ? 'bg-blue-500/80 text-white' : 
+                tag.toLowerCase() === 'limited' ? 'bg-purple-500/80 text-white' :
+                tag.toLowerCase() === 'trending' ? 'bg-yellow-500/80 text-white' :
+                tag.toLowerCase() === 'premium' || tag.toLowerCase() === 'special' ? 'bg-amber-500/80 text-white' :
+                'bg-gray-500/80 text-white'
               }`}>
                 {getTagIcon(tag)}
                 {tag}
