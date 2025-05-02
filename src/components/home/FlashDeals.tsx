@@ -16,6 +16,50 @@ const flashProducts = [
     sold: 1253,
     stock: 45
   },
+  {
+    id: 102,
+    name: "Wireless Earbuds with Noise Cancellation",
+    image: "https://placehold.co/300x300/6D28D9/FFF?text=Earbuds",
+    price: 79.99,
+    discountPrice: 39.99,
+    rating: 4.7,
+    ratingCount: 235,
+    sold: 1253,
+    stock: 45
+  },
+  {
+    id: 103,
+    name: "Wireless Earbuds with Noise Cancellation",
+    image: "https://placehold.co/300x300/6D28D9/FFF?text=Earbuds",
+    price: 79.99,
+    discountPrice: 39.99,
+    rating: 4.7,
+    ratingCount: 235,
+    sold: 1253,
+    stock: 45
+  },
+  {
+    id: 104,
+    name: "Wireless Earbuds with Noise Cancellation",
+    image: "https://placehold.co/300x300/6D28D9/FFF?text=Earbuds",
+    price: 79.99,
+    discountPrice: 39.99,
+    rating: 4.7,
+    ratingCount: 235,
+    sold: 1253,
+    stock: 45
+  },
+  {
+    id: 105,
+    name: "Wireless Earbuds with Noise Cancellation",
+    image: "https://placehold.co/300x300/6D28D9/FFF?text=Earbuds",
+    price: 79.99,
+    discountPrice: 39.99,
+    rating: 4.7,
+    ratingCount: 235,
+    sold: 1253,
+    stock: 45
+  },
   // ... more products
 ];
 
