@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flame, Sparkles, Percent, Clock } from 'lucide-react';
+import { Flame, Sparkles, Clock } from 'lucide-react';
 
 const AliExpressCategories = () => {
   const imageSeeds = {
@@ -14,7 +14,7 @@ const AliExpressCategories = () => {
 
   const getCategoryImageUrl = (category) => {
     const seed = imageSeeds[category.name];
-    return `https://picsum.photos/id/${seed}/80/80`;
+    return `https://picsum.photos/id/${seed}/64/64`;
   };
 
   const categories = [
@@ -49,34 +49,30 @@ const AliExpressCategories = () => {
 
   const getTagIcon = (tag) => {
     switch (tag.toLowerCase()) {
-      case 'hot':
-        return <Flame size={10} className="mr-0.5" />;
-      case 'new':
-        return <Sparkles size={10} className="mr-0.5" />;
-      case 'limited':
-        return <Clock size={10} className="mr-0.5" />;
-      default:
-        return null;
+      case 'hot': return <Flame size={8} className="mr-0.5" />;
+      case 'new': return <Sparkles size={8} className="mr-0.5" />;
+      case 'limited': return <Clock size={8} className="mr-0.5" />;
+      default: return null;
     }
   };
 
   const CategoryItem = ({ category }) => (
-    <div className="flex flex-col items-center w-16 flex-shrink-0 active:opacity-80 transition-opacity touch-manipulation">
-      <div className="relative w-14 h-14 rounded-lg overflow-hidden bg-gray-50 mb-0.5 shadow-sm">
+    <div className="flex flex-col items-center w-14 flex-shrink-0 transition-opacity active:opacity-80">
+      <div className="relative w-12 h-12 rounded-md overflow-hidden bg-gray-100 mb-0.5 shadow-sm">
         <img
           src={getCategoryImageUrl(category)}
           alt={category.name}
           className="h-full w-full object-cover"
         />
         {category.isPopular && (
-          <div className="absolute top-0 left-0 w-full h-4 bg-gradient-to-b from-red-500/70 to-transparent flex items-start justify-center">
-            <span className="text-[8px] font-bold text-white">POPULAR</span>
+          <div className="absolute top-0 left-0 w-full h-3 bg-gradient-to-b from-red-500/70 to-transparent flex items-start justify-center">
+            <span className="text-[7px] font-bold text-white leading-none">POPULAR</span>
           </div>
         )}
         {category.tags.length > 0 && (
           <div className="absolute bottom-0 left-0 right-0 flex justify-center w-full">
             {category.tags.map((tag, idx) => (
-              <div key={idx} className={`flex items-center justify-center w-full px-1 py-0.5 text-[7px] font-bold ${
+              <div key={idx} className={`flex items-center justify-center w-full px-0.5 py-0.5 text-[6px] font-bold ${
                 tag.toLowerCase() === 'hot' ? 'bg-red-500/80 text-white' : 
                 tag.toLowerCase() === 'new' ? 'bg-blue-500/80 text-white' : 
                 tag.toLowerCase() === 'limited' ? 'bg-purple-500/80 text-white' :
@@ -91,17 +87,17 @@ const AliExpressCategories = () => {
           </div>
         )}
       </div>
-      <span className="text-[10px] font-medium text-gray-700 text-center truncate w-full leading-snug">
-        {category.shortName || category.name}
+      <span className="text-[9px] font-medium text-gray-700 text-center truncate w-full leading-none">
+        {category.shortName}
       </span>
     </div>
   );
 
   return (
     <div className="w-full bg-white">
-      <div className="py-2 bg-white">
-        <div className="overflow-x-auto overscroll-x-contain no-scrollbar pl-2 scroll-smooth -webkit-overflow-scrolling-touch">
-          <div className="grid grid-flow-col auto-cols-max gap-2 pr-2" style={{ gridTemplateRows: 'repeat(2, auto)' }}>
+      <div className="py-1 bg-white">
+        <div className="overflow-x-auto overscroll-x-contain no-scrollbar pl-2 pr-1 scroll-smooth -webkit-overflow-scrolling-touch">
+          <div className="grid grid-flow-col auto-cols-max gap-1.5" style={{ gridTemplateRows: 'repeat(2, auto)' }}>
             {categories.map((category, index) => (
               <div key={index} style={{ gridRow: index % 2 === 0 ? '1' : '2' }}>
                 <CategoryItem category={category} />
