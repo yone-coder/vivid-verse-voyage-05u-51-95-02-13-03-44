@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { ChevronLeft, ChevronRight, Star, Heart, Fire, TrendingUp, Award } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star, Heart, TrendingUp, Award } from 'lucide-react';
 
 const ProductCarousel = () => {
   const scrollRef = useRef(null);
@@ -125,7 +125,8 @@ const ProductCarousel = () => {
           </div>
           <div className="flex space-x-2">
             <div className="flex items-center bg-orange-50 rounded-full px-2 py-0.5">
-              <Fire size={14} className="text-orange-500 mr-1" />
+              {/* Replace Fire with another available icon */}
+              <TrendingUp size={14} className="text-orange-500 mr-1" />
               <span className="text-xs font-medium text-orange-500">Hot Deals</span>
             </div>
             <div className="flex items-center bg-blue-50 rounded-full px-2 py-0.5">
