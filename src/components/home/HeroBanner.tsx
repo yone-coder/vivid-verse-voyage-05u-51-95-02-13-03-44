@@ -20,10 +20,10 @@ const banners = [
 ];
 
 const newsItems = [
-  { id: 1, icon: <AlertCircle className="w-3.5 h-3.5 text-red-500" />, text: "Flash sale: 30% off on all electronics today only" },
-  { id: 2, icon: <TrendingUp className="w-3.5 h-3.5 text-green-500" />, text: "New summer collection arriving next week" },
-  { id: 3, icon: <Clock className="w-3.5 h-3.5 text-blue-500" />, text: "Extended returns available until end of month" },
-  { id: 4, icon: <Newspaper className="w-3.5 h-3.5 text-purple-500" />, text: "New loyalty program launching soon - stay tuned" }
+  { id: 1, icon: <AlertCircle className="w-3 h-3 text-white" />, text: "FLASH SALE: 30% OFF ALL ELECTRONICS TODAY ONLY!" },
+  { id: 2, icon: <TrendingUp className="w-3 h-3 text-white" />, text: "NEW USER BONUS: GET ¥50 OFF YOUR FIRST ORDER" },
+  { id: 3, icon: <Clock className="w-3 h-3 text-white" />, text: "24H DEALS: UP TO 70% OFF BESTSELLERS" },
+  { id: 4, icon: <Newspaper className="w-3 h-3 text-white" />, text: "FREE SHIPPING ON ORDERS OVER ¥199" }
 ];
 
 export default function HeroBanner() {
@@ -158,22 +158,30 @@ export default function HeroBanner() {
         </div>
       </div>
 
-      {/* Vertical Sliding News Banner */}
+      {/* Vertical Sliding News Banner - AliExpress Style */}
       {showNews && (
-        <div className="bg-gray-50 border-b border-gray-200">
+        <div className="bg-red-50">
           <div className="max-w-screen-xl mx-auto">
-            <div className="relative overflow-hidden h-10">
-              {newsItems.map((item, index) => (
-                <div 
-                  key={item.id}
-                  className={`absolute inset-0 flex items-center px-4 transition-transform duration-500 ease-in-out ${
-                    index === activeNewsIndex ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
-                  }`}
-                >
-                  <span className="flex-shrink-0 mr-2">{item.icon}</span>
-                  <span className="text-sm font-medium text-gray-800">{item.text}</span>
-                </div>
-              ))}
+            <div className="relative overflow-hidden h-7">
+              {newsItems.map((item, index) => {
+                // AliExpress-like color schemes
+                const bgColors = [
+                  "bg-red-600", "bg-orange-500", "bg-blue-600", "bg-purple-600"
+                ];
+                const bgColor = bgColors[index % bgColors.length];
+                
+                return (
+                  <div 
+                    key={item.id}
+                    className={`absolute inset-0 flex items-center px-2 transition-transform duration-500 ease-in-out ${bgColor} ${
+                      index === activeNewsIndex ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
+                    }`}
+                  >
+                    <span className="flex-shrink-0 mr-1">{item.icon}</span>
+                    <span className="text-xs font-medium text-white truncate">{item.text}</span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
