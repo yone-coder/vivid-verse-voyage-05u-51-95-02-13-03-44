@@ -13,6 +13,7 @@ import StickyBuyButton from "@/components/StickyBuyButton";
 import { useVariantStockDecay } from "@/hooks/useVariantStockDecay";
 import CoreIdentity from "@/components/product/CoreIdentity";
 import PricingSection from '@/components/product/PricingSection';
+import ProductCarroussel from '@/components/product/ProductCaroussel';
 import ProductColorVariants from "@/components/product/ProductColorVariants";
 import ProductQuantitySelector from "@/components/product/ProductQuantitySelector";
 import ShippingOptionsComponent from '@/components/product/ShippingOptionsComponent';
