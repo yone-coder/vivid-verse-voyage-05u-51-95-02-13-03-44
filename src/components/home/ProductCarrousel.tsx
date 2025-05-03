@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight, Star, Heart, Fire, TrendingUp, Award } from 
 const ProductCarousel = () => {
   const scrollRef = useRef(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
-  
+
   const products = [
     {
       id: 1,
@@ -33,7 +33,7 @@ const ProductCarousel = () => {
       title: "Portable Power Bank 20000mAh",
       image: "/api/placeholder/300/300",
       originalPrice: 45.99,
-      discountPrice: 22.50,
+      discountPrice: 22.5,
       discount: 51,
       rating: 4.7,
       sales: 7621,
@@ -95,29 +95,28 @@ const ProductCarousel = () => {
       freeShipping: true,
     }
   ];
-  
+
   const scroll = (direction) => {
     if (scrollRef.current) {
       const { current } = scrollRef;
       const scrollAmount = direction === 'left' ? -current.offsetWidth : current.offsetWidth;
       current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-      
-      // Update left arrow visibility after scrolling
+
       setTimeout(() => {
         setShowLeftArrow(current.scrollLeft > 0);
       }, 500);
     }
   };
-  
+
   const handleScroll = () => {
     if (scrollRef.current) {
       setShowLeftArrow(scrollRef.current.scrollLeft > 0);
     }
   };
-  
+
   return (
     <div className="w-full bg-gray-50 py-6 px-4 relative">
-      {/* Enhanced Sponsored header */}
+      {/* Sponsored Header */}
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center space-x-4">
           <div className="flex items-center">
@@ -144,50 +143,48 @@ const ProductCarousel = () => {
           <ChevronRight size={16} className="ml-1" />
         </div>
       </div>
-      
-      {/* Carousel container */}
+
+      {/* Carousel */}
       <div className="relative">
-        {/* Left arrow */}
         {showLeftArrow && (
-          <button 
-            onClick={() => scroll('left')} 
+          <button
+            onClick={() => scroll('left')}
             className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 rounded-full shadow-md p-2 hover:bg-white"
           >
             <ChevronLeft size={20} />
           </button>
         )}
-        
-        {/* Products container */}
-        <div 
-          className="flex overflow-x-auto scrollbar-hide gap-3 pb-4" 
+
+        <div
+          className="flex overflow-x-auto scrollbar-hide gap-3 pb-4"
           ref={scrollRef}
           onScroll={handleScroll}
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {products.map((product) => (
-            <div key={product.id} className="flex-shrink-0 w-40 bg-white rounded-md shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-300">
-              {/* Product image */}
+            <div
+              key={product.id}
+              className="flex-shrink-0 w-40 bg-white rounded-md shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-300"
+            >
               <div className="relative">
                 <img src={product.image} alt="Product" className="w-full h-40 object-cover" />
-                {/* Wishlist button */}
                 <button className="absolute top-2 right-2 bg-white/80 rounded-full p-1 hover:bg-white">
                   <Heart size={16} className="text-gray-400 hover:text-red-500" />
                 </button>
-                {/* Discount tag */}
                 <div className="absolute bottom-0 left-0 bg-red-500 text-white text-xs px-1.5 py-0.5">
                   -{product.discount}%
                 </div>
               </div>
-              
-              {/* Streamlined Product info */}
+
               <div className="p-2">
-                {/* Price */}
                 <div className="flex items-baseline">
-                  <span className="text-red-500 font-medium text-base">US ${product.discountPrice.toFixed(2)}</span>
-                  <span className="ml-1 text-gray-400 text-xs line-through">US ${product.originalPrice.toFixed(2)}</span>
+                  <span className="text-red-500 font-medium text-base">
+                    US ${product.discountPrice.toFixed(2)}
+                  </span>
+                  <span className="ml-1 text-gray-400 text-xs line-through">
+                    US ${product.originalPrice.toFixed(2)}
+                  </span>
                 </div>
-                
-                {/* Rating and sales - enhanced */}
                 <div className="flex items-center mt-2 text-xs text-gray-500">
                   <div className="flex items-center bg-yellow-50 px-1.5 py-0.5 rounded">
                     <Star size={12} className="fill-yellow-400 text-yellow-400" />
@@ -200,10 +197,9 @@ const ProductCarousel = () => {
             </div>
           ))}
         </div>
-        
-        {/* Right arrow */}
-        <button 
-          onClick={() => scroll('right')} 
+
+        <button
+          onClick={() => scroll('right')}
           className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 rounded-full shadow-md p-2 hover:bg-white"
         >
           <ChevronRight size={20} />
