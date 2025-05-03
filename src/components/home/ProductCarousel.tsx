@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { ChevronLeft, ChevronRight, Star, Heart, TrendingUp, Award } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star, Heart } from 'lucide-react';
 
 const ProductCarousel = () => {
   const scrollRef = useRef(null);
@@ -116,28 +116,11 @@ const ProductCarousel = () => {
 
   return (
     <div className="w-full bg-gray-50 py-6 px-4 relative">
-      {/* Sponsored Header */}
+      {/* Simplified Header */}
       <div className="flex justify-between items-center mb-4">
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center">
-            <span className="text-lg font-bold text-gray-800">Sponsored</span>
-            <span className="ml-2 text-xs text-gray-500 border border-gray-300 rounded px-1">AD</span>
-          </div>
-          <div className="flex space-x-2">
-            <div className="flex items-center bg-orange-50 rounded-full px-2 py-0.5">
-              {/* Replace Fire with another available icon */}
-              <TrendingUp size={14} className="text-orange-500 mr-1" />
-              <span className="text-xs font-medium text-orange-500">Hot Deals</span>
-            </div>
-            <div className="flex items-center bg-blue-50 rounded-full px-2 py-0.5">
-              <TrendingUp size={14} className="text-blue-500 mr-1" />
-              <span className="text-xs font-medium text-blue-500">Trending</span>
-            </div>
-            <div className="flex items-center bg-purple-50 rounded-full px-2 py-0.5">
-              <Award size={14} className="text-purple-500 mr-1" />
-              <span className="text-xs font-medium text-purple-500">Top Rated</span>
-            </div>
-          </div>
+        <div className="flex items-center">
+          <span className="text-lg font-bold text-gray-800">Sponsored</span>
+          <span className="ml-2 text-xs text-gray-500 border border-gray-300 rounded px-1">AD</span>
         </div>
         <div className="flex items-center text-sm text-orange-500 font-medium cursor-pointer hover:text-orange-600">
           Show More
