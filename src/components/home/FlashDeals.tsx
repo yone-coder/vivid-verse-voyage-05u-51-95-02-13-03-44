@@ -124,7 +124,7 @@ export default function FlashDeals() {
             {flashProducts.map((product) => (
               <div
                 key={product.id}
-                className="w-[110px] md:w-[130px] flex-shrink-0 snap-start mr-2"
+                className="w-[calc(100%/3.5)] flex-shrink-0 snap-start mr-2"
               >
                 <Link to={`/product/${product.id}`}>
                   <div className="relative aspect-square overflow-hidden bg-gray-50 rounded-md mb-1.5">
