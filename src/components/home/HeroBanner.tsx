@@ -1,5 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
-import { ArrowRight, Clock, Newspaper, AlertCircle, TrendingUp } from "lucide-react";
+import {
+  ArrowRight,
+  Clock,
+  Newspaper,
+  AlertCircle,
+  TrendingUp,
+} from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,64 +26,73 @@ const banners = [
 ];
 
 const newsItems = [
-  { id: 1, icon: <AlertCircle className="w-3 h-3 text-white" />, text: "FLASH SALE: 30% OFF ALL ELECTRONICS TODAY ONLY!" },
-  { id: 2, icon: <TrendingUp className="w-3 h-3 text-white" />, text: "NEW USER BONUS: GET ¥50 OFF YOUR FIRST ORDER" },
-  { id: 3, icon: <Clock className="w-3 h-3 text-white" />, text: "24H DEALS: UP TO 70% OFF BESTSELLERS" },
-  { id: 4, icon: <Newspaper className="w-3 h-3 text-white" />, text: "FREE SHIPPING ON ORDERS OVER ¥199" }
+  { id: 1, icon: <AlertCircle className="w-3 h-3 text-white" />, text: "FLASH SALE: 30% OFF ALL ELECTRONICS TODAY ONLY!", color: "bg-red-600" },
+  { id: 2, icon: <TrendingUp className="w-3 h-3 text-white" />, text: "NEW USER BONUS: GET ¥50 OFF YOUR FIRST ORDER", color: "bg-orange-500" },
+  { id: 3, icon: <Clock className="w-3 h-3 text-white" />, text: "24H DEALS: UP TO 70% OFF BESTSELLERS", color: "bg-blue-600" },
+  { id: 4, icon: <Newspaper className="w-3 h-3 text-white" />, text: "FREE SHIPPING ON ORDERS OVER ¥199", color: "bg-purple-600" }
 ];
 
 export default function HeroBanner() {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [showNews, setShowNews] = useState(true);
-  const [activeNewsIndex, setActiveNewsIndex] = useState(0);
-  const [prevNewsIndex, setPrevNewsIndex] = useState(null);
   const [progress, setProgress] = useState(0);
+  const [currentNewsIndex, setCurrentNewsIndex] = useState(0);
+  const [isNewsVisible, setIsNewsVisible] = useState(true);
+
   const isMobile = useIsMobile();
   const intervalRef = useRef(null);
-  const newsIntervalRef = useRef(null);
   const progressIntervalRef = useRef(null);
-  const slideDuration = 5000;
-  const newsDuration = 4000;
 
+  const slideDuration = 5000;
+  const newsFadeDuration = 1000;
+  const newsDisplayDuration = 5000;
+
+  // Slide banners
   const startSlideTimer = () => {
-    clearInterval(intervalRef.current);
-    clearInterval(progressIntervalRef.current);
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
+
     setProgress(0);
-    const progressStep = (50 / slideDuration) * 100;
+    const step = (50 / slideDuration) * 100;
 
     progressIntervalRef.current = setInterval(() => {
-      setProgress(prev => (prev >= 100 ? 100 : prev + progressStep));
+      setProgress((prev) => (prev >= 100 ? 100 : prev + step));
     }, 50);
 
     intervalRef.current = setInterval(() => {
       setProgress(0);
-      setActiveIndex(current => (current + 1) % banners.length);
+      setActiveIndex((current) => (current + 1) % banners.length);
     }, slideDuration);
-  };
-
-  const startNewsTimer = () => {
-    clearInterval(newsIntervalRef.current);
-
-    newsIntervalRef.current = setInterval(() => {
-      setPrevNewsIndex(activeNewsIndex);
-      setActiveNewsIndex(current => (current + 1) % newsItems.length);
-    }, newsDuration);
   };
 
   useEffect(() => {
     startSlideTimer();
-    startNewsTimer();
 
     return () => {
-      clearInterval(intervalRef.current);
-      clearInterval(progressIntervalRef.current);
-      clearInterval(newsIntervalRef.current);
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
     };
   }, [activeIndex]);
 
-  const handleDotClick = (index) => {
-    setActiveIndex(index);
-  };
+  // News fade transition
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setIsNewsVisible(false);
+
+      setTimeout(() => {
+        let nextIndex;
+        do {
+          nextIndex = Math.floor(Math.random() * newsItems.length);
+        } while (nextIndex === currentNewsIndex && newsItems.length > 1);
+
+        setCurrentNewsIndex(nextIndex);
+        setIsNewsVisible(true);
+      }, newsFadeDuration);
+    }, newsDisplayDuration);
+
+    return () => clearInterval(intervalId);
+  }, [currentNewsIndex]);
+
+  const handleDotClick = (index) => setActiveIndex(index);
 
   return (
     <>
@@ -119,23 +134,19 @@ export default function HeroBanner() {
 
           {!isMobile && (
             <>
-              <CarouselPrevious 
+              <CarouselPrevious
                 className="left-6 bg-white/80 hover:bg-white hidden md:flex"
-                onClick={() => {
-                  setActiveIndex((current) => (current - 1 + banners.length) % banners.length);
-                }}
+                onClick={() => setActiveIndex((current) => (current - 1 + banners.length) % banners.length)}
               />
-              <CarouselNext 
+              <CarouselNext
                 className="right-6 bg-white/80 hover:bg-white hidden md:flex"
-                onClick={() => {
-                  setActiveIndex((current) => (current + 1) % banners.length);
-                }}
+                onClick={() => setActiveIndex((current) => (current + 1) % banners.length)}
               />
             </>
           )}
         </Carousel>
 
-        {/* Animated Dots */}
+        {/* Dots */}
         <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5">
           {banners.map((_, index) => (
             <button
@@ -143,54 +154,35 @@ export default function HeroBanner() {
               className="relative h-1 rounded-full bg-gray-300 w-5 overflow-hidden"
               onClick={() => handleDotClick(index)}
             >
-              <div className="absolute inset-0 bg-gray-300 rounded-full"></div>
+              <div className="absolute inset-0 bg-gray-300 rounded-full" />
               {activeIndex === index && (
-                <div 
+                <div
                   className="absolute inset-0 bg-orange-500 rounded-full origin-left"
                   style={{
                     width: `${progress}%`,
-                    transition: 'width 0.05s linear'
+                    transition: "width 0.05s linear"
                   }}
-                ></div>
+                />
               )}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Vertical Sliding News Banner */}
-      {showNews && (
-        <div className="bg-red-50">
-          <div className="max-w-screen-xl mx-auto">
-            <div className="relative overflow-hidden h-7">
-              {[prevNewsIndex, activeNewsIndex].map((index, idx) => {
-                if (index === null) return null;
-
-                const item = newsItems[index];
-                const bgColors = [
-                  "bg-red-600", "bg-orange-500", "bg-blue-600", "bg-purple-600"
-                ];
-                const bgColor = bgColors[index % bgColors.length];
-
-                const isIncoming = index === activeNewsIndex;
-                const positionClass = isIncoming
-                  ? "translate-y-full animate-slide-in"
-                  : "translate-y-0 animate-slide-out";
-
-                return (
-                  <div
-                    key={`news-${index}`}
-                    className={`absolute top-0 left-0 w-full h-7 flex items-center px-2 ${bgColor} ${positionClass}`}
-                  >
-                    <span className="flex-shrink-0 mr-1">{item.icon}</span>
-                    <span className="text-xs font-medium text-white truncate">{item.text}</span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
+      {/* News Fade Section */}
+      <div className="h-7 overflow-hidden">
+        <div
+          key={newsItems[currentNewsIndex].id}
+          className={`transition-opacity duration-1000 flex items-center h-7 px-3 ${newsItems[currentNewsIndex].color} ${
+            isNewsVisible ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          <span className="mr-1">{newsItems[currentNewsIndex].icon}</span>
+          <span className="text-xs font-medium text-white truncate">
+            {newsItems[currentNewsIndex].text}
+          </span>
         </div>
-      )}
+      </div>
     </>
   );
 }
