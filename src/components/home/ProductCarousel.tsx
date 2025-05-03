@@ -116,7 +116,7 @@ const ProductCarousel = () => {
 
   return (
     <div className="w-full bg-gray-50 py-6 px-4 relative">
-      {/* Enhanced Sponsored header */}
+      {/* Sponsored Header */}
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center space-x-4">
           <div className="flex items-center">
@@ -144,9 +144,8 @@ const ProductCarousel = () => {
         </div>
       </div>
 
-      {/* Carousel container */}
+      {/* Carousel */}
       <div className="relative">
-        {/* Left arrow */}
         {showLeftArrow && (
           <button
             onClick={() => scroll('left')}
@@ -156,7 +155,6 @@ const ProductCarousel = () => {
           </button>
         )}
 
-        {/* Products container */}
         <div
           className="flex overflow-x-auto scrollbar-hide gap-3 pb-4"
           ref={scrollRef}
@@ -168,22 +166,17 @@ const ProductCarousel = () => {
               key={product.id}
               className="flex-shrink-0 w-40 bg-white rounded-md shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-300"
             >
-              {/* Product image */}
               <div className="relative">
                 <img src={product.image} alt="Product" className="w-full h-40 object-cover" />
-                {/* Wishlist button */}
                 <button className="absolute top-2 right-2 bg-white/80 rounded-full p-1 hover:bg-white">
                   <Heart size={16} className="text-gray-400 hover:text-red-500" />
                 </button>
-                {/* Discount tag */}
                 <div className="absolute bottom-0 left-0 bg-red-500 text-white text-xs px-1.5 py-0.5">
                   -{product.discount}%
                 </div>
               </div>
 
-              {/* Product info */}
               <div className="p-2">
-                {/* Price */}
                 <div className="flex items-baseline">
                   <span className="text-red-500 font-medium text-base">
                     US ${product.discountPrice.toFixed(2)}
@@ -192,8 +185,6 @@ const ProductCarousel = () => {
                     US ${product.originalPrice.toFixed(2)}
                   </span>
                 </div>
-
-                {/* Rating and sales */}
                 <div className="flex items-center mt-2 text-xs text-gray-500">
                   <div className="flex items-center bg-yellow-50 px-1.5 py-0.5 rounded">
                     <Star size={12} className="fill-yellow-400 text-yellow-400" />
@@ -207,7 +198,6 @@ const ProductCarousel = () => {
           ))}
         </div>
 
-        {/* Right arrow */}
         <button
           onClick={() => scroll('right')}
           className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 rounded-full shadow-md p-2 hover:bg-white"
