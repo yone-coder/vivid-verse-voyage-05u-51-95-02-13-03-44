@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { ArrowRight, Clock, Newspaper, Bell, Sparkles } from "lucide-react";
+import { ArrowRight, Clock, Newspaper, AlertCircle, TrendingUp, ChevronUp, ChevronDown } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,21 +20,21 @@ const banners = [
 ];
 
 const newsItems = [
-  { id: 1, icon: <Newspaper className="w-3.5 h-3.5 text-blue-500" />, text: "New summer collection arriving next week" },
-  { id: 2, icon: <Bell className="w-3.5 h-3.5 text-red-500" />, text: "Flash sale: 30% off on all electronics today only" },
-  { id: 3, icon: <Clock className="w-3.5 h-3.5 text-green-500" />, text: "Extended returns available until end of month" },
-  { id: 4, icon: <Sparkles className="w-3.5 h-3.5 text-purple-500" />, text: "New loyalty program launching soon - stay tuned" }
+  { id: 1, icon: <AlertCircle className="w-3.5 h-3.5 text-red-500" />, text: "Flash sale: 30% off on all electronics today only" },
+  { id: 2, icon: <TrendingUp className="w-3.5 h-3.5 text-green-500" />, text: "New summer collection arriving next week" },
+  { id: 3, icon: <Clock className="w-3.5 h-3.5 text-blue-500" />, text: "Extended returns available until end of month" },
+  { id: 4, icon: <Newspaper className="w-3.5 h-3.5 text-purple-500" />, text: "New loyalty program launching soon - stay tuned" }
 ];
 
 export default function HeroBanner() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [showNews, setShowNews] = useState(true);
-  const [progress, setProgress] = useState(0);
   const [activeNewsIndex, setActiveNewsIndex] = useState(0);
+  const [progress, setProgress] = useState(0);
   const isMobile = useIsMobile();
   const intervalRef = useRef(null);
-  const progressIntervalRef = useRef(null);
   const newsIntervalRef = useRef(null);
+  const progressIntervalRef = useRef(null);
   const slideDuration = 5000;
   const newsDuration = 4000;
 
@@ -75,6 +75,20 @@ export default function HeroBanner() {
 
   const handleDotClick = (index) => {
     setActiveIndex(index);
+  };
+
+  const handleNewsNavigation = (direction) => {
+    if (direction === 'next') {
+      setActiveNewsIndex((current) => (current + 1) % newsItems.length);
+    } else {
+      setActiveNewsIndex((current) => (current - 1 + newsItems.length) % newsItems.length);
+    }
+    
+    // Reset the news interval timer when manually navigating
+    if (newsIntervalRef.current) {
+      clearInterval(newsIntervalRef.current);
+      startNewsTimer();
+    }
   };
 
   return (
@@ -156,40 +170,48 @@ export default function HeroBanner() {
         </div>
       </div>
 
-      {/* News Band */}
+      {/* Vertical Sliding News Banner */}
       {showNews && (
-        <div className="bg-gray-900 text-white overflow-hidden">
-          <div className="max-w-screen-xl mx-auto px-2">
-            <div className="flex items-center py-2">
-              <div className="flex-shrink-0 bg-blue-600 py-1 px-3 rounded mr-3 flex items-center">
-                <Newspaper className="w-3.5 h-3.5 mr-1.5" />
+        <div className="bg-gray-50 border-b border-gray-200">
+          <div className="max-w-screen-xl mx-auto">
+            <div className="flex items-center justify-between">
+              {/* News Label */}
+              <div className="bg-blue-600 py-2 px-4 text-white flex items-center">
+                <Newspaper className="w-4 h-4 mr-2" />
                 <span className="text-xs font-bold uppercase">News</span>
               </div>
               
-              <div className="overflow-hidden relative flex-1">
-                <div className="animate-transition flex items-center whitespace-nowrap">
+              {/* News Content */}
+              <div className="flex-1 relative overflow-hidden h-10">
+                <div className="h-full flex items-center px-4">
                   {newsItems.map((item, index) => (
                     <div 
                       key={item.id}
-                      className={`flex items-center gap-2 transition-all duration-500 ${
-                        index === activeNewsIndex ? "opacity-100" : "opacity-0 absolute"
+                      className={`absolute inset-0 flex items-center px-4 transition-transform duration-500 ease-in-out ${
+                        index === activeNewsIndex ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
                       }`}
-                      style={{
-                        transform: index === activeNewsIndex ? 'translateY(0)' : 'translateY(100%)'
-                      }}
                     >
-                      <span className="flex-shrink-0">{item.icon}</span>
-                      <span className="text-sm font-medium">{item.text}</span>
+                      <span className="flex-shrink-0 mr-2">{item.icon}</span>
+                      <span className="text-sm font-medium text-gray-800">{item.text}</span>
                     </div>
                   ))}
                 </div>
               </div>
               
-              <div className="flex-shrink-0 ml-3">
-                <Button variant="ghost" size="sm" className="text-xs text-white hover:bg-gray-800 h-7 px-2">
-                  View All
-                  <ArrowRight className="w-3 h-3 ml-1" />
-                </Button>
+              {/* Navigation Controls */}
+              <div className="flex flex-col border-l border-gray-200">
+                <button 
+                  className="p-1 hover:bg-gray-200 border-b border-gray-200 flex items-center justify-center"
+                  onClick={() => handleNewsNavigation('prev')}
+                >
+                  <ChevronUp className="w-4 h-4 text-gray-500" />
+                </button>
+                <button 
+                  className="p-1 hover:bg-gray-200 flex items-center justify-center"
+                  onClick={() => handleNewsNavigation('next')}
+                >
+                  <ChevronDown className="w-4 h-4 text-gray-500" />
+                </button>
               </div>
             </div>
           </div>
