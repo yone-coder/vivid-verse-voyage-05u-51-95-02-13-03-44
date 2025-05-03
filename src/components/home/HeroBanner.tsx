@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { ArrowRight, Clock, Newspaper, AlertCircle, TrendingUp, ChevronUp, ChevronDown } from "lucide-react";
+import { ArrowRight, Clock, Newspaper, AlertCircle, TrendingUp } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
 import {
@@ -56,7 +56,7 @@ export default function HeroBanner() {
 
   const startNewsTimer = () => {
     if (newsIntervalRef.current) clearInterval(newsIntervalRef.current);
-    
+
     newsIntervalRef.current = setInterval(() => {
       setActiveNewsIndex(current => (current + 1) % newsItems.length);
     }, newsDuration);
@@ -65,7 +65,7 @@ export default function HeroBanner() {
   useEffect(() => {
     startSlideTimer();
     startNewsTimer();
-    
+
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
       if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
@@ -76,8 +76,6 @@ export default function HeroBanner() {
   const handleDotClick = (index) => {
     setActiveIndex(index);
   };
-
-  // Removed handleNewsNavigation as we no longer have navigation arrows
 
   return (
     <>
@@ -119,13 +117,13 @@ export default function HeroBanner() {
 
           {!isMobile && (
             <>
-              <CarouselPrevious 
+              <CarouselPrevious
                 className="left-6 bg-white/80 hover:bg-white hidden md:flex"
                 onClick={() => {
                   setActiveIndex((current) => (current - 1 + banners.length) % banners.length);
                 }}
               />
-              <CarouselNext 
+              <CarouselNext
                 className="right-6 bg-white/80 hover:bg-white hidden md:flex"
                 onClick={() => {
                   setActiveIndex((current) => (current + 1) % banners.length);
@@ -145,7 +143,7 @@ export default function HeroBanner() {
             >
               <div className="absolute inset-0 bg-gray-300 rounded-full"></div>
               {activeIndex === index && (
-                <div 
+                <div
                   className="absolute inset-0 bg-orange-500 rounded-full origin-left"
                   style={{
                     width: `${progress}%`,
@@ -158,30 +156,34 @@ export default function HeroBanner() {
         </div>
       </div>
 
-      {/* Vertical Sliding News Banner - AliExpress Style */}
+      {/* Improved Vertical Sliding News Banner */}
       {showNews && (
         <div className="bg-red-50">
           <div className="max-w-screen-xl mx-auto">
             <div className="relative overflow-hidden h-7">
-              {newsItems.map((item, index) => {
-                // AliExpress-like color schemes
-                const bgColors = [
-                  "bg-red-600", "bg-orange-500", "bg-blue-600", "bg-purple-600"
-                ];
-                const bgColor = bgColors[index % bgColors.length];
-                
-                return (
-                  <div 
-                    key={item.id}
-                    className={`absolute inset-0 flex items-center px-2 transition-transform duration-500 ease-in-out ${bgColor} ${
-                      index === activeNewsIndex ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
-                    }`}
-                  >
-                    <span className="flex-shrink-0 mr-1">{item.icon}</span>
-                    <span className="text-xs font-medium text-white truncate">{item.text}</span>
-                  </div>
-                );
-              })}
+              <div
+                className="flex flex-col transition-transform duration-500 ease-in-out"
+                style={{ transform: `translateY(-${activeNewsIndex * 100}%)` }}
+              >
+                {newsItems.map((item, index) => {
+                  const bgColors = [
+                    "bg-red-600", "bg-orange-500", "bg-blue-600", "bg-purple-600"
+                  ];
+                  const bgColor = bgColors[index % bgColors.length];
+
+                  return (
+                    <div
+                      key={item.id}
+                      className={`flex items-center px-2 h-7 w-full ${bgColor}`}
+                    >
+                      <span className="flex-shrink-0 mr-1">{item.icon}</span>
+                      <span className="text-xs font-medium text-white truncate">
+                        {item.text}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
