@@ -9,90 +9,82 @@ const ProductCarousel = () => {
     {
       id: 1,
       title: "Bluetooth Earbuds",
-      image: "/api/placeholder/300/300",
+      image: "https://picsum.photos/seed/earbuds/300/300",
       originalPrice: 39.99,
       discountPrice: 19.99,
       discount: 50,
       rating: 4.8,
       sales: 5382,
-      freeShipping: true,
     },
     {
       id: 2,
       title: "Smart Watch Fitness Tracker",
-      image: "/api/placeholder/300/300",
+      image: "https://picsum.photos/seed/smartwatch/300/300",
       originalPrice: 59.99,
       discountPrice: 29.99,
       discount: 50,
       rating: 4.6,
       sales: 3287,
-      freeShipping: true,
     },
     {
       id: 3,
-      title: "Portable Power Bank 20000mAh",
-      image: "/api/placeholder/300/300",
+      title: "Portable Power Bank",
+      image: "https://picsum.photos/seed/powerbank/300/300",
       originalPrice: 45.99,
       discountPrice: 22.5,
       discount: 51,
       rating: 4.7,
       sales: 7621,
-      freeShipping: true,
     },
     {
       id: 4,
-      title: "LED Ring Light with Tripod Stand",
-      image: "/api/placeholder/300/300",
+      title: "LED Ring Light",
+      image: "https://picsum.photos/seed/ringlight/300/300",
       originalPrice: 34.99,
       discountPrice: 19.99,
       discount: 43,
       rating: 4.5,
       sales: 2938,
-      freeShipping: false,
     },
     {
       id: 5,
-      title: "Laptop Backpack with USB Port",
-      image: "/api/placeholder/300/300",
+      title: "Laptop Backpack",
+      image: "https://picsum.photos/seed/backpack/300/300",
       originalPrice: 49.99,
       discountPrice: 27.99,
       discount: 44,
       rating: 4.9,
       sales: 8273,
-      freeShipping: true,
     },
     {
       id: 6,
-      title: "Foldable Selfie Drone with Camera",
-      image: "/api/placeholder/300/300",
+      title: "Foldable Selfie Drone",
+      image: "https://picsum.photos/seed/drone/300/300",
       originalPrice: 129.99,
       discountPrice: 79.99,
       discount: 38,
       rating: 4.4,
       sales: 1536,
-      freeShipping: true,
     },
     {
       id: 7,
-      title: "Wireless Phone Charger Stand",
-      image: "/api/placeholder/300/300",
+      title: "Wireless Charger Stand",
+      image: "https://picsum.photos/seed/charger/300/300",
       originalPrice: 29.99,
       discountPrice: 15.99,
       discount: 47,
       rating: 4.6,
       sales: 4721,
-      freeShipping: true,
     },
     {
       id: 8,
-      title: "Gaming Mechanical Keyboard RGB",
-      image: "/api/placeholder/300/300",
+      title: "Mechanical Gaming Keyboard",
+      image: "https://picsum.photos/seed/keyboard/300/300",
       originalPrice: 89.99,
       discountPrice: 45.99,
       discount: 49,
       rating: 4.7,
       sales: 3198,
-      freeShipping: true,
     }
   ];
 
@@ -101,7 +93,6 @@ const ProductCarousel = () => {
       const { current } = scrollRef;
       const scrollAmount = direction === 'left' ? -current.offsetWidth : current.offsetWidth;
       current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-
       setTimeout(() => {
         setShowLeftArrow(current.scrollLeft > 0);
       }, 500);
@@ -145,7 +136,7 @@ const ProductCarousel = () => {
           onScroll={handleScroll}
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
-          {products.map((product, index) => (
+          {products.map((product) => (
             <div
               key={product.id}
               className="flex-shrink-0 w-[28.5%] sm:w-40 bg-white rounded-md shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-300 ml-2 first:ml-4 last:mr-4"
@@ -155,33 +146,30 @@ const ProductCarousel = () => {
                 <button className="absolute top-2 right-2 bg-white/80 rounded-full p-1 hover:bg-white">
                   <Heart size={16} className="text-gray-400 hover:text-red-500" />
                 </button>
-                <div className="absolute bottom-0 left-0 bg-red-500 text-white text-xs px-1.5 py-0.5">
+                <div className="absolute top-2 left-2 bg-yellow-100 text-yellow-700 text-xs px-1.5 py-0.5 rounded flex items-center">
+                  <Star size={12} className="fill-yellow-400 text-yellow-400 mr-1" />
+                  {product.rating}
+                </div>
+                <div className="absolute bottom-0 left-0 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded-tr">
+                  {product.sales}+ sold
+                </div>
+                <div className="absolute bottom-0 right-0 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-tl">
                   -{product.discount}%
                 </div>
               </div>
 
               <div className="p-2">
+                <div className="text-sm font-medium text-gray-800 line-clamp-2 leading-tight mb-1">
+                  {product.title}
+                </div>
                 <div className="flex items-baseline">
-                  <span className="text-red-500 font-medium text-base">
+                  <span className="text-red-500 font-semibold text-base">
                     US ${product.discountPrice.toFixed(2)}
                   </span>
                   <span className="ml-1 text-gray-400 text-xs line-through">
                     US ${product.originalPrice.toFixed(2)}
                   </span>
                 </div>
-                <div className="flex items-center mt-2 text-xs text-gray-500">
-                  <div className="flex items-center bg-yellow-50 px-1.5 py-0.5 rounded">
-                    <Star size={12} className="fill-yellow-400 text-yellow-400" />
-                    <span className="ml-0.5 font-medium">{product.rating}</span>
-                  </div>
-                  <span className="mx-1">·</span>
-                  <span className="font-medium">{product.sales}+ sold</span>
-                </div>
-                {product.freeShipping && (
-                  <div className="mt-1">
-                    <span className="text-xs text-green-600">Free Shipping</span>
-                  </div>
-                )}
               </div>
             </div>
           ))}
