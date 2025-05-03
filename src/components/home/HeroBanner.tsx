@@ -77,19 +77,7 @@ export default function HeroBanner() {
     setActiveIndex(index);
   };
 
-  const handleNewsNavigation = (direction) => {
-    if (direction === 'next') {
-      setActiveNewsIndex((current) => (current + 1) % newsItems.length);
-    } else {
-      setActiveNewsIndex((current) => (current - 1 + newsItems.length) % newsItems.length);
-    }
-    
-    // Reset the news interval timer when manually navigating
-    if (newsIntervalRef.current) {
-      clearInterval(newsIntervalRef.current);
-      startNewsTimer();
-    }
-  };
+  // Removed handleNewsNavigation as we no longer have navigation arrows
 
   return (
     <>
@@ -174,45 +162,18 @@ export default function HeroBanner() {
       {showNews && (
         <div className="bg-gray-50 border-b border-gray-200">
           <div className="max-w-screen-xl mx-auto">
-            <div className="flex items-center justify-between">
-              {/* News Label */}
-              <div className="bg-blue-600 py-2 px-4 text-white flex items-center">
-                <Newspaper className="w-4 h-4 mr-2" />
-                <span className="text-xs font-bold uppercase">News</span>
-              </div>
-              
-              {/* News Content */}
-              <div className="flex-1 relative overflow-hidden h-10">
-                <div className="h-full flex items-center px-4">
-                  {newsItems.map((item, index) => (
-                    <div 
-                      key={item.id}
-                      className={`absolute inset-0 flex items-center px-4 transition-transform duration-500 ease-in-out ${
-                        index === activeNewsIndex ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
-                      }`}
-                    >
-                      <span className="flex-shrink-0 mr-2">{item.icon}</span>
-                      <span className="text-sm font-medium text-gray-800">{item.text}</span>
-                    </div>
-                  ))}
+            <div className="relative overflow-hidden h-10">
+              {newsItems.map((item, index) => (
+                <div 
+                  key={item.id}
+                  className={`absolute inset-0 flex items-center px-4 transition-transform duration-500 ease-in-out ${
+                    index === activeNewsIndex ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
+                  }`}
+                >
+                  <span className="flex-shrink-0 mr-2">{item.icon}</span>
+                  <span className="text-sm font-medium text-gray-800">{item.text}</span>
                 </div>
-              </div>
-              
-              {/* Navigation Controls */}
-              <div className="flex flex-col border-l border-gray-200">
-                <button 
-                  className="p-1 hover:bg-gray-200 border-b border-gray-200 flex items-center justify-center"
-                  onClick={() => handleNewsNavigation('prev')}
-                >
-                  <ChevronUp className="w-4 h-4 text-gray-500" />
-                </button>
-                <button 
-                  className="p-1 hover:bg-gray-200 flex items-center justify-center"
-                  onClick={() => handleNewsNavigation('next')}
-                >
-                  <ChevronDown className="w-4 h-4 text-gray-500" />
-                </button>
-              </div>
+              ))}
             </div>
           </div>
         </div>
