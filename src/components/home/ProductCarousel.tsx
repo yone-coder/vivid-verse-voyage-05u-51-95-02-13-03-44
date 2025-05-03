@@ -123,7 +123,7 @@ const ProductCarousel = () => {
       {/* Header */}
       <div className="px-4 flex justify-between items-center mb-3">
         <div className="flex items-center">
-          <span className="text-sm font-bold text-gray-800">Flash Deals</span>
+          <span className="text-sm font-bold text-gray-800">Sponsored</span>
           <span className="ml-2 text-xs text-gray-500 border border-gray-300 rounded px-1">AD</span>
         </div>
         <div className="flex items-center text-xs text-orange-500 font-medium cursor-pointer hover:text-orange-600">
