@@ -199,7 +199,7 @@ const TopVendorsCompact = () => {
   };
 
   return (
-    <div className="w-full bg-gray-50 sm:p-3 rounded-lg">
+    <div className="w-full sm:p-3 rounded-lg">
       <div className="flex justify-between items-center mb-2">
         <div className="flex items-center">
           <h2 className="text-sm sm:text-base font-bold text-gray-800">Top Vendors</h2>
