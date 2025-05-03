@@ -7,7 +7,7 @@ import SpaceSavingCategories from "@/components/home/SpaceSavingCategories";
 import FlashDeals from "@/components/home/FlashDeals";
 import SuperDeals from "@/components/home/SuperDealsSection";
 import ProductGrid from "@/components/home/ProductGrid";
-import ProductCarousel from '@/components/product/ProductCarousel';
+import ProductCarousel from '@/components/home/ProductCarrousel';
 import TopBrands from "@/components/home/TopBrands";
 import ProductRecommendations from "@/components/home/ProductRecommendations";
 import { useIsMobile } from "@/hooks/use-mobile";
