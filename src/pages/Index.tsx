@@ -1,3 +1,4 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { fetchAllProducts } from "@/integrations/supabase/client";
 import AliExpressHeader from "@/components/home/AliExpressHeader";
@@ -15,6 +16,7 @@ import Newsletter from "@/components/home/Newsletter";
 import PopularSearches from "@/components/home/PopularSearches";
 import RecentlyViewed from "@/components/home/RecentlyViewed";
 import BenefitsBanner from "@/components/home/BenefitsBanner";
+import SecondaryHeroBanner from "@/components/home/SecondaryHeroBanner";
 
 export default function Index() {
   const { data: products, isLoading } = useQuery({
@@ -53,6 +55,11 @@ export default function Index() {
       {/* Flash Deals Section */}
       <div className="mb-1">
         <FlashDeals />
+      </div>
+
+      {/* Secondary Hero Banner - Added after Flash Deals */}
+      <div className="mb-1">
+        <SecondaryHeroBanner />
       </div>
 
       {/* Enhanced Popular Searches */}
