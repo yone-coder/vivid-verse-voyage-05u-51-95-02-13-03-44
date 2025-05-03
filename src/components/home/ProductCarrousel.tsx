@@ -167,7 +167,7 @@ const ProductCarousel = () => {
               className="flex-shrink-0 w-40 bg-white rounded-md shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-300"
             >
               <div className="relative">
-                <img src={product.image} alt="Product" className="w-full h-40 object-cover" />
+                <img src={product.image} alt={product.title} className="w-full h-40 object-cover" />
                 <button className="absolute top-2 right-2 bg-white/80 rounded-full p-1 hover:bg-white">
                   <Heart size={16} className="text-gray-400 hover:text-red-500" />
                 </button>
@@ -193,6 +193,11 @@ const ProductCarousel = () => {
                   <span className="mx-1">·</span>
                   <span className="font-medium">{product.sales}+ sold</span>
                 </div>
+                {product.freeShipping && (
+                  <div className="mt-1">
+                    <span className="text-xs text-green-600">Free Shipping</span>
+                  </div>
+                )}
               </div>
             </div>
           ))}
