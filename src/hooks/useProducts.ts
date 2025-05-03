@@ -1,87 +1,101 @@
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from '@tanstack/react-query';
 
 interface Product {
-  id: string;
-  name: string;
+  id: number;
+  title: string;
   price: number;
-  discountPrice?: number;
-  rating: number;
-  image: string;
-  isNew?: boolean;
+  description: string;
   category: string;
-  sold?: number;
+  image: string;
+  rating: {
+    rate: number;
+    count: number;
+  };
 }
 
-// Sample data for demo purposes
-const sampleProducts: Product[] = [
-  {
-    id: "1",
-    name: "Wireless Earbuds",
-    price: 39.99,
-    discountPrice: 29.99,
-    rating: 4.5,
-    image: "/api/placeholder/300/300",
-    isNew: true,
-    category: "electronics"
-  },
-  {
-    id: "2",
-    name: "Smart Watch",
-    price: 99.99,
-    discountPrice: 79.99,
-    rating: 4.3,
-    image: "/api/placeholder/300/300",
-    category: "electronics"
-  },
-  {
-    id: "3",
-    name: "Bluetooth Speaker",
-    price: 59.99,
-    discountPrice: 49.99,
-    rating: 4.7,
-    image: "/api/placeholder/300/300",
-    category: "electronics"
-  },
-  {
-    id: "4",
-    name: "Fitness Tracker",
-    price: 49.99,
-    discountPrice: 39.99,
-    rating: 4.2,
-    image: "/api/placeholder/300/300",
-    isNew: true,
-    category: "electronics"
-  },
-  {
-    id: "5",
-    name: "Laptop Sleeve",
-    price: 19.99,
-    rating: 4.6,
-    image: "/api/placeholder/300/300",
-    category: "accessories"
-  },
-  {
-    id: "6",
-    name: "Wireless Charger",
-    price: 29.99,
-    discountPrice: 24.99,
-    rating: 4.4,
-    image: "/api/placeholder/300/300",
-    category: "electronics"
-  }
-];
-
-// Mock fetch function - this would typically be an API call
+// Mock data function to simulate fetching products from an API
 const fetchProducts = async (): Promise<Product[]> => {
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 500));
-  return sampleProducts;
+  // In a real app, this would be an API call
+  return [
+    {
+      id: 1,
+      title: "Fjallraven - Foldsack No. 1 Backpack",
+      price: 109.95,
+      description: "Your perfect pack for everyday use and walks in the forest.",
+      category: "men's clothing",
+      image: "https://picsum.photos/seed/product1/300/300",
+      rating: {
+        rate: 3.9,
+        count: 120
+      }
+    },
+    {
+      id: 2,
+      title: "Mens Casual Premium Slim Fit T-Shirts",
+      price: 22.3,
+      description: "Slim-fitting style, contrast raglan long sleeve.",
+      category: "men's clothing",
+      image: "https://picsum.photos/seed/product2/300/300",
+      rating: {
+        rate: 4.1,
+        count: 259
+      }
+    },
+    {
+      id: 3,
+      title: "Mens Cotton Jacket",
+      price: 55.99,
+      description: "Great outerwear jackets for Spring/Autumn/Winter.",
+      category: "men's clothing",
+      image: "https://picsum.photos/seed/product3/300/300",
+      rating: {
+        rate: 4.7,
+        count: 500
+      }
+    },
+    {
+      id: 4,
+      title: "Women's Short Sleeve Boat Neck",
+      price: 9.85,
+      description: "95% Cotton, 5% Spandex, lightweight.",
+      category: "women's clothing",
+      image: "https://picsum.photos/seed/product4/300/300",
+      rating: {
+        rate: 4.5,
+        count: 146
+      }
+    },
+    {
+      id: 5,
+      title: "Women's Floppy Sun Hat",
+      price: 695,
+      description: "Protective sun hat for beach or daily wear",
+      category: "women's clothing",
+      image: "https://picsum.photos/seed/product5/300/300",
+      rating: {
+        rate: 4.6,
+        count: 320
+      }
+    },
+    {
+      id: 6,
+      title: "Solid Gold Petite Micropave",
+      price: 168,
+      description: "Satisfaction Guaranteed. Return or exchange any order within 30 days.",
+      category: "jewelery",
+      image: "https://picsum.photos/seed/product6/300/300",
+      rating: {
+        rate: 3.9,
+        count: 70
+      }
+    }
+  ];
 };
 
 export function useProducts() {
   return useQuery({
     queryKey: ['products'],
-    queryFn: fetchProducts,
+    queryFn: fetchProducts
   });
 }

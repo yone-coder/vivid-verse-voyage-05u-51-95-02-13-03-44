@@ -8,6 +8,7 @@ import FlashDeals from "@/components/home/FlashDeals";
 import SuperDeals from "@/components/home/SuperDealsSection";
 import ProductGrid from "@/components/home/ProductGrid";
 import ProductCarousel from '@/components/home/ProductCarousel';
+import TopVendorsCompact from '@/components/home/TopVendorsCompact';
 import TopBrands from "@/components/home/TopBrands";
 import ProductRecommendations from "@/components/home/ProductRecommendations";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -48,7 +49,7 @@ export default function Index() {
         <HeroBanner />
       </div>
 
-<div className="mb-1">
+      <div className="mb-1">
         <SpaceSavingCategories />
       </div>
       
@@ -68,8 +69,14 @@ export default function Index() {
         <PopularSearches />
       </div>
 
-<div className="mb-1 bg-white">
+      {/* Product Carousel */}
+      <div className="mb-1 bg-white">
         <ProductCarousel />
+      </div>
+      
+      {/* Top Vendors Compact - Added after Product Carousel */}
+      <div className="mb-1 bg-white">
+        <TopVendorsCompact />
       </div>
 
       {/* Super Deals */}
@@ -101,8 +108,6 @@ export default function Index() {
       <div className="bg-white mb-1">
         <RecentlyViewed />
       </div>
-
-      
 
       {/* Extra bottom padding for mobile to account for fixed navigation */}
       {isMobile && <div className="h-16"></div>}
