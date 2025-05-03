@@ -74,9 +74,10 @@ export default function Index() {
         <ProductCarousel />
       </div>
       
-      <div className="mb-1 bg-white -mx-4 px-4">
-  <TopVendorsCompact />
-</div>
+      {/* Top Vendors Compact - Added after Product Carousel */}
+      <div className="mb-1 bg-white">
+        <TopVendorsCompact />
+      </div>
 
       {/* Super Deals */}
       <div className="mb-1">

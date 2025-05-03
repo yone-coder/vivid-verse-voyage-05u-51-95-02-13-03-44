@@ -1,12 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import {
-  ChevronLeft,
-  ChevronRight,
-  Star,
-  Award,
-  Truck,
-  ShieldCheck
-} from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star, Award, Truck, ShieldCheck } from 'lucide-react';
 
 // Mock data for vendors
 const vendors = [
@@ -140,13 +133,12 @@ const vendors = [
   }
 ];
 
-// Vendor card component
+// Compact vendor card
 const CompactVendorCard = ({ vendor }: { vendor: any }) => {
   return (
-    <div className="flex-shrink-0 snap-start w-44 bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition-all duration-300">
+    <div className="flex-shrink-0 w-44 bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition-all duration-300">
       <div className="relative">
         <img src={vendor.image} alt={vendor.name} className="w-full h-24 object-cover" />
-
         <div className="absolute top-1 left-1 flex flex-wrap gap-1 max-w-full">
           {vendor.topSeller && (
             <div className="bg-orange-500 text-white text-xs px-1.5 py-0.5 rounded-sm flex items-center">
@@ -161,29 +153,25 @@ const CompactVendorCard = ({ vendor }: { vendor: any }) => {
             </div>
           )}
         </div>
-
         <div className="absolute top-1 right-1">
           <div className="bg-yellow-100 text-yellow-800 text-xs px-1.5 py-0.5 rounded-sm flex items-center">
             <Star size={10} className="mr-0.5 text-yellow-500 fill-yellow-500" />
             <span>{vendor.rating}</span>
           </div>
         </div>
-
         {vendor.verified && (
           <div className="absolute bottom-1 right-1 bg-blue-500 text-white rounded-full p-0.5">
             <ShieldCheck size={10} />
           </div>
         )}
       </div>
-
       <div className="p-2">
         <h3 className="font-bold text-xs truncate">{vendor.name}</h3>
         <div className="text-xs text-gray-500 mt-0.5">{vendor.sales} sales</div>
       </div>
-
       <div className="px-2 pb-2">
         <div className="flex gap-1 justify-between">
-          {vendor.topProducts.slice(0, 3).map((product: any) => (
+          {vendor.topProducts.slice(0, 3).map(product => (
             <div key={product.id} className="relative w-1/3 aspect-square group">
               <img src={product.image} alt="Product" className="w-full h-full object-cover rounded-sm border border-gray-200" />
               <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 rounded-sm">
@@ -195,7 +183,6 @@ const CompactVendorCard = ({ vendor }: { vendor: any }) => {
           ))}
         </div>
       </div>
-
       <div className="px-2 pb-2">
         <button className="w-full bg-red-500 hover:bg-red-600 text-white text-xs font-medium py-1 px-2 rounded-sm transition-colors duration-300">
           Visit Store
@@ -222,22 +209,23 @@ const TopVendorsCompact = () => {
   };
 
   useEffect(() => {
-    const ref = scrollRef.current;
-    if (ref) {
-      ref.addEventListener('scroll', handleScroll);
+    const currentRef = scrollRef.current;
+    if (currentRef) {
+      currentRef.addEventListener('scroll', handleScroll);
       handleScroll();
-      return () => ref.removeEventListener('scroll', handleScroll);
+      return () => currentRef.removeEventListener('scroll', handleScroll);
     }
   }, []);
 
-  const scroll = (dir: 'left' | 'right') => {
+  const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: dir === 'left' ? -200 : 200, behavior: 'smooth' });
+      const scrollAmount = direction === 'left' ? -200 : 200;
+      scrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
   };
 
   return (
-    <div className="w-full bg-gray-50 p-2 sm:p-3 rounded-lg">
+    <div className="w-full bg-gray-50 sm:p-3 rounded-lg">
       <div className="flex justify-between items-center mb-2">
         <div className="flex items-center">
           <h2 className="text-sm sm:text-base font-bold text-gray-800">Top Vendors</h2>
@@ -250,17 +238,17 @@ const TopVendorsCompact = () => {
 
       <div className="mb-3 overflow-x-auto whitespace-nowrap pb-1 scrollbar-hide">
         <div className="inline-flex gap-1.5">
-          {categories.map(cat => (
+          {categories.map(category => (
             <button
-              key={cat}
+              key={category}
               className={`px-2 py-0.5 text-xs rounded-full whitespace-nowrap transition-colors duration-300 ${
-                activeCategory === cat
+                activeCategory === category
                   ? 'bg-red-500 text-white'
                   : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
               }`}
-              onClick={() => setActiveCategory(cat)}
+              onClick={() => setActiveCategory(category)}
             >
-              {cat}
+              {category}
             </button>
           ))}
         </div>
@@ -279,11 +267,11 @@ const TopVendorsCompact = () => {
 
         <div
           ref={scrollRef}
-          className="flex gap-2 overflow-x-auto pb-2 pl-2 pr-2 scrollbar-hide scroll-smooth snap-x snap-mandatory"
+          className="flex gap-2 overflow-x-auto pb-2 pl-2 scrollbar-hide scroll-smooth"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
-          {vendors.map(v => (
-            <CompactVendorCard key={v.id} vendor={v} />
+          {vendors.map(vendor => (
+            <CompactVendorCard key={vendor.id} vendor={vendor} />
           ))}
         </div>
 
