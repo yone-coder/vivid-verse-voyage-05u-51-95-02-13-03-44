@@ -8,7 +8,7 @@ const ProductCarousel = () => {
   const products = [
     {
       id: 1,
-      title: " Bluetooth Earbuds",
+      title: "Bluetooth Earbuds",
       image: "/api/placeholder/300/300",
       originalPrice: 39.99,
       discountPrice: 19.99,
@@ -116,7 +116,7 @@ const ProductCarousel = () => {
 
   return (
     <div className="w-full bg-gray-50 py-6 px-4 relative">
-      {/* Simplified Header */}
+      {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center">
           <span className="text-lg font-bold text-gray-800">Sponsored</span>
@@ -140,7 +140,7 @@ const ProductCarousel = () => {
         )}
 
         <div
-          className="flex overflow-x-auto scrollbar-hide gap-3 pb-4"
+          className="flex overflow-x-auto scrollbar-hide pb-4 pl-2 gap-3"
           ref={scrollRef}
           onScroll={handleScroll}
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
@@ -148,7 +148,7 @@ const ProductCarousel = () => {
           {products.map((product) => (
             <div
               key={product.id}
-              className="flex-shrink-0 w-40 bg-white rounded-md shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-300"
+              className="flex-shrink-0 w-[calc(100%/3.5)] sm:w-40 bg-white rounded-md shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-300"
             >
               <div className="relative">
                 <img src={product.image} alt={product.title} className="w-full h-40 object-cover" />
