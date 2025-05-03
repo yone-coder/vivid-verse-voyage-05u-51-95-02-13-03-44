@@ -1,5 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
-import { ArrowRight, Clock, Newspaper, AlertCircle, TrendingUp } from "lucide-react";
+import {
+  ArrowRight,
+  Clock,
+  Newspaper,
+  AlertCircle,
+  TrendingUp
+} from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
 import {
@@ -30,6 +36,7 @@ export default function HeroBanner() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [showNews, setShowNews] = useState(true);
   const [activeNewsIndex, setActiveNewsIndex] = useState(0);
+  const [prevNewsIndex, setPrevNewsIndex] = useState(null);
   const [progress, setProgress] = useState(0);
   const isMobile = useIsMobile();
   const intervalRef = useRef(null);
@@ -57,6 +64,7 @@ export default function HeroBanner() {
   const startNewsTimer = () => {
     clearInterval(newsIntervalRef.current);
     newsIntervalRef.current = setInterval(() => {
+      setPrevNewsIndex(activeNewsIndex);
       setActiveNewsIndex(current => (current + 1) % newsItems.length);
     }, newsDuration);
   };
@@ -64,6 +72,7 @@ export default function HeroBanner() {
   useEffect(() => {
     startSlideTimer();
     startNewsTimer();
+
     return () => {
       clearInterval(intervalRef.current);
       clearInterval(progressIntervalRef.current);
@@ -115,13 +124,13 @@ export default function HeroBanner() {
 
           {!isMobile && (
             <>
-              <CarouselPrevious
+              <CarouselPrevious 
                 className="left-6 bg-white/80 hover:bg-white hidden md:flex"
                 onClick={() => {
                   setActiveIndex((current) => (current - 1 + banners.length) % banners.length);
                 }}
               />
-              <CarouselNext
+              <CarouselNext 
                 className="right-6 bg-white/80 hover:bg-white hidden md:flex"
                 onClick={() => {
                   setActiveIndex((current) => (current + 1) % banners.length);
@@ -141,7 +150,7 @@ export default function HeroBanner() {
             >
               <div className="absolute inset-0 bg-gray-300 rounded-full"></div>
               {activeIndex === index && (
-                <div
+                <div 
                   className="absolute inset-0 bg-orange-500 rounded-full origin-left"
                   style={{
                     width: `${progress}%`,
@@ -154,7 +163,7 @@ export default function HeroBanner() {
         </div>
       </div>
 
-      {/* Smooth Vertical Sliding News Banner */}
+      {/* Vertical Sliding News Banner */}
       {showNews && (
         <div className="bg-red-50">
           <div className="max-w-screen-xl mx-auto">
@@ -165,12 +174,15 @@ export default function HeroBanner() {
                 ];
                 const bgColor = bgColors[index % bgColors.length];
                 const isActive = index === activeNewsIndex;
+                const isPrevious = index === prevNewsIndex;
+
+                if (!isActive && !isPrevious) return null;
 
                 return (
                   <div
                     key={item.id}
                     className={`absolute top-0 left-0 w-full h-7 flex items-center px-2 transform transition-transform duration-500 ease-in-out ${bgColor} ${
-                      isActive ? "translate-y-0 z-10" : "translate-y-full z-0"
+                      isActive ? "translate-y-0 z-10" : "translate-y-[-100%] z-0"
                     }`}
                     style={{ transitionProperty: 'transform, opacity' }}
                   >
