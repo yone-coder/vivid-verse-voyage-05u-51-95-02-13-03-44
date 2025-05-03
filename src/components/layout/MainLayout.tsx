@@ -1,9 +1,7 @@
-
 import React from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
-import MobileBottomNav from "@/components/layout/MobileBottomNav";
 import IndexBottomNav from "@/components/layout/IndexBottomNav";
 import { Outlet, useLocation } from "react-router-dom";
 import { useState } from "react";
@@ -89,10 +87,7 @@ export default function MainLayout() {
       )}
       {!isMobile && !isHomePage && <Footer />}
       
-      {/* Only show regular mobile bottom nav on mobile non-home and non-product pages */}
-      {isMobile && !isProductPage && !isHomePage && <MobileBottomNav />}
-      
-      {/* Show our custom bottom nav only on home page on mobile */}
+      {/* Show our custom bottom nav only on mobile and appropriate pages */}
       {isMobile && isHomePage && <IndexBottomNav />}
     </div>
   );
