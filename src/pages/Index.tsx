@@ -7,7 +7,7 @@ import SpaceSavingCategories from "@/components/home/SpaceSavingCategories";
 import FlashDeals from "@/components/home/FlashDeals";
 import SuperDeals from "@/components/home/SuperDealsSection";
 import ProductGrid from "@/components/home/ProductGrid";
-import ProductCarrousel from '@/components/product/ProductCarousel';
+import ProductCarousel from '@/components/product/ProductCarrousel';
 import TopBrands from "@/components/home/TopBrands";
 import ProductRecommendations from "@/components/home/ProductRecommendations";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -69,7 +69,7 @@ export default function Index() {
       </div>
 
 <div className="mb-1 bg-white">
-        <ProductCarrousel/>
+        <ProductCarousel />
       </div>
 
       {/* Super Deals */}
