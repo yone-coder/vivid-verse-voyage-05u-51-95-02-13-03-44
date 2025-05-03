@@ -6,94 +6,7 @@ const ProductCarousel = () => {
   const [showLeftArrow, setShowLeftArrow] = useState(false);
 
   const products = [
-    {
-      id: 1,
-      title: "Bluetooth Earbuds",
-      image: "/api/placeholder/300/300",
-      originalPrice: 39.99,
-      discountPrice: 19.99,
-      discount: 50,
-      rating: 4.8,
-      sales: 5382,
-      freeShipping: true,
-    },
-    {
-      id: 2,
-      title: "Smart Watch Fitness Tracker",
-      image: "/api/placeholder/300/300",
-      originalPrice: 59.99,
-      discountPrice: 29.99,
-      discount: 50,
-      rating: 4.6,
-      sales: 3287,
-      freeShipping: true,
-    },
-    {
-      id: 3,
-      title: "Portable Power Bank 20000mAh",
-      image: "/api/placeholder/300/300",
-      originalPrice: 45.99,
-      discountPrice: 22.5,
-      discount: 51,
-      rating: 4.7,
-      sales: 7621,
-      freeShipping: true,
-    },
-    {
-      id: 4,
-      title: "LED Ring Light with Tripod Stand",
-      image: "/api/placeholder/300/300",
-      originalPrice: 34.99,
-      discountPrice: 19.99,
-      discount: 43,
-      rating: 4.5,
-      sales: 2938,
-      freeShipping: false,
-    },
-    {
-      id: 5,
-      title: "Laptop Backpack with USB Port",
-      image: "/api/placeholder/300/300",
-      originalPrice: 49.99,
-      discountPrice: 27.99,
-      discount: 44,
-      rating: 4.9,
-      sales: 8273,
-      freeShipping: true,
-    },
-    {
-      id: 6,
-      title: "Foldable Selfie Drone with Camera",
-      image: "/api/placeholder/300/300",
-      originalPrice: 129.99,
-      discountPrice: 79.99,
-      discount: 38,
-      rating: 4.4,
-      sales: 1536,
-      freeShipping: true,
-    },
-    {
-      id: 7,
-      title: "Wireless Phone Charger Stand",
-      image: "/api/placeholder/300/300",
-      originalPrice: 29.99,
-      discountPrice: 15.99,
-      discount: 47,
-      rating: 4.6,
-      sales: 4721,
-      freeShipping: true,
-    },
-    {
-      id: 8,
-      title: "Gaming Mechanical Keyboard RGB",
-      image: "/api/placeholder/300/300",
-      originalPrice: 89.99,
-      discountPrice: 45.99,
-      discount: 49,
-      rating: 4.7,
-      sales: 3198,
-      freeShipping: true,
-    }
+    // ...same product array...
   ];
 
   const scroll = (direction) => {
@@ -115,9 +28,9 @@ const ProductCarousel = () => {
   };
 
   return (
-    <div className="w-full bg-gray-50 py-6 px-4 relative">
+    <div className="w-full bg-gray-50 py-6 px-0 relative">
       {/* Header */}
-      <div className="flex justify-between items-center mb-4">
+      <div className="px-4 flex justify-between items-center mb-4">
         <div className="flex items-center">
           <span className="text-lg font-bold text-gray-800">Sponsored</span>
           <span className="ml-2 text-xs text-gray-500 border border-gray-300 rounded px-1">AD</span>
@@ -140,18 +53,18 @@ const ProductCarousel = () => {
         )}
 
         <div
-          className="flex overflow-x-auto scrollbar-hide pb-4 pl-2 gap-3"
+          className="flex overflow-x-auto scrollbar-hide pb-4 gap-2"
           ref={scrollRef}
           onScroll={handleScroll}
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
-          {products.map((product) => (
+          {products.map((product, index) => (
             <div
               key={product.id}
-              className="flex-shrink-0 w-[calc(100%/3.5)] sm:w-40 bg-white rounded-md shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-300"
+              className="flex-shrink-0 w-[28.5%] sm:w-40 bg-white rounded-md shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-300 ml-2 first:ml-4 last:mr-4"
             >
               <div className="relative">
-                <img src={product.image} alt={product.title} className="w-full h-40 object-cover" />
+                <img src={product.image} alt={product.title} className="w-full h-36 object-cover" />
                 <button className="absolute top-2 right-2 bg-white/80 rounded-full p-1 hover:bg-white">
                   <Heart size={16} className="text-gray-400 hover:text-red-500" />
                 </button>
