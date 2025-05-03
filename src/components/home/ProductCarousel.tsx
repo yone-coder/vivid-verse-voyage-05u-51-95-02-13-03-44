@@ -66,26 +66,6 @@ const ProductCarousel = () => {
       rating: 4.4,
       sales: 1536,
     },
-    {
-      id: 7,
-      title: "Wireless Charger Stand",
-      image: "https://picsum.photos/seed/charger/300/300",
-      originalPrice: 29.99,
-      discountPrice: 15.99,
-      discount: 47,
-      rating: 4.6,
-      sales: 4721,
-    },
-    {
-      id: 8,
-      title: "Mechanical Gaming Keyboard",
-      image: "https://picsum.photos/seed/keyboard/300/300",
-      originalPrice: 89.99,
-      discountPrice: 45.99,
-      discount: 49,
-      rating: 4.7,
-      sales: 3198,
-    }
   ];
 
   const scroll = (direction) => {
@@ -93,6 +73,7 @@ const ProductCarousel = () => {
       const { current } = scrollRef;
       const scrollAmount = direction === 'left' ? -current.offsetWidth : current.offsetWidth;
       current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+
       setTimeout(() => {
         setShowLeftArrow(current.scrollLeft > 0);
       }, 500);
@@ -106,11 +87,11 @@ const ProductCarousel = () => {
   };
 
   return (
-    <div className="w-full bg-gray-50 py-6 px-0 relative">
+    <div className="w-full bg-white py-4 px-0 relative">
       {/* Header */}
-      <div className="px-4 flex justify-between items-center mb-4">
+      <div className="px-4 flex justify-between items-center mb-3">
         <div className="flex items-center">
-          <span className="text-lg font-bold text-gray-800">Sponsored</span>
+          <span className="text-lg font-semibold text-gray-800">Sponsored</span>
           <span className="ml-2 text-xs text-gray-500 border border-gray-300 rounded px-1">AD</span>
         </div>
         <div className="flex items-center text-sm text-orange-500 font-medium cursor-pointer hover:text-orange-600">
@@ -124,49 +105,48 @@ const ProductCarousel = () => {
         {showLeftArrow && (
           <button
             onClick={() => scroll('left')}
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 rounded-full shadow-md p-2 hover:bg-white"
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full shadow p-2 hover:bg-gray-100"
           >
             <ChevronLeft size={20} />
           </button>
         )}
 
         <div
-          className="flex overflow-x-auto scrollbar-hide pb-4 gap-2"
           ref={scrollRef}
           onScroll={handleScroll}
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          className="flex overflow-x-auto scrollbar-hide gap-2 pl-2 pb-4"
+          style={{ scrollSnapType: 'x mandatory', scrollbarWidth: 'none' }}
         >
           {products.map((product) => (
             <div
               key={product.id}
-              className="flex-shrink-0 w-[28.5%] sm:w-40 bg-white rounded-md shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-300 ml-2 first:ml-4 last:mr-4"
+              className="flex-shrink-0 w-[28.5%] sm:w-40 bg-white rounded-md border border-gray-200 overflow-hidden ml-1 first:ml-4 last:mr-4"
+              style={{ scrollSnapAlign: 'start' }}
             >
               <div className="relative">
                 <img src={product.image} alt={product.title} className="w-full h-36 object-cover" />
-                <button className="absolute top-2 right-2 bg-white/80 rounded-full p-1 hover:bg-white">
+                <button className="absolute top-2 right-2 bg-white/90 rounded-full p-1 hover:bg-white">
                   <Heart size={16} className="text-gray-400 hover:text-red-500" />
                 </button>
-                <div className="absolute top-2 left-2 bg-yellow-100 text-yellow-700 text-xs px-1.5 py-0.5 rounded flex items-center">
-                  <Star size={12} className="fill-yellow-400 text-yellow-400 mr-1" />
-                  {product.rating}
-                </div>
-                <div className="absolute bottom-0 left-0 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded-tr">
-                  {product.sales}+ sold
-                </div>
-                <div className="absolute bottom-0 right-0 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-tl">
+                <div className="absolute top-2 left-2 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded">
                   -{product.discount}%
+                </div>
+                <div className="absolute bottom-2 left-2 bg-white/90 text-gray-800 text-xs px-1.5 py-0.5 rounded">
+                  <span>{product.rating}</span>
+                  <span className="mx-1">|</span>
+                  <span>{product.sales}+ sold</span>
                 </div>
               </div>
 
-              <div className="p-2">
-                <div className="text-sm font-medium text-gray-800 line-clamp-2 leading-tight mb-1">
+              <div className="px-2 py-2">
+                <div className="text-[13px] text-gray-800 leading-tight line-clamp-2 h-[34px]">
                   {product.title}
                 </div>
-                <div className="flex items-baseline">
-                  <span className="text-red-500 font-semibold text-base">
+                <div className="mt-1">
+                  <span className="text-[15px] text-red-500 font-semibold">
                     US ${product.discountPrice.toFixed(2)}
                   </span>
-                  <span className="ml-1 text-gray-400 text-xs line-through">
+                  <span className="text-xs text-gray-400 line-through ml-1">
                     US ${product.originalPrice.toFixed(2)}
                   </span>
                 </div>
@@ -177,7 +157,7 @@ const ProductCarousel = () => {
 
         <button
           onClick={() => scroll('right')}
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 rounded-full shadow-md p-2 hover:bg-white"
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full shadow p-2 hover:bg-gray-100"
         >
           <ChevronRight size={20} />
         </button>
