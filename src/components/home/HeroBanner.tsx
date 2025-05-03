@@ -1,11 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import {
-  ArrowRight,
-  Clock,
-  Newspaper,
-  AlertCircle,
-  TrendingUp
-} from "lucide-react";
+import { ArrowRight, Clock, Newspaper, AlertCircle, TrendingUp } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
 import {
@@ -63,6 +57,7 @@ export default function HeroBanner() {
 
   const startNewsTimer = () => {
     clearInterval(newsIntervalRef.current);
+
     newsIntervalRef.current = setInterval(() => {
       setPrevNewsIndex(activeNewsIndex);
       setActiveNewsIndex(current => (current + 1) % newsItems.length);
@@ -168,23 +163,24 @@ export default function HeroBanner() {
         <div className="bg-red-50">
           <div className="max-w-screen-xl mx-auto">
             <div className="relative overflow-hidden h-7">
-              {newsItems.map((item, index) => {
+              {[prevNewsIndex, activeNewsIndex].map((index, idx) => {
+                if (index === null) return null;
+
+                const item = newsItems[index];
                 const bgColors = [
                   "bg-red-600", "bg-orange-500", "bg-blue-600", "bg-purple-600"
                 ];
                 const bgColor = bgColors[index % bgColors.length];
-                const isActive = index === activeNewsIndex;
-                const isPrevious = index === prevNewsIndex;
 
-                if (!isActive && !isPrevious) return null;
+                const isIncoming = index === activeNewsIndex;
+                const positionClass = isIncoming
+                  ? "translate-y-full animate-slide-in"
+                  : "translate-y-0 animate-slide-out";
 
                 return (
                   <div
-                    key={item.id}
-                    className={`absolute top-0 left-0 w-full h-7 flex items-center px-2 transform transition-transform duration-500 ease-in-out ${bgColor} ${
-                      isActive ? "translate-y-0 z-10" : "translate-y-[-100%] z-0"
-                    }`}
-                    style={{ transitionProperty: 'transform, opacity' }}
+                    key={`news-${index}`}
+                    className={`absolute top-0 left-0 w-full h-7 flex items-center px-2 ${bgColor} ${positionClass}`}
                   >
                     <span className="flex-shrink-0 mr-1">{item.icon}</span>
                     <span className="text-xs font-medium text-white truncate">{item.text}</span>
