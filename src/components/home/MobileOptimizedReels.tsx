@@ -1,46 +1,45 @@
-
 import React, { useRef, useEffect } from 'react';
 
 const MobileOptimizedReels = () => {
   const scrollContainerRef = useRef(null);
-  
+
   // Original reels data
   const reels = [
     {
       id: 1,
       title: 'Bali Beach Paradise',
       views: '1.5M',
-      thumbnail: 'https://picsum.photos/seed/reel1/200/350',
+      thumbnail: '/api/placeholder/200/350',
     },
     {
       id: 2,
       title: '10-Minute Morning Workout',
       views: '825K',
-      thumbnail: 'https://picsum.photos/seed/reel2/200/350',
+      thumbnail: '/api/placeholder/200/350',
     },
     {
       id: 3,
       title: 'Ultimate Homemade Pasta',
       views: '2.3M',
-      thumbnail: 'https://picsum.photos/seed/reel3/200/350',
+      thumbnail: '/api/placeholder/200/350',
     },
     {
       id: 4,
       title: 'New Smartphone Review',
       views: '578K',
-      thumbnail: 'https://picsum.photos/seed/reel4/200/350',
+      thumbnail: '/api/placeholder/200/350',
     },
     {
       id: 5,
       title: 'Dog Learns Amazing Trick',
       views: '3.2M',
-      thumbnail: 'https://picsum.photos/seed/reel5/200/350',
+      thumbnail: '/api/placeholder/200/350',
     },
     {
       id: 6,
       title: 'Sunset Mountain Painting',
       views: '1.2M',
-      thumbnail: 'https://picsum.photos/seed/reel6/200/350',
+      thumbnail: '/api/placeholder/200/350',
     }
   ];
 
@@ -54,19 +53,20 @@ const MobileOptimizedReels = () => {
       
       /* Set the container width to show exactly 2.5 cards */
       @media (max-width: 640px) {
-        .reels-container {
-          width: 100%;
-          padding: 0 16px;
-        }
-        
         .reel-card {
           width: 40vw; /* Each card takes 40% of viewport width */
           margin-right: 3vw; /* Gap between cards */
         }
       }
+
+      /* Custom snap alignment */
+      .custom-snap-scroll {
+        scroll-padding-left: 16px;
+        scroll-padding-right: 16px;
+      }
     `;
     document.head.appendChild(style);
-    
+
     return () => {
       document.head.removeChild(style);
     };
@@ -85,14 +85,20 @@ const MobileOptimizedReels = () => {
           <span className="ml-1 text-xs">▶</span>
         </button>
       </div>
-      
+
       {/* Full-width container for scrolling */}
-      <div className="w-full relative">
+      <div className="w-full px-4"> {/* Container with padding */}
         <div 
           ref={scrollContainerRef}
-          className="reels-container flex overflow-x-auto hide-scrollbar snap-x snap-mandatory pl-4"
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          className="reels-container flex overflow-x-auto hide-scrollbar snap-x snap-mandatory custom-snap-scroll"
+          style={{ 
+            scrollbarWidth: 'none', 
+            msOverflowStyle: 'none',
+          }}
         >
+          {/* Spacer div at the beginning for proper left padding */}
+          <div className="flex-shrink-0 w-0"></div>
+          
           {reels.map((reel) => (
             <div 
               key={reel.id} 
@@ -106,12 +112,12 @@ const MobileOptimizedReels = () => {
                   alt={reel.title} 
                   className="w-full h-full object-cover"
                 />
-                
+
                 {/* Video duration indicator */}
                 <div className="absolute top-2 right-2 bg-black bg-opacity-60 text-white text-xs px-1.5 py-0.5 rounded">
                   0:{Math.floor(Math.random() * 50) + 10}
                 </div>
-                
+
                 {/* Original info overlay */}
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-3">
                   <h3 className="font-medium text-white text-xs mb-1 line-clamp-1">{reel.title}</h3>
@@ -122,7 +128,7 @@ const MobileOptimizedReels = () => {
               </div>
             </div>
           ))}
-          
+
           {/* "See all" card - matching the size of other cards */}
           <div 
             className="reel-card flex-shrink-0 rounded-lg overflow-hidden shadow-lg bg-gradient-to-b from-gray-800 to-black relative snap-start flex flex-col items-center justify-center"
