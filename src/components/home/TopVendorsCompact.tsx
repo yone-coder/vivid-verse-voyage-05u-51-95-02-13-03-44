@@ -133,7 +133,7 @@ const vendors = [
 ];
 
 const CompactVendorCard = ({ vendor }: { vendor: any }) => (
-  <div className="flex-shrink-0 w-44 bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition-all duration-300">
+  <div className="flex-shrink-0 w-44 bg-white rounded-lg shadow-md overflow-hidden border  transition-all duration-300">
     <div className="relative">
       <img src={vendor.image} alt={vendor.name} className="w-full h-24 object-cover" />
       <div className="absolute top-1 left-1 flex gap-1">
