@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { ArrowRight, Clock, Newspaper, AlertCircle, TrendingUp } from "lucide-react";
+import { ArrowRight, Clock, Newspaper, Bell, Sparkles } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,22 +20,23 @@ const banners = [
 ];
 
 const newsItems = [
-  { id: 1, icon: <AlertCircle className="w-3.5 h-3.5 text-red-500" />, text: "Flash sale: 30% off on all electronics today only" },
-  { id: 2, icon: <TrendingUp className="w-3.5 h-3.5 text-green-500" />, text: "New summer collection arriving next week" },
-  { id: 3, icon: <Clock className="w-3.5 h-3.5 text-blue-500" />, text: "Extended returns available until end of month" },
-  { id: 4, icon: <Newspaper className="w-3.5 h-3.5 text-purple-500" />, text: "New loyalty program launching soon - stay tuned" },
-  { id: 5, icon: <AlertCircle className="w-3.5 h-3.5 text-orange-500" />, text: "Limited-edition items just added to clearance" },
-  { id: 6, icon: <TrendingUp className="w-3.5 h-3.5 text-cyan-500" />, text: "Exclusive online discounts for members" }
+  { id: 1, icon: <Newspaper className="w-3.5 h-3.5 text-blue-500" />, text: "New summer collection arriving next week" },
+  { id: 2, icon: <Bell className="w-3.5 h-3.5 text-red-500" />, text: "Flash sale: 30% off on all electronics today only" },
+  { id: 3, icon: <Clock className="w-3.5 h-3.5 text-green-500" />, text: "Extended returns available until end of month" },
+  { id: 4, icon: <Sparkles className="w-3.5 h-3.5 text-purple-500" />, text: "New loyalty program launching soon - stay tuned" }
 ];
 
 export default function HeroBanner() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [showNews, setShowNews] = useState(true);
   const [progress, setProgress] = useState(0);
+  const [activeNewsIndex, setActiveNewsIndex] = useState(0);
   const isMobile = useIsMobile();
   const intervalRef = useRef(null);
   const progressIntervalRef = useRef(null);
+  const newsIntervalRef = useRef(null);
   const slideDuration = 5000;
+  const newsDuration = 4000;
 
   const startSlideTimer = () => {
     if (intervalRef.current) clearInterval(intervalRef.current);
@@ -53,11 +54,22 @@ export default function HeroBanner() {
     }, slideDuration);
   };
 
+  const startNewsTimer = () => {
+    if (newsIntervalRef.current) clearInterval(newsIntervalRef.current);
+    
+    newsIntervalRef.current = setInterval(() => {
+      setActiveNewsIndex(current => (current + 1) % newsItems.length);
+    }, newsDuration);
+  };
+
   useEffect(() => {
     startSlideTimer();
+    startNewsTimer();
+    
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
       if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
+      if (newsIntervalRef.current) clearInterval(newsIntervalRef.current);
     };
   }, [activeIndex]);
 
@@ -144,48 +156,45 @@ export default function HeroBanner() {
         </div>
       </div>
 
-      {/* News Ticker */}
+      {/* News Band */}
       {showNews && (
         <div className="bg-gray-900 text-white overflow-hidden">
-          <div className="flex items-center py-2">
-            <div className="flex-shrink-0 bg-blue-600 py-1 px-3 rounded-r mr-3 flex items-center">
-              <Newspaper className="w-3.5 h-3.5 mr-1.5" />
-              <span className="text-xs font-bold uppercase">Latest News</span>
-            </div>
-            
-            <div className="overflow-hidden relative flex-1">
-              <div className="animate-marquee whitespace-nowrap flex">
-                {/* Duplicate the news items to create a continuous scrolling effect */}
-                {[...newsItems, ...newsItems].map((item, index) => (
-                  <div 
-                    key={`${item.id}-${index}`}
-                    className="flex items-center gap-2 mx-6"
-                  >
-                    <span className="flex-shrink-0">{item.icon}</span>
-                    <span className="text-sm font-medium">{item.text}</span>
-                    <span className="mx-2 text-gray-500">•</span>
-                  </div>
-                ))}
+          <div className="max-w-screen-xl mx-auto px-2">
+            <div className="flex items-center py-2">
+              <div className="flex-shrink-0 bg-blue-600 py-1 px-3 rounded mr-3 flex items-center">
+                <Newspaper className="w-3.5 h-3.5 mr-1.5" />
+                <span className="text-xs font-bold uppercase">News</span>
+              </div>
+              
+              <div className="overflow-hidden relative flex-1">
+                <div className="animate-transition flex items-center whitespace-nowrap">
+                  {newsItems.map((item, index) => (
+                    <div 
+                      key={item.id}
+                      className={`flex items-center gap-2 transition-all duration-500 ${
+                        index === activeNewsIndex ? "opacity-100" : "opacity-0 absolute"
+                      }`}
+                      style={{
+                        transform: index === activeNewsIndex ? 'translateY(0)' : 'translateY(100%)'
+                      }}
+                    >
+                      <span className="flex-shrink-0">{item.icon}</span>
+                      <span className="text-sm font-medium">{item.text}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              <div className="flex-shrink-0 ml-3">
+                <Button variant="ghost" size="sm" className="text-xs text-white hover:bg-gray-800 h-7 px-2">
+                  View All
+                  <ArrowRight className="w-3 h-3 ml-1" />
+                </Button>
               </div>
             </div>
           </div>
         </div>
       )}
-
-      <style jsx>{`
-        @keyframes marquee {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
-        }
-        .animate-marquee {
-          display: inline-block;
-          animation: marquee 30s linear infinite;
-        }
-      `}</style>
     </>
   );
 }
