@@ -19,6 +19,7 @@ import PopularSearches from "@/components/home/PopularSearches";
 import RecentlyViewed from "@/components/home/RecentlyViewed";
 import BenefitsBanner from "@/components/home/BenefitsBanner";
 import SecondaryHeroBanner from "@/components/home/SecondaryHeroBanner";
+import MobileOptimizedReels from "@/components/home/MobileOptimizedReels";
 
 export default function Index() {
   const { data: products, isLoading } = useQuery({
@@ -82,6 +83,11 @@ export default function Index() {
       {/* Super Deals */}
       <div className="mb-1">
         <SuperDeals />
+      </div>
+      
+      {/* Mobile Optimized Reels - Added after Super Deals */}
+      <div className="mb-1 bg-white">
+        <MobileOptimizedReels />
       </div>
 
       {/* Secondary Flash Deals - Replaced New Arrivals */}
