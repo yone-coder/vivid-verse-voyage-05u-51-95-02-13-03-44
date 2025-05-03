@@ -28,9 +28,6 @@ const newsItems = [
 
 export default function HeroBanner() {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [previousIndex, setPreviousIndex] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [direction, setDirection] = useState('next'); // 'next' or 'prev'
   const [showNews, setShowNews] = useState(true);
   const [activeNewsIndex, setActiveNewsIndex] = useState(0);
   const [progress, setProgress] = useState(0);
@@ -40,7 +37,6 @@ export default function HeroBanner() {
   const progressIntervalRef = useRef(null);
   const slideDuration = 5000;
   const newsDuration = 4000;
-  const animationDuration = 500; // in ms
 
   const startSlideTimer = () => {
     if (intervalRef.current) clearInterval(intervalRef.current);
@@ -54,7 +50,7 @@ export default function HeroBanner() {
 
     intervalRef.current = setInterval(() => {
       setProgress(0);
-      changeSlide((activeIndex + 1) % banners.length, 'next');
+      setActiveIndex(current => (current + 1) % banners.length);
     }, slideDuration);
   };
 
@@ -77,103 +73,70 @@ export default function HeroBanner() {
     };
   }, [activeIndex]);
 
-  const changeSlide = (newIndex, dir) => {
-    if (isAnimating) return;
-    
-    setIsAnimating(true);
-    setPreviousIndex(activeIndex);
-    setActiveIndex(newIndex);
-    setDirection(dir);
-    
-    // Reset animation state after transition completes
-    setTimeout(() => {
-      setIsAnimating(false);
-    }, animationDuration);
-  };
-
   const handleDotClick = (index) => {
-    if (index === activeIndex) return;
-    
-    const dir = index > activeIndex ? 'next' : 'prev';
-    changeSlide(index, dir);
+    setActiveIndex(index);
   };
 
-  const handlePrevClick = () => {
-    const newIndex = (activeIndex - 1 + banners.length) % banners.length;
-    changeSlide(newIndex, 'prev');
-  };
-
-  const handleNextClick = () => {
-    const newIndex = (activeIndex + 1) % banners.length;
-    changeSlide(newIndex, 'next');
-  };
-
-  const getSlideClass = (index) => {
-    if (!isAnimating) {
-      return index === activeIndex ? 'translate-x-0 z-10' : 'translate-x-full opacity-0';
-    }
-    
-    if (index === activeIndex) {
-      return direction === 'next' ? 'translate-x-0 animate-slide-in-right z-10' : 'translate-x-0 animate-slide-in-left z-10';
-    }
-    
-    if (index === previousIndex) {
-      return direction === 'next' ? 'translate-x-full animate-slide-out-left z-0' : 'translate-x-full animate-slide-out-right z-0';
-    }
-    
-    return 'translate-x-full opacity-0';
-  };
+  // Removed handleNewsNavigation as we no longer have navigation arrows
 
   return (
     <>
-      <div className="relative h-[180px] md:h-[250px] lg:h-[300px] overflow-hidden">
-        {banners.map((banner, index) => (
-          <div
-            key={banner.id}
-            className={`absolute inset-0 bg-gradient-to-r ${banner.color} transition-transform duration-500 ${getSlideClass(index)}`}
-            style={{
-              transitionDuration: `${animationDuration}ms`
-            }}
-          >
-            <div className="h-full flex items-center">
-              <div className="container mx-auto px-4">
-                <div className="max-w-lg">
-                  <h2 className="text-xl md:text-3xl font-extrabold text-white mb-0.5 md:mb-2 drop-shadow-md">
-                    {banner.text}
-                  </h2>
-                  <p className="text-white text-xs md:text-base mb-2 md:mb-4 max-w-md drop-shadow-md font-medium">
-                    Don't miss out on amazing savings.
-                  </p>
-                  <Button className="bg-white text-black hover:bg-gray-100 font-medium text-xs md:text-sm rounded-full h-7 md:h-auto">
-                    Shop Now
-                    <ArrowRight className="w-3 h-3 md:w-3.5 md:h-3.5 ml-1" />
-                  </Button>
+      <div className={`relative bg-gradient-to-r ${banners[activeIndex].color} transition-colors duration-500`}>
+        <Carousel
+          className="w-full"
+          currentIndex={activeIndex}
+          setApi={(api) => {
+            api?.on("select", () => {
+              const selectedIndex = api.selectedScrollSnap();
+              if (selectedIndex !== activeIndex) {
+                setActiveIndex(selectedIndex);
+              }
+            });
+          }}
+        >
+          <CarouselContent>
+            {banners.map((banner) => (
+              <CarouselItem key={banner.id}>
+                <div className="relative h-[180px] md:h-[250px] lg:h-[300px] flex items-center">
+                  <div className="container mx-auto px-4">
+                    <div className="max-w-lg">
+                      <h2 className="text-xl md:text-3xl font-extrabold text-white mb-0.5 md:mb-2 drop-shadow-md">
+                        {banner.text}
+                      </h2>
+                      <p className="text-white text-xs md:text-base mb-2 md:mb-4 max-w-md drop-shadow-md font-medium">
+                        Don't miss out on amazing savings.
+                      </p>
+                      <Button className="bg-white text-black hover:bg-gray-100 font-medium text-xs md:text-sm rounded-full h-7 md:h-auto">
+                        Shop Now
+                        <ArrowRight className="w-3 h-3 md:w-3.5 md:h-3.5 ml-1" />
+                      </Button>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        ))}
+              </CarouselItem>
+            ))}
+          </CarouselContent>
 
-        {/* Navigation Buttons */}
-        {!isMobile && (
-          <>
-            <button 
-              className="absolute left-6 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 z-20 hidden md:flex"
-              onClick={handlePrevClick}
-            >
-              <ChevronUp className="w-4 h-4 rotate-90" />
-            </button>
-            <button 
-              className="absolute right-6 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white rounded-full p-2 z-20 hidden md:flex"
-              onClick={handleNextClick}
-            >
-              <ChevronUp className="w-4 h-4 -rotate-90" />
-            </button>
-          </>
-        )}
+          {!isMobile && (
+            <>
+              <CarouselPrevious 
+                className="left-6 bg-white/80 hover:bg-white hidden md:flex"
+                onClick={() => {
+                  setActiveIndex((current) => (current - 1 + banners.length) % banners.length);
+                }}
+              />
+              <CarouselNext 
+                className="right-6 bg-white/80 hover:bg-white hidden md:flex"
+                onClick={() => {
+                  setActiveIndex((current) => (current + 1) % banners.length);
+                }}
+              />
+            </>
+          )}
+        </Carousel>
 
         {/* Animated Dots */}
-        <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 z-20">
+        <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5">
           {banners.map((_, index) => (
             <button
               key={index}
@@ -223,44 +186,6 @@ export default function HeroBanner() {
           </div>
         </div>
       )}
-
-      <style jsx global>{`
-        @keyframes slide-in-right {
-          from { transform: translateX(100%); }
-          to { transform: translateX(0); }
-        }
-        
-        @keyframes slide-in-left {
-          from { transform: translateX(-100%); }
-          to { transform: translateX(0); }
-        }
-        
-        @keyframes slide-out-left {
-          from { transform: translateX(0); }
-          to { transform: translateX(-100%); }
-        }
-        
-        @keyframes slide-out-right {
-          from { transform: translateX(0); }
-          to { transform: translateX(100%); }
-        }
-        
-        .animate-slide-in-right {
-          animation: slide-in-right ${animationDuration}ms ease-out forwards;
-        }
-        
-        .animate-slide-in-left {
-          animation: slide-in-left ${animationDuration}ms ease-out forwards;
-        }
-        
-        .animate-slide-out-left {
-          animation: slide-out-left ${animationDuration}ms ease-out forwards;
-        }
-        
-        .animate-slide-out-right {
-          animation: slide-out-right ${animationDuration}ms ease-out forwards;
-        }
-      `}</style>
     </>
   );
 }
