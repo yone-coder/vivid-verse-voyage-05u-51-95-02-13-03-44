@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { ArrowRight, Clock, Gift, Truck } from "lucide-react";
+import { ArrowRight, Clock, Newspaper, AlertCircle, TrendingUp } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,20 +19,22 @@ const banners = [
   { id: 6, color: "from-indigo-400 to-blue-700", text: "Editor's Choice" }
 ];
 
-const promoItems = [
-  { id: 1, icon: <Truck className="w-3.5 h-3.5 text-orange-500" />, text: "Free Shipping" },
-  { id: 2, icon: <Gift className="w-3.5 h-3.5 text-pink-500" />, text: "New User Bonus" },
-  { id: 3, icon: <Clock className="w-3.5 h-3.5 text-blue-500" />, text: "24h Flash Deals" },
-  { id: 4, icon: <ArrowRight className="w-3.5 h-3.5 text-purple-500" />, text: "View All" }
+const newsItems = [
+  { id: 1, icon: <AlertCircle className="w-3.5 h-3.5 text-red-500" />, text: "Flash sale: 30% off on all electronics today only" },
+  { id: 2, icon: <TrendingUp className="w-3.5 h-3.5 text-green-500" />, text: "New summer collection arriving next week" },
+  { id: 3, icon: <Clock className="w-3.5 h-3.5 text-blue-500" />, text: "Extended returns available until end of month" },
+  { id: 4, icon: <Newspaper className="w-3.5 h-3.5 text-purple-500" />, text: "New loyalty program launching soon - stay tuned" },
+  { id: 5, icon: <AlertCircle className="w-3.5 h-3.5 text-orange-500" />, text: "Limited-edition items just added to clearance" },
+  { id: 6, icon: <TrendingUp className="w-3.5 h-3.5 text-cyan-500" />, text: "Exclusive online discounts for members" }
 ];
 
 export default function HeroBanner() {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [showPromo, setShowPromo] = useState(true);
+  const [showNews, setShowNews] = useState(true);
   const [progress, setProgress] = useState(0);
   const isMobile = useIsMobile();
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef(null);
+  const progressIntervalRef = useRef(null);
   const slideDuration = 5000;
 
   const startSlideTimer = () => {
@@ -59,7 +61,7 @@ export default function HeroBanner() {
     };
   }, [activeIndex]);
 
-  const handleDotClick = (index: number) => {
+  const handleDotClick = (index) => {
     setActiveIndex(index);
   };
 
@@ -88,7 +90,7 @@ export default function HeroBanner() {
                         {banner.text}
                       </h2>
                       <p className="text-white text-xs md:text-base mb-2 md:mb-4 max-w-md drop-shadow-md font-medium">
-                        Don’t miss out on amazing savings.
+                        Don't miss out on amazing savings.
                       </p>
                       <Button className="bg-white text-black hover:bg-gray-100 font-medium text-xs md:text-sm rounded-full h-7 md:h-auto">
                         Shop Now
@@ -142,33 +144,48 @@ export default function HeroBanner() {
         </div>
       </div>
 
-      {/* Promo Items */}
-      {showPromo && (
-        <div className="bg-white border-b border-gray-100 shadow-sm">
-          <div className="max-w-screen-xl mx-auto px-2">
-            <div className="overflow-x-auto scrollbar-hide">
-              <div className="flex items-center py-2 min-w-max">
-                {promoItems.map((item, index) => (
-                  <a 
-                    key={item.id}
-                    href="#"
-                    className={`flex items-center flex-shrink-0 ${
-                      index < promoItems.length - 1 
-                        ? "pr-3 mr-3 border-r border-gray-200" 
-                        : ""
-                    }`}
+      {/* News Ticker */}
+      {showNews && (
+        <div className="bg-gray-900 text-white overflow-hidden">
+          <div className="flex items-center py-2">
+            <div className="flex-shrink-0 bg-blue-600 py-1 px-3 rounded-r mr-3 flex items-center">
+              <Newspaper className="w-3.5 h-3.5 mr-1.5" />
+              <span className="text-xs font-bold uppercase">Latest News</span>
+            </div>
+            
+            <div className="overflow-hidden relative flex-1">
+              <div className="animate-marquee whitespace-nowrap flex">
+                {/* Duplicate the news items to create a continuous scrolling effect */}
+                {[...newsItems, ...newsItems].map((item, index) => (
+                  <div 
+                    key={`${item.id}-${index}`}
+                    className="flex items-center gap-2 mx-6"
                   >
-                    <div className="flex items-center gap-1.5">
-                      <span className="flex-shrink-0">{item.icon}</span>
-                      <span className="text-xs font-medium text-gray-700">{item.text}</span>
-                    </div>
-                  </a>
+                    <span className="flex-shrink-0">{item.icon}</span>
+                    <span className="text-sm font-medium">{item.text}</span>
+                    <span className="mx-2 text-gray-500">•</span>
+                  </div>
                 ))}
               </div>
             </div>
           </div>
         </div>
       )}
+
+      <style jsx>{`
+        @keyframes marquee {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
+        }
+        .animate-marquee {
+          display: inline-block;
+          animation: marquee 30s linear infinite;
+        }
+      `}</style>
     </>
   );
 }
