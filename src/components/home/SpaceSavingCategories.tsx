@@ -3,33 +3,13 @@ import { Flame, Sparkles, Percent, Clock } from 'lucide-react';
 
 const AliExpressCategories = () => {
   const imageSeeds = {
-    'Electronics': 1060,
-    'Home & Kitchen': 1084,
-    'Fashion': 1027,
-    'Beauty': 1062,
-    'Sports': 1044,
-    'Toys & Games': 1069,
-    'Jewelry': 1081,
-    'Automotive': 1076,
-    'Books': 1050,
-    'Pets': 1025,
-    'Food': 1080,
-    'Audio': 1083,
-    'Computers': 1051,
-    'Photography': 1061,
-    'Watches': 1079,
-    'Coffee': 1060,
-    'Movies': 1032,
-    'Travel': 1035,
-    'Music': 1085,
-    'Health': 1039,
-    'Finance': 1082,
-    'Apparel': 1033,
-    'Business': 1043,
-    'Outdoor': 1011,
-    'Adventure': 1036,
-    'Seasonal': 1018,
-    'Crafts': 1068
+    'Electronics': 1060, 'Home & Kitchen': 1084, 'Fashion': 1027, 'Beauty': 1062,
+    'Sports': 1044, 'Toys & Games': 1069, 'Jewelry': 1081, 'Automotive': 1076,
+    'Books': 1050, 'Pets': 1025, 'Food': 1080, 'Audio': 1083, 'Computers': 1051,
+    'Photography': 1061, 'Watches': 1079, 'Coffee': 1060, 'Movies': 1032,
+    'Travel': 1035, 'Music': 1085, 'Health': 1039, 'Finance': 1082,
+    'Apparel': 1033, 'Business': 1043, 'Outdoor': 1011, 'Adventure': 1036,
+    'Seasonal': 1018, 'Crafts': 1068
   };
 
   const getCategoryImageUrl = (category) => {
@@ -37,7 +17,6 @@ const AliExpressCategories = () => {
     return `https://picsum.photos/id/${seed}/80/80`;
   };
 
-  // Updated categories with less tags and no percentage-based ones
   const categories = [
     { name: 'Electronics', shortName: 'Electronics', tags: ['Hot'], isPopular: true },
     { name: 'Home & Kitchen', shortName: 'Home', tags: ['New'], isPopular: false },
@@ -83,7 +62,7 @@ const AliExpressCategories = () => {
 
   const CategoryItem = ({ category }) => (
     <div className="flex flex-col items-center w-16 flex-shrink-0 active:opacity-80 transition-opacity touch-manipulation">
-      <div className="relative w-14 h-14 rounded-lg overflow-hidden bg-gray-50 mb-1 shadow-sm">
+      <div className="relative w-14 h-14 rounded-lg overflow-hidden bg-gray-50 mb-0.5 shadow-sm">
         <img
           src={getCategoryImageUrl(category)}
           alt={category.name}
@@ -94,8 +73,6 @@ const AliExpressCategories = () => {
             <span className="text-[8px] font-bold text-white">POPULAR</span>
           </div>
         )}
-        
-        {/* Full width centered tags at the bottom of thumbnail */}
         {category.tags.length > 0 && (
           <div className="absolute bottom-0 left-0 right-0 flex justify-center w-full">
             {category.tags.map((tag, idx) => (
@@ -114,7 +91,7 @@ const AliExpressCategories = () => {
           </div>
         )}
       </div>
-      <span className="text-xs font-medium text-gray-700 text-center truncate w-full leading-tight">
+      <span className="text-[10px] font-medium text-gray-700 text-center truncate w-full leading-snug">
         {category.shortName || category.name}
       </span>
     </div>
@@ -122,11 +99,11 @@ const AliExpressCategories = () => {
 
   return (
     <div className="w-full bg-white">
-      <div className="py-3 bg-white">
+      <div className="py-2 bg-white">
         <div className="overflow-x-auto overscroll-x-contain no-scrollbar pl-2 scroll-smooth -webkit-overflow-scrolling-touch">
-          <div className="grid grid-flow-col auto-cols-max gap-3 pr-4" style={{ gridTemplateRows: 'repeat(2, auto)' }}>
+          <div className="grid grid-flow-col auto-cols-max gap-2 pr-2" style={{ gridTemplateRows: 'repeat(2, auto)' }}>
             {categories.map((category, index) => (
-              <div key={index} className="pb-1" style={{ gridRow: index % 2 === 0 ? '1' : '2' }}>
+              <div key={index} style={{ gridRow: index % 2 === 0 ? '1' : '2' }}>
                 <CategoryItem category={category} />
               </div>
             ))}
