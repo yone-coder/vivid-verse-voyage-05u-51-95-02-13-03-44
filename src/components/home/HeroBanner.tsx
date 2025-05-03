@@ -39,8 +39,8 @@ export default function HeroBanner() {
   const newsDuration = 4000;
 
   const startSlideTimer = () => {
-    if (intervalRef.current) clearInterval(intervalRef.current);
-    if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
+    clearInterval(intervalRef.current);
+    clearInterval(progressIntervalRef.current);
     setProgress(0);
     const progressStep = (50 / slideDuration) * 100;
 
@@ -55,8 +55,7 @@ export default function HeroBanner() {
   };
 
   const startNewsTimer = () => {
-    if (newsIntervalRef.current) clearInterval(newsIntervalRef.current);
-
+    clearInterval(newsIntervalRef.current);
     newsIntervalRef.current = setInterval(() => {
       setActiveNewsIndex(current => (current + 1) % newsItems.length);
     }, newsDuration);
@@ -65,11 +64,10 @@ export default function HeroBanner() {
   useEffect(() => {
     startSlideTimer();
     startNewsTimer();
-
     return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
-      if (newsIntervalRef.current) clearInterval(newsIntervalRef.current);
+      clearInterval(intervalRef.current);
+      clearInterval(progressIntervalRef.current);
+      clearInterval(newsIntervalRef.current);
     };
   }, [activeIndex]);
 
@@ -156,34 +154,31 @@ export default function HeroBanner() {
         </div>
       </div>
 
-      {/* Improved Vertical Sliding News Banner */}
+      {/* Smooth Vertical Sliding News Banner */}
       {showNews && (
         <div className="bg-red-50">
           <div className="max-w-screen-xl mx-auto">
             <div className="relative overflow-hidden h-7">
-              <div
-                className="flex flex-col transition-transform duration-500 ease-in-out"
-                style={{ transform: `translateY(-${activeNewsIndex * 100}%)` }}
-              >
-                {newsItems.map((item, index) => {
-                  const bgColors = [
-                    "bg-red-600", "bg-orange-500", "bg-blue-600", "bg-purple-600"
-                  ];
-                  const bgColor = bgColors[index % bgColors.length];
+              {newsItems.map((item, index) => {
+                const bgColors = [
+                  "bg-red-600", "bg-orange-500", "bg-blue-600", "bg-purple-600"
+                ];
+                const bgColor = bgColors[index % bgColors.length];
+                const isActive = index === activeNewsIndex;
 
-                  return (
-                    <div
-                      key={item.id}
-                      className={`flex items-center px-2 h-7 w-full ${bgColor}`}
-                    >
-                      <span className="flex-shrink-0 mr-1">{item.icon}</span>
-                      <span className="text-xs font-medium text-white truncate">
-                        {item.text}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
+                return (
+                  <div
+                    key={item.id}
+                    className={`absolute top-0 left-0 w-full h-7 flex items-center px-2 transform transition-transform duration-500 ease-in-out ${bgColor} ${
+                      isActive ? "translate-y-0 z-10" : "translate-y-full z-0"
+                    }`}
+                    style={{ transitionProperty: 'transform, opacity' }}
+                  >
+                    <span className="flex-shrink-0 mr-1">{item.icon}</span>
+                    <span className="text-xs font-medium text-white truncate">{item.text}</span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
