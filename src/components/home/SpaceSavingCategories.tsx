@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flame, Sparkles, Percent, Clock } from 'lucide-react';
+import { Flame, Sparkles, Clock } from 'lucide-react';
 
 const AliExpressCategories = () => {
   const imageSeeds = {
@@ -62,7 +62,7 @@ const AliExpressCategories = () => {
 
   const CategoryItem = ({ category }) => (
     <div className="flex flex-col items-center w-16 flex-shrink-0 active:opacity-80 transition-opacity touch-manipulation">
-      <div className="relative w-14 h-14 rounded-lg overflow-hidden bg-gray-50 mb-0.5 shadow-sm">
+      <div className="relative w-14 h-14 rounded-lg overflow-hidden bg-gray-50 shadow-sm">
         <img
           src={getCategoryImageUrl(category)}
           alt={category.name}
@@ -91,7 +91,7 @@ const AliExpressCategories = () => {
           </div>
         )}
       </div>
-      <span className="text-[10px] font-medium text-gray-700 text-center truncate w-full leading-snug">
+      <span className="text-[10px] font-medium text-gray-700 text-center truncate w-full leading-snug mt-0.5">
         {category.shortName || category.name}
       </span>
     </div>
@@ -99,9 +99,9 @@ const AliExpressCategories = () => {
 
   return (
     <div className="w-full bg-white">
-      <div className="py-2 bg-white">
-        <div className="overflow-x-auto overscroll-x-contain no-scrollbar pl-2 scroll-smooth -webkit-overflow-scrolling-touch">
-          <div className="grid grid-flow-col auto-cols-max gap-2 pr-2" style={{ gridTemplateRows: 'repeat(2, auto)' }}>
+      <div className="py-1 bg-white">
+        <div className="overflow-x-auto overscroll-x-contain no-scrollbar pl-1 scroll-smooth -webkit-overflow-scrolling-touch">
+          <div className="grid grid-flow-col auto-cols-max gap-1 pr-1" style={{ gridTemplateRows: 'repeat(2, auto)' }}>
             {categories.map((category, index) => (
               <div key={index} style={{ gridRow: index % 2 === 0 ? '1' : '2' }}>
                 <CategoryItem category={category} />
