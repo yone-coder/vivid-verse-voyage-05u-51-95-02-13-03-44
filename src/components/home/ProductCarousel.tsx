@@ -8,7 +8,7 @@ const ProductCarousel = () => {
   const products = [
     {
       id: 1,
-      title: "Wireless Bluetooth Earbuds",
+      title: " Bluetooth Earbuds",
       image: "/api/placeholder/300/300",
       originalPrice: 39.99,
       discountPrice: 19.99,
