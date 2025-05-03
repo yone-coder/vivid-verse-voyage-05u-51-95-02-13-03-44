@@ -1,5 +1,6 @@
+
 import React, { useState, useRef, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Star, Heart } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star, Heart, TrendingUp, Award } from 'lucide-react';
 
 const ProductCarousel = () => {
   const scrollRef = useRef(null);
@@ -10,7 +11,7 @@ const ProductCarousel = () => {
     {
       id: 1,
       title: "Bluetooth Earbuds Wireless Headphones Noise Cancellation",
-      image: "/api/placeholder/300/300",
+      image: "https://picsum.photos/seed/earbuds123/300/300",
       originalPrice: 39.99,
       discountPrice: 19.99,
       discount: 50,
@@ -21,7 +22,7 @@ const ProductCarousel = () => {
     {
       id: 2,
       title: "Smart Watch Fitness Tracker Heart Rate Monitor Sport Band",
-      image: "/api/placeholder/300/300",
+      image: "https://picsum.photos/seed/smartwatch456/300/300",
       originalPrice: 59.99,
       discountPrice: 29.99,
       discount: 50,
@@ -32,7 +33,7 @@ const ProductCarousel = () => {
     {
       id: 3,
       title: "Portable Power Bank 20000mAh Fast Charging External Battery",
-      image: "/api/placeholder/300/300",
+      image: "https://picsum.photos/seed/powerbank789/300/300",
       originalPrice: 45.99,
       discountPrice: 22.5,
       discount: 51,
@@ -43,7 +44,7 @@ const ProductCarousel = () => {
     {
       id: 4,
       title: "LED Ring Light with Tripod Stand Selfie Phone Holder",
-      image: "/api/placeholder/300/300",
+      image: "https://picsum.photos/seed/ringlight101/300/300",
       originalPrice: 34.99,
       discountPrice: 19.99,
       discount: 43,
@@ -54,7 +55,7 @@ const ProductCarousel = () => {
     {
       id: 5,
       title: "Laptop Backpack USB Charging Waterproof Travel School Bag",
-      image: "/api/placeholder/300/300",
+      image: "https://picsum.photos/seed/backpack202/300/300",
       originalPrice: 49.99,
       discountPrice: 27.99,
       discount: 44,
@@ -65,7 +66,7 @@ const ProductCarousel = () => {
     {
       id: 6,
       title: "Foldable Selfie Drone with Camera HD Quadcopter FPV",
-      image: "/api/placeholder/300/300",
+      image: "https://picsum.photos/seed/drone303/300/300",
       originalPrice: 129.99,
       discountPrice: 79.99,
       discount: 38,
@@ -76,7 +77,7 @@ const ProductCarousel = () => {
     {
       id: 7,
       title: "Wireless Charger Stand Fast Charging Phone Holder",
-      image: "/api/placeholder/300/300",
+      image: "https://picsum.photos/seed/charger404/300/300",
       originalPrice: 29.99,
       discountPrice: 15.99,
       discount: 47,
@@ -87,7 +88,7 @@ const ProductCarousel = () => {
     {
       id: 8,
       title: "Mechanical Gaming Keyboard RGB Backlit Anti-ghosting",
-      image: "/api/placeholder/300/300",
+      image: "https://picsum.photos/seed/keyboard505/300/300",
       originalPrice: 89.99,
       discountPrice: 45.99,
       discount: 49,
