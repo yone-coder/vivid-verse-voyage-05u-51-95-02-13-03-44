@@ -1,102 +1,134 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Star, Heart } from 'lucide-react';
 
 const ProductCarousel = () => {
   const scrollRef = useRef(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
+  const [showRightArrow, setShowRightArrow] = useState(true);
 
   const products = [
     {
       id: 1,
-      title: "Bluetooth Earbuds",
-      image: "https://picsum.photos/seed/earbuds/300/300",
+      title: "Bluetooth Earbuds Wireless Headphones Noise Cancellation",
+      image: "/api/placeholder/300/300",
       originalPrice: 39.99,
       discountPrice: 19.99,
       discount: 50,
       rating: 4.8,
       sales: 5382,
+      shipping: "Free Shipping",
     },
     {
       id: 2,
-      title: "Smart Watch Fitness Tracker",
-      image: "https://picsum.photos/seed/smartwatch/300/300",
+      title: "Smart Watch Fitness Tracker Heart Rate Monitor Sport Band",
+      image: "/api/placeholder/300/300",
       originalPrice: 59.99,
       discountPrice: 29.99,
       discount: 50,
       rating: 4.6,
       sales: 3287,
+      shipping: "Free Shipping",
     },
     {
       id: 3,
-      title: "Portable Power Bank",
-      image: "https://picsum.photos/seed/powerbank/300/300",
+      title: "Portable Power Bank 20000mAh Fast Charging External Battery",
+      image: "/api/placeholder/300/300",
       originalPrice: 45.99,
       discountPrice: 22.5,
       discount: 51,
       rating: 4.7,
       sales: 7621,
+      shipping: "Free Shipping",
     },
     {
       id: 4,
-      title: "LED Ring Light",
-      image: "https://picsum.photos/seed/ringlight/300/300",
+      title: "LED Ring Light with Tripod Stand Selfie Phone Holder",
+      image: "/api/placeholder/300/300",
       originalPrice: 34.99,
       discountPrice: 19.99,
       discount: 43,
       rating: 4.5,
       sales: 2938,
+      shipping: "Free Shipping",
     },
     {
       id: 5,
-      title: "Laptop Backpack",
-      image: "https://picsum.photos/seed/backpack/300/300",
+      title: "Laptop Backpack USB Charging Waterproof Travel School Bag",
+      image: "/api/placeholder/300/300",
       originalPrice: 49.99,
       discountPrice: 27.99,
       discount: 44,
       rating: 4.9,
       sales: 8273,
+      shipping: "+ $2.99 Shipping",
     },
     {
       id: 6,
-      title: "Foldable Selfie Drone",
-      image: "https://picsum.photos/seed/drone/300/300",
+      title: "Foldable Selfie Drone with Camera HD Quadcopter FPV",
+      image: "/api/placeholder/300/300",
       originalPrice: 129.99,
       discountPrice: 79.99,
       discount: 38,
       rating: 4.4,
       sales: 1536,
+      shipping: "Free Shipping",
     },
+    {
+      id: 7,
+      title: "Wireless Charger Stand Fast Charging Phone Holder",
+      image: "/api/placeholder/300/300",
+      originalPrice: 29.99,
+      discountPrice: 15.99,
+      discount: 47,
+      rating: 4.6,
+      sales: 4721,
+      shipping: "Free Shipping",
+    },
+    {
+      id: 8,
+      title: "Mechanical Gaming Keyboard RGB Backlit Anti-ghosting",
+      image: "/api/placeholder/300/300",
+      originalPrice: 89.99,
+      discountPrice: 45.99,
+      discount: 49,
+      rating: 4.7,
+      sales: 3198,
+      shipping: "+ $4.99 Shipping",
+    }
   ];
+
+  const checkScrollPosition = () => {
+    if (scrollRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+      setShowLeftArrow(scrollLeft > 0);
+      setShowRightArrow(scrollLeft < scrollWidth - clientWidth - 10); // 10px buffer
+    }
+  };
+
+  useEffect(() => {
+    checkScrollPosition();
+  }, []);
 
   const scroll = (direction) => {
     if (scrollRef.current) {
       const { current } = scrollRef;
-      const scrollAmount = direction === 'left' ? -current.offsetWidth : current.offsetWidth;
+      const scrollAmount = direction === 'left' ? -280 : 280; // Adjusted for smaller cards
       current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-
-      setTimeout(() => {
-        setShowLeftArrow(current.scrollLeft > 0);
-      }, 500);
-    }
-  };
-
-  const handleScroll = () => {
-    if (scrollRef.current) {
-      setShowLeftArrow(scrollRef.current.scrollLeft > 0);
+      setTimeout(checkScrollPosition, 500);
     }
   };
 
   return (
-    <div className="w-full bg-white py-4 px-0 relative">
+    <div className="w-full bg-gray-50 py-4 px-0 relative">
       {/* Header */}
       <div className="px-4 flex justify-between items-center mb-3">
         <div className="flex items-center">
-          <span className="text-lg font-semibold text-gray-800">Sponsored</span>
+          <span className="text-sm font-bold text-gray-800">Flash Deals</span>
           <span className="ml-2 text-xs text-gray-500 border border-gray-300 rounded px-1">AD</span>
         </div>
-        <div className="flex items-center text-sm text-orange-500 font-medium cursor-pointer hover:text-orange-600">
-          Show More
-          <ChevronRight size={16} className="ml-1" />
+        <div className="flex items-center text-xs text-orange-500 font-medium cursor-pointer hover:text-orange-600">
+          More
+          <ChevronRight size={14} className="ml-1" />
         </div>
       </div>
 
@@ -105,62 +137,72 @@ const ProductCarousel = () => {
         {showLeftArrow && (
           <button
             onClick={() => scroll('left')}
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full shadow p-2 hover:bg-gray-100"
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 rounded-full shadow-md p-1.5 hover:bg-white"
           >
-            <ChevronLeft size={20} />
+            <ChevronLeft size={16} />
           </button>
         )}
 
         <div
+          className="flex overflow-x-auto scrollbar-hide pb-4 gap-1"
           ref={scrollRef}
-          onScroll={handleScroll}
-          className="flex overflow-x-auto scrollbar-hide gap-2 pl-2 pb-4"
-          style={{ scrollSnapType: 'x mandatory', scrollbarWidth: 'none' }}
+          onScroll={checkScrollPosition}
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {products.map((product) => (
             <div
               key={product.id}
-              className="flex-shrink-0 w-[28.5%] sm:w-40 bg-white rounded-md border border-gray-200 overflow-hidden ml-1 first:ml-4 last:mr-4"
-              style={{ scrollSnapAlign: 'start' }}
+              className="flex-shrink-0 w-32 bg-white rounded overflow-hidden hover:shadow-sm transition-shadow duration-300 ml-2 first:ml-4 last:mr-4"
             >
               <div className="relative">
-                <img src={product.image} alt={product.title} className="w-full h-36 object-cover" />
-                <button className="absolute top-2 right-2 bg-white/90 rounded-full p-1 hover:bg-white">
-                  <Heart size={16} className="text-gray-400 hover:text-red-500" />
+                <img src={product.image} alt={product.title} className="w-full h-28 object-cover" />
+                <button className="absolute top-1 right-1 bg-white/80 rounded-full p-1 hover:bg-white">
+                  <Heart size={12} className="text-gray-400 hover:text-red-500" />
                 </button>
-                <div className="absolute top-2 left-2 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded">
-                  -{product.discount}%
-                </div>
-                <div className="absolute bottom-2 left-2 bg-white/90 text-gray-800 text-xs px-1.5 py-0.5 rounded">
-                  <span>{product.rating}</span>
-                  <span className="mx-1">|</span>
-                  <span>{product.sales}+ sold</span>
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent h-8">
+                  <div className="absolute bottom-1 left-1 text-white text-xs px-1 py-0.5 rounded flex items-center">
+                    <Star size={10} className="fill-yellow-400 text-yellow-400 mr-0.5" />
+                    {product.rating}
+                  </div>
+                  <div className="absolute bottom-1 right-1 bg-red-500 text-white text-xs px-1 py-0.5 rounded-sm">
+                    -{product.discount}%
+                  </div>
                 </div>
               </div>
 
-              <div className="px-2 py-2">
-                <div className="text-[13px] text-gray-800 leading-tight line-clamp-2 h-[34px]">
+              <div className="p-1.5">
+                <div className="text-xs text-gray-800 line-clamp-2 leading-tight h-8 mb-1">
                   {product.title}
                 </div>
-                <div className="mt-1">
-                  <span className="text-[15px] text-red-500 font-semibold">
-                    US ${product.discountPrice.toFixed(2)}
-                  </span>
-                  <span className="text-xs text-gray-400 line-through ml-1">
-                    US ${product.originalPrice.toFixed(2)}
-                  </span>
+                <div className="flex flex-col">
+                  <div className="flex items-baseline">
+                    <span className="text-sm text-red-500 font-semibold">
+                      US ${product.discountPrice.toFixed(2)}
+                    </span>
+                    <span className="ml-1 text-xs text-gray-400 line-through">
+                      ${product.originalPrice.toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="text-xs text-gray-500 mt-0.5">
+                    {product.shipping}
+                  </div>
+                  <div className="text-xs text-gray-400 mt-0.5">
+                    {product.sales}+ sold
+                  </div>
                 </div>
               </div>
             </div>
           ))}
         </div>
 
-        <button
-          onClick={() => scroll('right')}
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full shadow p-2 hover:bg-gray-100"
-        >
-          <ChevronRight size={20} />
-        </button>
+        {showRightArrow && (
+          <button
+            onClick={() => scroll('right')}
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 rounded-full shadow-md p-1.5 hover:bg-white"
+          >
+            <ChevronRight size={16} />
+          </button>
+        )}
       </div>
     </div>
   );
