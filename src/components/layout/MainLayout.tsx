@@ -89,8 +89,8 @@ export default function MainLayout() {
       )}
       {!isMobile && !isHomePage && <Footer />}
       
-      {/* Show our custom bottom nav only on mobile and appropriate pages */}
-      {isMobile && isHomePage && <IndexBottomNav />}
+      {/* Show bottom nav on mobile for home and product pages */}
+      {isMobile && (isHomePage || isProductPage) && <IndexBottomNav />}
     </div>
   );
 }
