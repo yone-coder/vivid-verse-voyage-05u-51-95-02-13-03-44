@@ -1,3 +1,4 @@
+
 import React, { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -246,6 +247,7 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
                     index={i}
                     currentPage={page}
                     onClick={() => scrollToPage(i)}
+                    active={i === page}
                   />
                 ))}
               </div>

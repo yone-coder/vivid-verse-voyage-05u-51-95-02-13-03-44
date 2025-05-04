@@ -1,3 +1,4 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { fetchAllProducts } from "@/integrations/supabase/client";
 import AliExpressHeader from "@/components/home/AliExpressHeader";
@@ -107,7 +108,7 @@ export default function Index() {
 
       {/* Recommended Products */}
       <div className="bg-white mb-1">
-        <ProductRecommendations products={products || []} />
+        <ProductRecommendations products={Array.isArray(products) ? products : []} />
       </div>
 
       {/* Recently Viewed - Updated Component */}
@@ -115,7 +116,7 @@ export default function Index() {
         <RecentlyViewed />
       </div>
 
-<div className="bg-white mb-1">
+      <div className="bg-white mb-1">
         <VendorProductCarousel />
       </div>
 
