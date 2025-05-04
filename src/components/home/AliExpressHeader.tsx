@@ -21,18 +21,15 @@ export default function AliExpressHeader() {
   const searchRef = useRef(null);
 
   const categories = [
-    { id: 'all', name: 'All', icon: <Home className="h-3 w-3" /> },
-    { id: 'women', name: 'Women', icon: <Users className="h-3 w-3" /> },
-    { id: 'men', name: 'Men', icon: <Users className="h-3 w-3" /> },
-    { id: 'electronics', name: 'Electronics', icon: <ShoppingBag className="h-3 w-3" /> },
-    { id: 'home', name: 'Home', icon: <Home className="h-3 w-3" /> },
-    { id: 'beauty', name: 'Beauty', icon: <Image className="h-3 w-3" /> },
-    { id: 'kids', name: 'Kids', icon: <Users className="h-3 w-3" /> },
-    { id: 'sports', name: 'Sports', icon: <ShoppingBag className="h-3 w-3" /> },
-    { id: 'posts', name: 'Posts', icon: <MessageSquare className="h-3 w-3" /> },
-    { id: 'shops', name: 'Shops', icon: <Store className="h-3 w-3" /> },
-  ];
-
+  { id: 'all', name: 'All', icon: <Home className="h-3 w-3" /> },
+  { id: 'posts', name: 'Posts', icon: <MessageSquare className="h-3 w-3" /> },
+  { id: 'shops', name: 'Shops', icon: <Store className="h-3 w-3" /> },
+  { id: 'trending', name: 'Trending', icon: <Image className="h-3 w-3" /> },
+  { id: 'collections', name: 'Collections', icon: <ShoppingBag className="h-3 w-3" /> },
+  { id: 'categories', name: 'Categories', icon: <Users className="h-3 w-3" /> },
+  { id: 'videos', name: 'Videos', icon: <Image className="h-3 w-3" /> },
+  { id: 'recommendations', name: 'For You', icon: <Home className="h-3 w-3" /> },
+];
   const togglePanel = () => setIsOpen(!isOpen);
   const handleSearchFocus = () => setIsSearchFocused(true);
   const handleClearSearch = () => setSearchQuery('');
