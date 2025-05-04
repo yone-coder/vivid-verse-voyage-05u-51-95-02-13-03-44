@@ -3,7 +3,7 @@ import React, { useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ChevronRight, Star } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
@@ -15,44 +15,44 @@ const RecommendationSkeleton = () => (
   </div>
 );
 
-// Minimal product card component
+// Minimal product card component styled like FlashDeals cards
 const MinimalProductCard = ({ product }) => {
   const discount = product.discount_price ? 
     Math.round(((product.price - product.discount_price) / product.price) * 100) : 0;
   
   return (
-    <Card className="overflow-hidden rounded-sm border-gray-100 h-full hover:shadow-sm transition-all">
-      <Link to={`/product/${product.id}`} className="block">
-        <div className="relative overflow-hidden aspect-square bg-white">
+    <div className="h-full">
+      <Link to={`/product/${product.id}`} className="block h-full">
+        <div className="relative aspect-square overflow-hidden bg-gray-50 rounded-md mb-1.5">
           <img
             src={product.image}
-            alt=""
-            className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+            alt={product.name}
+            className="h-full w-full object-cover hover:scale-105 transition-transform duration-300"
+            loading="lazy"
           />
           {discount > 0 && (
-            <Badge className="absolute top-1.5 left-1.5 bg-red-500 hover:bg-red-600 text-[10px] px-1.5 py-0.5 rounded-sm">
-              -{discount}%
-            </Badge>
+            <div className="absolute top-0 left-0 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-br-md font-medium">
+              -{discount}% OFF
+            </div>
           )}
         </div>
-        <CardContent className="p-2 flex justify-between items-center">
+        <div>
           <div className="flex items-baseline gap-1">
-            <span className="text-red-500 text-sm font-bold">
-              ${product.discountPrice || product.price}
-            </span>
+            <div className="text-red-500 font-semibold text-sm">
+              ${(product.discountPrice || product.price).toFixed(2)}
+            </div>
             {product.discountPrice && (
-              <span className="text-gray-400 line-through text-xs">
-                ${product.price}
-              </span>
+              <div className="text-xs text-gray-500 line-through">
+                ${product.price.toFixed(2)}
+              </div>
             )}
           </div>
-          <div className="flex items-center text-[10px] text-amber-500">
-            <Star className="h-3 w-3 fill-amber-400" />
-            <span className="ml-0.5">{product.rating}</span>
+          <div className="text-[10px] text-gray-500 truncate max-w-full mt-0.5">
+            {product.name}
           </div>
-        </CardContent>
+        </div>
       </Link>
-    </Card>
+    </div>
   );
 };
 
@@ -65,7 +65,7 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
     id: String(product.id), // Convert ID to string
     price: product.price || 0,
     discountPrice: product.discount_price,
-    rating: 4.5, // Default rating if not provided
+    name: product.name || "Product Name",
     image: product.product_images?.[0]?.src || "https://placehold.co/300x300?text=No+Image",
     // Include original product data
     ...product
@@ -74,7 +74,7 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
   const firstRow = formattedProducts.slice(0, Math.ceil(formattedProducts.length / 2));
   const secondRow = formattedProducts.slice(Math.ceil(formattedProducts.length / 2));
 
-  // Setup synchronized scrolling between rows with improved implementation
+  // Setup synchronized scrolling between rows
   useEffect(() => {
     const firstRowElement = firstRowRef.current;
     const secondRowElement = secondRowRef.current;
