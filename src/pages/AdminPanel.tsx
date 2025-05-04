@@ -1,8 +1,7 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Plus, Trash2, Edit, Eye, X, Check, Save, Pencil } from "lucide-react";
-import { supabase, updateProduct, subscribeToProductChanges } from "@/integrations/supabase/client";
+import { supabase, updateProduct, subscribeToProductChanges, createProduct } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -309,22 +308,18 @@ const AdminPanel: React.FC = () => {
     try {
       setCreatingProduct(true);
       
-      const { data, error } = await supabase
-        .from('products')
-        .insert({
-          name: newProduct.name,
-          description: newProduct.description,
-          price: newProduct.price,
-          discount_price: newProduct.discount_price || null
-        })
-        .select();
-
-      if (error) {
-        throw error;
-      }
+      const productData = {
+        name: newProduct.name,
+        description: newProduct.description,
+        price: newProduct.price,
+        discount_price: newProduct.discount_price || null
+      };
+      
+      console.log('Creating product with data:', productData);
+      
+      const data = await createProduct(productData);
 
       toast({
-        variant: "success",
         title: "Success",
         description: "Product created successfully!",
       });

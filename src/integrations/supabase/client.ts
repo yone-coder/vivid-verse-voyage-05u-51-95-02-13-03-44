@@ -48,6 +48,25 @@ export const fetchProductById = async (productId: string) => {
 };
 
 /**
+ * Creates a new product in the database
+ */
+export const createProduct = async (productData: any) => {
+  console.log('Creating new product with data:', productData);
+  
+  const { data, error } = await supabase
+    .from('products')
+    .insert(productData)
+    .select();
+  
+  if (error) {
+    console.error('Error creating product:', error);
+    throw error;
+  }
+  
+  return data;
+};
+
+/**
  * Updates a product by ID
  */
 export const updateProduct = async (productId: string, updates: any) => {
