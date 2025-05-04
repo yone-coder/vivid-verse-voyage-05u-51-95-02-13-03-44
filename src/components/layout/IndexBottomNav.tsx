@@ -122,39 +122,39 @@ export default function IndexBottomNav() {
                   </button>
                 </PopoverTrigger>
                 <PopoverContent 
-                  className="w-48 p-0 border border-gray-200 shadow-lg rounded-lg" 
+                  className="w-56 p-2 border border-gray-200 shadow-lg rounded-lg" 
                   align="center" 
                   side="top" 
                   sideOffset={5}
                 >
-                  <div className="flex flex-col p-1">
+                  <div className="grid grid-cols-2 gap-2">
                     <button
                       onClick={() => handleQuickAction("Product")}
-                      className="flex items-center space-x-2 p-2 hover:bg-gray-100 rounded-md text-sm transition-colors"
+                      className="flex flex-col items-center justify-center p-3 hover:bg-gray-100 rounded-md text-sm transition-colors"
                     >
-                      <ShoppingCart className="w-4 h-4 text-blue-600" />
-                      <span>Add Product</span>
+                      <ShoppingCart className="w-5 h-5 text-blue-600 mb-1" />
+                      <span>Product</span>
                     </button>
                     <button
                       onClick={() => handleQuickAction("Post")}
-                      className="flex items-center space-x-2 p-2 hover:bg-gray-100 rounded-md text-sm transition-colors"
+                      className="flex flex-col items-center justify-center p-3 hover:bg-gray-100 rounded-md text-sm transition-colors"
                     >
-                      <Pencil className="w-4 h-4 text-green-600" />
-                      <span>Create Post</span>
+                      <Pencil className="w-5 h-5 text-green-600 mb-1" />
+                      <span>Post</span>
                     </button>
                     <button
                       onClick={() => handleQuickAction("Image")}
-                      className="flex items-center space-x-2 p-2 hover:bg-gray-100 rounded-md text-sm transition-colors"
+                      className="flex flex-col items-center justify-center p-3 hover:bg-gray-100 rounded-md text-sm transition-colors"
                     >
-                      <Image className="w-4 h-4 text-purple-600" />
-                      <span>Upload Image</span>
+                      <Image className="w-5 h-5 text-purple-600 mb-1" />
+                      <span>Image</span>
                     </button>
                     <button
                       onClick={() => handleQuickAction("Video")}
-                      className="flex items-center space-x-2 p-2 hover:bg-gray-100 rounded-md text-sm transition-colors"
+                      className="flex flex-col items-center justify-center p-3 hover:bg-gray-100 rounded-md text-sm transition-colors"
                     >
-                      <Video className="w-4 h-4 text-red-600" />
-                      <span>Create Video</span>
+                      <Video className="w-5 h-5 text-red-600 mb-1" />
+                      <span>Video</span>
                     </button>
                   </div>
                 </PopoverContent>
