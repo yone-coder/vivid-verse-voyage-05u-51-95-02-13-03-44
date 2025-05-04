@@ -110,9 +110,9 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
                 <div className="space-y-2 pr-4 inline-flex flex-col min-w-full">
                   <div className="flex gap-2">
                     {firstRow.map((product) => (
-                      <div 
-                        key={product.id} 
-                        className="w-[30%] flex-shrink-0 snap-start mr-2"
+                      <div
+                        key={product.id}
+                        className="w-[calc(100%/3.5)] flex-shrink-0 snap-start mr-2"
                       >
                         <MinimalProductCard product={product} />
                       </div>
@@ -121,9 +121,9 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
                   
                   <div className="flex gap-2">
                     {secondRow.map((product) => (
-                      <div 
-                        key={product.id} 
-                        className="w-[30%] flex-shrink-0 snap-start mr-2"
+                      <div
+                        key={product.id}
+                        className="w-[calc(100%/3.5)] flex-shrink-0 snap-start mr-2"
                       >
                         <MinimalProductCard product={product} />
                       </div>
