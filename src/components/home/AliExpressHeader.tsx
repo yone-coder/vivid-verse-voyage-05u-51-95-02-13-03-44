@@ -32,6 +32,7 @@ export default function AliExpressHeader() {
     { id: 'posts', name: 'Posts', icon: <MessageSquare className="h-3 w-3" /> },
     { id: 'shops', name: 'Shops', icon: <Store className="h-3 w-3" /> },
   ];
+
   const togglePanel = () => setIsOpen(!isOpen);
   const handleSearchFocus = () => setIsSearchFocused(true);
   const handleClearSearch = () => setSearchQuery('');
