@@ -68,6 +68,15 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
   const firstRow = formattedProducts.slice(0, Math.ceil(formattedProducts.length / 2));
   const secondRow = formattedProducts.slice(Math.ceil(formattedProducts.length / 2));
 
+  const scrollToPage = (index) => {
+    const container = scrollContainerRef.current;
+    if (container) {
+      const width = container.clientWidth;
+      container.scrollTo({ left: index * width, behavior: 'smooth' });
+      setPage(index);
+    }
+  };
+
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
@@ -95,13 +104,19 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
     };
   }, [formattedProducts]);
 
-  const scrollToPage = (index) => {
-    const container = scrollContainerRef.current;
-    if (container) {
-      const width = container.clientWidth;
-      container.scrollTo({ left: index * width, behavior: 'smooth' });
-    }
-  };
+  useEffect(() => {
+    if (pageCount <= 1) return;
+
+    const interval = setInterval(() => {
+      setPage((prev) => {
+        const nextPage = (prev + 1) % pageCount;
+        scrollToPage(nextPage);
+        return nextPage;
+      });
+    }, 4000); // Auto-scroll every 4 seconds
+
+    return () => clearInterval(interval);
+  }, [pageCount]);
 
   return (
     <div className="py-2">
@@ -164,7 +179,7 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
               </div>
             </div>
 
-            {/* Dots Navigation with Fill Animation */}
+            {/* Animated Dots Navigation */}
             {pageCount > 1 && (
               <div className="flex justify-center mt-2 gap-2 px-2">
                 {Array.from({ length: pageCount }).map((_, i) => (
@@ -174,7 +189,7 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
                     className="relative w-4 h-2 rounded-full bg-gray-300 overflow-hidden cursor-pointer"
                   >
                     <div
-                      className="absolute top-0 left-0 h-full bg-gray-900 transition-all duration-300"
+                      className="absolute top-0 left-0 h-full bg-gray-900 transition-all duration-[3800ms] ease-linear"
                       style={{
                         width: i === page ? '100%' : '0%',
                       }}
