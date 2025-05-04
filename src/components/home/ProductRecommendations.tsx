@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ChevronRight } from 'lucide-react';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 // Helper component for product skeleton loading states
 const RecommendationSkeleton = () => (
@@ -97,40 +98,32 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
             </div>
           </div>
         ) : formattedProducts.length > 0 ? (
-          <div className="relative">
-            <div
-              ref={scrollContainerRef}
-              className="overflow-x-auto scroll-smooth scrollbar-hide snap-x snap-mandatory"
-              style={{
-                scrollPaddingLeft: "1rem",
-                WebkitOverflowScrolling: "touch"
-              }}
-            >
-              <div className="flex pl-2">
-                <div className="space-y-2 pr-4 inline-flex flex-col min-w-full">
-                  <div className="flex gap-2">
-                    {firstRow.map((product) => (
-                      <div
-                        key={product.id}
-                        className="w-[calc(100%/3.5)] flex-shrink-0 snap-start mr-2"
-                      >
-                        <MinimalProductCard product={product} />
-                      </div>
-                    ))}
-                  </div>
-                  
-                  <div className="flex gap-2">
-                    {secondRow.map((product) => (
-                      <div
-                        key={product.id}
-                        className="w-[calc(100%/3.5)] flex-shrink-0 snap-start mr-2"
-                      >
-                        <MinimalProductCard product={product} />
-                      </div>
-                    ))}
-                  </div>
+          <div className="-mx-2">
+            <div className="overflow-x-auto scrollbar-hide snap-x snap-mandatory">
+              <div className="space-y-2 pl-2 pr-8 inline-flex flex-col min-w-full">
+                <div className="flex gap-2">
+                  {firstRow.map((product) => (
+                    <div 
+                      key={product.id} 
+                      className="flex-shrink-0 snap-start"
+                      style={{ width: 'calc(30% - 0.5rem)' }}
+                    >
+                      <MinimalProductCard product={product} />
+                    </div>
+                  ))}
                 </div>
-                <div className="flex-none w-4" />
+                
+                <div className="flex gap-2">
+                  {secondRow.map((product) => (
+                    <div 
+                      key={product.id} 
+                      className="flex-shrink-0 snap-start"
+                      style={{ width: 'calc(30% - 0.5rem)' }}
+                    >
+                      <MinimalProductCard product={product} />
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
