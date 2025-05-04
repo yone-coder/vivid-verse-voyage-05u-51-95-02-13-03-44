@@ -1,4 +1,3 @@
-
 import { useQuery } from "@tanstack/react-query";
 import { fetchAllProducts } from "@/integrations/supabase/client";
 import AliExpressHeader from "@/components/home/AliExpressHeader";
@@ -46,16 +45,13 @@ export default function Index() {
       {/* AliExpressHeader component with improved scroll behavior */}
       <AliExpressHeader />
 
-      {/* Hero Banner with appropriate spacing */}
-      <div className="relative w-full bg-transparent">
-        <HeroBanner />
-      </div>
+      {/* The HeroBanner now has margin-top to account for the header height */}
+      <HeroBanner />
 
       <div className="mb-1">
         <SpaceSavingCategories />
       </div>
       
-
       {/* Flash Deals Section */}
       <div className="mb-1">
         <FlashDeals />

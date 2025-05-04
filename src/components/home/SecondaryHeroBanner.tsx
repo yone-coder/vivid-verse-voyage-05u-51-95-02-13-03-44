@@ -84,6 +84,7 @@ export default function SecondaryHeroBanner() {
   return (
     <>
       <div className={`relative bg-gradient-to-r ${banners[activeIndex].color} transition-colors duration-500 overflow-hidden`}>
+        {/* No margin-top needed for the SecondaryHeroBanner as it's not at the top */}
         <div className="relative h-[150px] md:h-[200px] lg:h-[250px]">
           {banners.map((banner, index) => {
             const isActive = index === activeIndex;

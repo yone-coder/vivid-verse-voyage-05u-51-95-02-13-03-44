@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
+
+import { useState, useEffect, useCallback } from 'react';
 import { ArrowRight, Clock, Newspaper, AlertCircle, TrendingUp } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Button } from "@/components/ui/button";
@@ -39,6 +40,9 @@ export default function HeroBanner() {
   const progressIntervalRef = useRef(null);
   const slideDuration = 5000;
   const newsDuration = 4000;
+
+  // Height of the header (44px header + category tabs)
+  const headerHeight = '78px';
 
   const startSlideTimer = () => {
     clearInterval(intervalRef.current);
@@ -82,7 +86,9 @@ export default function HeroBanner() {
 
   return (
     <>
-      <div className={`relative bg-gradient-to-r ${banners[activeIndex].color} transition-colors duration-500 overflow-hidden`}>
+      <div 
+        className={`relative bg-gradient-to-r ${banners[activeIndex].color} transition-colors duration-500 overflow-hidden mt-[78px]`}
+      >
         <div className="relative h-[180px] md:h-[250px] lg:h-[300px]">
           {banners.map((banner, index) => {
             const isActive = index === activeIndex;
