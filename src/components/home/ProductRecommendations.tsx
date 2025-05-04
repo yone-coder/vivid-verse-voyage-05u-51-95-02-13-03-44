@@ -55,6 +55,8 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
   const scrollContainerRef = useRef(null);
   const [page, setPage] = useState(0);
   const [pageCount, setPageCount] = useState(0);
+  const [isAutoScrolling, setIsAutoScrolling] = useState(false);
+  const autoScrollTimeoutRef = useRef(null);
 
   const formattedProducts = Array.isArray(products) ? products.map(product => ({
     id: String(product.id),
@@ -72,8 +74,15 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
     const container = scrollContainerRef.current;
     if (container) {
       const width = container.clientWidth;
+      setIsAutoScrolling(true);
       container.scrollTo({ left: index * width, behavior: 'smooth' });
       setPage(index);
+      
+      // Reset auto-scrolling flag after animation completes
+      clearTimeout(autoScrollTimeoutRef.current);
+      autoScrollTimeoutRef.current = setTimeout(() => {
+        setIsAutoScrolling(false);
+      }, 500);
     }
   };
 
@@ -82,6 +91,7 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
     if (!container) return;
 
     const updatePage = () => {
+      if (isAutoScrolling) return;
       const scrollLeft = container.scrollLeft;
       const width = container.clientWidth;
       const newPage = Math.round(scrollLeft / width);
@@ -102,7 +112,7 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
       container.removeEventListener('scroll', updatePage);
       window.removeEventListener('resize', calculatePageCount);
     };
-  }, [formattedProducts]);
+  }, [formattedProducts, isAutoScrolling]);
 
   useEffect(() => {
     if (pageCount <= 1) return;
@@ -179,22 +189,34 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
               </div>
             </div>
 
-            {/* Dots with animated fill */}
+            {/* Ultra Sleek Dots Navigation */}
             {pageCount > 1 && (
-              <div className="flex justify-center mt-2 gap-2 px-2">
+              <div className="flex justify-center mt-3 gap-1.5">
                 {Array.from({ length: pageCount }).map((_, i) => (
-                  <div
+                  <button
                     key={i}
                     onClick={() => scrollToPage(i)}
-                    className="relative w-4 h-2 rounded-full bg-gray-300 overflow-hidden cursor-pointer"
+                    className="group focus:outline-none"
+                    aria-label={`Page ${i + 1}`}
                   >
-                    <div
-                      className={`absolute top-0 left-0 h-full bg-gray-900 transition-[width] duration-[4000ms] ease-linear`}
-                      style={{
-                        width: i === page ? '100%' : '0%',
-                      }}
-                    />
-                  </div>
+                    <div className="relative h-[3px] w-4 overflow-hidden rounded-full transition-all duration-300 ease-out">
+                      <div 
+                        className={`absolute inset-0 rounded-full transition-all duration-300 ${
+                          i === page 
+                            ? "bg-black w-full" 
+                            : "bg-gray-200 group-hover:bg-gray-300 w-full"
+                        }`}
+                      />
+                      {i === page && (
+                        <div 
+                          className="absolute inset-y-0 left-0 bg-black w-full transform-gpu transition-transform ease-linear" 
+                          style={{
+                            animation: "dotProgress 4s linear forwards"
+                          }}
+                        />
+                      )}
+                    </div>
+                  </button>
                 ))}
               </div>
             )}
@@ -205,6 +227,13 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
           </div>
         )}
       </div>
+
+      <style jsx>{`
+        @keyframes dotProgress {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(0); }
+        }
+      `}</style>
     </div>
   );
 };
