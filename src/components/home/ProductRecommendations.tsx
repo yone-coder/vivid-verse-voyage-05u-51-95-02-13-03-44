@@ -8,7 +8,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 
 // Helper component for product skeleton loading states
 const RecommendationSkeleton = () => (
-  <div className="w-[calc(40vw)] md:w-[calc(25vw)] lg:w-[calc(16.66vw)] flex-shrink-0">
+  <div className="w-[40%] md:w-[calc(25vw)] lg:w-[calc(16.66vw)] flex-shrink-0">
     <Skeleton className="aspect-square mb-1" />
     <Skeleton className="h-3 w-1/2" />
   </div>
@@ -108,8 +108,8 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
                 {firstRow.map((product) => (
                   <div 
                     key={product.id} 
-                    className="w-[40%] md:w-[25%] lg:w-[16.66%] flex-shrink-0"
-                    style={{ width: 'calc(33% - 0.5rem)' }}
+                    className="flex-shrink-0"
+                    style={{ width: 'calc(40% - 0.5rem)' }}
                   >
                     <MinimalProductCard product={product} />
                   </div>
@@ -120,8 +120,8 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
                 {secondRow.map((product) => (
                   <div 
                     key={product.id} 
-                    className="w-[40%] md:w-[25%] lg:w-[16.66%] flex-shrink-0"
-                    style={{ width: 'calc(33% - 0.5rem)' }}
+                    className="flex-shrink-0"
+                    style={{ width: 'calc(40% - 0.5rem)' }}
                   >
                     <MinimalProductCard product={product} />
                   </div>
