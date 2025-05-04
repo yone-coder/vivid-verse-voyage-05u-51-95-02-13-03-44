@@ -1,7 +1,6 @@
 import React, { useRef } from 'react';
 
 const VendorProductCarousel = () => {
-  // Sample data for vendor and products
   const vendorData = {
     vendorName: "Fashion Boutique",
     profilePic: "/api/placeholder/50/50",
@@ -73,7 +72,6 @@ const VendorProductCarousel = () => {
 
   const carouselRef = useRef(null);
 
-  // Format number with k for thousands
   const formatNumber = (num) => {
     return num >= 1000 ? (num / 1000).toFixed(1) + 'k' : num;
   };
@@ -82,7 +80,6 @@ const VendorProductCarousel = () => {
     <div className="max-w-6xl mx-auto overflow-hidden">
       {/* Vendor Info Header */}
       <div className="flex items-center mb-4 px-3 md:px-4">
-        {/* Profile image with multiple techniques for guaranteed circular shape */}
         <div className="flex-shrink-0 mr-3 rounded-full overflow-hidden w-12 h-12">
           <img
             src={vendorData.profilePic}
@@ -99,18 +96,28 @@ const VendorProductCarousel = () => {
         </button>
       </div>
 
-      {/* Products Carousel - Edge to Edge with Modified Snapping */}
+      {/* Products Carousel */}
       <div className="relative w-full">
         <div 
-          className="flex overflow-x-auto gap-2 md:gap-3 pb-4" 
+          className="flex overflow-x-auto gap-2 md:gap-3 pb-4 snap-x snap-mandatory"
           ref={carouselRef}
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', paddingLeft: '8px', paddingRight: '8px' }}
+          style={{ 
+            scrollbarWidth: 'none', 
+            msOverflowStyle: 'none', 
+            paddingLeft: '8px', 
+            paddingRight: '8px', 
+            scrollSnapType: 'x mandatory' 
+          }}
         >
           {products.map((product) => (
             <div 
               key={product.id}
               className="flex-shrink-0 rounded-lg overflow-hidden shadow-sm border border-gray-200 bg-white hover:shadow-md transition-shadow"
-              style={{ width: 'calc(40% - 8px)', minWidth: '140px', scrollSnapAlign: 'center' }}
+              style={{ 
+                width: 'calc(40% - 8px)', 
+                minWidth: '140px', 
+                scrollSnapAlign: 'center' 
+              }}
             >
               {/* Product Image */}
               <div className="relative aspect-square">
@@ -119,16 +126,13 @@ const VendorProductCarousel = () => {
                   alt="Product"
                   className="w-full h-full object-cover"
                 />
-                
-                {/* Discount Tag - Only display discount percentage */}
                 <div className="absolute top-0 left-0 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-br-lg">
                   {product.discount} OFF
                 </div>
               </div>
-              
+
               {/* Product Info */}
               <div className="p-2">
-                {/* Price Info - Now in a single horizontal line */}
                 <div className="flex items-center">
                   <span className="font-bold text-red-500 text-base mr-2">{product.currentPrice}</span>
                   <span className="text-gray-400 text-xs line-through">{product.originalPrice}</span>
