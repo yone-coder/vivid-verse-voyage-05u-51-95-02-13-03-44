@@ -82,7 +82,7 @@ export default function MainLayout() {
           <Outlet />
         </main>
       ) : (
-        <main className="flex-grow pb-20">
+        <main className="flex-grow pb-14">
           <Outlet />
         </main>
       )}
