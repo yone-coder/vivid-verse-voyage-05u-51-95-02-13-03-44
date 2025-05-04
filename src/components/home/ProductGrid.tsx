@@ -1,8 +1,7 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Star, Heart, Filter, List, GridIcon } from "lucide-react";
 import {
@@ -14,7 +13,7 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 
-// Compact AliExpress-style Product Card without Add to Cart
+// Compact AliExpress-style Product Card without Name
 export const ProductCard = ({ product }) => {
   const mainImage = product.product_images?.[0]?.src || "https://placehold.co/300x300?text=No+Image";
   const discountPercentage = product.discount_price
@@ -175,7 +174,7 @@ export default function ProductGrid({ products, isLoading }) {
                         <div className="relative aspect-square bg-gray-100 overflow-hidden">
                           <img
                             src={product.product_images?.[0]?.src || "https://placehold.co/300x300?text=No+Image"}
-                            alt={product.name}
+                            alt=""
                             className="w-full h-full object-cover"
                             loading="lazy"
                           />
@@ -188,11 +187,6 @@ export default function ProductGrid({ products, isLoading }) {
                       </Link>
                     </div>
                     <div className="w-2/3 md:w-3/4 p-3 flex flex-col">
-                      <Link to={`/product/${product.id}`}>
-                        <h3 className="text-sm font-medium line-clamp-2 hover:text-red-500 transition-colors mb-1">
-                          {product.name}
-                        </h3>
-                      </Link>
                       <div className="flex items-center gap-1 text-xs text-gray-500 mb-1">
                         <div className="flex text-amber-400">
                           <Star className="h-3 w-3 fill-amber-400" />
