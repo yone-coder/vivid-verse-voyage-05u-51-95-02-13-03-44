@@ -27,7 +27,7 @@ export const ProductCard = ({ product }) => {
         <div className="relative aspect-square bg-gray-100 overflow-hidden">
           <img
             src={mainImage}
-            alt={product.name}
+            alt=""
             className="w-full h-full object-cover transition-transform group-hover:scale-105"
             loading="lazy"
           />
@@ -46,39 +46,34 @@ export const ProductCard = ({ product }) => {
         </div>
       </Link>
 
-      <CardContent className="p-2 space-y-1">
-        <Link to={`/product/${product.id}`} className="block space-y-1">
-          <h3 className="text-[11px] font-medium line-clamp-2 hover:text-red-500 transition-colors">
-            {product.name}
-          </h3>
-          <div className="flex items-center gap-1 text-[10px] text-gray-500">
-            <div className="flex text-amber-400">
-              <Star className="h-3 w-3 fill-amber-400" />
-              <Star className="h-3 w-3 fill-amber-400" />
-              <Star className="h-3 w-3 fill-amber-400" />
-              <Star className="h-3 w-3 fill-amber-400" />
-              <Star className="h-3 w-3 stroke-amber-400 fill-none" />
-            </div>
-            <span>(42)</span>
-          </div>
-          <div className="flex items-baseline gap-1">
-            {product.discount_price ? (
-              <>
-                <span className="text-red-500 text-sm font-semibold">
-                  ${product.discount_price.toFixed(2)}
-                </span>
-                <span className="text-gray-400 text-[10px] line-through">
-                  ${product.price.toFixed(2)}
-                </span>
-              </>
-            ) : (
-              <span className="text-sm font-semibold">
+      <CardContent className="p-1.5 space-y-1">
+        <div className="flex items-baseline gap-1">
+          {product.discount_price ? (
+            <>
+              <span className="text-red-500 text-sm font-semibold">
+                ${product.discount_price.toFixed(2)}
+              </span>
+              <span className="text-gray-400 text-[10px] line-through">
                 ${product.price.toFixed(2)}
               </span>
-            )}
+            </>
+          ) : (
+            <span className="text-sm font-semibold">
+              ${product.price.toFixed(2)}
+            </span>
+          )}
+        </div>
+        <div className="flex items-center gap-1 text-[10px] text-gray-500">
+          <div className="flex text-amber-400">
+            <Star className="h-3 w-3 fill-amber-400" />
+            <Star className="h-3 w-3 fill-amber-400" />
+            <Star className="h-3 w-3 fill-amber-400" />
+            <Star className="h-3 w-3 fill-amber-400" />
+            <Star className="h-3 w-3 stroke-amber-400 fill-none" />
           </div>
-          <p className="text-[10px] text-green-600 font-medium">Free Shipping</p>
-        </Link>
+          <span>(42)</span>
+        </div>
+        <p className="text-[10px] text-green-600 font-medium">Free Shipping</p>
       </CardContent>
     </Card>
   );
