@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { Store, Star, ShoppingBag, Users, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import ShopsSkeleton from "@/components/skeletons/ShopsSkeleton";
 
 export default function Shops() {
   const { data: products = [], isLoading } = useQuery({
@@ -24,7 +25,11 @@ export default function Shops() {
   }, [isMobile]);
 
   if (!isReady) {
-    return null; // Prevent flash while detecting mobile
+    return <ShopsSkeleton />;
+  }
+  
+  if (isLoading) {
+    return <ShopsSkeleton />;
   }
 
   // Mock data for shops

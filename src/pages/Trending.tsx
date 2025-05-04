@@ -6,6 +6,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useState, useEffect } from "react";
 import { TrendingUp, ArrowRight, ShoppingBag, Eye } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import TrendingSkeleton from "@/components/skeletons/TrendingSkeleton";
 
 export default function Trending() {
   const { data: products = [], isLoading } = useQuery({
@@ -23,7 +24,11 @@ export default function Trending() {
   }, [isMobile]);
 
   if (!isReady) {
-    return null; // Prevent flash while detecting mobile
+    return <TrendingSkeleton />;
+  }
+  
+  if (isLoading) {
+    return <TrendingSkeleton />;
   }
 
   // Mock data for trending categories and products

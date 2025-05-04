@@ -5,6 +5,7 @@ import AliExpressHeader from "@/components/home/AliExpressHeader";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useState, useEffect } from "react";
 import { MessageSquare, Heart, Share, Clock } from "lucide-react";
+import PostsSkeleton from "@/components/skeletons/PostsSkeleton";
 
 export default function Posts() {
   const { data: products = [], isLoading } = useQuery({
@@ -22,7 +23,11 @@ export default function Posts() {
   }, [isMobile]);
 
   if (!isReady) {
-    return null; // Prevent flash while detecting mobile
+    return <PostsSkeleton />;
+  }
+
+  if (isLoading) {
+    return <PostsSkeleton />;
   }
 
   // Mock data for posts

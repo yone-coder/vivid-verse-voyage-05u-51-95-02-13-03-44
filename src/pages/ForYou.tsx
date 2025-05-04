@@ -1,4 +1,3 @@
-
 import { useQuery } from "@tanstack/react-query";
 import { fetchAllProducts } from "@/integrations/supabase/client";
 import AliExpressHeader from "@/components/home/AliExpressHeader";
@@ -21,6 +20,7 @@ import BenefitsBanner from "@/components/home/BenefitsBanner";
 import SecondaryHeroBanner from "@/components/home/SecondaryHeroBanner";
 import MobileOptimizedReels from "@/components/home/MobileOptimizedReels";
 import VendorProductCarousel from "@/components/home/VendorProductCarousel";
+import PageSkeleton from "@/components/skeletons/PageSkeleton";
 
 export default function ForYou() {
   const { data: products = [], isLoading } = useQuery({
@@ -38,7 +38,11 @@ export default function ForYou() {
   }, [isMobile]);
 
   if (!isReady) {
-    return null; // Prevent flash while detecting mobile
+    return <PageSkeleton />;
+  }
+
+  if (isLoading) {
+    return <PageSkeleton />;
   }
 
   return (

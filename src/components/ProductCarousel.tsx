@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/carousel";
 import ProductCard from "./ProductCard";
 import { useProducts } from "@/hooks/useProducts";
+import ProductCarouselSkeleton from "./skeletons/ProductCarouselSkeleton";
 
 interface ProductCarouselProps {
   category?: string;
@@ -20,18 +21,7 @@ const ProductCarousel = ({ category, limit = 6, title = "Featured Products" }: P
   const { data: products, isLoading, error } = useProducts();
   
   if (isLoading) {
-    return (
-      <div className="w-full py-6">
-        <div className="container">
-          <h2 className="text-2xl font-bold mb-6">{title}</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {Array(limit).fill(0).map((_, i) => (
-              <div key={i} className="bg-gray-100 animate-pulse h-56 rounded-lg"></div>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
+    return <ProductCarouselSkeleton title={title} count={limit} />;
   }
   
   if (error || !products) {

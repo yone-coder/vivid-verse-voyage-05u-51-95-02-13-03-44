@@ -6,6 +6,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useState, useEffect } from "react";
 import { Heart, MessageSquare, Share, Play, Pause, Eye } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import VideosSkeleton from "@/components/skeletons/VideosSkeleton";
 
 export default function Videos() {
   const { data: products = [], isLoading } = useQuery({
@@ -25,7 +26,11 @@ export default function Videos() {
   }, [isMobile]);
 
   if (!isReady) {
-    return null; // Prevent flash while detecting mobile
+    return <VideosSkeleton />;
+  }
+  
+  if (isLoading) {
+    return <VideosSkeleton />;
   }
 
   // Mock data for videos
