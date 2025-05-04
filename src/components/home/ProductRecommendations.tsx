@@ -60,8 +60,8 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
   const firstRowRef = useRef(null);
   const secondRowRef = useRef(null);
   
-  // Format products and ensure it's an array
-  const formattedProducts = Array.isArray(products) ? products.map(product => ({
+  // Format products
+  const formattedProducts = products?.map(product => ({
     id: String(product.id), // Convert ID to string
     price: product.price || 0,
     discountPrice: product.discount_price,
@@ -69,7 +69,7 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
     image: product.product_images?.[0]?.src || "https://placehold.co/300x300?text=No+Image",
     // Include original product data
     ...product
-  })) : [];
+  }));
   
   const firstRow = formattedProducts.slice(0, Math.ceil(formattedProducts.length / 2));
   const secondRow = formattedProducts.slice(Math.ceil(formattedProducts.length / 2));
