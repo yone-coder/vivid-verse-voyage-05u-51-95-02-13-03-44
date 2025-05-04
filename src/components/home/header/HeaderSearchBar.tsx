@@ -54,7 +54,7 @@ const HeaderSearchBar = ({
             className="cursor-pointer mr-2 rounded-full hover:bg-gray-200"
             onClick={handleClearSearch}
           >
-            <X className="h-3 w-3 text-gray-500" />
+            <X className="h-3.5 w-3.5 text-gray-500" />
           </div>
         )}
       </div>
