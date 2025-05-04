@@ -1,14 +1,12 @@
-
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ChevronRight } from 'lucide-react';
-import { ScrollArea } from '@/components/ui/scroll-area';
 
 // Helper component for product skeleton loading states
 const RecommendationSkeleton = () => (
-  <div className="w-[calc(40vw)] md:w-[calc(25vw)] lg:w-[calc(16.66vw)] flex-shrink-0">
+  <div className="w-[30%] md:w-[calc(25vw)] lg:w-[calc(16.66vw)] flex-shrink-0 snap-start">
     <Skeleton className="aspect-square mb-1" />
     <Skeleton className="h-3 w-1/2" />
   </div>
@@ -16,9 +14,10 @@ const RecommendationSkeleton = () => (
 
 // Minimal product card component styled like FlashDeals cards
 const MinimalProductCard = ({ product }) => {
-  const discount = product.discount_price ? 
-    Math.round(((product.price - product.discount_price) / product.price) * 100) : 0;
-  
+  const discount = product.discount_price
+    ? Math.round(((product.price - product.discount_price) / product.price) * 100)
+    : 0;
+
   return (
     <div className="h-full">
       <Link to={`/product/${product.id}`} className="block h-full">
@@ -56,19 +55,19 @@ const MinimalProductCard = ({ product }) => {
 };
 
 const ProductRecommendations = ({ products = [], loading = false }) => {
-  const scrollContainerRef = useRef(null);
-  
   // Format products and ensure it's an array
-  const formattedProducts = Array.isArray(products) ? products.map(product => ({
-    id: String(product.id), // Convert ID to string
-    price: product.price || 0,
-    discountPrice: product.discount_price,
-    name: product.name || "Product Name",
-    image: product.product_images?.[0]?.src || "https://placehold.co/300x300?text=No+Image",
-    // Include original product data
-    ...product
-  })) : [];
-  
+  const formattedProducts = Array.isArray(products)
+    ? products.map((product) => ({
+        id: String(product.id),
+        price: product.price || 0,
+        discountPrice: product.discount_price,
+        name: product.name || 'Product Name',
+        image:
+          product.product_images?.[0]?.src || 'https://placehold.co/300x300?text=No+Image',
+        ...product,
+      }))
+    : [];
+
   const firstRow = formattedProducts.slice(0, Math.ceil(formattedProducts.length / 2));
   const secondRow = formattedProducts.slice(Math.ceil(formattedProducts.length / 2));
 
@@ -85,50 +84,56 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
         </div>
 
         {loading ? (
-          <div className="space-y-2">
-            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-              {Array(3).fill(0).map((_, index) => (
-                <RecommendationSkeleton key={`row1-${index}`} />
-              ))}
+          <div className="space-y-2 overflow-hidden">
+            <div className="overflow-x-auto scrollbar-hide snap-x snap-mandatory scroll-pl-4">
+              <div className="flex gap-2 w-max pr-4">
+                {Array(6)
+                  .fill(0)
+                  .map((_, index) => (
+                    <RecommendationSkeleton key={`row1-${index}`} />
+                  ))}
+              </div>
             </div>
-            <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-              {Array(3).fill(0).map((_, index) => (
-                <RecommendationSkeleton key={`row2-${index}`} />
-              ))}
+            <div className="overflow-x-auto scrollbar-hide snap-x snap-mandatory scroll-pl-4">
+              <div className="flex gap-2 w-max pr-4">
+                {Array(6)
+                  .fill(0)
+                  .map((_, index) => (
+                    <RecommendationSkeleton key={`row2-${index}`} />
+                  ))}
+              </div>
             </div>
           </div>
         ) : formattedProducts.length > 0 ? (
-          <ScrollArea 
-            ref={scrollContainerRef} 
-            orientation="horizontal" 
-            className="w-full overflow-x-auto"
-          >
-            <div className="space-y-2 pr-4">
-              <div className="flex gap-2">
+          <div className="space-y-2 overflow-hidden">
+            <div className="overflow-x-auto scrollbar-hide snap-x snap-mandatory scroll-pl-4">
+              <div className="flex gap-2 w-max pr-4">
                 {firstRow.map((product) => (
-                  <div 
-                    key={product.id} 
-                    className="w-[40%] md:w-[25%] lg:w-[16.66%] flex-shrink-0"
-                    style={{ width: 'calc(33% - 0.5rem)' }}
-                  >
-                    <MinimalProductCard product={product} />
-                  </div>
-                ))}
-              </div>
-              
-              <div className="flex gap-2">
-                {secondRow.map((product) => (
-                  <div 
-                    key={product.id} 
-                    className="w-[40%] md:w-[25%] lg:w-[16.66%] flex-shrink-0"
-                    style={{ width: 'calc(33% - 0.5rem)' }}
+                  <div
+                    key={product.id}
+                    className="flex-shrink-0 snap-start"
+                    style={{ width: 'calc(30% - 0.5rem)' }}
                   >
                     <MinimalProductCard product={product} />
                   </div>
                 ))}
               </div>
             </div>
-          </ScrollArea>
+
+            <div className="overflow-x-auto scrollbar-hide snap-x snap-mandatory scroll-pl-4">
+              <div className="flex gap-2 w-max pr-4">
+                {secondRow.map((product) => (
+                  <div
+                    key={product.id}
+                    className="flex-shrink-0 snap-start"
+                    style={{ width: 'calc(30% - 0.5rem)' }}
+                  >
+                    <MinimalProductCard product={product} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         ) : (
           <div className="text-center py-4">
             <p className="text-sm text-gray-500">No recommendations available right now</p>
