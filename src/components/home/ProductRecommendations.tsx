@@ -51,12 +51,47 @@ const MinimalProductCard = ({ product }) => {
   );
 };
 
+// Dot indicator component for cleaner implementation
+const DotIndicator = ({ active, index, currentPage, onClick }) => {
+  const isActive = index === currentPage;
+  
+  return (
+    <button
+      onClick={onClick}
+      className="group focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 px-0.5"
+      aria-label={`Page ${index + 1}`}
+      aria-current={isActive ? "true" : "false"}
+    >
+      <div className="relative h-[3px] w-5 overflow-hidden rounded-full">
+        {/* Background track */}
+        <div 
+          className={`absolute inset-0 rounded-full ${
+            isActive ? "bg-gray-200" : "bg-gray-200 group-hover:bg-gray-300"
+          }`}
+        />
+        
+        {/* Fill indicator - only shown when active */}
+        {isActive && (
+          <div 
+            className="absolute inset-y-0 left-0 w-full bg-black rounded-full origin-left"
+            style={{
+              transform: "scaleX(0)",
+              animation: "4s linear forwards running fillDot"
+            }}
+          />
+        )}
+      </div>
+    </button>
+  );
+};
+
 const ProductRecommendations = ({ products = [], loading = false }) => {
   const scrollContainerRef = useRef(null);
   const [page, setPage] = useState(0);
   const [pageCount, setPageCount] = useState(0);
   const [isAutoScrolling, setIsAutoScrolling] = useState(false);
   const autoScrollTimeoutRef = useRef(null);
+  const autoScrollIntervalRef = useRef(null);
 
   const formattedProducts = Array.isArray(products) ? products.map(product => ({
     id: String(product.id),
@@ -69,6 +104,31 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
 
   const firstRow = formattedProducts.slice(0, Math.ceil(formattedProducts.length / 2));
   const secondRow = formattedProducts.slice(Math.ceil(formattedProducts.length / 2));
+  
+  // Reset autoScroll interval when page changes
+  useEffect(() => {
+    if (pageCount <= 1) return;
+    
+    // Clear existing interval
+    if (autoScrollIntervalRef.current) {
+      clearInterval(autoScrollIntervalRef.current);
+    }
+    
+    // Set new interval
+    autoScrollIntervalRef.current = setInterval(() => {
+      setPage((prev) => {
+        const nextPage = (prev + 1) % pageCount;
+        scrollToPage(nextPage);
+        return nextPage;
+      });
+    }, 4000);
+    
+    return () => {
+      if (autoScrollIntervalRef.current) {
+        clearInterval(autoScrollIntervalRef.current);
+      }
+    };
+  }, [page, pageCount]);
 
   const scrollToPage = (index) => {
     const container = scrollContainerRef.current;
@@ -95,7 +155,9 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
       const scrollLeft = container.scrollLeft;
       const width = container.clientWidth;
       const newPage = Math.round(scrollLeft / width);
-      setPage(newPage);
+      if (newPage !== page) {
+        setPage(newPage);
+      }
     };
 
     const calculatePageCount = () => {
@@ -112,32 +174,7 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
       container.removeEventListener('scroll', updatePage);
       window.removeEventListener('resize', calculatePageCount);
     };
-  }, [formattedProducts, isAutoScrolling]);
-
-  // Reset dots animation whenever the page changes
-  useEffect(() => {
-    // This effect handles the auto-rotation logic
-    if (pageCount <= 1) return;
-
-    // Reset any existing animation
-    const dots = document.querySelectorAll('.dot-indicator');
-    dots.forEach(dot => {
-      dot.style.animation = 'none';
-      // Trigger reflow
-      void dot.offsetWidth;
-      dot.style.animation = '';
-    });
-
-    const interval = setInterval(() => {
-      setPage((prev) => {
-        const nextPage = (prev + 1) % pageCount;
-        scrollToPage(nextPage);
-        return nextPage;
-      });
-    }, 4000);
-
-    return () => clearInterval(interval);
-  }, [pageCount, page]);
+  }, [formattedProducts, isAutoScrolling, page]);
 
   return (
     <div className="py-2">
@@ -200,34 +237,16 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
               </div>
             </div>
 
-            {/* Ultra Sleek Dots Navigation with Filling Animation */}
+            {/* Ultra Sleek Dots Navigation */}
             {pageCount > 1 && (
-              <div className="flex justify-center mt-3 gap-1.5">
+              <div className="flex justify-center mt-3 gap-1">
                 {Array.from({ length: pageCount }).map((_, i) => (
-                  <button
+                  <DotIndicator 
                     key={i}
+                    index={i}
+                    currentPage={page}
                     onClick={() => scrollToPage(i)}
-                    className="group focus:outline-none"
-                    aria-label={`Page ${i + 1}`}
-                  >
-                    <div className="relative h-[3px] w-5 overflow-hidden rounded-full transition-all duration-300 ease-out">
-                      <div 
-                        className={`absolute inset-0 rounded-full transition-all duration-300 ${
-                          i === page 
-                            ? "bg-gray-100" 
-                            : "bg-gray-200 group-hover:bg-gray-300"
-                        }`}
-                      />
-                      {i === page && (
-                        <div 
-                          className="absolute inset-y-0 left-0 bg-black transform-gpu origin-left rounded-full dot-indicator"
-                          style={{
-                            animation: "dotFill 4s cubic-bezier(0.4, 0, 0.2, 1) forwards"
-                          }}
-                        />
-                      )}
-                    </div>
-                  </button>
+                  />
                 ))}
               </div>
             )}
@@ -238,13 +257,14 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
           </div>
         )}
       </div>
-
-      <style jsx>{`
-        @keyframes dotFill {
+      
+      {/* Global styles for animations */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes fillDot {
           0% { transform: scaleX(0); }
           100% { transform: scaleX(1); }
         }
-      `}</style>
+      `}} />
     </div>
   );
 };
