@@ -1,9 +1,12 @@
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Star, ShoppingCart, Heart, Filter, GridIcon, List } from "lucide-react";
+import { Star, ShoppingCart, Heart, Filter } from "lucide-react";
+import { List } from "lucide-react";
+import { GridIcon } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -24,7 +27,7 @@ export const ProductCard = ({ product }) => {
 
   return (
     <Card className="overflow-hidden transition-all hover:shadow-md group h-full">
-      <Link to={/product/${product.id}} className="block">
+      <Link to={`/product/${product.id}`} className="block">
         <div className="relative aspect-square overflow-hidden bg-gray-100">
           <img
             src={mainImage}
@@ -47,7 +50,7 @@ export const ProductCard = ({ product }) => {
         </div>
       </Link>
       <CardContent className="p-2">
-        <Link to={/product/${product.id}} className="block">
+        <Link to={`/product/${product.id}`} className="block">
           <div className="flex items-center gap-1 mb-1">
             <div className="flex text-amber-400 text-xs">
               <Star className="h-3 w-3 fill-amber-400" />
