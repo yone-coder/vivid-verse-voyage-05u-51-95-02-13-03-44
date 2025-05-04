@@ -35,14 +35,16 @@ export default function ProductRecommendations({ products }) {
           <Link to="#" className="text-xs text-orange-500 hover:underline">View More</Link>
         </div>
 
-        {/* Scrollable Category Tabs - edge to edge */}
+        {/* Scrollable Tabs with Fake Padding */}
         <div className="mb-3 overflow-x-auto">
-          <div className="flex space-x-2 px-3 pb-1 snap-x snap-mandatory overflow-x-auto scrollbar-hide">
-            {recommendedCategories.map(category => (
+          <div className="flex space-x-2 pb-1 snap-x snap-mandatory overflow-x-auto scrollbar-hide">
+            {recommendedCategories.map((category, index) => (
               <button
                 key={category.id}
                 onClick={() => setActiveCategory(category.id)}
                 className={`snap-start flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-all duration-150 ${
+                  index === 0 ? "ml-3" : ""
+                } ${index === recommendedCategories.length - 1 ? "mr-3" : ""} ${
                   activeCategory === category.id
                     ? "bg-orange-500 text-white border-orange-500"
                     : "bg-gray-50 text-gray-700 border-gray-200"
