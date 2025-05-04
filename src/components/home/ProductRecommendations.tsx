@@ -113,7 +113,7 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
         scrollToPage(nextPage);
         return nextPage;
       });
-    }, 4000);
+    }, 4000); // Auto-scroll every 4 seconds
 
     return () => clearInterval(interval);
   }, [pageCount]);
@@ -179,7 +179,7 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
               </div>
             </div>
 
-            {/* Dots with animated fill */}
+            {/* Animated Dots Navigation */}
             {pageCount > 1 && (
               <div className="flex justify-center mt-2 gap-2 px-2">
                 {Array.from({ length: pageCount }).map((_, i) => (
@@ -189,7 +189,7 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
                     className="relative w-4 h-2 rounded-full bg-gray-300 overflow-hidden cursor-pointer"
                   >
                     <div
-                      className={`absolute top-0 left-0 h-full bg-gray-900 transition-[width] duration-[4000ms] ease-linear`}
+                      className="absolute top-0 left-0 h-full bg-gray-900 transition-all duration-[3800ms] ease-linear"
                       style={{
                         width: i === page ? '100%' : '0%',
                       }}
