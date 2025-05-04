@@ -21,13 +21,12 @@ export default function AliExpressHeader() {
   const searchRef = useRef(null);
 
   const categories = [
-  { id: 'recommendations', name: 'For You', icon: <Home className="h-3 w-3" /> },
-  { id: 'posts', name: 'Posts', icon: <MessageSquare className="h-3 w-3" /> },
-  { id: 'shops', name: 'Shops', icon: <Store className="h-3 w-3" /> },
-  { id: 'trending', name: 'Trending', icon: <Image className="h-3 w-3" /> },
-  { id: 'videos', name: 'Videos', icon: <Image className="h-3 w-3" /> },
-  
-];
+    { id: 'recommendations', name: 'For You', icon: <Home className="h-3 w-3" /> },
+    { id: 'posts', name: 'Posts', icon: <MessageSquare className="h-3 w-3" /> },
+    { id: 'shops', name: 'Shops', icon: <Store className="h-3 w-3" /> },
+    { id: 'trending', name: 'Trending', icon: <Image className="h-3 w-3" /> },
+    { id: 'videos', name: 'Videos', icon: <Image className="h-3 w-3" /> },
+  ];
   const togglePanel = () => setIsOpen(!isOpen);
   const handleSearchFocus = () => setIsSearchFocused(true);
   const handleClearSearch = () => setSearchQuery('');
@@ -45,22 +44,16 @@ export default function AliExpressHeader() {
 
   return (
     <header className="fixed top-0 w-full z-30">
-      {/* Top Bar */}
+      {/* Top Bar - Always using white background */}
       <div
-        className="flex items-center justify-between px-2 transition-all duration-700"
+        className="flex items-center justify-between px-2 bg-white shadow-sm transition-all duration-300"
         style={{
           height: '44px',
-          backgroundColor: `rgba(255, 255, 255, ${Math.max(progress, 0.05)})`,
-          backdropFilter: `blur(${progress * 8}px)`,
-          backgroundImage:
-            progress < 0.5
-              ? 'linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0))'
-              : 'none',
         }}
       >
-        {/* Left: Logo or Tab */}
+        {/* Left: Always show Logo */}
         <HeaderLogoToggle 
-          progress={progress}
+          progress={1} // Always use the scrolled state
           togglePanel={togglePanel}
           isOpen={isOpen}
           activeTab={activeTab}
@@ -86,9 +79,9 @@ export default function AliExpressHeader() {
         </div>
       </div>
 
-      {/* Category Tabs */}
+      {/* Category Tabs - Always with white background */}
       <CategoryTabs 
-        progress={progress}
+        progress={1} // Always use the scrolled state
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         categories={categories}
@@ -96,7 +89,7 @@ export default function AliExpressHeader() {
 
       {/* Dropdown Panel */}
       <CategoryPanel 
-        progress={progress}
+        progress={1} // Always use the scrolled state
         isOpen={isOpen}
         activeTab={activeTab}
         categories={categories.map(cat => cat.id)}

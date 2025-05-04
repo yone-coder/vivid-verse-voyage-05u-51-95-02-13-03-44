@@ -1,5 +1,4 @@
 
-import { ChevronDown } from 'lucide-react';
 import Logo from '../Logo';
 
 interface HeaderLogoToggleProps {
@@ -12,7 +11,7 @@ interface HeaderLogoToggleProps {
 const HeaderLogoToggle = ({ 
   progress, 
   togglePanel, 
-  isOpen, 
+  isOpen,
   activeTab 
 }: HeaderLogoToggleProps) => {
   return (
@@ -20,18 +19,7 @@ const HeaderLogoToggle = ({
       className="flex items-center space-x-1 cursor-pointer"
       onClick={togglePanel}
     >
-      {progress < 0.5 ? (
-        <>
-          <span className="text-white text-sm">{activeTab}</span>
-          <ChevronDown
-            className={`w-4 h-4 text-white transition-transform duration-300 ${
-              isOpen ? 'rotate-180' : ''
-            }`}
-          />
-        </>
-      ) : (
-        <Logo />
-      )}
+      <Logo />
     </div>
   );
 };
