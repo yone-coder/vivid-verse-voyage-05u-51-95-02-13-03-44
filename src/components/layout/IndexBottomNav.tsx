@@ -103,7 +103,7 @@ export default function IndexBottomNav() {
         }}
         className="fixed bottom-0 left-0 right-0 bg-white dark:bg-zinc-900 border-t border-gray-200 dark:border-zinc-800 z-50 shadow-lg"
       >
-        <div className="h-14 max-w-md mx-auto flex items-center justify-between px-2 relative">
+        <div className="h-12 max-w-md mx-auto flex items-center justify-between px-2 relative">
           {navItems.map((item) => (
             item.id === "add" ? (
               <Popover key={item.id} open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
@@ -125,7 +125,7 @@ export default function IndexBottomNav() {
                   className="w-48 p-0 border border-gray-200 shadow-lg rounded-lg" 
                   align="center" 
                   side="top" 
-                  sideOffset={8}
+                  sideOffset={5}
                 >
                   <div className="flex flex-col p-1">
                     <button

@@ -59,6 +59,7 @@ export default function MainLayout() {
   const headerHeightStyle = `
     :root {
       --header-height: ${isMobile ? '44px' : '90px'};
+      --bottom-nav-height: ${isMobile ? '48px' : '0px'};
     }
   `;
   
@@ -82,7 +83,7 @@ export default function MainLayout() {
           <Outlet />
         </main>
       ) : (
-        <main className="flex-grow pb-14">
+        <main className="flex-grow pb-12">
           <Outlet />
         </main>
       )}
