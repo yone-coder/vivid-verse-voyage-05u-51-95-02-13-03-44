@@ -1,7 +1,8 @@
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Star, Heart, Filter, List, GridIcon } from "lucide-react";
 import {
@@ -13,7 +14,7 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 
-// Compact AliExpress-style Product Card without Name
+// Compact AliExpress-style Product Card without Add to Cart
 export const ProductCard = ({ product }) => {
   const mainImage = product.product_images?.[0]?.src || "https://placehold.co/300x300?text=No+Image";
   const discountPercentage = product.discount_price
@@ -26,7 +27,7 @@ export const ProductCard = ({ product }) => {
         <div className="relative aspect-square bg-gray-100 overflow-hidden">
           <img
             src={mainImage}
-            alt=""
+            alt={product.name}
             className="w-full h-full object-cover transition-transform group-hover:scale-105"
             loading="lazy"
           />
@@ -45,34 +46,39 @@ export const ProductCard = ({ product }) => {
         </div>
       </Link>
 
-      <CardContent className="p-1.5 space-y-1">
-        <div className="flex items-baseline gap-1">
-          {product.discount_price ? (
-            <>
-              <span className="text-red-500 text-sm font-semibold">
-                ${product.discount_price.toFixed(2)}
-              </span>
-              <span className="text-gray-400 text-[10px] line-through">
+      <CardContent className="p-2 space-y-1">
+        <Link to={`/product/${product.id}`} className="block space-y-1">
+          <h3 className="text-[11px] font-medium line-clamp-2 hover:text-red-500 transition-colors">
+            {product.name}
+          </h3>
+          <div className="flex items-center gap-1 text-[10px] text-gray-500">
+            <div className="flex text-amber-400">
+              <Star className="h-3 w-3 fill-amber-400" />
+              <Star className="h-3 w-3 fill-amber-400" />
+              <Star className="h-3 w-3 fill-amber-400" />
+              <Star className="h-3 w-3 fill-amber-400" />
+              <Star className="h-3 w-3 stroke-amber-400 fill-none" />
+            </div>
+            <span>(42)</span>
+          </div>
+          <div className="flex items-baseline gap-1">
+            {product.discount_price ? (
+              <>
+                <span className="text-red-500 text-sm font-semibold">
+                  ${product.discount_price.toFixed(2)}
+                </span>
+                <span className="text-gray-400 text-[10px] line-through">
+                  ${product.price.toFixed(2)}
+                </span>
+              </>
+            ) : (
+              <span className="text-sm font-semibold">
                 ${product.price.toFixed(2)}
               </span>
-            </>
-          ) : (
-            <span className="text-sm font-semibold">
-              ${product.price.toFixed(2)}
-            </span>
-          )}
-        </div>
-        <div className="flex items-center gap-1 text-[10px] text-gray-500">
-          <div className="flex text-amber-400">
-            <Star className="h-3 w-3 fill-amber-400" />
-            <Star className="h-3 w-3 fill-amber-400" />
-            <Star className="h-3 w-3 fill-amber-400" />
-            <Star className="h-3 w-3 fill-amber-400" />
-            <Star className="h-3 w-3 stroke-amber-400 fill-none" />
+            )}
           </div>
-          <span>(42)</span>
-        </div>
-        <p className="text-[10px] text-green-600 font-medium">Free Shipping</p>
+          <p className="text-[10px] text-green-600 font-medium">Free Shipping</p>
+        </Link>
       </CardContent>
     </Card>
   );
@@ -174,7 +180,7 @@ export default function ProductGrid({ products, isLoading }) {
                         <div className="relative aspect-square bg-gray-100 overflow-hidden">
                           <img
                             src={product.product_images?.[0]?.src || "https://placehold.co/300x300?text=No+Image"}
-                            alt=""
+                            alt={product.name}
                             className="w-full h-full object-cover"
                             loading="lazy"
                           />
@@ -187,6 +193,11 @@ export default function ProductGrid({ products, isLoading }) {
                       </Link>
                     </div>
                     <div className="w-2/3 md:w-3/4 p-3 flex flex-col">
+                      <Link to={`/product/${product.id}`}>
+                        <h3 className="text-sm font-medium line-clamp-2 hover:text-red-500 transition-colors mb-1">
+                          {product.name}
+                        </h3>
+                      </Link>
                       <div className="flex items-center gap-1 text-xs text-gray-500 mb-1">
                         <div className="flex text-amber-400">
                           <Star className="h-3 w-3 fill-amber-400" />
