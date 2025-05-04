@@ -1,11 +1,12 @@
+
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Heart } from "lucide-react";
 import { Link } from "react-router-dom";
 
-interface ProductProps {
-  id: string;
+export interface ProductProps {
+  id: string; // Changed from number to string for compatibility
   name: string;
   price: number;
   discountPrice?: number;
@@ -14,6 +15,9 @@ interface ProductProps {
   isNew?: boolean;
   category: string;
   sold?: number;
+  // Allow for additional properties that might be needed
+  product_images?: { src: string }[];
+  [key: string]: any;
 }
 
 interface ProductCardProps {

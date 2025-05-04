@@ -1,18 +1,15 @@
-import { useState, useRef, useEffect } from 'react';
-import {
-  Search,
-  X,
-  Mic,
-  Bell,
-  QrCode,
-  ChevronDown,
-  ChevronRight,
-  LayoutGrid,
-} from 'lucide-react';
-import { useScrollProgress } from '@/hooks/useScrollProgress';
-import Logo from './Logo';
 
-export default function AliExpressHeaderWithStates() {
+import { useState, useRef, useEffect } from 'react';
+import { useScrollProgress } from '@/hooks/useScrollProgress';
+import HeaderSearchBar from './header/HeaderSearchBar';
+import CategoryTabs from './header/CategoryTabs';
+import CategoryPanel from './header/CategoryPanel';
+import VoiceSearchOverlay from './header/VoiceSearchOverlay';
+import HeaderLocation from './header/HeaderLocation';
+import NotificationBadge from './header/NotificationBadge';
+import HeaderLogoToggle from './header/HeaderLogoToggle';
+
+export default function AliExpressHeader() {
   const { progress } = useScrollProgress();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -57,171 +54,56 @@ export default function AliExpressHeaderWithStates() {
         }}
       >
         {/* Left: Logo or Tab */}
-        <div
-          className="flex items-center space-x-1 cursor-pointer"
-          onClick={togglePanel}
-        >
-          {progress < 0.5 ? (
-            <>
-              <span className="text-white text-sm">{activeTab}</span>
-              <ChevronDown
-                className={`w-4 h-4 text-white transition-transform duration-300 ${
-                  isOpen ? 'rotate-180' : ''
-                }`}
-              />
-            </>
-          ) : (
-            <Logo />
-          )}
-        </div>
+        <HeaderLogoToggle 
+          progress={progress}
+          togglePanel={togglePanel}
+          isOpen={isOpen}
+          activeTab={activeTab}
+        />
 
         {/* Center: Search Bar */}
-        <div className="flex flex-1 mx-2">
-          <div
-            className="flex-grow transition-all duration-300"
-            ref={searchRef}
-          >
-            <div
-              className={`flex items-center w-full bg-gray-100 rounded-full ${
-                isSearchFocused
-                  ? 'border border-orange-500'
-                  : 'border border-gray-200'
-              }`}
-            >
-              <Search className="ml-2 h-3.5 w-3.5 text-orange-500" />
-              <input
-                className="py-1 px-2 text-xs outline-none bg-gray-100 placeholder-gray-400 w-full"
-                placeholder="Search on AliExpress"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onFocus={handleSearchFocus}
-              />
-              <div
-                className={`cursor-pointer mx-1 rounded-full ${
-                  voiceSearchActive ? 'bg-orange-100' : ''
-                }`}
-                onClick={handleVoiceSearch}
-              >
-                <Mic className="h-3.5 w-3.5 text-orange-500" />
-              </div>
-              <div className="cursor-pointer mx-1 rounded-full hover:bg-gray-200 p-0.5">
-                <QrCode className="h-3.5 w-3.5 text-orange-500" />
-              </div>
-              {searchQuery && (
-                <div
-                  className="cursor-pointer mr-2 rounded-full hover:bg-gray-200"
-                  onClick={handleClearSearch}
-                >
-                  <X className="h-3 w-3 text-gray-500" />
-                </div>
-              )}
-            </div>
-          </div>
+        <div className="flex flex-1 mx-2" ref={searchRef}>
+          <HeaderSearchBar 
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            isSearchFocused={isSearchFocused}
+            handleSearchFocus={handleSearchFocus}
+            handleClearSearch={handleClearSearch}
+            voiceSearchActive={voiceSearchActive}
+            handleVoiceSearch={handleVoiceSearch}
+          />
         </div>
 
-        {/* Right: Flag icon + ChevronRight (always), Bell only if progress >= 0.5 */}
+        {/* Right: Location and Notifications */}
         <div className="flex items-center space-x-2 flex-shrink-0">
-          <div className="flex items-center bg-black bg-opacity-40 px-2 py-1 rounded-full space-x-1">
-            <img
-              src="https://flagcdn.com/us.svg"
-              alt="USA"
-              className="h-4 w-4 rounded-full object-cover"
-            />
-            <span className="text-white text-xs font-medium">NY</span>
-            <ChevronRight className="h-3.5 w-3.5 text-white" />
-          </div>
-          {progress >= 0.5 && (
-            <div className="cursor-pointer relative hover:bg-black hover:bg-opacity-30 p-1 rounded-full">
-              <Bell className="h-4 w-4 text-gray-600" />
-              <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] rounded-full h-3.5 w-3.5 flex items-center justify-center">
-                2
-              </span>
-            </div>
-          )}
+          <HeaderLocation />
+          <NotificationBadge />
         </div>
       </div>
 
-      {/* Tabs */}
-<div
-  className="relative w-full transition-all duration-700 overflow-hidden"
-  style={{
-    maxHeight: progress > 0.3 ? '40px' : '0px',
-    opacity: progress > 0.3 ? 1 : 0,
-    backgroundColor: `rgba(255, 255, 255, ${progress * 0.98})`,
-    backdropFilter: `blur(${progress * 8}px)`,
-  }}
->
-  {/* Scrollable area wrapper with max-width */}
-  <div className="pr-[48px]">
-    <div className="flex overflow-x-auto no-scrollbar">
-      {categories.map((category) => (
-        <button
-          key={category}
-          className={`whitespace-nowrap px-3 py-1 text-xs font-medium transition-all border-b-2 ${
-            activeTab === category
-              ? 'border-orange-500 text-orange-500'
-              : 'border-transparent text-gray-600 hover:text-gray-900'
-          }`}
-          onClick={() => setActiveTab(category)}
-        >
-          {category}
-        </button>
-      ))}
-    </div>
-  </div>
-
-  {/* Separator + Icon */}
- {/* Separator + Icon */}
-<div className="absolute top-0 right-0 h-full flex items-center pl-2 pr-3 z-10 space-x-2">
-  <div className="h-5 w-px bg-gray-300" />
-  <div className="cursor-pointer p-1 rounded hover:bg-gray-100">
-    <LayoutGrid className="h-4 w-4 text-gray-500" />
-  </div>
-</div>
-</div>
+      {/* Category Tabs */}
+      <CategoryTabs 
+        progress={progress}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        categories={categories}
+      />
 
       {/* Dropdown Panel */}
-      {progress < 0.5 && isOpen && (
-        <div className="bg-white text-gray-800 p-4 shadow-md rounded-b-lg">
-          <div className="grid grid-cols-2 gap-4">
-            {categories.map((category) => (
-              <button
-                key={category}
-                className={`py-2 px-4 text-sm font-medium rounded ${
-                  activeTab === category
-                    ? 'bg-orange-100 text-orange-500'
-                    : 'text-gray-600 hover:bg-gray-100'
-                }`}
-                onClick={() => {
-                  setActiveTab(category);
-                  setIsOpen(false);
-                }}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+      <CategoryPanel 
+        progress={progress}
+        isOpen={isOpen}
+        activeTab={activeTab}
+        categories={categories}
+        setActiveTab={setActiveTab}
+        setIsOpen={setIsOpen}
+      />
 
       {/* Voice Search Overlay */}
-      {voiceSearchActive && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20">
-          <div className="bg-white p-4 rounded-xl w-64 flex flex-col items-center">
-            <div className="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center mb-2 animate-pulse">
-              <Mic className="h-6 w-6 text-orange-500" />
-            </div>
-            <p className="text-sm mb-1">Listening...</p>
-            <p className="text-xs text-gray-500 mb-2">Speak now to search</p>
-            <button
-              className="text-xs px-4 py-1 bg-orange-500 text-white rounded-full"
-              onClick={handleVoiceSearch}
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
+      <VoiceSearchOverlay
+        active={voiceSearchActive}
+        onCancel={handleVoiceSearch}
+      />
     </header>
   );
 }

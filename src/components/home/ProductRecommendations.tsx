@@ -1,99 +1,72 @@
-import { Link } from "react-router-dom";
-import { ProductCard } from "./ProductGrid";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { ChevronRight } from "lucide-react";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
 
-const recommendedCategories = [
-  { id: "for-you", name: "For You" },
-  { id: "new-arrivals", name: "New Arrivals" },
-  { id: "best-selling", name: "Best Selling" },
-  { id: "top-rated", name: "Top Rated" }
-];
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import ProductCard from '@/components/ProductCard';
+import { Skeleton } from '@/components/ui/skeleton';
+import { ChevronRight } from 'lucide-react';
 
-export default function ProductRecommendations({ products }) {
-  const isMobile = useIsMobile();
-  const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
-  const [activeCategory, setActiveCategory] = useState("for-you");
+// Helper component for product skeleton loading states
+const RecommendationSkeleton = () => (
+  <div className="w-full">
+    <Skeleton className="w-full aspect-square mb-1" />
+    <Skeleton className="h-3 w-3/4 mb-1" />
+    <Skeleton className="h-2 w-1/2" />
+  </div>
+);
 
-  const toggleExpand = (categoryId: string) => {
-    setExpandedCategories(prev => ({
-      ...prev,
-      [categoryId]: !prev[categoryId]
-    }));
-  };
-
-  const isExpanded = (categoryId: string) => expandedCategories[categoryId] || false;
+const ProductRecommendations = ({ products = [], loading = false }) => {
+  // Format products to match ProductCard requirements
+  const formattedProducts = products?.map(product => ({
+    id: String(product.id), // Convert ID to string
+    name: product.name || 'Unnamed Product',
+    price: product.price || 0,
+    discountPrice: product.discount_price,
+    rating: 4.5, // Default rating if not provided
+    image: product.product_images?.[0]?.src || "https://placehold.co/300x300?text=No+Image",
+    category: product.category || 'Uncategorized',
+    sold: Math.floor(Math.random() * 100) + 10, // Random sold count for demo
+    // Include original product data
+    ...product
+  }));
 
   return (
-    <div className="py-2 bg-white">
-      <div className="container mx-auto px-0">
-        {/* Header */}
-        <div className="flex justify-between items-center px-3 mb-2">
-          <h2 className="text-sm font-semibold tracking-tight">Just For You</h2>
-          <Link to="#" className="text-xs text-orange-500 hover:underline">View More</Link>
+    <div className="py-4">
+      <div className="px-4">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-base font-medium">Recommended for You</h2>
+          <Button variant="link" className="text-xs text-gray-500 p-0 h-auto" asChild>
+            <Link to="/search?category=recommended" className="flex items-center">
+              View All <ChevronRight className="h-3 w-3 ml-0.5" />
+            </Link>
+          </Button>
         </div>
 
-        {/* Scrollable Tabs with snap padding */}
-        <div className="mb-3 overflow-x-auto">
-          <div
-            className="flex space-x-2 pb-1 snap-x snap-mandatory overflow-x-auto scrollbar-hide px-3"
-            style={{ scrollPaddingLeft: '0.75rem' }} // equals px-3
-          >
-            {recommendedCategories.map(category => (
-              <button
-                key={category.id}
-                onClick={() => setActiveCategory(category.id)}
-                className={`snap-start flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-all duration-150 ${
-                  activeCategory === category.id
-                    ? "bg-orange-500 text-white border-orange-500"
-                    : "bg-gray-50 text-gray-700 border-gray-200"
-                }`}
-              >
-                {category.name}
-              </button>
+        {loading ? (
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+            {Array(6).fill(0).map((_, index) => (
+              <RecommendationSkeleton key={index} />
             ))}
           </div>
-        </div>
-
-        {/* Products Grid */}
-        {recommendedCategories.map(category =>
-          category.id === activeCategory && (
-            <div key={category.id} className="px-3">
-              <div
-                className={`grid gap-1 ${
-                  isMobile
-                    ? "grid-cols-2"
-                    : "md:grid-cols-4 lg:grid-cols-5"
-                }`}
-              >
-                {products
-                  ?.slice(0, isExpanded(category.id) ? (isMobile ? 6 : 10) : (isMobile ? 2 : 5))
-                  .map(product => (
-                    <div key={product.id} className="h-full">
-                      <ProductCard product={product} compact />
-                    </div>
-                  ))}
-              </div>
-
-              {/* View More / Show Less Button */}
-              {products && products.length > (isMobile ? 2 : 5) && (
-                <div className="mt-2 text-center">
-                  <Button
-                    onClick={() => toggleExpand(category.id)}
-                    variant="outline"
-                    className="w-full md:w-auto h-8 text-xs px-3 py-1 border-orange-500 text-orange-500 flex items-center justify-center gap-1"
-                  >
-                    {isExpanded(category.id) ? "Show Less" : "View More Products"}
-                    {!isExpanded(category.id) && <ChevronRight className="h-4 w-4" />}
-                  </Button>
-                </div>
-              )}
-            </div>
-          )
+        ) : formattedProducts.length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+            {formattedProducts.slice(0, 6).map((product) => (
+              <ProductCard 
+                key={product.id} 
+                product={product} 
+                showButton={false} 
+                compact={true}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-8">
+            <p className="text-sm text-gray-500">No recommendations available right now</p>
+          </div>
         )}
       </div>
     </div>
   );
-}
+};
+
+export default ProductRecommendations;
