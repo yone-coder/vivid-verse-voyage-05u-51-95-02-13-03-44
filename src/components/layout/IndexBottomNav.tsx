@@ -41,7 +41,7 @@ export default function IndexBottomNav() {
     {
       id: "add",
       icon: Plus,
-      label: "Add",
+      label: "", // Removed the "Add" label here
       path: "#",
       badge: null,
       isSpecial: true,
@@ -142,18 +142,21 @@ export default function IndexBottomNav() {
                 </div>
               </div>
 
-              <span 
-                className={cn(
-                  "text-[10px] mt-1 font-medium",
-                  item.isSpecial 
-                    ? "text-red-500"
-                    : activeTab === item.id 
-                      ? "text-red-500" 
-                      : "text-gray-500 dark:text-gray-400"
-                )}
-              >
-                {item.label}
-              </span>
+              {/* Only render the label if it exists */}
+              {item.label && (
+                <span 
+                  className={cn(
+                    "text-[10px] mt-1 font-medium",
+                    item.isSpecial 
+                      ? "text-red-500"
+                      : activeTab === item.id 
+                        ? "text-red-500" 
+                        : "text-gray-500 dark:text-gray-400"
+                  )}
+                >
+                  {item.label}
+                </span>
+              )}
 
               {activeTab === item.id && !item.isSpecial && (
                 <motion.div 
