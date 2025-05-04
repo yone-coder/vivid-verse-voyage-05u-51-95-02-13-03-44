@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -58,17 +58,19 @@ const MinimalProductCard = ({ product }) => {
 };
 
 const ProductRecommendations = ({ products = [], loading = false }) => {
+  const scrollRef = useRef(null);
+  
   // Format products
   const formattedProducts = products?.map(product => ({
-    id: String(product.id),
+    id: String(product.id), // Convert ID to string
     price: product.price || 0,
     discountPrice: product.discount_price,
-    rating: 4.5,
+    rating: 4.5, // Default rating if not provided
     image: product.product_images?.[0]?.src || "https://placehold.co/300x300?text=No+Image",
+    // Include original product data
     ...product
   }));
   
-  // Split products into two rows
   const firstRow = formattedProducts.slice(0, Math.ceil(formattedProducts.length / 2));
   const secondRow = formattedProducts.slice(Math.ceil(formattedProducts.length / 2));
 
@@ -99,6 +101,7 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
           </div>
         ) : formattedProducts.length > 0 ? (
           <ScrollArea 
+            ref={scrollRef}
             orientation="horizontal" 
             className="w-full overflow-x-auto scroll-smooth"
           >
@@ -107,8 +110,9 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
               <div className="flex gap-2">
                 {firstRow.map((product) => (
                   <div 
-                    key={`first-${product.id}`} 
+                    key={product.id} 
                     className="w-[40%] md:w-[25%] lg:w-[16.66%] flex-shrink-0"
+                    style={{ minWidth: 'calc(40%)' }}
                   >
                     <MinimalProductCard product={product} />
                   </div>
@@ -119,8 +123,9 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
               <div className="flex gap-2">
                 {secondRow.map((product) => (
                   <div 
-                    key={`second-${product.id}`} 
+                    key={product.id} 
                     className="w-[40%] md:w-[25%] lg:w-[16.66%] flex-shrink-0"
+                    style={{ minWidth: 'calc(40%)' }}
                   >
                     <MinimalProductCard product={product} />
                   </div>
