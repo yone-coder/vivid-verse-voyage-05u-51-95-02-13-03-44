@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -109,7 +108,7 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
                   <div 
                     key={product.id} 
                     className="w-[40%] md:w-[25%] lg:w-[16.66%] flex-shrink-0"
-                    style={{ width: 'calc(40% - 0.5rem)' }}
+                    style={{ width: 'calc(36% - 0.5rem)' }}
                   >
                     <MinimalProductCard product={product} />
                   </div>
@@ -121,7 +120,7 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
                   <div 
                     key={product.id} 
                     className="w-[40%] md:w-[25%] lg:w-[16.66%] flex-shrink-0"
-                    style={{ width: 'calc(40% - 0.5rem)' }}
+                    style={{ width: 'calc(36% - 0.5rem)' }}
                   >
                     <MinimalProductCard product={product} />
                   </div>
