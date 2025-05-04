@@ -1,14 +1,28 @@
 
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Home, Search, ShoppingCart, Heart, Zap, User, Plus } from "lucide-react";
+import { 
+  Home, 
+  Search, 
+  Heart, 
+  User, 
+  Plus,
+  ShoppingCart,
+  Bookmark,
+  Compass,
+  Bell
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
 
 export default function IndexBottomNav() {
   const [activeTab, setActiveTab] = useState("home");
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [showNotificationDot, setShowNotificationDot] = useState(true);
+  const location = useLocation();
+  const { toast } = useToast();
   
   const navItems = [
     {
@@ -20,8 +34,8 @@ export default function IndexBottomNav() {
     },
     {
       id: "categories",
-      icon: Search,
-      label: "Categories",
+      icon: Compass,
+      label: "Explore",
       path: "/categories", 
       badge: null,
     },
@@ -38,7 +52,7 @@ export default function IndexBottomNav() {
       icon: Heart,
       label: "Wishlist",
       path: "/wishlist",
-      badge: null,
+      badge: 3,
     },
     {
       id: "account",
@@ -54,6 +68,14 @@ export default function IndexBottomNav() {
     setIsAddDialogOpen(true);
   };
 
+  const dismissNotification = () => {
+    setShowNotificationDot(false);
+    toast({
+      title: "Notifications cleared",
+      description: "You're all caught up!",
+    });
+  };
+
   return (
     <>
       <motion.div 
@@ -64,24 +86,27 @@ export default function IndexBottomNav() {
           stiffness: 300, 
           damping: 20 
         }}
-        className="fixed bottom-0 left-0 right-0 h-16 bg-white dark:bg-zinc-900 border-t border-gray-200 dark:border-zinc-800 z-50"
+        className="fixed bottom-0 left-0 right-0 bg-white dark:bg-zinc-900 border-t border-gray-200 dark:border-zinc-800 z-50 shadow-lg"
       >
-        <div className="h-full max-w-md mx-auto flex items-center justify-between px-6 relative">
+        <div className="h-16 max-w-md mx-auto flex items-center justify-between px-2 relative">
           {navItems.map((item) => (
             item.isCenter ? (
-              <div key={item.id} className="relative flex flex-col items-center">
+              <div key={item.id} className="relative flex flex-col items-center justify-center w-1/5">
                 <button
                   onClick={handleAddClick}
-                  className="absolute -top-5 w-14 h-14 rounded-full bg-red-500 flex items-center justify-center shadow-lg"
+                  className="w-12 h-12 rounded-full bg-gradient-to-tr from-red-500 to-red-400 flex items-center justify-center shadow-lg transform -translate-y-3 border-2 border-white dark:border-zinc-800"
+                  style={{
+                    boxShadow: "0 4px 10px rgba(239, 68, 68, 0.2)"
+                  }}
                 >
-                  <Plus className="w-6 h-6 text-white" />
+                  <Plus className="w-5 h-5 text-white" strokeWidth={2.5} />
                 </button>
               </div>
             ) : (
               <Link
                 key={item.id}
                 to={item.path}
-                className="flex flex-col items-center justify-center relative"
+                className="flex flex-col items-center justify-center w-1/5 relative"
                 onClick={() => setActiveTab(item.id)}
               >
                 <div className="relative">
@@ -129,7 +154,7 @@ export default function IndexBottomNav() {
                 
                 {activeTab === item.id && (
                   <motion.div 
-                    className="absolute -bottom-4 w-1 h-1 rounded-full bg-red-500"
+                    className="absolute -bottom-3 w-1 h-1 rounded-full bg-red-500"
                     layoutId="activeIndicator"
                     transition={{ type: "spring", duration: 0.5 }}
                   />
@@ -138,6 +163,9 @@ export default function IndexBottomNav() {
             )
           ))}
         </div>
+        
+        {/* Quick actions drawer pull indicator */}
+        <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-10 h-1 bg-gray-300 dark:bg-gray-700 rounded-full opacity-80" />
         
         {/* Extra space at bottom for iOS safe area */}
         <div className="h-safe-bottom bg-white dark:bg-zinc-900" />
@@ -149,23 +177,56 @@ export default function IndexBottomNav() {
           <div className="space-y-4">
             <h3 className="text-lg font-semibold leading-6">Add New Product</h3>
             <p className="text-sm text-gray-500">
-              Choose where you want to go to add a new product
+              Choose what you want to do
             </p>
-            <div className="flex flex-col space-y-2">
+            <div className="grid grid-cols-2 gap-3">
               <Link 
                 to="/admin" 
-                className="flex items-center justify-center w-full px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md"
+                className="flex flex-col items-center justify-center p-3 bg-red-50 hover:bg-red-100 text-red-500 rounded-lg transition-colors"
                 onClick={() => setIsAddDialogOpen(false)}
               >
-                Go to Admin
+                <Plus className="w-6 h-6 mb-1" />
+                <span className="text-xs font-medium">Add Product</span>
               </Link>
-              <button 
+              
+              <Link 
+                to="/categories" 
+                className="flex flex-col items-center justify-center p-3 bg-blue-50 hover:bg-blue-100 text-blue-500 rounded-lg transition-colors"
                 onClick={() => setIsAddDialogOpen(false)}
-                className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100"
               >
-                Cancel
+                <Compass className="w-6 h-6 mb-1" />
+                <span className="text-xs font-medium">Browse Categories</span>
+              </Link>
+              
+              <Link 
+                to="/wishlist" 
+                className="flex flex-col items-center justify-center p-3 bg-purple-50 hover:bg-purple-100 text-purple-500 rounded-lg transition-colors"
+                onClick={() => setIsAddDialogOpen(false)}
+              >
+                <Heart className="w-6 h-6 mb-1" />
+                <span className="text-xs font-medium">My Wishlist</span>
+              </Link>
+              
+              <button 
+                onClick={() => {
+                  setIsAddDialogOpen(false);
+                  toast({
+                    title: "Coming Soon",
+                    description: "This feature will be available in the next update!",
+                  });
+                }}
+                className="flex flex-col items-center justify-center p-3 bg-amber-50 hover:bg-amber-100 text-amber-500 rounded-lg transition-colors"
+              >
+                <Bell className="w-6 h-6 mb-1" />
+                <span className="text-xs font-medium">Notifications</span>
               </button>
             </div>
+            <button 
+              onClick={() => setIsAddDialogOpen(false)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors mt-2"
+            >
+              Cancel
+            </button>
           </div>
         </DialogContent>
       </Dialog>
