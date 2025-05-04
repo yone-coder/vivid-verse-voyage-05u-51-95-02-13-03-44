@@ -1,3 +1,4 @@
+
 import React, { useRef, useEffect } from 'react';
 
 const MobileOptimizedReels = () => {
@@ -9,37 +10,37 @@ const MobileOptimizedReels = () => {
       id: 1,
       title: 'Bali Beach Paradise',
       views: '1.5M',
-      thumbnail: '/api/placeholder/200/350',
+      thumbnail: 'https://picsum.photos/seed/bali1/200/350',
     },
     {
       id: 2,
       title: '10-Minute Morning Workout',
       views: '825K',
-      thumbnail: '/api/placeholder/200/350',
+      thumbnail: 'https://picsum.photos/seed/workout2/200/350',
     },
     {
       id: 3,
       title: 'Ultimate Homemade Pasta',
       views: '2.3M',
-      thumbnail: '/api/placeholder/200/350',
+      thumbnail: 'https://picsum.photos/seed/pasta3/200/350',
     },
     {
       id: 4,
       title: 'New Smartphone Review',
       views: '578K',
-      thumbnail: '/api/placeholder/200/350',
+      thumbnail: 'https://picsum.photos/seed/phone4/200/350',
     },
     {
       id: 5,
       title: 'Dog Learns Amazing Trick',
       views: '3.2M',
-      thumbnail: '/api/placeholder/200/350',
+      thumbnail: 'https://picsum.photos/seed/dog5/200/350',
     },
     {
       id: 6,
       title: 'Sunset Mountain Painting',
       views: '1.2M',
-      thumbnail: '/api/placeholder/200/350',
+      thumbnail: 'https://picsum.photos/seed/sunset6/200/350',
     }
   ];
 
