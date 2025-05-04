@@ -10,23 +10,33 @@ import HeaderLocation from './header/HeaderLocation';
 import NotificationBadge from './header/NotificationBadge';
 import HeaderLogoToggle from './header/HeaderLogoToggle';
 
-export default function AliExpressHeader() {
+interface AliExpressHeaderProps {
+  activeTabId?: string;
+}
+
+export default function AliExpressHeader({ activeTabId = 'recommendations' }: AliExpressHeaderProps) {
   const { progress } = useScrollProgress();
 
   const [isOpen, setIsOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('all');
+  const [activeTab, setActiveTab] = useState(activeTabId);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [voiceSearchActive, setVoiceSearchActive] = useState(false);
   const searchRef = useRef(null);
 
+  // Update active tab when prop changes
+  useEffect(() => {
+    setActiveTab(activeTabId);
+  }, [activeTabId]);
+
   const categories = [
-    { id: 'recommendations', name: 'For You', icon: <Home className="h-3 w-3" /> },
-    { id: 'posts', name: 'Posts', icon: <MessageSquare className="h-3 w-3" /> },
-    { id: 'shops', name: 'Shops', icon: <Store className="h-3 w-3" /> },
-    { id: 'trending', name: 'Trending', icon: <Image className="h-3 w-3" /> },
-    { id: 'videos', name: 'Videos', icon: <Image className="h-3 w-3" /> },
+    { id: 'recommendations', name: 'For You', icon: <Home className="h-3 w-3" />, path: '/for-you' },
+    { id: 'posts', name: 'Posts', icon: <MessageSquare className="h-3 w-3" />, path: '/posts' },
+    { id: 'shops', name: 'Shops', icon: <Store className="h-3 w-3" />, path: '/shops' },
+    { id: 'trending', name: 'Trending', icon: <Image className="h-3 w-3" />, path: '/trending' },
+    { id: 'videos', name: 'Videos', icon: <Image className="h-3 w-3" />, path: '/videos' },
   ];
+  
   const togglePanel = () => setIsOpen(!isOpen);
   const handleSearchFocus = () => setIsSearchFocused(true);
   const handleClearSearch = () => setSearchQuery('');

@@ -6,6 +6,11 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
+import ForYou from "./pages/ForYou";
+import Posts from "./pages/Posts";
+import Shops from "./pages/Shops";
+import Trending from "./pages/Trending";
+import Videos from "./pages/Videos";
 import NotFound from "./pages/NotFound";
 import ProductDetail from "./pages/ProductDetail";
 import SearchPage from "./pages/SearchPage";
@@ -26,8 +31,13 @@ const App = () => (
           <BrowserRouter>
             <Routes>
               <Route element={<MainLayout />}>
-                <Route path="/" element={<Index />} />
-                <Route path="/browse" element={<Index />} />
+                <Route path="/" element={<Navigate to="/for-you" replace />} />
+                <Route path="/for-you" element={<ForYou />} />
+                <Route path="/posts" element={<Posts />} />
+                <Route path="/shops" element={<Shops />} />
+                <Route path="/trending" element={<Trending />} />
+                <Route path="/videos" element={<Videos />} />
+                <Route path="/browse" element={<ForYou />} />
                 <Route path="/product/:id" element={<ProductDetail />} />
                 <Route path="/admin" element={<AdminPanel />} />
                 <Route path="/search" element={<SearchPage />} />

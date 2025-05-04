@@ -1,11 +1,13 @@
 
 import { useState } from 'react';
-import { LayoutGrid, ShoppingBag, Home, Image, Users, ShoppingCart, Heart, MessageSquare, Store } from 'lucide-react';
+import { LayoutGrid, ShoppingBag, Home, Image, Users, MessageSquare, Store } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface CategoryTab {
   id: string;
   name: string;
   icon: React.ReactNode;
+  path: string;
 }
 
 interface CategoryTabsProps {
@@ -21,6 +23,13 @@ const CategoryTabs = ({
   setActiveTab,
   categories 
 }: CategoryTabsProps) => {
+  const navigate = useNavigate();
+  
+  const handleTabClick = (categoryId: string, path: string) => {
+    setActiveTab(categoryId);
+    navigate(path);
+  };
+  
   return (
     <div
       className="relative w-full transition-all duration-700 overflow-hidden"
@@ -42,7 +51,7 @@ const CategoryTabs = ({
                   ? 'border-orange-500 text-orange-500'
                   : 'border-transparent text-gray-600 hover:text-gray-900'
               }`}
-              onClick={() => setActiveTab(category.id)}
+              onClick={() => handleTabClick(category.id, category.path)}
             >
               {category.icon}
               <span>{category.name}</span>
