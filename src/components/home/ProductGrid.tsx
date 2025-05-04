@@ -1,12 +1,9 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Star, ShoppingCart, Heart, Filter } from "lucide-react";
-import { List } from "lucide-react";
-import { GridIcon } from "lucide-react";
+import { Star, ShoppingCart, Heart, Filter, List, GridIcon } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -16,59 +13,57 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 
-// Product Card component for better organization
+// Compact AliExpress-style Product Card
 export const ProductCard = ({ product }) => {
-  const mainImage = product.product_images && product.product_images.length > 0
-    ? product.product_images[0].src
-    : "https://placehold.co/300x300?text=No+Image";
-
-  const discountPercentage = product.discount_price &&
-    Math.round(((product.price - product.discount_price) / product.price) * 100);
+  const mainImage = product.product_images?.[0]?.src || "https://placehold.co/300x300?text=No+Image";
+  const discountPercentage = product.discount_price
+    ? Math.round(((product.price - product.discount_price) / product.price) * 100)
+    : null;
 
   return (
-    <Card className="overflow-hidden transition-all hover:shadow-md group h-full">
+    <Card className="overflow-hidden group h-full border-gray-200 hover:shadow-sm transition-all">
       <Link to={`/product/${product.id}`} className="block">
-        <div className="relative aspect-square overflow-hidden bg-gray-100">
+        <div className="relative aspect-square bg-gray-100 overflow-hidden">
           <img
             src={mainImage}
             alt={product.name}
-            className="h-full w-full object-cover transition-transform group-hover:scale-105"
+            className="w-full h-full object-cover transition-transform group-hover:scale-105"
             loading="lazy"
           />
-          {product.discount_price && (
-            <div className="absolute top-2 left-2 bg-red-500 text-white text-xs font-medium px-2 py-0.5 rounded">
-              {discountPercentage}% OFF
+          {discountPercentage && (
+            <div className="absolute top-1 left-1 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-sm font-bold">
+              -{discountPercentage}%
             </div>
           )}
           <Button
             variant="ghost"
             size="icon"
-            className="absolute top-2 right-2 bg-white/80 hover:bg-white text-gray-700 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+            className="absolute top-1 right-1 bg-white/80 hover:bg-white text-gray-700 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
           >
-            <Heart className="h-4 w-4" />
+            <Heart className="h-3.5 w-3.5" />
           </Button>
         </div>
       </Link>
-      <CardContent className="p-2">
-        <Link to={`/product/${product.id}`} className="block">
-          <div className="flex items-center gap-1 mb-1">
-            <div className="flex text-amber-400 text-xs">
-              <Star className="h-3 w-3 fill-amber-400" />
-              <Star className="h-3 w-3 fill-amber-400" />
-              <Star className="h-3 w-3 fill-amber-400" />
-              <Star className="h-3 w-3 fill-amber-400" />
-              <Star className="h-3 w-3 fill-amber-400 stroke-amber-400/50" />
-            </div>
-            <span className="text-xs text-gray-500">(42)</span>
-          </div>
 
-          <h3 className="font-medium text-xs line-clamp-1 mb-1 hover:text-red-500 transition-colors">
+      <CardContent className="p-2 space-y-1">
+        <Link to={`/product/${product.id}`} className="block space-y-1">
+          <h3 className="text-[11px] font-medium line-clamp-2 hover:text-red-500 transition-colors">
             {product.name}
           </h3>
-          <div className="flex items-baseline gap-2">
+          <div className="flex items-center gap-1 text-[10px] text-gray-500">
+            <div className="flex text-amber-400">
+              <Star className="h-3 w-3 fill-amber-400" />
+              <Star className="h-3 w-3 fill-amber-400" />
+              <Star className="h-3 w-3 fill-amber-400" />
+              <Star className="h-3 w-3 fill-amber-400" />
+              <Star className="h-3 w-3 stroke-amber-400 fill-none" />
+            </div>
+            <span>(42)</span>
+          </div>
+          <div className="flex items-baseline gap-1">
             {product.discount_price ? (
               <>
-                <span className="text-red-500 font-semibold text-xs">
+                <span className="text-red-500 text-sm font-semibold">
                   ${product.discount_price.toFixed(2)}
                 </span>
                 <span className="text-gray-400 text-[10px] line-through">
@@ -76,38 +71,39 @@ export const ProductCard = ({ product }) => {
                 </span>
               </>
             ) : (
-              <span className="font-semibold text-xs">
+              <span className="text-sm font-semibold">
                 ${product.price.toFixed(2)}
               </span>
             )}
           </div>
-
-          <p className="text-[10px] text-gray-500 mt-0.5">Free Shipping</p>
+          <p className="text-[10px] text-green-600 font-medium">Free Shipping</p>
         </Link>
       </CardContent>
+
       <CardFooter className="p-2 pt-0">
-        <Button size="sm" variant="outline" className="w-full gap-1 text-xs h-7">
-          <ShoppingCart className="h-3 w-3" /> Add
+        <Button size="sm" variant="outline" className="w-full text-[11px] h-7 px-2 gap-1">
+          <ShoppingCart className="h-3.5 w-3.5" /> Add
         </Button>
       </CardFooter>
     </Card>
   );
 };
 
-// Create a ProductSkeleton component for loading state
+// Skeleton loader
 export const ProductSkeleton = () => (
   <div className="overflow-hidden rounded-md border h-full">
     <Skeleton className="aspect-square w-full" />
-    <div className="p-2">
-      <Skeleton className="h-3 w-24 mb-2" />
-      <Skeleton className="h-3 w-full mb-2" />
-      <Skeleton className="h-3 w-2/3 mb-2" />
-      <Skeleton className="h-3 w-1/3 mb-2" />
+    <div className="p-2 space-y-2">
+      <Skeleton className="h-3 w-24" />
+      <Skeleton className="h-3 w-full" />
+      <Skeleton className="h-3 w-2/3" />
+      <Skeleton className="h-3 w-1/3" />
       <Skeleton className="h-7 w-full" />
     </div>
   </div>
 );
 
+// Product grid component
 export default function ProductGrid({ products, isLoading }) {
   const [viewMode, setViewMode] = useState("grid");
   const [sortBy, setSortBy] = useState("recommended");
@@ -179,63 +175,67 @@ export default function ProductGrid({ products, isLoading }) {
               ? "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4"
               : "flex flex-col gap-3 md:gap-4"}
           >
-            {products?.map(product => (
+            {products.map(product =>
               viewMode === "grid" ? (
                 <ProductCard key={product.id} product={product} />
               ) : (
-                <Card key={product.id} className="overflow-hidden transition-all hover:shadow-md">
+                <Card key={product.id} className="overflow-hidden hover:shadow-sm">
                   <div className="flex">
                     <div className="w-1/3 md:w-1/4">
-                      <Link to={`/product/${product.id}`} className="block h-full">
-                        <div className="relative h-full aspect-square md:aspect-auto overflow-hidden bg-gray-100">
+                      <Link to={`/product/${product.id}`}>
+                        <div className="relative aspect-square bg-gray-100 overflow-hidden">
                           <img
-                            src={product.product_images && product.product_images.length > 0
-                              ? product.product_images[0].src
-                              : "https://placehold.co/300x300?text=No+Image"}
+                            src={product.product_images?.[0]?.src || "https://placehold.co/300x300?text=No+Image"}
                             alt={product.name}
-                            className="h-full w-full object-cover"
+                            className="w-full h-full object-cover"
                             loading="lazy"
                           />
                           {product.discount_price && (
-                            <div className="absolute top-2 left-2 bg-red-500 text-white text-xs font-medium px-2 py-0.5 rounded">
-                              {Math.round(((product.price - product.discount_price) / product.price) * 100)}% OFF
+                            <div className="absolute top-1 left-1 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-sm font-bold">
+                              -{Math.round(((product.price - product.discount_price) / product.price) * 100)}%
                             </div>
                           )}
                         </div>
                       </Link>
                     </div>
-                    <div className="flex flex-col p-4 w-2/3 md:w-3/4">
-                      <Link to={`/product/${product.id}`} className="block">
-                        <h3 className="font-medium text-sm md:text-base line-clamp-2 mb-1 hover:text-red-500 transition-colors">
+                    <div className="w-2/3 md:w-3/4 p-3 flex flex-col">
+                      <Link to={`/product/${product.id}`}>
+                        <h3 className="text-sm font-medium line-clamp-2 hover:text-red-500 transition-colors mb-1">
                           {product.name}
                         </h3>
                       </Link>
-                      <div className="flex items-center gap-1 mt-1">
-                        <div className="flex text-amber-400 text-xs">
+                      <div className="flex items-center gap-1 text-xs text-gray-500 mb-1">
+                        <div className="flex text-amber-400">
                           <Star className="h-3 w-3 fill-amber-400" />
                           <Star className="h-3 w-3 fill-amber-400" />
                           <Star className="h-3 w-3 fill-amber-400" />
                           <Star className="h-3 w-3 fill-amber-400" />
-                          <Star className="h-3 w-3 fill-amber-400 stroke-amber-400/50" />
+                          <Star className="h-3 w-3 stroke-amber-400 fill-none" />
                         </div>
-                        <span className="text-xs text-gray-500">(42)</span>
+                        <span>(42)</span>
                       </div>
-                      <div className="flex items-baseline gap-2 mt-2">
+                      <div className="flex items-baseline gap-2 mb-1">
                         {product.discount_price ? (
                           <>
-                            <span className="text-red-500 font-semibold">${product.discount_price.toFixed(2)}</span>
-                            <span className="text-gray-400 text-xs line-through">${product.price.toFixed(2)}</span>
+                            <span className="text-red-500 font-semibold text-base">
+                              ${product.discount_price.toFixed(2)}
+                            </span>
+                            <span className="text-gray-400 text-xs line-through">
+                              ${product.price.toFixed(2)}
+                            </span>
                           </>
                         ) : (
-                          <span className="font-semibold">${product.price.toFixed(2)}</span>
+                          <span className="font-semibold text-base">
+                            ${product.price.toFixed(2)}
+                          </span>
                         )}
                       </div>
-                      <p className="text-xs text-gray-500 mt-1">Free Shipping</p>
+                      <p className="text-[11px] text-green-600 font-medium">Free Shipping</p>
                       <div className="mt-auto pt-2 flex gap-2">
-                        <Button size="sm" className="flex-1 bg-red-500 hover:bg-red-600 text-xs">
-                          <ShoppingCart className="h-3.5 w-3.5 mr-1" /> Add to Cart
+                        <Button size="sm" className="flex-1 bg-red-500 hover:bg-red-600 text-xs h-8">
+                          <ShoppingCart className="h-3.5 w-3.5 mr-1" /> Add
                         </Button>
-                        <Button size="sm" variant="outline" className="px-2">
+                        <Button size="sm" variant="outline" className="px-2 h-8">
                           <Heart className="h-3.5 w-3.5" />
                         </Button>
                       </div>
@@ -243,7 +243,7 @@ export default function ProductGrid({ products, isLoading }) {
                   </div>
                 </Card>
               )
-            ))}
+            )}
           </div>
         )}
       </div>
