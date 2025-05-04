@@ -74,19 +74,34 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
   const firstRow = formattedProducts.slice(0, Math.ceil(formattedProducts.length / 2));
   const secondRow = formattedProducts.slice(Math.ceil(formattedProducts.length / 2));
 
-  // Setup synchronized scrolling between rows
+  // Setup synchronized scrolling between rows with improved implementation
   useEffect(() => {
     const firstRowElement = firstRowRef.current;
     const secondRowElement = secondRowRef.current;
 
     if (!firstRowElement || !secondRowElement) return;
 
+    // Flag to prevent infinite loop when synchronizing scrolls
+    let isScrolling = false;
+
     const handleFirstRowScroll = () => {
-      secondRowElement.scrollLeft = firstRowElement.scrollLeft;
+      if (!isScrolling) {
+        isScrolling = true;
+        secondRowElement.scrollLeft = firstRowElement.scrollLeft;
+        setTimeout(() => {
+          isScrolling = false;
+        }, 10);
+      }
     };
 
     const handleSecondRowScroll = () => {
-      firstRowElement.scrollLeft = secondRowElement.scrollLeft;
+      if (!isScrolling) {
+        isScrolling = true;
+        firstRowElement.scrollLeft = secondRowElement.scrollLeft;
+        setTimeout(() => {
+          isScrolling = false;
+        }, 10);
+      }
     };
 
     firstRowElement.addEventListener('scroll', handleFirstRowScroll);
