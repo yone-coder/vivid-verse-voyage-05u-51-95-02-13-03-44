@@ -114,8 +114,19 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
     };
   }, [formattedProducts, isAutoScrolling]);
 
+  // Reset dots animation whenever the page changes
   useEffect(() => {
+    // This effect handles the auto-rotation logic
     if (pageCount <= 1) return;
+
+    // Reset any existing animation
+    const dots = document.querySelectorAll('.dot-indicator');
+    dots.forEach(dot => {
+      dot.style.animation = 'none';
+      // Trigger reflow
+      void dot.offsetWidth;
+      dot.style.animation = '';
+    });
 
     const interval = setInterval(() => {
       setPage((prev) => {
@@ -126,7 +137,7 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
     }, 4000);
 
     return () => clearInterval(interval);
-  }, [pageCount]);
+  }, [pageCount, page]);
 
   return (
     <div className="py-2">
@@ -189,7 +200,7 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
               </div>
             </div>
 
-            {/* Ultra Sleek Dots Navigation */}
+            {/* Ultra Sleek Dots Navigation with Filling Animation */}
             {pageCount > 1 && (
               <div className="flex justify-center mt-3 gap-1.5">
                 {Array.from({ length: pageCount }).map((_, i) => (
@@ -199,19 +210,19 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
                     className="group focus:outline-none"
                     aria-label={`Page ${i + 1}`}
                   >
-                    <div className="relative h-[3px] w-4 overflow-hidden rounded-full transition-all duration-300 ease-out">
+                    <div className="relative h-[3px] w-5 overflow-hidden rounded-full transition-all duration-300 ease-out">
                       <div 
                         className={`absolute inset-0 rounded-full transition-all duration-300 ${
                           i === page 
-                            ? "bg-black w-full" 
-                            : "bg-gray-200 group-hover:bg-gray-300 w-full"
+                            ? "bg-gray-100" 
+                            : "bg-gray-200 group-hover:bg-gray-300"
                         }`}
                       />
                       {i === page && (
                         <div 
-                          className="absolute inset-y-0 left-0 bg-black w-full transform-gpu transition-transform ease-linear" 
+                          className="absolute inset-y-0 left-0 bg-black transform-gpu origin-left rounded-full dot-indicator"
                           style={{
-                            animation: "dotProgress 4s linear forwards"
+                            animation: "dotFill 4s cubic-bezier(0.4, 0, 0.2, 1) forwards"
                           }}
                         />
                       )}
@@ -229,9 +240,9 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
       </div>
 
       <style jsx>{`
-        @keyframes dotProgress {
-          0% { transform: translateX(-100%); }
-          100% { transform: translateX(0); }
+        @keyframes dotFill {
+          0% { transform: scaleX(0); }
+          100% { transform: scaleX(1); }
         }
       `}</style>
     </div>
