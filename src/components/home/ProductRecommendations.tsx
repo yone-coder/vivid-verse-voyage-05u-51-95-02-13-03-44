@@ -35,12 +35,12 @@ export default function ProductRecommendations({ products }) {
           <Link to="#" className="text-xs text-orange-500 hover:underline">View More</Link>
         </div>
 
-        {/* Scrollable Tabs with Fake Padding and Snap */}
+        {/* Scrollable Tabs with snap padding */}
         <div className="mb-3 overflow-x-auto">
-          <div className="flex space-x-2 pb-1 snap-x snap-mandatory overflow-x-auto scrollbar-hide">
-            {/* Left Spacer for fake padding */}
-            <div className="w-3 shrink-0" aria-hidden />
-            
+          <div
+            className="flex space-x-2 pb-1 snap-x snap-mandatory overflow-x-auto scrollbar-hide px-3"
+            style={{ scrollPaddingLeft: '0.75rem' }} // equals px-3
+          >
             {recommendedCategories.map(category => (
               <button
                 key={category.id}
@@ -54,9 +54,6 @@ export default function ProductRecommendations({ products }) {
                 {category.name}
               </button>
             ))}
-
-            {/* Right Spacer for fake padding */}
-            <div className="w-3 shrink-0" aria-hidden />
           </div>
         </div>
 
