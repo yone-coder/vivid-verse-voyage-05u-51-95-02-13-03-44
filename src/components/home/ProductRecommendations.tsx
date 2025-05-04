@@ -156,7 +156,7 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
                     <div
                       key={product.id}
                       className="flex-shrink-0 snap-start"
-                      style={{ width: 'calc(26% - 0.5rem)' }}
+                      style={{ width: 'calc(20% - 0.5rem)' }}
                     >
                       <MinimalProductCard product={product} />
                     </div>
@@ -169,7 +169,7 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
                     <div
                       key={product.id}
                       className="flex-shrink-0 snap-start"
-                      style={{ width: 'calc(26% - 0.5rem)' }}
+                      style={{ width: 'calc(20% - 0.5rem)' }}
                     >
                       <MinimalProductCard product={product} />
                     </div>
