@@ -4,8 +4,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ChevronRight } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 // Helper component for product skeleton loading states
 const RecommendationSkeleton = () => (
@@ -57,8 +56,7 @@ const MinimalProductCard = ({ product }) => {
 };
 
 const ProductRecommendations = ({ products = [], loading = false }) => {
-  const firstRowRef = useRef(null);
-  const secondRowRef = useRef(null);
+  const scrollContainerRef = useRef(null);
   
   // Format products and ensure it's an array
   const formattedProducts = Array.isArray(products) ? products.map(product => ({
@@ -73,45 +71,6 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
   
   const firstRow = formattedProducts.slice(0, Math.ceil(formattedProducts.length / 2));
   const secondRow = formattedProducts.slice(Math.ceil(formattedProducts.length / 2));
-
-  // Setup synchronized scrolling between rows
-  useEffect(() => {
-    const firstRowElement = firstRowRef.current;
-    const secondRowElement = secondRowRef.current;
-
-    if (!firstRowElement || !secondRowElement) return;
-
-    // Flag to prevent infinite loop when synchronizing scrolls
-    let isScrolling = false;
-
-    const handleFirstRowScroll = () => {
-      if (!isScrolling) {
-        isScrolling = true;
-        secondRowElement.scrollLeft = firstRowElement.scrollLeft;
-        setTimeout(() => {
-          isScrolling = false;
-        }, 10);
-      }
-    };
-
-    const handleSecondRowScroll = () => {
-      if (!isScrolling) {
-        isScrolling = true;
-        firstRowElement.scrollLeft = secondRowElement.scrollLeft;
-        setTimeout(() => {
-          isScrolling = false;
-        }, 10);
-      }
-    };
-
-    firstRowElement.addEventListener('scroll', handleFirstRowScroll);
-    secondRowElement.addEventListener('scroll', handleSecondRowScroll);
-
-    return () => {
-      firstRowElement.removeEventListener('scroll', handleFirstRowScroll);
-      secondRowElement.removeEventListener('scroll', handleSecondRowScroll);
-    };
-  }, []);
 
   return (
     <div className="py-2">
@@ -139,45 +98,35 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
             </div>
           </div>
         ) : formattedProducts.length > 0 ? (
-          <div className="space-y-2">
-            <div 
-              ref={firstRowRef}
-              className="flex gap-2 overflow-x-auto pb-2 scroll-smooth scrollbar-hide snap-x snap-mandatory"
-              style={{
-                scrollPaddingLeft: "0.5rem",
-                WebkitOverflowScrolling: "touch"
-              }}
-            >
-              {firstRow.map((product) => (
-                <div 
-                  key={product.id} 
-                  className="w-[40%] md:w-[25%] lg:w-[16.66%] flex-shrink-0 snap-start"
-                >
-                  <MinimalProductCard product={product} />
-                </div>
-              ))}
-              <div className="flex-none w-4" />
+          <ScrollArea 
+            ref={scrollContainerRef} 
+            orientation="horizontal" 
+            className="w-full overflow-x-auto"
+          >
+            <div className="space-y-2 pr-4">
+              <div className="flex gap-2">
+                {firstRow.map((product) => (
+                  <div 
+                    key={product.id} 
+                    className="w-[40%] md:w-[25%] lg:w-[16.66%] flex-shrink-0"
+                  >
+                    <MinimalProductCard product={product} />
+                  </div>
+                ))}
+              </div>
+              
+              <div className="flex gap-2">
+                {secondRow.map((product) => (
+                  <div 
+                    key={product.id} 
+                    className="w-[40%] md:w-[25%] lg:w-[16.66%] flex-shrink-0"
+                  >
+                    <MinimalProductCard product={product} />
+                  </div>
+                ))}
+              </div>
             </div>
-            
-            <div 
-              ref={secondRowRef}
-              className="flex gap-2 overflow-x-auto pb-2 scroll-smooth scrollbar-hide snap-x snap-mandatory"
-              style={{
-                scrollPaddingLeft: "0.5rem",
-                WebkitOverflowScrolling: "touch"
-              }}
-            >
-              {secondRow.map((product) => (
-                <div 
-                  key={product.id} 
-                  className="w-[40%] md:w-[25%] lg:w-[16.66%] flex-shrink-0 snap-start"
-                >
-                  <MinimalProductCard product={product} />
-                </div>
-              ))}
-              <div className="flex-none w-4" />
-            </div>
-          </div>
+          </ScrollArea>
         ) : (
           <div className="text-center py-4">
             <p className="text-sm text-gray-500">No recommendations available right now</p>
