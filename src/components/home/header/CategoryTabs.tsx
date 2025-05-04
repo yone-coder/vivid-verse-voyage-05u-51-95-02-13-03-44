@@ -27,7 +27,7 @@ const CategoryTabs = ({
   
   const handleTabClick = (categoryId: string, path: string) => {
     setActiveTab(categoryId);
-    navigate(path);
+    navigate(path, { replace: true });  // Use replace to avoid building history stack
   };
   
   return (

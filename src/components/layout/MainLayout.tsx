@@ -7,6 +7,7 @@ import IndexBottomNav from "@/components/layout/IndexBottomNav";
 import { Outlet, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import AliExpressHeader from "@/components/home/AliExpressHeader";
 
 export default function MainLayout() {
   const isMobile = useIsMobile();
@@ -19,6 +20,16 @@ export default function MainLayout() {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  
+  // Determine active tab based on current route
+  const getActiveTabFromRoute = () => {
+    if (location.pathname === "/" || location.pathname === "/for-you") return "recommendations";
+    if (location.pathname === "/posts") return "posts";
+    if (location.pathname === "/shops") return "shops";
+    if (location.pathname === "/trending") return "trending";
+    if (location.pathname === "/videos") return "videos";
+    return "recommendations";
+  };
   
   const toggleFavorite = () => {
     setIsFavorite(!isFavorite);
@@ -69,7 +80,12 @@ export default function MainLayout() {
     <div className="min-h-screen flex flex-col bg-gray-50">
       <style dangerouslySetInnerHTML={{ __html: headerHeightStyle }} />
       
-      {/* No header for home page (handled by AliExpressHeader) or product pages */}
+      {/* AliExpress Header for home pages */}
+      {isHomePage && (
+        <AliExpressHeader activeTabId={getActiveTabFromRoute()} />
+      )}
+      
+      {/* Regular header for other pages except product pages */}
       {!isProductPage && !isHomePage && (
         <Header 
           isSearchOpen={isSearchOpen}
