@@ -29,19 +29,20 @@ export default function ProductRecommendations({ products }) {
   return (
     <div className="py-2 bg-white">
       <div className="container mx-auto px-2">
+        {/* Header */}
         <div className="flex justify-between items-center mb-2">
           <h2 className="text-sm font-semibold tracking-tight">Just For You</h2>
           <Link to="#" className="text-xs text-orange-500 hover:underline">View More</Link>
         </div>
 
-        {/* Category Tabs */}
-        <div className="mb-3">
-          <div className="flex overflow-x-auto space-x-2 scrollbar-hide">
+        {/* Mobile-friendly Tabs */}
+        <div className="mb-3 -mx-2 overflow-x-auto">
+          <div className="flex space-x-2 px-2 pb-1 snap-x snap-mandatory overflow-x-auto scrollbar-hide">
             {recommendedCategories.map(category => (
               <button
                 key={category.id}
                 onClick={() => setActiveCategory(category.id)}
-                className={`px-2.5 py-1 rounded-full text-xs border ${
+                className={`snap-start flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-all duration-150 ${
                   activeCategory === category.id
                     ? "bg-orange-500 text-white border-orange-500"
                     : "bg-gray-50 text-gray-700 border-gray-200"
