@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { ProductCard } from "./ProductGrid";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -6,7 +5,6 @@ import { ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
-// Simulating product recommendations by category
 const recommendedCategories = [
   { id: "for-you", name: "For You" },
   { id: "new-arrivals", name: "New Arrivals" },
@@ -18,34 +16,35 @@ export default function ProductRecommendations({ products }) {
   const isMobile = useIsMobile();
   const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
   const [activeCategory, setActiveCategory] = useState("for-you");
-  
+
   const toggleExpand = (categoryId: string) => {
     setExpandedCategories(prev => ({
       ...prev,
       [categoryId]: !prev[categoryId]
     }));
   };
-  
+
   const isExpanded = (categoryId: string) => expandedCategories[categoryId] || false;
-  
+
   return (
-    <div className="py-3">
-      <div className="container mx-auto px-3">
+    <div className="py-2 bg-white">
+      <div className="container mx-auto px-2">
         <div className="flex justify-between items-center mb-2">
-          <h2 className="text-sm font-bold">Just For You</h2>
+          <h2 className="text-sm font-semibold tracking-tight">Just For You</h2>
           <Link to="#" className="text-xs text-orange-500 hover:underline">View More</Link>
         </div>
-        
-        <div className="mb-4">
-          <div className="flex overflow-x-auto space-x-4 pb-2 scrollbar-hide">
+
+        {/* Category Tabs */}
+        <div className="mb-3">
+          <div className="flex overflow-x-auto space-x-2 scrollbar-hide">
             {recommendedCategories.map(category => (
               <button
                 key={category.id}
                 onClick={() => setActiveCategory(category.id)}
-                className={`whitespace-nowrap px-3 py-1 rounded-full text-xs ${
-                  activeCategory === category.id 
-                    ? "bg-orange-500 text-white" 
-                    : "bg-gray-100 text-gray-700"
+                className={`px-2.5 py-1 rounded-full text-xs border ${
+                  activeCategory === category.id
+                    ? "bg-orange-500 text-white border-orange-500"
+                    : "bg-gray-50 text-gray-700 border-gray-200"
                 }`}
               >
                 {category.name}
@@ -53,24 +52,34 @@ export default function ProductRecommendations({ products }) {
             ))}
           </div>
         </div>
-        
-        {recommendedCategories.map(category => (
+
+        {/* Products */}
+        {recommendedCategories.map(category =>
           category.id === activeCategory && (
             <div key={category.id}>
-              <div className={`grid grid-cols-2 ${isMobile ? 'md:grid-cols-3' : 'md:grid-cols-4 lg:grid-cols-5'} gap-2`}>
-                {products?.slice(0, isExpanded(category.id) ? (isMobile ? 6 : 10) : (isMobile ? 2 : 5)).map(product => (
-                  <div key={product.id} className="h-full">
-                    <ProductCard key={product.id} product={product} />
-                  </div>
-                ))}
+              <div
+                className={`grid gap-1 ${
+                  isMobile
+                    ? "grid-cols-2"
+                    : "md:grid-cols-4 lg:grid-cols-5"
+                }`}
+              >
+                {products
+                  ?.slice(0, isExpanded(category.id) ? (isMobile ? 6 : 10) : (isMobile ? 2 : 5))
+                  .map(product => (
+                    <div key={product.id} className="h-full">
+                      <ProductCard product={product} compact />
+                    </div>
+                  ))}
               </div>
-              
+
+              {/* View More Button */}
               {products && products.length > (isMobile ? 2 : 5) && (
-                <div className="mt-3 text-center">
+                <div className="mt-2 text-center">
                   <Button
                     onClick={() => toggleExpand(category.id)}
                     variant="outline"
-                    className="w-full md:w-auto flex items-center justify-center gap-2 text-orange-500 border-orange-500"
+                    className="w-full md:w-auto h-8 text-xs px-3 py-1 border-orange-500 text-orange-500 flex items-center justify-center gap-1"
                   >
                     {isExpanded(category.id) ? "Show Less" : "View More Products"}
                     {!isExpanded(category.id) && <ChevronRight className="h-4 w-4" />}
@@ -79,7 +88,7 @@ export default function ProductRecommendations({ products }) {
               )}
             </div>
           )
-        ))}
+        )}
       </div>
     </div>
   );
