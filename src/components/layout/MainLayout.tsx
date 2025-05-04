@@ -12,7 +12,9 @@ export default function MainLayout() {
   const isMobile = useIsMobile();
   const location = useLocation();
   const isProductPage = location.pathname.includes('/product/');
-  const isHomePage = location.pathname === "/" || location.pathname === "/browse";
+  const isHomePage = location.pathname === "/" || location.pathname === "/for-you" || 
+                     location.pathname === "/posts" || location.pathname === "/shops" ||
+                     location.pathname === "/trending" || location.pathname === "/videos";
   const { toast } = useToast();
   const [isFavorite, setIsFavorite] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
