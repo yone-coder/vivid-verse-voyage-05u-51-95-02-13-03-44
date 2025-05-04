@@ -28,16 +28,16 @@ export default function ProductRecommendations({ products }) {
 
   return (
     <div className="py-2 bg-white">
-      <div className="container mx-auto px-2">
+      <div className="container mx-auto px-0">
         {/* Header */}
-        <div className="flex justify-between items-center mb-2">
+        <div className="flex justify-between items-center px-3 mb-2">
           <h2 className="text-sm font-semibold tracking-tight">Just For You</h2>
           <Link to="#" className="text-xs text-orange-500 hover:underline">View More</Link>
         </div>
 
-        {/* Scrollable Category Tabs */}
+        {/* Scrollable Category Tabs - edge to edge */}
         <div className="mb-3 overflow-x-auto">
-          <div className="flex space-x-2 pl-2 pr-2 pb-1 snap-x snap-mandatory overflow-x-auto scrollbar-hide">
+          <div className="flex space-x-2 px-3 pb-1 snap-x snap-mandatory overflow-x-auto scrollbar-hide">
             {recommendedCategories.map(category => (
               <button
                 key={category.id}
@@ -57,7 +57,7 @@ export default function ProductRecommendations({ products }) {
         {/* Products Grid */}
         {recommendedCategories.map(category =>
           category.id === activeCategory && (
-            <div key={category.id}>
+            <div key={category.id} className="px-3">
               <div
                 className={`grid gap-1 ${
                   isMobile
