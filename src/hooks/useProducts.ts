@@ -7,7 +7,6 @@ export interface Product {
   price: number;
   category: string;
   imageUrl: string;
-  image: string; // Added image property to fix build error
   rating: number;
   reviewCount: number;
 }
@@ -19,7 +18,6 @@ const mockProducts: Product[] = [
     price: 89.99,
     category: "Electronics",
     imageUrl: "https://picsum.photos/seed/headphones/300/300",
-    image: "https://picsum.photos/seed/headphones/300/300", // Added image property
     rating: 4.5,
     reviewCount: 120
   },
@@ -29,7 +27,6 @@ const mockProducts: Product[] = [
     price: 199.99,
     category: "Electronics",
     imageUrl: "https://picsum.photos/seed/smartwatch/300/300",
-    image: "https://picsum.photos/seed/smartwatch/300/300", // Added image property
     rating: 4.7,
     reviewCount: 95
   },
@@ -39,7 +36,6 @@ const mockProducts: Product[] = [
     price: 49.99,
     category: "Electronics",
     imageUrl: "https://picsum.photos/seed/speaker/300/300",
-    image: "https://picsum.photos/seed/speaker/300/300", // Added image property
     rating: 4.3,
     reviewCount: 78
   },
@@ -49,7 +45,6 @@ const mockProducts: Product[] = [
     price: 79.99,
     category: "Sports",
     imageUrl: "https://picsum.photos/seed/shoes/300/300",
-    image: "https://picsum.photos/seed/shoes/300/300", // Added image property
     rating: 4.8,
     reviewCount: 150
   },
@@ -59,7 +54,6 @@ const mockProducts: Product[] = [
     price: 129.99,
     category: "Home",
     imageUrl: "https://picsum.photos/seed/coffeemaker/300/300",
-    image: "https://picsum.photos/seed/coffeemaker/300/300", // Added image property
     rating: 4.6,
     reviewCount: 89
   },
@@ -69,7 +63,6 @@ const mockProducts: Product[] = [
     price: 39.99,
     category: "Fashion",
     imageUrl: "https://picsum.photos/seed/backpack/300/300",
-    image: "https://picsum.photos/seed/backpack/300/300", // Added image property
     rating: 4.4,
     reviewCount: 65
   }
