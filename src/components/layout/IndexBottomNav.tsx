@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -94,12 +93,12 @@ export default function IndexBottomNav() {
               <div key={item.id} className="relative flex flex-col items-center justify-center w-1/5">
                 <button
                   onClick={handleAddClick}
-                  className="w-12 h-12 rounded-full bg-gradient-to-tr from-red-500 to-red-400 flex items-center justify-center shadow-lg transform -translate-y-3 border-2 border-white dark:border-zinc-800"
+                  className="absolute w-14 h-14 rounded-full bg-gradient-to-tr from-red-500 to-red-400 flex items-center justify-center shadow-lg transform -translate-y-6 border-4 border-white dark:border-zinc-800"
                   style={{
-                    boxShadow: "0 4px 10px rgba(239, 68, 68, 0.2)"
+                    boxShadow: "0 4px 15px rgba(239, 68, 68, 0.3)"
                   }}
                 >
-                  <Plus className="w-5 h-5 text-white" strokeWidth={2.5} />
+                  <Plus className="w-6 h-6 text-white" strokeWidth={2} />
                 </button>
               </div>
             ) : (
