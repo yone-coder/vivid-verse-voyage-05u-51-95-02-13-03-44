@@ -1,3 +1,4 @@
+
 import React, { useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -97,37 +98,35 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
             </div>
           </div>
         ) : formattedProducts.length > 0 ? (
-          <ScrollArea 
-            ref={scrollContainerRef} 
-            orientation="horizontal" 
-            className="w-full overflow-x-auto"
-          >
-            <div className="space-y-2 pr-4">
-              <div className="flex gap-2">
-                {firstRow.map((product) => (
-                  <div 
-                    key={product.id} 
-                    className="flex-shrink-0"
-                    style={{ width: 'calc(30% - 0.5rem)' }}
-                  >
-                    <MinimalProductCard product={product} />
-                  </div>
-                ))}
-              </div>
-              
-              <div className="flex gap-2">
-                {secondRow.map((product) => (
-                  <div 
-                    key={product.id} 
-                    className="flex-shrink-0"
-                    style={{ width: 'calc(30% - 0.5rem)' }}
-                  >
-                    <MinimalProductCard product={product} />
-                  </div>
-                ))}
+          <div className="-mx-2">
+            <div className="overflow-x-auto scrollbar-hide snap-x snap-mandatory">
+              <div className="space-y-2 pl-2 pr-8 inline-flex flex-col min-w-full">
+                <div className="flex gap-2">
+                  {firstRow.map((product) => (
+                    <div 
+                      key={product.id} 
+                      className="flex-shrink-0 snap-start"
+                      style={{ width: 'calc(30% - 0.5rem)' }}
+                    >
+                      <MinimalProductCard product={product} />
+                    </div>
+                  ))}
+                </div>
+                
+                <div className="flex gap-2">
+                  {secondRow.map((product) => (
+                    <div 
+                      key={product.id} 
+                      className="flex-shrink-0 snap-start"
+                      style={{ width: 'calc(30% - 0.5rem)' }}
+                    >
+                      <MinimalProductCard product={product} />
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-          </ScrollArea>
+          </div>
         ) : (
           <div className="text-center py-4">
             <p className="text-sm text-gray-500">No recommendations available right now</p>
