@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -90,10 +91,10 @@ export default function IndexBottomNav() {
         <div className="h-16 max-w-md mx-auto flex items-center justify-between px-2 relative">
           {navItems.map((item) => (
             item.isCenter ? (
-              <div key={item.id} className="relative flex flex-col items-center justify-center w-1/5">
+              <div key={item.id} className="flex flex-col items-center justify-center w-1/5">
                 <button
                   onClick={handleAddClick}
-                  className="absolute w-14 h-14 rounded-full bg-gradient-to-tr from-red-500 to-red-400 flex items-center justify-center shadow-lg transform -translate-y-6 border-4 border-white dark:border-zinc-800"
+                  className="w-14 h-14 rounded-full bg-gradient-to-tr from-red-500 to-red-400 flex items-center justify-center shadow-lg transform -translate-y-6 border-4 border-white dark:border-zinc-800"
                   style={{
                     boxShadow: "0 4px 15px rgba(239, 68, 68, 0.3)"
                   }}
