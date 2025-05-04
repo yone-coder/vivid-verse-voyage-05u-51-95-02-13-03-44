@@ -21,6 +21,9 @@ import BenefitsBanner from "@/components/home/BenefitsBanner";
 import SecondaryHeroBanner from "@/components/home/SecondaryHeroBanner";
 import MobileOptimizedReels from "@/components/home/MobileOptimizedReels";
 
+import VendorProductCarousel from "@/components/home/VendorProductCarousel";
+
+
 export default function Index() {
   const { data: products, isLoading } = useQuery({
     queryKey: ['products'],
@@ -113,6 +116,10 @@ export default function Index() {
       {/* Recently Viewed - Updated Component */}
       <div className="bg-white mb-1">
         <RecentlyViewed />
+      </div>
+
+<div className="bg-white mb-1">
+        <VendorProductCarousel />
       </div>
 
       {/* Extra bottom padding for mobile to account for fixed navigation */}
