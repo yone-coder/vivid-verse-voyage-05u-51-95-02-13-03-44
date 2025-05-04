@@ -21,14 +21,12 @@ export default function AliExpressHeader() {
   const searchRef = useRef(null);
 
   const categories = [
-  { id: 'all', name: 'All', icon: <Home className="h-3 w-3" /> },
+  { id: 'recommendations', name: 'For You', icon: <Home className="h-3 w-3" /> },
   { id: 'posts', name: 'Posts', icon: <MessageSquare className="h-3 w-3" /> },
   { id: 'shops', name: 'Shops', icon: <Store className="h-3 w-3" /> },
   { id: 'trending', name: 'Trending', icon: <Image className="h-3 w-3" /> },
-  { id: 'collections', name: 'Collections', icon: <ShoppingBag className="h-3 w-3" /> },
-  { id: 'categories', name: 'Categories', icon: <Users className="h-3 w-3" /> },
   { id: 'videos', name: 'Videos', icon: <Image className="h-3 w-3" /> },
-  { id: 'recommendations', name: 'For You', icon: <Home className="h-3 w-3" /> },
+  
 ];
   const togglePanel = () => setIsOpen(!isOpen);
   const handleSearchFocus = () => setIsSearchFocused(true);
