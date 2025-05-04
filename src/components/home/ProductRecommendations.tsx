@@ -4,21 +4,23 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ChevronRight } from 'lucide-react';
 
+// Helper component for loading state
 const RecommendationSkeleton = () => (
-  <div className="w-[calc(100%/3.5)] flex-shrink-0 mr-2">
-    <Skeleton className="aspect-square mb-1.5" />
-    <Skeleton className="h-3 w-3/4 mb-1" />
-    <Skeleton className="h-2 w-1/2" />
+  <div className="w-full">
+    <div className="aspect-square bg-gray-200 animate-pulse rounded-md mb-1.5"></div>
+    <div className="h-3 w-3/4 bg-gray-200 animate-pulse mb-1"></div>
+    <div className="h-2 w-1/2 bg-gray-200 animate-pulse"></div>
   </div>
 );
 
+// Minimal product card component styled like FlashDeals
 const MinimalProductCard = ({ product }) => {
   const discount = product.discount_price
     ? Math.round(((product.price - product.discount_price) / product.price) * 100)
     : 0;
 
   return (
-    <div className="h-full">
+    <div className="h-full w-full">
       <Link to={`/product/${product.id}`} className="block h-full">
         <div className="relative aspect-square overflow-hidden bg-gray-50 rounded-md mb-1.5">
           <img
@@ -54,23 +56,36 @@ const MinimalProductCard = ({ product }) => {
 };
 
 const ProductRecommendations = ({ products = [], loading = false }) => {
+  // Format products into usable structure
   const formattedProducts = Array.isArray(products)
-    ? products.map(product => ({
+    ? products.map((product) => ({
         id: String(product.id),
         price: product.price || 0,
         discountPrice: product.discount_price,
-        name: product.name || 'Product Name',
-        image: product.product_images?.[0]?.src || 'https://placehold.co/300x300?text=No+Image',
+        name: product.name || "Product Name",
+        image:
+          product.product_images?.[0]?.src ||
+          "https://placehold.co/300x300?text=No+Image",
         ...product,
       }))
     : [];
+
+  // Group products into pairs (2 items per column)
+  const groupedPairs = [];
+  for (let i = 0; i < formattedProducts.length; i += 2) {
+    groupedPairs.push([formattedProducts[i], formattedProducts[i + 1]]);
+  }
 
   return (
     <div className="py-2">
       <div className="px-2">
         <div className="flex items-center justify-between mb-2">
           <h2 className="text-base font-medium">Recommended for You</h2>
-          <Button variant="link" className="text-xs text-gray-500 p-0 h-auto" asChild>
+          <Button
+            variant="link"
+            className="text-xs text-gray-500 p-0 h-auto"
+            asChild
+          >
             <Link to="/search?category=recommended" className="flex items-center">
               View All <ChevronRight className="h-3 w-3 ml-0.5" />
             </Link>
@@ -78,39 +93,35 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
         </div>
       </div>
 
-      <div className="relative">
-        {loading ? (
-          <div className="pl-2 flex overflow-x-auto scrollbar-hide">
-            {Array(5).fill(0).map((_, index) => (
-              <RecommendationSkeleton key={index} />
-            ))}
-            <div className="flex-none w-4" />
-          </div>
-        ) : formattedProducts.length > 0 ? (
-          <div
-            className="overflow-x-auto scroll-smooth scrollbar-hide snap-x snap-mandatory"
-            style={{
-              scrollPaddingLeft: '1rem',
-              WebkitOverflowScrolling: 'touch',
-            }}
-          >
-            <div className="flex pl-2">
-              {formattedProducts.map(product => (
+      <div className="overflow-x-auto scroll-smooth scrollbar-hide snap-x snap-mandatory -mx-2 px-2">
+        <div className="flex gap-2">
+          {loading
+            ? Array(3)
+                .fill(0)
+                .map((_, i) => (
+                  <div
+                    key={`skeleton-${i}`}
+                    className="w-[calc(30%)] flex-shrink-0 snap-start space-y-2"
+                  >
+                    <RecommendationSkeleton />
+                    <RecommendationSkeleton />
+                  </div>
+                ))
+            : groupedPairs.map((pair, index) => (
                 <div
-                  key={product.id}
-                  className="w-[calc(100%/3.5)] flex-shrink-0 snap-start mr-2"
+                  key={`group-${index}`}
+                  className="w-[calc(30%)] flex-shrink-0 snap-start space-y-2"
                 >
-                  <MinimalProductCard product={product} />
+                  {pair.map(
+                    (product) =>
+                      product && (
+                        <MinimalProductCard key={product.id} product={product} />
+                      )
+                  )}
                 </div>
               ))}
-              <div className="flex-none w-4" />
-            </div>
-          </div>
-        ) : (
-          <div className="text-center py-4">
-            <p className="text-sm text-gray-500">No recommendations available right now</p>
-          </div>
-        )}
+          <div className="flex-none w-4" />
+        </div>
       </div>
     </div>
   );
