@@ -3,7 +3,7 @@ import React, { useRef } from 'react';
 const VendorProductCarousel = () => {
   const vendorData = {
     vendorName: "Fashion Boutique",
-    profilePic: "/api/placeholder/50/50",
+    profilePic: "https://picsum.photos/seed/vendor/50/50",
     followers: "24.5K"
   };
 
@@ -17,7 +17,7 @@ const VendorProductCarousel = () => {
       rating: 4.9,
       reviews: 2453,
       imageCount: 4,
-      image: "/api/placeholder/320/320",
+      image: "https://picsum.photos/seed/product1/320/320",
       tags: ["HOT", "Free Shipping"]
     },
     {
@@ -29,7 +29,7 @@ const VendorProductCarousel = () => {
       rating: 4.8,
       reviews: 1832,
       imageCount: 5,
-      image: "/api/placeholder/320/320",
+      image: "https://picsum.photos/seed/product2/320/320",
       tags: ["Trending"]
     },
     {
@@ -41,7 +41,7 @@ const VendorProductCarousel = () => {
       rating: 4.7,
       reviews: 3410,
       imageCount: 6,
-      image: "/api/placeholder/320/320",
+      image: "https://picsum.photos/seed/product3/320/320",
       tags: ["Free Shipping"]
     },
     {
@@ -53,7 +53,7 @@ const VendorProductCarousel = () => {
       rating: 4.9,
       reviews: 1976,
       imageCount: 3,
-      image: "/api/placeholder/320/320",
+      image: "https://picsum.photos/seed/product4/320/320",
       tags: ["HOT", "Best Seller"]
     },
     {
@@ -65,7 +65,7 @@ const VendorProductCarousel = () => {
       rating: 4.8,
       reviews: 1245,
       imageCount: 4,
-      image: "/api/placeholder/320/320",
+      image: "https://picsum.photos/seed/product5/320/320",
       tags: ["Limited"]
     }
   ];
