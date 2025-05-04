@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Star, ShoppingCart, Heart, Filter, List, GridIcon } from "lucide-react";
+import { Star, Heart, Filter, List, GridIcon } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 
-// Compact AliExpress-style Product Card
+// Compact AliExpress-style Product Card without Add to Cart
 export const ProductCard = ({ product }) => {
   const mainImage = product.product_images?.[0]?.src || "https://placehold.co/300x300?text=No+Image";
   const discountPercentage = product.discount_price
@@ -79,12 +79,6 @@ export const ProductCard = ({ product }) => {
           <p className="text-[10px] text-green-600 font-medium">Free Shipping</p>
         </Link>
       </CardContent>
-
-      <CardFooter className="p-2 pt-0">
-        <Button size="sm" variant="outline" className="w-full text-[11px] h-7 px-2 gap-1">
-          <ShoppingCart className="h-3.5 w-3.5" /> Add
-        </Button>
-      </CardFooter>
     </Card>
   );
 };
@@ -98,7 +92,6 @@ export const ProductSkeleton = () => (
       <Skeleton className="h-3 w-full" />
       <Skeleton className="h-3 w-2/3" />
       <Skeleton className="h-3 w-1/3" />
-      <Skeleton className="h-7 w-full" />
     </div>
   </div>
 );
@@ -231,10 +224,7 @@ export default function ProductGrid({ products, isLoading }) {
                         )}
                       </div>
                       <p className="text-[11px] text-green-600 font-medium">Free Shipping</p>
-                      <div className="mt-auto pt-2 flex gap-2">
-                        <Button size="sm" className="flex-1 bg-red-500 hover:bg-red-600 text-xs h-8">
-                          <ShoppingCart className="h-3.5 w-3.5 mr-1" /> Add
-                        </Button>
+                      <div className="mt-auto pt-2 flex justify-end">
                         <Button size="sm" variant="outline" className="px-2 h-8">
                           <Heart className="h-3.5 w-3.5" />
                         </Button>
