@@ -1,10 +1,9 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ChevronRight } from 'lucide-react';
 
-// Helper component for product skeleton loading states
 const RecommendationSkeleton = () => (
   <div className="w-[30%] md:w-[calc(25vw)] lg:w-[calc(16.66vw)] flex-shrink-0">
     <Skeleton className="aspect-square mb-1" />
@@ -12,7 +11,6 @@ const RecommendationSkeleton = () => (
   </div>
 );
 
-// Minimal product card component styled like FlashDeals cards
 const MinimalProductCard = ({ product }) => {
   const discount = product.discount_price ?
     Math.round(((product.price - product.discount_price) / product.price) * 100) : 0;
@@ -55,8 +53,9 @@ const MinimalProductCard = ({ product }) => {
 
 const ProductRecommendations = ({ products = [], loading = false }) => {
   const scrollContainerRef = useRef(null);
+  const [page, setPage] = useState(0);
+  const [pageCount, setPageCount] = useState(0);
 
-  // Format products and ensure it's an array
   const formattedProducts = Array.isArray(products) ? products.map(product => ({
     id: String(product.id),
     price: product.price || 0,
@@ -68,6 +67,41 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
 
   const firstRow = formattedProducts.slice(0, Math.ceil(formattedProducts.length / 2));
   const secondRow = formattedProducts.slice(Math.ceil(formattedProducts.length / 2));
+
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const updatePage = () => {
+      const scrollLeft = container.scrollLeft;
+      const width = container.clientWidth;
+      const newPage = Math.round(scrollLeft / width);
+      setPage(newPage);
+    };
+
+    const calculatePageCount = () => {
+      const width = container.clientWidth;
+      const scrollWidth = container.scrollWidth;
+      setPageCount(Math.ceil(scrollWidth / width));
+    };
+
+    container.addEventListener('scroll', updatePage);
+    window.addEventListener('resize', calculatePageCount);
+    calculatePageCount();
+
+    return () => {
+      container.removeEventListener('scroll', updatePage);
+      window.removeEventListener('resize', calculatePageCount);
+    };
+  }, [formattedProducts]);
+
+  const scrollToPage = (index) => {
+    const container = scrollContainerRef.current;
+    if (container) {
+      const width = container.clientWidth;
+      container.scrollTo({ left: index * width, behavior: 'smooth' });
+    }
+  };
 
   return (
     <div className="py-2">
@@ -95,39 +129,56 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
             </div>
           </div>
         ) : formattedProducts.length > 0 ? (
-          <div
-            className="overflow-x-auto scrollbar-hide snap-x snap-mandatory"
-            style={{ scrollPaddingLeft: '0.5rem', WebkitOverflowScrolling: 'touch' }}
-            ref={scrollContainerRef}
-          >
-            <div className="space-y-2 pl-2 inline-flex flex-col min-w-full">
-              <div className="flex gap-2">
-                {firstRow.map((product) => (
-                  <div
-                    key={product.id}
-                    className="flex-shrink-0 snap-start"
-                    style={{ width: 'calc(26% - 0.5rem)' }}
-                  >
-                    <MinimalProductCard product={product} />
-                  </div>
-                ))}
-                <div className="flex-none w-4" />
-              </div>
+          <>
+            <div
+              className="overflow-x-auto scrollbar-hide snap-x snap-mandatory"
+              style={{ scrollPaddingLeft: '0.5rem', WebkitOverflowScrolling: 'touch' }}
+              ref={scrollContainerRef}
+            >
+              <div className="space-y-2 pl-2 inline-flex flex-col min-w-full">
+                <div className="flex gap-2">
+                  {firstRow.map((product) => (
+                    <div
+                      key={product.id}
+                      className="flex-shrink-0 snap-start"
+                      style={{ width: 'calc(26% - 0.5rem)' }}
+                    >
+                      <MinimalProductCard product={product} />
+                    </div>
+                  ))}
+                  <div className="flex-none w-4" />
+                </div>
 
-              <div className="flex gap-2">
-                {secondRow.map((product) => (
-                  <div
-                    key={product.id}
-                    className="flex-shrink-0 snap-start"
-                    style={{ width: 'calc(26% - 0.5rem)' }}
-                  >
-                    <MinimalProductCard product={product} />
-                  </div>
-                ))}
-                <div className="flex-none w-4" />
+                <div className="flex gap-2">
+                  {secondRow.map((product) => (
+                    <div
+                      key={product.id}
+                      className="flex-shrink-0 snap-start"
+                      style={{ width: 'calc(26% - 0.5rem)' }}
+                    >
+                      <MinimalProductCard product={product} />
+                    </div>
+                  ))}
+                  <div className="flex-none w-4" />
+                </div>
               </div>
             </div>
-          </div>
+
+            {/* Dots Navigation */}
+            {pageCount > 1 && (
+              <div className="flex justify-center mt-2 gap-1">
+                {Array.from({ length: pageCount }).map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => scrollToPage(i)}
+                    className={`w-2 h-2 rounded-full transition-all ${
+                      i === page ? 'bg-gray-900' : 'bg-gray-300'
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
+          </>
         ) : (
           <div className="text-center py-4">
             <p className="text-sm text-gray-500">No recommendations available right now</p>
