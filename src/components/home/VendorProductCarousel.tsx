@@ -1,11 +1,10 @@
-
 import React, { useRef } from 'react';
 
 const VendorProductCarousel = () => {
   // Sample data for vendor and products
   const vendorData = {
     vendorName: "Fashion Boutique",
-    profilePic: "https://picsum.photos/seed/vendorprofile/50/50",
+    profilePic: "/api/placeholder/50/50",
     followers: "24.5K"
   };
 
@@ -19,7 +18,7 @@ const VendorProductCarousel = () => {
       rating: 4.9,
       reviews: 2453,
       imageCount: 4,
-      image: "https://picsum.photos/seed/product1/320/320",
+      image: "/api/placeholder/320/320",
       tags: ["HOT", "Free Shipping"]
     },
     {
@@ -31,7 +30,7 @@ const VendorProductCarousel = () => {
       rating: 4.8,
       reviews: 1832,
       imageCount: 5,
-      image: "https://picsum.photos/seed/product2/320/320",
+      image: "/api/placeholder/320/320",
       tags: ["Trending"]
     },
     {
@@ -43,7 +42,7 @@ const VendorProductCarousel = () => {
       rating: 4.7,
       reviews: 3410,
       imageCount: 6,
-      image: "https://picsum.photos/seed/product3/320/320",
+      image: "/api/placeholder/320/320",
       tags: ["Free Shipping"]
     },
     {
@@ -55,7 +54,7 @@ const VendorProductCarousel = () => {
       rating: 4.9,
       reviews: 1976,
       imageCount: 3,
-      image: "https://picsum.photos/seed/product4/320/320",
+      image: "/api/placeholder/320/320",
       tags: ["HOT", "Best Seller"]
     },
     {
@@ -67,18 +66,23 @@ const VendorProductCarousel = () => {
       rating: 4.8,
       reviews: 1245,
       imageCount: 4,
-      image: "https://picsum.photos/seed/product5/320/320",
+      image: "/api/placeholder/320/320",
       tags: ["Limited"]
     }
   ];
 
   const carouselRef = useRef(null);
 
+  // Format number with k for thousands
+  const formatNumber = (num) => {
+    return num >= 1000 ? (num / 1000).toFixed(1) + 'k' : num;
+  };
+
   return (
     <div className="max-w-6xl mx-auto overflow-hidden">
       {/* Vendor Info Header */}
       <div className="flex items-center mb-4 px-3 md:px-4">
-        {/* Profile image with circular shape */}
+        {/* Profile image with multiple techniques for guaranteed circular shape */}
         <div className="flex-shrink-0 mr-3 rounded-full overflow-hidden w-12 h-12">
           <img
             src={vendorData.profilePic}
@@ -95,28 +99,18 @@ const VendorProductCarousel = () => {
         </button>
       </div>
 
-      {/* Products Carousel with Improved Scroll Snapping */}
-      <div className="relative w-full px-2">
+      {/* Products Carousel - Edge to Edge with Modified Snapping */}
+      <div className="relative w-full">
         <div 
-          className="flex overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide"
+          className="flex overflow-x-auto gap-2 md:gap-3 pb-4" 
           ref={carouselRef}
-          style={{ 
-            scrollbarWidth: 'none',
-            msOverflowStyle: 'none',
-            WebkitOverflowScrolling: 'touch',
-            scrollSnapType: 'x mandatory',
-            paddingLeft: '8px',
-            paddingRight: '8px'
-          }}
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', paddingLeft: '8px', paddingRight: '8px' }}
         >
           {products.map((product) => (
             <div 
               key={product.id}
-              className="flex-shrink-0 rounded-lg overflow-hidden shadow-sm border border-gray-200 bg-white hover:shadow-md transition-shadow mx-1 snap-start"
-              style={{ 
-                width: 'calc(40% - 8px)', 
-                minWidth: '140px'
-              }}
+              className="flex-shrink-0 rounded-lg overflow-hidden shadow-sm border border-gray-200 bg-white hover:shadow-md transition-shadow"
+              style={{ width: 'calc(40% - 8px)', minWidth: '140px', scrollSnapAlign: 'center' }}
             >
               {/* Product Image */}
               <div className="relative aspect-square">
@@ -126,7 +120,7 @@ const VendorProductCarousel = () => {
                   className="w-full h-full object-cover"
                 />
                 
-                {/* Discount Tag */}
+                {/* Discount Tag - Only display discount percentage */}
                 <div className="absolute top-0 left-0 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-br-lg">
                   {product.discount} OFF
                 </div>
@@ -134,7 +128,7 @@ const VendorProductCarousel = () => {
               
               {/* Product Info */}
               <div className="p-2">
-                {/* Price Info */}
+                {/* Price Info - Now in a single horizontal line */}
                 <div className="flex items-center">
                   <span className="font-bold text-red-500 text-base mr-2">{product.currentPrice}</span>
                   <span className="text-gray-400 text-xs line-through">{product.originalPrice}</span>
