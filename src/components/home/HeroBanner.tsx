@@ -41,8 +41,8 @@ export default function HeroBanner() {
   const slideDuration = 5000;
   const newsDuration = 4000;
 
-  // Height of the header (44px header + category tabs)
-  const headerHeight = '78px';
+  // Reduced header height value 
+  const headerHeight = '44px';
 
   const startSlideTimer = () => {
     clearInterval(intervalRef.current);
@@ -87,7 +87,7 @@ export default function HeroBanner() {
   return (
     <>
       <div 
-        className={`relative bg-gradient-to-r ${banners[activeIndex].color} transition-colors duration-500 overflow-hidden mt-[78px]`}
+        className={`relative bg-gradient-to-r ${banners[activeIndex].color} transition-colors duration-500 overflow-hidden mt-[44px]`}
       >
         <div className="relative h-[180px] md:h-[250px] lg:h-[300px]">
           {banners.map((banner, index) => {
