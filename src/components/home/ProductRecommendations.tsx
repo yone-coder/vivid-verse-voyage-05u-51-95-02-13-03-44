@@ -35,9 +35,9 @@ export default function ProductRecommendations({ products }) {
           <Link to="#" className="text-xs text-orange-500 hover:underline">View More</Link>
         </div>
 
-        {/* Mobile-friendly Tabs */}
-        <div className="mb-3 -mx-2 overflow-x-auto">
-          <div className="flex space-x-2 px-2 pb-1 snap-x snap-mandatory overflow-x-auto scrollbar-hide">
+        {/* Scrollable Category Tabs */}
+        <div className="mb-3 overflow-x-auto">
+          <div className="flex space-x-2 pl-2 pr-2 pb-1 snap-x snap-mandatory overflow-x-auto scrollbar-hide">
             {recommendedCategories.map(category => (
               <button
                 key={category.id}
@@ -54,7 +54,7 @@ export default function ProductRecommendations({ products }) {
           </div>
         </div>
 
-        {/* Products */}
+        {/* Products Grid */}
         {recommendedCategories.map(category =>
           category.id === activeCategory && (
             <div key={category.id}>
@@ -74,7 +74,7 @@ export default function ProductRecommendations({ products }) {
                   ))}
               </div>
 
-              {/* View More Button */}
+              {/* View More / Show Less Button */}
               {products && products.length > (isMobile ? 2 : 5) && (
                 <div className="mt-2 text-center">
                   <Button
