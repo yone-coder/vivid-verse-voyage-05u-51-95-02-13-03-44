@@ -119,23 +119,21 @@ const VendorProductCarousel = () => {
                 scrollSnapAlign: 'center' 
               }}
             >
-              {/* Product Image */}
+              {/* Product Image with Price Overlay */}
               <div className="relative aspect-square">
                 <img 
                   src={product.image} 
                   alt="Product"
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute top-0 left-0 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-br-lg">
+                {/* Discount Tag */}
+                <div className="absolute top-0 left-0 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-br-lg z-10">
                   {product.discount} OFF
                 </div>
-              </div>
-
-              {/* Product Info */}
-              <div className="p-2">
-                <div className="flex items-center">
-                  <span className="font-bold text-red-500 text-base mr-2">{product.currentPrice}</span>
-                  <span className="text-gray-400 text-xs line-through">{product.originalPrice}</span>
+                {/* Price Overlay at Bottom */}
+                <div className="absolute bottom-0 w-full px-2 py-1 bg-gradient-to-t from-black/70 to-transparent text-white flex items-center justify-between text-xs z-10">
+                  <span className="font-bold text-sm text-red-400">{product.currentPrice}</span>
+                  <span className="line-through text-gray-300">{product.originalPrice}</span>
                 </div>
               </div>
             </div>
