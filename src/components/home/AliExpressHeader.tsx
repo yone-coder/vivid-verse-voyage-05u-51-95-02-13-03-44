@@ -1,6 +1,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useScrollProgress } from '@/hooks/useScrollProgress';
+import { Home, ShoppingBag, Users, Image, MessageSquare, Store } from 'lucide-react';
 import HeaderSearchBar from './header/HeaderSearchBar';
 import CategoryTabs from './header/CategoryTabs';
 import CategoryPanel from './header/CategoryPanel';
@@ -13,14 +14,23 @@ export default function AliExpressHeader() {
   const { progress } = useScrollProgress();
 
   const [isOpen, setIsOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('All');
+  const [activeTab, setActiveTab] = useState('all');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [voiceSearchActive, setVoiceSearchActive] = useState(false);
   const searchRef = useRef(null);
 
   const categories = [
-    'All', 'Women', 'Men', 'Electronics', 'Home', 'Beauty', 'Kids', 'Sports',
+    { id: 'all', name: 'All', icon: <Home className="h-3 w-3" /> },
+    { id: 'women', name: 'Women', icon: <Users className="h-3 w-3" /> },
+    { id: 'men', name: 'Men', icon: <Users className="h-3 w-3" /> },
+    { id: 'electronics', name: 'Electronics', icon: <ShoppingBag className="h-3 w-3" /> },
+    { id: 'home', name: 'Home', icon: <Home className="h-3 w-3" /> },
+    { id: 'beauty', name: 'Beauty', icon: <Image className="h-3 w-3" /> },
+    { id: 'kids', name: 'Kids', icon: <Users className="h-3 w-3" /> },
+    { id: 'sports', name: 'Sports', icon: <ShoppingBag className="h-3 w-3" /> },
+    { id: 'posts', name: 'Posts', icon: <MessageSquare className="h-3 w-3" /> },
+    { id: 'shops', name: 'Shops', icon: <Store className="h-3 w-3" /> },
   ];
 
   const togglePanel = () => setIsOpen(!isOpen);
@@ -94,7 +104,7 @@ export default function AliExpressHeader() {
         progress={progress}
         isOpen={isOpen}
         activeTab={activeTab}
-        categories={categories}
+        categories={categories.map(cat => cat.id)}
         setActiveTab={setActiveTab}
         setIsOpen={setIsOpen}
       />

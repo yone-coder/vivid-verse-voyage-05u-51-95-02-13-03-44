@@ -1,12 +1,18 @@
 
 import { useState } from 'react';
-import { LayoutGrid } from 'lucide-react';
+import { LayoutGrid, ShoppingBag, Home, Image, Users, ShoppingCart, Heart, MessageSquare, Store } from 'lucide-react';
+
+interface CategoryTab {
+  id: string;
+  name: string;
+  icon: React.ReactNode;
+}
 
 interface CategoryTabsProps {
   progress: number;
   activeTab: string;
   setActiveTab: (tab: string) => void;
-  categories: string[];
+  categories: CategoryTab[];
 }
 
 const CategoryTabs = ({ 
@@ -30,15 +36,16 @@ const CategoryTabs = ({
         <div className="flex overflow-x-auto no-scrollbar">
           {categories.map((category) => (
             <button
-              key={category}
-              className={`whitespace-nowrap px-3 py-1 text-xs font-medium transition-all border-b-2 ${
-                activeTab === category
+              key={category.id}
+              className={`whitespace-nowrap px-3 py-1 text-xs font-medium transition-all border-b-2 flex items-center gap-1 ${
+                activeTab === category.id
                   ? 'border-orange-500 text-orange-500'
                   : 'border-transparent text-gray-600 hover:text-gray-900'
               }`}
-              onClick={() => setActiveTab(category)}
+              onClick={() => setActiveTab(category.id)}
             >
-              {category}
+              {category.icon}
+              <span>{category.name}</span>
             </button>
           ))}
         </div>
