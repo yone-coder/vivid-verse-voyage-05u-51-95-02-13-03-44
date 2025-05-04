@@ -14,11 +14,21 @@ import {
   Bell,
   Image,
   Video,
-  Pencil
+  Pencil,
+  Camera,
+  Package,
+  Tag,
+  Clock,
+  MapPin,
+  Gift,
+  DollarSign,
+  Percent,
+  TrendingUp
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useToast } from "@/hooks/use-toast";
+import { Badge } from "@/components/ui/badge";
 
 export default function IndexBottomNav() {
   const [activeTab, setActiveTab] = useState("home");
@@ -91,6 +101,37 @@ export default function IndexBottomNav() {
     }, 500);
   };
 
+  // Quick action categories for the enhanced popover
+  const quickActions = [
+    {
+      title: "Add Content",
+      items: [
+        { icon: ShoppingCart, label: "Product", action: "Product", color: "text-blue-600" },
+        { icon: Pencil, label: "Post", action: "Post", color: "text-green-600" },
+        { icon: Camera, label: "Photo", action: "Image", color: "text-purple-600" },
+        { icon: Video, label: "Video", action: "Video", color: "text-red-600" },
+      ]
+    },
+    {
+      title: "Sell Products",
+      items: [
+        { icon: Package, label: "List Item", action: "ListItem", color: "text-orange-600" },
+        { icon: Tag, label: "Create Offer", action: "Offer", color: "text-pink-600" },
+        { icon: DollarSign, label: "Set Price", action: "Price", color: "text-green-700" },
+        { icon: Percent, label: "Discount", action: "Discount", color: "text-red-700" },
+      ]
+    },
+    {
+      title: "Promotions",
+      items: [
+        { icon: Gift, label: "Flash Sale", action: "FlashSale", color: "text-purple-700" },
+        { icon: Clock, label: "Limited Time", action: "LimitedOffer", color: "text-amber-600" },
+        { icon: TrendingUp, label: "Boost Item", action: "Boost", color: "text-blue-700" },
+        { icon: MapPin, label: "Local Ads", action: "LocalAds", color: "text-emerald-600" },
+      ]
+    }
+  ];
+
   return (
     <>
       <motion.div 
@@ -122,40 +163,53 @@ export default function IndexBottomNav() {
                   </button>
                 </PopoverTrigger>
                 <PopoverContent 
-                  className="w-56 p-2 border border-gray-200 shadow-lg rounded-lg" 
+                  className="w-[300px] p-0 border border-gray-200 shadow-xl rounded-lg overflow-hidden" 
                   align="center" 
                   side="top" 
                   sideOffset={5}
                 >
-                  <div className="grid grid-cols-2 gap-2">
-                    <button
-                      onClick={() => handleQuickAction("Product")}
-                      className="flex flex-col items-center justify-center p-3 hover:bg-gray-100 rounded-md text-sm transition-colors"
-                    >
-                      <ShoppingCart className="w-5 h-5 text-blue-600 mb-1" />
-                      <span>Product</span>
-                    </button>
-                    <button
-                      onClick={() => handleQuickAction("Post")}
-                      className="flex flex-col items-center justify-center p-3 hover:bg-gray-100 rounded-md text-sm transition-colors"
-                    >
-                      <Pencil className="w-5 h-5 text-green-600 mb-1" />
-                      <span>Post</span>
-                    </button>
-                    <button
-                      onClick={() => handleQuickAction("Image")}
-                      className="flex flex-col items-center justify-center p-3 hover:bg-gray-100 rounded-md text-sm transition-colors"
-                    >
-                      <Image className="w-5 h-5 text-purple-600 mb-1" />
-                      <span>Image</span>
-                    </button>
-                    <button
-                      onClick={() => handleQuickAction("Video")}
-                      className="flex flex-col items-center justify-center p-3 hover:bg-gray-100 rounded-md text-sm transition-colors"
-                    >
-                      <Video className="w-5 h-5 text-red-600 mb-1" />
-                      <span>Video</span>
-                    </button>
+                  <div className="bg-gradient-to-r from-red-500 to-orange-500 px-4 py-2 text-white">
+                    <h3 className="font-medium text-sm">Create New</h3>
+                  </div>
+                  
+                  <div className="max-h-[60vh] overflow-y-auto p-2">
+                    {quickActions.map((category, idx) => (
+                      <div key={idx} className={`mb-3 ${idx > 0 ? "pt-2 border-t border-gray-100" : ""}`}>
+                        <h4 className="text-xs font-medium text-gray-500 mb-2 px-1">{category.title}</h4>
+                        <div className="grid grid-cols-4 gap-1">
+                          {category.items.map((item, itemIdx) => (
+                            <button
+                              key={itemIdx}
+                              onClick={() => handleQuickAction(item.action)}
+                              className="flex flex-col items-center justify-center p-2 hover:bg-gray-50 rounded-md text-[11px] transition-colors"
+                            >
+                              <div className={`mb-1 ${item.color}`}>
+                                <item.icon className="w-5 h-5" />
+                              </div>
+                              <span className="text-center line-clamp-2 text-gray-700">{item.label}</span>
+                              {itemIdx === 0 && category.title === "Add Content" && (
+                                <Badge variant="aliHot" className="text-[9px] mt-1 p-px px-1">HOT</Badge>
+                              )}
+                              {itemIdx === 0 && category.title === "Sell Products" && (
+                                <Badge variant="aliNew" className="text-[9px] mt-1 p-px px-1">NEW</Badge>
+                              )}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <div className="border-t border-gray-100 p-2 bg-gray-50">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-gray-500">Go to shop center</span>
+                      <button 
+                        onClick={() => setIsPopoverOpen(false)}
+                        className="text-xs text-blue-600"
+                      >
+                        Close
+                      </button>
+                    </div>
                   </div>
                 </PopoverContent>
               </Popover>
