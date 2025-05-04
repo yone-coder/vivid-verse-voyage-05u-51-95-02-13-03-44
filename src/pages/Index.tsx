@@ -1,4 +1,3 @@
-
 import { useQuery } from "@tanstack/react-query";
 import { fetchAllProducts } from "@/integrations/supabase/client";
 import AliExpressHeader from "@/components/home/AliExpressHeader";
@@ -20,12 +19,10 @@ import RecentlyViewed from "@/components/home/RecentlyViewed";
 import BenefitsBanner from "@/components/home/BenefitsBanner";
 import SecondaryHeroBanner from "@/components/home/SecondaryHeroBanner";
 import MobileOptimizedReels from "@/components/home/MobileOptimizedReels";
-
 import VendorProductCarousel from "@/components/home/VendorProductCarousel";
 
-
 export default function Index() {
-  const { data: products, isLoading } = useQuery({
+  const { data: products = [], isLoading } = useQuery({
     queryKey: ['products'],
     queryFn: fetchAllProducts,
   });

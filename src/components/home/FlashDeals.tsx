@@ -17,7 +17,7 @@ export default function FlashDeals() {
   });
 
   // Get only first 5 products with discount_price (flash deals)
-  const flashProducts = products
+  const flashProducts = (products as any[])
     .filter(product => product.discount_price)
     .slice(0, 5);
 
