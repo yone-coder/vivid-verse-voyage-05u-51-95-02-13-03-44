@@ -1,12 +1,11 @@
 
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ChevronRight, Star } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scroll-area';
 
 // Helper component for product skeleton loading states
 const RecommendationSkeleton = () => (
@@ -58,9 +57,10 @@ const MinimalProductCard = ({ product }) => {
 };
 
 const ProductRecommendations = ({ products = [], loading = false }) => {
-  const scrollRef = useRef(null);
+  const firstRowRef = useRef(null);
+  const secondRowRef = useRef(null);
   
-  // Split products into two rows for layout
+  // Format products
   const formattedProducts = products?.map(product => ({
     id: String(product.id), // Convert ID to string
     price: product.price || 0,
@@ -73,6 +73,30 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
   
   const firstRow = formattedProducts.slice(0, Math.ceil(formattedProducts.length / 2));
   const secondRow = formattedProducts.slice(Math.ceil(formattedProducts.length / 2));
+
+  // Setup synchronized scrolling between rows
+  useEffect(() => {
+    const firstRowElement = firstRowRef.current;
+    const secondRowElement = secondRowRef.current;
+
+    if (!firstRowElement || !secondRowElement) return;
+
+    const handleFirstRowScroll = () => {
+      secondRowElement.scrollLeft = firstRowElement.scrollLeft;
+    };
+
+    const handleSecondRowScroll = () => {
+      firstRowElement.scrollLeft = secondRowElement.scrollLeft;
+    };
+
+    firstRowElement.addEventListener('scroll', handleFirstRowScroll);
+    secondRowElement.addEventListener('scroll', handleSecondRowScroll);
+
+    return () => {
+      firstRowElement.removeEventListener('scroll', handleFirstRowScroll);
+      secondRowElement.removeEventListener('scroll', handleSecondRowScroll);
+    };
+  }, []);
 
   return (
     <div className="py-2">
@@ -102,7 +126,7 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
         ) : formattedProducts.length > 0 ? (
           <div className="space-y-2">
             <div 
-              ref={scrollRef}
+              ref={firstRowRef}
               className="flex gap-2 overflow-x-auto pb-2 scroll-smooth scrollbar-hide snap-x snap-mandatory"
               style={{
                 scrollPaddingLeft: "0.5rem",
@@ -121,6 +145,7 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
             </div>
             
             <div 
+              ref={secondRowRef}
               className="flex gap-2 overflow-x-auto pb-2 scroll-smooth scrollbar-hide snap-x snap-mandatory"
               style={{
                 scrollPaddingLeft: "0.5rem",
