@@ -164,17 +164,22 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
               </div>
             </div>
 
-            {/* Dots Navigation */}
+            {/* Dots Navigation with Fill Animation */}
             {pageCount > 1 && (
-              <div className="flex justify-center mt-2 gap-1">
+              <div className="flex justify-center mt-2 gap-2 px-2">
                 {Array.from({ length: pageCount }).map((_, i) => (
-                  <button
+                  <div
                     key={i}
                     onClick={() => scrollToPage(i)}
-                    className={`w-2 h-2 rounded-full transition-all ${
-                      i === page ? 'bg-gray-900' : 'bg-gray-300'
-                    }`}
-                  />
+                    className="relative w-4 h-2 rounded-full bg-gray-300 overflow-hidden cursor-pointer"
+                  >
+                    <div
+                      className="absolute top-0 left-0 h-full bg-gray-900 transition-all duration-300"
+                      style={{
+                        width: i === page ? '100%' : '0%',
+                      }}
+                    />
+                  </div>
                 ))}
               </div>
             )}
