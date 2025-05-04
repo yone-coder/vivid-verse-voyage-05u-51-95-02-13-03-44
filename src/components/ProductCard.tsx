@@ -1,58 +1,96 @@
-export const ProductCard = ({ product }) => {
-  const mainImage = product.product_images?.[0]?.src || "https://placehold.co/300x300?text=No+Image";
-  const discountPercentage = product.discount_price && Math.round(((product.price - product.discount_price) / product.price) * 100);
+import React from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Heart } from "lucide-react";
+import { Link } from "react-router-dom";
+
+interface ProductProps {
+  id: string;
+  name: string;
+  price: number;
+  discountPrice?: number;
+  rating: number;
+  image: string;
+  isNew?: boolean;
+  category: string;
+  sold?: number;
+}
+
+interface ProductCardProps {
+  product: ProductProps;
+  className?: string;
+  showTitle?: boolean;
+  showButton?: boolean;
+  compact?: boolean;
+}
+
+const ProductCard = ({
+  product,
+  className = "",
+  showTitle = true,
+  showButton = true,
+  compact = false
+}: ProductCardProps) => {
+  const { id, name, price, discountPrice, rating, image, isNew } = product;
+  const discount = discountPrice ? Math.round(((price - discountPrice) / price) * 100) : 0;
 
   return (
-    <Card className="overflow-hidden group border h-full">
-      <Link to={`/product/${product.id}`} className="block">
-        <div className="relative bg-gray-100 aspect-square overflow-hidden">
+    <Card className={`overflow-hidden group border h-full transition-all ${className}`}>
+      <Link to={`/product/${id}`} className="block h-full">
+        <div className="relative overflow-hidden aspect-square">
           <img 
-            src={mainImage} 
-            alt={product.name} 
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-            loading="lazy"
+            src={image} 
+            alt={name} 
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
-          {discountPercentage && (
-            <div className="absolute top-1 left-1 bg-red-500 text-white text-[10px] font-semibold px-1.5 py-0.5 rounded">
-              -{discountPercentage}%
-            </div>
+          <div className="absolute top-1.5 right-1.5">
+            <Heart className="h-4 w-4 text-gray-400 hover:text-red-500 transition-colors cursor-pointer" />
+          </div>
+          {discount > 0 && (
+            <Badge className="absolute top-1.5 left-1.5 bg-red-500 hover:bg-red-600 text-[10px] px-1.5 py-0.5">
+              -{discount}%
+            </Badge>
           )}
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="absolute top-1 right-1 bg-white/90 text-gray-600 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-          >
-            <Heart className="h-3.5 w-3.5" />
-          </Button>
+          {isNew && (
+            <Badge className="absolute bottom-1.5 left-1.5 bg-green-500 hover:bg-green-600 text-[10px] px-1.5 py-0.5">
+              New
+            </Badge>
+          )}
         </div>
+
+        {showTitle && (
+          <CardContent className={`flex flex-col gap-1 ${compact ? "p-2" : "p-3"}`}>
+            <h3 className={`truncate ${compact ? "text-xs font-medium" : "text-sm font-semibold"}`}>
+              {name}
+            </h3>
+            <div className="flex flex-col items-start space-y-0.5">
+              <div className="flex items-center gap-1">
+                {discountPrice ? (
+                  <>
+                    <span className={`font-semibold ${compact ? "text-sm" : "text-base"}`}>
+                      ${discountPrice}
+                    </span>
+                    <span className={`text-gray-400 line-through ${compact ? "text-xs" : "text-sm"}`}>
+                      ${price}
+                    </span>
+                  </>
+                ) : (
+                  <span className={`font-semibold ${compact ? "text-sm" : "text-base"}`}>
+                    ${price}
+                  </span>
+                )}
+              </div>
+              {showButton && (
+                <button className="text-xs mt-1 px-2 py-0.5 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors">
+                  Add to cart
+                </button>
+              )}
+            </div>
+          </CardContent>
+        )}
       </Link>
-      <CardContent className="p-2 space-y-1">
-        <Link to={`/product/${product.id}`} className="block">
-          <h3 className="text-xs font-medium leading-tight line-clamp-2">{product.name}</h3>
-          <div className="flex items-center text-amber-400 text-[10px] gap-0.5 mt-1">
-            {[...Array(5)].map((_, i) => (
-              <Star key={i} className={`h-3 w-3 ${i < 4 ? "fill-amber-400" : "stroke-amber-400/50"}`} />
-            ))}
-            <span className="text-gray-500 ml-1">(42)</span>
-          </div>
-          <div className="flex items-center gap-1 mt-1">
-            {product.discount_price ? (
-              <>
-                <span className="text-red-500 font-semibold text-sm">${product.discount_price.toFixed(2)}</span>
-                <span className="text-gray-400 text-[10px] line-through">${product.price.toFixed(2)}</span>
-              </>
-            ) : (
-              <span className="text-sm font-semibold">${product.price.toFixed(2)}</span>
-            )}
-          </div>
-          <p className="text-[10px] text-gray-500 mt-0.5">Free Shipping</p>
-        </Link>
-      </CardContent>
-      <CardFooter className="p-2 pt-0">
-        <Button size="sm" variant="outline" className="w-full h-7 text-[11px] gap-1">
-          <ShoppingCart className="h-3.5 w-3.5" /> Add
-        </Button>
-      </CardFooter>
     </Card>
   );
 };
+
+export default ProductCard;
