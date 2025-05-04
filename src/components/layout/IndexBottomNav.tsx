@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -23,7 +22,7 @@ export default function IndexBottomNav() {
   const [showNotificationDot, setShowNotificationDot] = useState(true);
   const location = useLocation();
   const { toast } = useToast();
-  
+
   const navItems = [
     {
       id: "home",
@@ -42,10 +41,10 @@ export default function IndexBottomNav() {
     {
       id: "add",
       icon: Plus,
-      label: "",
+      label: "Add",
       path: "#",
       badge: null,
-      isCenter: true,
+      isSpecial: true,
     },
     {
       id: "wishlist",
@@ -90,36 +89,37 @@ export default function IndexBottomNav() {
       >
         <div className="h-16 max-w-md mx-auto flex items-center justify-between px-2 relative">
           {navItems.map((item) => (
-            item.isCenter ? (
-              <div key={item.id} className="flex flex-col items-center justify-center w-1/5">
-                <button
-                  onClick={handleAddClick}
-                  className="w-14 h-14 rounded-full bg-gradient-to-tr from-red-500 to-red-400 flex items-center justify-center shadow-lg transform -translate-y-6 border-4 border-white dark:border-zinc-800"
-                  style={{
-                    boxShadow: "0 4px 15px rgba(239, 68, 68, 0.3)"
-                  }}
-                >
-                  <Plus className="w-6 h-6 text-white" strokeWidth={2} />
-                </button>
-              </div>
-            ) : (
-              <Link
-                key={item.id}
-                to={item.path}
-                className="flex flex-col items-center justify-center w-1/5 relative"
-                onClick={() => setActiveTab(item.id)}
-              >
+            <Link
+              key={item.id}
+              to={item.path}
+              className="flex flex-col items-center justify-center w-1/5 relative"
+              onClick={(e) => {
+                if (item.id === "add") {
+                  handleAddClick(e);
+                } else {
+                  setActiveTab(item.id);
+                }
+              }}
+            >
+              <div className="relative">
+                <motion.div
+                  className={cn(
+                    "absolute -inset-3 rounded-full",
+                    activeTab === item.id ? "bg-red-50 dark:bg-red-950/20" : "bg-transparent"
+                  )}
+                  layoutId="nav-pill"
+                  transition={{ type: "spring", duration: 0.5 }}
+                  style={{ opacity: activeTab === item.id ? 1 : 0 }}
+                />
                 <div className="relative">
-                  <motion.div
-                    className={cn(
-                      "absolute -inset-3 rounded-full",
-                      activeTab === item.id ? "bg-red-50 dark:bg-red-950/20" : "bg-transparent"
-                    )}
-                    layoutId="nav-pill"
-                    transition={{ type: "spring", duration: 0.5 }}
-                    style={{ opacity: activeTab === item.id ? 1 : 0 }}
-                  />
-                  <div className="relative">
+                  {item.isSpecial ? (
+                    <div className="bg-gradient-to-tr from-red-500 to-red-400 rounded-full p-2 shadow-md"
+                      style={{
+                        boxShadow: "0 2px 8px rgba(239, 68, 68, 0.3)"
+                      }}>
+                      <Plus className="w-5 h-5 text-white" strokeWidth={2} />
+                    </div>
+                  ) : (
                     <item.icon
                       className={cn(
                         "w-5 h-5 transition-colors",
@@ -128,45 +128,47 @@ export default function IndexBottomNav() {
                           : "text-gray-500 dark:text-gray-400"
                       )}
                     />
-                    
-                    {item.badge && (
-                      <motion.div 
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[8px] font-medium rounded-full px-1 min-w-[14px] h-3.5 flex items-center justify-center"
-                      >
-                        {item.badge}
-                      </motion.div>
-                    )}
-                  </div>
+                  )}
+
+                  {item.badge && (
+                    <motion.div 
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[8px] font-medium rounded-full px-1 min-w-[14px] h-3.5 flex items-center justify-center"
+                    >
+                      {item.badge}
+                    </motion.div>
+                  )}
                 </div>
-                
-                <span 
-                  className={cn(
-                    "text-[10px] mt-1 font-medium",
-                    activeTab === item.id 
+              </div>
+
+              <span 
+                className={cn(
+                  "text-[10px] mt-1 font-medium",
+                  item.isSpecial 
+                    ? "text-red-500"
+                    : activeTab === item.id 
                       ? "text-red-500" 
                       : "text-gray-500 dark:text-gray-400"
-                  )}
-                >
-                  {item.label}
-                </span>
-                
-                {activeTab === item.id && (
-                  <motion.div 
-                    className="absolute -bottom-3 w-1 h-1 rounded-full bg-red-500"
-                    layoutId="activeIndicator"
-                    transition={{ type: "spring", duration: 0.5 }}
-                  />
                 )}
-              </Link>
-            )
+              >
+                {item.label}
+              </span>
+
+              {activeTab === item.id && !item.isSpecial && (
+                <motion.div 
+                  className="absolute -bottom-3 w-1 h-1 rounded-full bg-red-500"
+                  layoutId="activeIndicator"
+                  transition={{ type: "spring", duration: 0.5 }}
+                />
+              )}
+            </Link>
           ))}
         </div>
-        
+
         {/* Quick actions drawer pull indicator */}
         <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-10 h-1 bg-gray-300 dark:bg-gray-700 rounded-full opacity-80" />
-        
+
         {/* Extra space at bottom for iOS safe area */}
         <div className="h-safe-bottom bg-white dark:bg-zinc-900" />
       </motion.div>
@@ -188,7 +190,7 @@ export default function IndexBottomNav() {
                 <Plus className="w-6 h-6 mb-1" />
                 <span className="text-xs font-medium">Add Product</span>
               </Link>
-              
+
               <Link 
                 to="/categories" 
                 className="flex flex-col items-center justify-center p-3 bg-blue-50 hover:bg-blue-100 text-blue-500 rounded-lg transition-colors"
@@ -197,7 +199,7 @@ export default function IndexBottomNav() {
                 <Compass className="w-6 h-6 mb-1" />
                 <span className="text-xs font-medium">Browse Categories</span>
               </Link>
-              
+
               <Link 
                 to="/wishlist" 
                 className="flex flex-col items-center justify-center p-3 bg-purple-50 hover:bg-purple-100 text-purple-500 rounded-lg transition-colors"
@@ -206,7 +208,7 @@ export default function IndexBottomNav() {
                 <Heart className="w-6 h-6 mb-1" />
                 <span className="text-xs font-medium">My Wishlist</span>
               </Link>
-              
+
               <button 
                 onClick={() => {
                   setIsAddDialogOpen(false);
