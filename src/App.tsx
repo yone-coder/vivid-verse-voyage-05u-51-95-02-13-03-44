@@ -11,6 +11,7 @@ import Posts from "./pages/Posts";
 import Shops from "./pages/Shops";
 import Trending from "./pages/Trending";
 import Videos from "./pages/Videos";
+import Reels from "./pages/Reels";
 import NotFound from "./pages/NotFound";
 import ProductDetail from "./pages/ProductDetail";
 import SearchPage from "./pages/SearchPage";
@@ -37,11 +38,12 @@ const App = () => (
                 <Route path="/shops" element={<Shops />} />
                 <Route path="/trending" element={<Trending />} />
                 <Route path="/videos" element={<Videos />} />
+                <Route path="/reels" element={<Reels />} />
                 <Route path="/browse" element={<ForYou />} />
                 <Route path="/product/:id" element={<ProductDetail />} />
                 <Route path="/admin" element={<AdminPanel />} />
                 <Route path="/search" element={<SearchPage />} />
-                <Route path="/categories" element={<NotFound />} />
+                <Route path="/categories" element={<Navigate to="/reels" replace />} />
                 <Route path="/cart" element={<NotFound />} />
                 <Route path="/wishlist" element={<NotFound />} />
                 <Route path="/account" element={<NotFound />} />

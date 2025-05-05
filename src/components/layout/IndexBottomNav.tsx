@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -33,7 +34,7 @@ export default function IndexBottomNav() {
   useEffect(() => {
     if (location.pathname === "/" || location.pathname === "/for-you") {
       setActiveTab("home");
-    } else if (location.pathname === "/categories") {
+    } else if (location.pathname === "/categories" || location.pathname === "/reels") {
       setActiveTab("categories");
     } else if (location.pathname === "/wishlist") {
       setActiveTab("wishlist");
@@ -54,7 +55,7 @@ export default function IndexBottomNav() {
       id: "categories",
       icon: Zap,
       label: "Shorts",
-      path: "/categories",
+      path: "/reels",
       badge: null
     },
     {
