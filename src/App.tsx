@@ -44,6 +44,7 @@ const App = () => (
                 <Route path="/admin" element={<AdminPanel />} />
                 <Route path="/search" element={<SearchPage />} />
                 <Route path="/categories" element={<Navigate to="/reels" replace />} />
+                <Route path="/auth" element={<NotFound />} /> {/* This will be replaced with actual auth page */}
                 <Route path="/cart" element={<NotFound />} />
                 <Route path="/wishlist" element={<NotFound />} />
                 <Route path="/account" element={<NotFound />} />

@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/popover";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
+import SignInBanner from "./SignInBanner";
 
 export default function IndexBottomNav() {
   const [activeTab, setActiveTab] = useState("home");
@@ -30,6 +31,7 @@ export default function IndexBottomNav() {
   const { toast } = useToast();
   const plusButtonRef = useRef(null);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [showSignInBanner, setShowSignInBanner] = useState(true);
 
   useEffect(() => {
     if (location.pathname === "/" || location.pathname === "/for-you") {
@@ -141,6 +143,7 @@ export default function IndexBottomNav() {
 
   return (
     <>
+      {showSignInBanner && <SignInBanner />}
       <motion.div
         initial={{ y: 100 }}
         animate={{ y: 0 }}
