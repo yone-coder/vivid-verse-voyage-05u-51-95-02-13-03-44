@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { User, Mail, Phone, Eye, EyeOff } from 'lucide-react';
+import { User, Mail, Phone, Eye, EyeOff, ChevronLeft } from 'lucide-react';
 
 const SpotifyLogin = () => {
   const [email, setEmail] = useState('');
@@ -9,6 +9,8 @@ const SpotifyLogin = () => {
   const [activeTab, setActiveTab] = useState('email'); // 'email', 'username', or 'phone'
   const [step, setStep] = useState(1); // Multi-step process
   const [tabTransition, setTabTransition] = useState(false);
+  const [showLoginOptions, setShowLoginOptions] = useState(false);
+  const [showLoginForm, setShowLoginForm] = useState(false);
 
   // Handle tab switching with animation
   const handleTabChange = (tab) => {
@@ -19,6 +21,24 @@ const SpotifyLogin = () => {
       setActiveTab(tab);
       setTabTransition(false);
     }, 150);
+  };
+
+  const handleOpenLoginOptions = () => {
+    setShowLoginOptions(true);
+  };
+
+  const handleLoginOptionSelect = (option) => {
+    setActiveTab(option);
+    setShowLoginOptions(false);
+    setShowLoginForm(true);
+  };
+
+  const handleBackToMain = () => {
+    setShowLoginForm(false);
+    setShowLoginOptions(false);
+    setStep(1);
+    setEmail('');
+    setPassword('');
   };
 
   const handleSubmit = (e) => {
@@ -89,24 +109,6 @@ const SpotifyLogin = () => {
     );
   };
 
-  // Active tab indicator styles
-  const getTabIndicatorStyles = () => {
-    let position = "left-0";
-    
-    if (activeTab === 'email') position = "left-0";
-    else if (activeTab === 'username') position = "left-1/3";
-    else if (activeTab === 'phone') position = "left-2/3";
-    
-    return `absolute bottom-0 w-1/3 h-0.5 bg-green-500 transition-all duration-300 ${position}`;
-  };
-
-  // Get tab button styles
-  const getTabButtonStyles = (tab) => {
-    return `flex-1 py-3 text-center relative font-medium text-sm transition-all duration-200 ${
-      activeTab === tab ? 'text-white' : 'text-gray-400 hover:text-gray-200'
-    }`;
-  };
-
   return (
     <div className="flex flex-col items-center min-h-screen bg-black text-white">
       {/* Header with logo */}
@@ -125,154 +127,180 @@ const SpotifyLogin = () => {
       <div className="w-full max-w-md p-6 rounded-lg bg-black">
         <h1 className="text-3xl font-bold text-center mb-8">Log in to Spotify</h1>
 
-        <div className="space-y-4">
-          {/* Social login buttons */}
-          <button className="w-full py-3 px-4 border border-gray-700 rounded-full font-bold flex items-center justify-center space-x-2 hover:border-white transition-colors">
-            <svg className="w-5 h-5" viewBox="0 0 24 24">
-              <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
-                <path fill="#4285F4" d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z"/>
-                <path fill="#34A853" d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z"/>
-                <path fill="#FBBC05" d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.724 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z"/>
-                <path fill="#EA4335" d="M -14.754 43.989 C -12.984 43.989 -11.404 44.599 -10.154 45.789 L -6.734 42.369 C -8.804 40.429 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z"/>
-              </g>
-            </svg>
-            <span>Continue with Google</span>
-          </button>
-
-          <button className="w-full py-3 px-4 border border-gray-700 rounded-full font-bold flex items-center justify-center space-x-2 hover:border-white transition-colors">
-            <svg className="w-5 h-5" viewBox="0 0 24 24">
-              <path fill="currentColor" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"/>
-            </svg>
-            <span>Continue with Facebook</span>
-          </button>
-
-          <div className="flex items-center">
-            <div className="flex-grow border-t border-gray-700"></div>
-            <span className="px-4 text-sm text-gray-400">OR</span>
-            <div className="flex-grow border-t border-gray-700"></div>
-          </div>
-        </div>
-
-        {/* Enhanced Tab Switcher */}
-        <div className="relative border-b border-gray-700 mb-6 mt-6">
-          <div className="flex">
+        {showLoginForm ? (
+          <div className="animate-fade-in">
+            {/* Back button */}
             <button 
-              className={getTabButtonStyles('email')}
-              onClick={() => handleTabChange('email')}
+              onClick={handleBackToMain}
+              className="flex items-center text-gray-400 hover:text-white mb-6"
             >
-              <div className="flex items-center justify-center space-x-1">
-                <Mail size={16} />
+              <ChevronLeft size={18} />
+              <span>Back</span>
+            </button>
+            
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {step === 1 ? (
+                renderInputField()
+              ) : (
+                <div className="relative">
+                  <label htmlFor="password" className="block text-sm font-medium mb-2">
+                    Password
+                  </label>
+                  <div className="relative">
+                    <input
+                      id="password"
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full px-3 py-3 bg-gray-900 border border-gray-700 rounded text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      required
+                    />
+                    <button
+                      type="button"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {step === 2 && (
+                <div className="flex items-center">
+                  <div className="relative inline-block w-10 mr-2 align-middle select-none">
+                    <input 
+                      type="checkbox" 
+                      id="remember" 
+                      checked={rememberMe}
+                      onChange={(e) => setRememberMe(e.target.checked)}
+                      className="opacity-0 absolute block w-6 h-6 cursor-pointer" 
+                    />
+                    <label 
+                      htmlFor="remember" 
+                      className={`block overflow-hidden h-6 rounded-full bg-gray-700 cursor-pointer ${rememberMe ? 'bg-green-500' : ''}`}
+                    >
+                      <span className={`block h-6 w-6 rounded-full bg-white shadow transform transition-transform duration-200 ease-in ${rememberMe ? 'translate-x-4' : 'translate-x-0'}`}></span>
+                    </label>
+                  </div>
+                  <label htmlFor="remember" className="text-sm cursor-pointer">
+                    Remember me
+                  </label>
+                </div>
+              )}
+
+              <button
+                type="submit"
+                className="w-full bg-green-500 text-black font-bold py-3 px-4 rounded-full hover:scale-105 hover:bg-green-400 transition-all focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-black"
+              >
+                {step === 1 ? 'Next' : 'Log In'}
+              </button>
+
+              {step === 2 && (
+                <div className="text-center">
+                  <a href="#" className="text-gray-400 hover:text-white hover:underline text-sm transition-colors">
+                    Forgot your password?
+                  </a>
+                </div>
+              )}
+
+              {step === 1 && (
+                <div className={`text-center transition-opacity duration-150 ${tabTransition ? 'opacity-0' : 'opacity-100'}`}>
+                  <span className="text-sm text-gray-400">
+                    {activeTab === 'email' && "We'll send you a link to log in"}
+                    {activeTab === 'username' && "Enter your Spotify username"}
+                    {activeTab === 'phone' && "We'll send you a confirmation code"}
+                  </span>
+                </div>
+              )}
+            </form>
+          </div>
+        ) : showLoginOptions ? (
+          <div className="animate-fade-in">
+            {/* Back button */}
+            <button 
+              onClick={handleBackToMain}
+              className="flex items-center text-gray-400 hover:text-white mb-6"
+            >
+              <ChevronLeft size={18} />
+              <span>Back</span>
+            </button>
+            
+            <h2 className="text-xl font-semibold mb-6">Choose a login method</h2>
+            
+            <div className="flex justify-center space-x-4">
+              <button 
+                onClick={() => handleLoginOptionSelect('email')}
+                className="flex-1 flex flex-col items-center justify-center py-4 px-2 bg-gray-900 rounded-xl hover:bg-gray-800 transition-colors"
+              >
+                <div className="bg-gray-800 p-3 rounded-full mb-2">
+                  <Mail size={24} className="text-green-500" />
+                </div>
                 <span>Email</span>
-              </div>
-            </button>
-            <button 
-              className={getTabButtonStyles('username')}
-              onClick={() => handleTabChange('username')}
-            >
-              <div className="flex items-center justify-center space-x-1">
-                <User size={16} />
+              </button>
+              
+              <button 
+                onClick={() => handleLoginOptionSelect('username')}
+                className="flex-1 flex flex-col items-center justify-center py-4 px-2 bg-gray-900 rounded-xl hover:bg-gray-800 transition-colors"
+              >
+                <div className="bg-gray-800 p-3 rounded-full mb-2">
+                  <User size={24} className="text-green-500" />
+                </div>
                 <span>Username</span>
-              </div>
-            </button>
-            <button 
-              className={getTabButtonStyles('phone')}
-              onClick={() => handleTabChange('phone')}
-            >
-              <div className="flex items-center justify-center space-x-1">
-                <Phone size={16} />
+              </button>
+              
+              <button 
+                onClick={() => handleLoginOptionSelect('phone')}
+                className="flex-1 flex flex-col items-center justify-center py-4 px-2 bg-gray-900 rounded-xl hover:bg-gray-800 transition-colors"
+              >
+                <div className="bg-gray-800 p-3 rounded-full mb-2">
+                  <Phone size={24} className="text-green-500" />
+                </div>
                 <span>Phone</span>
-              </div>
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {/* Social login buttons */}
+            <button className="w-full py-3 px-4 border border-gray-700 rounded-full font-bold flex items-center justify-center space-x-2 hover:border-white transition-colors">
+              <svg className="w-5 h-5" viewBox="0 0 24 24">
+                <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
+                  <path fill="#4285F4" d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z"/>
+                  <path fill="#34A853" d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z"/>
+                  <path fill="#FBBC05" d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.724 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z"/>
+                  <path fill="#EA4335" d="M -14.754 43.989 C -12.984 43.989 -11.404 44.599 -10.154 45.789 L -6.734 42.369 C -8.804 40.429 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z"/>
+                </g>
+              </svg>
+              <span>Continue with Google</span>
+            </button>
+
+            <button className="w-full py-3 px-4 border border-gray-700 rounded-full font-bold flex items-center justify-center space-x-2 hover:border-white transition-colors">
+              <svg className="w-5 h-5" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"/>
+              </svg>
+              <span>Continue with Facebook</span>
+            </button>
+
+            {/* Login options button */}
+            <button 
+              onClick={handleOpenLoginOptions}
+              className="w-full py-3 px-4 border border-gray-700 rounded-full font-bold flex items-center justify-center hover:border-green-500 hover:text-green-500 transition-colors"
+            >
+              <span>Login with email, username, or phone</span>
             </button>
           </div>
-          {/* Animated active tab indicator */}
-          <div className={getTabIndicatorStyles()}></div>
-        </div>
+        )}
 
-        {/* Login form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {step === 1 ? (
-            renderInputField()
-          ) : (
-            <div className="relative">
-              <label htmlFor="password" className="block text-sm font-medium mb-2">
-                Password
-              </label>
-              <div className="relative">
-                <input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-3 py-3 bg-gray-900 border border-gray-700 rounded text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  required
-                />
-                <button
-                  type="button"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
-              </div>
-            </div>
-          )}
-
-          {step === 2 && (
-            <div className="flex items-center">
-              <div className="relative inline-block w-10 mr-2 align-middle select-none">
-                <input 
-                  type="checkbox" 
-                  id="remember" 
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                  className="opacity-0 absolute block w-6 h-6 cursor-pointer" 
-                />
-                <label 
-                  htmlFor="remember" 
-                  className={`block overflow-hidden h-6 rounded-full bg-gray-700 cursor-pointer ${rememberMe ? 'bg-green-500' : ''}`}
-                >
-                  <span className={`block h-6 w-6 rounded-full bg-white shadow transform transition-transform duration-200 ease-in ${rememberMe ? 'translate-x-4' : 'translate-x-0'}`}></span>
-                </label>
-              </div>
-              <label htmlFor="remember" className="text-sm cursor-pointer">
-                Remember me
-              </label>
-            </div>
-          )}
-
-          <button
-            type="submit"
-            className="w-full bg-green-500 text-black font-bold py-3 px-4 rounded-full hover:scale-105 hover:bg-green-400 transition-all focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-black"
-          >
-            {step === 1 ? 'Next' : 'Log In'}
-          </button>
-
-          {step === 2 && (
-            <div className="text-center">
-              <a href="#" className="text-gray-400 hover:text-white hover:underline text-sm transition-colors">
-                Forgot your password?
-              </a>
-            </div>
-          )}
-
-          {step === 1 && (
-            <div className={`text-center transition-opacity duration-150 ${tabTransition ? 'opacity-0' : 'opacity-100'}`}>
-              <span className="text-sm text-gray-400">
-                {activeTab === 'email' && "We'll send you a link to log in"}
-                {activeTab === 'username' && "Enter your Spotify username"}
-                {activeTab === 'phone' && "We'll send you a confirmation code"}
-              </span>
-            </div>
-          )}
-        </form>
-
-        <div className="mt-8 border-t border-gray-700 pt-6 text-center">
-          <p className="text-gray-400 text-sm">Don't have an account?</p>
-          <a href="#" className="block mt-2 border border-gray-700 text-white font-bold py-3 px-4 rounded-full hover:border-green-500 hover:text-green-500 transition-colors">
-            Sign up for Spotify
-          </a>
-        </div>
+        {!showLoginForm && !showLoginOptions && (
+          <div className="mt-8 border-t border-gray-700 pt-6 text-center">
+            <p className="text-gray-400 text-sm">Don't have an account?</p>
+            <a href="#" className="block mt-2 border border-gray-700 text-white font-bold py-3 px-4 rounded-full hover:border-green-500 hover:text-green-500 transition-colors">
+              Sign up for Spotify
+            </a>
+          </div>
+        )}
       </div>
 
       {/* Footer */}
