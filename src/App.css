@@ -2,7 +2,6 @@
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
   text-align: center;
   font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
@@ -41,4 +40,43 @@
 
 .read-the-docs {
   color: #888;
+}
+
+/* AliExpress specific styles */
+.ali-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 12px;
+}
+
+.ali-section {
+  margin-bottom: 12px;
+  background: #fff;
+  border-radius: 4px;
+}
+
+.ali-price {
+  color: #ff4747;
+  font-weight: 600;
+}
+
+.ali-discount-tag {
+  background-color: #ff4747;
+  color: white;
+  padding: 2px 4px;
+  border-radius: 2px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.ali-rating {
+  color: #ff9800;
+}
+
+/* Mobile Optimization */
+@media (max-width: 768px) {
+  .ali-container {
+    padding: 0 8px;
+  }
 }

@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Footer from "@/components/layout/Footer";
@@ -14,6 +15,7 @@ export default function MainLayout() {
                      location.pathname === "/posts" || location.pathname === "/shops" ||
                      location.pathname === "/trending" || location.pathname === "/videos";
   const isReelsPage = location.pathname === "/reels";
+  const isAuthPage = location.pathname === "/auth";
   const { toast } = useToast();
   const [isFavorite, setIsFavorite] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -73,7 +75,7 @@ export default function MainLayout() {
   `;
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-white">
       <style dangerouslySetInnerHTML={{ __html: headerHeightStyle }} />
 
       {/* AliExpress Header for home pages */}
@@ -83,7 +85,11 @@ export default function MainLayout() {
 
       {/* Removed the regular Header component completely */}
 
-      {isProductPage || isHomePage || isReelsPage ? (
+      {isAuthPage ? (
+        <main className="flex-grow w-full">
+          <Outlet />
+        </main>
+      ) : isProductPage || isHomePage || isReelsPage ? (
         <main className="flex-grow relative">
           <Outlet />
         </main>
@@ -93,7 +99,7 @@ export default function MainLayout() {
         </main>
       )}
       
-      {!isMobile && !isHomePage && !isReelsPage && <Footer />}
+      {!isMobile && !isHomePage && !isReelsPage && !isAuthPage && <Footer />}
 
       {/* Show bottom nav on mobile for home, reels and product pages */}
       {isMobile && (isHomePage || isProductPage || isReelsPage) && <IndexBottomNav />}

@@ -35,16 +35,16 @@ export default function ForYou() {
       </div>
       
       <HeroBannerSection />
-      <SuperDealsSection products={products || []} />
+      <SuperDealsSection products={products || []} isLoading={isLoading} />
       <SecondaryHeroBanner />
       <FlashDeals />
       <SpaceSavingCategories />
       <TopBrands />
-      <VendorProductCarousel title="Technology" products={products?.slice(0, 10) || []} />
+      <VendorProductCarousel title="Technology" products={products?.slice(0, 10) || []} isLoading={isLoading} />
       <SecondaryFlashDeals />
       <BenefitsBanner />
       <TopVendorsCompact />
-      <ProductGrid products={products || []} />
+      <ProductGrid products={products || []} isLoading={isLoading} />
       <Newsletter />
     </div>
   );

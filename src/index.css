@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -13,8 +14,8 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 351 83% 53%;
+    --primary-foreground: 0 0% 100%;
 
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
@@ -42,6 +43,14 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* AliExpress specific colors */
+    --ali-red: 351 83% 53%;
+    --ali-orange: 25 95% 53%;
+    --ali-light-gray: 0 0% 96%;
+    --ali-border-gray: 0 0% 90%;
+    --ali-text-primary: 0 0% 20%;
+    --ali-text-secondary: 0 0% 45%;
   }
 
   .dark {
@@ -54,8 +63,8 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 351 83% 53%;
+    --primary-foreground: 0 0% 100%;
 
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
@@ -88,8 +97,33 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-white text-foreground;
   }
+}
+
+/* AliExpress specific styles */
+.ali-container {
+  @apply max-w-screen-xl mx-auto px-2 sm:px-4;
+}
+
+.ali-button-primary {
+  @apply bg-[#ff4747] hover:bg-[#ff2020] text-white transition-colors;
+}
+
+.ali-button-secondary {
+  @apply bg-white border border-[#ff4747] text-[#ff4747] hover:bg-[#fff0f0] transition-colors;
+}
+
+.ali-card {
+  @apply bg-white border border-[#eaeaea] rounded-md shadow-sm hover:shadow-md transition-shadow;
+}
+
+.ali-price {
+  @apply text-[#ff4747] font-semibold;
+}
+
+.ali-discount {
+  @apply bg-[#fff3f3] text-[#ff4747] px-1 py-0.5 text-xs rounded;
 }
 
 /* Subtle pulse animation (opacity only) */

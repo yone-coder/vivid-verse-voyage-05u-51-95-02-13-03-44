@@ -247,9 +247,9 @@ export default function UltraModernLogin() {
             <div 
               className={`w-8 h-8 rounded-full flex items-center justify-center ${
                 currentStep > index + 1 
-                  ? 'bg-green-500 text-white' 
+                  ? 'bg-[#ff4747] text-white' 
                   : currentStep === index + 1 
-                    ? 'bg-orange-500 text-white'
+                    ? 'bg-[#ff4747] text-white'
                     : 'bg-gray-200 text-gray-500'
               }`}
             >
@@ -262,7 +262,7 @@ export default function UltraModernLogin() {
             {index < totalSteps - 1 && (
               <div 
                 className={`h-1 w-10 ${
-                  currentStep > index + 1 ? 'bg-green-500' : 'bg-gray-200'
+                  currentStep > index + 1 ? 'bg-[#ff4747]' : 'bg-gray-200'
                 }`}
               />
             )}
@@ -273,7 +273,7 @@ export default function UltraModernLogin() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-indigo-50 via-blue-50 to-purple-50 font-sans transition-opacity duration-500 w-full">
+    <div className="flex flex-col min-h-screen bg-white font-sans transition-opacity duration-500 w-full">
       <div className="w-full flex flex-col">
         {/* Minimal Header */}
         <div className="px-6 pt-8 pb-2 max-w-5xl mx-auto w-full">
@@ -292,7 +292,7 @@ export default function UltraModernLogin() {
                 : "Join our community today"}
           </p>
           <div className="flex justify-center mb-4">
-            <div className="bg-purple-100 text-purple-800 text-xs px-3 py-1 rounded-full flex items-center">
+            <div className="bg-[#fff2f2] text-[#ff4747] text-xs px-3 py-1 rounded-full flex items-center">
               <Shield className="h-3 w-3 mr-1" />
               <span>Enhanced security protocols active</span>
             </div>
@@ -307,7 +307,7 @@ export default function UltraModernLogin() {
           <div className="px-6 pt-0 pb-4 max-w-5xl mx-auto w-full">
             <button 
               onClick={goBack}
-              className="text-sm text-blue-600 hover:text-blue-800 flex items-center"
+              className="text-sm text-[#ff4747] hover:text-[#ff2727] flex items-center"
             >
               <ChevronRight className="h-4 w-4 rotate-180 mr-1" />
               {currentStep > 1 ? "Back to previous step" : resetPassword ? "Back to login" : "Back to sign in"}
@@ -323,9 +323,9 @@ export default function UltraModernLogin() {
               {currentStep === 1 && (
                 <div className="mb-6">
                   {authMode === 'signin' && (
-                    <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-100 flex items-center">
-                      <Info className="h-4 w-4 text-blue-500 mr-2" />
-                      <div className="text-xs text-blue-700">
+                    <div className="mb-4 p-3 bg-[#f5f5f5] rounded-lg border border-[#eaeaea] flex items-center">
+                      <Info className="h-4 w-4 text-[#ff4747] mr-2" />
+                      <div className="text-xs text-gray-700">
                         <span className="font-medium">Last login:</span> {lastLogin} from {loginLocation}
                       </div>
                     </div>
@@ -334,12 +334,12 @@ export default function UltraModernLogin() {
                   {/* Authentication Method Tabs */}
                   <div className="mb-4">
                     <Tabs defaultValue="email" value={activeTab} onValueChange={setActiveTab} className="w-full">
-                      <TabsList className="grid grid-cols-2 w-full">
-                        <TabsTrigger value="email" className="flex items-center justify-center">
+                      <TabsList className="grid grid-cols-2 w-full bg-[#f5f5f5]">
+                        <TabsTrigger value="email" className="flex items-center justify-center data-[state=active]:bg-white data-[state=active]:text-[#ff4747]">
                           <Mail className="h-4 w-4 mr-2" />
                           Email
                         </TabsTrigger>
-                        <TabsTrigger value="phone" className="flex items-center justify-center">
+                        <TabsTrigger value="phone" className="flex items-center justify-center data-[state=active]:bg-white data-[state=active]:text-[#ff4747]">
                           <Smartphone className="h-4 w-4 mr-2" />
                           Phone
                         </TabsTrigger>
@@ -348,14 +348,14 @@ export default function UltraModernLogin() {
                         <div className="mb-4">
                           <Label htmlFor="email" className="block text-gray-700 mb-1">Email address</Label>
                           <div className="relative group">
-                            <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-blue-600 transition-colors" />
+                            <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-[#ff4747] transition-colors" />
                             <Input
                               id="email"
                               type="email"
                               value={email}
                               onChange={(e) => setEmail(e.target.value)}
                               placeholder="Enter your email address"
-                              className="w-full pl-10 pr-3 py-3"
+                              className="w-full pl-10 pr-3 py-3 border-[#eaeaea] focus-visible:ring-[#ff4747]"
                               required
                             />
                           </div>
@@ -369,7 +369,7 @@ export default function UltraModernLogin() {
                               <select
                                 value={countryCode}
                                 onChange={(e) => setCountryCode(e.target.value)}
-                                className="h-10 w-full rounded-md border border-input bg-background px-3 py-1.5 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+                                className="h-10 w-full rounded-md border border-[#eaeaea] bg-background px-3 py-1.5 text-base focus-visible:ring-[#ff4747] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
                               >
                                 <option value="+1">+1</option>
                                 <option value="+44">+44</option>
@@ -380,14 +380,14 @@ export default function UltraModernLogin() {
                               </select>
                             </div>
                             <div className="relative group flex-1">
-                              <Smartphone className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-blue-600 transition-colors" />
+                              <Smartphone className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-[#ff4747] transition-colors" />
                               <Input
                                 id="phone"
                                 type="tel"
                                 value={phone}
                                 onChange={(e) => setPhone(e.target.value)}
                                 placeholder="Enter your phone number"
-                                className="w-full pl-10 pr-3 py-3"
+                                className="w-full pl-10 pr-3 py-3 border-[#eaeaea] focus-visible:ring-[#ff4747]"
                                 required
                               />
                             </div>
@@ -402,14 +402,14 @@ export default function UltraModernLogin() {
                     <div className="mb-4">
                       <Label htmlFor="fullName" className="block text-gray-700 mb-1">Full Name</Label>
                       <div className="relative group">
-                        <UserCheck className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-blue-600 transition-colors" />
+                        <UserCheck className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-[#ff4747] transition-colors" />
                         <Input
                           id="fullName"
                           type="text"
                           value={fullName}
                           onChange={(e) => setFullName(e.target.value)}
                           placeholder="Enter your full name"
-                          className="w-full pl-10 pr-3 py-3"
+                          className="w-full pl-10 pr-3 py-3 border-[#eaeaea] focus-visible:ring-[#ff4747]"
                           required
                         />
                       </div>
@@ -425,14 +425,14 @@ export default function UltraModernLogin() {
                   <div className="mb-4">
                     <Label htmlFor="password" className="block text-gray-700 mb-1">Password</Label>
                     <div className="relative group">
-                      <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-blue-600 transition-colors" />
+                      <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-[#ff4747] transition-colors" />
                       <Input
                         id="password"
                         type={showPassword ? "text" : "password"}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="Enter your password"
-                        className="w-full pl-10 pr-10 py-3"
+                        className="w-full pl-10 pr-10 py-3 border-[#eaeaea] focus-visible:ring-[#ff4747]"
                         required
                       />
                       <button
@@ -448,10 +448,10 @@ export default function UltraModernLogin() {
                     {authMode === 'signup' && (
                       <div className="mt-2">
                         <div className="w-full h-1 flex space-x-1">
-                          <div className={`h-full rounded-full w-1/4 ${password.length >= 8 ? 'bg-green-500' : 'bg-gray-200'}`}></div>
-                          <div className={`h-full rounded-full w-1/4 ${/[A-Z]/.test(password) ? 'bg-green-500' : 'bg-gray-200'}`}></div>
-                          <div className={`h-full rounded-full w-1/4 ${/[0-9]/.test(password) ? 'bg-green-500' : 'bg-gray-200'}`}></div>
-                          <div className={`h-full rounded-full w-1/4 ${/[^A-Za-z0-9]/.test(password) ? 'bg-green-500' : 'bg-gray-200'}`}></div>
+                          <div className={`h-full rounded-full w-1/4 ${password.length >= 8 ? 'bg-[#ff4747]' : 'bg-gray-200'}`}></div>
+                          <div className={`h-full rounded-full w-1/4 ${/[A-Z]/.test(password) ? 'bg-[#ff4747]' : 'bg-gray-200'}`}></div>
+                          <div className={`h-full rounded-full w-1/4 ${/[0-9]/.test(password) ? 'bg-[#ff4747]' : 'bg-gray-200'}`}></div>
+                          <div className={`h-full rounded-full w-1/4 ${/[^A-Za-z0-9]/.test(password) ? 'bg-[#ff4747]' : 'bg-gray-200'}`}></div>
                         </div>
                         <div className="flex justify-between mt-1">
                           <span className="text-xs text-gray-500">Password strength: {
@@ -471,14 +471,14 @@ export default function UltraModernLogin() {
                     <div className="mb-4">
                       <Label htmlFor="confirmPassword" className="block text-gray-700 mb-1">Confirm Password</Label>
                       <div className="relative group">
-                        <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-blue-600 transition-colors" />
+                        <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-[#ff4747] transition-colors" />
                         <Input
                           id="confirmPassword"
                           type={showPassword ? "text" : "password"}
                           value={confirmPassword}
                           onChange={(e) => setConfirmPassword(e.target.value)}
                           placeholder="Confirm your password"
-                          className={`w-full pl-10 pr-10 py-3 ${
+                          className={`w-full pl-10 pr-10 py-3 border-[#eaeaea] focus-visible:ring-[#ff4747] ${
                             confirmPassword && password !== confirmPassword 
                               ? 'border-red-500 focus:ring-red-500' 
                               : ''
@@ -500,11 +500,11 @@ export default function UltraModernLogin() {
                         type="checkbox"
                         checked={agreeToTerms}
                         onChange={() => setAgreeToTerms(!agreeToTerms)}
-                        className="h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                        className="h-4 w-4 text-[#ff4747] rounded border-gray-300 focus:ring-[#ff4747]"
                         required
                       />
                       <label htmlFor="terms" className="ml-2 block text-sm text-gray-600">
-                        I agree to the <a href="#" className="text-blue-600 hover:underline">Terms of Service</a> and <a href="#" className="text-blue-600 hover:underline">Privacy Policy</a>
+                        I agree to the <a href="#" className="text-[#ff4747] hover:underline">Terms of Service</a> and <a href="#" className="text-[#ff4747] hover:underline">Privacy Policy</a>
                       </label>
                     </div>
                   )}
@@ -522,7 +522,7 @@ export default function UltraModernLogin() {
                             className="absolute opacity-0 w-0 h-0"
                           />
                           <div className="block bg-gray-200 w-10 h-6 rounded-full cursor-pointer"></div>
-                          <div className={`absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-300 ease-in-out ${rememberMe ? 'transform translate-x-4 bg-orange-500' : ''}`}></div>
+                          <div className={`absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-300 ease-in-out ${rememberMe ? 'transform translate-x-4 bg-[#ff4747]' : ''}`}></div>
                         </div>
                         <label htmlFor="remember-me" className="block text-sm text-gray-600 cursor-pointer">
                           Remember me
@@ -532,7 +532,7 @@ export default function UltraModernLogin() {
                         <button 
                           type="button"
                           onClick={handlePasswordReset}
-                          className="font-medium text-orange-500 hover:text-orange-600 transition-colors cursor-pointer"
+                          className="font-medium text-[#ff4747] hover:text-[#ff2727] transition-colors cursor-pointer"
                         >
                           Forgot password?
                         </button>
@@ -544,29 +544,29 @@ export default function UltraModernLogin() {
 
               {/* Step 3: 2FA (if enabled) */}
               {currentStep === 3 && showTwoFactor && (
-                <div className="mb-4 mt-4 p-4 border border-blue-100 rounded-lg bg-blue-50">
-                  <h3 className="text-sm font-medium text-blue-800 mb-2 flex items-center">
-                    <Shield className="h-4 w-4 mr-2" />
+                <div className="mb-4 mt-4 p-4 border border-[#eaeaea] rounded-lg bg-[#f9f9f9]">
+                  <h3 className="text-sm font-medium text-gray-800 mb-2 flex items-center">
+                    <Shield className="h-4 w-4 mr-2 text-[#ff4747]" />
                     Two-Factor Authentication Required
                   </h3>
-                  <p className="text-xs text-blue-600 mb-3">
+                  <p className="text-xs text-gray-600 mb-3">
                     We've sent a verification code to your {activeTab === 'email' ? 'email' : 'phone'}.
                   </p>
                   <div className="mb-4">
                     <Label htmlFor="twoFactorCode">Enter 6-digit code</Label>
                     <InputOTP maxLength={6} value={twoFactorCode} onChange={setTwoFactorCode} className="mt-2">
                       <InputOTPGroup>
-                        <InputOTPSlot index={0} />
-                        <InputOTPSlot index={1} />
-                        <InputOTPSlot index={2} />
-                        <InputOTPSlot index={3} />
-                        <InputOTPSlot index={4} />
-                        <InputOTPSlot index={5} />
+                        <InputOTPSlot index={0} className="border-[#eaeaea] focus:border-[#ff4747] focus:ring-[#ff4747]" />
+                        <InputOTPSlot index={1} className="border-[#eaeaea] focus:border-[#ff4747] focus:ring-[#ff4747]" />
+                        <InputOTPSlot index={2} className="border-[#eaeaea] focus:border-[#ff4747] focus:ring-[#ff4747]" />
+                        <InputOTPSlot index={3} className="border-[#eaeaea] focus:border-[#ff4747] focus:ring-[#ff4747]" />
+                        <InputOTPSlot index={4} className="border-[#eaeaea] focus:border-[#ff4747] focus:ring-[#ff4747]" />
+                        <InputOTPSlot index={5} className="border-[#eaeaea] focus:border-[#ff4747] focus:ring-[#ff4747]" />
                       </InputOTPGroup>
                     </InputOTP>
                   </div>
                   <div className="flex justify-between mt-2">
-                    <button type="button" className="text-xs text-blue-600 hover:text-blue-800 transition-colors">
+                    <button type="button" className="text-xs text-[#ff4747] hover:text-[#ff2727] transition-colors">
                       Resend code
                     </button>
                     <span className="text-xs text-gray-500">
@@ -583,14 +583,14 @@ export default function UltraModernLogin() {
                 <div>
                   <Label htmlFor="resetEmail" className="block text-gray-700 mb-1">Email address</Label>
                   <div className="relative group">
-                    <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-blue-600 transition-colors" />
+                    <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-[#ff4747] transition-colors" />
                     <Input
                       id="resetEmail"
                       type="email"
                       value={resetEmail}
                       onChange={(e) => setResetEmail(e.target.value)}
                       placeholder="Enter your email address"
-                      className="w-full pl-10 pr-3 py-3"
+                      className="w-full pl-10 pr-3 py-3 border-[#eaeaea] focus-visible:ring-[#ff4747]"
                       required
                     />
                   </div>
@@ -600,8 +600,8 @@ export default function UltraModernLogin() {
                 </div>
               ) : (
                 <div className="text-center p-8">
-                  <div className="bg-green-100 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                    <CheckCircle className="h-8 w-8 text-green-600" />
+                  <div className="bg-[#fff2f2] p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                    <CheckCircle className="h-8 w-8 text-[#ff4747]" />
                   </div>
                   <h3 className="text-xl font-semibold text-gray-800 mb-2">Check your inbox</h3>
                   <p className="text-gray-600 mb-4">
@@ -620,7 +620,7 @@ export default function UltraModernLogin() {
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full flex items-center justify-center bg-orange-500 hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 text-white font-medium py-3 px-4 rounded-lg transition-all relative overflow-hidden h-12"
+              className="w-full flex items-center justify-center bg-[#ff4747] hover:bg-[#ff2727] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#ff4747] text-white font-medium py-3 px-4 rounded-lg transition-all relative overflow-hidden h-12"
             >
               {isLoading ? (
                 <Loader className="h-5 w-5 animate-spin" />
@@ -643,7 +643,7 @@ export default function UltraModernLogin() {
             <Button
               type="button"
               onClick={goBack}
-              className="w-full mt-4"
+              className="w-full mt-4 border-[#ff4747] text-[#ff4747] hover:bg-[#fff2f2]"
               variant="outline"
             >
               Back to sign in
@@ -656,19 +656,19 @@ export default function UltraModernLogin() {
           <div className="px-6 pt-0 pb-6 max-w-4xl mx-auto w-full">
             <div className="relative flex items-center justify-center my-4">
               <div className="border-t w-full absolute"></div>
-              <span className="bg-gradient-to-br from-gray-50 to-gray-100 px-4 text-sm text-gray-500 relative">or continue with</span>
+              <span className="bg-white px-4 text-sm text-gray-500 relative">or continue with</span>
             </div>
 
             <div className="grid grid-cols-3 gap-3">
               <button 
                 type="button"
                 onClick={() => handleSocialLogin('github')}
-                className="flex justify-center items-center py-2 px-4 border border-gray-300 rounded-lg shadow-sm bg-white hover:bg-gray-50 transition-all hover:shadow-md"
+                className="flex justify-center items-center py-2 px-4 border border-[#eaeaea] rounded-lg shadow-sm bg-white hover:bg-gray-50 transition-all hover:shadow-md"
               >
                 <Github className="h-5 w-5" />
               </button>
               <button 
-                className="flex justify-center items-center py-2 px-4 border border-gray-300 rounded-lg shadow-sm bg-white hover:bg-gray-50 transition-all hover:shadow-md"
+                className="flex justify-center items-center py-2 px-4 border border-[#eaeaea] rounded-lg shadow-sm bg-white hover:bg-gray-50 transition-all hover:shadow-md"
                 onClick={() => {
                   toast({
                     title: "Google login",
@@ -686,7 +686,7 @@ export default function UltraModernLogin() {
               <button 
                 type="button"
                 onClick={() => handleSocialLogin('twitter')}
-                className="flex justify-center items-center py-2 px-4 border border-gray-300 rounded-lg shadow-sm bg-white hover:bg-gray-50 transition-all hover:shadow-md"
+                className="flex justify-center items-center py-2 px-4 border border-[#eaeaea] rounded-lg shadow-sm bg-white hover:bg-gray-50 transition-all hover:shadow-md"
               >
                 <Twitter className="h-5 w-5 text-[#1DA1F2]" />
               </button>
@@ -696,14 +696,14 @@ export default function UltraModernLogin() {
 
         {/* Registration link */}
         {currentStep === 1 && !resetPassword && !resetSent && !showTwoFactor && (
-          <div className="px-6 py-4 bg-gray-50 flex items-center justify-between max-w-4xl mx-auto w-full">
+          <div className="px-6 py-4 bg-[#f9f9f9] flex items-center justify-between max-w-4xl mx-auto w-full">
             <p className="text-sm text-gray-600">
               {authMode === 'signin' ? "Don't have an account?" : "Already have an account?"}
             </p>
             <button 
               type="button"
               onClick={() => setAuthMode(authMode === 'signin' ? 'signup' : 'signin')}
-              className="inline-flex items-center text-sm font-medium text-orange-500 hover:text-orange-600 transition-colors cursor-pointer group"
+              className="inline-flex items-center text-sm font-medium text-[#ff4747] hover:text-[#ff2727] transition-colors cursor-pointer group"
             >
               {authMode === 'signin' ? "Register now" : "Sign in"}
               <ChevronRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -712,9 +712,9 @@ export default function UltraModernLogin() {
         )}
 
         {/* Safety notice */}
-        <div className="p-4 bg-blue-50 flex items-start border-t border-blue-100 max-w-4xl mx-auto w-full">
-          <AlertCircle className="h-5 w-5 text-blue-500 mt-0.5 mr-3 flex-shrink-0" />
-          <p className="text-xs text-blue-700">
+        <div className="p-4 bg-[#f9f9f9] flex items-start border-t border-[#eaeaea] max-w-4xl mx-auto w-full">
+          <AlertCircle className="h-5 w-5 text-[#ff4747] mt-0.5 mr-3 flex-shrink-0" />
+          <p className="text-xs text-gray-700">
             For account security, never share your password or verification codes. Our representatives will never ask for this information.
           </p>
         </div>
@@ -730,7 +730,7 @@ export default function UltraModernLogin() {
               description: "Biometric authentication is not available yet",
             });
           }}
-          className="bg-white text-orange-500 rounded-full p-3 shadow-lg hover:bg-orange-50 transition-all flex items-center justify-center hover:scale-110 transform active:scale-95"
+          className="bg-white text-[#ff4747] rounded-full p-3 shadow-lg hover:bg-[#fff2f2] transition-all flex items-center justify-center hover:scale-110 transform active:scale-95"
         >
           <Fingerprint className="w-6 h-6" />
         </button>
@@ -748,7 +748,7 @@ export default function UltraModernLogin() {
           }}
           className="bg-white flex items-center rounded-full pl-3 pr-4 py-2 shadow-lg hover:shadow-xl transition-all"
         >
-          <div className="bg-orange-500 p-1 rounded-full mr-2">
+          <div className="bg-[#ff4747] p-1 rounded-full mr-2">
             <Smartphone className="h-4 w-4 text-white" />
           </div>
           <span className="text-sm font-medium text-gray-700">Get our app</span>
