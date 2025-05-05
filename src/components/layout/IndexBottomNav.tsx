@@ -109,34 +109,17 @@ export default function IndexBottomNav() {
     }
   };
 
-  const quickActions = [
-    {
-      icon: ShoppingCart,
-      label: "Product",
-      action: "Product",
-      color: "text-blue-600",
-      badge: "HOT"
-    },
-    {
-      icon: Camera,
-      label: "Photo",
-      action: "Photo",
-      color: "text-purple-600"
-    },
-    {
-      icon: Tag,
-      label: "Offer",
-      action: "Offer",
-      color: "text-pink-600",
-      badge: "NEW"
-    },
-    {
-      icon: Gift,
-      label: "Sale",
-      action: "Sale",
-      color: "text-orange-600"
-    }
-  ];
+  // Updated quick actions
+const quickActions = [
+  { icon: ShoppingCart, label: "Product", action: "Product", color: "text-blue-600", badge: "HOT" },
+  { icon: Camera, label: "Photo", action: "Photo", color: "text-purple-600" },
+  { icon: Gift, label: "Shorts", action: "Shorts", color: "text-orange-600", badge: "NEW" },
+  { icon: Tag, label: "Offer", action: "Offer", color: "text-pink-600" },
+  { icon: Video, label: "Video", action: "Video", color: "text-red-600" },
+  { icon: Pencil, label: "Post", action: "Post", color: "text-green-600" },
+  { icon: Tag, label: "Coupon", action: "Coupon", color: "text-yellow-600" },
+  { icon: User, label: "Invite", action: "Invite", color: "text-indigo-600" },
+];
 
   return (
     <>
@@ -174,61 +157,52 @@ export default function IndexBottomNav() {
                     </div>
                   </button>
                 </PopoverTrigger>
-                <PopoverContent
-                  className="w-[280px] p-0 border border-gray-200 shadow-xl rounded-lg overflow-hidden"
-                  align="center"
-                  side="top"
-                  sideOffset={5}
-                >
-                  <div className="bg-gradient-to-r from-red-500 to-orange-500 px-4 py-2 text-white">
-                    <h3 className="font-medium text-sm">Quick Actions</h3>
-                  </div>
+                // Inside <PopoverContent>
+<PopoverContent 
+  className="w-[320px] p-0 border border-gray-200 shadow-xl rounded-lg overflow-hidden" 
+  align="center" 
+  side="top" 
+  sideOffset={5}
+>
+  <div className="bg-gradient-to-r from-red-500 to-orange-500 px-4 py-2 text-white">
+    <h3 className="font-medium text-sm">Quick Create</h3>
+    <p className="text-xs opacity-90">Instantly publish new content</p>
+  </div>
 
-                  <div className="py-3 px-2">
-                    <div className="grid grid-cols-4 gap-1">
-                      {quickActions.map((item, idx) => (
-                        <button
-                          key={idx}
-                          onClick={() => handleQuickAction(item.action)}
-                          className="flex flex-col items-center justify-center p-2 hover:bg-gray-50 rounded-md text-[11px] transition-all duration-200"
-                        >
-                          <div
-                            className={`mb-1 ${item.color} transition-transform duration-200 hover:scale-110`}
-                          >
-                            <item.icon className="w-5 h-5" />
-                          </div>
-                          <span className="text-center line-clamp-1 text-gray-700">
-                            {item.label}
-                          </span>
-                          {item.badge && (
-                            <Badge
-                              variant={
-                                item.badge === "HOT" ? "aliHot" : "aliNew"
-                              }
-                              className="text-[9px] mt-1 p-px px-1"
-                            >
-                              {item.badge}
-                            </Badge>
-                          )}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+  <div className="py-3 px-3">
+    <div className="grid grid-cols-4 gap-2">
+      {quickActions.map((item, idx) => (
+        <button
+          key={idx}
+          onClick={() => handleQuickAction(item.action)}
+          className="flex flex-col items-center justify-center p-2 hover:bg-gray-50 rounded-md text-[11px] transition-all duration-200"
+        >
+          <div className={`mb-1 ${item.color} transition-transform duration-200 hover:scale-110`}>
+            <item.icon className="w-5 h-5" />
+          </div>
+          <span className="text-center line-clamp-1 text-gray-700">{item.label}</span>
+          {item.badge && (
+            <Badge 
+              variant={item.badge === "HOT" ? "aliHot" : "aliNew"} 
+              className="text-[9px] mt-1 p-px px-1"
+            >
+              {item.badge}
+            </Badge>
+          )}
+        </button>
+      ))}
+    </div>
+  </div>
 
-                  <div className="border-t border-gray-100 p-2 bg-gray-50">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-gray-500">
-                        Go to shop center
-                      </span>
-                      <button
-                        onClick={() => setIsPopoverOpen(false)}
-                        className="text-xs text-blue-600 hover:text-blue-800 transition-colors"
-                      >
-                        Close
-                      </button>
-                    </div>
-                  </div>
-                </PopoverContent>
+  <div className="border-t border-gray-100 p-2 bg-gray-50 text-right">
+    <button 
+      onClick={() => setIsPopoverOpen(false)}
+      className="text-xs text-blue-600 hover:text-blue-800 transition-colors"
+    >
+      Close
+    </button>
+  </div>
+</PopoverContent>
               </Popover>
             ) : (
               <button
