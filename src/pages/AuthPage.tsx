@@ -123,9 +123,8 @@ const SpotifyLogin = () => {
       </div>
 
       {/* Main content */}
-      <div className="w-full max-w-md p-6 rounded-lg bg-black">
-        <h1 className="text-3xl font-bold text-center mb-8">Log in to Spotify</h1>
-
+      <div className="w-full max-w-md pt-2 px-6 pb-6 rounded-lg bg-black">
+  <h1 className="text-xl font-bold text-center mb-6">Log in to Spotify</h1>
         <div className="space-y-4">
           {/* Social login buttons */}
           <button className="w-full py-3 px-4 border border-gray-700 rounded-full font-bold flex items-center justify-center space-x-2 hover:border-white transition-colors">
