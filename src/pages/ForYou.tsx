@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { fetchAllProducts } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import HeroBannerSection from "@/components/home/HeroBanner";
@@ -35,13 +35,11 @@ export default function ForYou() {
       </div>
       
       <HeroBannerSection />
-      {/* @ts-ignore - Ignore type checking for now until we update component props */}
       <SuperDealsSection products={products || []} isLoading={isLoading} />
       <SecondaryHeroBanner />
       <FlashDeals />
       <SpaceSavingCategories />
       <TopBrands />
-      {/* @ts-ignore - Ignore type checking for now until we update component props */}
       <VendorProductCarousel title="Technology" products={products?.slice(0, 10) || []} isLoading={isLoading} />
       <SecondaryFlashDeals />
       <BenefitsBanner />
