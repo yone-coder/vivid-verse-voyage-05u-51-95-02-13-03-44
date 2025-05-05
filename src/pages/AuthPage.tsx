@@ -1,5 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Eye, EyeOff, ChevronRight, ArrowRight, Smartphone, Lock, Mail, AlertCircle, Fingerprint, Shield, Key, Calendar, UserCheck, Laptop, Moon, Sun, Info, AlertTriangle, CreditCard, QrCode, Scan, Languages, HelpCircle, UserPlus, BellRing } from 'lucide-react';
+import { 
+  Eye, EyeOff, ChevronRight, ArrowRight, Smartphone, Lock, Mail, 
+  AlertCircle, Fingerprint, UserPlus, Shield, Key, FileCheck, 
+  Bell, Clock, Gift, Zap, HelpCircle, UserCheck, Info, CheckCircle,
+  MessageSquare, Mail as EmailIcon, Coffee, Tablet
+} from 'lucide-react';
 
 export default function UltraModernLogin() {
   const [activeTab, setActiveTab] = useState('email');
@@ -11,9 +16,14 @@ export default function UltraModernLogin() {
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [theme, setTheme] = useState('light');
-  const [showSecurityTips, setShowSecurityTips] = useState(false);
-  const [showQrLogin, setShowQrLogin] = useState(false);
+  const [showTwoFactor, setShowTwoFactor] = useState(false);
+  const [twoFactorCode, setTwoFactorCode] = useState('');
+  const [loginAttempts, setLoginAttempts] = useState(0);
+  const [showHelp, setShowHelp] = useState(false);
+  const [deviceTrusted, setDeviceTrusted] = useState(false);
+  const [accountRecoveryOpen, setAccountRecoveryOpen] = useState(false);
+  const [lastLogin, setLastLogin] = useState('May 4, 2025 - 17:42');
+  const [loginLocation, setLoginLocation] = useState('San Francisco, USA');
 
   useEffect(() => {
     setMounted(true);
@@ -27,141 +37,97 @@ export default function UltraModernLogin() {
     // Simulate API call  
     setTimeout(() => {  
       setIsLoading(false);  
-      console.log('Login attempted with:', activeTab === 'email' ? { email, password } : { phone, password });  
+      setLoginAttempts(loginAttempts + 1);
+      
+      if (loginAttempts > 0) {
+        setShowTwoFactor(true);
+      } else {
+        console.log('Login attempted with:', activeTab === 'email' ? { email, password } : { phone, password });
+      }
     }, 1500);
   };
 
-  const toggleTheme = () => {
-    setTheme(theme === 'light' ? 'dark' : 'light');
-  };
-
-  const bgClass = theme === 'light' 
-    ? "bg-gradient-to-br from-gray-50 to-gray-100" 
-    : "bg-gradient-to-br from-gray-900 to-gray-800";
-
-  const textClass = theme === 'light' ? "text-gray-800" : "text-gray-100";
-  const subtextClass = theme === 'light' ? "text-gray-500" : "text-gray-400";
-  const inputBgClass = theme === 'light' ? "bg-gray-50" : "bg-gray-800";
-  const inputBorderClass = theme === 'light' ? "border-transparent" : "border-gray-700";
-  const cardBgClass = theme === 'light' ? "bg-white" : "bg-gray-900";
-
   return (
-    <div className={`flex flex-col min-h-screen ${bgClass} font-sans transition-all duration-500 w-full ${textClass}`}>
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-indigo-50 via-blue-50 to-purple-50 font-sans transition-opacity duration-500 w-full">
       <div className="w-full flex flex-col">
-        <div className="px-6 pt-8 pb-0 max-w-5xl mx-auto w-full">
-          <div className="flex justify-between items-center">
-            <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-opacity-10 hover:bg-gray-500 transition-colors">
-              {theme === 'light' ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
-            </button>
-            <div className="flex space-x-4">
-              <button className="p-2 rounded-full hover:bg-opacity-10 hover:bg-gray-500 transition-colors">
-                <HelpCircle className="h-5 w-5" />
-              </button>
-              <button className="p-2 rounded-full hover:bg-opacity-10 hover:bg-gray-500 transition-colors">
-                <BellRing className="h-5 w-5" />
-              </button>
-              <button className="p-2 rounded-full hover:bg-opacity-10 hover:bg-gray-500 transition-colors">
-                <Languages className="h-5 w-5" />
-              </button>
+        {/* Minimal Header */}
+        <div className="px-6 pt-8 pb-4 max-w-5xl mx-auto w-full">
+          <h1 className="text-3xl font-bold text-gray-800 mb-2 text-center">Secure Authentication</h1>
+          <p className="text-gray-500 text-center mb-2">Access your account securely</p>
+          <div className="flex justify-center mb-2">
+            <div className="bg-purple-100 text-purple-800 text-xs px-3 py-1 rounded-full flex items-center">
+              <Shield className="h-3 w-3 mr-1" />
+              <span>Enhanced security protocols active</span>
             </div>
-          </div>
-          <div className="text-center mt-8 mb-4">
-            <h1 className={`text-3xl font-bold ${textClass} mb-2`}>Welcome back</h1>
-            <p className={`${subtextClass} text-sm`}>Sign in to access your account</p>
           </div>
         </div>
 
         {/* Login methods */}
-        <div className="flex max-w-5xl mx-auto w-full px-6 justify-center">
-          <div className="flex overflow-x-auto w-full justify-center space-x-4 py-3">
-            <button
-              onClick={() => {
-                setActiveTab('email');
-                setShowQrLogin(false);
-              }}
-              className={`flex items-center px-4 py-2 rounded-lg transition-all ${
-                activeTab === 'email' && !showQrLogin
-                  ? theme === 'light' 
-                    ? 'bg-orange-50 text-orange-500 shadow-sm' 
-                    : 'bg-orange-900 bg-opacity-30 text-orange-400 shadow-sm'
-                  : theme === 'light'
-                    ? 'text-gray-600 hover:bg-gray-100'
-                    : 'text-gray-300 hover:bg-gray-800'
-              }`}
-            >
-              <Mail className="h-4 w-4 mr-2" />
-              Email
-            </button>
-            <button
-              onClick={() => {
-                setActiveTab('phone');
-                setShowQrLogin(false);
-              }}
-              className={`flex items-center px-4 py-2 rounded-lg transition-all ${
-                activeTab === 'phone' && !showQrLogin
-                  ? theme === 'light'
-                    ? 'bg-orange-50 text-orange-500 shadow-sm'
-                    : 'bg-orange-900 bg-opacity-30 text-orange-400 shadow-sm'
-                  : theme === 'light'
-                    ? 'text-gray-600 hover:bg-gray-100'
-                    : 'text-gray-300 hover:bg-gray-800'
-              }`}
-            >
-              <Smartphone className="h-4 w-4 mr-2" />
-              Phone
-            </button>
-            <button
-              onClick={() => {
-                setShowQrLogin(true);
-              }}
-              className={`flex items-center px-4 py-2 rounded-lg transition-all ${
-                showQrLogin
-                  ? theme === 'light'
-                    ? 'bg-orange-50 text-orange-500 shadow-sm'
-                    : 'bg-orange-900 bg-opacity-30 text-orange-400 shadow-sm'
-                  : theme === 'light'
-                    ? 'text-gray-600 hover:bg-gray-100'
-                    : 'text-gray-300 hover:bg-gray-800'
-              }`}
-            >
-              <QrCode className="h-4 w-4 mr-2" />
-              QR Code
-            </button>
-            <button
-              className={`flex items-center px-4 py-2 rounded-lg transition-all ${
-                theme === 'light'
-                  ? 'text-gray-600 hover:bg-gray-100'
-                  : 'text-gray-300 hover:bg-gray-800'
-              }`}
-            >
-              <Key className="h-4 w-4 mr-2" />
-              SSO
-            </button>
-            <button
-              className={`flex items-center px-4 py-2 rounded-lg transition-all ${
-                theme === 'light'
-                  ? 'text-gray-600 hover:bg-gray-100'
-                  : 'text-gray-300 hover:bg-gray-800'
-              }`}
-            >
-              <Fingerprint className="h-4 w-4 mr-2" />
-              Biometric
-            </button>
-          </div>
+        <div className="flex max-w-5xl mx-auto w-full px-6 mt-2 border-b justify-center">  
+          <button  
+            onClick={() => setActiveTab('email')}  
+            className={`pb-2 px-5 text-sm font-medium transition-all relative flex items-center ${  
+              activeTab === 'email'  
+                ? 'text-blue-600'  
+                : 'text-gray-500 hover:text-gray-700'  
+            }`}  
+          >  
+            <Mail className="h-4 w-4 mr-2" />
+            Email  
+            {activeTab === 'email' && (  
+              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 rounded-t-full"></span>  
+            )}  
+          </button>  
+          <button  
+            onClick={() => setActiveTab('phone')}  
+            className={`pb-2 px-5 text-sm font-medium transition-all relative flex items-center ${  
+              activeTab === 'phone'  
+                ? 'text-blue-600'  
+                : 'text-gray-500 hover:text-gray-700'  
+            }`}  
+          >  
+            <Smartphone className="h-4 w-4 mr-2" />
+            Phone  
+            {activeTab === 'phone' && (  
+              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 rounded-t-full"></span>  
+            )}  
+          </button>
+          <button  
+            onClick={() => setActiveTab('fingerprint')}  
+            className={`pb-2 px-5 text-sm font-medium transition-all relative flex items-center ${  
+              activeTab === 'fingerprint'  
+                ? 'text-blue-600'  
+                : 'text-gray-500 hover:text-gray-700'  
+            }`}  
+          >  
+            <Fingerprint className="h-4 w-4 mr-2" />
+            Biometric  
+            {activeTab === 'fingerprint' && (  
+              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 rounded-t-full"></span>  
+            )}  
+          </button>  
         </div>  
 
         {/* Login Form Fields */}  
-        <form onSubmit={handleSubmit} className="px-6 py-6 max-w-4xl mx-auto w-full">  
+        <form onSubmit={handleSubmit} className="px-6 py-6 max-w-5xl mx-auto w-full">  
+          {/* Last login info */}
+          <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-100 flex items-center">
+            <Info className="h-4 w-4 text-blue-500 mr-2" />
+            <div className="text-xs text-blue-700">
+              <span className="font-medium">Last login:</span> {lastLogin} from {loginLocation}
+            </div>
+          </div>
+
           <div className={`transition-all duration-300 ${activeTab === 'email' ? 'opacity-100 max-h-24' : 'opacity-0 max-h-0 overflow-hidden absolute'}`}>  
             <div className="mb-4">  
               <div className="relative group">  
-                <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-orange-500 transition-colors" />  
+                <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-blue-600 transition-colors" />  
                 <input  
                   type="email"  
                   value={email}  
                   onChange={(e) => setEmail(e.target.value)}  
                   placeholder="Email address"  
-                  className="w-full pl-10 pr-3 py-3 bg-gray-50 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:bg-white transition-all border border-transparent focus:border-orange-500"  
+                  className="w-full pl-10 pr-3 py-3 bg-gray-50 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all border border-transparent focus:border-blue-600"  
                   required  
                 />  
               </div>  
@@ -177,20 +143,23 @@ export default function UltraModernLogin() {
                     onChange={(e) => setCountryCode(e.target.value)}  
                     className="bg-transparent text-sm text-gray-600 focus:outline-none py-3"  
                   >  
-                    <option value="+1">+1</option>  
-                    <option value="+44">+44</option>  
-                    <option value="+86">+86</option>  
-                    <option value="+91">+91</option>  
+                    <option value="+1">+1 (US)</option>  
+                    <option value="+44">+44 (UK)</option>  
+                    <option value="+86">+86 (CN)</option>  
+                    <option value="+91">+91 (IN)</option>
+                    <option value="+49">+49 (DE)</option>
+                    <option value="+33">+33 (FR)</option>
+                    <option value="+81">+81 (JP)</option>
                   </select>  
                 </div>  
                 <div className="relative flex-1">  
-                  <Smartphone className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-orange-500 transition-colors" />  
+                  <Smartphone className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-blue-600 transition-colors" />  
                   <input  
                     type="tel"  
                     value={phone}  
                     onChange={(e) => setPhone(e.target.value)}  
                     placeholder="Phone number"  
-                    className="w-full pl-10 pr-3 py-3 bg-gray-50 rounded-r-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:bg-white transition-all border border-transparent focus:border-orange-500"  
+                    className="w-full pl-10 pr-3 py-3 bg-gray-50 rounded-r-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all border border-transparent focus:border-blue-600"  
                     required  
                   />  
                 </div>  
@@ -198,26 +167,90 @@ export default function UltraModernLogin() {
             </div>  
           </div>  
 
-          <div className="mb-4 mt-4">  
-            <div className="relative group">  
-              <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-orange-500 transition-colors" />  
-              <input  
-                type={showPassword ? "text" : "password"}  
-                value={password}  
-                onChange={(e) => setPassword(e.target.value)}  
-                placeholder="Password"  
-                className="w-full pl-10 pr-10 py-3 bg-gray-50 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:bg-white transition-all border border-transparent focus:border-orange-500"  
-                required  
-              />  
-              <button  
-                type="button"  
-                onClick={() => setShowPassword(!showPassword)}  
-                className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 transition-colors"  
-              >  
-                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}  
-              </button>  
+          <div className={`transition-all duration-300 ${activeTab === 'fingerprint' ? 'opacity-100 max-h-64' : 'opacity-0 max-h-0 overflow-hidden absolute'}`}>  
+            <div className="mb-4 flex flex-col items-center justify-center py-6">  
+              <Fingerprint className="h-16 w-16 text-blue-600 mb-4" />
+              <p className="text-gray-600 text-center mb-2">Use your fingerprint or face ID to sign in</p>
+              <button type="button" className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                Authenticate
+              </button>
             </div>  
           </div>  
+
+          {activeTab !== 'fingerprint' && (
+            <div className="mb-4 mt-4">  
+              <div className="relative group">  
+                <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-blue-600 transition-colors" />  
+                <input  
+                  type={showPassword ? "text" : "password"}  
+                  value={password}  
+                  onChange={(e) => setPassword(e.target.value)}  
+                  placeholder="Password"  
+                  className="w-full pl-10 pr-10 py-3 bg-gray-50 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition-all border border-transparent focus:border-blue-600"  
+                  required  
+                />  
+                <button  
+                  type="button"  
+                  onClick={() => setShowPassword(!showPassword)}  
+                  className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 transition-colors"  
+                >  
+                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}  
+                </button>  
+              </div>
+
+              {/* Password strength meter */}
+              <div className="mt-2">
+                <div className="w-full h-1 flex space-x-1">
+                  <div className="h-full rounded-full w-1/4 bg-green-500"></div>
+                  <div className="h-full rounded-full w-1/4 bg-green-500"></div>
+                  <div className="h-full rounded-full w-1/4 bg-green-500"></div>
+                  <div className="h-full rounded-full w-1/4 bg-gray-200"></div>
+                </div>
+                <div className="flex justify-between mt-1">
+                  <span className="text-xs text-green-600">Strong password</span>
+                  <span className="text-xs text-gray-400">Last changed: 22 days ago</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 2FA Section */}
+          <div className={`transition-all duration-300 ${showTwoFactor ? 'opacity-100 max-h-64' : 'opacity-0 max-h-0 overflow-hidden'}`}>
+            <div className="mb-4 mt-4 p-4 border border-blue-100 rounded-lg bg-blue-50">
+              <h3 className="text-sm font-medium text-blue-800 mb-2 flex items-center">
+                <Shield className="h-4 w-4 mr-2" />
+                Two-Factor Authentication Required
+              </h3>
+              <p className="text-xs text-blue-600 mb-3">
+                We've sent a verification code to your {activeTab === 'email' ? 'email' : 'phone'}.
+              </p>
+              <div className="flex space-x-2">
+                <input
+                  type="text"
+                  value={twoFactorCode}
+                  onChange={(e) => setTwoFactorCode(e.target.value)}
+                  placeholder="Enter code"
+                  className="flex-1 pl-3 pr-3 py-2 bg-white rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 border border-blue-200"
+                  required
+                />
+                <button 
+                  type="button"
+                  className="bg-blue-600 text-white px-3 py-2 rounded-lg text-sm hover:bg-blue-700 transition-colors"
+                >
+                  Verify
+                </button>
+              </div>
+              <div className="flex justify-between mt-2">
+                <button type="button" className="text-xs text-blue-600 hover:text-blue-800 transition-colors">
+                  Resend code
+                </button>
+                <span className="text-xs text-gray-500">
+                  <Clock className="h-3 w-3 inline mr-1" />
+                  Code expires in 4:59
+                </span>
+              </div>
+            </div>
+          </div>
 
           <div className="flex items-center justify-between mb-6">  
             <div className="flex items-center">  
