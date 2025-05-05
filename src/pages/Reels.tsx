@@ -4,24 +4,23 @@ import { Heart, MessageSquare, Share, Volume2, VolumeX } from "lucide-react";
 // Mock custom hook - returns true for mobile
 const useIsMobile = () => {
   const [isMobile, setIsMobile] = useState(true);
-
+  
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
-
+    
     checkMobile();
     window.addEventListener('resize', checkMobile);
-
+    
     return () => {
       window.removeEventListener('resize', checkMobile);
     };
   }, []);
-
+  
   return isMobile;
 };
 
-// Mock skeleton component
 const ReelsSkeleton = () => (
   <div className="flex flex-col min-h-screen bg-black items-center justify-center">
     <div className="animate-pulse w-20 h-20 rounded-full bg-gray-700 mb-4"></div>
@@ -29,7 +28,6 @@ const ReelsSkeleton = () => (
   </div>
 );
 
-// Avatar components
 const Avatar = ({ className, children }) => (
   <div className={`relative inline-block rounded-full overflow-hidden ${className}`}>
     {children}
@@ -46,13 +44,12 @@ const AvatarFallback = ({ children }) => (
   </div>
 );
 
-// Button component
 const Button = ({ variant = "default", size = "md", className, children, ...props }) => {
   let sizeClasses = "py-2 px-4";
   if (size === "sm") sizeClasses = "py-1 px-3 text-sm";
-
+  
   return (
-    <button
+    <button 
       className={`font-medium rounded ${sizeClasses} ${className}`}
       {...props}
     >
@@ -61,7 +58,6 @@ const Button = ({ variant = "default", size = "md", className, children, ...prop
   );
 };
 
-// Reel interface
 interface Reel {
   id: number;
   username: string;
@@ -83,7 +79,7 @@ export default function Reels() {
   const observerRef = useRef(null);
   const isMobile = useIsMobile();
 
-  const reels = [
+  const reels: Reel[] = [
     {
       id: 1,
       username: "techgadgets",
@@ -99,7 +95,7 @@ export default function Reels() {
     {
       id: 2,
       username: "kitchenmaster",
-      avatar: "/api/placeholder/100/100",
+      avatar: "/api/placeholder/100/100", 
       description: "Cook perfect eggs every time with this amazing kitchen tool! #cooking #kitchen",
       videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-cooking-in-a-camping-site-12992-large.mp4",
       likes: "67.5K",
@@ -186,6 +182,7 @@ export default function Reels() {
 
   return (
     <div className="flex flex-col min-h-screen bg-black">
+      {/* Overlay header */}
       <div className="absolute top-0 z-10 w-full flex justify-center px-3 py-2">
         <div className="bg-black/30 backdrop-blur-sm rounded-full flex p-1">
           <div className="whitespace-nowrap px-3 py-1 bg-red-500 rounded-full text-white text-sm font-medium">
@@ -197,9 +194,10 @@ export default function Reels() {
         </div>
       </div>
 
+      {/* Reels Scrollable */}
       <div className="w-full h-screen overflow-y-auto snap-y snap-mandatory">
         {reels.map((reel, index) => (
-          <div
+          <div 
             key={reel.id}
             id={`reel-${index}`}
             className="w-full h-screen relative snap-start snap-always"
@@ -215,9 +213,9 @@ export default function Reels() {
             />
 
             <div className="absolute inset-0 pointer-events-none flex flex-col justify-end">
-              <div className="absolute bottom-0 left-0 right-0 h-3/5 bg-gradient-to-t from-black/70 via-black/30 to-transparent pointer-events-none" />
+              <div className="absolute bottom-0 left-0 right-0 h-2/5 bg-gradient-to-t from-black/70 via-black/30 to-transparent pointer-events-none" />
 
-              <div className="relative z-10 px-4 pb-4 pointer-events-auto">
+              <div className="relative z-10 px-4 pb-6 pointer-events-auto">
                 <div className="mb-3">
                   <div className="flex items-center mb-2">
                     <Avatar className="h-9 w-9 border-2 border-white">
@@ -229,13 +227,12 @@ export default function Reels() {
                       Follow
                     </Button>
                   </div>
-
                   <p className="text-white mb-3 text-sm">{reel.description}</p>
                 </div>
 
                 <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 flex items-center">
-                  <img
-                    src={reel.productImage}
+                  <img 
+                    src={reel.productImage} 
                     alt={reel.productName}
                     className="w-12 h-12 rounded-md object-cover"
                   />
@@ -249,7 +246,8 @@ export default function Reels() {
                 </div>
               </div>
 
-              <div className="absolute bottom-4 right-3 flex flex-col items-center space-y-6 pointer-events-auto">
+              {/* Action Buttons */}
+              <div className="absolute bottom-6 right-3 flex flex-col items-center space-y-5 pointer-events-auto">
                 <button onClick={toggleMute} className="flex flex-col items-center">
                   <div className="rounded-full bg-black/30 p-2">
                     {isMuted ? <VolumeX className="h-6 w-6 text-white" /> : <Volume2 className="h-6 w-6 text-white" />}
