@@ -334,22 +334,16 @@ export default function UltraModernLogin() {
                   {/* Authentication Method Tabs */}
                   <div className="mb-4">
                     <Tabs defaultValue="email" value={activeTab} onValueChange={setActiveTab} className="w-full">
-  <TabsList className="grid grid-cols-2 w-full bg-[#f5f5f5] rounded-lg overflow-hidden">
-    <TabsTrigger
-      value="email"
-      className="flex items-center justify-center py-3 text-base font-medium data-[state=active]:bg-white data-[state=active]:text-[#ff4747]"
-    >
-      <Mail className="h-5 w-5 mr-2" />
-      Email
-    </TabsTrigger>
-    <TabsTrigger
-      value="phone"
-      className="flex items-center justify-center py-3 text-base font-medium data-[state=active]:bg-white data-[state=active]:text-[#ff4747]"
-    >
-      <Smartphone className="h-5 w-5 mr-2" />
-      Phone
-    </TabsTrigger>
-  </TabsList>
+                     <TabsList className="grid grid-cols-2 w-full bg-[#f5f5f5]">  
+                        <TabsTrigger value="email" className="flex items-center justify-center data-[state=active]:bg-white data-[state=active]:text-[#ff4747]">  
+                          <Mail className="h-4 w-4 mr-2" />  
+                          Email  
+                        </TabsTrigger>  
+                        <TabsTrigger value="phone" className="flex items-center justify-center data-[state=active]:bg-white data-[state=active]:text-[#ff4747]">  
+                          <Smartphone className="h-4 w-4 mr-2" />  
+                          Phone  
+                        </TabsTrigger>  
+                      </TabsList>
                       <TabsContent value="email" className="pt-4">
                         <div className="mb-4">
                           <Label htmlFor="email" className="block text-gray-700 mb-1">Email address</Label>
