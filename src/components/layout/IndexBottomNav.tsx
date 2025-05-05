@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -183,18 +182,7 @@ export default function IndexBottomNav() {
                 onClick={() => setActiveTab(item.id)}
               >
                 <div className="relative">
-                  {/* Background pill - animated when active */}
-                  <motion.div
-                    className={cn(
-                      "absolute -inset-2.5 rounded-full",
-                      activeTab === item.id ? "bg-red-50 dark:bg-red-950/20" : "bg-transparent group-hover:bg-gray-50 dark:group-hover:bg-zinc-800/50"
-                    )}
-                    layoutId="nav-pill"
-                    transition={{ type: "spring", duration: 0.5 }}
-                    style={{ 
-                      opacity: activeTab === item.id ? 1 : 0,
-                    }}
-                  />
+                  {/* Removed the glassmorphic background pill */}
                   
                   {/* Icon with hover effect */}
                   <div className="relative transition-transform duration-200 group-hover:scale-110">
