@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 export default function UltraModernLogin() {
   const [activeTab, setActiveTab] = useState('email');
@@ -39,6 +40,8 @@ export default function UltraModernLogin() {
   const [resetPassword, setResetPassword] = useState(false);
   const [resetEmail, setResetEmail] = useState('');
   const [resetSent, setResetSent] = useState(false);
+  const [currentStep, setCurrentStep] = useState(1);
+  const [totalSteps, setTotalSteps] = useState(3);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -68,8 +71,58 @@ export default function UltraModernLogin() {
     };
   }, [navigate]);
 
+  // Set appropriate total steps based on auth mode
+  useEffect(() => {
+    if (resetPassword) {
+      setTotalSteps(2);
+    } else if (authMode === 'signin') {
+      setTotalSteps(showTwoFactor ? 3 : 2);
+    } else {
+      setTotalSteps(3);
+    }
+  }, [authMode, showTwoFactor, resetPassword]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // If not on the last step, proceed to the next step
+    if (currentStep < totalSteps) {
+      // Validate current step
+      if (currentStep === 1) {
+        if (activeTab === 'email' && !email) {
+          toast({
+            title: "Email required",
+            description: "Please enter your email address",
+            variant: "destructive",
+          });
+          return;
+        } else if (activeTab === 'phone' && !phone) {
+          toast({
+            title: "Phone number required",
+            description: "Please enter your phone number",
+            variant: "destructive",
+          });
+          return;
+        }
+      } else if (currentStep === 2 && !password) {
+        toast({
+          title: "Password required",
+          description: "Please enter your password",
+          variant: "destructive",
+        });
+        return;
+      }
+      
+      setCurrentStep(currentStep + 1);
+      
+      // If we're now at step 3 for signin with 2FA, show 2FA UI
+      if (currentStep + 1 === 3 && authMode === 'signin' && !resetPassword) {
+        setShowTwoFactor(true);
+      }
+      
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -164,22 +217,66 @@ export default function UltraModernLogin() {
 
   const handlePasswordReset = async () => {
     setResetPassword(true);
+    setCurrentStep(1);
   };
 
   const goBack = () => {
-    if (resetPassword) {
-      setResetPassword(false);
-      setResetSent(false);
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+      
+      // If going back from 2FA step
+      if (currentStep === 3 && showTwoFactor) {
+        setShowTwoFactor(false);
+      }
     } else {
-      setAuthMode(authMode === 'signin' ? 'signup' : 'signin');
+      if (resetPassword) {
+        setResetPassword(false);
+        setResetSent(false);
+      } else {
+        setAuthMode(authMode === 'signin' ? 'signup' : 'signin');
+      }
     }
+  };
+
+  // Render progress indicators
+  const renderProgress = () => {
+    return (
+      <div className="flex items-center justify-between mb-6 w-full max-w-xs mx-auto">
+        {[...Array(totalSteps)].map((_, index) => (
+          <div key={index} className="flex items-center">
+            <div 
+              className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                currentStep > index + 1 
+                  ? 'bg-green-500 text-white' 
+                  : currentStep === index + 1 
+                    ? 'bg-orange-500 text-white'
+                    : 'bg-gray-200 text-gray-500'
+              }`}
+            >
+              {currentStep > index + 1 ? (
+                <CheckCircle className="h-5 w-5" />
+              ) : (
+                <span>{index + 1}</span>
+              )}
+            </div>
+            {index < totalSteps - 1 && (
+              <div 
+                className={`h-1 w-10 ${
+                  currentStep > index + 1 ? 'bg-green-500' : 'bg-gray-200'
+                }`}
+              />
+            )}
+          </div>
+        ))}
+      </div>
+    );
   };
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-indigo-50 via-blue-50 to-purple-50 font-sans transition-opacity duration-500 w-full">
       <div className="w-full flex flex-col">
         {/* Minimal Header */}
-        <div className="px-6 pt-8 pb-4 max-w-5xl mx-auto w-full">
+        <div className="px-6 pt-8 pb-2 max-w-5xl mx-auto w-full">
           <h1 className="text-3xl font-bold text-gray-800 mb-2 text-center">
             {resetPassword 
               ? "Reset Your Password" 
@@ -187,14 +284,14 @@ export default function UltraModernLogin() {
                 ? "Sign In to Your Account" 
                 : "Create Your Account"}
           </h1>
-          <p className="text-gray-500 text-center mb-2">
+          <p className="text-gray-500 text-center mb-4">
             {resetPassword 
               ? "Enter your email to receive a reset link" 
               : authMode === 'signin' 
                 ? "Welcome back! Access your account securely" 
                 : "Join our community today"}
           </p>
-          <div className="flex justify-center mb-2">
+          <div className="flex justify-center mb-4">
             <div className="bg-purple-100 text-purple-800 text-xs px-3 py-1 rounded-full flex items-center">
               <Shield className="h-3 w-3 mr-1" />
               <span>Enhanced security protocols active</span>
@@ -202,25 +299,28 @@ export default function UltraModernLogin() {
           </div>
         </div>
 
+        {/* Step progress */}
+        {renderProgress()}
+
         {/* Go back button */}
-        {(resetPassword || authMode === 'signup') && (
+        {(currentStep > 1 || resetPassword || authMode === 'signup') && (
           <div className="px-6 pt-0 pb-4 max-w-5xl mx-auto w-full">
             <button 
               onClick={goBack}
               className="text-sm text-blue-600 hover:text-blue-800 flex items-center"
             >
               <ChevronRight className="h-4 w-4 rotate-180 mr-1" />
-              Back to {resetPassword ? "login" : "sign in"}
+              {currentStep > 1 ? "Back to previous step" : resetPassword ? "Back to login" : "Back to sign in"}
             </button>
           </div>
         )}
 
         {/* Form area */}
-        <form onSubmit={handleSubmit} className="px-6 py-6 max-w-5xl mx-auto w-full">
+        <form onSubmit={handleSubmit} className="px-6 py-4 max-w-5xl mx-auto w-full">
           {!resetPassword ? (
             <>
-              {/* Login/Signup Tabs */}
-              {!resetPassword && !showTwoFactor && (
+              {/* Step 1: Authentication Method and Initial Details */}
+              {currentStep === 1 && (
                 <div className="mb-6">
                   {authMode === 'signin' && (
                     <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-100 flex items-center">
@@ -231,27 +331,70 @@ export default function UltraModernLogin() {
                     </div>
                   )}
 
-                  {/* Email field */}
+                  {/* Authentication Method Tabs */}
                   <div className="mb-4">
-                    <Label htmlFor="email" className="block text-gray-700 mb-1">Email address</Label>
-                    <div className="relative group">
-                      <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-blue-600 transition-colors" />
-                      <Input
-                        id="email"
-                        type="email"
-                        value={authMode === 'signin' ? email : resetPassword ? resetEmail : email}
-                        onChange={(e) => {
-                          if (resetPassword) {
-                            setResetEmail(e.target.value);
-                          } else {
-                            setEmail(e.target.value);
-                          }
-                        }}
-                        placeholder="Enter your email address"
-                        className="w-full pl-10 pr-3 py-3"
-                        required
-                      />
-                    </div>
+                    <Tabs defaultValue="email" value={activeTab} onValueChange={setActiveTab} className="w-full">
+                      <TabsList className="grid grid-cols-2 w-full">
+                        <TabsTrigger value="email" className="flex items-center justify-center">
+                          <Mail className="h-4 w-4 mr-2" />
+                          Email
+                        </TabsTrigger>
+                        <TabsTrigger value="phone" className="flex items-center justify-center">
+                          <Smartphone className="h-4 w-4 mr-2" />
+                          Phone
+                        </TabsTrigger>
+                      </TabsList>
+                      <TabsContent value="email" className="pt-4">
+                        <div className="mb-4">
+                          <Label htmlFor="email" className="block text-gray-700 mb-1">Email address</Label>
+                          <div className="relative group">
+                            <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-blue-600 transition-colors" />
+                            <Input
+                              id="email"
+                              type="email"
+                              value={email}
+                              onChange={(e) => setEmail(e.target.value)}
+                              placeholder="Enter your email address"
+                              className="w-full pl-10 pr-3 py-3"
+                              required
+                            />
+                          </div>
+                        </div>
+                      </TabsContent>
+                      <TabsContent value="phone" className="pt-4">
+                        <div className="mb-4">
+                          <Label htmlFor="phone" className="block text-gray-700 mb-1">Phone number</Label>
+                          <div className="flex">
+                            <div className="relative w-24 mr-2">
+                              <select
+                                value={countryCode}
+                                onChange={(e) => setCountryCode(e.target.value)}
+                                className="h-10 w-full rounded-md border border-input bg-background px-3 py-1.5 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+                              >
+                                <option value="+1">+1</option>
+                                <option value="+44">+44</option>
+                                <option value="+33">+33</option>
+                                <option value="+49">+49</option>
+                                <option value="+86">+86</option>
+                                <option value="+91">+91</option>
+                              </select>
+                            </div>
+                            <div className="relative group flex-1">
+                              <Smartphone className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-blue-600 transition-colors" />
+                              <Input
+                                id="phone"
+                                type="tel"
+                                value={phone}
+                                onChange={(e) => setPhone(e.target.value)}
+                                placeholder="Enter your phone number"
+                                className="w-full pl-10 pr-3 py-3"
+                                required
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </TabsContent>
+                    </Tabs>
                   </div>
 
                   {/* Full name field (sign up only) */}
@@ -272,7 +415,12 @@ export default function UltraModernLogin() {
                       </div>
                     </div>
                   )}
+                </div>
+              )}
 
+              {/* Step 2: Password */}
+              {currentStep === 2 && (
+                <div className="mb-6">
                   {/* Password field */}
                   <div className="mb-4">
                     <Label htmlFor="password" className="block text-gray-700 mb-1">Password</Label>
@@ -394,8 +542,8 @@ export default function UltraModernLogin() {
                 </div>
               )}
 
-              {/* 2FA Section */}
-              {showTwoFactor && (
+              {/* Step 3: 2FA (if enabled) */}
+              {currentStep === 3 && showTwoFactor && (
                 <div className="mb-4 mt-4 p-4 border border-blue-100 rounded-lg bg-blue-50">
                   <h3 className="text-sm font-medium text-blue-800 mb-2 flex items-center">
                     <Shield className="h-4 w-4 mr-2" />
@@ -467,7 +615,7 @@ export default function UltraModernLogin() {
             </div>
           )}
 
-          {/* Submit Button */}
+          {/* Next/Submit Button */}
           {(!resetSent || !resetPassword) && (
             <Button
               type="submit"
@@ -478,10 +626,10 @@ export default function UltraModernLogin() {
                 <Loader className="h-5 w-5 animate-spin" />
               ) : (
                 <>
-                  {resetPassword 
-                    ? "Send Reset Link" 
-                    : showTwoFactor 
-                      ? "Verify" 
+                  {currentStep < totalSteps 
+                    ? "Continue" 
+                    : resetPassword 
+                      ? "Send Reset Link" 
                       : authMode === 'signin' 
                         ? "Sign In" 
                         : "Create Account"}
@@ -504,7 +652,7 @@ export default function UltraModernLogin() {
         </form>
 
         {/* Social logins */}
-        {!resetPassword && !resetSent && !showTwoFactor && (
+        {currentStep === 1 && !resetPassword && !resetSent && !showTwoFactor && (
           <div className="px-6 pt-0 pb-6 max-w-4xl mx-auto w-full">
             <div className="relative flex items-center justify-center my-4">
               <div className="border-t w-full absolute"></div>
@@ -547,7 +695,7 @@ export default function UltraModernLogin() {
         )}
 
         {/* Registration link */}
-        {!resetPassword && !resetSent && !showTwoFactor && (
+        {currentStep === 1 && !resetPassword && !resetSent && !showTwoFactor && (
           <div className="px-6 py-4 bg-gray-50 flex items-center justify-between max-w-4xl mx-auto w-full">
             <p className="text-sm text-gray-600">
               {authMode === 'signin' ? "Don't have an account?" : "Already have an account?"}
