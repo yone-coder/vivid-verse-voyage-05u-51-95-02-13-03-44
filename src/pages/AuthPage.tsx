@@ -51,17 +51,47 @@ export default function UltraModernLogin() {
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-indigo-50 via-blue-50 to-purple-50 font-sans transition-opacity duration-500 w-full">
       <div className="w-full flex flex-col">
         {/* Minimal Header */}
-        <div className="px-6 pt-8 pb-4 max-w-5xl mx-auto w-full">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2 text-center">Secure Authentication</h1>
-          <p className="text-gray-500 text-center mb-2">Access your account securely</p>
-          <div className="flex justify-center mb-2">
-            <div className="bg-purple-100 text-purple-800 text-xs px-3 py-1 rounded-full flex items-center">
-              <Shield className="h-3 w-3 mr-1" />
-              <span>Enhanced security protocols active</span>
-            </div>
-          </div>
-        </div>
+        <div className="w-full px-4 py-3 flex items-center justify-between bg-white border-b shadow-sm max-w-5xl mx-auto">
+  {/* Left: Back Button */}
+  <button
+    onClick={() => window.history.back()}
+    className="text-gray-500 hover:text-gray-700 transition-colors p-2"
+  >
+    <ChevronRight className="transform rotate-180 h-5 w-5" />
+  </button>
 
+  {/* Center: Logo */}
+  <a href="/" className="text-lg font-bold text-gray-800 tracking-wide">
+    MyAppLogo
+  </a>
+
+  {/* Right: Action Icons */}
+  <div className="flex items-center space-x-4">
+    {/* Language/Currency Switcher */}
+    <select className="text-sm bg-gray-100 px-2 py-1 rounded-md text-gray-700 focus:outline-none">
+      <option value="en-US">$ USD - US</option>
+      <option value="en-GB">£ GBP - UK</option>
+      <option value="fr-FR">€ EUR - FR</option>
+      <option value="jp-JP">¥ JPY - JP</option>
+    </select>
+
+    {/* Help Icon */}
+    <button
+      onClick={() => setShowHelp(true)}
+      className="text-gray-500 hover:text-gray-700 transition-colors"
+    >
+      <HelpCircle className="h-5 w-5" />
+    </button>
+
+    {/* Close Button (only show in modal context) */}
+    <button
+      onClick={() => {/* Close modal logic */}}
+      className="text-gray-500 hover:text-red-500 transition-colors"
+    >
+      <X className="h-5 w-5" />
+    </button>
+  </div>
+</div>
         {/* Login methods */}
         <div className="flex max-w-5xl mx-auto w-full px-6 mt-2 border-b justify-center">  
           <button  
