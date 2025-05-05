@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { motion } from "framer-motion";
@@ -135,24 +134,27 @@ export default function Reels() {
 
   return (
     <div className="flex flex-col min-h-screen bg-black">
-      {/* No header here, removed AliExpressHeader */}
-      
-      {/* Categories header */}
-      <div className="bg-black sticky top-0 z-10 border-b border-gray-800">
-        <div className="flex gap-2 overflow-x-auto no-scrollbar py-2 px-3">
-          <div className="whitespace-nowrap px-3 py-1 bg-red-500 rounded-full text-white text-sm font-medium">
-            For You
+      {/* Categories header with updated styling */}
+      <div className="bg-black sticky top-0 z-10 px-3 py-2">
+        <div className="flex gap-2 overflow-x-auto no-scrollbar">
+          {/* Semi-transparent rounded background for For You and Following only */}
+          <div className="bg-black/30 backdrop-blur-sm rounded-full flex p-1">
+            <div className="whitespace-nowrap px-3 py-1 bg-red-500 rounded-full text-white text-sm font-medium">
+              For You
+            </div>
+            <div className="whitespace-nowrap px-3 py-1 text-gray-300 text-sm font-medium">
+              Following
+            </div>
           </div>
-          <div className="whitespace-nowrap px-3 py-1 bg-gray-800 rounded-full text-gray-300 text-sm font-medium">
-            Following
-          </div>
-          <div className="whitespace-nowrap px-3 py-1 bg-gray-800 rounded-full text-gray-300 text-sm font-medium">
+          
+          {/* Other category buttons without background */}
+          <div className="whitespace-nowrap px-3 py-1 text-gray-300 text-sm font-medium">
             Tech
           </div>
-          <div className="whitespace-nowrap px-3 py-1 bg-gray-800 rounded-full text-gray-300 text-sm font-medium">
+          <div className="whitespace-nowrap px-3 py-1 text-gray-300 text-sm font-medium">
             Kitchen
           </div>
-          <div className="whitespace-nowrap px-3 py-1 bg-gray-800 rounded-full text-gray-300 text-sm font-medium">
+          <div className="whitespace-nowrap px-3 py-1 text-gray-300 text-sm font-medium">
             Beauty
           </div>
         </div>
@@ -178,15 +180,12 @@ export default function Reels() {
             />
             
             {/* Overlay content */}
-            <div className="absolute inset-0 flex flex-col justify-between">
-              {/* Top gradient overlay */}
-              <div className="bg-gradient-to-b from-black/50 to-transparent h-16" />
-              
-              {/* Bottom gradient overlay with content */}
-              <div className="bg-gradient-to-t from-black/80 to-transparent pt-10">
-                {/* User info and description */}
-                <div className="px-4 pb-20">
-                  <div className="flex items-center">
+            <div className="absolute inset-0 flex flex-col justify-end">
+              {/* All content moved to the bottom */}
+              <div className="bg-gradient-to-t from-black/80 via-black/40 to-transparent p-4">
+                {/* User info, description and product info */}
+                <div className="mb-16"> {/* Add bottom margin to account for bottom nav */}
+                  <div className="flex items-center mb-2">
                     <img 
                       src={reel.avatar} 
                       alt={reel.username}
@@ -198,12 +197,12 @@ export default function Reels() {
                     </button>
                   </div>
                   
-                  <p className="text-white mt-2 text-sm">
+                  <p className="text-white mb-3 text-sm">
                     {reel.description}
                   </p>
                   
                   {/* Product info */}
-                  <div className="mt-4 bg-white/10 backdrop-blur-sm rounded-lg p-3 flex items-center">
+                  <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 flex items-center">
                     <img 
                       src={reel.productImage} 
                       alt={reel.productName}
@@ -220,36 +219,36 @@ export default function Reels() {
                 </div>
               </div>
               
-              {/* Side actions */}
+              {/* Side actions - remain on the right side */}
               <div className="absolute bottom-24 right-2 flex flex-col items-center space-y-6">
                 <button onClick={toggleMute} className="flex flex-col items-center">
                   {isMuted ? (
-                    <div className="bg-black/50 p-2 rounded-full">
+                    <div className="rounded-full">
                       <VolumeX className="h-6 w-6 text-white" />
                     </div>
                   ) : (
-                    <div className="bg-black/50 p-2 rounded-full">
+                    <div className="rounded-full">
                       <Volume2 className="h-6 w-6 text-white" />
                     </div>
                   )}
                 </button>
                 
                 <button className="flex flex-col items-center">
-                  <div className="bg-black/50 p-2 rounded-full">
+                  <div className="rounded-full">
                     <Heart className="h-6 w-6 text-white" />
                   </div>
                   <span className="text-white text-xs mt-1">{reel.likes}</span>
                 </button>
                 
                 <button className="flex flex-col items-center">
-                  <div className="bg-black/50 p-2 rounded-full">
+                  <div className="rounded-full">
                     <MessageSquare className="h-6 w-6 text-white" />
                   </div>
                   <span className="text-white text-xs mt-1">{reel.comments}</span>
                 </button>
                 
                 <button className="flex flex-col items-center">
-                  <div className="bg-black/50 p-2 rounded-full">
+                  <div className="rounded-full">
                     <Share className="h-6 w-6 text-white" />
                   </div>
                   <span className="text-white text-xs mt-1">Share</span>
@@ -260,7 +259,7 @@ export default function Reels() {
         ))}
       </div>
 
-      {/* Bottom padding to account for the navigation bar - ensures content doesn't get hidden */}
+      {/* Bottom padding to account for the navigation bar */}
       <div className="h-16"></div>
     </div>
   );
