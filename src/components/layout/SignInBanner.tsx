@@ -13,14 +13,14 @@ export default function SignInBanner() {
   };
   
   return (
-    <div className="fixed bottom-12 left-0 right-0 z-40 bg-gradient-to-r from-red-500 to-orange-500 py-2 px-4 flex items-center justify-between">
-      <div className="text-white text-sm font-medium">Sign in to explore more</div>
+    <div className="fixed bottom-12 left-0 right-0 z-40 bg-gradient-to-r from-red-500/80 to-orange-500/80 backdrop-blur-sm py-1.5 px-4 flex items-center justify-between shadow-sm">
+      <div className="text-white text-xs font-medium">Sign in to explore more</div>
       <Button 
         onClick={handleSignIn} 
         size="sm" 
-        className="bg-white hover:bg-white/90 text-red-500 shadow-sm flex items-center gap-1 px-3 py-1 h-7 rounded-full"
+        className="bg-white hover:bg-white/90 text-red-500 shadow-sm flex items-center gap-1 px-2 py-0.5 h-6 rounded-full"
       >
-        <LogIn className="w-3.5 h-3.5" />
+        <LogIn className="w-3 h-3" />
         <span className="text-xs font-medium">Sign in</span>
       </Button>
     </div>
