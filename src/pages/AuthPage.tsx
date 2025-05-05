@@ -16,7 +16,7 @@ const SignInScreen = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="flex flex-col justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 w-full">
       {/* Header with logo */}
       <div className="bg-orange-500 p-4 text-center">
         <div className="flex items-center justify-center">
