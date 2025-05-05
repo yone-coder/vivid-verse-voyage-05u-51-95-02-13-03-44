@@ -47,7 +47,9 @@ export default function ForYou() {
       <SecondaryFlashDeals />
       <BenefitsBanner />
       <TopVendorsCompact />
-      <ProductRecommendations />
+            <div className="bg-white mb-1">
+        <ProductRecommendations products={Array.isArray(products) ? products : []} />
+      </div>
       <Newsletter />
     </div>
   );
