@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { 
   Eye, EyeOff, ChevronRight, ArrowRight, Smartphone, Lock, Mail, 
   AlertCircle, Fingerprint, UserPlus, Shield, Key, FileCheck, 
-  Bell, Clock, Gift, Zap, HelpCircle, UserCheck, Info, CheckCircle,
+  Bell, Clock, Gift, Zap, HelpCircle, UserCheck, Info,X, CheckCircle,
   MessageSquare, Mail as EmailIcon, Coffee, Tablet
 } from 'lucide-react';
 
