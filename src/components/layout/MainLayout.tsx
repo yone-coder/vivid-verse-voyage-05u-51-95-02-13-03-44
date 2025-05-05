@@ -15,7 +15,8 @@ export default function MainLayout() {
   const isProductPage = location.pathname.includes('/product/');
   const isHomePage = location.pathname === "/" || location.pathname === "/for-you" || 
                      location.pathname === "/posts" || location.pathname === "/shops" ||
-                     location.pathname === "/trending" || location.pathname === "/videos";
+                     location.pathname === "/trending" || location.pathname === "/videos" ||
+                     location.pathname === "/categories";
   const { toast } = useToast();
   const [isFavorite, setIsFavorite] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
