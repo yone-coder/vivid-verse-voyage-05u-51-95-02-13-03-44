@@ -1,8 +1,9 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Heart, MessageSquare, Share, Volume2, VolumeX } from "lucide-react";
 import ReelsSkeleton from "@/components/skeletons/ReelsSkeleton";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 
 interface Reel {
   id: number;
@@ -165,22 +166,23 @@ export default function Reels() {
               poster="https://picsum.photos/seed/reel1/500/800"
             />
             
-            {/* Bottom overlay with user info, description, and interaction buttons */}
-            <div className="absolute inset-0 pointer-events-none">
-              {/* Bottom gradient and content - all pushed to bottom */}
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent pb-16 pt-40 px-4 pointer-events-auto">
+            {/* Content overlay */}
+            <div className="absolute inset-0 pointer-events-none flex flex-col justify-end">
+              {/* Bottom gradient for better text visibility */}
+              <div className="absolute bottom-0 left-0 right-0 h-[60%] bg-gradient-to-t from-black/70 via-black/30 to-transparent pointer-events-none" />
+              
+              <div className="relative z-10 pb-16 px-4 pointer-events-auto">
                 {/* User info and description */}
                 <div className="mb-3">
                   <div className="flex items-center mb-2">
-                    <img 
-                      src={reel.avatar} 
-                      alt={reel.username}
-                      className="w-9 h-9 rounded-full border-2 border-white"
-                    />
+                    <Avatar className="h-9 w-9 border-2 border-white">
+                      <AvatarImage src={reel.avatar} alt={reel.username} />
+                      <AvatarFallback>{reel.username.substring(0, 2).toUpperCase()}</AvatarFallback>
+                    </Avatar>
                     <span className="ml-2 font-semibold text-white">@{reel.username}</span>
-                    <button className="ml-2 bg-red-500 text-white px-2 py-0.5 rounded-full text-xs">
+                    <Button variant="default" size="sm" className="ml-2 bg-red-500 hover:bg-red-600 text-white text-xs h-7 px-3 rounded-full">
                       Follow
-                    </button>
+                    </Button>
                   </div>
                   
                   <p className="text-white mb-3 text-sm">
@@ -189,24 +191,24 @@ export default function Reels() {
                 </div>
                 
                 {/* Product info */}
-                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 flex items-center mb-2">
+                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 flex items-center mb-4">
                   <img 
                     src={reel.productImage} 
                     alt={reel.productName}
                     className="w-12 h-12 rounded-md object-cover"
                   />
-                  <div className="ml-3">
+                  <div className="ml-3 flex-1">
                     <p className="text-white text-sm font-medium">{reel.productName}</p>
                     <p className="text-red-400 font-bold">{reel.productPrice}</p>
                   </div>
-                  <button className="ml-auto bg-red-500 text-white px-3 py-1 rounded-full text-sm">
+                  <Button size="sm" className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 h-8 rounded-full">
                     Buy
-                  </button>
+                  </Button>
                 </div>
               </div>
               
-              {/* Right side action buttons */}
-              <div className="absolute bottom-20 right-3 flex flex-col items-center space-y-6 pointer-events-auto">
+              {/* Right side action buttons - positioned near the bottom */}
+              <div className="absolute bottom-24 right-3 flex flex-col items-center space-y-6 pointer-events-auto">
                 <button onClick={toggleMute} className="flex flex-col items-center">
                   {isMuted ? (
                     <div className="rounded-full bg-black/30 p-2">
