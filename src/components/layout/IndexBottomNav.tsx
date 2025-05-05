@@ -174,11 +174,11 @@ export default function IndexBottomNav() {
                 </button>
               </PopoverTrigger>
               <PopoverContent
-                className="w-full max-w-sm mx-auto p-0 border-none rounded-t-2xl shadow-xl bg-white dark:bg-zinc-900"
-                align="center"
-                side="top"
-                sideOffset={0}
-              >
+  className="w-full max-w-md p-0 border-none rounded-t-2xl shadow-xl bg-white dark:bg-zinc-900 bottom-0 left-0 right-0 fixed"
+  side="top"
+  sideOffset={0}
+  align="start"
+>
                 <div className="px-4 pt-3 pb-2 border-b border-gray-100 dark:border-zinc-800">
                   <div className="w-12 h-1.5 bg-gray-300 dark:bg-zinc-600 rounded-full mx-auto mb-2" />
                   <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-200">
