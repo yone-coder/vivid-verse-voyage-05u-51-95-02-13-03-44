@@ -1,11 +1,8 @@
-
-import React from "react";
+import React, { useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Footer from "@/components/layout/Footer";
-import Header from "@/components/layout/Header";
 import IndexBottomNav from "@/components/layout/IndexBottomNav";
 import { Outlet, useLocation } from "react-router-dom";
-import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import AliExpressHeader from "@/components/home/AliExpressHeader";
 
@@ -21,8 +18,7 @@ export default function MainLayout() {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  
-  // Determine active tab based on current route
+
   const getActiveTabFromRoute = () => {
     if (location.pathname === "/" || location.pathname === "/for-you") return "recommendations";
     if (location.pathname === "/posts") return "posts";
@@ -31,7 +27,7 @@ export default function MainLayout() {
     if (location.pathname === "/videos") return "videos";
     return "recommendations";
   };
-  
+
   const toggleFavorite = () => {
     setIsFavorite(!isFavorite);
     toast({
@@ -39,21 +35,20 @@ export default function MainLayout() {
       description: !isFavorite ? "This item has been added to your wishlist" : "This item has been removed from your wishlist",
     });
   };
-  
+
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({
         title: 'Check out this product',
         text: 'I found this amazing product I thought you might like!',
         url: window.location.href,
-      }).catch((error) => {
+      }).catch(() => {
         toast({
           title: "Sharing Failed",
           description: "There was an error sharing this content.",
         });
       });
     } else {
-      // Fallback for browsers that don't support navigator.share
       navigator.clipboard.writeText(window.location.href);
       toast({
         title: "Link Copied",
@@ -61,7 +56,7 @@ export default function MainLayout() {
       });
     }
   };
-  
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     toast({
@@ -69,34 +64,25 @@ export default function MainLayout() {
       description: `Searching for: ${searchQuery}`,
     });
   };
-  
+
   const headerHeightStyle = `
     :root {
       --header-height: ${isMobile ? '44px' : '90px'};
       --bottom-nav-height: ${isMobile ? '48px' : '0px'};
     }
   `;
-  
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <style dangerouslySetInnerHTML={{ __html: headerHeightStyle }} />
-      
+
       {/* AliExpress Header for home pages */}
       {isHomePage && (
         <AliExpressHeader activeTabId={getActiveTabFromRoute()} />
       )}
-      
-      {/* Regular header for other pages except product pages and reels */}
-      {!isProductPage && !isHomePage && !isReelsPage && (
-        <Header 
-          isSearchOpen={isSearchOpen}
-          setIsSearchOpen={setIsSearchOpen}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          handleSearch={handleSearch}
-        />
-      )}
-      
+
+      {/* Removed the regular Header component completely */}
+
       {isProductPage || isHomePage || isReelsPage ? (
         <main className="flex-grow relative">
           <Outlet />
@@ -106,8 +92,9 @@ export default function MainLayout() {
           <Outlet />
         </main>
       )}
-      {!isMobile && !isHomePage && !isReelsPage && <Footer />}
       
+      {!isMobile && !isHomePage && !isReelsPage && <Footer />}
+
       {/* Show bottom nav on mobile for home, reels and product pages */}
       {isMobile && (isHomePage || isProductPage || isReelsPage) && <IndexBottomNav />}
     </div>
