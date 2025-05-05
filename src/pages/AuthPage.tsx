@@ -1,14 +1,110 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { User, Mail, Phone, Eye, EyeOff } from 'lucide-react';
 
 const SpotifyLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [activeTab, setActiveTab] = useState('email'); // 'email', 'username', or 'phone'
+  const [step, setStep] = useState(1); // Multi-step process
+  const [tabTransition, setTabTransition] = useState(false);
+
+  // Handle tab switching with animation
+  const handleTabChange = (tab) => {
+    if (tab === activeTab) return;
+    
+    setTabTransition(true);
+    setTimeout(() => {
+      setActiveTab(tab);
+      setTabTransition(false);
+    }, 150);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Login attempted with:', { email, password, rememberMe });
+    if (step === 1) {
+      setStep(2); // Move to password step
+    } else {
+      console.log('Login attempted with:', { 
+        [activeTab]: activeTab === 'email' ? email : activeTab === 'username' ? email : email, // Using email state for all for simplicity
+        password, 
+        rememberMe 
+      });
+    }
+  };
+
+  const renderInputField = () => {
+    let placeholder = '';
+    let type = 'text';
+    let label = '';
+    let icon = <Mail size={18} />;
+    
+    switch (activeTab) {
+      case 'email':
+        placeholder = 'Email address or username';
+        type = 'email';
+        label = 'Email or username';
+        icon = <Mail size={18} />;
+        break;
+      case 'username':
+        placeholder = 'Username';
+        type = 'text';
+        label = 'Username';
+        icon = <User size={18} />;
+        break;
+      case 'phone':
+        placeholder = 'Phone number';
+        type = 'tel';
+        label = 'Phone number';
+        icon = <Phone size={18} />;
+        break;
+      default:
+        placeholder = 'Email';
+        type = 'email';
+        label = 'Email';
+        icon = <Mail size={18} />;
+    }
+
+    return (
+      <div className={`transition-opacity duration-150 ${tabTransition ? 'opacity-0' : 'opacity-100'}`}>
+        <label htmlFor="login-input" className="block text-sm font-medium mb-2">
+          {label}
+        </label>
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
+            {icon}
+          </div>
+          <input
+            id="login-input"
+            type={type}
+            placeholder={placeholder}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full pl-10 pr-3 py-3 bg-gray-900 border border-gray-700 rounded text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            required
+          />
+        </div>
+      </div>
+    );
+  };
+
+  // Active tab indicator styles
+  const getTabIndicatorStyles = () => {
+    let position = "left-0";
+    
+    if (activeTab === 'email') position = "left-0";
+    else if (activeTab === 'username') position = "left-1/3";
+    else if (activeTab === 'phone') position = "left-2/3";
+    
+    return `absolute bottom-0 w-1/3 h-0.5 bg-green-500 transition-all duration-300 ${position}`;
+  };
+
+  // Get tab button styles
+  const getTabButtonStyles = (tab) => {
+    return `flex-1 py-3 text-center relative font-medium text-sm transition-all duration-200 ${
+      activeTab === tab ? 'text-white' : 'text-gray-400 hover:text-gray-200'
+    }`;
   };
 
   return (
@@ -50,17 +146,6 @@ const SpotifyLogin = () => {
             <span>Continue with Facebook</span>
           </button>
 
-          <button className="w-full py-3 px-4 border border-gray-700 rounded-full font-bold flex items-center justify-center space-x-2 hover:border-white transition-colors">
-            <svg className="w-5 h-5" viewBox="0 0 24 24">
-              <path fill="currentColor" d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.33-3.14-2.57C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
-            </svg>
-            <span>Continue with Apple</span>
-          </button>
-
-          <button className="w-full py-3 px-4 border border-gray-700 rounded-full font-bold flex items-center justify-center space-x-2 hover:border-white transition-colors">
-            <span>Continue with phone number</span>
-          </button>
-
           <div className="flex items-center">
             <div className="flex-grow border-t border-gray-700"></div>
             <span className="px-4 text-sm text-gray-400">OR</span>
@@ -68,75 +153,123 @@ const SpotifyLogin = () => {
           </div>
         </div>
 
-        {/* Login form */}
-        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium mb-2">
-              Email or username
-            </label>
-            <input
-              id="email"
-              type="text"
-              placeholder="Email or username"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-3 bg-gray-900 border border-gray-700 rounded text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-              required
-            />
-          </div>
-
-          <div className="relative">
-            <label htmlFor="password" className="block text-sm font-medium mb-2">
-              Password
-            </label>
-            <input
-              id="password"
-              type={showPassword ? "text" : "password"}
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3 py-3 bg-gray-900 border border-gray-700 rounded text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-              required
-            />
-            <button
-              type="button"
-              className="absolute right-3 top-10 text-gray-400"
-              onClick={() => setShowPassword(!showPassword)}
+        {/* Enhanced Tab Switcher */}
+        <div className="relative border-b border-gray-700 mb-6 mt-6">
+          <div className="flex">
+            <button 
+              className={getTabButtonStyles('email')}
+              onClick={() => handleTabChange('email')}
             >
-              {showPassword ? "Hide" : "Show"}
+              <div className="flex items-center justify-center space-x-1">
+                <Mail size={16} />
+                <span>Email</span>
+              </div>
+            </button>
+            <button 
+              className={getTabButtonStyles('username')}
+              onClick={() => handleTabChange('username')}
+            >
+              <div className="flex items-center justify-center space-x-1">
+                <User size={16} />
+                <span>Username</span>
+              </div>
+            </button>
+            <button 
+              className={getTabButtonStyles('phone')}
+              onClick={() => handleTabChange('phone')}
+            >
+              <div className="flex items-center justify-center space-x-1">
+                <Phone size={16} />
+                <span>Phone</span>
+              </div>
             </button>
           </div>
+          {/* Animated active tab indicator */}
+          <div className={getTabIndicatorStyles()}></div>
+        </div>
 
-          <div className="flex items-center">
-            <input
-              id="remember"
-              type="checkbox"
-              checked={rememberMe}
-              onChange={(e) => setRememberMe(e.target.checked)}
-              className="h-4 w-4 text-green-500 focus:ring-0"
-            />
-            <label htmlFor="remember" className="ml-2 block text-sm">
-              Remember me
-            </label>
-          </div>
+        {/* Login form */}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {step === 1 ? (
+            renderInputField()
+          ) : (
+            <div className="relative">
+              <label htmlFor="password" className="block text-sm font-medium mb-2">
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-3 py-3 bg-gray-900 border border-gray-700 rounded text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                  required
+                />
+                <button
+                  type="button"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {step === 2 && (
+            <div className="flex items-center">
+              <div className="relative inline-block w-10 mr-2 align-middle select-none">
+                <input 
+                  type="checkbox" 
+                  id="remember" 
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="opacity-0 absolute block w-6 h-6 cursor-pointer" 
+                />
+                <label 
+                  htmlFor="remember" 
+                  className={`block overflow-hidden h-6 rounded-full bg-gray-700 cursor-pointer ${rememberMe ? 'bg-green-500' : ''}`}
+                >
+                  <span className={`block h-6 w-6 rounded-full bg-white shadow transform transition-transform duration-200 ease-in ${rememberMe ? 'translate-x-4' : 'translate-x-0'}`}></span>
+                </label>
+              </div>
+              <label htmlFor="remember" className="text-sm cursor-pointer">
+                Remember me
+              </label>
+            </div>
+          )}
 
           <button
             type="submit"
-            className="w-full bg-green-500 text-black font-bold py-3 px-4 rounded-full hover:bg-green-400 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+            className="w-full bg-green-500 text-black font-bold py-3 px-4 rounded-full hover:scale-105 hover:bg-green-400 transition-all focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-black"
           >
-            Log In
+            {step === 1 ? 'Next' : 'Log In'}
           </button>
 
-          <div className="text-center">
-            <a href="#" className="text-gray-400 hover:underline text-sm">
-              Forgot your password?
-            </a>
-          </div>
+          {step === 2 && (
+            <div className="text-center">
+              <a href="#" className="text-gray-400 hover:text-white hover:underline text-sm transition-colors">
+                Forgot your password?
+              </a>
+            </div>
+          )}
+
+          {step === 1 && (
+            <div className={`text-center transition-opacity duration-150 ${tabTransition ? 'opacity-0' : 'opacity-100'}`}>
+              <span className="text-sm text-gray-400">
+                {activeTab === 'email' && "We'll send you a link to log in"}
+                {activeTab === 'username' && "Enter your Spotify username"}
+                {activeTab === 'phone' && "We'll send you a confirmation code"}
+              </span>
+            </div>
+          )}
         </form>
 
         <div className="mt-8 border-t border-gray-700 pt-6 text-center">
           <p className="text-gray-400 text-sm">Don't have an account?</p>
-          <a href="#" className="block mt-2 border border-gray-700 text-white font-bold py-3 px-4 rounded-full hover:border-white transition-colors">
+          <a href="#" className="block mt-2 border border-gray-700 text-white font-bold py-3 px-4 rounded-full hover:border-green-500 hover:text-green-500 transition-colors">
             Sign up for Spotify
           </a>
         </div>
