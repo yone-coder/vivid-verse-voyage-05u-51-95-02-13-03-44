@@ -1,5 +1,6 @@
+
 import React, { useState, useRef, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Home, 
@@ -21,16 +22,30 @@ export default function IndexBottomNav() {
   const [activeTab, setActiveTab] = useState("home");
   const [showNotificationDot, setShowNotificationDot] = useState(true);
   const location = useLocation();
+  const navigate = useNavigate();
   const { toast } = useToast();
   const plusButtonRef = useRef(null);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+
+  // Update activeTab when the route changes
+  useEffect(() => {
+    if (location.pathname === "/" || location.pathname === "/for-you") {
+      setActiveTab("home");
+    } else if (location.pathname === "/categories") {
+      setActiveTab("categories");
+    } else if (location.pathname === "/wishlist") {
+      setActiveTab("wishlist");
+    } else if (location.pathname === "/account") {
+      setActiveTab("account");
+    }
+  }, [location.pathname]);
 
   const navItems = [
     {
       id: "home",
       icon: Home,
       label: "Home",
-      path: "/",
+      path: "/for-you",
       badge: null,
     },
     {
@@ -83,9 +98,16 @@ export default function IndexBottomNav() {
     // Close the popover after action
     setTimeout(() => {
       if (action === "Product") {
-        window.location.href = "/admin";
+        navigate("/admin");
       }
     }, 500);
+  };
+
+  const handleTabClick = (item) => {
+    setActiveTab(item.id);
+    if (item.id !== "add") {
+      navigate(item.path);
+    }
   };
 
   // Quick action items in a single row
@@ -175,15 +197,12 @@ export default function IndexBottomNav() {
                 </PopoverContent>
               </Popover>
             ) : (
-              <Link
+              <button
                 key={item.id}
-                to={item.path}
                 className="flex flex-col items-center justify-center w-1/5 relative group"
-                onClick={() => setActiveTab(item.id)}
+                onClick={() => handleTabClick(item)}
               >
                 <div className="relative">
-                  {/* Removed the glassmorphic background pill */}
-                  
                   {/* Icon with hover effect */}
                   <div className="relative transition-transform duration-200 group-hover:scale-110">
                     <item.icon
@@ -229,7 +248,7 @@ export default function IndexBottomNav() {
                     transition={{ type: "spring", duration: 0.5 }}
                   />
                 )}
-              </Link>
+              </button>
             )
           ))}
         </div>
