@@ -334,19 +334,19 @@ export default function UltraModernLogin() {
                   {/* Authentication Method Tabs */}
                   <div className="mb-4">
                     <Tabs defaultValue="email" value={activeTab} onValueChange={setActiveTab} className="w-full">
-                      <TabsList className="grid grid-cols-2 w-full bg-[#f5f5f5]">
+                     <TabsList className="grid grid-cols-2 w-full bg-[#f5f5f5]">
   <TabsTrigger
     value="email"
-    className="flex items-center justify-center py-3 text-base font-medium data-[state=active]:bg-white data-[state=active]:text-[#ff4747]"
+    className="flex items-center justify-center px-4 py-4 text-[17px] font-semibold data-[state=active]:bg-white data-[state=active]:text-[#ff4747]"
   >
-    <Mail className="h-5 w-5 mr-2" />
+    <Mail className="h-6 w-6 mr-2" />
     Email
   </TabsTrigger>
   <TabsTrigger
     value="phone"
-    className="flex items-center justify-center py-3 text-base font-medium data-[state=active]:bg-white data-[state=active]:text-[#ff4747]"
+    className="flex items-center justify-center px-4 py-4 text-[17px] font-semibold data-[state=active]:bg-white data-[state=active]:text-[#ff4747]"
   >
-    <Smartphone className="h-5 w-5 mr-2" />
+    <Smartphone className="h-6 w-6 mr-2" />
     Phone
   </TabsTrigger>
 </TabsList>
