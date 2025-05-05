@@ -17,7 +17,7 @@ const SignInScreen = () => {
   return (
     <div className="flex flex-col justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Header with logo */}
-      <div className="bg-orange-500 p-4 text-center">
+      <div className="bg-orange-500 text-center">
         <div className="flex items-center justify-center">
           <ShoppingBag className="text-white mr-2" size={24} />
           <h1 className="text-xl font-bold text-white">AliExpress</h1>
