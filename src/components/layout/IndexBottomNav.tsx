@@ -44,7 +44,7 @@ export default function IndexBottomNav() {
     {
       id: "add",
       icon: Plus,
-      label: "", // Removed the "Add" label here
+      label: "", // Removed label
       path: "#",
       badge: null,
       isSpecial: true,
@@ -119,7 +119,7 @@ export default function IndexBottomNav() {
                     className="flex flex-col items-center justify-center w-1/5 relative"
                     onClick={() => setIsPopoverOpen(true)}
                   >
-                    <div className="bg-gradient-to-tr from-red-500 to-red-400 rounded-full p-2 shadow-md"
+                    <div className="bg-gradient-to-tr from-red-500 to-red-400 rounded-full p-2 shadow-md transition-all duration-200 hover:shadow-red-300 hover:scale-110"
                       style={{
                         boxShadow: "0 2px 8px rgba(239, 68, 68, 0.3)"
                       }}>
@@ -143,9 +143,9 @@ export default function IndexBottomNav() {
                         <button
                           key={idx}
                           onClick={() => handleQuickAction(item.action)}
-                          className="flex flex-col items-center justify-center p-2 hover:bg-gray-50 rounded-md text-[11px] transition-colors"
+                          className="flex flex-col items-center justify-center p-2 hover:bg-gray-50 rounded-md text-[11px] transition-all duration-200"
                         >
-                          <div className={`mb-1 ${item.color}`}>
+                          <div className={`mb-1 ${item.color} transition-transform duration-200 hover:scale-110`}>
                             <item.icon className="w-5 h-5" />
                           </div>
                           <span className="text-center line-clamp-1 text-gray-700">{item.label}</span>
@@ -167,7 +167,7 @@ export default function IndexBottomNav() {
                       <span className="text-xs text-gray-500">Go to shop center</span>
                       <button 
                         onClick={() => setIsPopoverOpen(false)}
-                        className="text-xs text-blue-600"
+                        className="text-xs text-blue-600 hover:text-blue-800 transition-colors"
                       >
                         Close
                       </button>
@@ -179,26 +179,31 @@ export default function IndexBottomNav() {
               <Link
                 key={item.id}
                 to={item.path}
-                className="flex flex-col items-center justify-center w-1/5 relative"
+                className="flex flex-col items-center justify-center w-1/5 relative group"
                 onClick={() => setActiveTab(item.id)}
               >
                 <div className="relative">
+                  {/* Background pill - animated when active */}
                   <motion.div
                     className={cn(
                       "absolute -inset-2.5 rounded-full",
-                      activeTab === item.id ? "bg-red-50 dark:bg-red-950/20" : "bg-transparent"
+                      activeTab === item.id ? "bg-red-50 dark:bg-red-950/20" : "bg-transparent group-hover:bg-gray-50 dark:group-hover:bg-zinc-800/50"
                     )}
                     layoutId="nav-pill"
                     transition={{ type: "spring", duration: 0.5 }}
-                    style={{ opacity: activeTab === item.id ? 1 : 0 }}
+                    style={{ 
+                      opacity: activeTab === item.id ? 1 : 0,
+                    }}
                   />
-                  <div className="relative">
+                  
+                  {/* Icon with hover effect */}
+                  <div className="relative transition-transform duration-200 group-hover:scale-110">
                     <item.icon
                       className={cn(
                         "w-5 h-5 transition-colors",
                         activeTab === item.id 
                           ? "text-red-500" 
-                          : "text-gray-500 dark:text-gray-400"
+                          : "text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300"
                       )}
                     />
 
@@ -214,20 +219,21 @@ export default function IndexBottomNav() {
                   </div>
                 </div>
 
-                {/* Only render the label if it exists */}
+                {/* Label with improved hover state */}
                 {item.label && (
                   <span 
                     className={cn(
-                      "text-[10px] mt-0.5 font-medium",
+                      "text-[10px] mt-0.5 font-medium transition-colors",
                       activeTab === item.id 
                         ? "text-red-500" 
-                        : "text-gray-500 dark:text-gray-400"
+                        : "text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300"
                     )}
                   >
                     {item.label}
                   </span>
                 )}
 
+                {/* Active indicator dot */}
                 {activeTab === item.id && (
                   <motion.div 
                     className="absolute -bottom-2 w-1 h-1 rounded-full bg-red-500"
