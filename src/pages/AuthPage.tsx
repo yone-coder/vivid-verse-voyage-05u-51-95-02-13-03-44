@@ -14,7 +14,6 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Progress } from "@/components/ui/progress";
 
 export default function UltraModernLogin() {
   const [activeTab, setActiveTab] = useState('email');
@@ -32,6 +31,8 @@ export default function UltraModernLogin() {
   const [showHelp, setShowHelp] = useState(false);
   const [deviceTrusted, setDeviceTrusted] = useState(false);
   const [accountRecoveryOpen, setAccountRecoveryOpen] = useState(false);
+  const [lastLogin, setLastLogin] = useState('May 4, 2025 - 17:42');
+  const [loginLocation, setLoginLocation] = useState('San Francisco, USA');
   const [authMode, setAuthMode] = useState('signin'); // 'signin' or 'signup'
   const [confirmPassword, setConfirmPassword] = useState('');
   const [fullName, setFullName] = useState('');
@@ -237,48 +238,36 @@ export default function UltraModernLogin() {
     }
   };
 
-  // Calculate progress percentage
-  const progressPercentage = (currentStep / totalSteps) * 100;
-
   // Render progress indicators
   const renderProgress = () => {
     return (
-      <div className="mb-8 w-full max-w-md mx-auto">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-xs text-gray-500">Step {currentStep} of {totalSteps}</span>
-          <span className="text-xs font-medium text-[#ff4747]">{Math.round(progressPercentage)}%</span>
-        </div>
-        <Progress 
-          value={progressPercentage} 
-          className="h-2 bg-gray-100" 
-          indicatorClassName="bg-gradient-to-r from-[#ff4747] to-[#ff6b47]"
-        />
-        <div className="flex justify-between mt-2">
-          {[...Array(totalSteps)].map((_, index) => (
-            <div key={index} className="flex flex-col items-center">
-              <div 
-                className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
-                  currentStep > index + 1 
-                    ? 'bg-[#ff4747] text-white transform scale-90' 
-                    : currentStep === index + 1 
-                      ? 'bg-[#ff4747] text-white ring-4 ring-red-100 transform scale-100'
-                      : 'bg-gray-100 text-gray-400'
-                }`}
-              >
-                {currentStep > index + 1 ? (
-                  <CheckCircle className="h-5 w-5" />
-                ) : (
-                  <span className="text-sm">{index + 1}</span>
-                )}
-              </div>
-              <span className="text-[10px] mt-1 text-gray-500 font-medium">
-                {index === 0 ? 'Account' : 
-                 index === 1 ? 'Password' : 
-                 index === 2 ? 'Verify' : ''}
-              </span>
+      <div className="flex items-center justify-between mb-6 w-full max-w-xs mx-auto">
+        {[...Array(totalSteps)].map((_, index) => (
+          <div key={index} className="flex items-center">
+            <div 
+              className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                currentStep > index + 1 
+                  ? 'bg-[#ff4747] text-white' 
+                  : currentStep === index + 1 
+                    ? 'bg-[#ff4747] text-white'
+                    : 'bg-gray-200 text-gray-500'
+              }`}
+            >
+              {currentStep > index + 1 ? (
+                <CheckCircle className="h-5 w-5" />
+              ) : (
+                <span>{index + 1}</span>
+              )}
             </div>
-          ))}
-        </div>
+            {index < totalSteps - 1 && (
+              <div 
+                className={`h-1 w-10 ${
+                  currentStep > index + 1 ? 'bg-[#ff4747]' : 'bg-gray-200'
+                }`}
+              />
+            )}
+          </div>
+        ))}
       </div>
     );
   };
@@ -287,8 +276,8 @@ export default function UltraModernLogin() {
     <div className="flex flex-col min-h-screen bg-white font-sans transition-opacity duration-500 w-full">
       <div className="w-full flex flex-col">
         {/* Minimal Header */}
-        <div className="px-6 pt-12 pb-4 max-w-5xl mx-auto w-full">
-          <h1 className="text-3xl font-bold text-gray-800 mb-3 text-center">
+        <div className="px-6 pt-8 pb-2 max-w-5xl mx-auto w-full">
+          <h1 className="text-3xl font-bold text-gray-800 mb-2 text-center">
             {resetPassword 
               ? "Reset Your Password" 
               : authMode === 'signin' 
@@ -302,7 +291,7 @@ export default function UltraModernLogin() {
                 ? "Welcome back! Access your account securely" 
                 : "Join our community today"}
           </p>
-          <div className="flex justify-center mb-6">
+          <div className="flex justify-center mb-4">
             <div className="bg-[#fff2f2] text-[#ff4747] text-xs px-3 py-1 rounded-full flex items-center">
               <Shield className="h-3 w-3 mr-1" />
               <span>Enhanced security protocols active</span>
@@ -327,57 +316,60 @@ export default function UltraModernLogin() {
         )}
 
         {/* Form area */}
-        <form onSubmit={handleSubmit} className="px-6 py-4 max-w-md mx-auto w-full">
+        <form onSubmit={handleSubmit} className="px-6 py-4 max-w-5xl mx-auto w-full">
           {!resetPassword ? (
             <>
               {/* Step 1: Authentication Method and Initial Details */}
               {currentStep === 1 && (
                 <div className="mb-6">
+                  {authMode === 'signin' && (
+                    <div className="mb-4 p-3 bg-[#f5f5f5] rounded-lg border border-[#eaeaea] flex items-center">
+                      <Info className="h-4 w-4 text-[#ff4747] mr-2" />
+                      <div className="text-xs text-gray-700">
+                        <span className="font-medium">Last login:</span> {lastLogin} from {loginLocation}
+                      </div>
+                    </div>
+                  )}
+
                   {/* Authentication Method Tabs */}
-                  <div className="mb-6">
+                  <div className="mb-4">
                     <Tabs defaultValue="email" value={activeTab} onValueChange={setActiveTab} className="w-full">
-                      <TabsList className="grid grid-cols-2 w-full bg-[#f9f9f9] p-1 rounded-xl h-14 mb-4">
-                        <TabsTrigger 
-                          value="email" 
-                          className="flex items-center justify-center text-base rounded-lg h-12 data-[state=active]:bg-white data-[state=active]:text-[#ff4747] data-[state=active]:shadow-sm transition-all"
-                        >
-                          <Mail className="h-5 w-5 mr-2" />
+                      <TabsList className="grid grid-cols-2 w-full bg-[#f5f5f5]">
+                        <TabsTrigger value="email" className="flex items-center justify-center data-[state=active]:bg-white data-[state=active]:text-[#ff4747]">
+                          <Mail className="h-4 w-4 mr-2" />
                           Email
                         </TabsTrigger>
-                        <TabsTrigger 
-                          value="phone" 
-                          className="flex items-center justify-center text-base rounded-lg h-12 data-[state=active]:bg-white data-[state=active]:text-[#ff4747] data-[state=active]:shadow-sm transition-all"
-                        >
-                          <Smartphone className="h-5 w-5 mr-2" />
+                        <TabsTrigger value="phone" className="flex items-center justify-center data-[state=active]:bg-white data-[state=active]:text-[#ff4747]">
+                          <Smartphone className="h-4 w-4 mr-2" />
                           Phone
                         </TabsTrigger>
                       </TabsList>
-                      <TabsContent value="email" className="pt-2">
+                      <TabsContent value="email" className="pt-4">
                         <div className="mb-4">
-                          <Label htmlFor="email" className="block text-gray-700 mb-2 text-sm font-medium">Email address</Label>
+                          <Label htmlFor="email" className="block text-gray-700 mb-1">Email address</Label>
                           <div className="relative group">
-                            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-[#ff4747] transition-colors" />
+                            <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-[#ff4747] transition-colors" />
                             <Input
                               id="email"
                               type="email"
                               value={email}
                               onChange={(e) => setEmail(e.target.value)}
                               placeholder="Enter your email address"
-                              className="w-full pl-12 pr-4 py-3 h-14 border-[#eaeaea] focus-visible:ring-[#ff4747] rounded-xl bg-[#f9f9f9] focus:bg-white transition-all"
+                              className="w-full pl-10 pr-3 py-3 border-[#eaeaea] focus-visible:ring-[#ff4747]"
                               required
                             />
                           </div>
                         </div>
                       </TabsContent>
-                      <TabsContent value="phone" className="pt-2">
+                      <TabsContent value="phone" className="pt-4">
                         <div className="mb-4">
-                          <Label htmlFor="phone" className="block text-gray-700 mb-2 text-sm font-medium">Phone number</Label>
+                          <Label htmlFor="phone" className="block text-gray-700 mb-1">Phone number</Label>
                           <div className="flex">
                             <div className="relative w-24 mr-2">
                               <select
                                 value={countryCode}
                                 onChange={(e) => setCountryCode(e.target.value)}
-                                className="h-14 w-full rounded-xl border border-[#eaeaea] bg-[#f9f9f9] px-3 py-3 text-base focus-visible:ring-[#ff4747] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                className="h-10 w-full rounded-md border border-[#eaeaea] bg-background px-3 py-1.5 text-base focus-visible:ring-[#ff4747] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
                               >
                                 <option value="+1">+1</option>
                                 <option value="+44">+44</option>
@@ -388,14 +380,14 @@ export default function UltraModernLogin() {
                               </select>
                             </div>
                             <div className="relative group flex-1">
-                              <Smartphone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-[#ff4747] transition-colors" />
+                              <Smartphone className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-[#ff4747] transition-colors" />
                               <Input
                                 id="phone"
                                 type="tel"
                                 value={phone}
                                 onChange={(e) => setPhone(e.target.value)}
                                 placeholder="Enter your phone number"
-                                className="w-full pl-12 pr-4 py-3 h-14 border-[#eaeaea] focus-visible:ring-[#ff4747] rounded-xl bg-[#f9f9f9] focus:bg-white transition-all"
+                                className="w-full pl-10 pr-3 py-3 border-[#eaeaea] focus-visible:ring-[#ff4747]"
                                 required
                               />
                             </div>
@@ -408,16 +400,16 @@ export default function UltraModernLogin() {
                   {/* Full name field (sign up only) */}
                   {authMode === 'signup' && (
                     <div className="mb-4">
-                      <Label htmlFor="fullName" className="block text-gray-700 mb-2 text-sm font-medium">Full Name</Label>
+                      <Label htmlFor="fullName" className="block text-gray-700 mb-1">Full Name</Label>
                       <div className="relative group">
-                        <UserCheck className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-[#ff4747] transition-colors" />
+                        <UserCheck className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-[#ff4747] transition-colors" />
                         <Input
                           id="fullName"
                           type="text"
                           value={fullName}
                           onChange={(e) => setFullName(e.target.value)}
                           placeholder="Enter your full name"
-                          className="w-full pl-12 pr-4 py-3 h-14 border-[#eaeaea] focus-visible:ring-[#ff4747] rounded-xl bg-[#f9f9f9] focus:bg-white transition-all"
+                          className="w-full pl-10 pr-3 py-3 border-[#eaeaea] focus-visible:ring-[#ff4747]"
                           required
                         />
                       </div>
@@ -430,23 +422,23 @@ export default function UltraModernLogin() {
               {currentStep === 2 && (
                 <div className="mb-6">
                   {/* Password field */}
-                  <div className="mb-6">
-                    <Label htmlFor="password" className="block text-gray-700 mb-2 text-sm font-medium">Password</Label>
+                  <div className="mb-4">
+                    <Label htmlFor="password" className="block text-gray-700 mb-1">Password</Label>
                     <div className="relative group">
-                      <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-[#ff4747] transition-colors" />
+                      <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-[#ff4747] transition-colors" />
                       <Input
                         id="password"
                         type={showPassword ? "text" : "password"}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="Enter your password"
-                        className="w-full pl-12 pr-12 py-3 h-14 border-[#eaeaea] focus-visible:ring-[#ff4747] rounded-xl bg-[#f9f9f9] focus:bg-white transition-all"
+                        className="w-full pl-10 pr-10 py-3 border-[#eaeaea] focus-visible:ring-[#ff4747]"
                         required
                       />
                       <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                        className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 transition-colors"
                       >
                         {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                       </button>
@@ -454,12 +446,12 @@ export default function UltraModernLogin() {
 
                     {/* Password requirements (sign up only) */}
                     {authMode === 'signup' && (
-                      <div className="mt-4">
-                        <div className="w-full h-1.5 flex space-x-1 mb-1">
-                          <div className={`h-full rounded-full w-1/4 transition-all duration-300 ${password.length >= 8 ? 'bg-gradient-to-r from-[#ff4747] to-[#ff6b47]' : 'bg-gray-200'}`}></div>
-                          <div className={`h-full rounded-full w-1/4 transition-all duration-300 ${/[A-Z]/.test(password) ? 'bg-gradient-to-r from-[#ff4747] to-[#ff6b47]' : 'bg-gray-200'}`}></div>
-                          <div className={`h-full rounded-full w-1/4 transition-all duration-300 ${/[0-9]/.test(password) ? 'bg-gradient-to-r from-[#ff4747] to-[#ff6b47]' : 'bg-gray-200'}`}></div>
-                          <div className={`h-full rounded-full w-1/4 transition-all duration-300 ${/[^A-Za-z0-9]/.test(password) ? 'bg-gradient-to-r from-[#ff4747] to-[#ff6b47]' : 'bg-gray-200'}`}></div>
+                      <div className="mt-2">
+                        <div className="w-full h-1 flex space-x-1">
+                          <div className={`h-full rounded-full w-1/4 ${password.length >= 8 ? 'bg-[#ff4747]' : 'bg-gray-200'}`}></div>
+                          <div className={`h-full rounded-full w-1/4 ${/[A-Z]/.test(password) ? 'bg-[#ff4747]' : 'bg-gray-200'}`}></div>
+                          <div className={`h-full rounded-full w-1/4 ${/[0-9]/.test(password) ? 'bg-[#ff4747]' : 'bg-gray-200'}`}></div>
+                          <div className={`h-full rounded-full w-1/4 ${/[^A-Za-z0-9]/.test(password) ? 'bg-[#ff4747]' : 'bg-gray-200'}`}></div>
                         </div>
                         <div className="flex justify-between mt-1">
                           <span className="text-xs text-gray-500">Password strength: {
@@ -476,17 +468,17 @@ export default function UltraModernLogin() {
 
                   {/* Confirm Password field (sign up only) */}
                   {authMode === 'signup' && (
-                    <div className="mb-6">
-                      <Label htmlFor="confirmPassword" className="block text-gray-700 mb-2 text-sm font-medium">Confirm Password</Label>
+                    <div className="mb-4">
+                      <Label htmlFor="confirmPassword" className="block text-gray-700 mb-1">Confirm Password</Label>
                       <div className="relative group">
-                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-[#ff4747] transition-colors" />
+                        <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-[#ff4747] transition-colors" />
                         <Input
                           id="confirmPassword"
                           type={showPassword ? "text" : "password"}
                           value={confirmPassword}
                           onChange={(e) => setConfirmPassword(e.target.value)}
                           placeholder="Confirm your password"
-                          className={`w-full pl-12 pr-12 py-3 h-14 border-[#eaeaea] focus-visible:ring-[#ff4747] rounded-xl bg-[#f9f9f9] focus:bg-white transition-all ${
+                          className={`w-full pl-10 pr-10 py-3 border-[#eaeaea] focus-visible:ring-[#ff4747] ${
                             confirmPassword && password !== confirmPassword 
                               ? 'border-red-500 focus:ring-red-500' 
                               : ''
@@ -502,21 +494,16 @@ export default function UltraModernLogin() {
 
                   {/* Terms checkbox (sign up only) */}
                   {authMode === 'signup' && (
-                    <div className="flex items-center mb-6">
-                      <div className="relative">
-                        <input
-                          id="terms"
-                          type="checkbox"
-                          checked={agreeToTerms}
-                          onChange={() => setAgreeToTerms(!agreeToTerms)}
-                          className="opacity-0 absolute h-5 w-5"
-                          required
-                        />
-                        <div className={`h-5 w-5 rounded border ${agreeToTerms ? 'bg-[#ff4747] border-[#ff4747]' : 'border-gray-300 bg-white'} flex items-center justify-center transition-colors duration-200`}>
-                          {agreeToTerms && <CheckCircle className="h-4 w-4 text-white" />}
-                        </div>
-                      </div>
-                      <label htmlFor="terms" className="ml-3 block text-sm text-gray-600">
+                    <div className="flex items-center mb-4">
+                      <input
+                        id="terms"
+                        type="checkbox"
+                        checked={agreeToTerms}
+                        onChange={() => setAgreeToTerms(!agreeToTerms)}
+                        className="h-4 w-4 text-[#ff4747] rounded border-gray-300 focus:ring-[#ff4747]"
+                        required
+                      />
+                      <label htmlFor="terms" className="ml-2 block text-sm text-gray-600">
                         I agree to the <a href="#" className="text-[#ff4747] hover:underline">Terms of Service</a> and <a href="#" className="text-[#ff4747] hover:underline">Privacy Policy</a>
                       </label>
                     </div>
@@ -526,7 +513,7 @@ export default function UltraModernLogin() {
                   {authMode === 'signin' && (
                     <div className="flex items-center justify-between mb-6">
                       <div className="flex items-center">
-                        <div className="relative inline-block w-12 mr-2 align-middle select-none">
+                        <div className="relative inline-block w-10 mr-2 align-middle select-none">
                           <input
                             id="remember-me"
                             type="checkbox"
@@ -534,8 +521,8 @@ export default function UltraModernLogin() {
                             onChange={() => setRememberMe(!rememberMe)}
                             className="absolute opacity-0 w-0 h-0"
                           />
-                          <div className="block bg-gray-200 w-12 h-6 rounded-full cursor-pointer"></div>
-                          <div className={`absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-300 ease-in-out ${rememberMe ? 'transform translate-x-6 bg-[#ff4747]' : ''}`}></div>
+                          <div className="block bg-gray-200 w-10 h-6 rounded-full cursor-pointer"></div>
+                          <div className={`absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-300 ease-in-out ${rememberMe ? 'transform translate-x-4 bg-[#ff4747]' : ''}`}></div>
                         </div>
                         <label htmlFor="remember-me" className="block text-sm text-gray-600 cursor-pointer">
                           Remember me
@@ -557,54 +544,53 @@ export default function UltraModernLogin() {
 
               {/* Step 3: 2FA (if enabled) */}
               {currentStep === 3 && showTwoFactor && (
-                <div className="mb-8 mt-4 p-6 border border-[#eaeaea] rounded-xl bg-[#f9f9f9] shadow-sm">
-                  <h3 className="text-base font-medium text-gray-800 mb-3 flex items-center">
-                    <Shield className="h-5 w-5 mr-2 text-[#ff4747]" />
-                    Two-Factor Authentication
+                <div className="mb-4 mt-4 p-4 border border-[#eaeaea] rounded-lg bg-[#f9f9f9]">
+                  <h3 className="text-sm font-medium text-gray-800 mb-2 flex items-center">
+                    <Shield className="h-4 w-4 mr-2 text-[#ff4747]" />
+                    Two-Factor Authentication Required
                   </h3>
-                  <p className="text-sm text-gray-600 mb-4">
-                    Enter the verification code sent to your {activeTab === 'email' ? 'email' : 'phone'}.
+                  <p className="text-xs text-gray-600 mb-3">
+                    We've sent a verification code to your {activeTab === 'email' ? 'email' : 'phone'}.
                   </p>
-                  <div className="mb-6">
-                    <Label htmlFor="twoFactorCode" className="block text-gray-700 mb-2 text-sm font-medium">Verification Code</Label>
-                    <InputOTP maxLength={6} value={twoFactorCode} onChange={setTwoFactorCode} className="mt-2 justify-center gap-2">
+                  <div className="mb-4">
+                    <Label htmlFor="twoFactorCode">Enter 6-digit code</Label>
+                    <InputOTP maxLength={6} value={twoFactorCode} onChange={setTwoFactorCode} className="mt-2">
                       <InputOTPGroup>
-                        <InputOTPSlot index={0} className="w-12 h-12 border-[#eaeaea] focus:border-[#ff4747] focus:ring-[#ff4747] rounded-lg text-lg" />
-                        <InputOTPSlot index={1} className="w-12 h-12 border-[#eaeaea] focus:border-[#ff4747] focus:ring-[#ff4747] rounded-lg text-lg" />
-                        <InputOTPSlot index={2} className="w-12 h-12 border-[#eaeaea] focus:border-[#ff4747] focus:ring-[#ff4747] rounded-lg text-lg" />
-                        <InputOTPSlot index={3} className="w-12 h-12 border-[#eaeaea] focus:border-[#ff4747] focus:ring-[#ff4747] rounded-lg text-lg" />
-                        <InputOTPSlot index={4} className="w-12 h-12 border-[#eaeaea] focus:border-[#ff4747] focus:ring-[#ff4747] rounded-lg text-lg" />
-                        <InputOTPSlot index={5} className="w-12 h-12 border-[#eaeaea] focus:border-[#ff4747] focus:ring-[#ff4747] rounded-lg text-lg" />
+                        <InputOTPSlot index={0} className="border-[#eaeaea] focus:border-[#ff4747] focus:ring-[#ff4747]" />
+                        <InputOTPSlot index={1} className="border-[#eaeaea] focus:border-[#ff4747] focus:ring-[#ff4747]" />
+                        <InputOTPSlot index={2} className="border-[#eaeaea] focus:border-[#ff4747] focus:ring-[#ff4747]" />
+                        <InputOTPSlot index={3} className="border-[#eaeaea] focus:border-[#ff4747] focus:ring-[#ff4747]" />
+                        <InputOTPSlot index={4} className="border-[#eaeaea] focus:border-[#ff4747] focus:ring-[#ff4747]" />
+                        <InputOTPSlot index={5} className="border-[#eaeaea] focus:border-[#ff4747] focus:ring-[#ff4747]" />
                       </InputOTPGroup>
                     </InputOTP>
                   </div>
                   <div className="flex justify-between mt-2">
-                    <button type="button" className="text-sm text-[#ff4747] hover:text-[#ff2727] transition-colors flex items-center">
-                      <ArrowRight className="h-4 w-4 mr-1 rotate-180" />
+                    <button type="button" className="text-xs text-[#ff4747] hover:text-[#ff2727] transition-colors">
                       Resend code
                     </button>
-                    <span className="text-sm text-gray-500 flex items-center">
-                      <Clock className="h-4 w-4 inline mr-1" />
-                      Expires in 4:59
+                    <span className="text-xs text-gray-500">
+                      <Clock className="h-3 w-3 inline mr-1" />
+                      Code expires in 4:59
                     </span>
                   </div>
                 </div>
               )}
             </>
           ) : (
-            <div className="mb-8">
+            <div className="mb-4">
               {!resetSent ? (
                 <div>
-                  <Label htmlFor="resetEmail" className="block text-gray-700 mb-2 text-sm font-medium">Email address</Label>
+                  <Label htmlFor="resetEmail" className="block text-gray-700 mb-1">Email address</Label>
                   <div className="relative group">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-[#ff4747] transition-colors" />
+                    <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-[#ff4747] transition-colors" />
                     <Input
                       id="resetEmail"
                       type="email"
                       value={resetEmail}
                       onChange={(e) => setResetEmail(e.target.value)}
                       placeholder="Enter your email address"
-                      className="w-full pl-12 pr-4 py-3 h-14 border-[#eaeaea] focus-visible:ring-[#ff4747] rounded-xl bg-[#f9f9f9] focus:bg-white transition-all"
+                      className="w-full pl-10 pr-3 py-3 border-[#eaeaea] focus-visible:ring-[#ff4747]"
                       required
                     />
                   </div>
@@ -634,7 +620,7 @@ export default function UltraModernLogin() {
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full flex items-center justify-center bg-gradient-to-r from-[#ff4747] to-[#ff6b47] hover:from-[#ff2727] hover:to-[#ff5b47] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#ff4747] text-white font-medium py-3 px-4 rounded-xl transition-all relative overflow-hidden h-14 shadow-md hover:shadow-lg"
+              className="w-full flex items-center justify-center bg-[#ff4747] hover:bg-[#ff2727] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#ff4747] text-white font-medium py-3 px-4 rounded-lg transition-all relative overflow-hidden h-12"
             >
               {isLoading ? (
                 <Loader className="h-5 w-5 animate-spin" />
@@ -647,7 +633,7 @@ export default function UltraModernLogin() {
                       : authMode === 'signin' 
                         ? "Sign In" 
                         : "Create Account"}
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  <ArrowRight className="ml-2 h-4 w-4" />
                 </>
               )}
             </Button>
@@ -657,7 +643,7 @@ export default function UltraModernLogin() {
             <Button
               type="button"
               onClick={goBack}
-              className="w-full mt-4 border-[#ff4747] text-[#ff4747] hover:bg-[#fff2f2] h-14 rounded-xl"
+              className="w-full mt-4 border-[#ff4747] text-[#ff4747] hover:bg-[#fff2f2]"
               variant="outline"
             >
               Back to sign in
@@ -667,8 +653,8 @@ export default function UltraModernLogin() {
 
         {/* Social logins */}
         {currentStep === 1 && !resetPassword && !resetSent && !showTwoFactor && (
-          <div className="px-6 pt-2 pb-8 max-w-md mx-auto w-full">
-            <div className="relative flex items-center justify-center my-6">
+          <div className="px-6 pt-0 pb-6 max-w-4xl mx-auto w-full">
+            <div className="relative flex items-center justify-center my-4">
               <div className="border-t w-full absolute"></div>
               <span className="bg-white px-4 text-sm text-gray-500 relative">or continue with</span>
             </div>
@@ -677,12 +663,12 @@ export default function UltraModernLogin() {
               <button 
                 type="button"
                 onClick={() => handleSocialLogin('github')}
-                className="flex justify-center items-center py-3 px-4 border border-[#eaeaea] rounded-xl shadow-sm bg-white hover:bg-gray-50 transition-all hover:shadow-md h-14"
+                className="flex justify-center items-center py-2 px-4 border border-[#eaeaea] rounded-lg shadow-sm bg-white hover:bg-gray-50 transition-all hover:shadow-md"
               >
                 <Github className="h-5 w-5" />
               </button>
               <button 
-                className="flex justify-center items-center py-3 px-4 border border-[#eaeaea] rounded-xl shadow-sm bg-white hover:bg-gray-50 transition-all hover:shadow-md h-14"
+                className="flex justify-center items-center py-2 px-4 border border-[#eaeaea] rounded-lg shadow-sm bg-white hover:bg-gray-50 transition-all hover:shadow-md"
                 onClick={() => {
                   toast({
                     title: "Google login",
@@ -700,7 +686,7 @@ export default function UltraModernLogin() {
               <button 
                 type="button"
                 onClick={() => handleSocialLogin('twitter')}
-                className="flex justify-center items-center py-3 px-4 border border-[#eaeaea] rounded-xl shadow-sm bg-white hover:bg-gray-50 transition-all hover:shadow-md h-14"
+                className="flex justify-center items-center py-2 px-4 border border-[#eaeaea] rounded-lg shadow-sm bg-white hover:bg-gray-50 transition-all hover:shadow-md"
               >
                 <Twitter className="h-5 w-5 text-[#1DA1F2]" />
               </button>
@@ -710,7 +696,7 @@ export default function UltraModernLogin() {
 
         {/* Registration link */}
         {currentStep === 1 && !resetPassword && !resetSent && !showTwoFactor && (
-          <div className="px-6 py-6 bg-[#f9f9f9] flex items-center justify-between max-w-md mx-auto w-full rounded-xl mb-8">
+          <div className="px-6 py-4 bg-[#f9f9f9] flex items-center justify-between max-w-4xl mx-auto w-full">
             <p className="text-sm text-gray-600">
               {authMode === 'signin' ? "Don't have an account?" : "Already have an account?"}
             </p>
@@ -726,7 +712,7 @@ export default function UltraModernLogin() {
         )}
 
         {/* Safety notice */}
-        <div className="p-4 bg-[#f9f9f9] flex items-start border-t border-[#eaeaea] max-w-md mx-auto w-full mt-auto">
+        <div className="p-4 bg-[#f9f9f9] flex items-start border-t border-[#eaeaea] max-w-4xl mx-auto w-full">
           <AlertCircle className="h-5 w-5 text-[#ff4747] mt-0.5 mr-3 flex-shrink-0" />
           <p className="text-xs text-gray-700">
             For account security, never share your password or verification codes. Our representatives will never ask for this information.
@@ -771,4 +757,3 @@ export default function UltraModernLogin() {
     </div>
   );
 }
-

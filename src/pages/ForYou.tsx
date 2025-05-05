@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { fetchAllProducts } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import HeroBannerSection from "@/components/home/HeroBanner";
@@ -35,18 +35,17 @@ export default function ForYou() {
       </div>
       
       <HeroBannerSection />
-      <SuperDealsSection products={products || []} />
+      <SuperDealsSection products={products || []} isLoading={isLoading} />
       <SecondaryHeroBanner />
       <FlashDeals />
       <SpaceSavingCategories />
       <TopBrands />
-      <VendorProductCarousel title="Technology" products={products?.slice(0, 10) || []} />
+      <VendorProductCarousel title="Technology" products={products?.slice(0, 10) || []} isLoading={isLoading} />
       <SecondaryFlashDeals />
       <BenefitsBanner />
       <TopVendorsCompact />
-      <ProductGrid products={products || []} />
+      <ProductGrid products={products || []} isLoading={isLoading} />
       <Newsletter />
     </div>
   );
 }
-
