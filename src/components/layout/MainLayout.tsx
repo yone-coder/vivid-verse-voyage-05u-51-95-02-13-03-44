@@ -15,8 +15,8 @@ export default function MainLayout() {
   const isProductPage = location.pathname.includes('/product/');
   const isHomePage = location.pathname === "/" || location.pathname === "/for-you" || 
                      location.pathname === "/posts" || location.pathname === "/shops" ||
-                     location.pathname === "/trending" || location.pathname === "/videos" ||
-                     location.pathname === "/categories";
+                     location.pathname === "/trending" || location.pathname === "/videos";
+  const isReelsPage = location.pathname === "/reels";
   const { toast } = useToast();
   const [isFavorite, setIsFavorite] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -86,8 +86,8 @@ export default function MainLayout() {
         <AliExpressHeader activeTabId={getActiveTabFromRoute()} />
       )}
       
-      {/* Regular header for other pages except product pages */}
-      {!isProductPage && !isHomePage && (
+      {/* Regular header for other pages except product pages and reels */}
+      {!isProductPage && !isHomePage && !isReelsPage && (
         <Header 
           isSearchOpen={isSearchOpen}
           setIsSearchOpen={setIsSearchOpen}
@@ -97,7 +97,7 @@ export default function MainLayout() {
         />
       )}
       
-      {isProductPage || isHomePage ? (
+      {isProductPage || isHomePage || isReelsPage ? (
         <main className="flex-grow relative">
           <Outlet />
         </main>
@@ -106,10 +106,10 @@ export default function MainLayout() {
           <Outlet />
         </main>
       )}
-      {!isMobile && !isHomePage && <Footer />}
+      {!isMobile && !isHomePage && !isReelsPage && <Footer />}
       
-      {/* Show bottom nav on mobile for home and product pages */}
-      {isMobile && (isHomePage || isProductPage) && <IndexBottomNav />}
+      {/* Show bottom nav on mobile for home, reels and product pages */}
+      {isMobile && (isHomePage || isProductPage || isReelsPage) && <IndexBottomNav />}
     </div>
   );
 }

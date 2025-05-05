@@ -3,7 +3,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { motion } from "framer-motion";
 import { Heart, MessageSquare, Share, Volume2, VolumeX } from "lucide-react";
-import AliExpressHeader from "@/components/home/AliExpressHeader";
 import ReelsSkeleton from "@/components/skeletons/ReelsSkeleton";
 
 interface Reel {
@@ -136,135 +135,133 @@ export default function Reels() {
 
   return (
     <div className="flex flex-col min-h-screen bg-black">
-      <AliExpressHeader activeTabId="categories" />
+      {/* No header here, removed AliExpressHeader */}
       
-      <div className="pt-[44px] pb-16">
-        {/* Categories header */}
-        <div className="bg-black sticky top-[44px] z-10 border-b border-gray-800">
-          <div className="flex gap-2 overflow-x-auto no-scrollbar py-2 px-3">
-            <div className="whitespace-nowrap px-3 py-1 bg-red-500 rounded-full text-white text-sm font-medium">
-              For You
-            </div>
-            <div className="whitespace-nowrap px-3 py-1 bg-gray-800 rounded-full text-gray-300 text-sm font-medium">
-              Following
-            </div>
-            <div className="whitespace-nowrap px-3 py-1 bg-gray-800 rounded-full text-gray-300 text-sm font-medium">
-              Tech
-            </div>
-            <div className="whitespace-nowrap px-3 py-1 bg-gray-800 rounded-full text-gray-300 text-sm font-medium">
-              Kitchen
-            </div>
-            <div className="whitespace-nowrap px-3 py-1 bg-gray-800 rounded-full text-gray-300 text-sm font-medium">
-              Beauty
-            </div>
+      {/* Categories header */}
+      <div className="bg-black sticky top-0 z-10 border-b border-gray-800">
+        <div className="flex gap-2 overflow-x-auto no-scrollbar py-2 px-3">
+          <div className="whitespace-nowrap px-3 py-1 bg-red-500 rounded-full text-white text-sm font-medium">
+            For You
+          </div>
+          <div className="whitespace-nowrap px-3 py-1 bg-gray-800 rounded-full text-gray-300 text-sm font-medium">
+            Following
+          </div>
+          <div className="whitespace-nowrap px-3 py-1 bg-gray-800 rounded-full text-gray-300 text-sm font-medium">
+            Tech
+          </div>
+          <div className="whitespace-nowrap px-3 py-1 bg-gray-800 rounded-full text-gray-300 text-sm font-medium">
+            Kitchen
+          </div>
+          <div className="whitespace-nowrap px-3 py-1 bg-gray-800 rounded-full text-gray-300 text-sm font-medium">
+            Beauty
           </div>
         </div>
-        
-        {/* Reels container - full screen snapping vertical scroll */}
-        <div className="w-full h-[calc(100vh-104px)] overflow-y-scroll snap-y snap-mandatory">
-          {reels.map((reel, index) => (
-            <div 
-              key={reel.id}
-              id={`reel-${index}`}
-              className="w-full h-full relative snap-start snap-always"
-            >
-              {/* Video */}
-              <video
-                ref={(el) => (reelRefs.current[index] = el)}
-                src={reel.videoUrl}
-                className="w-full h-full object-cover"
-                loop
-                muted={isMuted}
-                playsInline
-                poster="https://picsum.photos/seed/reel1/500/800"
-              />
+      </div>
+      
+      {/* Reels container - full screen snapping vertical scroll */}
+      <div className="w-full h-[calc(100vh-104px)] overflow-y-scroll snap-y snap-mandatory">
+        {reels.map((reel, index) => (
+          <div 
+            key={reel.id}
+            id={`reel-${index}`}
+            className="w-full h-full relative snap-start snap-always"
+          >
+            {/* Video */}
+            <video
+              ref={(el) => (reelRefs.current[index] = el)}
+              src={reel.videoUrl}
+              className="w-full h-full object-cover"
+              loop
+              muted={isMuted}
+              playsInline
+              poster="https://picsum.photos/seed/reel1/500/800"
+            />
+            
+            {/* Overlay content */}
+            <div className="absolute inset-0 flex flex-col justify-between">
+              {/* Top gradient overlay */}
+              <div className="bg-gradient-to-b from-black/50 to-transparent h-16" />
               
-              {/* Overlay content */}
-              <div className="absolute inset-0 flex flex-col justify-between">
-                {/* Top gradient overlay */}
-                <div className="bg-gradient-to-b from-black/50 to-transparent h-16" />
-                
-                {/* Bottom gradient overlay with content */}
-                <div className="bg-gradient-to-t from-black/80 to-transparent pt-10">
-                  {/* User info and description */}
-                  <div className="px-4 pb-20">
-                    <div className="flex items-center">
-                      <img 
-                        src={reel.avatar} 
-                        alt={reel.username}
-                        className="w-9 h-9 rounded-full border-2 border-white"
-                      />
-                      <span className="ml-2 font-semibold text-white">@{reel.username}</span>
-                      <button className="ml-2 bg-red-500 text-white px-2 py-0.5 rounded-full text-xs">
-                        Follow
-                      </button>
+              {/* Bottom gradient overlay with content */}
+              <div className="bg-gradient-to-t from-black/80 to-transparent pt-10">
+                {/* User info and description */}
+                <div className="px-4 pb-20">
+                  <div className="flex items-center">
+                    <img 
+                      src={reel.avatar} 
+                      alt={reel.username}
+                      className="w-9 h-9 rounded-full border-2 border-white"
+                    />
+                    <span className="ml-2 font-semibold text-white">@{reel.username}</span>
+                    <button className="ml-2 bg-red-500 text-white px-2 py-0.5 rounded-full text-xs">
+                      Follow
+                    </button>
+                  </div>
+                  
+                  <p className="text-white mt-2 text-sm">
+                    {reel.description}
+                  </p>
+                  
+                  {/* Product info */}
+                  <div className="mt-4 bg-white/10 backdrop-blur-sm rounded-lg p-3 flex items-center">
+                    <img 
+                      src={reel.productImage} 
+                      alt={reel.productName}
+                      className="w-12 h-12 rounded-md object-cover"
+                    />
+                    <div className="ml-3">
+                      <p className="text-white text-sm font-medium">{reel.productName}</p>
+                      <p className="text-red-400 font-bold">{reel.productPrice}</p>
                     </div>
-                    
-                    <p className="text-white mt-2 text-sm">
-                      {reel.description}
-                    </p>
-                    
-                    {/* Product info */}
-                    <div className="mt-4 bg-white/10 backdrop-blur-sm rounded-lg p-3 flex items-center">
-                      <img 
-                        src={reel.productImage} 
-                        alt={reel.productName}
-                        className="w-12 h-12 rounded-md object-cover"
-                      />
-                      <div className="ml-3">
-                        <p className="text-white text-sm font-medium">{reel.productName}</p>
-                        <p className="text-red-400 font-bold">{reel.productPrice}</p>
-                      </div>
-                      <button className="ml-auto bg-red-500 text-white px-3 py-1 rounded-full text-sm">
-                        Buy
-                      </button>
-                    </div>
+                    <button className="ml-auto bg-red-500 text-white px-3 py-1 rounded-full text-sm">
+                      Buy
+                    </button>
                   </div>
                 </div>
+              </div>
+              
+              {/* Side actions */}
+              <div className="absolute bottom-24 right-2 flex flex-col items-center space-y-6">
+                <button onClick={toggleMute} className="flex flex-col items-center">
+                  {isMuted ? (
+                    <div className="bg-black/50 p-2 rounded-full">
+                      <VolumeX className="h-6 w-6 text-white" />
+                    </div>
+                  ) : (
+                    <div className="bg-black/50 p-2 rounded-full">
+                      <Volume2 className="h-6 w-6 text-white" />
+                    </div>
+                  )}
+                </button>
                 
-                {/* Side actions */}
-                <div className="absolute bottom-24 right-2 flex flex-col items-center space-y-6">
-                  <button onClick={toggleMute} className="flex flex-col items-center">
-                    {isMuted ? (
-                      <div className="bg-black/50 p-2 rounded-full">
-                        <VolumeX className="h-6 w-6 text-white" />
-                      </div>
-                    ) : (
-                      <div className="bg-black/50 p-2 rounded-full">
-                        <Volume2 className="h-6 w-6 text-white" />
-                      </div>
-                    )}
-                  </button>
-                  
-                  <button className="flex flex-col items-center">
-                    <div className="bg-black/50 p-2 rounded-full">
-                      <Heart className="h-6 w-6 text-white" />
-                    </div>
-                    <span className="text-white text-xs mt-1">{reel.likes}</span>
-                  </button>
-                  
-                  <button className="flex flex-col items-center">
-                    <div className="bg-black/50 p-2 rounded-full">
-                      <MessageSquare className="h-6 w-6 text-white" />
-                    </div>
-                    <span className="text-white text-xs mt-1">{reel.comments}</span>
-                  </button>
-                  
-                  <button className="flex flex-col items-center">
-                    <div className="bg-black/50 p-2 rounded-full">
-                      <Share className="h-6 w-6 text-white" />
-                    </div>
-                    <span className="text-white text-xs mt-1">Share</span>
-                  </button>
-                </div>
+                <button className="flex flex-col items-center">
+                  <div className="bg-black/50 p-2 rounded-full">
+                    <Heart className="h-6 w-6 text-white" />
+                  </div>
+                  <span className="text-white text-xs mt-1">{reel.likes}</span>
+                </button>
+                
+                <button className="flex flex-col items-center">
+                  <div className="bg-black/50 p-2 rounded-full">
+                    <MessageSquare className="h-6 w-6 text-white" />
+                  </div>
+                  <span className="text-white text-xs mt-1">{reel.comments}</span>
+                </button>
+                
+                <button className="flex flex-col items-center">
+                  <div className="bg-black/50 p-2 rounded-full">
+                    <Share className="h-6 w-6 text-white" />
+                  </div>
+                  <span className="text-white text-xs mt-1">Share</span>
+                </button>
               </div>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
 
-      {/* Extra bottom padding for mobile */}
-      {isMobile && <div className="h-16"></div>}
+      {/* Bottom padding to account for the navigation bar - ensures content doesn't get hidden */}
+      <div className="h-16"></div>
     </div>
   );
 }
