@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, ChevronRight, Smartphone, Mail, Lock, ShoppingBag, ArrowRight } from 'lucide-react';
 
-export default function AuthPage() {
+export default function SignInScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
