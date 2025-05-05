@@ -129,49 +129,51 @@ export default function IndexBottomNav() {
                   </button>
                 </PopoverTrigger>
                 <PopoverContent
-                  side="top"
-                  sideOffset={0}
-                  align="start"
-                  className="w-full max-w-md p-0 border-none rounded-t-2xl shadow-xl bg-white dark:bg-zinc-900 bottom-0 left-0 right-0 fixed"
-                >
-                  <div className="px-4 py-3 border-b border-gray-100 dark:border-zinc-800">
-                    <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-100">
-                      Create New
-                    </h3>
-                  </div>
+  className="w-full max-w-md mx-auto p-0 border-none rounded-t-2xl shadow-xl bg-white dark:bg-zinc-900"
+  align="center"
+  side="top"
+  sideOffset={0}
+>
+  <div className="pt-3 px-4 border-b border-gray-200 dark:border-zinc-800">
+    <div className="w-12 h-1.5 bg-gray-300 dark:bg-zinc-600 rounded-full mx-auto mb-3" />
+    <h3 className="text-center text-sm font-semibold text-gray-700 dark:text-gray-200">
+      Quick Create
+    </h3>
+  </div>
 
-                  <div className="grid grid-cols-4 gap-2 p-4">
-                    {quickActions.map((item, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => handleQuickAction(item.action)}
-                        className="flex flex-col items-center justify-center text-center hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-md p-2"
-                      >
-                        <item.icon className={`w-6 h-6 mb-1 ${item.color}`} />
-                        <span className="text-xs text-gray-700 dark:text-gray-200">
-                          {item.label}
-                        </span>
-                        {item.badge && (
-                          <Badge
-                            variant={item.badge === "HOT" ? "aliHot" : "aliNew"}
-                            className="text-[9px] mt-1 p-px px-1"
-                          >
-                            {item.badge}
-                          </Badge>
-                        )}
-                      </button>
-                    ))}
-                  </div>
+  <div className="max-h-[60vh] overflow-y-auto p-4 space-y-3">
+    {quickActions.map((item, idx) => (
+      <button
+        key={idx}
+        onClick={() => handleQuickAction(item.action)}
+        className="w-full flex items-center gap-4 p-3 rounded-xl bg-gray-50 dark:bg-zinc-800 hover:bg-gray-100 dark:hover:bg-zinc-700 transition-all"
+      >
+        <div
+          className={`${item.color} w-10 h-10 flex items-center justify-center rounded-full bg-opacity-10`}
+        >
+          <item.icon className="w-5 h-5" />
+        </div>
+        <div className="flex-1">
+          <div className="text-sm font-medium text-gray-800 dark:text-gray-100">
+            {item.label}
+          </div>
+          <div className="text-xs text-gray-500 dark:text-gray-400">
+            {item.desc}
+          </div>
+        </div>
+      </button>
+    ))}
+  </div>
 
-                  <div className="border-t border-gray-100 dark:border-zinc-800 p-3 text-center text-sm">
-                    <button
-                      onClick={() => setIsPopoverOpen(false)}
-                      className="text-blue-600 dark:text-blue-400 hover:underline"
-                    >
-                      Close
-                    </button>
-                  </div>
-                </PopoverContent>
+  <div className="border-t border-gray-200 dark:border-zinc-800 p-3 flex justify-center">
+    <button
+      onClick={() => setIsPopoverOpen(false)}
+      className="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+    >
+      Close
+    </button>
+  </div>
+</PopoverContent>
               </Popover>
             ) : (
               <button
