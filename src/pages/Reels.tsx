@@ -1,6 +1,6 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { motion } from "framer-motion";
 import { Heart, MessageSquare, Share, Volume2, VolumeX } from "lucide-react";
 import ReelsSkeleton from "@/components/skeletons/ReelsSkeleton";
 
@@ -134,34 +134,20 @@ export default function Reels() {
 
   return (
     <div className="flex flex-col min-h-screen bg-black">
-      {/* Categories header with updated styling */}
-      <div className="bg-black sticky top-0 z-10 px-3 py-2">
-        <div className="flex gap-2 overflow-x-auto no-scrollbar">
-          {/* Semi-transparent rounded background for For You and Following only */}
-          <div className="bg-black/30 backdrop-blur-sm rounded-full flex p-1">
-            <div className="whitespace-nowrap px-3 py-1 bg-red-500 rounded-full text-white text-sm font-medium">
-              For You
-            </div>
-            <div className="whitespace-nowrap px-3 py-1 text-gray-300 text-sm font-medium">
-              Following
-            </div>
-          </div>
-          
-          {/* Other category buttons without background */}
-          <div className="whitespace-nowrap px-3 py-1 text-gray-300 text-sm font-medium">
-            Tech
+      {/* Simplified overlay header with just For You and Following */}
+      <div className="absolute top-0 z-10 w-full flex justify-center px-3 py-2">
+        <div className="bg-black/30 backdrop-blur-sm rounded-full flex p-1">
+          <div className="whitespace-nowrap px-3 py-1 bg-red-500 rounded-full text-white text-sm font-medium">
+            For You
           </div>
           <div className="whitespace-nowrap px-3 py-1 text-gray-300 text-sm font-medium">
-            Kitchen
-          </div>
-          <div className="whitespace-nowrap px-3 py-1 text-gray-300 text-sm font-medium">
-            Beauty
+            Following
           </div>
         </div>
       </div>
       
       {/* Reels container - full screen snapping vertical scroll */}
-      <div className="w-full h-[calc(100vh-104px)] overflow-y-scroll snap-y snap-mandatory">
+      <div className="w-full h-[calc(100vh-48px)] overflow-y-scroll snap-y snap-mandatory">
         {reels.map((reel, index) => (
           <div 
             key={reel.id}
@@ -179,12 +165,12 @@ export default function Reels() {
               poster="https://picsum.photos/seed/reel1/500/800"
             />
             
-            {/* Overlay content */}
-            <div className="absolute inset-0 flex flex-col justify-end">
-              {/* All content moved to the bottom */}
-              <div className="bg-gradient-to-t from-black/80 via-black/40 to-transparent p-4">
-                {/* User info, description and product info */}
-                <div className="mb-16"> {/* Add bottom margin to account for bottom nav */}
+            {/* Bottom overlay with user info, description, and interaction buttons */}
+            <div className="absolute inset-0 pointer-events-none">
+              {/* Bottom gradient and content - all pushed to bottom */}
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent pb-16 pt-40 px-4 pointer-events-auto">
+                {/* User info and description */}
+                <div className="mb-3">
                   <div className="flex items-center mb-2">
                     <img 
                       src={reel.avatar} 
@@ -200,55 +186,55 @@ export default function Reels() {
                   <p className="text-white mb-3 text-sm">
                     {reel.description}
                   </p>
-                  
-                  {/* Product info */}
-                  <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 flex items-center">
-                    <img 
-                      src={reel.productImage} 
-                      alt={reel.productName}
-                      className="w-12 h-12 rounded-md object-cover"
-                    />
-                    <div className="ml-3">
-                      <p className="text-white text-sm font-medium">{reel.productName}</p>
-                      <p className="text-red-400 font-bold">{reel.productPrice}</p>
-                    </div>
-                    <button className="ml-auto bg-red-500 text-white px-3 py-1 rounded-full text-sm">
-                      Buy
-                    </button>
+                </div>
+                
+                {/* Product info */}
+                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 flex items-center mb-2">
+                  <img 
+                    src={reel.productImage} 
+                    alt={reel.productName}
+                    className="w-12 h-12 rounded-md object-cover"
+                  />
+                  <div className="ml-3">
+                    <p className="text-white text-sm font-medium">{reel.productName}</p>
+                    <p className="text-red-400 font-bold">{reel.productPrice}</p>
                   </div>
+                  <button className="ml-auto bg-red-500 text-white px-3 py-1 rounded-full text-sm">
+                    Buy
+                  </button>
                 </div>
               </div>
               
-              {/* Side actions - remain on the right side */}
-              <div className="absolute bottom-24 right-2 flex flex-col items-center space-y-6">
+              {/* Right side action buttons */}
+              <div className="absolute bottom-20 right-3 flex flex-col items-center space-y-6 pointer-events-auto">
                 <button onClick={toggleMute} className="flex flex-col items-center">
                   {isMuted ? (
-                    <div className="rounded-full">
+                    <div className="rounded-full bg-black/30 p-2">
                       <VolumeX className="h-6 w-6 text-white" />
                     </div>
                   ) : (
-                    <div className="rounded-full">
+                    <div className="rounded-full bg-black/30 p-2">
                       <Volume2 className="h-6 w-6 text-white" />
                     </div>
                   )}
                 </button>
                 
                 <button className="flex flex-col items-center">
-                  <div className="rounded-full">
+                  <div className="rounded-full bg-black/30 p-2">
                     <Heart className="h-6 w-6 text-white" />
                   </div>
                   <span className="text-white text-xs mt-1">{reel.likes}</span>
                 </button>
                 
                 <button className="flex flex-col items-center">
-                  <div className="rounded-full">
+                  <div className="rounded-full bg-black/30 p-2">
                     <MessageSquare className="h-6 w-6 text-white" />
                   </div>
                   <span className="text-white text-xs mt-1">{reel.comments}</span>
                 </button>
                 
                 <button className="flex flex-col items-center">
-                  <div className="rounded-full">
+                  <div className="rounded-full bg-black/30 p-2">
                     <Share className="h-6 w-6 text-white" />
                   </div>
                   <span className="text-white text-xs mt-1">Share</span>
@@ -258,9 +244,6 @@ export default function Reels() {
           </div>
         ))}
       </div>
-
-      {/* Bottom padding to account for the navigation bar */}
-      <div className="h-16"></div>
     </div>
   );
 }
