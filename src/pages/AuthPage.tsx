@@ -1,398 +1,157 @@
+import React, { useState } from 'react';
 
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Loader } from 'lucide-react';
-import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
-
-// Import all the components we created
-import AuthHeader from '@/components/auth/AuthHeader';
-import StepProgress from '@/components/auth/StepProgress';
-import BackButton from '@/components/auth/BackButton';
-import AuthTabs from '@/components/auth/AuthTabs';
-import PasswordStepContent from '@/components/auth/PasswordStepContent';
-import TwoFactorAuth from '@/components/auth/TwoFactorAuth';
-import SocialLogins from '@/components/auth/SocialLogins';
-import AuthModeToggle from '@/components/auth/AuthModeToggle';
-import SafetyNotice from '@/components/auth/SafetyNotice';
-import FloatingButtons from '@/components/auth/FloatingButtons';
-import ResetPasswordForm from '@/components/auth/ResetPasswordForm';
-import SubmitButton from '@/components/auth/SubmitButton';
-
-export default function AuthPage() {
-  const [activeTab, setActiveTab] = useState('email');
+const SpotifyLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [phone, setPhone] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [countryCode, setCountryCode] = useState('+1');
   const [rememberMe, setRememberMe] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [mounted, setMounted] = useState(false);
-  const [showTwoFactor, setShowTwoFactor] = useState(false);
-  const [twoFactorCode, setTwoFactorCode] = useState('');
-  const [loginAttempts, setLoginAttempts] = useState(0);
-  const [deviceTrusted, setDeviceTrusted] = useState(false);
-  const [lastLogin, setLastLogin] = useState('May 4, 2025 - 17:42');
-  const [loginLocation, setLoginLocation] = useState('San Francisco, USA');
-  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [fullName, setFullName] = useState('');
-  const [agreeToTerms, setAgreeToTerms] = useState(false);
-  const [resetPassword, setResetPassword] = useState(false);
-  const [resetEmail, setResetEmail] = useState('');
-  const [resetSent, setResetSent] = useState(false);
-  const [currentStep, setCurrentStep] = useState(1);
-  const [totalSteps, setTotalSteps] = useState(3);
-  const { toast } = useToast();
-  const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-
-    // Check if user is already logged in
-    const checkUser = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (data.session) {
-        navigate('/for-you');
-      }
-    };
-    
-    checkUser();
-
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN' && session) {
-        navigate('/for-you');
-      }
-    });
-
-    return () => {
-      subscription.unsubscribe();
-      setMounted(false);
-    };
-  }, [navigate]);
-
-  // Set appropriate total steps based on auth mode
-  useEffect(() => {
-    if (resetPassword) {
-      setTotalSteps(2);
-    } else if (authMode === 'signin') {
-      setTotalSteps(showTwoFactor ? 3 : 2);
-    } else {
-      setTotalSteps(3);
-    }
-  }, [authMode, showTwoFactor, resetPassword]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    
-    // If not on the last step, proceed to the next step
-    if (currentStep < totalSteps) {
-      // Validate current step
-      if (currentStep === 1) {
-        if (activeTab === 'email' && !email) {
-          toast({
-            title: "Email required",
-            description: "Please enter your email address",
-            variant: "destructive",
-          });
-          return;
-        } else if (activeTab === 'phone' && !phone) {
-          toast({
-            title: "Phone number required",
-            description: "Please enter your phone number",
-            variant: "destructive",
-          });
-          return;
-        }
-      } else if (currentStep === 2 && !password) {
-        toast({
-          title: "Password required",
-          description: "Please enter your password",
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      setCurrentStep(currentStep + 1);
-      
-      // If we're now at step 3 for signin with 2FA, show 2FA UI
-      if (currentStep + 1 === 3 && authMode === 'signin' && !resetPassword) {
-        setShowTwoFactor(true);
-      }
-      
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      if (resetPassword) {
-        // Handle password reset
-        const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
-          redirectTo: `${window.location.origin}/auth?reset=true`,
-        });
-        
-        if (error) throw error;
-        
-        setResetSent(true);
-        toast({
-          title: "Reset email sent",
-          description: "Check your inbox for the password reset link",
-          variant: "success",
-        });
-      } else if (authMode === 'signin') {
-        // Handle sign in
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
-        
-        if (error) throw error;
-        
-        toast({
-          title: "Welcome back!",
-          description: "You have successfully signed in",
-          variant: "success",
-        });
-      } else {
-        // Handle sign up
-        if (password !== confirmPassword) {
-          toast({
-            title: "Passwords don't match",
-            description: "Please make sure your passwords match",
-            variant: "destructive",
-          });
-          setIsLoading(false);
-          return;
-        }
-        
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            data: {
-              full_name: fullName,
-            },
-          },
-        });
-        
-        if (error) throw error;
-        
-        toast({
-          title: "Account created",
-          description: "Check your email to confirm your account",
-        });
-      }
-    } catch (error: any) {
-      console.error('Authentication error:', error);
-      toast({
-        title: "Authentication error",
-        description: error.message || "Something went wrong",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    console.log('Login attempted with:', { email, password, rememberMe });
   };
-
-  const handleSocialLogin = async (provider: 'github' | 'twitter') => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider,
-        options: {
-          redirectTo: `${window.location.origin}/auth`,
-        },
-      });
-      
-      if (error) throw error;
-    } catch (error: any) {
-      console.error('Social login error:', error);
-      toast({
-        title: "Authentication error",
-        description: error.message || "Something went wrong with social login",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handlePasswordReset = async () => {
-    setResetPassword(true);
-    setCurrentStep(1);
-  };
-
-  const goBack = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-      
-      // If going back from 2FA step
-      if (currentStep === 3 && showTwoFactor) {
-        setShowTwoFactor(false);
-      }
-    } else {
-      if (resetPassword) {
-        setResetPassword(false);
-        setResetSent(false);
-      } else {
-        setAuthMode(authMode === 'signin' ? 'signup' : 'signin');
-      }
-    }
-  };
-
-  // Get the appropriate title and description based on current state
-  const getHeaderContent = () => {
-    if (resetPassword) {
-      return {
-        title: "Reset Your Password",
-        description: "Enter your email to receive a reset link"
-      };
-    } else if (authMode === 'signin') {
-      return {
-        title: "Sign In to Your Account",
-        description: "Welcome back! Access your account securely"
-      };
-    } else {
-      return {
-        title: "Create Your Account",
-        description: "Join our community today"
-      };
-    }
-  };
-
-  // Get the appropriate button label based on current state
-  const getButtonLabel = () => {
-    if (currentStep < totalSteps) {
-      return "Continue";
-    } else if (resetPassword) {
-      return "Send Reset Link";
-    } else if (authMode === 'signin') {
-      return "Sign In";
-    } else {
-      return "Create Account";
-    }
-  };
-
-  const toggleShowPassword = () => setShowPassword(!showPassword);
 
   return (
-    <div className="flex flex-col min-h-screen bg-white font-sans transition-opacity duration-500 w-full">
-      <div className="w-full flex flex-col">
-        {/* Header */}
-        <AuthHeader 
-          title={getHeaderContent().title} 
-          description={getHeaderContent().description} 
-        />
-
-        {/* Step progress */}
-        <StepProgress currentStep={currentStep} totalSteps={totalSteps} />
-
-        {/* Go back button */}
-        {(currentStep > 1 || resetPassword || authMode === 'signup') && (
-          <div className="px-6 pt-0 pb-4 max-w-5xl mx-auto w-full">
-            <BackButton 
-              onClick={goBack} 
-              label={currentStep > 1 
-                ? "Back to previous step" 
-                : resetPassword 
-                  ? "Back to login" 
-                  : "Back to sign in"
-              } 
+    <div className="flex flex-col items-center min-h-screen bg-black text-white">
+      {/* Header with logo */}
+      <div className="w-full max-w-md pt-10 pb-8">
+        <div className="flex justify-center">
+          <svg viewBox="0 0 1134 340" className="h-10 text-green-500">
+            <path
+              fill="currentColor"
+              d="M8 171c0 92 76 168 168 168s168-76 168-168S268 4 176 4 8 79 8 171zm230 78c-39-24-89-30-147-17-14 2-16-18-4-20 64-15 118-8 162 19 11 7 0 24-11 18zm17-45c-45-28-114-36-167-20-17 5-23-21-7-25 61-18 136-9 188 23 14 9 0 31-14 22zM80 133c-17 6-28-23-9-30 59-18 159-15 221 22 17 9 1 37-17 27-54-32-144-35-195-19zm379 91c-17 0-33-6-47-20-1 0-1 1-1 1l-16 19c-1 1-1 2 0 3 18 16 40 24 64 24 34 0 55-19 55-47 0-24-15-37-50-46-29-7-34-12-34-22s10-16 23-16 25 5 39 15c0 0 1 1 2 1s1-1 1-1l14-20c1-1 1-1 0-2-16-13-35-20-56-20-31 0-53 19-53 46 0 29 20 38 52 46 28 6 32 12 32 22 0 11-10 17-25 17zm95-77v-13c0-1-1-2-2-2h-26c-1 0-2 1-2 2v147c0 1 1 2 2 2h26c1 0 2-1 2-2v-46c10 11 21 16 36 16 27 0 54-21 54-61s-27-60-54-60c-15 0-26 5-36 17zm30 78c-18 0-31-15-31-35s13-34 31-34 30 14 30 34-12 35-30 35zm68-34c0 34 27 60 62 60s62-27 62-61-26-60-61-60-63 27-63 61zm30-1c0-20 13-34 32-34s33 15 33 35-13 34-32 34-33-15-33-35zm140-58v-29c0-1 0-2-1-2h-26c-1 0-2 1-2 2v29h-13c-1 0-2 1-2 2v22c0 1 1 2 2 2h13v58c0 23 11 35 34 35 9 0 18-2 25-6 1 0 1-1 1-2v-21c0-1 0-2-1-2h-2c-5 3-11 4-16 4-8 0-12-4-12-12v-54h30c1 0 2-1 2-2v-22c0-1-1-2-2-2h-30zm129-3c0-11 4-15 13-15 5 0 10 0 15 2h1s1-1 1-2V93c0-1 0-2-1-2-5-2-12-3-22-3-24 0-36 14-36 39v5h-13c-1 0-2 1-2 2v22c0 1 1 2 2 2h13v89c0 1 1 2 2 2h26c1 0 1-1 1-2v-89h25l39 89c-4 9-8 11-14 11-5 0-10-1-15-4h-1l-1 1-9 19c0 1 0 3 1 3 9 5 17 7 27 7 19 0 30-9 39-33l45-116v-2c0-1-1-1-2-1h-27c-1 0-1 1-1 2l-28 78-30-78c0-1-1-2-2-2h-44v-3zm-83 3c-1 0-2 1-2 2v113c0 1 1 2 2 2h26c1 0 1-1 1-2V134c0-1 0-2-1-2h-26zm-6-33c0 10 9 19 19 19s18-9 18-19-8-18-18-18-19 8-19 18zm245 69c10 0 19-8 19-18s-9-18-19-18-18 8-18 18 8 18 18 18zm0-34c9 0 17 7 17 16s-8 16-17 16-16-7-16-16 7-16 16-16zm4 18c3-1 5-3 5-6 0-4-4-6-8-6h-8v19h4v-6h4l4 6h5zm-3-9c2 0 4 1 4 3s-2 3-4 3h-4v-6h4z"
             />
-          </div>
-        )}
-
-        {/* Form area */}
-        <form onSubmit={handleSubmit} className="px-6 py-4 max-w-5xl mx-auto w-full">
-          {!resetPassword ? (
-            <>
-              {/* Step 1: Authentication Method and Initial Details */}
-              {currentStep === 1 && (
-                <div className="mb-6">
-                  {authMode === 'signin' && (
-                    <div className="mb-4 p-3 bg-[#f5f5f5] rounded-lg border border-[#eaeaea] flex items-center">
-                      <div className="text-xs text-gray-700">
-                        <span className="font-medium">Last login:</span> {lastLogin} from {loginLocation}
-                      </div>
-                    </div>
-                  )}
-
-                  <AuthTabs 
-                    activeTab={activeTab}
-                    setActiveTab={setActiveTab}
-                    email={email}
-                    setEmail={setEmail}
-                    phone={phone}
-                    setPhone={setPhone}
-                    countryCode={countryCode}
-                    setCountryCode={setCountryCode}
-                    isSignUp={authMode === 'signup'}
-                    fullName={fullName}
-                    setFullName={setFullName}
-                  />
-                </div>
-              )}
-
-              {/* Step 2: Password */}
-              {currentStep === 2 && (
-                <PasswordStepContent 
-                  authMode={authMode}
-                  password={password}
-                  setPassword={setPassword}
-                  showPassword={showPassword}
-                  toggleShowPassword={toggleShowPassword}
-                  confirmPassword={confirmPassword}
-                  setConfirmPassword={setConfirmPassword}
-                  agreeToTerms={agreeToTerms}
-                  setAgreeToTerms={setAgreeToTerms}
-                  rememberMe={rememberMe}
-                  setRememberMe={setRememberMe}
-                  handlePasswordReset={handlePasswordReset}
-                />
-              )}
-
-              {/* Step 3: 2FA (if enabled) */}
-              {currentStep === 3 && showTwoFactor && (
-                <TwoFactorAuth 
-                  twoFactorCode={twoFactorCode}
-                  setTwoFactorCode={setTwoFactorCode}
-                  activeTab={activeTab}
-                />
-              )}
-            </>
-          ) : (
-            <ResetPasswordForm 
-              resetEmail={resetEmail}
-              setResetEmail={setResetEmail}
-              resetSent={resetSent}
-              isLoading={isLoading}
-              goBack={goBack}
-            />
-          )}
-
-          {/* Submit Button */}
-          {(!resetSent || !resetPassword) && (
-            <SubmitButton isLoading={isLoading} label={getButtonLabel()} />
-          )}
-        </form>
-
-        {/* Social logins */}
-        {currentStep === 1 && !resetPassword && !resetSent && !showTwoFactor && (
-          <SocialLogins handleSocialLogin={handleSocialLogin} />
-        )}
-
-        {/* Registration link */}
-        {currentStep === 1 && !resetPassword && !resetSent && !showTwoFactor && (
-          <AuthModeToggle authMode={authMode} setAuthMode={setAuthMode} />
-        )}
-
-        {/* Safety notice */}
-        <SafetyNotice />
+          </svg>
+        </div>
       </div>
 
-      {/* Floating buttons */}
-      <FloatingButtons />
+      {/* Main content */}
+      <div className="w-full max-w-md p-6 rounded-lg bg-black">
+        <h1 className="text-3xl font-bold text-center mb-8">Log in to Spotify</h1>
+
+        <div className="space-y-4">
+          {/* Social login buttons */}
+          <button className="w-full py-3 px-4 border border-gray-700 rounded-full font-bold flex items-center justify-center space-x-2 hover:border-white transition-colors">
+            <svg className="w-5 h-5" viewBox="0 0 24 24">
+              <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
+                <path fill="#4285F4" d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z"/>
+                <path fill="#34A853" d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z"/>
+                <path fill="#FBBC05" d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.724 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z"/>
+                <path fill="#EA4335" d="M -14.754 43.989 C -12.984 43.989 -11.404 44.599 -10.154 45.789 L -6.734 42.369 C -8.804 40.429 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z"/>
+              </g>
+            </svg>
+            <span>Continue with Google</span>
+          </button>
+
+          <button className="w-full py-3 px-4 border border-gray-700 rounded-full font-bold flex items-center justify-center space-x-2 hover:border-white transition-colors">
+            <svg className="w-5 h-5" viewBox="0 0 24 24">
+              <path fill="currentColor" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"/>
+            </svg>
+            <span>Continue with Facebook</span>
+          </button>
+
+          <button className="w-full py-3 px-4 border border-gray-700 rounded-full font-bold flex items-center justify-center space-x-2 hover:border-white transition-colors">
+            <svg className="w-5 h-5" viewBox="0 0 24 24">
+              <path fill="currentColor" d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.33-3.14-2.57C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+            </svg>
+            <span>Continue with Apple</span>
+          </button>
+
+          <button className="w-full py-3 px-4 border border-gray-700 rounded-full font-bold flex items-center justify-center space-x-2 hover:border-white transition-colors">
+            <span>Continue with phone number</span>
+          </button>
+
+          <div className="flex items-center">
+            <div className="flex-grow border-t border-gray-700"></div>
+            <span className="px-4 text-sm text-gray-400">OR</span>
+            <div className="flex-grow border-t border-gray-700"></div>
+          </div>
+        </div>
+
+        {/* Login form */}
+        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium mb-2">
+              Email or username
+            </label>
+            <input
+              id="email"
+              type="text"
+              placeholder="Email or username"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-3 py-3 bg-gray-900 border border-gray-700 rounded text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              required
+            />
+          </div>
+
+          <div className="relative">
+            <label htmlFor="password" className="block text-sm font-medium mb-2">
+              Password
+            </label>
+            <input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-3 py-3 bg-gray-900 border border-gray-700 rounded text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              required
+            />
+            <button
+              type="button"
+              className="absolute right-3 top-10 text-gray-400"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? "Hide" : "Show"}
+            </button>
+          </div>
+
+          <div className="flex items-center">
+            <input
+              id="remember"
+              type="checkbox"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
+              className="h-4 w-4 text-green-500 focus:ring-0"
+            />
+            <label htmlFor="remember" className="ml-2 block text-sm">
+              Remember me
+            </label>
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-green-500 text-black font-bold py-3 px-4 rounded-full hover:bg-green-400 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+          >
+            Log In
+          </button>
+
+          <div className="text-center">
+            <a href="#" className="text-gray-400 hover:underline text-sm">
+              Forgot your password?
+            </a>
+          </div>
+        </form>
+
+        <div className="mt-8 border-t border-gray-700 pt-6 text-center">
+          <p className="text-gray-400 text-sm">Don't have an account?</p>
+          <a href="#" className="block mt-2 border border-gray-700 text-white font-bold py-3 px-4 rounded-full hover:border-white transition-colors">
+            Sign up for Spotify
+          </a>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="w-full max-w-md py-8 text-center text-xs text-gray-400">
+        <p>
+          This site is protected by reCAPTCHA and the Google{' '}
+          <a href="#" className="text-white underline">Privacy Policy</a> and{' '}
+          <a href="#" className="text-white underline">Terms of Service</a> apply.
+        </p>
+      </div>
     </div>
   );
-}
+};
+
+export default SpotifyLogin;
