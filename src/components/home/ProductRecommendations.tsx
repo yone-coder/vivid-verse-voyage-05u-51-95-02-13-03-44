@@ -1,4 +1,3 @@
-
 import React, { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -55,7 +54,7 @@ const MinimalProductCard = ({ product }) => {
 // Dot indicator component for cleaner implementation
 const DotIndicator = ({ active, index, currentPage, onClick }) => {
   const isActive = index === currentPage;
-  
+
   return (
     <button
       onClick={onClick}
@@ -70,7 +69,7 @@ const DotIndicator = ({ active, index, currentPage, onClick }) => {
             isActive ? "bg-gray-200" : "bg-gray-200 group-hover:bg-gray-300"
           }`}
         />
-        
+
         {/* Fill indicator - only shown when active */}
         {isActive && (
           <div 
@@ -105,16 +104,16 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
 
   const firstRow = formattedProducts.slice(0, Math.ceil(formattedProducts.length / 2));
   const secondRow = formattedProducts.slice(Math.ceil(formattedProducts.length / 2));
-  
+
   // Reset autoScroll interval when page changes
   useEffect(() => {
     if (pageCount <= 1) return;
-    
+
     // Clear existing interval
     if (autoScrollIntervalRef.current) {
       clearInterval(autoScrollIntervalRef.current);
     }
-    
+
     // Set new interval
     autoScrollIntervalRef.current = setInterval(() => {
       setPage((prev) => {
@@ -123,7 +122,7 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
         return nextPage;
       });
     }, 4000);
-    
+
     return () => {
       if (autoScrollIntervalRef.current) {
         clearInterval(autoScrollIntervalRef.current);
@@ -138,7 +137,7 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
       setIsAutoScrolling(true);
       container.scrollTo({ left: index * width, behavior: 'smooth' });
       setPage(index);
-      
+
       // Reset auto-scrolling flag after animation completes
       clearTimeout(autoScrollTimeoutRef.current);
       autoScrollTimeoutRef.current = setTimeout(() => {
@@ -259,7 +258,7 @@ const ProductRecommendations = ({ products = [], loading = false }) => {
           </div>
         )}
       </div>
-      
+
       {/* Global styles for animations */}
       <style dangerouslySetInnerHTML={{ __html: `
         @keyframes fillDot {
