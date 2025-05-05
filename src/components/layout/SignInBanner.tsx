@@ -13,7 +13,7 @@ export default function SignInBanner() {
   };
   
   return (
-    <div className="fixed bottom-12 left-0 right-0 z-40 bg-gradient-to-r from-red-500/80 to-orange-500/80 backdrop-blur-sm py-1.5 px-4 flex items-center justify-between shadow-sm">
+    <div className="fixed bottom-12 left-0 right-0 z-40 bg-gradient-to-r from-red-500/80 to-orange-500/80 backdrop-blur-sm py-1.5 px-4 flex items-center justify-between shadow-md">
       <div className="text-white text-xs font-medium">Sign in to explore more</div>
       <Button 
         onClick={handleSignIn} 
