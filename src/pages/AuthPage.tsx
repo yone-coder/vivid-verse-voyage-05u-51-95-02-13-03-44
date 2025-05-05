@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { 
   Eye, EyeOff, ChevronRight, ArrowRight, Smartphone, Lock, Mail, 
   AlertCircle, Fingerprint, UserPlus, Shield, Key, FileCheck, 
-  Bell, Clock, Gift, Zap, HelpCircle, UserCheck, Info,X, CheckCircle,
+  Bell, Clock, Gift, Zap, HelpCircle, UserCheck, Info, CheckCircle,
   MessageSquare, Mail as EmailIcon, Coffee, Tablet
 } from 'lucide-react';
 
@@ -51,43 +51,16 @@ export default function UltraModernLogin() {
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-indigo-50 via-blue-50 to-purple-50 font-sans transition-opacity duration-500 w-full">
       <div className="w-full flex flex-col">
         {/* Minimal Header */}
-      {/* Enhanced Header */}
-<div className="px-6 pt-6 pb-4 max-w-5xl mx-auto w-full flex items-center justify-between">
-  {/* Left side: Logo or title */}
-  <div className="flex items-center space-x-3">
-    <Shield className="h-6 w-6 text-blue-600" />
-    <div>
-      <h1 className="text-xl font-semibold text-gray-800 leading-tight">Secure Login</h1>
-      <p className="text-xs text-gray-500 leading-tight">Welcome back</p>
-    </div>
-  </div>
-
-  {/* Right side: Help + Close */}
-  <div className="flex items-center space-x-3">
-    <button
-      onClick={() => setShowHelp(!showHelp)}
-      className="text-gray-500 hover:text-blue-600 transition-colors"
-      title="Help"
-    >
-      <HelpCircle className="h-5 w-5" />
-    </button>
-    <button
-      onClick={() => console.log('Close login screen')}
-      className="text-gray-400 hover:text-gray-600 transition-colors"
-      title="Close"
-    >
-      <X className="h-5 w-5" />
-    </button>
-  </div>
-</div>
-
-{/* Optional Help Message */}
-{showHelp && (
-  <div className="px-6 pb-2 max-w-5xl mx-auto w-full text-sm text-blue-700 bg-blue-50 rounded-lg border border-blue-100 flex items-start space-x-2">
-    <Info className="h-4 w-4 mt-1 text-blue-500" />
-    <p>Need help signing in? Try resetting your password or contact support if you’re locked out.</p>
-  </div>
-)}
+        <div className="px-6 pt-8 pb-4 max-w-5xl mx-auto w-full">
+          <h1 className="text-3xl font-bold text-gray-800 mb-2 text-center">Secure Authentication</h1>
+          <p className="text-gray-500 text-center mb-2">Access your account securely</p>
+          <div className="flex justify-center mb-2">
+            <div className="bg-purple-100 text-purple-800 text-xs px-3 py-1 rounded-full flex items-center">
+              <Shield className="h-3 w-3 mr-1" />
+              <span>Enhanced security protocols active</span>
+            </div>
+          </div>
+        </div>
 
         {/* Login methods */}
         <div className="flex max-w-5xl mx-auto w-full px-6 mt-2 border-b justify-center">  
