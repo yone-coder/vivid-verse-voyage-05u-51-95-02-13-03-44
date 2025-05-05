@@ -1,21 +1,19 @@
 import { useState, useEffect } from 'react';
-import { Eye, EyeOff, ChevronRight, ArrowRight, Smartphone, Lock, Mail, AlertCircle, Fingerprint, ChevronLeft, Shield, CreditCard, ArrowLeftRight } from 'lucide-react';
+import { Eye, EyeOff, ChevronRight, ArrowRight, Smartphone, Lock, Mail, AlertCircle, Fingerprint, Shield, Key, Calendar, UserCheck, Laptop, Moon, Sun, Info, AlertTriangle, CreditCard, QrCode, Scan, Languages, HelpCircle, UserPlus, BellRing } from 'lucide-react';
 
 export default function UltraModernLogin() {
   const [activeTab, setActiveTab] = useState('email');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [phone, setPhone] = useState('');
-  const [cardNumber, setCardNumber] = useState('');
-  const [cardExpiry, setCardExpiry] = useState('');
-  const [cardCVV, setCardCVV] = useState('');
-  const [otherIdentifier, setOtherIdentifier] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [countryCode, setCountryCode] = useState('+1');
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [theme, setTheme] = useState('light');
   const [showSecurityTips, setShowSecurityTips] = useState(false);
+  const [showQrLogin, setShowQrLogin] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -28,93 +26,129 @@ export default function UltraModernLogin() {
 
     // Simulate API call  
     setTimeout(() => {  
-      setIsLoading(false);
-      
-      // Log appropriate credentials based on active tab
-      let credentials = { password };
-      
-      switch(activeTab) {
-        case 'email':
-          credentials = { ...credentials, email };
-          break;
-        case 'phone':
-          credentials = { ...credentials, phone: `${countryCode}${phone}` };
-          break;
-        case 'card':
-          credentials = { ...credentials, cardNumber, cardExpiry, cardCVV };
-          break;
-        case 'other':
-          credentials = { ...credentials, otherIdentifier };
-          break;
-      }
-      
-      console.log('Login attempted with:', credentials);  
+      setIsLoading(false);  
+      console.log('Login attempted with:', activeTab === 'email' ? { email, password } : { phone, password });  
     }, 1500);
   };
 
+  const toggleTheme = () => {
+    setTheme(theme === 'light' ? 'dark' : 'light');
+  };
+
+  const bgClass = theme === 'light' 
+    ? "bg-gradient-to-br from-gray-50 to-gray-100" 
+    : "bg-gradient-to-br from-gray-900 to-gray-800";
+
+  const textClass = theme === 'light' ? "text-gray-800" : "text-gray-100";
+  const subtextClass = theme === 'light' ? "text-gray-500" : "text-gray-400";
+  const inputBgClass = theme === 'light' ? "bg-gray-50" : "bg-gray-800";
+  const inputBorderClass = theme === 'light' ? "border-transparent" : "border-gray-700";
+  const cardBgClass = theme === 'light' ? "bg-white" : "bg-gray-900";
+
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 font-sans transition-opacity duration-500 w-full">
+    <div className={`flex flex-col min-h-screen ${bgClass} font-sans transition-all duration-500 w-full ${textClass}`}>
       <div className="w-full flex flex-col">
-        {/* Header with back button */}
-        <div className="px-6 pt-8 pb-4 max-w-4xl mx-auto w-full">
-          <div className="flex items-center mb-6">
-            <button className="mr-2 p-2 rounded-full hover:bg-gray-100 transition-colors flex items-center justify-center">
-              <ChevronLeft className="h-5 w-5 text-gray-600" />
+        <div className="px-6 pt-8 pb-0 max-w-5xl mx-auto w-full">
+          <div className="flex justify-between items-center">
+            <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-opacity-10 hover:bg-gray-500 transition-colors">
+              {theme === 'light' ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
             </button>
-            <h1 className="text-2xl font-bold text-gray-800">Welcome back</h1>
+            <div className="flex space-x-4">
+              <button className="p-2 rounded-full hover:bg-opacity-10 hover:bg-gray-500 transition-colors">
+                <HelpCircle className="h-5 w-5" />
+              </button>
+              <button className="p-2 rounded-full hover:bg-opacity-10 hover:bg-gray-500 transition-colors">
+                <BellRing className="h-5 w-5" />
+              </button>
+              <button className="p-2 rounded-full hover:bg-opacity-10 hover:bg-gray-500 transition-colors">
+                <Languages className="h-5 w-5" />
+              </button>
+            </div>
           </div>
-          <p className="text-gray-500 text-sm ml-10">Sign in to continue your journey</p>
+          <div className="text-center mt-8 mb-4">
+            <h1 className={`text-3xl font-bold ${textClass} mb-2`}>Welcome back</h1>
+            <p className={`${subtextClass} text-sm`}>Sign in to access your account</p>
+          </div>
         </div>
 
-        {/* Enhanced Login tabs */}  
-        <div className="max-w-4xl mx-auto w-full px-6 mt-4">
-          <div className="bg-gray-50 p-1.5 rounded-xl flex mb-4 shadow-sm">  
-            <button  
-              onClick={() => setActiveTab('email')}  
-              className={`flex-1 flex items-center justify-center py-2.5 px-4 text-sm font-medium transition-all rounded-lg ${  
-                activeTab === 'email'  
-                  ? 'bg-white text-orange-500 shadow-sm'  
-                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'  
-              }`}  
-            >  
-              <Mail className={`h-4 w-4 mr-2 ${activeTab === 'email' ? 'text-orange-500' : 'text-gray-400'}`} />
-              <span>Email</span>
-            </button>  
-            <button  
-              onClick={() => setActiveTab('phone')}  
-              className={`flex-1 flex items-center justify-center py-2.5 px-4 text-sm font-medium transition-all rounded-lg ${  
-                activeTab === 'phone'  
-                  ? 'bg-white text-orange-500 shadow-sm'  
-                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'  
-              }`}  
-            >  
-              <Smartphone className={`h-4 w-4 mr-2 ${activeTab === 'phone' ? 'text-orange-500' : 'text-gray-400'}`} />
-              <span>Phone</span>
+        {/* Login methods */}
+        <div className="flex max-w-5xl mx-auto w-full px-6 justify-center">
+          <div className="flex overflow-x-auto w-full justify-center space-x-4 py-3">
+            <button
+              onClick={() => {
+                setActiveTab('email');
+                setShowQrLogin(false);
+              }}
+              className={`flex items-center px-4 py-2 rounded-lg transition-all ${
+                activeTab === 'email' && !showQrLogin
+                  ? theme === 'light' 
+                    ? 'bg-orange-50 text-orange-500 shadow-sm' 
+                    : 'bg-orange-900 bg-opacity-30 text-orange-400 shadow-sm'
+                  : theme === 'light'
+                    ? 'text-gray-600 hover:bg-gray-100'
+                    : 'text-gray-300 hover:bg-gray-800'
+              }`}
+            >
+              <Mail className="h-4 w-4 mr-2" />
+              Email
             </button>
-            <button  
-              onClick={() => setActiveTab('card')}  
-              className={`flex-1 flex items-center justify-center py-2.5 px-4 text-sm font-medium transition-all rounded-lg ${  
-                activeTab === 'card'  
-                  ? 'bg-white text-orange-500 shadow-sm'  
-                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'  
-              }`}  
-            >  
-              <CreditCard className={`h-4 w-4 mr-2 ${activeTab === 'card' ? 'text-orange-500' : 'text-gray-400'}`} />
-              <span>Card</span>
+            <button
+              onClick={() => {
+                setActiveTab('phone');
+                setShowQrLogin(false);
+              }}
+              className={`flex items-center px-4 py-2 rounded-lg transition-all ${
+                activeTab === 'phone' && !showQrLogin
+                  ? theme === 'light'
+                    ? 'bg-orange-50 text-orange-500 shadow-sm'
+                    : 'bg-orange-900 bg-opacity-30 text-orange-400 shadow-sm'
+                  : theme === 'light'
+                    ? 'text-gray-600 hover:bg-gray-100'
+                    : 'text-gray-300 hover:bg-gray-800'
+              }`}
+            >
+              <Smartphone className="h-4 w-4 mr-2" />
+              Phone
             </button>
-            <button  
-              onClick={() => setActiveTab('other')}  
-              className={`flex-1 flex items-center justify-center py-2.5 px-4 text-sm font-medium transition-all rounded-lg ${  
-                activeTab === 'other'  
-                  ? 'bg-white text-orange-500 shadow-sm'  
-                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'  
-              }`}  
-            >  
-              <ArrowLeftRight className={`h-4 w-4 mr-2 ${activeTab === 'other' ? 'text-orange-500' : 'text-gray-400'}`} />
-              <span>Other</span>
+            <button
+              onClick={() => {
+                setShowQrLogin(true);
+              }}
+              className={`flex items-center px-4 py-2 rounded-lg transition-all ${
+                showQrLogin
+                  ? theme === 'light'
+                    ? 'bg-orange-50 text-orange-500 shadow-sm'
+                    : 'bg-orange-900 bg-opacity-30 text-orange-400 shadow-sm'
+                  : theme === 'light'
+                    ? 'text-gray-600 hover:bg-gray-100'
+                    : 'text-gray-300 hover:bg-gray-800'
+              }`}
+            >
+              <QrCode className="h-4 w-4 mr-2" />
+              QR Code
             </button>
-          </div>  
-        </div>
+            <button
+              className={`flex items-center px-4 py-2 rounded-lg transition-all ${
+                theme === 'light'
+                  ? 'text-gray-600 hover:bg-gray-100'
+                  : 'text-gray-300 hover:bg-gray-800'
+              }`}
+            >
+              <Key className="h-4 w-4 mr-2" />
+              SSO
+            </button>
+            <button
+              className={`flex items-center px-4 py-2 rounded-lg transition-all ${
+                theme === 'light'
+                  ? 'text-gray-600 hover:bg-gray-100'
+                  : 'text-gray-300 hover:bg-gray-800'
+              }`}
+            >
+              <Fingerprint className="h-4 w-4 mr-2" />
+              Biometric
+            </button>
+          </div>
+        </div>  
 
         {/* Login Form Fields */}  
         <form onSubmit={handleSubmit} className="px-6 py-6 max-w-4xl mx-auto w-full">  
