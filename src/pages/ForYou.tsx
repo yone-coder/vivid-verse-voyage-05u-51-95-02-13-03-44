@@ -7,6 +7,7 @@ import PageSkeleton from "@/components/skeletons/PageSkeleton";
 import SuperDealsSection from "@/components/home/SuperDealsSection";
 import SecondaryHeroBanner from "@/components/home/SecondaryHeroBanner";
 import FlashDeals from "@/components/home/FlashDeals";
+import ProductRecommendations from "@/components/home/ProductRecommendations";
 import SpaceSavingCategories from "@/components/home/SpaceSavingCategories";
 import TopBrands from "@/components/home/TopBrands";
 import VendorProductCarousel from "@/components/home/VendorProductCarousel";
@@ -46,7 +47,7 @@ export default function ForYou() {
       <SecondaryFlashDeals />
       <BenefitsBanner />
       <TopVendorsCompact />
-      <ProductGrid products={products || []} isLoading={isLoading} />
+      <ProductRecommendations />
       <Newsletter />
     </div>
   );
