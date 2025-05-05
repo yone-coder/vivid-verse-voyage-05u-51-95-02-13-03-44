@@ -18,6 +18,7 @@ import SearchPage from "./pages/SearchPage";
 import AdminPanel from "./pages/AdminPanel";
 import MainLayout from "./components/layout/MainLayout";
 import { ThemeProvider } from "@/components/theme-provider";
+import AuthPage from "./pages/AuthPage";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -44,7 +45,7 @@ const App = () => (
                 <Route path="/admin" element={<AdminPanel />} />
                 <Route path="/search" element={<SearchPage />} />
                 <Route path="/categories" element={<Navigate to="/reels" replace />} />
-                <Route path="/auth" element={<NotFound />} /> {/* This will be replaced with actual auth page */}
+                <Route path="/auth" element={<AuthPage />} /> {/* Updated to use AuthPage */}
                 <Route path="/cart" element={<NotFound />} />
                 <Route path="/wishlist" element={<NotFound />} />
                 <Route path="/account" element={<NotFound />} />
