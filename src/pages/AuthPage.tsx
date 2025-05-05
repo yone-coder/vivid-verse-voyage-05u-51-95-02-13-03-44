@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -704,7 +703,7 @@ const AuthPage = () => {
                 ? 'Sign in to your account to continue'
                 : activeTab === 'signup'
                 ? 'Fill in your details to create an account'
-                : 'We'll send you a link to reset your password'}
+                : "We'll send you a link to reset your password"}
             </p>
           )}
         </div>
