@@ -104,6 +104,7 @@ export default function IndexBottomNav() {
       desc: "Add a new item to your store",
       action: "Product",
       color: "text-blue-600",
+      bgColor: "bg-blue-50 dark:bg-blue-900/20",
     },
     {
       icon: Camera,
@@ -111,6 +112,7 @@ export default function IndexBottomNav() {
       desc: "Upload an image post",
       action: "Photo",
       color: "text-purple-600",
+      bgColor: "bg-purple-50 dark:bg-purple-900/20",
     },
     {
       icon: Tag,
@@ -118,6 +120,7 @@ export default function IndexBottomNav() {
       desc: "Create a promo deal",
       action: "Offer",
       color: "text-pink-600",
+      bgColor: "bg-pink-50 dark:bg-pink-900/20",
     },
     {
       icon: Gift,
@@ -125,6 +128,7 @@ export default function IndexBottomNav() {
       desc: "Launch a sale campaign",
       action: "Sale",
       color: "text-orange-600",
+      bgColor: "bg-orange-50 dark:bg-orange-900/20",
     },
     {
       icon: User,
@@ -132,6 +136,7 @@ export default function IndexBottomNav() {
       desc: "Write a short update",
       action: "Post",
       color: "text-green-600",
+      bgColor: "bg-green-50 dark:bg-green-900/20",
     },
     {
       icon: Heart,
@@ -139,6 +144,7 @@ export default function IndexBottomNav() {
       desc: "Upload a short video",
       action: "Short",
       color: "text-red-500",
+      bgColor: "bg-red-50 dark:bg-red-900/20",
     },
   ];
 
@@ -147,9 +153,9 @@ export default function IndexBottomNav() {
       initial={{ y: 100 }}
       animate={{ y: 0 }}
       transition={{ type: "spring", stiffness: 300, damping: 20 }}
-      className="fixed bottom-0 left-0 right-0 bg-white dark:bg-zinc-900 border-t border-gray-200 dark:border-zinc-800 z-50 shadow-lg safe-area-bottom"
+      className="fixed bottom-0 left-0 right-0 bg-white dark:bg-zinc-900 border-t border-gray-200 dark:border-zinc-800 z-50 shadow-lg"
     >
-      <div className="h-16 max-w-lg mx-auto flex items-center justify-between px-3 relative">
+      <div className="h-16 max-w-md mx-auto flex items-center justify-between px-3 relative">
         {navItems.map((item) =>
           item.id === "add" ? (
             <Popover
@@ -158,100 +164,106 @@ export default function IndexBottomNav() {
               onOpenChange={setIsPopoverOpen}
             >
               <PopoverTrigger asChild>
-                <button
+                <motion.button
                   ref={plusButtonRef}
-                  className="flex flex-col items-center justify-center w-1/5 relative"
+                  className="flex flex-col items-center justify-center w-1/5 pt-1 relative"
                   onClick={() => setIsPopoverOpen(true)}
-                  aria-label="Quick create menu"
+                  whileTap={{ scale: 0.9 }}
                 >
-                  <div
-                    className="bg-gradient-to-tr from-red-500 to-red-400 rounded-full p-3 shadow-md transition-all duration-200 hover:shadow-red-300 active:scale-95 touch-action-manipulation"
+                  <motion.div
+                    whileHover={{ scale: 1.1 }}
+                    className="bg-gradient-to-tr from-red-500 to-red-400 rounded-full p-3 shadow-md"
                     style={{
-                      boxShadow: "0 2px 10px rgba(239, 68, 68, 0.4)",
-                      transform: "translateY(-8px)",
+                      boxShadow: "0 3px 10px rgba(239, 68, 68, 0.4)",
                     }}
                   >
                     <Plus className="w-5 h-5 text-white" strokeWidth={2.5} />
-                  </div>
-                </button>
+                  </motion.div>
+                </motion.button>
               </PopoverTrigger>
               <PopoverContent
-                className="w-screen max-w-xs mx-auto p-0 border-none rounded-t-3xl shadow-xl bg-white dark:bg-zinc-900"
+                className="w-full max-w-sm mx-auto p-0 border border-gray-200 dark:border-zinc-700 rounded-t-2xl shadow-xl bg-white dark:bg-zinc-900"
                 align="center"
                 side="top"
-                sideOffset={20}
+                sideOffset={12}
               >
-                <div className="px-4 pt-4 pb-2 border-b border-gray-100 dark:border-zinc-800">
-                  <div className="w-16 h-1.5 bg-gray-300 dark:bg-zinc-600 rounded-full mx-auto mb-3" />
-                  <h3 className="text-base font-semibold text-gray-700 dark:text-gray-200">
-                    Quick Create
+                <div className="px-4 pt-3 pb-2 border-b border-gray-100 dark:border-zinc-800">
+                  <div className="w-12 h-1.5 bg-gray-300 dark:bg-zinc-600 rounded-full mx-auto mb-3" />
+                  <h3 className="text-base font-semibold text-gray-800 dark:text-gray-100 mb-1">
+                    Create New
                   </h3>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 p-4">
                   {quickActions.map((item, idx) => (
-                    <button
+                    <motion.button
                       key={idx}
                       onClick={() => handleQuickAction(item.action)}
-                      className="flex items-start gap-3 p-4 bg-gray-50 dark:bg-zinc-800 hover:bg-gray-100 dark:hover:bg-zinc-700 rounded-xl transition-all duration-200 text-left active:scale-95 touch-action-manipulation"
+                      className="flex items-start gap-3 p-3 hover:bg-gray-100 dark:hover:bg-zinc-800 rounded-xl transition-all duration-200 text-left"
+                      whileTap={{ scale: 0.97 }}
                     >
-                      <div className={`${item.color} p-2 bg-white dark:bg-zinc-700 rounded-lg shadow-sm`}>
-                        <item.icon className="w-5 h-5" />
+                      <div className={`${item.bgColor} p-2 rounded-lg`}>
+                        <item.icon className={`w-5 h-5 ${item.color}`} />
                       </div>
                       <div>
-                        <div className="text-sm font-semibold text-gray-800 dark:text-gray-100">
+                        <div className="text-sm font-medium text-gray-800 dark:text-gray-100">
                           {item.label}
                         </div>
                         <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                           {item.desc}
                         </div>
                       </div>
-                    </button>
+                    </motion.button>
                   ))}
                 </div>
 
-                <div className="border-t border-gray-200 dark:border-zinc-800 p-4 flex justify-center">
-                  <button
+                <div className="border-t border-gray-200 dark:border-zinc-800 p-3 flex justify-center">
+                  <motion.button
                     onClick={() => setIsPopoverOpen(false)}
-                    className="text-sm font-medium text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 py-2 px-6 rounded-full bg-gray-50 dark:bg-zinc-800 active:scale-95 touch-action-manipulation"
+                    className="w-full py-2 text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 bg-gray-50 dark:bg-zinc-800 rounded-lg"
+                    whileTap={{ scale: 0.98 }}
                   >
-                    Close
-                  </button>
+                    Cancel
+                  </motion.button>
                 </div>
               </PopoverContent>
             </Popover>
           ) : (
-            <button
+            <motion.button
               key={item.id}
-              className="flex flex-col items-center justify-center w-1/5 relative group touch-action-manipulation"
+              className="flex flex-col items-center justify-center w-1/5 py-1 relative group touch-action-manipulation"
               onClick={() => handleTabClick(item)}
+              whileTap={{ scale: 0.95 }}
               aria-label={item.label}
-              aria-current={activeTab === item.id ? "page" : undefined}
             >
-              <div 
-                className={cn(
-                  "relative transition-transform duration-200 group-hover:scale-110 group-active:scale-95",
-                  activeTab === item.id ? "scale-110" : ""
-                )}
-              >
-                <item.icon
-                  className={cn(
-                    "w-6 h-6 transition-colors",
-                    activeTab === item.id
-                      ? "text-red-500"
-                      : "text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300"
-                  )}
-                  strokeWidth={activeTab === item.id ? 2.5 : 2}
-                />
-                {item.badge && (
+              <div className="relative">
+                {activeTab === item.id ? (
                   <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-medium rounded-full px-1.5 min-w-[18px] h-4.5 flex items-center justify-center shadow-sm"
-                  >
-                    {item.badge}
-                  </motion.div>
-                )}
+                    className="absolute inset-0 -m-1 p-1 bg-red-50 dark:bg-red-900/20 rounded-lg"
+                    layoutId="activeTabBackground"
+                    transition={{ type: "spring", duration: 0.6 }}
+                  />
+                ) : null}
+                <div className="relative z-10">
+                  <item.icon
+                    className={cn(
+                      "w-5 h-5 transition-colors",
+                      activeTab === item.id
+                        ? "text-red-500"
+                        : "text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300"
+                    )}
+                    strokeWidth={activeTab === item.id ? 2.2 : 1.8}
+                  />
+                  {item.badge && (
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      className="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-xs font-medium rounded-full min-w-[16px] h-4 flex items-center justify-center px-1"
+                    >
+                      {item.badge}
+                    </motion.div>
+                  )}
+                </div>
               </div>
 
               {item.label && (
@@ -269,15 +281,17 @@ export default function IndexBottomNav() {
 
               {activeTab === item.id && (
                 <motion.div
-                  className="absolute -bottom-3 w-6 h-1 rounded-full bg-red-500"
+                  className="absolute -bottom-1 w-10 h-0.5 rounded-full bg-red-500"
                   layoutId="activeIndicator"
                   transition={{ type: "spring", duration: 0.5 }}
                 />
               )}
-            </button>
+            </motion.button>
           )
         )}
       </div>
+
+      <div className="h-safe-bottom bg-white dark:bg-zinc-900" />
     </motion.div>
   );
 }
