@@ -1,16 +1,21 @@
 import { useState, useEffect } from 'react';
-import { Eye, EyeOff, ChevronRight, ArrowRight, Smartphone, Lock, Mail, Globe, AlertCircle, Fingerprint } from 'lucide-react';
+import { Eye, EyeOff, ChevronRight, ArrowRight, Smartphone, Lock, Mail, AlertCircle, Fingerprint, ChevronLeft, Shield, CreditCard, ArrowLeftRight } from 'lucide-react';
 
 export default function UltraModernLogin() {
   const [activeTab, setActiveTab] = useState('email');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [phone, setPhone] = useState('');
+  const [cardNumber, setCardNumber] = useState('');
+  const [cardExpiry, setCardExpiry] = useState('');
+  const [cardCVV, setCardCVV] = useState('');
+  const [otherIdentifier, setOtherIdentifier] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [countryCode, setCountryCode] = useState('+1');
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [showSecurityTips, setShowSecurityTips] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -23,59 +28,93 @@ export default function UltraModernLogin() {
 
     // Simulate API call  
     setTimeout(() => {  
-      setIsLoading(false);  
-      console.log('Login attempted with:', activeTab === 'email' ? { email, password } : { phone, password });  
+      setIsLoading(false);
+      
+      // Log appropriate credentials based on active tab
+      let credentials = { password };
+      
+      switch(activeTab) {
+        case 'email':
+          credentials = { ...credentials, email };
+          break;
+        case 'phone':
+          credentials = { ...credentials, phone: `${countryCode}${phone}` };
+          break;
+        case 'card':
+          credentials = { ...credentials, cardNumber, cardExpiry, cardCVV };
+          break;
+        case 'other':
+          credentials = { ...credentials, otherIdentifier };
+          break;
+      }
+      
+      console.log('Login attempted with:', credentials);  
     }, 1500);
   };
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 font-sans transition-opacity duration-500 w-full">
       <div className="w-full flex flex-col">
-        {/* Header with logo */}
+        {/* Header with back button */}
         <div className="px-6 pt-8 pb-4 max-w-4xl mx-auto w-full">
-          <div className="flex justify-between items-center mb-6">
-            <div className="flex items-center">
-              <div className="bg-orange-500 text-white font-bold text-xl px-2 py-1 rounded shadow-sm">Ali</div>
-              <div className="text-orange-500 font-bold text-xl ml-1">Express</div>
-            </div>
-            <div className="flex items-center text-sm bg-gray-50 rounded-full px-3 py-1 cursor-pointer hover:bg-gray-100 transition-colors">
-              <Globe className="h-4 w-4 mr-1 text-gray-500" />
-              <span className="text-gray-600">EN</span>
-            </div>
+          <div className="flex items-center mb-6">
+            <button className="mr-2 p-2 rounded-full hover:bg-gray-100 transition-colors flex items-center justify-center">
+              <ChevronLeft className="h-5 w-5 text-gray-600" />
+            </button>
+            <h1 className="text-2xl font-bold text-gray-800">Welcome back</h1>
           </div>
-          <h1 className="text-2xl font-bold text-gray-800 mb-1">Welcome back</h1>
-          <p className="text-gray-500 text-sm">Sign in to continue shopping</p>
+          <p className="text-gray-500 text-sm ml-10">Sign in to continue your journey</p>
         </div>
 
-        {/* Login tabs */}  
-        <div className="flex max-w-4xl mx-auto w-full px-6 mt-2 border-b">  
-          <button  
-            onClick={() => setActiveTab('email')}  
-            className={`pb-2 px-3 text-sm font-medium transition-all relative ${  
-              activeTab === 'email'  
-                ? 'text-orange-500'  
-                : 'text-gray-500 hover:text-gray-700'  
-            }`}  
-          >  
-            Email  
-            {activeTab === 'email' && (  
-              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-orange-500 rounded-t-full"></span>  
-            )}  
-          </button>  
-          <button  
-            onClick={() => setActiveTab('phone')}  
-            className={`pb-2 px-3 text-sm font-medium transition-all relative ${  
-              activeTab === 'phone'  
-                ? 'text-orange-500'  
-                : 'text-gray-500 hover:text-gray-700'  
-            }`}  
-          >  
-            Phone  
-            {activeTab === 'phone' && (  
-              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-orange-500 rounded-t-full"></span>  
-            )}  
-          </button>  
-        </div>  
+        {/* Enhanced Login tabs */}  
+        <div className="max-w-4xl mx-auto w-full px-6 mt-4">
+          <div className="bg-gray-50 p-1.5 rounded-xl flex mb-4 shadow-sm">  
+            <button  
+              onClick={() => setActiveTab('email')}  
+              className={`flex-1 flex items-center justify-center py-2.5 px-4 text-sm font-medium transition-all rounded-lg ${  
+                activeTab === 'email'  
+                  ? 'bg-white text-orange-500 shadow-sm'  
+                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'  
+              }`}  
+            >  
+              <Mail className={`h-4 w-4 mr-2 ${activeTab === 'email' ? 'text-orange-500' : 'text-gray-400'}`} />
+              <span>Email</span>
+            </button>  
+            <button  
+              onClick={() => setActiveTab('phone')}  
+              className={`flex-1 flex items-center justify-center py-2.5 px-4 text-sm font-medium transition-all rounded-lg ${  
+                activeTab === 'phone'  
+                  ? 'bg-white text-orange-500 shadow-sm'  
+                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'  
+              }`}  
+            >  
+              <Smartphone className={`h-4 w-4 mr-2 ${activeTab === 'phone' ? 'text-orange-500' : 'text-gray-400'}`} />
+              <span>Phone</span>
+            </button>
+            <button  
+              onClick={() => setActiveTab('card')}  
+              className={`flex-1 flex items-center justify-center py-2.5 px-4 text-sm font-medium transition-all rounded-lg ${  
+                activeTab === 'card'  
+                  ? 'bg-white text-orange-500 shadow-sm'  
+                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'  
+              }`}  
+            >  
+              <CreditCard className={`h-4 w-4 mr-2 ${activeTab === 'card' ? 'text-orange-500' : 'text-gray-400'}`} />
+              <span>Card</span>
+            </button>
+            <button  
+              onClick={() => setActiveTab('other')}  
+              className={`flex-1 flex items-center justify-center py-2.5 px-4 text-sm font-medium transition-all rounded-lg ${  
+                activeTab === 'other'  
+                  ? 'bg-white text-orange-500 shadow-sm'  
+                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'  
+              }`}  
+            >  
+              <ArrowLeftRight className={`h-4 w-4 mr-2 ${activeTab === 'other' ? 'text-orange-500' : 'text-gray-400'}`} />
+              <span>Other</span>
+            </button>
+          </div>  
+        </div>
 
         {/* Login Form Fields */}  
         <form onSubmit={handleSubmit} className="px-6 py-6 max-w-4xl mx-auto w-full">  
