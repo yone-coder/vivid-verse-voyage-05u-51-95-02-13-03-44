@@ -51,16 +51,33 @@ export default function UltraModernLogin() {
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-indigo-50 via-blue-50 to-purple-50 font-sans transition-opacity duration-500 w-full">
       <div className="w-full flex flex-col">
         {/* Minimal Header */}
-        <div className="px-6 pt-8 pb-4 max-w-5xl mx-auto w-full">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2 text-center">Secure Authentication</h1>
-          <p className="text-gray-500 text-center mb-2">Access your account securely</p>
-          <div className="flex justify-center mb-2">
-            <div className="bg-purple-100 text-purple-800 text-xs px-3 py-1 rounded-full flex items-center">
-              <Shield className="h-3 w-3 mr-1" />
-              <span>Enhanced security protocols active</span>
-            </div>
-          </div>
-        </div>
+       <div className="relative px-6 pt-8 pb-4 max-w-5xl mx-auto w-full">
+  <div className="flex items-start justify-between">
+    <div>
+      <h1 className="text-3xl font-bold text-gray-800 mb-1">Secure Authentication</h1>
+      <p className="text-gray-500">Access your account securely</p>
+    </div>
+
+    {/* Close button (e.g., for modal or dismissing login panel) */}
+    <button
+      onClick={() => console.log('Close clicked')} // Replace with your close handler
+      className="text-gray-400 hover:text-gray-600 transition-colors"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none"
+        viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+          d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+  </div>
+
+  <div className="flex justify-start mt-3">
+    <div className="bg-purple-100 text-purple-800 text-xs px-3 py-1 rounded-full flex items-center">
+      <Shield className="h-3 w-3 mr-1" />
+      <span>Enhanced security protocols active</span>
+    </div>
+  </div>
+</div>
 
         {/* Login methods */}
         <div className="flex max-w-5xl mx-auto w-full px-6 mt-2 border-b justify-center">  
