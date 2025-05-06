@@ -157,32 +157,32 @@ const SpotifyLogin = () => {
         <div className="relative border-b border-gray-700 mb-6 mt-6">
           <div className="flex">
             <button 
-              className={getTabButtonStyles('email')}
-              onClick={() => handleTabChange('email')}
-            >
-              <div className="flex items-center justify-center space-x-1">
-                <Mail size={16} />
-                <span>Email</span>
-              </div>
-            </button>
-            <button 
-              className={getTabButtonStyles('username')}
-              onClick={() => handleTabChange('username')}
-            >
-              <div className="flex items-center justify-center space-x-1">
-                <User size={16} />
-                <span>Username</span>
-              </div>
-            </button>
-            <button 
-              className={getTabButtonStyles('phone')}
-              onClick={() => handleTabChange('phone')}
-            >
-              <div className="flex items-center justify-center space-x-1">
-                <Phone size={16} />
-                <span>Phone</span>
-              </div>
-            </button>
+  className={getTabButtonStyles('email')}
+  onClick={() => handleTabChange('email')}
+>
+  <div className="flex items-center justify-center space-x-1">
+    <Mail size={16} />
+    <span>Email</span>
+  </div>
+</button>
+<button 
+  className={getTabButtonStyles('phone')}
+  onClick={() => handleTabChange('phone')}
+>
+  <div className="flex items-center justify-center space-x-1">
+    <Phone size={16} />
+    <span>Phone</span>
+  </div>
+</button>
+<button 
+  className={getTabButtonStyles('passkey')}
+  onClick={() => handleTabChange('passkey')}
+>
+  <div className="flex items-center justify-center space-x-1">
+    <User size={16} />
+    <span>Passkey</span>
+  </div>
+</button>
           </div>
           {/* Animated active tab indicator */}
           <div className={getTabIndicatorStyles()}></div>
