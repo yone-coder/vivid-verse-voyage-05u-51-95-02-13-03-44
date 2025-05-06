@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Key, Mail, Phone, Eye, EyeOff } from 'lucide-react';
+import { KeyRound, Mail, Phone, Eye, EyeOff } from 'lucide-react';
 
 const SpotifyLogin = () => {
   const [email, setEmail] = useState('');
@@ -179,7 +179,7 @@ const SpotifyLogin = () => {
   onClick={() => handleTabChange('passkey')}
 >
   <div className="flex items-center justify-center space-x-1">
-    <Key size={16} />
+    <KeyRound size={16} />
     <span>Passkey</span>
   </div>
 </button>
