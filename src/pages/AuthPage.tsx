@@ -92,14 +92,14 @@ const SpotifyLogin = () => {
 
   // Active tab indicator styles
   const getTabIndicatorStyles = () => {
-    let position = "left-0";
-    
-    if (activeTab === 'email') position = "left-0";
-    else if (activeTab === 'username') position = "left-1/3";
-    else if (activeTab === 'phone') position = "left-2/3";
-    
-    return `absolute bottom-0 w-1/3 h-0.5 bg-green-500 transition-all duration-300 ${position}`;
-  };
+  let position = "left-0";
+
+  if (activeTab === 'email') position = "left-0";
+  else if (activeTab === 'phone') position = "left-1/3";
+  else if (activeTab === 'passkey') position = "left-2/3";
+
+  return `absolute bottom-0 w-1/3 h-0.5 bg-green-500 transition-all duration-300 ${position}`;
+};
 
   // Get tab button styles
   const getTabButtonStyles = (tab) => {
