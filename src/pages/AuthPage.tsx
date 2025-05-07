@@ -1,7 +1,10 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { KeyRound, Mail, Phone, Eye, EyeOff, User } from 'lucide-react';
 import Logo from "@/components/home/Logo";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import SocialLogins from "@/components/auth/SocialLogins";
+import { useToast } from "@/hooks/use-toast";
 
 const AuthPage = () => {
   const [email, setEmail] = useState('');
@@ -13,6 +16,7 @@ const AuthPage = () => {
   const [tabTransition, setTabTransition] = useState(false);
   const [activePage, setActivePage] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
 
   // Handle tab switching with animation
   const handleTabChange = (tab) => {
@@ -35,7 +39,23 @@ const AuthPage = () => {
         password, 
         rememberMe 
       });
+      
+      // Show a toast for demonstration
+      toast({
+        title: "Login Attempt",
+        description: `Attempted login with ${activeTab}: ${email}`,
+      });
     }
+  };
+
+  // Handle social login
+  const handleSocialLogin = async (provider: 'github' | 'twitter' | 'google' | 'facebook' | 'apple') => {
+    console.log(`Attempting to login with ${provider}`);
+    toast({
+      title: "Social Login",
+      description: `Attempting to login with ${provider}`,
+      duration: 3000,
+    });
   };
 
   // Monitor scroll position for pagination indicator
@@ -166,7 +186,10 @@ const AuthPage = () => {
                   {/* Group 1: Google and Facebook */}
                   <div className="flex-shrink-0 snap-start min-w-[calc(100%-2rem)] pr-4">
                     <div className="space-y-3">
-                      <button className="w-full py-2.5 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md">
+                      <button 
+                        className="w-full py-2.5 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md"
+                        onClick={() => handleSocialLogin('google')}
+                      >
                         <svg className="w-5 h-5" viewBox="0 0 24 24">
                           <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
                             <path fill="#4285F4" d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z"/>
@@ -177,7 +200,10 @@ const AuthPage = () => {
                         </svg>
                         <span className="text-[#333]">Continue with Google</span>
                       </button>
-                      <button className="w-full py-2.5 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md">
+                      <button 
+                        className="w-full py-2.5 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md"
+                        onClick={() => handleSocialLogin('facebook')}
+                      >
                         <svg className="w-5 h-5" viewBox="0 0 24 24">
                           <path fill="currentColor" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"/>
                         </svg>
@@ -189,13 +215,19 @@ const AuthPage = () => {
                   {/* Group 2: Apple and X (Twitter) */}
                   <div className="flex-shrink-0 snap-start min-w-[calc(100%-2rem)] pr-4">
                     <div className="space-y-3">
-                      <button className="w-full py-2.5 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md">
+                      <button 
+                        className="w-full py-2.5 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md"
+                        onClick={() => handleSocialLogin('apple')}
+                      >
                         <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                           <path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.09998 22C7.78998 22.05 6.79998 20.68 5.95998 19.47C4.24998 17 2.93998 12.45 4.69998 9.39C5.56998 7.87 7.12998 6.91 8.81998 6.88C10.1 6.86 11.32 7.75 12.11 7.75C12.89 7.75 14.37 6.68 15.92 6.84C16.57 6.87 18.39 7.1 19.56 8.82C19.47 8.88 17.39 10.1 17.41 12.63C17.44 15.65 20.06 16.66 20.09 16.67C20.06 16.74 19.67 18.11 18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z"/>
                         </svg>
                         <span className="text-[#333]">Continue with Apple</span>
                       </button>
-                      <button className="w-full py-2.5 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md">
+                      <button 
+                        className="w-full py-2.5 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md"
+                        onClick={() => handleSocialLogin('twitter')}
+                      >
                         <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                           <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                         </svg>
@@ -207,13 +239,24 @@ const AuthPage = () => {
                   {/* Group 3: GitHub and Phone */}
                   <div className="flex-shrink-0 snap-start min-w-[calc(100%-2rem)] pr-4">
                     <div className="space-y-3">
-                      <button className="w-full py-2.5 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md">
+                      <button 
+                        className="w-full py-2.5 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md"
+                        onClick={() => handleSocialLogin('github')}
+                      >
                         <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                           <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
                         </svg>
                         <span className="text-[#333]">Continue with GitHub</span>
                       </button>
-                      <button className="w-full py-2.5 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md">
+                      <button 
+                        className="w-full py-2.5 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md"
+                        onClick={() => {
+                          toast({
+                            title: "Phone login",
+                            description: "Phone login is not configured yet",
+                          });
+                        }}
+                      >
                         <Phone className="w-5 h-5" />
                         <span className="text-[#333]">Continue with Phone</span>
                       </button>
@@ -242,11 +285,9 @@ const AuthPage = () => {
               </div>
             </div>
 
-            <div className="flex items-center my-3">
-              <div className="flex-grow border-t border-[#eaeaea]"></div>
-              <span className="px-4 text-sm text-[#999]">OR</span>
-              <div className="flex-grow border-t border-[#eaeaea]"></div>
-            </div>
+            {/* Enhanced OR section with feature-rich social logins */}
+            <SocialLogins handleSocialLogin={handleSocialLogin} />
+
           </div>
 
           {/* Enhanced Tab Switcher - reduced top margin */}
