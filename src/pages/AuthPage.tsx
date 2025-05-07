@@ -275,7 +275,7 @@ const AuthPage = () => {
                 
 <div className="mt-1">
   <span className="text-xs text-[#888] leading-snug">
-    By tapping <span className="bg-red-500 text-white px-0.5 py-0.5 rounded font-medium">Continue</span>, you acknowledge that you’ve read and agree to our 
+    By tapping <span className="bg-red-500 text-white px-2 py-0.5 rounded font-medium">Continue</span>, you acknowledge that you’ve read and agree to our 
     <a href="/terms" className="underline text-[#333] hover:text-red-500 mx-1">Terms of Service</a> and 
     <a href="/privacy" className="underline text-[#333] hover:text-red-500">Privacy Policy</a>, 
     ensuring a secure and personalized experience.
