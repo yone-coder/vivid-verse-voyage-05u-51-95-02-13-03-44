@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -156,7 +157,7 @@ export default function IndexBottomNav() {
       {showSignInBanner && <SignInBanner openAuthDialog={openAuthDialog} />}
       
       <Dialog open={showAuthDialog} onOpenChange={setShowAuthDialog}>
-        <DialogContent className="w-full sm:max-w-md p-0 h-[100dvh] sm:h-auto sm:max-h-[90vh] overflow-auto">
+        <DialogContent className="w-full sm:max-w-md p-0 h-[100dvh] sm:h-auto sm:max-h-[90vh] overflow-auto data-[state=open]:slide-in-from-bottom data-[state=closed]:slide-out-to-bottom">
           <button 
             onClick={() => setShowAuthDialog(false)}
             className="absolute left-4 top-4 z-50 rounded-sm opacity-70 text-white bg-gray-800/40 hover:bg-gray-700/40 hover:opacity-100 transition-opacity p-1"
