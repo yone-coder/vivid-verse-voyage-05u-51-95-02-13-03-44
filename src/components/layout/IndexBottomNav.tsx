@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -11,7 +10,8 @@ import {
   ShoppingCart,
   Camera,
   Tag,
-  Gift
+  Gift,
+  X
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -19,9 +19,14 @@ import {
   PopoverContent,
   PopoverTrigger
 } from "@/components/ui/popover";
+import {
+  Dialog,
+  DialogContent
+} from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import SignInBanner from "./SignInBanner";
+import AuthPage from "@/pages/AuthPage";
 
 export default function IndexBottomNav() {
   const [activeTab, setActiveTab] = useState("home");
@@ -32,6 +37,7 @@ export default function IndexBottomNav() {
   const plusButtonRef = useRef(null);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [showSignInBanner, setShowSignInBanner] = useState(true);
+  const [showAuthDialog, setShowAuthDialog] = useState(false);
 
   useEffect(() => {
     if (location.pathname === "/" || location.pathname === "/for-you") {
@@ -141,9 +147,27 @@ export default function IndexBottomNav() {
     }
   ];
 
+  const openAuthDialog = () => {
+    setShowAuthDialog(true);
+  };
+
   return (
     <>
-      {showSignInBanner && <SignInBanner />}
+      {showSignInBanner && <SignInBanner openAuthDialog={openAuthDialog} />}
+      
+      <Dialog open={showAuthDialog} onOpenChange={setShowAuthDialog}>
+        <DialogContent className="w-full sm:max-w-md p-0 h-[100dvh] sm:h-auto sm:max-h-[90vh] overflow-auto">
+          <button 
+            onClick={() => setShowAuthDialog(false)}
+            className="absolute left-4 top-4 z-50 rounded-sm opacity-70 text-white bg-gray-800/40 hover:bg-gray-700/40 hover:opacity-100 transition-opacity p-1"
+          >
+            <X className="h-4 w-4" />
+            <span className="sr-only">Close</span>
+          </button>
+          <AuthPage isOverlay={true} onClose={() => setShowAuthDialog(false)} />
+        </DialogContent>
+      </Dialog>
+
       <motion.div
         initial={{ y: 100 }}
         animate={{ y: 0 }}

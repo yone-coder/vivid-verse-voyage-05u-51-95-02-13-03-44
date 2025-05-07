@@ -1,9 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { KeyRound, Mail, Phone, Eye, EyeOff, User } from 'lucide-react';
+import { KeyRound, Mail, Phone, Eye, EyeOff, User, X } from 'lucide-react';
 import Logo from "@/components/home/Logo";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
-const AuthPage = () => {
+interface AuthPageProps {
+  isOverlay?: boolean;
+  onClose?: () => void;
+}
+
+const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
@@ -130,20 +135,24 @@ const AuthPage = () => {
     }`;
   };
 
+  const containerClasses = isOverlay 
+    ? "flex flex-col justify-between items-center min-h-full bg-white text-[#333] pt-8 pb-4" 
+    : "flex flex-col justify-center items-center min-h-screen bg-white text-[#333] py-8";
+
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen bg-white text-[#333] py-8">
-      <div className="w-full max-w-md px-4 flex flex-col items-center justify-center min-h-screen py-4">
+    <div className={containerClasses}>
+      <div className="w-full max-w-md px-4 flex flex-col items-center justify-center py-4">
         {/* Header with logo - reduced padding */}
-        <div className="w-full max-w-md pt-4 pb-4">
+        <div className="w-full max-w-md pt-2 pb-2">
           <div className="flex justify-center items-center">
             <Logo width={70} height={70} className="text-[#ff4747]" />
           </div>
         </div>
 
         {/* Main content - reduced spacing */}
-        <div className="w-full mb-4 space-y-4">
-          <h1 className="text-2xl font-bold text-center mb-4">Log in to Mima</h1>
-          <div className="space-y-4">
+        <div className="w-full mb-4 space-y-3">
+          <h1 className="text-2xl font-bold text-center mb-2">Log in to Mima</h1>
+          <div className="space-y-3">
             {/* This container extends edge-to-edge */}
             <div className="w-screen -mx-4 relative">
               <div 
@@ -240,14 +249,14 @@ const AuthPage = () => {
             </div>
           </div>
 
-          <div className="flex items-center my-3">
+          <div className="flex items-center my-2">
             <div className="flex-grow border-t border-[#eaeaea]"></div>
             <span className="px-3 text-xs text-[#999]">OR</span>
             <div className="flex-grow border-t border-[#eaeaea]"></div>
           </div>
 
           {/* Enhanced Tab Switcher - reduced margin */}
-          <div className="relative border-b border-[#eaeaea] mb-4 mt-3">
+          <div className="relative border-b border-[#eaeaea] mb-3 mt-2">
             <div className="flex">
               <button 
                 className={getTabButtonStyles('email')}
