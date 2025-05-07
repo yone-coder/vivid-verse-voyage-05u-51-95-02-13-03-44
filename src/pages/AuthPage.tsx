@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { KeyRound, Mail, Phone, Eye, EyeOff, User } from 'lucide-react';
 import Logo from "@/components/home/Logo";
@@ -255,35 +254,13 @@ const AuthPage = () => {
 
           {step === 1 && (
             <div className={`text-center transition-opacity duration-150 ${tabTransition ? 'opacity-0' : 'opacity-100'}`}>
-              <span className="text-sm text-[#999]">
-                {activeTab === 'email' && "Don't have an account?"}
-                {activeTab === 'username' && "Don't have an account?"}
-                {activeTab === 'phone' && "Don't have an account?"}
-              </span>
+              <p className="text-sm">
+                <span className="text-[#999]">Don't have an account?</span>{' '}
+                <a href="#" className="text-[#ff4747] hover:text-[#ff2727] font-medium hover:underline transition-colors">Sign up</a>
+              </p>
             </div>
           )}
         </form>
-
-        <div className="mt-8 border-t border-[#eaeaea] pt-6">
-          <div className="flex flex-col items-center space-y-4">
-            <h3 className="text-base font-semibold text-[#333] relative">
-              <span className="relative z-10 px-2 bg-white">Don't have an account?</span>
-              <span className="absolute left-0 top-1/2 w-full h-px bg-[#eaeaea] -z-10"></span>
-            </h3>
-            
-            <div className="relative w-full group">
-              <a href="#" className="block w-full relative z-10 border border-[#ff4747] text-[#ff4747] font-medium py-3 px-4 rounded-md text-center transition-all duration-300 
-                hover:bg-gradient-to-r hover:from-[#ff4747] hover:to-[#ff5e5e] hover:text-white hover:shadow-lg hover:shadow-red-200 group-hover:border-transparent">
-                Sign up for AliExpress
-              </a>
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-[#ff4747] to-[#ff9f9f] rounded-md blur-sm opacity-0 group-hover:opacity-60 transition-all duration-300"></div>
-            </div>
-            
-            <p className="text-xs text-[#999] max-w-xs text-center">
-              Join millions of shoppers and get access to exclusive deals, personalized recommendations, and more.
-            </p>
-          </div>
-        </div>
       </div>
 
       {/* Footer */}
