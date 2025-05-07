@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { KeyRound, Mail, Phone, Eye, EyeOff, User } from 'lucide-react';
+import { KeyRound, ShieldCheck, Mail, Phone, Eye, EyeOff, User } from 'lucide-react';
 import Logo from "@/components/home/Logo";
 
 const AuthPage = () => {
@@ -273,12 +273,13 @@ const AuthPage = () => {
                   </a>
                 </div>
                 
-<div className="mt-1">
-  <span className="text-xs text-[#888] leading-snug">
-    By tapping <strong className="text-[#333]">Continue</strong>, you acknowledge that you’ve read and agree to our 
-    <a href="/terms" className="underline text-[#333] hover:text-red-500 mx-1">Terms of Service</a> and 
-    <a href="/privacy" className="underline text-[#333] hover:text-red-500">Privacy Policy</a>, 
-    ensuring a secure and personalized experience.
+<div className="mt-1 px-1 flex items-start gap-1 text-xs text-[#999]">
+  <ShieldCheck size={14} className="mt-0.5 text-[#f53d3d] flex-shrink-0" />
+  <span>
+    By tapping <span className="text-[#222] font-medium">Continue</span>, you agree to our&nbsp;
+    <a href="/terms" className="text-[#333] underline hover:text-[#f53d3d]">Terms of Service</a> and&nbsp;
+    <a href="/privacy" className="text-[#333] underline hover:text-[#f53d3d]">Privacy Policy</a>. 
+    Enjoy a smarter, more tailored shopping experience!
   </span>
 </div>
               </div>
