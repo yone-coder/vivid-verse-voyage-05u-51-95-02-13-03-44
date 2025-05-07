@@ -1,84 +1,77 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import PasswordField from './PasswordField';
-import ConfirmPasswordField from './ConfirmPasswordField';
-import TermsCheckbox from './TermsCheckbox';
 import RememberMeToggle from './RememberMeToggle';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft } from 'lucide-react';
 
 interface PasswordStepContentProps {
-  authMode: 'signin' | 'signup';
   password: string;
   setPassword: (password: string) => void;
-  showPassword: boolean;
-  toggleShowPassword: () => void;
-  confirmPassword: string;
-  setConfirmPassword: (password: string) => void;
-  agreeToTerms: boolean;
-  setAgreeToTerms: (agree: boolean) => void;
+  handleSubmit: () => void;
   rememberMe: boolean;
   setRememberMe: (remember: boolean) => void;
-  handlePasswordReset: () => void;
+  onBack: () => void;
+  loading?: boolean;
 }
 
-const PasswordStepContent = ({
-  authMode,
+const PasswordStepContent: React.FC<PasswordStepContentProps> = ({
   password,
   setPassword,
-  showPassword,
-  toggleShowPassword,
-  confirmPassword,
-  setConfirmPassword,
-  agreeToTerms,
-  setAgreeToTerms,
+  handleSubmit,
   rememberMe,
   setRememberMe,
-  handlePasswordReset
-}: PasswordStepContentProps) => {
+  onBack,
+  loading = false
+}) => {
+  const [showPassword, setShowPassword] = useState(false);
+  
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
-    <div className="mb-6">
+    <div className="space-y-4 py-2">
+      <div className="flex items-center mb-4">
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="mr-2"
+          onClick={onBack}
+        >
+          <ArrowLeft className="h-4 w-4" />
+        </Button>
+        <h2 className="text-lg font-medium">Enter your password</h2>
+      </div>
+
       <PasswordField
-        id="password"
         label="Password"
         password={password}
         setPassword={setPassword}
         showPassword={showPassword}
         toggleShowPassword={toggleShowPassword}
-        hasConfirmation={authMode === 'signup'}
       />
 
-      {authMode === 'signup' && (
-        <>
-          <ConfirmPasswordField
-            confirmPassword={confirmPassword}
-            setConfirmPassword={setConfirmPassword}
-            password={password}
-            showPassword={showPassword}
-          />
-          
-          <TermsCheckbox
-            agreeToTerms={agreeToTerms}
-            setAgreeToTerms={setAgreeToTerms}
-          />
-        </>
-      )}
+      <div className="flex items-center justify-between">
+        <RememberMeToggle rememberMe={rememberMe} setRememberMe={setRememberMe} />
+        
+        <a 
+          href="#" 
+          className="text-sm text-[#ff4747] hover:text-[#ff2727] transition-colors"
+        >
+          Forgot password?
+        </a>
+      </div>
 
-      {authMode === 'signin' && (
-        <div className="flex items-center justify-between mb-6">
-          <RememberMeToggle
-            rememberMe={rememberMe}
-            setRememberMe={setRememberMe}
-          />
-          <div className="text-sm">
-            <button 
-              type="button"
-              onClick={handlePasswordReset}
-              className="font-medium text-[#ff4747] hover:text-[#ff2727] transition-colors cursor-pointer"
-            >
-              Forgot password?
-            </button>
-          </div>
-        </div>
-      )}
+      <Button
+        type="button"
+        className="w-full mt-4"
+        onClick={handleSubmit}
+        disabled={password.length === 0 || loading}
+      >
+        {loading ? 'Signing in...' : 'Sign In'}
+      </Button>
     </div>
   );
 };
