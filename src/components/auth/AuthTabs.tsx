@@ -51,17 +51,39 @@ const AuthTabs = ({
       <TabDivider />
 
       <Tabs defaultValue={activeTab} value={activeTab} onValueChange={handleTabChange} className="w-full">
-        <TabNavigation activeTab={activeTab} handleTabChange={handleTabChange} />
-        <TabContent 
-          activeTab={activeTab} 
-          tabTransition={tabTransition} 
-          email={email} 
-          setEmail={setEmail} 
-          phone={phone} 
-          setPhone={setPhone} 
-          countryCode={countryCode} 
-          setCountryCode={setCountryCode} 
-        />
+        <TabNavigation
+  activeTab={currentTab}
+  handleTabChange={setCurrentTab}
+  showTooltips={true}
+  showBadges={true}
+  tabDirection="horizontal"
+  size="md"
+  accentColor="#0066cc"
+  animationStyle="bounce"
+  tabsData={[
+    {
+      id: 'email',
+      label: 'Email',
+      icon: <Mail className="h-3.5 w-3.5 mr-1.5" />,
+      tooltip: 'Sign in with email',
+      badgeCount: 2
+    },
+    {
+      id: 'phone',
+      label: 'Phone',
+      icon: <Phone className="h-3.5 w-3.5 mr-1.5" />,
+      tooltip: 'Sign in with phone',
+      badgeCount: 0
+    },
+    {
+      id: 'passkey',
+      label: 'Passkey',
+      icon: <KeyRound className="h-3.5 w-3.5 mr-1.5" />,
+      tooltip: 'Use passkey',
+      disabled: true
+    }
+  ]}
+/>
       </Tabs>
 
       {isSignUp && <FullNameField fullName={fullName} setFullName={setFullName} />}
