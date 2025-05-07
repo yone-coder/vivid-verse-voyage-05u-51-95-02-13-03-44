@@ -125,8 +125,7 @@ export const subscribeToProductChanges = (callback: () => void) => {
         schema: 'public',
         table: 'products'
       },
-      (payload) => {
-        console.log('Received product change:', payload);
+      () => {
         callback();
       }
     )
