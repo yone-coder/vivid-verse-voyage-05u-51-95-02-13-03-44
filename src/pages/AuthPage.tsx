@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { KeyRound, Mail, Phone, Eye, EyeOff, User } from 'lucide-react';
 import Logo from "@/components/home/Logo";
 
@@ -110,18 +109,17 @@ const AuthPage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center min-h-screen bg-[#f5f5f5] text-[#333]">
-      {/* Header with logo */}
-      <div className="w-full max-w-md pt-10 pb-8">
+    <div className="flex flex-col items-center min-h-screen bg-white text-[#333]">
+      {/* Header with logo - simplified and centered */}
+      <div className="w-full max-w-md pt-6 pb-4">
         <div className="flex justify-center items-center">
-          <Logo width={40} height={40} className="text-[#ff4747]" />
-          <span className="ml-2 text-2xl font-bold text-[#ff4747]">mima</span>
+          <Logo width={60} height={60} className="text-[#ff4747]" />
         </div>
       </div>
 
       {/* Main content */}
-      <div className="w-full max-w-md px-6 py-8 rounded-lg bg-white shadow-sm">
-        <h1 className="text-2xl font-bold text-center mb-6">Log in to AliExpress</h1>
+      <div className="w-full max-w-md px-6">
+        <h1 className="text-2xl font-bold text-center mb-6">Log in to Mima</h1>
         <div className="space-y-4">
           {/* Social login buttons */}
           <button className="w-full py-3 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white">
@@ -273,27 +271,18 @@ const AuthPage = () => {
                   </a>
                 </div>
                 
-<div className="mt-1">
-  <span className="text-xs text-[#888] leading-snug">
-    By tapping <span className="bg-red-500 text-white px-2 py-0.5 rounded font-medium">Continue</span>, you acknowledge that you’ve read and agree to our 
-<a href="/terms" className="text-red-600 hover:text-red-700 font-medium mx-1 border-b border-red-200 hover:border-red-500 transition-colors">Terms of Service</a> and 
-<a href="/terms" className="text-red-600 hover:text-red-700 font-medium mx-1 border-b border-red-200 hover:border-red-500 transition-colors">Privacy Policy</a>, 
-    ensuring a secure and personalized experience.
-  </span>
-</div>
+                <div className="mt-1">
+                  <span className="text-xs text-[#888] leading-snug">
+                    By tapping <span className="bg-red-500 text-white px-2 py-0.5 rounded font-medium">Continue</span>, you acknowledge that you've read and agree to our 
+                    <a href="/terms" className="text-red-600 hover:text-red-700 font-medium mx-1 border-b border-red-200 hover:border-red-500 transition-colors">Terms of Service</a> and 
+                    <a href="/terms" className="text-red-600 hover:text-red-700 font-medium mx-1 border-b border-red-200 hover:border-red-500 transition-colors">Privacy Policy</a>, 
+                    ensuring a secure and personalized experience.
+                  </span>
+                </div>
               </div>
             </div>
           )}
         </form>
-      </div>
-
-      {/* Footer */}
-      <div className="w-full max-w-md py-8 text-center text-xs text-[#999]">
-        <p>
-          This site is protected by reCAPTCHA and the Google{' '}
-          <a href="#" className="text-[#ff4747] underline">Privacy Policy</a> and{' '}
-          <a href="#" className="text-[#ff4747] underline">Terms of Service</a> apply.
-        </p>
       </div>
     </div>
   );
