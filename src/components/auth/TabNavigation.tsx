@@ -9,7 +9,7 @@ interface TabNavigationProps {
 
 const TabNavigation = ({ activeTab, handleTabChange }: TabNavigationProps) => {
   return (
-    <TabsList className="flex w-full bg-transparent p-0 h-auto border-b border-[#eaeaea]">  
+    <TabsList className="flex w-full bg-transparent p-0 h-auto border-b border-[#eaeaea] rounded-none !rounded-none">  
       <TabsTrigger 
         value="email" 
         className="flex-1 flex items-center justify-center text-xs font-medium py-2 border-b-2 data-[state=active]:border-[#ff4747] data-[state=active]:text-[#ff4747] data-[state=inactive]:border-transparent rounded-none data-[state=inactive]:text-gray-500 transition-all hover:bg-gray-50 rounded-none !rounded-none"
