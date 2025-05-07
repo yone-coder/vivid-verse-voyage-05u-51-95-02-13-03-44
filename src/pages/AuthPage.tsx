@@ -273,9 +273,11 @@ const AuthPage = () => {
                   </a>
                 </div>
                 
-                <div className="mt-1">
-                  <span className="text-xs text-[#999] italic">Unlock exclusive deals & personalized recommendations</span>
-                </div>
+<div className="mt-1">
+  <span className="text-xs text-[#999] italic">
+    By clicking Continue, you agree to our <a href="/terms" className="underline">Terms of Service</a> and <a href="/privacy" className="underline">Privacy Policy</a>.
+  </span>
+</div>
               </div>
             </div>
           )}
