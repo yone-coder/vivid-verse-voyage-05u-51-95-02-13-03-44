@@ -1,12 +1,12 @@
 
 /* Form field focus animations */
 .input-animated {
-  transition: all 0.2s ease-in-out;
+  transition: all 0.3s ease-in-out;
 }
 
 .input-animated:focus-within {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px rgba(255, 71, 71, 0.1);
 }
 
 /* Error shake animation */
@@ -22,9 +22,9 @@
 
 /* Success checkmark animation */
 @keyframes checkmark {
-  0% { transform: scale(0); }
-  50% { transform: scale(1.2); }
-  100% { transform: scale(1); }
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 .success-checkmark {
@@ -33,11 +33,12 @@
 
 /* Button press effect */
 .btn-press {
-  transition: transform 0.1s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .btn-press:active {
   transform: scale(0.97);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
 }
 
 /* Fade-in animation */
@@ -47,22 +48,23 @@
 }
 
 .fade-in {
-  animation: fadeIn 0.3s ease-in-out;
+  animation: fadeIn 0.4s ease-in-out;
 }
 
 /* Scale effect for inputs */
 .input-scale-focus {
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .input-scale-focus:focus-within {
-  transform: scale(1.01);
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(255, 71, 71, 0.15);
 }
 
 /* Subtle pulse for buttons on hover */
 @keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(255, 71, 71, 0.4); }
-  70% { box-shadow: 0 0 0 10px rgba(255, 71, 71, 0); }
+  0% { box-shadow: 0 0 0 0 rgba(255, 71, 71, 0.6); }
+  70% { box-shadow: 0 0 0 12px rgba(255, 71, 71, 0); }
   100% { box-shadow: 0 0 0 0 rgba(255, 71, 71, 0); }
 }
 
@@ -73,4 +75,61 @@
 /* Tab sliding indicator */
 .tab-indicator {
   transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Glow effect on focus */
+.input-glow:focus-within {
+  box-shadow: 0 0 0 2px rgba(255, 71, 71, 0.2), 0 4px 16px rgba(255, 71, 71, 0.15);
+}
+
+/* Bounce animation */
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-10px); }
+  60% { transform: translateY(-5px); }
+}
+
+.animate-bounce {
+  animation: bounce 1s ease;
+}
+
+/* Success flash animation */
+@keyframes successFlash {
+  0% { background-color: rgba(34, 197, 94, 0); }
+  50% { background-color: rgba(34, 197, 94, 0.2); }
+  100% { background-color: rgba(34, 197, 94, 0); }
+}
+
+.success-flash {
+  animation: successFlash 1.5s ease;
+}
+
+/* Enhanced hover transition */
+.hover-transition {
+  transition: all 0.3s ease;
+}
+
+.hover-transition:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+}
+
+/* Focus ring pulsing */
+@keyframes focusRingPulse {
+  0% { box-shadow: 0 0 0 0 rgba(255, 71, 71, 0.4); }
+  70% { box-shadow: 0 0 0 6px rgba(255, 71, 71, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 71, 71, 0); }
+}
+
+.focus-ring-pulse:focus {
+  animation: focusRingPulse 2s infinite;
+}
+
+/* Loading spinner animation */
+@keyframes spinner {
+  to {transform: rotate(360deg);}
+}
+
+.animate-spin {
+  animation: spinner 1s linear infinite;
 }

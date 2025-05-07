@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { KeyRound, Mail, Phone, Eye, EyeOff, User, X, Loader, CheckCircle, AlertCircle } from 'lucide-react';
 import Logo from "@/components/home/Logo";
@@ -7,6 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useFormValidation } from '@/hooks/use-form-validation';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import '../components/ui/form-animations.css';
+import { toast } from '@/hooks/use-toast';
 
 interface AuthPageProps {
   isOverlay?: boolean;
@@ -31,8 +31,8 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   
-  // Get auth context
-  const { user, signIn, signUp, isLoading } = useAuth();
+  // Get auth context with enhanced validation
+  const { user, signIn, signUp, isLoading, validationErrors, setValidationError, clearValidationErrors } = useAuth();
   
   // Form validation
   const emailValidation = useFormValidation(
@@ -65,6 +65,36 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
       }
     }
   );
+
+  // Apply animation classes based on field interactions
+  const [animateEmail, setAnimateEmail] = useState(false);
+  const [animatePassword, setAnimatePassword] = useState(false);
+  const [successAnimation, setSuccessAnimation] = useState<string | null>(null);
+
+  // Enhanced field focus handlers with animations
+  const handleFieldFocus = (field: string) => {
+    if (field === 'email') setAnimateEmail(true);
+    if (field === 'password') setAnimatePassword(true);
+  };
+
+  const handleFieldBlur = (field: string) => {
+    if (field === 'email') {
+      setAnimateEmail(false);
+      emailValidation.handleBlur('email');
+    }
+    if (field === 'password') {
+      setAnimatePassword(false);
+      passwordValidation.handleBlur('password');
+    }
+  };
+
+  // Show success animation when fields are valid
+  useEffect(() => {
+    if (emailValidation.touched.email && !emailValidation.errors.email) {
+      setSuccessAnimation('email');
+      setTimeout(() => setSuccessAnimation(null), 1000);
+    }
+  }, [emailValidation.errors.email, emailValidation.touched.email]);
 
   // Handle tab switching with animation
   const handleTabChange = (tab) => {
@@ -134,7 +164,10 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate form based on current step
+    // Clear previous validation errors
+    clearValidationErrors();
+    
+    // Validate form based on current step with enhanced animations
     let isValid = false;
     
     if (step === 1) {
@@ -144,7 +177,13 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
         return;
       }
       setEmail(emailValidation.values.email);
-      setStep(2); // Move to password step
+      
+      // Show success animation
+      setSuccessAnimation('email');
+      setTimeout(() => {
+        setSuccessAnimation(null);
+        setStep(2); // Move to password step with a slight delay for animation
+      }, 500);
       return;
     } 
     
@@ -159,14 +198,21 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
       
       if (authMode === 'signin') {
         await signIn(email, passwordValidation.values.password, rememberMe);
-        if (!isOverlay) {
-          navigate('/');
-        } else if (onClose) {
-          onClose();
-        }
+        
+        // Show success animation
+        setSuccessAnimation('form');
+        
+        setTimeout(() => {
+          if (!isOverlay) {
+            navigate('/');
+          } else if (onClose) {
+            onClose();
+          }
+        }, 800);
       } else {
         await signUp(email, passwordValidation.values.password);
-        // Stay on the page to show success message
+        // Show success animation for signup
+        setSuccessAnimation('form');
       }
     } catch (error) {
       console.error('Authentication error:', error);
@@ -246,6 +292,69 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
     ? "flex flex-col justify-between items-center min-h-full bg-white text-[#333] pt-8 pb-4" 
     : "flex flex-col justify-center items-center min-h-screen bg-white text-[#333] py-8";
 
+  // Enhanced input field with animations
+  const renderAnimatedInput = (
+    id: string,
+    type: string,
+    placeholder: string,
+    value: string,
+    onChange: (value: string) => void,
+    onBlur: () => void,
+    error: string | null,
+    icon: React.ReactNode,
+    isPassword = false
+  ) => {
+    const isAnimating = id === 'email' ? animateEmail : animatePassword;
+    const hasSuccess = successAnimation === id;
+    
+    return (
+      <div className={`relative input-animated ${isAnimating ? 'input-scale-focus' : ''} ${fieldShake === id ? 'shake' : ''} ${hasSuccess ? 'success-checkmark' : ''}`}>
+        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#999]">
+          {icon}
+        </div>
+        <input
+          id={id}
+          type={isPassword && !showPassword ? "password" : type}
+          placeholder={placeholder}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          onFocus={() => handleFieldFocus(id)}
+          onBlur={() => handleFieldBlur(id)}
+          className={`w-full pl-10 ${isPassword ? 'pr-10' : 'pr-3'} py-2 bg-white border transition-all duration-200 ${
+            error 
+              ? 'border-red-500 focus:ring-red-500' 
+              : hasSuccess
+                ? 'border-green-500 focus:ring-green-500'
+                : 'border-[#e8e8e8] focus:ring-[#ff4747]'
+          } rounded-md text-[#333] placeholder-[#999] focus:outline-none focus:ring-2 focus:border-transparent ${isAnimating ? 'shadow-md -translate-y-1' : ''}`}
+          disabled={isLoading || isSubmitting}
+          required
+        />
+        {isPassword && (
+          <button
+            type="button"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#999] hover:text-[#333] transition-colors"
+            onClick={() => setShowPassword(!showPassword)}
+            disabled={isLoading || isSubmitting}
+          >
+            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+          </button>
+        )}
+        {hasSuccess && (
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 animate-bounce">
+            <CheckCircle size={16} />
+          </div>
+        )}
+        {error && (
+          <div className="text-red-500 text-xs mt-1 flex items-center fade-in">
+            <AlertCircle className="w-3 h-3 mr-1" />
+            {error}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   const passwordStrength = getPasswordStrength(passwordValidation.values.password);
 
   return (
@@ -253,14 +362,22 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
       <div className="w-full max-w-md px-4 flex flex-col items-center justify-center py-4">
         {/* Header with logo - reduced padding */}
         <div className="w-full max-w-md pt-2 pb-2">
-          <div className="flex justify-center items-center">
+          <div className="flex justify-between items-center">
             <Logo width={70} height={70} className="text-[#ff4747]" />
+            {isOverlay && onClose && (
+              <button 
+                onClick={onClose}
+                className="text-gray-500 hover:text-gray-800 transition-colors p-2 rounded-full hover:bg-gray-100"
+              >
+                <X size={20} />
+              </button>
+            )}
           </div>
         </div>
 
-        {/* Main content - reduced spacing */}
+        {/* Main content - with enhanced animations */}
         <div className="w-full mb-4 space-y-3">
-          <h1 className="text-2xl font-bold text-center mb-2 fade-in">
+          <h1 className={`text-2xl font-bold text-center mb-2 fade-in ${successAnimation === 'form' ? 'text-green-600' : ''}`}>
             {authMode === 'signin' ? 'Log in to Mima' : 'Create an account'}
           </h1>
           <div className="space-y-3">

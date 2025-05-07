@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import AuthPage from "@/pages/AuthPage";
 import { useAuth } from "@/contexts/AuthContext";
+import "../components/ui/form-animations.css"; // Import animations
 
 interface SignInBannerProps {
   openAuthDialog: () => void;

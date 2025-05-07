@@ -13,6 +13,9 @@ type AuthContextType = {
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
   updatePassword: (password: string) => Promise<void>;
+  validationErrors: Record<string, string | null>;
+  setValidationError: (field: string, message: string | null) => void;
+  clearValidationErrors: () => void;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -21,7 +24,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [validationErrors, setValidationErrors] = useState<Record<string, string | null>>({});
   const { toast } = useToast();
+
+  const setValidationError = (field: string, message: string | null) => {
+    setValidationErrors(prev => ({ ...prev, [field]: message }));
+  };
+
+  const clearValidationErrors = () => {
+    setValidationErrors({});
+  };
 
   // Clean up auth state to prevent issues
   const cleanupAuthState = () => {
@@ -50,10 +62,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(session?.user ?? null);
         setIsLoading(false);
 
+        // Show toast notifications for auth events
         if (session?.user && event === 'SIGNED_IN') {
           toast({
             title: "Signed in successfully",
             description: `Welcome ${session.user.email || 'back'}!`,
+            variant: "default",
+            className: "bg-green-100 border-green-400 text-green-800",
           });
 
           // Defer data fetching to prevent deadlocks
@@ -61,6 +76,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             // You could fetch user profile data here if needed
             console.log('User is signed in, fetching additional data');
           }, 0);
+        } else if (event === 'SIGNED_OUT') {
+          toast({
+            title: "Signed out successfully",
+            description: "You have been signed out",
+            variant: "default",
+            className: "bg-blue-100 border-blue-400 text-blue-800",
+          });
+        } else if (event === 'USER_UPDATED') {
+          toast({
+            title: "Account updated",
+            description: "Your account has been updated successfully",
+            variant: "default",
+            className: "bg-green-100 border-green-400 text-green-800",
+          });
         }
       }
     );
@@ -80,6 +109,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signIn = async (email: string, password: string, rememberMe: boolean) => {
     try {
       setIsLoading(true);
+      clearValidationErrors();
+      
+      // Validate form fields
+      if (!email.trim()) {
+        setValidationError('email', 'Email is required');
+        throw new Error('Email is required');
+      }
+      
+      if (!password) {
+        setValidationError('password', 'Password is required');
+        throw new Error('Password is required');
+      }
+      
       // Clean up existing state
       cleanupAuthState();
       
@@ -95,7 +137,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         password,
       });
       
-      if (error) throw error;
+      if (error) {
+        if (error.message.includes('email')) {
+          setValidationError('email', error.message);
+        } else if (error.message.includes('password')) {
+          setValidationError('password', error.message);
+        } else {
+          // Generic error
+          setValidationError('form', error.message);
+        }
+        throw error;
+      }
       
       // Store remember me preference
       if (rememberMe) {
@@ -103,11 +155,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } else {
         localStorage.removeItem('auth_remember_me');
       }
+      
+      toast({
+        title: "Login successful",
+        description: "Welcome back!",
+        variant: "default",
+        className: "bg-green-100 border-green-400 text-green-800 animate-fade-in",
+      });
     } catch (error: any) {
       toast({
         title: "Sign in failed",
         description: error.message || "An error occurred during sign in",
         variant: "destructive",
+        className: "animate-shake",
       });
       throw error;
     } finally {
@@ -118,6 +178,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signUp = async (email: string, password: string) => {
     try {
       setIsLoading(true);
+      clearValidationErrors();
+      
+      // Validate email
+      if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        setValidationError('email', 'Please enter a valid email address');
+        throw new Error('Please enter a valid email address');
+      }
+      
+      // Validate password
+      if (!password) {
+        setValidationError('password', 'Password is required');
+        throw new Error('Password is required');
+      }
+      
+      if (password.length < 8) {
+        setValidationError('password', 'Password must be at least 8 characters');
+        throw new Error('Password must be at least 8 characters');
+      }
+      
+      if (!/[A-Z]/.test(password)) {
+        setValidationError('password', 'Password must contain at least one uppercase letter');
+        throw new Error('Password must contain at least one uppercase letter');
+      }
+      
+      if (!/[0-9]/.test(password)) {
+        setValidationError('password', 'Password must contain at least one number');
+        throw new Error('Password must contain at least one number');
+      }
+      
       // Clean up existing state
       cleanupAuthState();
       
@@ -126,17 +215,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         password,
       });
       
-      if (error) throw error;
+      if (error) {
+        if (error.message.includes('email')) {
+          setValidationError('email', error.message);
+        } else if (error.message.includes('password')) {
+          setValidationError('password', error.message);
+        } else {
+          setValidationError('form', error.message);
+        }
+        throw error;
+      }
       
       toast({
         title: "Sign up successful",
         description: "Please check your email for verification instructions",
+        className: "bg-green-100 border-green-400 text-green-800 animate-fade-in",
       });
     } catch (error: any) {
       toast({
         title: "Sign up failed",
         description: error.message || "An error occurred during sign up",
         variant: "destructive",
+        className: "animate-shake",
       });
       throw error;
     } finally {
@@ -155,6 +255,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
       toast({
         title: "Signed out successfully",
+        className: "bg-blue-100 border-blue-400 text-blue-800 animate-fade-in",
       });
       
       // Force page reload for a clean state
@@ -164,6 +265,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         title: "Sign out failed",
         description: error.message || "An error occurred during sign out",
         variant: "destructive",
+        className: "animate-shake",
       });
     } finally {
       setIsLoading(false);
@@ -229,6 +331,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     signOut,
     resetPassword,
     updatePassword,
+    validationErrors,
+    setValidationError,
+    clearValidationErrors,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

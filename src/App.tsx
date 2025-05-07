@@ -1,4 +1,5 @@
-import React from "react";
+
+import React, { useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -19,11 +20,18 @@ import MainLayout from "./components/layout/MainLayout";
 import { ThemeProvider } from "@/components/theme-provider";
 import AuthPage from "./pages/AuthPage";
 import { AuthProvider } from './contexts/AuthContext';
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 // Create a client
 const queryClient = new QueryClient();
 
 function App() {
+  const [authDialogOpen, setAuthDialogOpen] = useState(false);
+
+  const openAuthDialog = () => {
+    setAuthDialogOpen(true);
+  };
+
   return (
     <AuthProvider>
       <React.StrictMode>
@@ -32,30 +40,34 @@ function App() {
             <TooltipProvider>
               <Toaster />
               <Sonner />
-              <BrowserRouter>
-                <Routes>
-                  <Route element={<MainLayout />}>
-                    <Route path="/" element={<Navigate to="/for-you" replace />} />
-                    <Route path="/for-you" element={<ForYou />} />
-                    <Route path="/posts" element={<Posts />} />
-                    <Route path="/shops" element={<Shops />} />
-                    <Route path="/trending" element={<Trending />} />
-                    <Route path="/videos" element={<Videos />} />
-                    <Route path="/reels" element={<Reels />} />
-                    <Route path="/browse" element={<ForYou />} />
-                    <Route path="/product/:id" element={<ProductDetail />} />
-                    <Route path="/admin" element={<AdminPanel />} />
-                    <Route path="/search" element={<SearchPage />} />
-                    <Route path="/categories" element={<Navigate to="/reels" replace />} />
-                    <Route path="/auth" element={<AuthPage />} /> {/* Updated to use AuthPage */}
-                    <Route path="/cart" element={<NotFound />} />
-                    <Route path="/wishlist" element={<NotFound />} />
-                    <Route path="/account" element={<NotFound />} />
-                    {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                    <Route path="*" element={<NotFound />} />
-                  </Route>
-                </Routes>
-              </BrowserRouter>
+              <Dialog open={authDialogOpen} onOpenChange={setAuthDialogOpen}>
+                <DialogContent className="sm:max-w-md p-0 border-none bg-transparent shadow-none">
+                  <AuthPage isOverlay={true} onClose={() => setAuthDialogOpen(false)} />
+                </DialogContent>
+                <BrowserRouter>
+                  <Routes>
+                    <Route element={<MainLayout openAuthDialog={openAuthDialog} />}>
+                      <Route path="/" element={<Navigate to="/for-you" replace />} />
+                      <Route path="/for-you" element={<ForYou />} />
+                      <Route path="/posts" element={<Posts />} />
+                      <Route path="/shops" element={<Shops />} />
+                      <Route path="/trending" element={<Trending />} />
+                      <Route path="/videos" element={<Videos />} />
+                      <Route path="/reels" element={<Reels />} />
+                      <Route path="/browse" element={<ForYou />} />
+                      <Route path="/product/:id" element={<ProductDetail />} />
+                      <Route path="/admin" element={<AdminPanel />} />
+                      <Route path="/search" element={<SearchPage />} />
+                      <Route path="/categories" element={<Navigate to="/reels" replace />} />
+                      <Route path="/auth" element={<AuthPage />} />
+                      <Route path="/cart" element={<NotFound />} />
+                      <Route path="/wishlist" element={<NotFound />} />
+                      <Route path="/account" element={<NotFound />} />
+                      <Route path="*" element={<NotFound />} />
+                    </Route>
+                  </Routes>
+                </BrowserRouter>
+              </Dialog>
             </TooltipProvider>
           </ThemeProvider>
         </QueryClientProvider>
