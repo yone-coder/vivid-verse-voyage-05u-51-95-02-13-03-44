@@ -2,11 +2,11 @@
 import React from 'react';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { User } from 'lucide-react';
+import { UserCheck } from 'lucide-react';
 
 interface FullNameFieldProps {
   fullName: string;
-  setFullName: (fullName: string) => void;
+  setFullName: (name: string) => void;
 }
 
 const FullNameField = ({ fullName, setFullName }: FullNameFieldProps) => {
@@ -14,7 +14,7 @@ const FullNameField = ({ fullName, setFullName }: FullNameFieldProps) => {
     <div className="mb-4">
       <Label htmlFor="fullName" className="block text-gray-700 mb-1">Full Name</Label>
       <div className="relative group">
-        <User className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-[#ff4747] transition-colors" />
+        <UserCheck className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-[#ff4747] transition-colors" />
         <Input
           id="fullName"
           type="text"
