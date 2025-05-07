@@ -2,18 +2,20 @@
 import React from "react";
 import { LogIn, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import AuthPage from "@/pages/AuthPage";
+import { useAuth } from "@/context/AuthContext";
 
 interface SignInBannerProps {
   openAuthDialog: () => void;
 }
 
 export default function SignInBanner({ openAuthDialog }: SignInBannerProps) {
+  const { user } = useAuth();
+  
+  // Don't show banner if user is logged in
+  if (user) {
+    return null;
+  }
+  
   return (
     <div className="fixed bottom-12 left-0 right-0 z-40 bg-gradient-to-r from-red-500/80 to-orange-500/80 backdrop-blur-sm py-1.5 px-4 flex items-center justify-between shadow-md">
       <div className="text-white text-xs font-medium">Sign in to explore more</div>

@@ -1,7 +1,11 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { KeyRound, Mail, Phone, Eye, EyeOff, User, X } from 'lucide-react';
 import Logo from "@/components/home/Logo";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useAuth } from '@/context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 interface AuthPageProps {
   isOverlay?: boolean;
@@ -9,6 +13,7 @@ interface AuthPageProps {
 }
 
 const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
+  // State management for the auth flow
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
@@ -18,9 +23,14 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
   const [tabTransition, setTabTransition] = useState(false);
   const [activePage, setActivePage] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
+  const [isSignUp, setIsSignUp] = useState(false);
+
+  // Auth context
+  const { signIn, signUp, user } = useAuth();
+  const navigate = useNavigate();
 
   // Handle tab switching with animation
-  const handleTabChange = (tab) => {
+  const handleTabChange = (tab: string) => {
     if (tab === activeTab) return;
     
     setTabTransition(true);
@@ -30,16 +40,48 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
     }, 150);
   };
 
-  const handleSubmit = (e) => {
+  // Redirect if already logged in
+  useEffect(() => {
+    if (user) {
+      navigate('/for-you');
+    }
+  }, [user, navigate]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (step === 1) {
+      // Basic validation
+      if (!email) {
+        toast.error("Please enter your email address.");
+        return;
+      }
+      // Simple email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        toast.error("Please enter a valid email address.");
+        return;
+      }
       setStep(2); // Move to password step
     } else {
-      console.log('Login attempted with:', { 
-        [activeTab]: activeTab === 'email' ? email : activeTab === 'username' ? email : email, // Using email state for all for simplicity
-        password, 
-        rememberMe 
-      });
+      // Password validation
+      if (!password) {
+        toast.error("Please enter a password.");
+        return;
+      }
+      if (password.length < 6) {
+        toast.error("Password must be at least 6 characters.");
+        return;
+      }
+
+      try {
+        if (isSignUp) {
+          await signUp(email, password);
+        } else {
+          await signIn(email, password, rememberMe);
+        }
+      } catch (error) {
+        console.error("Authentication error:", error);
+      }
     }
   };
 
@@ -129,7 +171,7 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
   };
 
   // Get tab button styles
-  const getTabButtonStyles = (tab) => {
+  const getTabButtonStyles = (tab: string) => {
     return `flex-1 py-3 text-center relative font-medium text-sm transition-all duration-200 ${
       activeTab === tab ? 'text-[#ff4747]' : 'text-[#666] hover:text-[#ff4747]'
     }`;
@@ -151,9 +193,11 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
 
         {/* Main content - reduced spacing */}
         <div className="w-full mb-4 space-y-3">
-          <h1 className="text-2xl font-bold text-center mb-2">Log in to Mima</h1>
+          <h1 className="text-2xl font-bold text-center mb-2">
+            {isSignUp ? "Create an account" : "Log in to Mima"}
+          </h1>
           <div className="space-y-3">
-            {/* This container extends edge-to-edge */}
+            {/* Social login carousel */}
             <div className="w-screen -mx-4 relative">
               <div 
                 ref={carouselRef}
@@ -368,7 +412,7 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
               type="submit"
               className="w-full bg-[#ff4747] text-white font-medium py-2 px-4 rounded-md hover:bg-[#ff2727] transition-all focus:outline-none focus:ring-2 focus:ring-[#ff4747] focus:ring-offset-2 focus:ring-offset-white mt-3"
             >
-              {step === 1 ? 'Next' : 'Log In'}
+              {step === 1 ? 'Next' : (isSignUp ? 'Sign Up' : 'Log In')}
             </button>
 
             {step === 2 && (
@@ -387,13 +431,19 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
                 
                 <div className="mt-4 text-center">
                   <div className="inline-block relative">
-                    <span className="text-[#999] text-xs">Don't have an account?</span>{' '}
+                    <span className="text-[#999] text-xs">
+                      {isSignUp ? "Already have an account?" : "Don't have an account?"}
+                    </span>{' '}
                     <a 
                       href="#" 
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setIsSignUp(!isSignUp);
+                      }}
                       className="relative inline-block group ml-1"
                     >
                       <span className="text-[#ff4747] font-medium text-xs group-hover:text-[#ff2727] transition-colors">
-                        Sign up
+                        {isSignUp ? "Log in" : "Sign up"}
                       </span>
                       <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#ff4747] group-hover:w-full transition-all duration-300"></span>
                     </a>
