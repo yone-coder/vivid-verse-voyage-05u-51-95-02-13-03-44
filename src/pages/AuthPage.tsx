@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { KeyRound, Mail, Phone, Eye, EyeOff, User } from 'lucide-react';
 import Logo from "@/components/home/Logo";
@@ -253,11 +254,29 @@ const AuthPage = () => {
           )}
 
           {step === 1 && (
-            <div className={`text-center transition-opacity duration-150 ${tabTransition ? 'opacity-0' : 'opacity-100'}`}>
-              <p className="text-sm">
-                <span className="text-[#999]">Don't have an account?</span>{' '}
-                <a href="#" className="text-[#ff4747] hover:text-[#ff2727] font-medium hover:underline transition-colors">Sign up</a>
-              </p>
+            <div className={`relative transition-opacity duration-150 ${tabTransition ? 'opacity-0' : 'opacity-100'}`}>
+              <div className="flex items-center justify-center">
+                <div className="h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent w-full"></div>
+              </div>
+              
+              <div className="mt-4 text-center">
+                <div className="inline-block relative">
+                  <span className="text-[#999] text-sm">Don't have an account?</span>{' '}
+                  <a 
+                    href="#" 
+                    className="relative inline-block group"
+                  >
+                    <span className="text-[#ff4747] font-medium text-sm group-hover:text-[#ff2727] transition-colors">
+                      Sign up
+                    </span>
+                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#ff4747] group-hover:w-full transition-all duration-300"></span>
+                  </a>
+                </div>
+                
+                <div className="mt-1">
+                  <span className="text-xs text-[#999] italic">Unlock exclusive deals & personalized recommendations</span>
+                </div>
+              </div>
             </div>
           )}
         </form>
