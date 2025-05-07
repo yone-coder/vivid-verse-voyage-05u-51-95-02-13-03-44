@@ -1,8 +1,9 @@
+
 import React, { useState } from 'react';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Mail, Phone, KeyRound } from 'lucide-react';
-import EmailTab from './EmailTab';
-import PhoneTab from './PhoneTab';
+import { Tabs } from "@/components/ui/tabs";
+import TabDivider from './TabDivider';
+import TabNavigation from './TabNavigation';
+import TabContent from './TabContent';
 import FullNameField from './FullNameField';
 
 interface AuthTabsProps {
@@ -47,58 +48,20 @@ const AuthTabs = ({
 
   return (
     <div className="mb-4">
-      <div className="flex items-center my-2">
-        <div className="flex-grow border-t border-[#eaeaea]"></div>
-        <span className="px-3 text-xs text-[#999] font-medium">OR</span>
-        <div className="flex-grow border-t border-[#eaeaea]"></div>
-      </div>
+      <TabDivider />
 
       <Tabs defaultValue={activeTab} value={activeTab} onValueChange={handleTabChange} className="w-full">
-        <TabsList className="flex w-full bg-transparent p-0 h-auto border-b border-[#eaeaea]">  
-          <TabsTrigger 
-            value="email" 
-            className="flex-1 flex items-center justify-center text-xs font-medium py-2 border-b-2 data-[state=active]:border-[#ff4747] data-[state=active]:text-[#ff4747] data-[state=inactive]:border-transparent rounded-none data-[state=inactive]:text-gray-500 transition-all hover:bg-gray-50"
-          >  
-            <Mail className="h-3.5 w-3.5 mr-1.5" />  
-            <span>Email</span>
-          </TabsTrigger>  
-          <TabsTrigger 
-            value="phone" 
-            className="flex-1 flex items-center justify-center text-xs font-medium py-2 border-b-2 data-[state=active]:border-[#ff4747] data-[state=active]:text-[#ff4747] data-[state=inactive]:border-transparent rounded-none data-[state=inactive]:text-gray-500 transition-all hover:bg-gray-50"
-          >  
-            <Phone className="h-3.5 w-3.5 mr-1.5" />  
-            <span>Phone</span>
-          </TabsTrigger>  
-          <TabsTrigger 
-            value="passkey" 
-            className="flex-1 flex items-center justify-center text-xs font-medium py-2 border-b-2 data-[state=active]:border-[#ff4747] data-[state=active]:text-[#ff4747] data-[state=inactive]:border-transparent rounded-none data-[state=inactive]:text-gray-500 transition-all hover:bg-gray-50"
-          >  
-            <KeyRound className="h-3.5 w-3.5 mr-1.5" />  
-            <span>Passkey</span>
-          </TabsTrigger>  
-        </TabsList>
-        <div className={`transition-all duration-200 ${tabTransition ? 'opacity-0 transform -translate-y-1' : 'opacity-100 transform translate-y-0'}`}>
-          <TabsContent value="email" className="pt-3 mb-0">
-            <EmailTab email={email} setEmail={setEmail} />
-          </TabsContent>
-          <TabsContent value="phone" className="pt-3 mb-0">
-            <PhoneTab 
-              phone={phone} 
-              setPhone={setPhone} 
-              countryCode={countryCode} 
-              setCountryCode={setCountryCode} 
-            />
-          </TabsContent>
-          <TabsContent value="passkey" className="pt-3 mb-0">
-            <div className="text-center py-3">
-              <KeyRound className="h-10 w-10 mx-auto mb-2 text-gray-400" />
-              <p className="text-xs text-gray-600">Use a security key or biometric authentication</p>
-              <button className="mt-3 px-5 py-1.5 bg-gray-100 rounded-md text-xs font-medium hover:bg-gray-200 transition-colors">
-                Continue with Passkey
-              </button>
-            </div>
-          </TabsContent>
-        </div>
+        <TabNavigation activeTab={activeTab} handleTabChange={handleTabChange} />
+        <TabContent 
+          activeTab={activeTab} 
+          tabTransition={tabTransition} 
+          email={email} 
+          setEmail={setEmail} 
+          phone={phone} 
+          setPhone={setPhone} 
+          countryCode={countryCode} 
+          setCountryCode={setCountryCode} 
+        />
       </Tabs>
 
       {isSignUp && <FullNameField fullName={fullName} setFullName={setFullName} />}
