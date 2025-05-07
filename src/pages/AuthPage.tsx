@@ -1,12 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { KeyRound, Mail, Phone, Eye, EyeOff, User, X, Loader, CheckCircle, AlertCircle } from 'lucide-react';
+import { KeyRound, Mail, Phone, Eye, EyeOff, User, X } from 'lucide-react';
 import Logo from "@/components/home/Logo";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useAuth } from '@/contexts/AuthContext';
-import { useFormValidation } from '@/hooks/use-form-validation';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import '../components/ui/form-animations.css';
-import { toast } from '@/hooks/use-toast';
 
 interface AuthPageProps {
   isOverlay?: boolean;
@@ -14,87 +9,15 @@ interface AuthPageProps {
 }
 
 const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
-  // Auth mode: 'signin' or 'signup'
-  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [activeTab, setActiveTab] = useState('email'); // 'email', 'phone', or 'passkey'
   const [step, setStep] = useState(1); // Multi-step process
   const [tabTransition, setTabTransition] = useState(false);
   const [activePage, setActivePage] = useState(0);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [fieldShake, setFieldShake] = useState<string | null>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  
-  // Get auth context with enhanced validation
-  const { user, signIn, signUp, isLoading, validationErrors, setValidationError, clearValidationErrors } = useAuth();
-  
-  // Form validation
-  const emailValidation = useFormValidation(
-    { email: '' },
-    {
-      email: {
-        required: true,
-        email: true,
-      }
-    }
-  );
-  
-  const passwordValidation = useFormValidation(
-    { password: '', confirmPassword: '' },
-    {
-      password: {
-        required: true,
-        minLength: 8,
-        validate: (value) => {
-          // At least one uppercase letter
-          if (!/[A-Z]/.test(value)) return 'Password must contain at least one uppercase letter';
-          // At least one number
-          if (!/[0-9]/.test(value)) return 'Password must contain at least one number';
-          return true;
-        }
-      },
-      confirmPassword: {
-        required: authMode === 'signup',
-        passwordMatch: 'password'
-      }
-    }
-  );
-
-  // Apply animation classes based on field interactions
-  const [animateEmail, setAnimateEmail] = useState(false);
-  const [animatePassword, setAnimatePassword] = useState(false);
-  const [successAnimation, setSuccessAnimation] = useState<string | null>(null);
-
-  // Enhanced field focus handlers with animations
-  const handleFieldFocus = (field: string) => {
-    if (field === 'email') setAnimateEmail(true);
-    if (field === 'password') setAnimatePassword(true);
-  };
-
-  const handleFieldBlur = (field: string) => {
-    if (field === 'email') {
-      setAnimateEmail(false);
-      emailValidation.handleBlur('email');
-    }
-    if (field === 'password') {
-      setAnimatePassword(false);
-      passwordValidation.handleBlur('password');
-    }
-  };
-
-  // Show success animation when fields are valid
-  useEffect(() => {
-    if (emailValidation.touched.email && !emailValidation.errors.email) {
-      setSuccessAnimation('email');
-      setTimeout(() => setSuccessAnimation(null), 1000);
-    }
-  }, [emailValidation.errors.email, emailValidation.touched.email]);
 
   // Handle tab switching with animation
   const handleTabChange = (tab) => {
@@ -107,40 +30,18 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
     }, 150);
   };
 
-  // Check for redirect from Supabase auth
-  useEffect(() => {
-    const redirectError = searchParams.get('error_description');
-    if (redirectError) {
-      // Show error to user
-      console.error("Auth error:", redirectError);
-      // Shake the email field to indicate error
-      setFieldShake('email');
-      setTimeout(() => setFieldShake(null), 820);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (step === 1) {
+      setStep(2); // Move to password step
+    } else {
+      console.log('Login attempted with:', { 
+        [activeTab]: activeTab === 'email' ? email : activeTab === 'username' ? email : email, // Using email state for all for simplicity
+        password, 
+        rememberMe 
+      });
     }
-  }, [searchParams]);
-
-  // Reset field shake
-  useEffect(() => {
-    if (fieldShake) {
-      const timer = setTimeout(() => setFieldShake(null), 820);
-      return () => clearTimeout(timer);
-    }
-  }, [fieldShake]);
-
-  // Redirect if user is already logged in
-  useEffect(() => {
-    if (user && !isOverlay) {
-      navigate('/');
-    }
-  }, [user, isOverlay, navigate]);
-
-  // Check local storage for remember me preference
-  useEffect(() => {
-    const remembered = localStorage.getItem('auth_remember_me');
-    if (remembered === 'true') {
-      setRememberMe(true);
-    }
-  }, []);
+  };
 
   // Monitor scroll position for pagination indicator
   useEffect(() => {
@@ -161,113 +62,59 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
     }
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const renderInputField = () => {
+    let placeholder = '';
+    let type = 'text';
+    let label = '';
+    let icon = <Mail size={18} />;
     
-    // Clear previous validation errors
-    clearValidationErrors();
-    
-    // Validate form based on current step with enhanced animations
-    let isValid = false;
-    
-    if (step === 1) {
-      isValid = emailValidation.validateAll();
-      if (!isValid) {
-        setFieldShake('email');
-        return;
-      }
-      setEmail(emailValidation.values.email);
-      
-      // Show success animation
-      setSuccessAnimation('email');
-      setTimeout(() => {
-        setSuccessAnimation(null);
-        setStep(2); // Move to password step with a slight delay for animation
-      }, 500);
-      return;
-    } 
-    
-    isValid = passwordValidation.validateAll();
-    if (!isValid) {
-      setFieldShake('password');
-      return;
+    switch (activeTab) {
+      case 'email':
+        placeholder = 'Email address or username';
+        type = 'email';
+        label = 'Email or username';
+        icon = <Mail size={18} />;
+        break;
+      case 'username':
+        placeholder = 'Username';
+        type = 'text';
+        label = 'Username';
+        icon = <User size={18} />;
+        break;
+      case 'phone':
+        placeholder = 'Phone number';
+        type = 'tel';
+        label = 'Phone number';
+        icon = <Phone size={18} />;
+        break;
+      default:
+        placeholder = 'Email';
+        type = 'email';
+        label = 'Email';
+        icon = <Mail size={18} />;
     }
-    
-    try {
-      setIsSubmitting(true);
-      
-      if (authMode === 'signin') {
-        await signIn(email, passwordValidation.values.password, rememberMe);
-        
-        // Show success animation
-        setSuccessAnimation('form');
-        
-        setTimeout(() => {
-          if (!isOverlay) {
-            navigate('/');
-          } else if (onClose) {
-            onClose();
-          }
-        }, 800);
-      } else {
-        await signUp(email, passwordValidation.values.password);
-        // Show success animation for signup
-        setSuccessAnimation('form');
-      }
-    } catch (error) {
-      console.error('Authentication error:', error);
-      setFieldShake('password');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
-  // Toggle between login and sign up
-  const toggleAuthMode = () => {
-    setAuthMode(authMode === 'signin' ? 'signup' : 'signin');
-    // Reset password fields when toggling
-    passwordValidation.resetForm();
-    setConfirmPassword('');
-    if (step === 2) {
-      setStep(1); // Go back to email step when switching modes
-    }
-  };
-
-  // Get password strength
-  const getPasswordStrength = (password: string) => {
-    if (!password) return 0;
-    
-    let strength = 0;
-    if (password.length >= 8) strength++;
-    if (/[A-Z]/.test(password)) strength++;
-    if (/[0-9]/.test(password)) strength++;
-    if (/[^A-Za-z0-9]/.test(password)) strength++;
-    
-    return strength;
-  };
-
-  // Get strength label
-  const getStrengthLabel = (strength: number) => {
-    switch (strength) {
-      case 0: return 'Very Weak';
-      case 1: return 'Weak';
-      case 2: return 'Fair';
-      case 3: return 'Good';
-      case 4: return 'Strong';
-      default: return '';
-    }
-  };
-
-  // Get strength color
-  const getStrengthColor = (strength: number) => {
-    switch (strength) {
-      case 0: return 'bg-gray-200';
-      case 1: return 'bg-red-500';
-      case 2: return 'bg-orange-500';
-      case 3: return 'bg-yellow-500';
-      case 4: return 'bg-green-500';
-      default: return 'bg-gray-200';
-    }
+    return (
+      <div className={`transition-opacity duration-150 ${tabTransition ? 'opacity-0' : 'opacity-100'}`}>
+        <label htmlFor="login-input" className="block text-sm font-medium mb-2 text-[#333]">
+          {label}
+        </label>
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#999]">
+            {icon}
+          </div>
+          <input
+            id="login-input"
+            type={type}
+            placeholder={placeholder}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full pl-10 pr-3 py-3 bg-white border border-[#e8e8e8] rounded-md text-[#333] placeholder-[#999] focus:outline-none focus:ring-2 focus:ring-[#ff4747] focus:border-transparent"
+            required
+          />
+        </div>
+      </div>
+    );
   };
 
   // Active tab indicator styles
@@ -278,7 +125,7 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
     else if (activeTab === 'phone') position = "left-1/3";
     else if (activeTab === 'passkey') position = "left-2/3";
 
-    return `absolute bottom-0 w-1/3 h-0.5 bg-[#ff4747] transition-all duration-300 tab-indicator ${position}`;
+    return `absolute bottom-0 w-1/3 h-0.5 bg-[#ff4747] transition-all duration-300 ${position}`;
   };
 
   // Get tab button styles
@@ -292,94 +139,19 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
     ? "flex flex-col justify-between items-center min-h-full bg-white text-[#333] pt-8 pb-4" 
     : "flex flex-col justify-center items-center min-h-screen bg-white text-[#333] py-8";
 
-  // Enhanced input field with animations
-  const renderAnimatedInput = (
-    id: string,
-    type: string,
-    placeholder: string,
-    value: string,
-    onChange: (value: string) => void,
-    onBlur: () => void,
-    error: string | null,
-    icon: React.ReactNode,
-    isPassword = false
-  ) => {
-    const isAnimating = id === 'email' ? animateEmail : animatePassword;
-    const hasSuccess = successAnimation === id;
-    
-    return (
-      <div className={`relative input-animated ${isAnimating ? 'input-scale-focus' : ''} ${fieldShake === id ? 'shake' : ''} ${hasSuccess ? 'success-checkmark' : ''}`}>
-        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#999]">
-          {icon}
-        </div>
-        <input
-          id={id}
-          type={isPassword && !showPassword ? "password" : type}
-          placeholder={placeholder}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          onFocus={() => handleFieldFocus(id)}
-          onBlur={() => handleFieldBlur(id)}
-          className={`w-full pl-10 ${isPassword ? 'pr-10' : 'pr-3'} py-2 bg-white border transition-all duration-200 ${
-            error 
-              ? 'border-red-500 focus:ring-red-500' 
-              : hasSuccess
-                ? 'border-green-500 focus:ring-green-500'
-                : 'border-[#e8e8e8] focus:ring-[#ff4747]'
-          } rounded-md text-[#333] placeholder-[#999] focus:outline-none focus:ring-2 focus:border-transparent ${isAnimating ? 'shadow-md -translate-y-1' : ''}`}
-          disabled={isLoading || isSubmitting}
-          required
-        />
-        {isPassword && (
-          <button
-            type="button"
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#999] hover:text-[#333] transition-colors"
-            onClick={() => setShowPassword(!showPassword)}
-            disabled={isLoading || isSubmitting}
-          >
-            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-          </button>
-        )}
-        {hasSuccess && (
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 animate-bounce">
-            <CheckCircle size={16} />
-          </div>
-        )}
-        {error && (
-          <div className="text-red-500 text-xs mt-1 flex items-center fade-in">
-            <AlertCircle className="w-3 h-3 mr-1" />
-            {error}
-          </div>
-        )}
-      </div>
-    );
-  };
-
-  const passwordStrength = getPasswordStrength(passwordValidation.values.password);
-
   return (
     <div className={containerClasses}>
       <div className="w-full max-w-md px-4 flex flex-col items-center justify-center py-4">
         {/* Header with logo - reduced padding */}
         <div className="w-full max-w-md pt-2 pb-2">
-          <div className="flex justify-between items-center">
+          <div className="flex justify-center items-center">
             <Logo width={70} height={70} className="text-[#ff4747]" />
-            {isOverlay && onClose && (
-              <button 
-                onClick={onClose}
-                className="text-gray-500 hover:text-gray-800 transition-colors p-2 rounded-full hover:bg-gray-100"
-              >
-                <X size={20} />
-              </button>
-            )}
           </div>
         </div>
 
-        {/* Main content - with enhanced animations */}
+        {/* Main content - reduced spacing */}
         <div className="w-full mb-4 space-y-3">
-          <h1 className={`text-2xl font-bold text-center mb-2 fade-in ${successAnimation === 'form' ? 'text-green-600' : ''}`}>
-            {authMode === 'signin' ? 'Log in to Mima' : 'Create an account'}
-          </h1>
+          <h1 className="text-2xl font-bold text-center mb-2">Log in to Mima</h1>
           <div className="space-y-3">
             {/* This container extends edge-to-edge */}
             <div className="w-screen -mx-4 relative">
@@ -401,10 +173,7 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
                 {/* Group 1: Google and Facebook */}
                 <div className="flex-shrink-0 snap-start min-w-[calc(100%-2rem)] pr-4">
                   <div className="space-y-2">
-                    <button 
-                      className="w-full py-2 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md btn-press"
-                      disabled={isLoading || isSubmitting}
-                    >
+                    <button className="w-full py-2 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md">
                       <svg className="w-5 h-5" viewBox="0 0 24 24">
                         <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
                           <path fill="#4285F4" d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z"/>
@@ -415,10 +184,7 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
                       </svg>
                       <span className="text-[#333]">Continue with Google</span>
                     </button>
-                    <button 
-                      className="w-full py-2 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md btn-press"
-                      disabled={isLoading || isSubmitting}
-                    >
+                    <button className="w-full py-2 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md">
                       <svg className="w-5 h-5" viewBox="0 0 24 24">
                         <path fill="currentColor" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"/>
                       </svg>
@@ -430,19 +196,13 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
                 {/* Group 2: Apple and X (Twitter) */}
                 <div className="flex-shrink-0 snap-start min-w-[calc(100%-2rem)] pr-4">
                   <div className="space-y-2">
-                    <button 
-                      className="w-full py-2 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md btn-press"
-                      disabled={isLoading || isSubmitting}
-                    >
+                    <button className="w-full py-2 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md">
                       <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.09998 22C7.78998 22.05 6.79998 20.68 5.95998 19.47C4.24998 17 2.93998 12.45 4.69998 9.39C5.56998 7.87 7.12998 6.91 8.81998 6.88C10.1 6.86 11.32 7.75 12.11 7.75C12.89 7.75 14.37 6.68 15.92 6.84C16.57 6.87 18.39 7.1 19.56 8.82C19.47 8.88 17.39 10.1 17.41 12.63C17.44 15.65 20.06 16.66 20.09 16.67C20.06 16.74 19.67 18.11 18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z"/>
                       </svg>
                       <span className="text-[#333]">Continue with Apple</span>
                     </button>
-                    <button 
-                      className="w-full py-2 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md btn-press"
-                      disabled={isLoading || isSubmitting}
-                    >
+                    <button className="w-full py-2 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md">
                       <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                       </svg>
@@ -454,19 +214,13 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
                 {/* Group 3: GitHub and Phone */}
                 <div className="flex-shrink-0 snap-start min-w-[calc(100%-2rem)] pr-4">
                   <div className="space-y-2">
-                    <button 
-                      className="w-full py-2 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md btn-press"
-                      disabled={isLoading || isSubmitting}
-                    >
+                    <button className="w-full py-2 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md">
                       <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
                       </svg>
                       <span className="text-[#333]">Continue with GitHub</span>
                     </button>
-                    <button 
-                      className="w-full py-2 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md btn-press"
-                      disabled={isLoading || isSubmitting}
-                    >
+                    <button className="w-full py-2 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md">
                       <Phone className="w-5 h-5" />
                       <span className="text-[#333]">Continue with Phone</span>
                     </button>
@@ -507,7 +261,6 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
               <button 
                 className={getTabButtonStyles('email')}
                 onClick={() => handleTabChange('email')}
-                disabled={isLoading || isSubmitting}
               >
                 <div className="flex items-center justify-center space-x-1">
                   <Mail size={14} />
@@ -517,7 +270,6 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
               <button 
                 className={getTabButtonStyles('phone')}
                 onClick={() => handleTabChange('phone')}
-                disabled={isLoading || isSubmitting}
               >
                 <div className="flex items-center justify-center space-x-1">
                   <Phone size={14} />
@@ -527,7 +279,6 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
               <button 
                 className={getTabButtonStyles('passkey')}
                 onClick={() => handleTabChange('passkey')}
-                disabled={isLoading || isSubmitting}
               >
                 <div className="flex items-center justify-center space-x-1">
                   <KeyRound size={14} />
@@ -542,11 +293,11 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
           {/* Login form - reduced spacing */}
           <form onSubmit={handleSubmit} className="space-y-4">
             {step === 1 ? (
-              <div className={`transition-opacity duration-150 fade-in ${tabTransition ? 'opacity-0' : 'opacity-100'}`}>
+              <div className={`transition-opacity duration-150 ${tabTransition ? 'opacity-0' : 'opacity-100'}`}>
                 <label htmlFor="login-input" className="block text-sm font-medium mb-1 text-[#333]">
                   {activeTab === 'email' ? "Email or username" : activeTab === 'phone' ? "Phone number" : "Passkey"}
                 </label>
-                <div className={`relative input-animated input-scale-focus ${fieldShake === 'email' ? 'shake' : ''}`}>
+                <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#999]">
                     {activeTab === 'email' ? <Mail size={16} /> : 
                      activeTab === 'phone' ? <Phone size={16} /> : 
@@ -557,171 +308,70 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
                     type={activeTab === 'email' ? "email" : activeTab === 'phone' ? "tel" : "text"}
                     placeholder={activeTab === 'email' ? "Email address or username" : 
                                activeTab === 'phone' ? "Phone number" : "Passkey"}
-                    value={emailValidation.values.email}
-                    onChange={(e) => emailValidation.handleChange('email', e.target.value)}
-                    onBlur={() => emailValidation.handleBlur('email')}
-                    className={`w-full pl-10 pr-3 py-2 bg-white border ${
-                      emailValidation.touched.email && emailValidation.errors.email 
-                        ? 'border-red-500 focus:ring-red-500' 
-                        : 'border-[#e8e8e8] focus:ring-[#ff4747]'
-                    } rounded-md text-[#333] placeholder-[#999] focus:outline-none focus:ring-2 focus:border-transparent`}
-                    disabled={isLoading || isSubmitting}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full pl-10 pr-3 py-2 bg-white border border-[#e8e8e8] rounded-md text-[#333] placeholder-[#999] focus:outline-none focus:ring-2 focus:ring-[#ff4747] focus:border-transparent"
                     required
                   />
-                  {emailValidation.touched.email && emailValidation.errors.email && (
-                    <div className="text-red-500 text-xs mt-1 flex items-center fade-in">
-                      <AlertCircle className="w-3 h-3 mr-1" />
-                      {emailValidation.errors.email}
-                    </div>
-                  )}
                 </div>
               </div>
             ) : (
-              <div className="relative fade-in">
+              <div className="relative">
                 <label htmlFor="password" className="block text-sm font-medium mb-1 text-[#333]">
                   Password
                 </label>
-                <div className={`relative input-animated input-scale-focus ${fieldShake === 'password' ? 'shake' : ''}`}>
+                <div className="relative">
                   <input
                     id="password"
                     type={showPassword ? "text" : "password"}
                     placeholder="Password"
-                    value={passwordValidation.values.password}
-                    onChange={(e) => {
-                      passwordValidation.handleChange('password', e.target.value);
-                      setPassword(e.target.value);
-                    }}
-                    onBlur={() => passwordValidation.handleBlur('password')}
-                    className={`w-full px-3 py-2 bg-white border ${
-                      passwordValidation.touched.password && passwordValidation.errors.password 
-                        ? 'border-red-500 focus:ring-red-500' 
-                        : 'border-[#e8e8e8] focus:ring-[#ff4747]'
-                    } rounded-md text-[#333] placeholder-[#999] focus:outline-none focus:ring-2 focus:border-transparent`}
-                    disabled={isLoading || isSubmitting}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full px-3 py-2 bg-white border border-[#e8e8e8] rounded-md text-[#333] placeholder-[#999] focus:outline-none focus:ring-2 focus:ring-[#ff4747] focus:border-transparent"
                     required
                   />
                   <button
                     type="button"
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#999] hover:text-[#333] transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#999] hover:text-[#333]"
                     onClick={() => setShowPassword(!showPassword)}
-                    disabled={isLoading || isSubmitting}
                   >
                     {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
-                  
-                  {passwordValidation.touched.password && passwordValidation.errors.password && (
-                    <div className="text-red-500 text-xs mt-1 flex items-center fade-in">
-                      <AlertCircle className="w-3 h-3 mr-1" />
-                      {passwordValidation.errors.password}
-                    </div>
-                  )}
                 </div>
+              </div>
+            )}
 
-                {/* Password strength indicator (only for signup) */}
-                {authMode === 'signup' && passwordValidation.values.password && (
-                  <div className="mt-2">
-                    <div className="w-full h-1 flex space-x-1">
-                      {[1, 2, 3, 4].map((index) => (
-                        <div 
-                          key={index}
-                          className={`h-full rounded-full w-1/4 transition-all duration-300 ${
-                            passwordStrength >= index ? getStrengthColor(passwordStrength) : 'bg-gray-200'
-                          }`}
-                        ></div>
-                      ))}
-                    </div>
-                    <div className="flex justify-between mt-1">
-                      <span className={`text-xs ${
-                        passwordStrength <= 1 ? 'text-red-500' : 
-                        passwordStrength === 2 ? 'text-orange-500' : 
-                        passwordStrength === 3 ? 'text-yellow-600' : 
-                        'text-green-600'
-                      }`}>
-                        Password strength: {getStrengthLabel(passwordStrength)}
-                      </span>
-                    </div>
-                  </div>
-                )}
-
-                {/* Confirm password field for signup */}
-                {authMode === 'signup' && (
-                  <div className="mt-3">
-                    <label htmlFor="confirmPassword" className="block text-sm font-medium mb-1 text-[#333]">
-                      Confirm Password
-                    </label>
-                    <div className={`relative input-animated input-scale-focus ${
-                      passwordValidation.errors.confirmPassword ? 'shake' : ''
-                    }`}>
-                      <input
-                        id="confirmPassword"
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Confirm your password"
-                        value={passwordValidation.values.confirmPassword}
-                        onChange={(e) => {
-                          passwordValidation.handleChange('confirmPassword', e.target.value);
-                          setConfirmPassword(e.target.value);
-                        }}
-                        onBlur={() => passwordValidation.handleBlur('confirmPassword')}
-                        className={`w-full px-3 py-2 bg-white border ${
-                          passwordValidation.touched.confirmPassword && passwordValidation.errors.confirmPassword
-                            ? 'border-red-500 focus:ring-red-500' 
-                            : 'border-[#e8e8e8] focus:ring-[#ff4747]'
-                        } rounded-md text-[#333] placeholder-[#999] focus:outline-none focus:ring-2 focus:border-transparent`}
-                        disabled={isLoading || isSubmitting}
-                        required={authMode === 'signup'}
-                      />
-                      {passwordValidation.touched.confirmPassword && passwordValidation.errors.confirmPassword && (
-                        <div className="text-red-500 text-xs mt-1 flex items-center fade-in">
-                          <AlertCircle className="w-3 h-3 mr-1" />
-                          {passwordValidation.errors.confirmPassword}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                {authMode === 'signin' && (
-                  <div className="flex items-center mt-2">
-                    <div className="relative inline-block w-8 mr-2 align-middle select-none">
-                      <input 
-                        type="checkbox" 
-                        id="remember" 
-                        checked={rememberMe}
-                        onChange={(e) => setRememberMe(e.target.checked)}
-                        className="opacity-0 absolute block w-4 h-4 cursor-pointer" 
-                        disabled={isLoading || isSubmitting}
-                      />
-                      <label 
-                        htmlFor="remember" 
-                        className={`block overflow-hidden h-4 rounded-full bg-[#e8e8e8] cursor-pointer ${rememberMe ? 'bg-[#ff4747]' : ''}`}
-                      >
-                        <span className={`block h-4 w-4 rounded-full bg-white shadow transform transition-transform duration-200 ease-in ${rememberMe ? 'translate-x-4' : 'translate-x-0'}`}></span>
-                      </label>
-                    </div>
-                    <label htmlFor="remember" className="text-xs cursor-pointer text-[#666]">
-                      Remember me
-                    </label>
-                  </div>
-                )}
+            {step === 2 && (
+              <div className="flex items-center mt-2">
+                <div className="relative inline-block w-8 mr-2 align-middle select-none">
+                  <input 
+                    type="checkbox" 
+                    id="remember" 
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    className="opacity-0 absolute block w-4 h-4 cursor-pointer" 
+                  />
+                  <label 
+                    htmlFor="remember" 
+                    className={`block overflow-hidden h-4 rounded-full bg-[#e8e8e8] cursor-pointer ${rememberMe ? 'bg-[#ff4747]' : ''}`}
+                  >
+                    <span className={`block h-4 w-4 rounded-full bg-white shadow transform transition-transform duration-200 ease-in ${rememberMe ? 'translate-x-4' : 'translate-x-0'}`}></span>
+                  </label>
+                </div>
+                <label htmlFor="remember" className="text-xs cursor-pointer text-[#666]">
+                  Remember me
+                </label>
               </div>
             )}
 
             <button
               type="submit"
-              className={`w-full bg-[#ff4747] text-white font-medium py-2 px-4 rounded-md hover:bg-[#ff2727] transition-all focus:outline-none focus:ring-2 focus:ring-[#ff4747] focus:ring-offset-2 focus:ring-offset-white mt-3 btn-press ${step === 2 && authMode === 'signin' ? 'btn-pulse' : ''}`}
-              disabled={isLoading || isSubmitting}
+              className="w-full bg-[#ff4747] text-white font-medium py-2 px-4 rounded-md hover:bg-[#ff2727] transition-all focus:outline-none focus:ring-2 focus:ring-[#ff4747] focus:ring-offset-2 focus:ring-offset-white mt-3"
             >
-              {isLoading || isSubmitting ? (
-                <div className="flex items-center justify-center">
-                  <Loader className="w-4 h-4 mr-2 animate-spin" />
-                  {authMode === 'signin' ? 'Signing in...' : 'Signing up...'}
-                </div>
-              ) : (
-                step === 1 ? 'Next' : (authMode === 'signin' ? 'Log In' : 'Sign Up')
-              )}
+              {step === 1 ? 'Next' : 'Log In'}
             </button>
 
-            {step === 2 && authMode === 'signin' && (
+            {step === 2 && (
               <div className="text-center mt-2">
                 <a href="#" className="text-[#ff4747] hover:text-[#ff2727] hover:underline text-xs transition-colors">
                   Forgot your password?
@@ -737,20 +387,16 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
                 
                 <div className="mt-4 text-center">
                   <div className="inline-block relative">
-                    <span className="text-[#999] text-xs">
-                      {authMode === 'signin' ? "Don't have an account?" : "Already have an account?"}
-                    </span>{' '}
-                    <button 
-                      type="button"
-                      onClick={toggleAuthMode}
+                    <span className="text-[#999] text-xs">Don't have an account?</span>{' '}
+                    <a 
+                      href="#" 
                       className="relative inline-block group ml-1"
-                      disabled={isLoading || isSubmitting}
                     >
                       <span className="text-[#ff4747] font-medium text-xs group-hover:text-[#ff2727] transition-colors">
-                        {authMode === 'signin' ? 'Sign up' : 'Log in'}
+                        Sign up
                       </span>
                       <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#ff4747] group-hover:w-full transition-all duration-300"></span>
-                    </button>
+                    </a>
                   </div>
                 </div>
               </div>
