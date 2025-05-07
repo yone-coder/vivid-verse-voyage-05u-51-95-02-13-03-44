@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { KeyRound, Mail, Phone, Eye, EyeOff, User } from 'lucide-react';
 import Logo from "@/components/home/Logo";
@@ -143,15 +144,19 @@ const AuthPage = () => {
       <div className="w-full max-w-md px-6">
         <h1 className="text-2xl font-bold text-center mb-6">Log in to Mima</h1>
         <div className="space-y-4">
-          {/* Horizontally scrollable social login section with paired buttons */}
-          <div className="relative mb-6">
+          {/* Horizontally scrollable social login section with improved scroll behavior */}
+          <div className="relative mb-6 w-full">
             <div 
               ref={carouselRef}
-              className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide pl-2 -mx-2 pb-4"
-              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide pl-2 -mx-2 pb-4 scroll-pl-4"
+              style={{ 
+                scrollbarWidth: 'none', 
+                msOverflowStyle: 'none',
+                WebkitOverflowScrolling: 'touch'
+              }}
             >
               {/* Group 1: Google and Facebook */}
-              <div className="flex-shrink-0 snap-center min-w-[calc(100%-1rem)] pr-4">
+              <div className="flex-shrink-0 snap-start min-w-[calc(100%-1rem)] pr-4">
                 <div className="space-y-3">
                   <button className="w-full py-3 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md">
                     <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -174,7 +179,7 @@ const AuthPage = () => {
               </div>
               
               {/* Group 2: Apple and X (Twitter) */}
-              <div className="flex-shrink-0 snap-center min-w-[calc(100%-1rem)] pr-4">
+              <div className="flex-shrink-0 snap-start min-w-[calc(100%-1rem)] pr-4">
                 <div className="space-y-3">
                   <button className="w-full py-3 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md">
                     <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
@@ -192,7 +197,7 @@ const AuthPage = () => {
               </div>
               
               {/* Group 3: GitHub and Phone */}
-              <div className="flex-shrink-0 snap-center min-w-[calc(100%-1rem)] pr-4">
+              <div className="flex-shrink-0 snap-start min-w-[calc(100%-1rem)] pr-4">
                 <div className="space-y-3">
                   <button className="w-full py-3 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md">
                     <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
@@ -206,6 +211,9 @@ const AuthPage = () => {
                   </button>
                 </div>
               </div>
+              
+              {/* Right spacer to prevent last item from touching edge */}
+              <div className="flex-none w-4"></div>
             </div>
             
             {/* Pagination indicators */}
@@ -222,21 +230,6 @@ const AuthPage = () => {
                   />
                 </div>
               ))}
-            </div>
-            
-            {/* Updated legal disclaimer */}
-            <div className="mt-3 text-center">
-              <span className="text-xs text-[#888]">
-                By tapping Continue, you agree to our{' '}
-                <a href="/terms" className="text-red-600 hover:text-red-700 font-medium border-b border-red-200 hover:border-red-500 transition-colors">
-                  Terms of Service
-                </a>{' '}
-                and{' '}
-                <a href="/terms" className="text-red-600 hover:text-red-700 font-medium border-b border-red-200 hover:border-red-500 transition-colors">
-                  Privacy Policy
-                </a>
-                .
-              </span>
             </div>
           </div>
 
@@ -373,6 +366,21 @@ const AuthPage = () => {
             </div>
           )}
         </form>
+      </div>
+      
+      {/* Legal disclaimer moved to bottom of page */}
+      <div className="w-full max-w-md px-6 mt-auto py-4 text-center">
+        <span className="text-xs text-[#888]">
+          By tapping Continue, you agree to our{' '}
+          <a href="/terms" className="text-red-600 hover:text-red-700 font-medium border-b border-red-200 hover:border-red-500 transition-colors">
+            Terms of Service
+          </a>{' '}
+          and{' '}
+          <a href="/terms" className="text-red-600 hover:text-red-700 font-medium border-b border-red-200 hover:border-red-500 transition-colors">
+            Privacy Policy
+          </a>
+          .
+        </span>
       </div>
     </div>
   );
