@@ -5,12 +5,7 @@ import AuthHeader from "@/components/auth/AuthHeader";
 import AuthForms from "@/components/auth/AuthForms";
 import AuthFooter from "@/components/auth/AuthFooter";
 
-interface AuthPageProps {
-  isOverlay?: boolean;
-  onClose?: () => void;
-}
-
-const AuthPage: React.FC<AuthPageProps> = ({ isOverlay, onClose }) => {
+const AuthPage = () => {
   return (
     <AuthContainer>
       <AuthHeader />
