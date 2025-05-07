@@ -133,23 +133,23 @@ const AuthPage = () => {
 
   return (
     <div className="flex flex-col justify-center items-center min-h-screen bg-white text-[#333]">
-      <div className="w-full max-w-md px-6 flex flex-col justify-center items-center">
-        {/* Header with logo - simplified and smaller */}
-        <div className="w-full max-w-md pt-2 pb-1">
+      <div className="w-full max-w-md px-6 flex flex-col items-center justify-center min-h-screen">
+        {/* Header with logo */}
+        <div className="w-full max-w-md pt-6 pb-4">
           <div className="flex justify-center items-center">
-            <Logo width={60} height={60} className="text-[#ff4747]" />
+            <Logo width={70} height={70} className="text-[#ff4747]" />
           </div>
         </div>
 
-        {/* Main content with reduced spacing */}
-        <div className="w-full">
-          <h1 className="text-xl font-bold text-center mb-3">Log in to Mima</h1>
-          <div className="space-y-2">
-            {/* Horizontally scrollable social login section with reduced spacing */}
-            <div className="relative mb-3 w-full">
+        {/* Main content */}
+        <div className="w-full mb-4">
+          <h1 className="text-2xl font-bold text-center mb-5">Log in to Mima</h1>
+          <div className="space-y-4">
+            {/* Horizontally scrollable social login section */}
+            <div className="relative mb-5 w-full">
               <div 
                 ref={carouselRef}
-                className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide pl-2 -mx-2 pb-2 scroll-pl-4"
+                className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide pl-2 -mx-2 pb-3 scroll-pl-4"
                 style={{ 
                   scrollbarWidth: 'none', 
                   msOverflowStyle: 'none',
@@ -158,8 +158,8 @@ const AuthPage = () => {
               >
                 {/* Group 1: Google and Facebook */}
                 <div className="flex-shrink-0 snap-start min-w-[calc(100%-1rem)] pr-4">
-                  <div className="space-y-2">
-                    <button className="w-full py-2 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md">
+                  <div className="space-y-3">
+                    <button className="w-full py-2.5 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md">
                       <svg className="w-5 h-5" viewBox="0 0 24 24">
                         <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
                           <path fill="#4285F4" d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z"/>
@@ -170,7 +170,7 @@ const AuthPage = () => {
                       </svg>
                       <span className="text-[#333]">Continue with Google</span>
                     </button>
-                    <button className="w-full py-2 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md">
+                    <button className="w-full py-2.5 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md">
                       <svg className="w-5 h-5" viewBox="0 0 24 24">
                         <path fill="currentColor" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"/>
                       </svg>
@@ -181,14 +181,14 @@ const AuthPage = () => {
                 
                 {/* Group 2: Apple and X (Twitter) */}
                 <div className="flex-shrink-0 snap-start min-w-[calc(100%-1rem)] pr-4">
-                  <div className="space-y-2">
-                    <button className="w-full py-2 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md">
+                  <div className="space-y-3">
+                    <button className="w-full py-2.5 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md">
                       <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.09998 22C7.78998 22.05 6.79998 20.68 5.95998 19.47C4.24998 17 2.93998 12.45 4.69998 9.39C5.56998 7.87 7.12998 6.91 8.81998 6.88C10.1 6.86 11.32 7.75 12.11 7.75C12.89 7.75 14.37 6.68 15.92 6.84C16.57 6.87 18.39 7.1 19.56 8.82C19.47 8.88 17.39 10.1 17.41 12.63C17.44 15.65 20.06 16.66 20.09 16.67C20.06 16.74 19.67 18.11 18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z"/>
                       </svg>
                       <span className="text-[#333]">Continue with Apple</span>
                     </button>
-                    <button className="w-full py-2 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md">
+                    <button className="w-full py-2.5 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md">
                       <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                       </svg>
@@ -199,14 +199,14 @@ const AuthPage = () => {
                 
                 {/* Group 3: GitHub and Phone */}
                 <div className="flex-shrink-0 snap-start min-w-[calc(100%-1rem)] pr-4">
-                  <div className="space-y-2">
-                    <button className="w-full py-2 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md">
+                  <div className="space-y-3">
+                    <button className="w-full py-2.5 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md">
                       <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
                       </svg>
                       <span className="text-[#333]">Continue with GitHub</span>
                     </button>
-                    <button className="w-full py-2 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md">
+                    <button className="w-full py-2.5 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md">
                       <Phone className="w-5 h-5" />
                       <span className="text-[#333]">Continue with Phone</span>
                     </button>
@@ -217,12 +217,12 @@ const AuthPage = () => {
                 <div className="flex-none w-4"></div>
               </div>
               
-              {/* Pagination indicators - made more compact */}
-              <div className="flex justify-center items-center space-x-2 mt-1">
+              {/* Pagination indicators */}
+              <div className="flex justify-center items-center space-x-3 mt-3">
                 {[0, 1, 2].map((pageIndex) => (
                   <div 
                     key={pageIndex}
-                    className="h-1 rounded-full w-6 overflow-hidden bg-gray-200"
+                    className="h-1.5 rounded-full w-7 overflow-hidden bg-gray-200"
                   >
                     <div 
                       className={`h-full bg-[#ff4747] transition-all duration-300 ease-out ${
@@ -234,41 +234,41 @@ const AuthPage = () => {
               </div>
             </div>
 
-            <div className="flex items-center">
+            <div className="flex items-center my-4">
               <div className="flex-grow border-t border-[#eaeaea]"></div>
-              <span className="px-3 text-xs text-[#999]">OR</span>
+              <span className="px-4 text-sm text-[#999]">OR</span>
               <div className="flex-grow border-t border-[#eaeaea]"></div>
             </div>
           </div>
 
-          {/* Enhanced Tab Switcher with reduced height */}
-          <div className="relative border-b border-[#eaeaea] mb-3 mt-2">
+          {/* Enhanced Tab Switcher */}
+          <div className="relative border-b border-[#eaeaea] mb-5 mt-3">
             <div className="flex">
               <button 
                 className={getTabButtonStyles('email')}
                 onClick={() => handleTabChange('email')}
               >
-                <div className="flex items-center justify-center space-x-1">
-                  <Mail size={14} />
-                  <span className="text-sm">Email</span>
+                <div className="flex items-center justify-center space-x-1.5">
+                  <Mail size={15} />
+                  <span className="text-base">Email</span>
                 </div>
               </button>
               <button 
                 className={getTabButtonStyles('phone')}
                 onClick={() => handleTabChange('phone')}
               >
-                <div className="flex items-center justify-center space-x-1">
-                  <Phone size={14} />
-                  <span className="text-sm">Phone</span>
+                <div className="flex items-center justify-center space-x-1.5">
+                  <Phone size={15} />
+                  <span className="text-base">Phone</span>
                 </div>
               </button>
               <button 
                 className={getTabButtonStyles('passkey')}
                 onClick={() => handleTabChange('passkey')}
               >
-                <div className="flex items-center justify-center space-x-1">
-                  <KeyRound size={14} />
-                  <span className="text-sm">Passkey</span>
+                <div className="flex items-center justify-center space-x-1.5">
+                  <KeyRound size={15} />
+                  <span className="text-base">Passkey</span>
                 </div>
               </button>
             </div>
@@ -276,11 +276,11 @@ const AuthPage = () => {
             <div className={getTabIndicatorStyles()}></div>
           </div>
 
-          {/* Login form with reduced spacing */}
-          <form onSubmit={handleSubmit} className="space-y-3">
+          {/* Login form */}
+          <form onSubmit={handleSubmit} className="space-y-5">
             {step === 1 ? (
               <div className={`transition-opacity duration-150 ${tabTransition ? 'opacity-0' : 'opacity-100'}`}>
-                <label htmlFor="login-input" className="block text-sm font-medium mb-2 text-[#333]">
+                <label htmlFor="login-input" className="block text-base font-medium mb-2 text-[#333]">
                   {activeTab === 'email' ? "Email or username" : activeTab === 'phone' ? "Phone number" : "Passkey"}
                 </label>
                 <div className="relative">
@@ -303,7 +303,7 @@ const AuthPage = () => {
               </div>
             ) : (
               <div className="relative">
-                <label htmlFor="password" className="block text-sm font-medium mb-1 text-[#333]">
+                <label htmlFor="password" className="block text-base font-medium mb-2 text-[#333]">
                   Password
                 </label>
                 <div className="relative">
@@ -313,7 +313,7 @@ const AuthPage = () => {
                     placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full px-3 py-2 bg-white border border-[#e8e8e8] rounded-md text-[#333] placeholder-[#999] focus:outline-none focus:ring-2 focus:ring-[#ff4747] focus:border-transparent"
+                    className="w-full px-3 py-3 bg-white border border-[#e8e8e8] rounded-md text-[#333] placeholder-[#999] focus:outline-none focus:ring-2 focus:ring-[#ff4747] focus:border-transparent"
                     required
                   />
                   <button
@@ -328,8 +328,8 @@ const AuthPage = () => {
             )}
 
             {step === 2 && (
-              <div className="flex items-center">
-                <div className="relative inline-block w-9 mr-2 align-middle select-none">
+              <div className="flex items-center mt-4">
+                <div className="relative inline-block w-10 mr-2 align-middle select-none">
                   <input 
                     type="checkbox" 
                     id="remember" 
@@ -341,10 +341,10 @@ const AuthPage = () => {
                     htmlFor="remember" 
                     className={`block overflow-hidden h-5 rounded-full bg-[#e8e8e8] cursor-pointer ${rememberMe ? 'bg-[#ff4747]' : ''}`}
                   >
-                    <span className={`block h-5 w-5 rounded-full bg-white shadow transform transition-transform duration-200 ease-in ${rememberMe ? 'translate-x-4' : 'translate-x-0'}`}></span>
+                    <span className={`block h-5 w-5 rounded-full bg-white shadow transform transition-transform duration-200 ease-in ${rememberMe ? 'translate-x-5' : 'translate-x-0'}`}></span>
                   </label>
                 </div>
-                <label htmlFor="remember" className="text-xs cursor-pointer text-[#666]">
+                <label htmlFor="remember" className="text-sm cursor-pointer text-[#666]">
                   Remember me
                 </label>
               </div>
@@ -352,33 +352,33 @@ const AuthPage = () => {
 
             <button
               type="submit"
-              className="w-full bg-[#ff4747] text-white font-medium py-2 px-4 rounded-md hover:bg-[#ff2727] transition-all focus:outline-none focus:ring-2 focus:ring-[#ff4747] focus:ring-offset-2 focus:ring-offset-white"
+              className="w-full bg-[#ff4747] text-white font-medium py-3 px-4 rounded-md hover:bg-[#ff2727] transition-all focus:outline-none focus:ring-2 focus:ring-[#ff4747] focus:ring-offset-2 focus:ring-offset-white mt-5"
             >
               {step === 1 ? 'Next' : 'Log In'}
             </button>
 
             {step === 2 && (
-              <div className="text-center">
-                <a href="#" className="text-[#ff4747] hover:text-[#ff2727] hover:underline text-xs transition-colors">
+              <div className="text-center mt-4">
+                <a href="#" className="text-[#ff4747] hover:text-[#ff2727] hover:underline text-sm transition-colors">
                   Forgot your password?
                 </a>
               </div>
             )}
 
             {step === 1 && (
-              <div className={`relative transition-opacity duration-150 ${tabTransition ? 'opacity-0' : 'opacity-100'}`}>
+              <div className={`relative transition-opacity duration-150 mt-6 ${tabTransition ? 'opacity-0' : 'opacity-100'}`}>
                 <div className="flex items-center justify-center">
                   <div className="h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent w-full"></div>
                 </div>
                 
-                <div className="mt-2 text-center">
+                <div className="mt-4 text-center">
                   <div className="inline-block relative">
-                    <span className="text-[#999] text-xs">Don't have an account?</span>{' '}
+                    <span className="text-[#999] text-sm">Don't have an account?</span>{' '}
                     <a 
                       href="#" 
-                      className="relative inline-block group"
+                      className="relative inline-block group ml-1"
                     >
-                      <span className="text-[#ff4747] font-medium text-xs group-hover:text-[#ff2727] transition-colors">
+                      <span className="text-[#ff4747] font-medium text-sm group-hover:text-[#ff2727] transition-colors">
                         Sign up
                       </span>
                       <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#ff4747] group-hover:w-full transition-all duration-300"></span>
@@ -390,9 +390,9 @@ const AuthPage = () => {
           </form>
         </div>
         
-        {/* Legal disclaimer moved to bottom of page with reduced size */}
-        <div className="w-full mt-auto py-2 text-center">
-          <span className="text-xs text-[#888]">
+        {/* Legal disclaimer */}
+        <div className="w-full mt-6 py-3 text-center">
+          <span className="text-sm text-[#888]">
             By tapping Continue, you agree to our{' '}
             <a href="/terms" className="text-red-600 hover:text-red-700 font-medium border-b border-red-200 hover:border-red-500 transition-colors">
               Terms
