@@ -274,8 +274,11 @@ const AuthPage = () => {
                 </div>
                 
 <div className="mt-1">
-  <span className="text-xs text-[#999] italic">
-    By clicking on Continue, you agree to our <a href="/terms" className="underline">Terms of Service</a> and <a href="/privacy" className="underline">Privacy Policy</a>.
+  <span className="text-xs text-[#888] leading-snug">
+    By tapping <strong className="text-[#333]">Continue</strong>, you acknowledge that you’ve read and agree to our 
+    <a href="/terms" className="underline text-[#333] hover:text-red-500 mx-1">Terms of Service</a> and 
+    <a href="/privacy" className="underline text-[#333] hover:text-red-500">Privacy Policy</a>, 
+    ensuring a secure and personalized experience.
   </span>
 </div>
               </div>
