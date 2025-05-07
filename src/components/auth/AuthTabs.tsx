@@ -51,7 +51,12 @@ const AuthTabs = ({
       <TabDivider />
 
       <Tabs defaultValue={activeTab} value={activeTab} onValueChange={handleTabChange} className="w-full">
-        <TabNavigation activeTab={activeTab} handleTabChange={handleTabChange} />
+        <TabNavigation 
+          activeTab={activeTab} 
+          handleTabChange={handleTabChange} 
+          showTooltips={true}
+          animationStyle="grow"
+        />
         <TabContent 
           activeTab={activeTab} 
           tabTransition={tabTransition} 
