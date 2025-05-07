@@ -74,7 +74,7 @@ const TabNavigation = ({
 }: TabNavigationProps) => {
   // Track if component is mounted (for animations)
   const [isMounted, setIsMounted] = useState(false);
-  
+
   // Handle keyboard navigation
   const handleKeyDown = (e: React.KeyboardEvent, tabId: string, disabled?: boolean) => {
     if ((e.key === 'Enter' || e.key === ' ') && !disabled) {
@@ -177,7 +177,7 @@ const TabNavigation = ({
             <span className="transition-all duration-300 ease-in-out group-data-[state=active]:font-medium group-hover:tracking-wide">
               {tab.label}
             </span>
-            
+
             {/* Badge counter */}
             {showBadges && tab.badgeCount && tab.badgeCount > 0 && (
               <Badge 
