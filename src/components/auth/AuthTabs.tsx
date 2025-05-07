@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Mail, Smartphone, KeyRound } from 'lucide-react';
+import { Mail, Phone, KeyRound } from 'lucide-react';
 import EmailTab from './EmailTab';
 import PhoneTab from './PhoneTab';
 import FullNameField from './FullNameField';
@@ -66,7 +66,7 @@ const AuthTabs = ({
             value="phone" 
             className="flex-1 flex items-center justify-center text-xs font-medium py-2 border-b-2 data-[state=active]:border-[#ff4747] data-[state=active]:text-[#ff4747] data-[state=inactive]:border-transparent rounded-none data-[state=inactive]:text-gray-500 transition-all hover:bg-gray-50"
           >  
-            <Smartphone className="h-3.5 w-3.5 mr-1.5" />  
+            <Phone className="h-3.5 w-3.5 mr-1.5" />  
             <span>Phone</span>
           </TabsTrigger>  
           <TabsTrigger 
