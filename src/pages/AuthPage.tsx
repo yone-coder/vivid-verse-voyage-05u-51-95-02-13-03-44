@@ -273,7 +273,7 @@ const AuthPage = () => {
                   </a>
                 </div>
                 
-<div className="bg-gradient-to-r from-red-50 to-orange-50 p-4 rounded-lg border border-red-100 shadow-sm">
+<div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-lg border border-red-100 shadow-sm">
       <div className="flex items-center mb-2">
         <ShieldCheck size={18} className="text-red-500 flex-shrink-0 mr-2" />
         <h3 className="text-sm font-semibold text-gray-800">SECURE VERIFICATION</h3>
