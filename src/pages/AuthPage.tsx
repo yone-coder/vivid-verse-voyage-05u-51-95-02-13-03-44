@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { KeyRound, Mail, Phone, Eye, EyeOff, User } from 'lucide-react';
+import { KeyRound, ShieldCheck, Lock, Award, Globe , Mail, Phone, Eye, EyeOff, User } from 'lucide-react';
 import Logo from "@/components/home/Logo";
 
 const AuthPage = () => {
@@ -273,14 +273,41 @@ const AuthPage = () => {
                   </a>
                 </div>
                 
-<div className="mt-1">
-  <span className="text-xs text-[#888] leading-snug">
-    By tapping <strong className="text-[#333]">Continue</strong>, you acknowledge that you’ve read and agree to our 
-    <a href="/terms" className="underline text-[#333] hover:text-red-500 mx-1">Terms of Service</a> and 
-    <a href="/privacy" className="underline text-[#333] hover:text-red-500">Privacy Policy</a>, 
-    ensuring a secure and personalized experience.
-  </span>
-</div>
+<div className="bg-gradient-to-r from-red-50 to-orange-50 p-4 rounded-lg border border-red-100 shadow-sm">
+      <div className="flex items-center mb-2">
+        <ShieldCheck size={18} className="text-red-500 flex-shrink-0 mr-2" />
+        <h3 className="text-sm font-semibold text-gray-800">SECURE VERIFICATION</h3>
+      </div>
+      
+      <div className="text-xs text-gray-700 leading-relaxed">
+        <p className="mb-2">
+          By selecting <span className="bg-red-500 text-white px-2 py-0.5 rounded font-medium">Continue</span>, you acknowledge and consent to our comprehensive 
+          <a href="/terms" className="text-red-600 hover:text-red-700 font-medium mx-1 border-b border-red-200 hover:border-red-500 transition-colors">Terms of Service</a> and 
+          <a href="/privacy" className="text-red-600 hover:text-red-700 font-medium mx-1 border-b border-red-200 hover:border-red-500 transition-colors">Privacy Policy</a>.
+        </p>
+      </div>
+      
+      <div className="mt-3 grid grid-cols-3 gap-2 text-center">
+        <div className="flex flex-col items-center">
+          <Lock size={14} className="text-gray-600 mb-1" />
+          <span className="text-xs text-gray-600">Data Protection</span>
+        </div>
+        <div className="flex flex-col items-center">
+          <Award size={14} className="text-gray-600 mb-1" />
+          <span className="text-xs text-gray-600">Premium Experience</span>
+        </div>
+        <div className="flex flex-col items-center">
+          <Globe size={14} className="text-gray-600 mb-1" />
+          <span className="text-xs text-gray-600">Global Standards</span>
+        </div>
+      </div>
+      
+      <div className="mt-3 text-xs text-gray-500 italic border-t border-red-100 pt-2">
+        Elevate your shopping journey with personalized recommendations and exclusive offers.
+      </div>
+    </div>
+    
+    
               </div>
             </div>
           )}
