@@ -1,420 +1,206 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { KeyRound, Mail, Phone, Eye, EyeOff, User } from 'lucide-react';
-import Logo from "@/components/home/Logo";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
-const AuthPage = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { useNavigate } from "react-router-dom";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Eye, EyeOff, Mail, Lock, User } from "lucide-react";
+
+export default function AuthPage() {
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState<"login" | "signup">("login");
   const [showPassword, setShowPassword] = useState(false);
-  const [activeTab, setActiveTab] = useState('email'); // 'email', 'phone', or 'passkey'
-  const [step, setStep] = useState(1); // Multi-step process
-  const [tabTransition, setTabTransition] = useState(false);
-  const [activePage, setActivePage] = useState(0);
-  const carouselRef = useRef<HTMLDivElement>(null);
+  const [rememberMe, setRememberMe] = useState(false);
 
-  // Handle tab switching with animation
-  const handleTabChange = (tab) => {
-    if (tab === activeTab) return;
-    
-    setTabTransition(true);
-    setTimeout(() => {
-      setActiveTab(tab);
-      setTabTransition(false);
-    }, 150);
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (step === 1) {
-      setStep(2); // Move to password step
-    } else {
-      console.log('Login attempted with:', { 
-        [activeTab]: activeTab === 'email' ? email : activeTab === 'username' ? email : email, // Using email state for all for simplicity
-        password, 
-        rememberMe 
-      });
-    }
+    navigate("/for-you");
   };
 
-  // Monitor scroll position for pagination indicator
-  useEffect(() => {
-    const handleScroll = () => {
-      if (carouselRef.current) {
-        const { scrollLeft, scrollWidth, clientWidth } = carouselRef.current;
-        const totalPages = 3; // Total number of pages in carousel
-        const progress = scrollLeft / (scrollWidth - clientWidth);
-        const currentPage = Math.round(progress * (totalPages - 1));
-        setActivePage(currentPage);
-      }
-    };
-
-    const carousel = carouselRef.current;
-    if (carousel) {
-      carousel.addEventListener('scroll', handleScroll);
-      return () => carousel.removeEventListener('scroll', handleScroll);
-    }
-  }, []);
-
-  const renderInputField = () => {
-    let placeholder = '';
-    let type = 'text';
-    let label = '';
-    let icon = <Mail size={18} />;
-    
-    switch (activeTab) {
-      case 'email':
-        placeholder = 'Email address or username';
-        type = 'email';
-        label = 'Email or username';
-        icon = <Mail size={18} />;
-        break;
-      case 'username':
-        placeholder = 'Username';
-        type = 'text';
-        label = 'Username';
-        icon = <User size={18} />;
-        break;
-      case 'phone':
-        placeholder = 'Phone number';
-        type = 'tel';
-        label = 'Phone number';
-        icon = <Phone size={18} />;
-        break;
-      default:
-        placeholder = 'Email';
-        type = 'email';
-        label = 'Email';
-        icon = <Mail size={18} />;
-    }
-
-    return (
-      <div className={`transition-opacity duration-150 ${tabTransition ? 'opacity-0' : 'opacity-100'}`}>
-        <label htmlFor="login-input" className="block text-sm font-medium mb-2 text-[#333]">
-          {label}
-        </label>
-        <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#999]">
-            {icon}
-          </div>
-          <input
-            id="login-input"
-            type={type}
-            placeholder={placeholder}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full pl-10 pr-3 py-3 bg-white border border-[#e8e8e8] rounded-md text-[#333] placeholder-[#999] focus:outline-none focus:ring-2 focus:ring-[#ff4747] focus:border-transparent"
-            required
-          />
-        </div>
-      </div>
-    );
-  };
-
-  // Active tab indicator styles
-  const getTabIndicatorStyles = () => {
-    let position = "left-0";
-
-    if (activeTab === 'email') position = "left-0";
-    else if (activeTab === 'phone') position = "left-1/3";
-    else if (activeTab === 'passkey') position = "left-2/3";
-
-    return `absolute bottom-0 w-1/3 h-0.5 bg-[#ff4747] transition-all duration-300 ${position}`;
-  };
-
-  // Get tab button styles
-  const getTabButtonStyles = (tab) => {
-    return `flex-1 py-3 text-center relative font-medium text-sm transition-all duration-200 ${
-      activeTab === tab ? 'text-[#ff4747]' : 'text-[#666] hover:text-[#ff4747]'
-    }`;
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen bg-white text-[#333] py-8">
-      <div className="w-full max-w-md px-4 flex flex-col items-center justify-center min-h-screen">
-        {/* Header with logo */}
-        <div className="w-full max-w-md pt-10 pb-8">
-          <div className="flex justify-center items-center">
-            <Logo width={80} height={80} className="text-[#ff4747]" />
-          </div>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-6">
+      <div className="w-full max-w-md px-6">
+        <div className="text-center mb-5">
+          <h1 className="text-2xl font-bold tracking-tight text-gray-900">Welcome back</h1>
+          <p className="text-sm text-gray-500 mt-1">Sign in to your account or create a new one</p>
         </div>
 
-        {/* Main content */}
-        <div className="w-full mb-8 space-y-6">
-          <h1 className="text-2xl font-bold text-center mb-8">Log in to Mima</h1>
-          <div className="space-y-6">
-            {/* Horizontally scrollable social login section - Full Width with proper spacing */}
-            <div className="relative mb-8 w-full">
-              {/* This container extends edge-to-edge */}
-              <div className="w-screen -mx-4 relative">
-                <div 
-                  ref={carouselRef}
-                  className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4"
-                  style={{ 
-                    scrollbarWidth: 'none', 
-                    msOverflowStyle: 'none',
-                    WebkitOverflowScrolling: 'touch',
-                    scrollSnapType: 'x mandatory',
-                    scrollPaddingLeft: '16px', // Padding for snap points
-                    scrollPaddingRight: '16px' // Padding for snap points
-                  }}
-                >
-                  {/* Left spacer for visual padding */}
-                  <div className="flex-shrink-0 w-4"></div>
-                  
-                  {/* Group 1: Google and Facebook */}
-                  <div className="flex-shrink-0 snap-start min-w-[calc(100%-2rem)] pr-4">
-                    <div className="space-y-4">
-                      <button className="w-full py-3 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md">
-                        <svg className="w-5 h-5" viewBox="0 0 24 24">
-                          <g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)">
-                            <path fill="#4285F4" d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z"/>
-                            <path fill="#34A853" d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z"/>
-                            <path fill="#FBBC05" d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.724 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z"/>
-                            <path fill="#EA4335" d="M -14.754 43.989 C -12.984 43.989 -11.404 44.599 -10.154 45.789 L -6.734 42.369 C -8.804 40.429 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z"/>
-                          </g>
-                        </svg>
-                        <span className="text-[#333]">Continue with Google</span>
-                      </button>
-                      <button className="w-full py-3 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md">
-                        <svg className="w-5 h-5" viewBox="0 0 24 24">
-                          <path fill="currentColor" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"/>
-                        </svg>
-                        <span className="text-[#333]">Continue with Facebook</span>
-                      </button>
-                    </div>
-                  </div>
-                  
-                  {/* Group 2: Apple and X (Twitter) */}
-                  <div className="flex-shrink-0 snap-start min-w-[calc(100%-2rem)] pr-4">
-                    <div className="space-y-4">
-                      <button className="w-full py-3 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md">
-                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M18.71 19.5C17.88 20.74 17 21.95 15.66 21.97C14.32 22 13.89 21.18 12.37 21.18C10.84 21.18 10.37 21.95 9.09998 22C7.78998 22.05 6.79998 20.68 5.95998 19.47C4.24998 17 2.93998 12.45 4.69998 9.39C5.56998 7.87 7.12998 6.91 8.81998 6.88C10.1 6.86 11.32 7.75 12.11 7.75C12.89 7.75 14.37 6.68 15.92 6.84C16.57 6.87 18.39 7.1 19.56 8.82C19.47 8.88 17.39 10.1 17.41 12.63C17.44 15.65 20.06 16.66 20.09 16.67C20.06 16.74 19.67 18.11 18.71 19.5ZM13 3.5C13.73 2.67 14.94 2.04 15.94 2C16.07 3.17 15.6 4.35 14.9 5.19C14.21 6.04 13.07 6.7 11.95 6.61C11.8 5.46 12.36 4.26 13 3.5Z"/>
-                        </svg>
-                        <span className="text-[#333]">Continue with Apple</span>
-                      </button>
-                      <button className="w-full py-3 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md">
-                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                        </svg>
-                        <span className="text-[#333]">Continue with X</span>
-                      </button>
-                    </div>
-                  </div>
-                  
-                  {/* Group 3: GitHub and Phone */}
-                  <div className="flex-shrink-0 snap-start min-w-[calc(100%-2rem)] pr-4">
-                    <div className="space-y-4">
-                      <button className="w-full py-3 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md">
-                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
-                        </svg>
-                        <span className="text-[#333]">Continue with GitHub</span>
-                      </button>
-                      <button className="w-full py-3 px-4 border border-[#eaeaea] rounded-lg font-medium flex items-center justify-center space-x-2 hover:border-[#ff4747] transition-colors bg-white shadow-sm hover:shadow-md">
-                        <Phone className="w-5 h-5" />
-                        <span className="text-[#333]">Continue with Phone</span>
-                      </button>
-                    </div>
-                  </div>
-                  
-                  {/* Right spacer to prevent last item from touching edge */}
-                  <div className="flex-none w-4"></div>
-                </div>
+        <Tabs
+          defaultValue="login"
+          value={activeTab}
+          onValueChange={(value) => setActiveTab(value as "login" | "signup")}
+          className="bg-white shadow-sm rounded-lg p-5"
+        >
+          <TabsList className="grid grid-cols-2 mb-4">
+            <TabsTrigger value="login" className="relative">
+              Login
+              <div className="absolute bottom-0 left-0 right-0 h-full transition-all duration-300 ease-out">
+                <div className={`h-full bg-[#ff4747] transition-all duration-300 ease-out ${activeTab === "login" ? "w-full" : "w-0"}`}></div>
               </div>
-              
-              {/* Pagination indicators */}
-              <div className="flex justify-center items-center space-x-3 mt-4">
-                {[0, 1, 2].map((pageIndex) => (
-                  <div 
-                    key={pageIndex}
-                    className="h-1.5 rounded-full w-7 overflow-hidden bg-gray-200"
-                  >
-                    <div 
-                      className={`h-full bg-[#ff4747] transition-all duration-300 ease-out ${
-                        activePage === pageIndex ? 'w-full' : 'w-0'
-                      }`}
-                    />
-                  </div>
-                ))}
+            </TabsTrigger>
+            <TabsTrigger value="signup" className="relative">
+              Sign Up
+              <div className="absolute bottom-0 left-0 right-0 h-full transition-all duration-300 ease-out">
+                <div className={`h-full bg-[#ff4747] transition-all duration-300 ease-out ${activeTab === "signup" ? "w-full" : "w-0"}`}></div>
               </div>
-            </div>
-
-            <div className="flex items-center my-6">
-              <div className="flex-grow border-t border-[#eaeaea]"></div>
-              <span className="px-4 text-sm text-[#999]">OR</span>
-              <div className="flex-grow border-t border-[#eaeaea]"></div>
-            </div>
-          </div>
-
-          {/* Enhanced Tab Switcher */}
-          <div className="relative border-b border-[#eaeaea] mb-8 mt-6">
-            <div className="flex">
-              <button 
-                className={getTabButtonStyles('email')}
-                onClick={() => handleTabChange('email')}
-              >
-                <div className="flex items-center justify-center space-x-1.5">
-                  <Mail size={15} />
-                  <span className="text-base">Email</span>
-                </div>
-              </button>
-              <button 
-                className={getTabButtonStyles('phone')}
-                onClick={() => handleTabChange('phone')}
-              >
-                <div className="flex items-center justify-center space-x-1.5">
-                  <Phone size={15} />
-                  <span className="text-base">Phone</span>
-                </div>
-              </button>
-              <button 
-                className={getTabButtonStyles('passkey')}
-                onClick={() => handleTabChange('passkey')}
-              >
-                <div className="flex items-center justify-center space-x-1.5">
-                  <KeyRound size={15} />
-                  <span className="text-base">Passkey</span>
-                </div>
-              </button>
-            </div>
-            {/* Animated active tab indicator */}
-            <div className={getTabIndicatorStyles()}></div>
-          </div>
-
-          {/* Login form */}
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {step === 1 ? (
-              <div className={`transition-opacity duration-150 ${tabTransition ? 'opacity-0' : 'opacity-100'}`}>
-                <label htmlFor="login-input" className="block text-base font-medium mb-2 text-[#333]">
-                  {activeTab === 'email' ? "Email or username" : activeTab === 'phone' ? "Phone number" : "Passkey"}
-                </label>
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="login" className="space-y-3">
+            <form onSubmit={handleSubmit} className="space-y-3">
+              <div className="space-y-1">
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#999]">
-                    {activeTab === 'email' ? <Mail size={18} /> : 
-                     activeTab === 'phone' ? <Phone size={18} /> : 
-                     <KeyRound size={18} />}
-                  </div>
-                  <input
-                    id="login-input"
-                    type={activeTab === 'email' ? "email" : activeTab === 'phone' ? "tel" : "text"}
-                    placeholder={activeTab === 'email' ? "Email address or username" : 
-                               activeTab === 'phone' ? "Phone number" : "Passkey"}
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-10 pr-3 py-3 bg-white border border-[#e8e8e8] rounded-md text-[#333] placeholder-[#999] focus:outline-none focus:ring-2 focus:ring-[#ff4747] focus:border-transparent"
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <Input
+                    type="email"
+                    placeholder="Email"
+                    className="pl-10"
                     required
                   />
                 </div>
               </div>
-            ) : (
-              <div className="relative">
-                <label htmlFor="password" className="block text-base font-medium mb-2 text-[#333]">
-                  Password
-                </label>
+              <div className="space-y-1">
                 <div className="relative">
-                  <input
-                    id="password"
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <Input
                     type={showPassword ? "text" : "password"}
                     placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="w-full px-3 py-3 bg-white border border-[#e8e8e8] rounded-md text-[#333] placeholder-[#999] focus:outline-none focus:ring-2 focus:ring-[#ff4747] focus:border-transparent"
+                    className="pl-10 pr-10"
                     required
                   />
                   <button
                     type="button"
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#999] hover:text-[#333]"
-                    onClick={() => setShowPassword(!showPassword)}
+                    onClick={togglePasswordVisibility}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2"
                   >
-                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4 text-gray-500" />
+                    ) : (
+                      <Eye className="h-4 w-4 text-gray-500" />
+                    )}
                   </button>
                 </div>
               </div>
-            )}
-
-            {step === 2 && (
-              <div className="flex items-center mt-4">
-                <div className="relative inline-block w-10 mr-2 align-middle select-none">
-                  <input 
-                    type="checkbox" 
-                    id="remember" 
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="remember"
                     checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                    className="opacity-0 absolute block w-5 h-5 cursor-pointer" 
+                    onCheckedChange={() => setRememberMe(!rememberMe)}
                   />
-                  <label 
-                    htmlFor="remember" 
-                    className={`block overflow-hidden h-5 rounded-full bg-[#e8e8e8] cursor-pointer ${rememberMe ? 'bg-[#ff4747]' : ''}`}
+                  <label
+                    htmlFor="remember"
+                    className="text-xs text-gray-500 cursor-pointer"
                   >
-                    <span className={`block h-5 w-5 rounded-full bg-white shadow transform transition-transform duration-200 ease-in ${rememberMe ? 'translate-x-5' : 'translate-x-0'}`}></span>
+                    Remember me
                   </label>
                 </div>
-                <label htmlFor="remember" className="text-sm cursor-pointer text-[#666]">
-                  Remember me
-                </label>
-              </div>
-            )}
-
-            <button
-              type="submit"
-              className="w-full bg-[#ff4747] text-white font-medium py-3 px-4 rounded-md hover:bg-[#ff2727] transition-all focus:outline-none focus:ring-2 focus:ring-[#ff4747] focus:ring-offset-2 focus:ring-offset-white mt-5"
-            >
-              {step === 1 ? 'Next' : 'Log In'}
-            </button>
-
-            {step === 2 && (
-              <div className="text-center mt-4">
-                <a href="#" className="text-[#ff4747] hover:text-[#ff2727] hover:underline text-sm transition-colors">
-                  Forgot your password?
+                <a
+                  href="#"
+                  className="text-xs text-[#ff4747] hover:underline"
+                >
+                  Forgot password?
                 </a>
               </div>
-            )}
-
-            {step === 1 && (
-              <div className={`relative transition-opacity duration-150 mt-8 ${tabTransition ? 'opacity-0' : 'opacity-100'}`}>
-                <div className="flex items-center justify-center">
-                  <div className="h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent w-full"></div>
-                </div>
-                
-                <div className="mt-6 text-center">
-                  <div className="inline-block relative">
-                    <span className="text-[#999] text-sm">Don't have an account?</span>{' '}
-                    <a 
-                      href="#" 
-                      className="relative inline-block group ml-1"
-                    >
-                      <span className="text-[#ff4747] font-medium text-sm group-hover:text-[#ff2727] transition-colors">
-                        Sign up
-                      </span>
-                      <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#ff4747] group-hover:w-full transition-all duration-300"></span>
-                    </a>
-                  </div>
-                </div>
+              <Button
+                type="submit"
+                className="w-full bg-[#ff4747] hover:bg-[#e53e3e]"
+              >
+                Sign in
+              </Button>
+            </form>
+            <div className="relative mt-5">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-200"></div>
               </div>
-            )}
-          </form>
-        </div>
-        
-        {/* Legal disclaimer */}
-        <div className="w-full mt-8 py-4 text-center">
-          <span className="text-sm text-[#888]">
-            By tapping Continue, you agree to our{' '}
-            <a href="/terms" className="text-red-600 hover:text-red-700 font-medium border-b border-red-200 hover:border-red-500 transition-colors">
-              Terms
-            </a>{' '}
-            and{' '}
-            <a href="/terms" className="text-red-600 hover:text-red-700 font-medium border-b border-red-200 hover:border-red-500 transition-colors">
-              Privacy
-            </a>
-            .
-          </span>
-        </div>
+              <div className="relative flex justify-center text-xs">
+                <span className="px-2 bg-white text-gray-500">Or continue with</span>
+              </div>
+            </div>
+            <div className="grid grid-cols-3 gap-2 mt-2">
+              <button className="flex items-center justify-center p-2 border border-gray-300 rounded-md hover:bg-gray-50">
+                <img src="/lovable-uploads/f3efe2eb-c3db-48bd-abc7-c65456fdc028.png" alt="Google" className="h-5 w-5" />
+              </button>
+              <button className="flex items-center justify-center p-2 border border-gray-300 rounded-md hover:bg-gray-50">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                  <path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951z"/>
+                </svg>
+              </button>
+              <button className="flex items-center justify-center p-2 border border-gray-300 rounded-md hover:bg-gray-50">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                  <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+                </svg>
+              </button>
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="signup" className="space-y-3">
+            <form onSubmit={handleSubmit} className="space-y-3">
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input
+                  type="text"
+                  placeholder="Full Name"
+                  className="pl-10"
+                  required
+                />
+              </div>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input
+                  type="email"
+                  placeholder="Email"
+                  className="pl-10"
+                  required
+                />
+              </div>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                  className="pl-10 pr-10"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4 text-gray-500" />
+                  ) : (
+                    <Eye className="h-4 w-4 text-gray-500" />
+                  )}
+                </button>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox id="terms" />
+                <label
+                  htmlFor="terms"
+                  className="text-xs text-gray-500 cursor-pointer"
+                >
+                  I agree to the{" "}
+                  <a href="#" className="text-[#ff4747] hover:underline">
+                    terms and conditions
+                  </a>
+                </label>
+              </div>
+              <Button
+                type="submit"
+                className="w-full bg-[#ff4747] hover:bg-[#e53e3e]"
+              >
+                Create account
+              </Button>
+            </form>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
-};
-
-export default AuthPage;
+}
