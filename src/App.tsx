@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -19,45 +18,50 @@ import AdminPanel from "./pages/AdminPanel";
 import MainLayout from "./components/layout/MainLayout";
 import { ThemeProvider } from "@/components/theme-provider";
 import AuthPage from "./pages/AuthPage";
+import { AuthProvider } from './contexts/AuthContext';
 
 // Create a client
 const queryClient = new QueryClient();
 
-const App = () => (
-  <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="light">
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route element={<MainLayout />}>
-                <Route path="/" element={<Navigate to="/for-you" replace />} />
-                <Route path="/for-you" element={<ForYou />} />
-                <Route path="/posts" element={<Posts />} />
-                <Route path="/shops" element={<Shops />} />
-                <Route path="/trending" element={<Trending />} />
-                <Route path="/videos" element={<Videos />} />
-                <Route path="/reels" element={<Reels />} />
-                <Route path="/browse" element={<ForYou />} />
-                <Route path="/product/:id" element={<ProductDetail />} />
-                <Route path="/admin" element={<AdminPanel />} />
-                <Route path="/search" element={<SearchPage />} />
-                <Route path="/categories" element={<Navigate to="/reels" replace />} />
-                <Route path="/auth" element={<AuthPage />} /> {/* Updated to use AuthPage */}
-                <Route path="/cart" element={<NotFound />} />
-                <Route path="/wishlist" element={<NotFound />} />
-                <Route path="/account" element={<NotFound />} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Route>
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
-  </React.StrictMode>
-);
+function App() {
+  return (
+    <AuthProvider>
+      <React.StrictMode>
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider defaultTheme="light">
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <Routes>
+                  <Route element={<MainLayout />}>
+                    <Route path="/" element={<Navigate to="/for-you" replace />} />
+                    <Route path="/for-you" element={<ForYou />} />
+                    <Route path="/posts" element={<Posts />} />
+                    <Route path="/shops" element={<Shops />} />
+                    <Route path="/trending" element={<Trending />} />
+                    <Route path="/videos" element={<Videos />} />
+                    <Route path="/reels" element={<Reels />} />
+                    <Route path="/browse" element={<ForYou />} />
+                    <Route path="/product/:id" element={<ProductDetail />} />
+                    <Route path="/admin" element={<AdminPanel />} />
+                    <Route path="/search" element={<SearchPage />} />
+                    <Route path="/categories" element={<Navigate to="/reels" replace />} />
+                    <Route path="/auth" element={<AuthPage />} /> {/* Updated to use AuthPage */}
+                    <Route path="/cart" element={<NotFound />} />
+                    <Route path="/wishlist" element={<NotFound />} />
+                    <Route path="/account" element={<NotFound />} />
+                    {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                    <Route path="*" element={<NotFound />} />
+                  </Route>
+                </Routes>
+              </BrowserRouter>
+            </TooltipProvider>
+          </ThemeProvider>
+        </QueryClientProvider>
+      </React.StrictMode>
+    </AuthProvider>
+  );
+}
 
 export default App;

@@ -1,0 +1,76 @@
+
+/* Form field focus animations */
+.input-animated {
+  transition: all 0.2s ease-in-out;
+}
+
+.input-animated:focus-within {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Error shake animation */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.shake {
+  animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+/* Success checkmark animation */
+@keyframes checkmark {
+  0% { transform: scale(0); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.success-checkmark {
+  animation: checkmark 0.5s ease-in-out;
+}
+
+/* Button press effect */
+.btn-press {
+  transition: transform 0.1s ease;
+}
+
+.btn-press:active {
+  transform: scale(0.97);
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Scale effect for inputs */
+.input-scale-focus {
+  transition: all 0.2s ease;
+}
+
+.input-scale-focus:focus-within {
+  transform: scale(1.01);
+}
+
+/* Subtle pulse for buttons on hover */
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(255, 71, 71, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(255, 71, 71, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 71, 71, 0); }
+}
+
+.btn-pulse:hover {
+  animation: pulse 1.5s infinite;
+}
+
+/* Tab sliding indicator */
+.tab-indicator {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
