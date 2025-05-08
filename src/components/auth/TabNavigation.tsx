@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Mail, Phone, KeyRound } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 interface TabNavigationProps {
   activeTab: string;
@@ -43,44 +43,37 @@ const TabNavigation = ({ activeTab, handleTabChange }: TabNavigationProps) => {
               ref={(el) => (tabsRef.current[i] = el)}
               className="group relative flex-1 flex items-center justify-center text-xs font-medium py-2 border-b-2 border-transparent data-[state=inactive]:text-gray-500 transition-all duration-300 ease-in-out hover:bg-gray-50 rounded-none"
             >
-              <motion.div
-                className="relative w-6 h-6 flex items-center justify-center"
-                initial={false}
-                animate={isActive ? { scale: 1.1 } : { scale: 1 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-              >
-                {/* Background Circle */}
-                <motion.div
-                  className="absolute inset-0 rounded-full bg-[#ff4747]/10"
-                  initial={{ scale: 0, opacity: 0 }}
-                  animate={isActive ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                />
-                {/* Icon */}
+              <div className="relative w-6 h-6 flex items-center justify-center">
+                {/* Circle background */}
+                <div className="absolute inset-0 rounded-full bg-[#ff4747]/10 scale-0 group-data-[state=active]:scale-100 transition-transform duration-300 ease-out" />
                 <Icon
-                  className={`h-4 w-4 text-current transition-transform ${
-                    isActive ? 'drop-shadow-[0_0_6px_#ff4747]' : ''
-                  }`}
+                  className="h-4 w-4 text-current transition-transform duration-300 ease-in-out group-data-[state=active]:scale-110 group-data-[state=active]:drop-shadow-[0_0_6px_#ff4747]"
                 />
-              </motion.div>
-
-              <motion.span
-                className="ml-1.5"
-                initial={{ opacity: 0, y: 4 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.05, duration: 0.25 }}
-              >
+              </div>
+              <span className="ml-1.5 transition-all duration-300 ease-in-out group-data-[state=active]:font-medium group-hover:tracking-wide">
                 {label}
-              </motion.span>
+              </span>
             </TabsTrigger>
           );
         })}
 
-        {/* Animated underline */}
+        {/* Animated filling underline */}
         <motion.div
-          className="absolute bottom-0 h-[2px] bg-[#ff4747] rounded-full"
-          animate={{ left: underlineStyle.left, width: underlineStyle.width }}
-          transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+          className="absolute bottom-0 h-[2px] bg-[#ff4747] origin-left"
+          initial={{ scaleX: 0 }}
+          animate={{
+            left: underlineStyle.left,
+            width: underlineStyle.width,
+            scaleX: 1,
+          }}
+          transition={{
+            left: { type: 'tween', duration: 0.2 },
+            width: { type: 'tween', duration: 0.2 },
+            scaleX: { type: 'spring', stiffness: 250, damping: 20 },
+          }}
+          style={{
+            transformOrigin: 'left center',
+          }}
         />
       </TabsList>
     </div>
