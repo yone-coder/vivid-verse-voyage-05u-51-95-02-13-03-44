@@ -150,26 +150,25 @@ ${focused ? 'text-[#ff4747]' : 'text-gray-400'}`}
           aria-label="Email icon"
         />
         <Input
-          ref={inputRef}
-          id="email"
-          type="email"
-          spellCheck="false"
-          autoCorrect="off"
-          autoCapitalize="none"
-          value={email}
-          onChange={(e) => setEmail(normalizeEmail(e.target.value))}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          onKeyDown={handleKeyDown}
-          placeholder="name@example.com"
-          className={`w-full pl-10 pr-10 transition-all $
-{
-            validationMessage ? 'border-red-300' : isValid ? 'border-green-300' : 'border-gray-300'
-          }`}
-          autoComplete="email"
-          aria-invalid={!!validationMessage}
-          aria-describedby={validationMessage ? "email-validation-error" : undefined}
-        />
+  ref={inputRef}
+  id="email"
+  type="email"
+  spellCheck="false"
+  autoCorrect="off"
+  autoCapitalize="none"
+  value={email}
+  onChange={(e) => setEmail(normalizeEmail(e.target.value))}
+  onFocus={handleFocus}
+  onBlur={handleBlur}
+  onKeyDown={handleKeyDown}
+  placeholder="name@example.com"
+  className={`w-full pl-10 pr-10 transition-all focus:outline-none focus:ring-0 ${
+    validationMessage ? 'border-red-300' : isValid ? 'border-green-300' : 'border-gray-300'
+  }`}
+  autoComplete="email"
+  aria-invalid={!!validationMessage}
+  aria-describedby={validationMessage ? "email-validation-error" : undefined}
+/>
 
         {/* Clear Button */}
         {email.length > 0 && (
