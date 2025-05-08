@@ -26,8 +26,8 @@ const TabNavigation = ({ activeTab, handleTabChange }: TabNavigationProps) => {
             <div className="absolute inset-0 rounded-full bg-[#ff4747]/10 scale-0 group-data-[state=active]:scale-100 transition-transform duration-300 ease-out" />
             {/* Glow Effect */}
             <Icon
-              className="h-4 w-4 text-current transition-all duration-300 ease-in-out group-data-[state=active]:scale-110 group-hover:rotate-[-5deg] group-data-[state=active]:drop-shadow-[0_0_6px_#ff4747]"
-            />
+  className="h-4 w-4 text-current transition-all duration-300 ease-in-out group-data-[state=active]:scale-110 group-hover:rotate-[-5deg] group-data-[state=active]:drop-shadow-[0_0_6px_#ff4747] group-data-[state=active]:animate-pulse-glow"
+/>
           </div>
           <span className="ml-1.5 transition-all duration-300 ease-in-out group-data-[state=active]:font-medium group-hover:tracking-wide">
             {label}
