@@ -210,45 +210,25 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
       )}
 
       {/* Suggestions Dropdown */}
-      {showSuggestions && suggestions.length > 0 && (
-        <div
-          ref={suggestionsRef}
-          tabIndex={0}
-          className="mt-1 border border-gray-200 rounded-lg shadow-lg overflow-hidden max-h-40 z-10 bg-white"
-          role="listbox"
-        >
-          {suggestions.map((suggestion, idx) => {
-            // Find provider meta for hyperlink
-            const domain = suggestion.split('@')[1];
-            const meta = premiumDomains.find((d) => d.domain === domain);
-            return (
-              <div
-                key={suggestion}
-                className={`flex justify-between items-center px-3 py-2 cursor-pointer text-sm transition-colors
-                  ${idx === hoveredIndex ? 'bg-gray-100 font-semibold' : ''}`}
-                onMouseDown={() => selectSuggestion(suggestion)}
-                onMouseEnter={() => setHoveredIndex(idx)}
-                role="option"
-                aria-selected={idx === hoveredIndex}
-                tabIndex={-1}
-              >
-                <span>{suggestion}</span>
-                {meta ? (
-                  <a
-                    href={meta.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="ml-2 underline text-gray-400 hover:text-[#ff4747] text-xs"
-                    tabIndex={-1}
-                  >
-                    Visit [{meta.name}]
-                  </a>
-                ) : null}
-              </div>
-            );
-          })}
-        </div>
-      )}
+      {/* Horizontal domain suggestions */}
+{showSuggestions && suggestions.length > 0 && (
+  <div className="flex flex-wrap items-center gap-2 mt-2 overflow-x-auto">
+    {suggestions.map((domain) => (
+      <button
+        key={domain}
+        type="button"
+        onClick={() => {
+          const [localPart] = email.split('@');
+          setEmail(`${localPart}@${domain}`);
+          inputRef.current?.focus();
+        }}
+        className="px-3 py-1.5 rounded-full bg-gray-100 text-sm text-gray-600 hover:bg-[#ff4747]/10 hover:text-[#ff4747] transition-colors"
+      >
+        {domain}
+      </button>
+    ))}
+  </div>
+)}
 
       {/* Provider Links Row */}
       <div className="flex flex-wrap gap-2 mt-1.5">
