@@ -1,7 +1,7 @@
-,import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { User, Check, X, AlertCircle } from 'lucide-react';
+import { User, Check, X } from 'lucide-react';
 
 interface EmailTabProps {
   email: string;
@@ -10,78 +10,103 @@ interface EmailTabProps {
   showSubmitButton?: boolean;
 }
 
+const getValidationMessage = (email: string) => {
+  if (!email) return null;
+
+  // Check for basic structure
+  if (!email.includes('@')) {
+    return 'Missing "@" symbol. Example: user@example.com';
+  }
+
+  const [localPart, domainPart] = email.split('@');
+
+  // Check local part (before @)
+  if (!localPart) {
+    return 'Please enter your email username (before @)';
+  }
+
+  // Check domain part (after @)
+  if (!domainPart) {
+    return 'Please enter a domain (after @)';
+  }
+
+  if (!domainPart.includes('.')) {
+    return 'Domain is incomplete. Example: gmail.com';
+  }
+
+  // Check for valid domain extension
+  if (domainPart.split('.').length < 2 || domainPart.endsWith('.')) {
+    return 'Invalid domain format. Example: example.com';
+  }
+
+  // Final regex check
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return 'Please enter a valid email address';
+  }
+
+  return null; // No errors
+};
+
+// Usage in component
+const validationMessage = getValidationMessage(email);
+
 const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: EmailTabProps) => {
   const [focused, setFocused] = useState(false);
+  const [isValid, setIsValid] = useState<boolean | null>(null);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Domain suggestions (prioritized by popularity)
+  // Prioritized list of email domains (most popular first)
   const premiumDomains = [
-    'gmail.com', 'yahoo.com', 'outlook.com', 
-    'icloud.com', 'protonmail.com', 'aol.com'
+    'gmail.com',     // Most common
+    'yahoo.com',
+    'outlook.com',
+    'icloud.com',
+    'hotmail.com',
+    'protonmail.com',
+    'aol.com',
   ];
 
-  // Contextual validation messages
-  const getValidationMessage = (email: string) => {
-    if (!email) return null;
+  // Generate email suggestions
+  const generateSuggestions = useCallback((inputEmail: string) => {
+    if (!inputEmail.includes('@')) return []; // Only suggest after '@' is typed
 
-    if (!email.includes('@')) {
-      return 'Missing "@" symbol. Example: user@example.com';
-    }
+    const [username, partialDomain] = inputEmail.split('@');
+    if (!partialDomain || partialDomain.includes('.')) return []; // Skip if domain is complete
 
-    const [localPart, domainPart] = email.split('@');
-
-    if (!localPart) {
-      return 'Please enter your email username (before @)';
-    }
-
-    if (!domainPart) {
-      return 'Please enter a domain (after @)';
-    }
-
-    if (!domainPart.includes('.')) {
-      return 'Domain is incomplete. Example: gmail.com';
-    }
-
-    if (domainPart.split('.').length < 2 || domainPart.endsWith('.')) {
-      return 'Invalid domain format. Example: example.com';
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return 'Please enter a valid email address';
-    }
-
-    return null;
-  };
-
-  const validationMessage = getValidationMessage(email);
-  const isValid = !validationMessage && email.length > 0;
-
-  // Generate suggestions
-  const generateSuggestions = useCallback((input: string) => {
-    if (!input.includes('@')) return [];
+    const lowerPartial = partialDomain.toLowerCase();
     
-    const [username, partialDomain] = input.split('@');
-    if (!partialDomain || partialDomain.includes('.')) return [];
+    // Filter domains that match the partial input (case-insensitive)
+    const matchedDomains = premiumDomains.filter(domain => 
+      domain.toLowerCase().startsWith(lowerPartial)
+    );
 
-    return premiumDomains
-      .filter(domain => domain.startsWith(partialDomain.toLowerCase()))
-      .slice(0, 3)
+    // Remove duplicates and limit to 5 suggestions
+    const uniqueSuggestions = Array.from(new Set(matchedDomains))
+      .slice(0, 5)
       .map(domain => `${username}@${domain}`);
+
+    return uniqueSuggestions;
   }, []);
 
-  // Debounced validation and suggestions
+  // Debounced validation & suggestion generation
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
 
     debounceRef.current = setTimeout(() => {
-      if (email) {
+      if (email.length > 0) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        setIsValid(emailRegex.test(email));
+
         const newSuggestions = generateSuggestions(email);
         setSuggestions(newSuggestions);
         setShowSuggestions(newSuggestions.length > 0 && focused);
+      } else {
+        setIsValid(null);
+        setShowSuggestions(false);
       }
     }, 300);
 
@@ -105,81 +130,67 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   };
 
   return (
-    <div className="w-full max-w-md mx-auto space-y-1">
-      {/* Input Field */}
-      <div className="relative">
-        <User className={`absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 ${
-          focused ? 'text-[#ff4747]' : 'text-gray-400'
-        }`} />
-        
-        <Input
-  ref={inputRef}
-  id="email"
-  type="email"
-  value={email}
-  onChange={(e) => setEmail(e.target.value)}
-  onFocus={handleFocus}
-  onBlur={handleBlur}
-  placeholder="name@example.com"
-  className={`w-full pl-10 pr-10 appearance-none outline-none shadow-none ring-0 focus:outline-none focus:ring-0 ${  
-    validationMessage ? 'border-red-300' : isValid ? 'border-green-300' : 'border-gray-300'  
-  }`}  
-  autoComplete="email"
-/>
-        
-        {email.length > 0 && (
-          <button
-            type="button"
-            onClick={clearInput}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-            aria-label="Clear input"
-          >
-            <X className="h-4 w-4" />
-          </button>
-        )}
-        
-        {isValid && (
-          <Check className="absolute right-8 top-1/2 -translate-y-1/2 h-4 w-4 text-green-500" />
-        )}
-      </div>
+   <div className="w-full max-w-md mx-auto">
+  {/* Label (no wrapper needed) */}
+  <Label htmlFor="email" className="block text-sm font-medium mb-2 text-gray-700">
+    Email or username
+  </Label>
 
-      {/* Validation Message */}
-      {validationMessage && (
-        <div className="flex items-start gap-1.5 text-xs text-red-500">
-          <AlertCircle className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
-          <span>{validationMessage}</span>
+  {/* Single relative wrapper (red) - for input + icons */}
+  <div className="relative">
+    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+    
+    <Input
+      ref={inputRef}
+      id="email"
+      type="email"
+      value={email}
+      onChange={(e) => setEmail(e.target.value)}
+      onFocus={handleFocus}
+      onBlur={handleBlur}
+      placeholder="name@example.com"
+      className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg"
+      required
+      autoComplete="email"
+    />
+
+    {/* Clear (X) and validation (✓) icons */}
+    {email.length > 0 && (
+      <button
+        type="button"
+        onClick={clearInput}
+        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+      >
+        <X className="h-4 w-4" />
+      </button>
+    )}
+    {isValid === true && email.length > 0 && (
+      <Check className="absolute right-8 top-1/2 -translate-y-1/2 h-4 w-4 text-green-500" />
+    )}
+  </div>
+
+  {/* Suggestions dropdown (now sibling of input wrapper) */}
+  {showSuggestions && (
+    <div className="mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg z-10">
+      {suggestions.map((suggestion) => (
+        <div key={suggestion} className="px-3 py-2 hover:bg-gray-50 cursor-pointer">
+          {suggestion}
         </div>
-      )}
-
-      {/* Suggestions */}
-      {showSuggestions && suggestions.length > 0 && (
-        <div className="mt-1 border border-gray-200 rounded-lg shadow-lg overflow-hidden">
-          {suggestions.map((suggestion) => (
-            <div
-              key={suggestion}
-              className="px-3 py-2 hover:bg-gray-50 cursor-pointer text-sm"
-              onClick={() => selectSuggestion(suggestion)}
-            >
-              {suggestion}
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Submit Button */}
-      {showSubmitButton && onSubmit && (
-        <button
-          type="button"
-          onClick={onSubmit}
-          disabled={!isValid}
-          className={`w-full mt-4 py-2 rounded-lg transition-colors ${
-            isValid ? 'bg-[#ff4747] hover:bg-[#ff2727] text-white' : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-          }`}
-        >
-          Continue
-        </button>
-      )}
+      ))}
     </div>
+  )}
+
+  {/* Next button */}
+  {showSubmitButton && (
+    <button 
+      type="button"
+      onClick={onSubmit}
+      className="mt-4 w-full bg-[#ff4747] hover:bg-[#ff2727] text-white py-2 px-4 rounded-lg"
+    >
+      Next
+    </button>
+  )}
+</div>
   );
 };
 
