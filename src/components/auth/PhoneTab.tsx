@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useCallback, useMemo } from 'react';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -10,6 +11,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { ScrollArea } from "@/components/ui/scroll-area";
+import WorldFlag from 'react-world-flags';
 
 interface PhoneTabProps {
   phone: string;
@@ -236,10 +238,18 @@ const PhoneTab = ({
                 }`}
                 aria-label="Select country code"
               >
-                <div className="w-6 h-6 rounded-full flex items-center justify-center bg-gray-100 mr-1.5 overflow-hidden">
-                  <span className="text-base leading-none">{currentCountry.flag}</span>
+                <div className="w-6 h-6 rounded-full flex items-center justify-center overflow-hidden">
+                  <WorldFlag 
+                    code={currentCountry.code} 
+                    style={{
+                      width: '24px',
+                      height: '24px',
+                      objectFit: 'cover',
+                      borderRadius: '50%'
+                    }}
+                  />
                 </div>
-                <span className="text-sm font-medium">{countryCode}</span>
+                <span className="text-sm font-medium ml-1.5">{countryCode}</span>
                 <ChevronDown className="ml-1 h-4 w-4 text-muted-foreground" />
               </button>
             </PopoverTrigger>
@@ -265,8 +275,16 @@ const PhoneTab = ({
                       onClick={() => handleCountrySelect(country.dialCode)}
                     >
                       <div className="flex items-center space-x-2">
-                        <div className="w-6 h-6 rounded-full flex items-center justify-center bg-gray-100 overflow-hidden">
-                          <span className="text-base leading-none">{country.flag}</span>
+                        <div className="w-6 h-6 rounded-full flex items-center justify-center overflow-hidden">
+                          <WorldFlag 
+                            code={country.code} 
+                            style={{
+                              width: '24px',
+                              height: '24px',
+                              objectFit: 'cover',
+                              borderRadius: '50%'
+                            }}
+                          />
                         </div>
                         <span>{country.name}</span>
                       </div>

@@ -216,7 +216,7 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
 
             <SubmitButton 
               isLoading={isLoading} 
-              label={authMode === 'signin' ? "Sign in" : "Create account"} 
+              label={authMode === 'signin' ? "Continue" : "Create account"} 
             />
 
             <div className="text-center mt-4 flex items-center justify-center space-x-2">
@@ -255,7 +255,7 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
 
             <SubmitButton 
               isLoading={isLoading} 
-              label="Verify & Continue" 
+              label="Continue" 
             />
 
             <div className="text-center mt-4 flex items-center justify-center space-x-2">

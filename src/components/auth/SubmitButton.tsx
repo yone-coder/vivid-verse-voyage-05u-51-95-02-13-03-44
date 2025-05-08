@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Loader } from 'lucide-react';
+import { ArrowRight, Loader2 } from 'lucide-react';
 
 interface SubmitButtonProps {
   isLoading: boolean;
@@ -13,15 +13,15 @@ const SubmitButton = ({ isLoading, label }: SubmitButtonProps) => {
     <Button
       type="submit"
       disabled={isLoading}
-      className="w-full flex items-center justify-center bg-[#ff4747] hover:bg-[#ff2727] focus:ring-2 focus:ring-offset-1 focus:ring-[#ff4747]/50 text-white font-medium py-3 px-4 rounded-lg transition-all relative overflow-hidden h-12 shadow-sm"
+      className="w-full flex items-center justify-center bg-[#ff4747] hover:bg-[#ff2727] text-white font-medium py-3 px-4 rounded-lg transition-all relative overflow-hidden h-12 shadow-sm hover:shadow-md focus:ring-2 focus:ring-offset-1 focus:ring-[#ff4747]/50 dark:focus:ring-offset-gray-900"
     >
       {isLoading ? (
-        <Loader className="h-5 w-5 animate-spin" />
+        <Loader2 className="h-5 w-5 animate-spin" />
       ) : (
-        <>
+        <span className="flex items-center gap-2">
           {label}
-          <ArrowRight className="ml-2 h-4 w-4" />
-        </>
+          <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+        </span>
       )}
     </Button>
   );
