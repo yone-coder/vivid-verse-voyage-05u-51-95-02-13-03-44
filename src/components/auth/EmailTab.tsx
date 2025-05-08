@@ -89,90 +89,88 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   };
 
   return (
-    <div className="w-full max-w-md mx-auto">
-      <Label htmlFor="email" className="block text-sm font-medium mb-2 text-gray-700">
-        Email or username
-      </Label>
+   <div className="w-full max-w-md mx-auto">
+  <div className="relative"> {/* This container holds input + suggestions */}
+    <Label htmlFor="email" className="block text-sm font-medium mb-2 text-gray-700">
+      Email or username
+    </Label>
+    
+    <div className="relative"> {/* Input wrapper */}
+      <User className={`absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 transition-colors ${
+        focused ? 'text-[#ff4747]' : 'text-gray-400'
+      }`} />
       
-      <div className="relative">
-        <User className={`absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 transition-colors ${
-          focused ? 'text-[#ff4747]' : 'text-gray-400'
-        }`} />
-        
-        <Input
-          ref={inputRef}
-          id="email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          placeholder="name@example.com"
-          className={`w-full pl-10 pr-10 py-2 bg-white border border-gray-200 rounded-lg transition-all duration-200 ${
-            focused ? 'ring-1 ring-[#ff4747] border-[#ff4747]' : 
-            isValid === true ? 'border-gray-300' : 
-            isValid === false ? 'border-red-300' : 'border-gray-200'
-          }`}
-          required
-          autoComplete="email"
-        />
-        
-        {email.length > 0 && (
-          <button
-            type="button"
-            onClick={clearInput}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-            aria-label="Clear input"
-          >
-            <X className="h-4 w-4" />
-          </button>
-        )}
-        
-        {isValid === true && email.length > 0 && (
-          <Check className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-green-500" />
-        )}
-      </div>
+      <Input
+        ref={inputRef}
+        id="email"
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        placeholder="name@example.com"
+        className={`w-full pl-10 pr-10 py-2 bg-white border border-gray-200 rounded-lg transition-all duration-200 ${
+          focused ? 'ring-1 ring-[#ff4747] border-[#ff4747]' : 
+          isValid === true ? 'border-gray-300' : 
+          isValid === false ? 'border-red-300' : 'border-gray-200'
+        }`}
+        required
+        autoComplete="email"
+      />
       
-      {isValid === false && email.length > 0 && (
-        <p className="mt-1 text-xs text-red-500">
-          Please enter a valid email address
-        </p>
+      {email.length > 0 && (
+        <button
+          type="button"
+          onClick={clearInput}
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+          aria-label="Clear input"
+        >
+          <X className="h-4 w-4" />
+        </button>
       )}
       
-      {showSuggestions && suggestions.length > 0 && (
-        <div className="absolute z-10 mt-1 w-full max-w-md bg-white border border-gray-200 rounded-lg shadow-lg py-1">
-          {suggestions.map((suggestion, index) => (
-            <div
-              key={index}
-              className="px-3 py-2 hover:bg-gray-50 cursor-pointer text-sm"
-              onClick={() => selectSuggestion(suggestion)}
-              onKeyDown={(e) => e.key === 'Enter' && selectSuggestion(suggestion)}
-              tabIndex={0}
-              role="option"
-            >
-              {suggestion}
-            </div>
-          ))}
-        </div>
-      )}
-      
-      {showSubmitButton && onSubmit && (
-        <div className="mt-4">
-          <button 
-            type="button"
-            onClick={onSubmit}
-            disabled={!isValid}
-            className={`w-full flex items-center justify-center text-white font-medium py-2 px-4 rounded-lg transition-all ${
-              isValid 
-                ? 'bg-[#ff4747] hover:bg-[#ff2727]' 
-                : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-            }`}
-          >
-            Next
-          </button>
-        </div>
+      {isValid === true && email.length > 0 && (
+        <Check className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-green-500" />
       )}
     </div>
+    
+    {/* Suggestions dropdown (now properly positioned) */}
+    {showSuggestions && suggestions.length > 0 && (
+      <div className="mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg py-1 z-10">
+        {suggestions.map((suggestion, index) => (
+          <div
+            key={index}
+            className="px-3 py-2 hover:bg-gray-50 cursor-pointer text-sm"
+            onClick={() => selectSuggestion(suggestion)}
+            onKeyDown={(e) => e.key === 'Enter' && selectSuggestion(suggestion)}
+            tabIndex={0}
+            role="option"
+          >
+            {suggestion}
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+
+  {/* Next button (now outside the relative container) */}
+  {showSubmitButton && onSubmit && (
+    <div className="mt-4">
+      <button 
+        type="button"
+        onClick={onSubmit}
+        disabled={!isValid}
+        className={`w-full flex items-center justify-center text-white font-medium py-2 px-4 rounded-lg transition-all ${
+          isValid 
+            ? 'bg-[#ff4747] hover:bg-[#ff2727]' 
+            : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+        }`}
+      >
+        Next
+      </button>
+    </div>
+  )}
+</div>
   );
 };
 
