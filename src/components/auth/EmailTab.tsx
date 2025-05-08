@@ -71,9 +71,9 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   const trimmed = input.trim();
   if (trimmed.length < 3) return [];
 
-  let username = trimmed;
   let partialDomain = '';
-  
+  let username = trimmed;
+
   if (trimmed.includes('@')) {
     [username, partialDomain] = trimmed.split('@');
   }
@@ -83,8 +83,8 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   const lowerPartial = partialDomain.toLowerCase();
   return premiumDomains
     .filter(({ domain }) => domain.startsWith(lowerPartial))
-    .slice(0, 4)
-    .map(({ domain }) => `${username}@${domain}`);
+    .slice(0, 6)
+    .map(({ domain }) => domain);
 }, []);
 
   // Debounced validation and suggestions
