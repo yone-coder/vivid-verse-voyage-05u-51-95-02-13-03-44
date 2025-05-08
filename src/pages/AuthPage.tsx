@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -27,7 +26,6 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [countryCode, setCountryCode] = useState('+1');
-  const [fullName, setFullName] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [twoFactorCode, setTwoFactorCode] = useState('');
@@ -69,12 +67,6 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
 
     if (activeTab === 'phone' && !phone) {
       toast.error("Please enter your phone number.");
-      return;
-    }
-
-    // For signup mode, validate full name
-    if (authMode === 'signup' && !fullName && (activeTab === 'email' || activeTab === 'phone')) {
-      toast.error("Please enter your full name.");
       return;
     }
 
@@ -187,8 +179,6 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
               countryCode={countryCode}
               setCountryCode={setCountryCode}
               isSignUp={authMode === 'signup'}
-              fullName={fullName}
-              setFullName={setFullName}
               onSubmit={handleStep1Submit}
               step={step}
             />

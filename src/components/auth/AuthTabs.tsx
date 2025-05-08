@@ -4,7 +4,6 @@ import { Tabs } from "@/components/ui/tabs";
 import TabDivider from './TabDivider';
 import TabNavigation from './TabNavigation';
 import TabContent from './TabContent';
-import FullNameField from './FullNameField';
 
 interface AuthTabsProps {
   activeTab: string;
@@ -16,8 +15,6 @@ interface AuthTabsProps {
   countryCode: string;
   setCountryCode: (code: string) => void;
   isSignUp: boolean;
-  fullName: string;
-  setFullName: (name: string) => void;
   onSubmit?: (e: React.FormEvent) => void;
   step: number; // Add step property
 }
@@ -32,8 +29,6 @@ const AuthTabs = ({
   countryCode, 
   setCountryCode,
   isSignUp,
-  fullName,
-  setFullName,
   onSubmit,
   step
 }: AuthTabsProps) => {
@@ -77,8 +72,6 @@ const AuthTabs = ({
           showForms={showFormsInTabs}
           showInlineButtons={false}
           isSignUp={isSignUp}
-          fullName={fullName}
-          setFullName={setFullName}
         />
       </Tabs>
     </div>
