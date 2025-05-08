@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Mail, Phone, KeyRound } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface TabNavigationProps {
   activeTab: string;
@@ -11,7 +11,7 @@ interface TabNavigationProps {
 const TabNavigation = ({ activeTab, handleTabChange }: TabNavigationProps) => {
   const tabsRef = useRef<(HTMLButtonElement | null)[]>([]);
   const [underline, setUnderline] = useState({ left: 0, width: 0 });
-  const [showUnderline, setShowUnderline] = useState(true);
+  const [exiting, setExiting] = useState(false);
 
   const tabs = [
     { key: 'email', icon: Mail, label: 'Email' },
@@ -23,17 +23,16 @@ const TabNavigation = ({ activeTab, handleTabChange }: TabNavigationProps) => {
     const index = tabs.findIndex(tab => tab.key === activeTab);
     const el = tabsRef.current[index];
     if (el) {
-      // Start exit animation
-      setShowUnderline(false);
+      setExiting(true); // start exit
 
-      // Wait for exit to finish, then reposition and grow underline
+      // after exit, update position and show entry
       setTimeout(() => {
         setUnderline({
           left: el.offsetLeft,
           width: el.offsetWidth,
         });
-        setShowUnderline(true);
-      }, 200); // exit duration
+        setExiting(false);
+      }, 200); // match exit duration
     }
   }, [activeTab]);
 
@@ -64,19 +63,33 @@ const TabNavigation = ({ activeTab, handleTabChange }: TabNavigationProps) => {
           );
         })}
 
-        {/* Exit and Entry Underline Animation */}
-        <motion.div
-          className="absolute bottom-0 h-[2px] bg-[#ff4747] origin-left"
-          key={showUnderline ? 'grow' : 'shrink'}
-          initial={{ scaleX: showUnderline ? 0 : 1 }}
-          animate={{ scaleX: showUnderline ? 1 : 0 }}
-          transition={{ duration: 0.2, ease: 'easeInOut' }}
-          style={{
-            left: underline.left,
-            width: underline.width,
-            transformOrigin: 'left center',
-          }}
-        />
+        {/* AnimatePresence for exit + entry underline */}
+        <AnimatePresence mode="wait">
+          {!exiting && (
+            <motion.div
+              key={`underline-${activeTab}`}
+              className="absolute bottom-0 h-[2px] bg-[#ff4747]"
+              initial={{ scaleX: 0, opacity: 0 }}
+              animate={{ scaleX: 1, opacity: 1 }}
+              exit={{ scaleX: 0, opacity: 0 }}
+              transition={{
+                scaleX: {
+                  type: "spring",
+                  stiffness: 300,
+                  damping: 20,
+                },
+                opacity: { duration: 0.15 },
+              }}
+              style={{
+                left: underline.left,
+                width: underline.width,
+                transformOrigin: "left center",
+                boxShadow: "0 0 6px #ff4747, 0 0 10px #ff4747",
+                borderRadius: '9999px',
+              }}
+            />
+          )}
+        </AnimatePresence>
       </TabsList>
     </div>
   );
