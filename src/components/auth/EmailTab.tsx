@@ -361,7 +361,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         </TooltipProvider>
       </Label>
 
-      {/* Input Field */}
+      {/* Input Field - Cleaned up design */}
       <div className="relative">
         <div className={`absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center h-5 w-5 transition-all duration-200 ${focused ? 'text-primary' : 'text-muted-foreground'}`}>
           <Mail className="h-[15px] w-[15px]" />
@@ -383,15 +383,19 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
           }}
           onKeyDown={handleKeyDown}
           placeholder="name@example.com"
-          className={`w-full pl-10 pr-10 h-11 text-sm transition-all duration-200 focus:ring-1 focus:ring-offset-0 focus:outline-none shadow-sm ${
+          className={`w-full pl-10 pr-10 h-11 text-sm bg-background transition-all duration-200 rounded-md shadow-sm ${
             validationMessage 
               ? 'border-destructive focus:border-destructive focus:ring-destructive/20 bg-destructive/5' 
               : isValid 
-                ? 'border-green-500 focus:border-green-600 focus:ring-green-200 bg-green-50 dark:bg-green-950/20 dark:border-green-800' 
+                ? 'border-green-500 focus:border-green-600 focus:ring-green-200 bg-green-50/30 dark:bg-green-950/10' 
                 : focused 
                   ? 'border-primary/30 focus:border-primary focus:ring-primary/20' 
                   : 'border-input hover:border-input focus:border-input focus:ring-ring/20'
           }`}
+          style={{
+            boxShadow: focused ? `0 0 0 1px ${validationMessage ? 'hsl(var(--destructive))' : isValid ? 'hsl(142, 71%, 45%)' : 'hsl(var(--primary))'}` : 'none',
+            transition: 'all 0.2s ease',
+          }}
           autoComplete="email"
           aria-invalid={!!validationMessage}
           aria-describedby={validationMessage ? "email-validation-error" : undefined}
