@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import TabDivider from './TabDivider';
 import TabNavigation from './TabNavigation';
@@ -36,8 +36,8 @@ const AuthTabs = ({
 }: AuthTabsProps) => {
   const [tabTransition, setTabTransition] = useState(false);
 
-  // Handle tab switching with animation
-  const handleTabChange = (tab: string) => {
+  // Handle tab switching with animation - use useCallback to prevent recreating this function on each render
+  const handleTabChange = useCallback((tab: string) => {
     if (tab === activeTab) return;
 
     setTabTransition(true);
@@ -45,7 +45,7 @@ const AuthTabs = ({
       setActiveTab(tab);
       setTabTransition(false);
     }, 150);
-  };
+  }, [activeTab, setActiveTab]);
 
   // Only show forms in the tabs during step 1
   const showFormsInTabs = step === 1;
