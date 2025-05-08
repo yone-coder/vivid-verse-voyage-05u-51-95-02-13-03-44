@@ -1,3 +1,4 @@
+
 import React, { useRef, useEffect, useState } from 'react';
 import { TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Mail, Phone, KeyRound } from 'lucide-react';
@@ -6,9 +7,16 @@ import { motion } from 'framer-motion';
 interface TabNavigationProps {
   activeTab: string;
   handleTabChange: (tab: string) => void;
+  showTooltips?: boolean;
+  animationStyle?: 'slide' | 'grow';
 }
 
-const TabNavigation = ({ activeTab, handleTabChange }: TabNavigationProps) => {
+const TabNavigation = ({ 
+  activeTab, 
+  handleTabChange, 
+  showTooltips = false,
+  animationStyle = 'slide' 
+}: TabNavigationProps) => {
   const tabsRef = useRef<(HTMLButtonElement | null)[]>([]);
   const [underline, setUnderline] = useState({ left: 0, width: 0 });
   const [showUnderline, setShowUnderline] = useState(true);

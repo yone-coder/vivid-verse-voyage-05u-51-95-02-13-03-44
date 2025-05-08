@@ -1,6 +1,10 @@
+
 import React from 'react';
 import { Eye, EyeOff, Lock, Mail, ArrowRight, ChevronLeft } from 'lucide-react';
 import { toast } from 'sonner';
+import { Button } from "@/components/ui/button";
+import PasswordField from './PasswordField';
+import RememberMeToggle from './RememberMeToggle';
 
 interface SignInFormProps {
   email: string;
@@ -35,6 +39,10 @@ const SignInForm = ({
     toast.info("Password reset functionality is not implemented yet");
   };
 
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <div className="w-full max-w-md mx-auto">
       <form onSubmit={handleSubmit} className="space-y-5 w-full">
@@ -60,65 +68,50 @@ const SignInForm = ({
         )}
 
         {step === 2 && (
-          <div className="space-y-1">
-            <div className="flex items-center justify-between">
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password
-              </label>
-              <button 
-                type="button"
-                onClick={handleForgotPassword} 
-                className="text-sm text-blue-600 hover:text-blue-800 hover:underline transition-colors"
-              >
-                Forgot password?
-              </button>
-            </div>
-            <div className="relative group">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
-              <input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3 py-2.5 pl-10 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                required
-                autoFocus
-              />
-              <button
-                type="button"
-                aria-label={showPassword ? "Hide password" : "Show password"}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-full p-1"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
-            </div>
-
-            <div className="flex items-center mt-3">
-              <div className="relative inline-flex items-center">
-                <input 
-                  type="checkbox" 
-                  id="remember" 
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                  className="sr-only" 
-                />
-                <div className="relative">
-                  <div className={`block w-10 h-5 rounded-full transition-colors duration-200 ease-in-out ${rememberMe ? 'bg-blue-500' : 'bg-gray-200'}`}>
-                    <div className={`absolute top-0.5 left-0.5 bg-white w-4 h-4 rounded-full shadow transform transition-transform duration-200 ${rememberMe ? 'translate-x-5' : 'translate-x-0'}`}>
-                    </div>
-                  </div>
-                </div>
-                <label htmlFor="remember" className="ml-2 text-sm text-gray-600 cursor-pointer select-none">
-                  Remember me
+          <>
+            <div className="space-y-1">
+              <div className="flex items-center justify-between">
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                  Password
                 </label>
+                <button 
+                  type="button"
+                  onClick={handleForgotPassword} 
+                  className="text-sm text-blue-600 hover:text-blue-800 hover:underline transition-colors"
+                >
+                  Forgot password?
+                </button>
+              </div>
+              <div className="relative group">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+                <input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-3 py-2.5 pl-10 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  required
+                  autoFocus
+                />
+                <button
+                  type="button"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-full p-1"
+                  onClick={toggleShowPassword}
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+
+              <div className="flex items-center mt-3">
+                <RememberMeToggle rememberMe={rememberMe} setRememberMe={setRememberMe} />
               </div>
             </div>
-          </div>
+          </>
         )}
 
-        <button
+        <Button
           type="submit"
           disabled={isLoading}
           className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-4 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-white mt-6 relative group disabled:opacity-70 disabled:cursor-not-allowed shadow-md"
@@ -133,7 +126,7 @@ const SignInForm = ({
             {step === 1 ? 'Continue' : 'Sign in'}
             {!isLoading && <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />}
           </span>
-        </button>
+        </Button>
 
         {step === 2 && (
           <div className="text-center">
