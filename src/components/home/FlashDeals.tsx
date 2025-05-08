@@ -3,7 +3,7 @@ import { ArrowRight, Zap } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useQuery } from "@tanstack/react-query";
-import { fetchAllProducts } from "@/integrations/supabase/client";
+import { fetchAllProducts } from "@/integrations/supabase/products";
 
 export default function FlashDeals() {
   const isMobile = useIsMobile();

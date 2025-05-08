@@ -316,7 +316,8 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         </button>
       )}
 
-      <style jsx>{`
+      <style>
+        {`
         @keyframes fadeIn {
           from { opacity: 0; }
           to { opacity: 1; }
@@ -331,7 +332,8 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         .animate-slideIn {
           animation: slideIn 0.2s ease-in-out;
         }
-      `}</style>
+        `}
+      </style>
     </div>
   );
 };

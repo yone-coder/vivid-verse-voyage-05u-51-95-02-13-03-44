@@ -1,6 +1,5 @@
-
 import { useQuery } from "@tanstack/react-query";
-import { fetchAllProducts } from "@/integrations/supabase/client";
+import { fetchAllProducts } from "@/integrations/supabase/products";
 import AliExpressHeader from "@/components/home/AliExpressHeader";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useState, useEffect } from "react";

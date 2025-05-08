@@ -1,6 +1,5 @@
-
 import React, { useEffect } from "react";
-import { fetchAllProducts } from "@/integrations/supabase/client";
+import { fetchAllProducts } from "@/integrations/supabase/products";
 import { useQuery } from "@tanstack/react-query";
 import HeroBannerSection from "@/components/home/HeroBanner";
 import PageSkeleton from "@/components/skeletons/PageSkeleton";

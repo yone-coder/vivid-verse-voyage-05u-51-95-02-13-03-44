@@ -1,6 +1,7 @@
 
 import { useQuery } from "@tanstack/react-query";
-import { supabase, fetchProductById } from "@/integrations/supabase/client";
+import { supabase } from "@/integrations/supabase/client";
+import { fetchProductById } from "@/integrations/supabase/products";
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 

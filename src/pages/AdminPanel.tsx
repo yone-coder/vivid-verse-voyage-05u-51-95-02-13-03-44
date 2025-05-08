@@ -1,7 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import React from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { createProduct, updateProduct, subscribeToProductChanges } from '@/integrations/supabase/products';
+
 import { useNavigate } from "react-router-dom";
 import { Plus, Trash2, Edit, Eye, X, Check, Save, Pencil } from "lucide-react";
-import { supabase, updateProduct, subscribeToProductChanges, createProduct } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
