@@ -79,34 +79,25 @@ const PasskeyTab = ({
   }, [handleAuthenticate]);
 
   return (
-    <div className="w-full max-w-md mx-auto">
-      <div className="flex flex-col items-center justify-center text-center space-y-4">
-        <div className="mb-2">
-          <TooltipProvider>
-            <Tooltip delayDuration={300}>
-              <TooltipTrigger asChild>
-                <div className="relative group">
-                  <Info 
-                    className="absolute top-0 right-0 h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" 
-                    aria-label="Info about passkeys" 
-                  />
-                </div>
-              </TooltipTrigger>
-              <TooltipContent className="max-w-[260px] p-3">
-                <p className="text-xs">Passkeys are a new way to sign in without passwords. They use your device's built-in authentication like fingerprint or face recognition.</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          
+    <div className="w-full max-w-sm mx-auto">
+      <div className="flex flex-col items-center justify-center text-center space-y-5">
+        {/* Passkey Icon/Button */}
+        <div 
+          className={`relative group cursor-pointer transition-all duration-300 ${
+            status === PasskeyStatus.CHECKING 
+              ? 'scale-[0.98]' 
+              : 'hover:scale-[1.02]'
+          }`}
+        >
           <div 
-            className={`flex-shrink-0 h-32 w-32 flex items-center justify-center rounded-full mx-auto transition-all duration-500 ${
+            className={`flex-shrink-0 h-28 w-28 flex items-center justify-center rounded-full mx-auto transition-all duration-300 shadow-sm ${
               status === PasskeyStatus.CHECKING 
-                ? 'bg-amber-50 dark:bg-amber-900/20' 
+                ? 'bg-amber-50 dark:bg-amber-900/20 shadow-inner' 
                 : status === PasskeyStatus.SUCCESS
                   ? 'bg-green-50 dark:bg-green-900/20'
                   : status === PasskeyStatus.ERROR
                     ? 'bg-red-50 dark:bg-red-900/20'
-                    : 'bg-blue-50 dark:bg-blue-900/20'
+                    : 'bg-primary/5 dark:bg-primary/10'
             }`}
             role="button"
             tabIndex={0}
@@ -124,9 +115,9 @@ const PasskeyTab = ({
                   className="text-amber-500 dark:text-amber-400"
                 >
                   <div className="relative">
-                    <Fingerprint className="h-16 w-16" />
-                    <div className="absolute -top-1.5 -right-1.5">
-                      <Loader2 className="h-6 w-6 animate-spin" />
+                    <Fingerprint className="h-14 w-14" strokeWidth={1.5} />
+                    <div className="absolute -top-1 -right-1">
+                      <Loader2 className="h-5 w-5 animate-spin" strokeWidth={1.5} />
                     </div>
                   </div>
                 </motion.div>
@@ -139,9 +130,9 @@ const PasskeyTab = ({
                   className="text-green-500 dark:text-green-400"
                 >
                   <div className="relative">
-                    <Fingerprint className="h-16 w-16" />
-                    <div className="absolute -top-1.5 -right-1.5 bg-white dark:bg-gray-900 rounded-full">
-                      <CheckCircle className="h-6 w-6 text-green-500 dark:text-green-400" />
+                    <Fingerprint className="h-14 w-14" strokeWidth={1.5} />
+                    <div className="absolute -top-1 -right-1 bg-white dark:bg-gray-900 rounded-full shadow-sm">
+                      <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400" strokeWidth={1.5} />
                     </div>
                   </div>
                 </motion.div>
@@ -154,9 +145,9 @@ const PasskeyTab = ({
                   className="text-red-500 dark:text-red-400"
                 >
                   <div className="relative">
-                    <Fingerprint className="h-16 w-16" />
-                    <div className="absolute -top-1.5 -right-1.5 bg-white dark:bg-gray-900 rounded-full">
-                      <AlertCircle className="h-6 w-6 text-red-500 dark:text-red-400" />
+                    <Fingerprint className="h-14 w-14" strokeWidth={1.5} />
+                    <div className="absolute -top-1 -right-1 bg-white dark:bg-gray-900 rounded-full shadow-sm">
+                      <AlertCircle className="h-5 w-5 text-red-500 dark:text-red-400" strokeWidth={1.5} />
                     </div>
                   </div>
                 </motion.div>
@@ -172,17 +163,35 @@ const PasskeyTab = ({
                     } : {}
                   }}
                   exit={{ opacity: 0, scale: 0.8 }}
-                  className="text-primary dark:text-primary"
+                  className="text-primary"
                 >
-                  <KeyRound className="h-16 w-16" />
+                  <KeyRound className="h-14 w-14" strokeWidth={1.5} />
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
+          
+          {/* Info tooltip */}
+          <TooltipProvider>
+            <Tooltip delayDuration={300}>
+              <TooltipTrigger asChild>
+                <div className="absolute -top-1 -right-1 p-1 bg-background rounded-full border border-border/30 shadow-sm">
+                  <Info 
+                    className="h-3.5 w-3.5 text-muted-foreground/70 hover:text-foreground transition-colors" 
+                    aria-label="Info about passkeys" 
+                  />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent className="max-w-[260px] p-3 text-xs">
+                <p className="leading-relaxed">Passkeys are a new way to sign in without passwords. They use your device's built-in authentication like fingerprint or face recognition.</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
 
-        <div className="space-y-2">
-          <h3 className="text-lg font-medium">
+        {/* Status text */}
+        <div className="space-y-1.5">
+          <h3 className="text-base font-medium">
             {status === PasskeyStatus.CHECKING
               ? "Verifying passkey..."
               : status === PasskeyStatus.SUCCESS
@@ -192,9 +201,9 @@ const PasskeyTab = ({
               : "Use your passkey"}
           </h3>
           
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground/80">
             {status === PasskeyStatus.CHECKING
-              ? "Please follow the instructions on your device"
+              ? "Follow the instructions on your device"
               : status === PasskeyStatus.SUCCESS
               ? "You've been successfully authenticated"
               : status === PasskeyStatus.ERROR
@@ -203,49 +212,61 @@ const PasskeyTab = ({
           </p>
         </div>
 
-        {/* Device Authentication Icons */}
+        {/* Device icons - show only in idle state */}
         {status === PasskeyStatus.IDLE && (
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 5 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="flex items-center justify-center space-x-4 text-muted-foreground"
+            className="flex items-center justify-center gap-6 text-muted-foreground/70"
           >
-            <Tooltip>
-              <TooltipTrigger>
-                <div className="flex flex-col items-center">
-                  <Fingerprint className="h-5 w-5" />
-                  <span className="text-xs mt-1">Fingerprint</span>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p className="text-xs">Sign in with fingerprint</p>
-              </TooltipContent>
-            </Tooltip>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="flex flex-col items-center gap-1.5 group">
+                    <div className="p-2 rounded-full bg-background border border-border/30 shadow-sm group-hover:border-border/50 transition-colors">
+                      <Fingerprint className="h-4 w-4 group-hover:text-foreground transition-colors" strokeWidth={1.5} />
+                    </div>
+                    <span className="text-xs group-hover:text-foreground transition-colors">Fingerprint</span>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="text-xs">Sign in with fingerprint</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
             
-            <Tooltip>
-              <TooltipTrigger>
-                <div className="flex flex-col items-center">
-                  <KeyRound className="h-5 w-5" />
-                  <span className="text-xs mt-1">Face ID</span>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p className="text-xs">Sign in with Face ID</p>
-              </TooltipContent>
-            </Tooltip>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="flex flex-col items-center gap-1.5 group">
+                    <div className="p-2 rounded-full bg-background border border-border/30 shadow-sm group-hover:border-border/50 transition-colors">
+                      <KeyRound className="h-4 w-4 group-hover:text-foreground transition-colors" strokeWidth={1.5} />
+                    </div>
+                    <span className="text-xs group-hover:text-foreground transition-colors">Face ID</span>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="text-xs">Sign in with Face ID</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
             
-            <Tooltip>
-              <TooltipTrigger>
-                <div className="flex flex-col items-center">
-                  <Smartphone className="h-5 w-5" />
-                  <span className="text-xs mt-1">Phone</span>
-                </div>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p className="text-xs">Sign in with your phone</p>
-              </TooltipContent>
-            </Tooltip>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="flex flex-col items-center gap-1.5 group">
+                    <div className="p-2 rounded-full bg-background border border-border/30 shadow-sm group-hover:border-border/50 transition-colors">
+                      <Smartphone className="h-4 w-4 group-hover:text-foreground transition-colors" strokeWidth={1.5} />
+                    </div>
+                    <span className="text-xs group-hover:text-foreground transition-colors">Phone</span>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="text-xs">Sign in with your phone</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </motion.div>
         )}
 
@@ -256,10 +277,10 @@ const PasskeyTab = ({
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="flex items-start gap-1.5 text-xs text-destructive mt-1.5 bg-destructive/5 px-3 py-1.5 rounded-md border border-destructive/10 overflow-hidden w-full"
+              className="flex items-start gap-2 text-xs text-destructive mt-0 bg-destructive/5 px-4 py-2.5 rounded-md border border-destructive/10 overflow-hidden w-full"
               role="alert"
             >
-              <AlertCircle className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
+              <AlertCircle className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
               <span>{errorMessage}</span>
             </motion.div>
           )}
@@ -270,13 +291,13 @@ const PasskeyTab = ({
           <button
             type="button"
             onClick={handleTryAgain}
-            className="w-full py-2 mt-2 bg-muted hover:bg-muted/80 text-foreground rounded-md text-sm font-medium transition-colors"
+            className="w-full py-2.5 px-4 mt-1 bg-muted hover:bg-muted/80 text-foreground rounded-md text-sm font-medium transition-colors border border-border/40 shadow-sm"
           >
             Try Again
           </button>
         ) : showSubmitButton && status === PasskeyStatus.IDLE ? (
           <motion.div
-            initial={{ y: 10, opacity: 0 }}
+            initial={{ y: 5, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.1 }}
             className="w-full"
@@ -285,9 +306,10 @@ const PasskeyTab = ({
               ref={submitButtonRef}
               type="button"
               onClick={() => handleAuthenticate()}
-              className="w-full py-2.5 rounded-lg font-medium transition-all duration-200 bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm hover:shadow"
+              className="w-full py-2.5 px-4 rounded-md font-medium transition-all duration-200 bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm hover:shadow flex items-center justify-center gap-2"
             >
-              Authenticate with Passkey
+              <span>Authenticate with Passkey</span>
+              <KeyRound className="h-4 w-4" strokeWidth={1.5} />
             </button>
           </motion.div>
         ) : null}
