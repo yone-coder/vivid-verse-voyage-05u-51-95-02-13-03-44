@@ -10,6 +10,47 @@ interface EmailTabProps {
   showSubmitButton?: boolean;
 }
 
+const getValidationMessage = (email: string) => {
+  if (!email) return null;
+
+  // Check for basic structure
+  if (!email.includes('@')) {
+    return 'Missing "@" symbol. Example: user@example.com';
+  }
+
+  const [localPart, domainPart] = email.split('@');
+
+  // Check local part (before @)
+  if (!localPart) {
+    return 'Please enter your email username (before @)';
+  }
+
+  // Check domain part (after @)
+  if (!domainPart) {
+    return 'Please enter a domain (after @)';
+  }
+
+  if (!domainPart.includes('.')) {
+    return 'Domain is incomplete. Example: gmail.com';
+  }
+
+  // Check for valid domain extension
+  if (domainPart.split('.').length < 2 || domainPart.endsWith('.')) {
+    return 'Invalid domain format. Example: example.com';
+  }
+
+  // Final regex check
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return 'Please enter a valid email address';
+  }
+
+  return null; // No errors
+};
+
+// Usage in component
+const validationMessage = getValidationMessage(email);
+
 const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: EmailTabProps) => {
   const [focused, setFocused] = useState(false);
   const [isValid, setIsValid] = useState<boolean | null>(null);
