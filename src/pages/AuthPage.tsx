@@ -19,13 +19,9 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [countryCode, setCountryCode] = useState('+1');
-  const [fullName, setFullName] = useState('');
   const [activeTab, setActiveTab] = useState('email');
-  const [step, setStep] = useState(1);
-  const [isSignUp, setIsSignUp] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
-  const { signIn, signUp, user } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,29 +33,25 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (step === 1) {
-      if (!email && activeTab === 'email') {
+    if (activeTab === 'email') {
+      if (!email) {
         toast.error("Please enter your email address.");
         return;
       }
 
-      if (activeTab === 'email') {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-          toast.error("Please enter a valid email address.");
-          return;
-        }
-      }
-
-      if (activeTab === 'phone' && !phone) {
-        toast.error("Please enter your phone number.");
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        toast.error("Please enter a valid email address.");
         return;
       }
-
-      setStep(2);
-    } else {
-      toast.info("Password input and handling have been removed.");
     }
+
+    if (activeTab === 'phone' && !phone) {
+      toast.error("Please enter your phone number.");
+      return;
+    }
+
+    toast.info("Continue to next step not implemented.");
   };
 
   const handleSocialLogin = async (provider: 'github' | 'twitter' | 'google' | 'facebook' | 'apple') => {
@@ -68,7 +60,7 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
 
   return (
     <AuthContainer isOverlay={isOverlay} onClose={onClose}>
-      <AuthHeader title={isSignUp ? "Create an account" : "Log in to Mima"} />
+      <AuthHeader title="Log in to Mima" />
 
       <div className="w-full mb-4 space-y-3">
         <AuthSocialButtons handleSocialLogin={handleSocialLogin} />
@@ -82,11 +74,11 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
           setPhone={setPhone}
           countryCode={countryCode}
           setCountryCode={setCountryCode}
-          isSignUp={isSignUp}
-          fullName={fullName}
-          setFullName={setFullName}
+          isSignUp={false}
+          fullName={''}
+          setFullName={() => {}}
           onSubmit={handleSubmit}
-          step={step}
+          step={1} // Force step 1
         />
       </div>
 
