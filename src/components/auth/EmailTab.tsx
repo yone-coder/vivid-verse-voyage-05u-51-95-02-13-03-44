@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { User, Check, X, AlertCircle, Info, Loader2, Mail, Shield, ExternalLink } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useTheme } from "@/components/theme-provider";
 
 interface EmailTabProps {
   email: string;
@@ -126,6 +127,7 @@ const getEmailStrength = (email: string): {
 };
 
 const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: EmailTabProps) => {
+  const { theme } = useTheme();
   const [focused, setFocused] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -259,9 +261,21 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   const handleFocus = () => {
     setFocused(true);
     setSubmitted(false);
+    // Show suggestions if we already have some and the email field has content
+    if (suggestions.length > 0 && email.length > 0) {
+      setShowSuggestions(true);
+    }
   };
 
-  const handleBlur = () => setTimeout(() => setShowSuggestions(false), 200);
+  const handleBlur = () => {
+    // Use setTimeout to allow click events on suggestions to fire before hiding them
+    setTimeout(() => {
+      if (document.activeElement !== inputRef.current && 
+          !suggestionsRef.current?.contains(document.activeElement)) {
+        setShowSuggestions(false);
+      }
+    }, 200);
+  };
 
   const selectSuggestion = (suggestion: string) => {
     setEmail(suggestion);
@@ -312,16 +326,24 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     return 'Excellent';
   };
 
+  // Theme-aware style constants
+  const primaryColor = 'hsl(var(--primary))';
+  const primaryHoverColor = theme === 'dark' ? 'hsl(var(--primary-foreground))' : 'hsl(var(--primary))';
+  const focusRingColor = 'hsl(var(--ring))';
+  const inputBgColor = theme === 'dark' ? 'hsl(var(--input))' : 'hsl(var(--background))';
+  const errorColor = 'hsl(var(--destructive))';
+  const successColor = 'hsl(var(--success, 142 71% 45%))';
+
   return (
     <div className="w-full max-w-md mx-auto space-y-2">
-      <Label htmlFor="email" className="block font-medium text-sm mb-1.5 text-gray-700 flex items-center">
+      <Label htmlFor="email" className="block font-medium text-sm mb-1.5 text-foreground flex items-center">
         Email address
         <TooltipProvider>
           <Tooltip delayDuration={300}>
             <TooltipTrigger asChild>
               <div className="relative group ml-1.5">
                 <Info 
-                  className="h-3.5 w-3.5 text-gray-400 group-hover:text-gray-600 transition-colors" 
+                  className="h-3.5 w-3.5 text-muted-foreground group-hover:text-foreground transition-colors" 
                   aria-label="Info" 
                 />
               </div>
@@ -335,7 +357,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
 
       {/* Input Field */}
       <div className="relative">
-        <div className={`absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center h-5 w-5 transition-all duration-200 ${focused ? 'text-[#ff4747]' : 'text-gray-400'}`}>
+        <div className={`absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center h-5 w-5 transition-all duration-200 ${focused ? 'text-primary' : 'text-muted-foreground'}`}>
           <Mail className="h-[15px] w-[15px]" />
         </div>
         
@@ -357,12 +379,12 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
           placeholder="name@example.com"
           className={`w-full pl-10 pr-10 h-11 text-sm transition-all duration-200 focus:ring-1 focus:ring-offset-0 focus:outline-none shadow-sm ${
             validationMessage 
-              ? 'border-red-300 focus:border-red-400 focus:ring-red-200 bg-red-50' 
+              ? 'border-destructive focus:border-destructive focus:ring-destructive/20 bg-destructive/5' 
               : isValid 
-                ? 'border-green-300 focus:border-green-400 focus:ring-green-200 bg-green-50' 
+                ? 'border-green-500 focus:border-green-600 focus:ring-green-200 bg-green-50 dark:bg-green-950/20 dark:border-green-800' 
                 : focused 
-                  ? 'border-[#ff4747]/30 focus:border-[#ff4747] focus:ring-[#ff4747]/20' 
-                  : 'border-gray-200 hover:border-gray-300 focus:border-gray-400 focus:ring-gray-200'
+                  ? 'border-primary/30 focus:border-primary focus:ring-primary/20' 
+                  : 'border-input hover:border-input focus:border-input focus:ring-ring/20'
           }`}
           autoComplete="email"
           aria-invalid={!!validationMessage}
@@ -373,7 +395,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
           {/* Checking Indicator */}
           {checking && (
-            <Loader2 className="h-4 w-4 text-gray-400 animate-spin mr-1" aria-label="Checking email" />
+            <Loader2 className="h-4 w-4 text-muted-foreground animate-spin mr-1" aria-label="Checking email" />
           )}
           
           {/* Clear Button */}
@@ -382,7 +404,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
               type="button"
               onClick={clearInput}
               tabIndex={0}
-              className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-1 transition-colors"
+              className="text-muted-foreground hover:text-foreground hover:bg-muted rounded-full p-1 transition-colors"
               aria-label="Clear input"
             >
               <X className="h-3.5 w-3.5" />
@@ -404,7 +426,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         <button
           type="button"
           onClick={applyTypoSuggestion}
-          className="flex items-center gap-1.5 mt-1 text-xs text-blue-500 hover:text-blue-700 hover:underline"
+          className="flex items-center gap-1.5 mt-1 text-xs text-primary hover:text-primary/90 hover:underline"
         >
           <span>Did you mean: <strong>{typoSuggestion}</strong>?</span>
           <Check className="h-3 w-3" />
@@ -418,7 +440,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="flex items-start gap-1.5 text-xs text-red-500 mt-1.5 bg-red-50 px-3 py-1.5 rounded border border-red-100 overflow-hidden"
+            className="flex items-start gap-1.5 text-xs text-destructive mt-1.5 bg-destructive/5 px-3 py-1.5 rounded-md border border-destructive/10 overflow-hidden"
             id="email-validation-error"
             role="alert"
           >
@@ -442,9 +464,9 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
                 <Shield className={`h-3.5 w-3.5 ${emailStrength.score < 3 ? 'text-orange-400' : emailStrength.score < 7 ? 'text-yellow-500' : 'text-green-500'}`} />
                 <span className="font-medium">Email security: {getStrengthLabel(emailStrength.score)}</span>
               </div>
-              <span className="text-gray-500">{Math.max(0, Math.min(emailStrength.score, 10))}/10</span>
+              <span className="text-muted-foreground">{Math.max(0, Math.min(emailStrength.score, 10))}/10</span>
             </div>
-            <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+            <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
               <div 
                 className={`h-full ${getStrengthColor(emailStrength.score)} transition-all duration-500 ease-out`}
                 style={{ width: getStrengthWidth(emailStrength.score) }}
@@ -458,9 +480,9 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
                   {msg.positive ? (
                     <Check className="h-3 w-3 text-green-500 mt-0.5" />
                   ) : (
-                    <X className="h-3 w-3 text-red-500 mt-0.5" />
+                    <X className="h-3 w-3 text-destructive mt-0.5" />
                   )}
-                  <span className={msg.positive ? 'text-green-600' : 'text-red-500'}>
+                  <span className={msg.positive ? 'text-green-600 dark:text-green-400' : 'text-destructive'}>
                     {msg.text}
                   </span>
                 </div>
@@ -488,8 +510,8 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
                 onMouseEnter={() => setHoveredIndex(index)}
                 className={`flex items-center text-xs px-3 py-1.5 rounded-full transition-all duration-150 ${
                   hoveredIndex === index
-                    ? 'bg-[#ff4747]/10 text-[#ff4747] shadow-sm'
-                    : 'bg-gray-100 text-gray-600 hover:bg-[#ff4747]/5 hover:text-[#ff4747]/90'
+                    ? 'bg-primary/10 text-primary shadow-sm'
+                    : 'bg-muted text-muted-foreground hover:bg-primary/5 hover:text-primary/90'
                 }`}
               >
                 @{domain}
@@ -499,7 +521,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
                     target="_blank" 
                     rel="noopener noreferrer"
                     onClick={(e) => e.stopPropagation()}
-                    className="ml-1.5 text-gray-400 hover:text-gray-600"
+                    className="ml-1.5 text-muted-foreground hover:text-foreground"
                     title={`Visit ${provider.name}`}
                   >
                     <ExternalLink className="h-3 w-3" />
@@ -524,8 +546,8 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
             disabled={!isValid || checking}
             className={`w-full mt-4 py-2.5 rounded-lg font-medium transition-all duration-200 relative overflow-hidden ${
               isValid && !checking
-                ? 'bg-[#ff4747] hover:bg-[#ff2727] text-white shadow-sm hover:shadow'
-                : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                ? 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm hover:shadow'
+                : 'bg-muted text-muted-foreground cursor-not-allowed'
             }`}
           >
             {checking ? (
@@ -542,8 +564,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         </motion.div>
       )}
 
-      <style>
-        {`
+      <style jsx>{`
         @keyframes fadeIn {
           from { opacity: 0; }
           to { opacity: 1; }
@@ -558,8 +579,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         .animate-slideIn {
           animation: slideIn 0.2s ease-in-out;
         }
-        `}
-      </style>
+      `}</style>
     </div>
   );
 };
