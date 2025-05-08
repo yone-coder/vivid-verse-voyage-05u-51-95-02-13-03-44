@@ -3,6 +3,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
+// Import new component structure
 import AuthContainer from '@/components/auth/AuthContainer';
 import AuthHeader from '@/components/auth/AuthHeader';
 import AuthSocialButtons from '@/components/auth/AuthSocialButtons';
@@ -19,13 +20,8 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
   const [phone, setPhone] = useState('');
   const [countryCode, setCountryCode] = useState('+1');
   const [fullName, setFullName] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
-  const [agreeToTerms, setAgreeToTerms] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [activeTab, setActiveTab] = useState('email');
   const [isSignUp, setIsSignUp] = useState(false);
+  const [activeTab, setActiveTab] = useState('email');
   const [isLoading, setIsLoading] = useState(false);
 
   const { signIn, signUp, user } = useAuth();
@@ -40,55 +36,25 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate input based on active tab
     if (activeTab === 'email') {
       if (!email) {
         toast.error("Please enter your email address.");
         return;
       }
+
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
         toast.error("Please enter a valid email address.");
         return;
       }
-    } else if (activeTab === 'phone') {
-      if (!phone) {
-        toast.error("Please enter your phone number.");
-        return;
-      }
     }
 
-    // Validate password
-    if (!password || password.length < 6) {
-      toast.error("Password must be at least 6 characters.");
+    if (activeTab === 'phone' && !phone) {
+      toast.error("Please enter your phone number.");
       return;
     }
 
-    // Extra validation for sign-up
-    if (isSignUp) {
-      if (password !== confirmPassword) {
-        toast.error("Passwords don't match.");
-        return;
-      }
-      if (!agreeToTerms) {
-        toast.error("You must agree to the terms of service.");
-        return;
-      }
-    }
-
-    setIsLoading(true);
-    try {
-      if (isSignUp) {
-        await signUp(email, password);
-      } else {
-        await signIn(email, password, rememberMe);
-      }
-    } catch (error) {
-      console.error("Authentication error:", error);
-      toast.error("Authentication failed. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
+    toast.success(`Submitted ${activeTab === 'email' ? email : phone}`);
   };
 
   const handleSocialLogin = async (provider: 'github' | 'twitter' | 'google' | 'facebook' | 'apple') => {
