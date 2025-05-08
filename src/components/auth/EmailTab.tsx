@@ -57,7 +57,10 @@ const getEmailStrength = (email: string): {
 } => {
   if (!email || !email.includes('@')) return { score: 0, messages: [] };
   
-  const [localPart, domain] = email.split('@');
+  const parts = email.split('@');
+  if (parts.length !== 2) return { score: 0, messages: [] };
+  
+  const [localPart, domain] = parts;
   if (!localPart || !domain) return { score: 0, messages: [] };
   
   let score = 0;
@@ -141,24 +144,24 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
   
   // Helper: Normalize and lowercase domain
-  const normalizeEmail = (val: string) => {
+  const normalizeEmail = useCallback((val: string) => {
     const atIndex = val.indexOf('@');
     if (atIndex === -1) return val; // no @ yet, return raw input
     const local = val.slice(0, atIndex);
     const domain = val.slice(atIndex + 1).toLowerCase();
     return `${local}@${domain}`;
-  };
+  }, []);
 
   // Helper: Detect disposable provider
-  const isDisposableDomain = (domain: string) =>
-    disposableDomainPatterns.some((pattern) => pattern.test(domain));
+  const isDisposableDomain = useCallback((domain: string) =>
+    disposableDomainPatterns.some((pattern) => pattern.test(domain)), []);
 
   // Contextual validation
-  const getValidationMessage = (email: string) => {
-    if (!email) return null;
-    if (email.length < 4) return 'Enter at least 4 characters.';
-    if (!email.includes('@')) return 'Missing "@" symbol. Example: name@example.com';
-    const parts = email.split('@');
+  const getValidationMessage = useCallback((emailValue: string) => {
+    if (!emailValue) return null;
+    if (emailValue.length < 4) return 'Enter at least 4 characters.';
+    if (!emailValue.includes('@')) return 'Missing "@" symbol. Example: name@example.com';
+    const parts = emailValue.split('@');
     if (parts.length !== 2) return 'Invalid email format. Example: name@example.com';
     const [localPart, domainPart] = parts;
     if (!localPart) return 'Please enter your email username (before @)';
@@ -179,15 +182,14 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     
     // Stricter validation
     const strictRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!strictRegex.test(normalizeEmail(email))) return 'Please enter a valid email address';
+    if (!strictRegex.test(normalizeEmail(emailValue))) return 'Please enter a valid email address';
     return null;
-  };
+  }, [isDisposableDomain, normalizeEmail]);
 
   const validationMessage = (submitted || (!focused && email.length > 0)) ? getValidationMessage(email) : null;
   const isValid = !validationMessage && email.length > 0;
-  const emailStrength = getEmailStrength(email);
-
-  // Generate suggestions as user types
+  
+  // Generate suggestions as user types - memoized to prevent re-creation on render
   const generateSuggestions = useCallback((input: string) => {
     const trimmed = input.trim();
     if (trimmed.length < 3) return [];
@@ -327,6 +329,9 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     setSubmitted(true);
     if (onSubmit && isValid) onSubmit(e);
   };
+
+  // Get email strength data once during render to prevent recalculation
+  const emailStrength = React.useMemo(() => getEmailStrength(email), [email]);
 
   // Strength meter coloration
   const getStrengthColor = (score: number) => {
@@ -509,7 +514,10 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
           className="flex flex-wrap gap-2 mt-2 animate-fadeIn"
         >
           {suggestions.map((sugg, index) => {
-            const domain = sugg.split('@')[1];
+            const parts = sugg.split('@');
+            if (parts.length !== 2) return null;
+            
+            const domain = parts[1];
             const provider = premiumDomains.find(pd => pd.domain === domain);
             
             return (
