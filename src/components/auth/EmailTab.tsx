@@ -57,8 +57,8 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     if (isDisposableDomain(domainPart)) return 'Please use a permanent, non-disposable email.';
     // Stricter validation
     const strictRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-if (!strictRegex.test(normalizeEmail(email))) return 'Please enter a valid email address';
-return null;
+    if (!strictRegex.test(normalizeEmail(email))) return 'Please enter a valid email address';
+    return null;
   };
 
   const validationMessage = getValidationMessage(email);
@@ -69,15 +69,22 @@ return null;
     if (!input.includes('@')) return [];
     const [username, partialDomain] = input.split('@');
     if (!username) return [];
-    if (!partialDomain || partialDomain.includes('.')) return [];
+    
+    // If there's nothing after @ or just starting to type, show all suggestions
+    if (!partialDomain) {
+      return premiumDomains
+        .slice(0, 4)
+        .map(({ domain }) => `${username}@${domain}`);
+    }
+    
+    // If already contains a dot, don't show suggestions
+    if (partialDomain.includes('.')) return [];
+    
     const lowerPartial = partialDomain.toLowerCase();
-
     return premiumDomains
       .filter(({ domain }) => domain.startsWith(lowerPartial))
       .slice(0, 4)
-      .map(({ domain }) => `
-${username}@$
-{domain}`);
+      .map(({ domain }) => `${username}@${domain}`);
   }, []);
 
   // Debounced validation and suggestions
@@ -143,31 +150,30 @@ ${username}@$
       {/* Input Field */}
       <div className="relative">
         <User
-          className={`absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4
-${focused ? 'text-[#ff4747]' : 'text-gray-400'}`}
+          className={`absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 ${focused ? 'text-[#ff4747]' : 'text-gray-400'}`}
           title={tooltip}
           aria-label="Email icon"
         />
         <Input
-  ref={inputRef}
-  id="email"
-  type="email"
-  spellCheck="false"
-  autoCorrect="off"
-  autoCapitalize="none"
-  value={email}
-  onChange={(e) => setEmail(normalizeEmail(e.target.value))}
-  onFocus={handleFocus}
-  onBlur={handleBlur}
-  onKeyDown={handleKeyDown}
-  placeholder="name@example.com"
-  className={`w-full pl-10 pr-10 transition-all focus:outline-none focus:ring-0 ${
-    validationMessage ? 'border-red-300' : isValid ? 'border-green-300' : 'border-gray-300'
-  }`}
-  autoComplete="email"
-  aria-invalid={!!validationMessage}
-  aria-describedby={validationMessage ? "email-validation-error" : undefined}
-/>
+          ref={inputRef}
+          id="email"
+          type="email"
+          spellCheck="false"
+          autoCorrect="off"
+          autoCapitalize="none"
+          value={email}
+          onChange={(e) => setEmail(normalizeEmail(e.target.value))}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
+          placeholder="name@example.com"
+          className={`w-full pl-10 pr-10 transition-all focus:outline-none focus:ring-0 ${
+            validationMessage ? 'border-red-300' : isValid ? 'border-green-300' : 'border-gray-300'
+          }`}
+          autoComplete="email"
+          aria-invalid={!!validationMessage}
+          aria-describedby={validationMessage ? "email-validation-error" : undefined}
+        />
 
         {/* Clear Button */}
         {email.length > 0 && (
@@ -219,9 +225,7 @@ ${focused ? 'text-[#ff4747]' : 'text-gray-400'}`}
               <div
                 key={suggestion}
                 className={`flex justify-between items-center px-3 py-2 cursor-pointer text-sm transition-colors
-${
-                  idx === hoveredIndex ? 'bg-gray-100 font-semibold' : ''
-                }`}
+                  ${idx === hoveredIndex ? 'bg-gray-100 font-semibold' : ''}`}
                 onMouseDown={() => selectSuggestion(suggestion)}
                 onMouseEnter={() => setHoveredIndex(idx)}
                 role="option"
