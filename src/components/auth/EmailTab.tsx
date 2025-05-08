@@ -34,10 +34,12 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
 
   // Helper: Normalize and lowercase domain
   const normalizeEmail = (val: string) => {
-    // Email should be lowercased except local-part per RFC, but most sites do this for simplicity
-    const [lp, dom] = val.split('@');
-    return (dom ? `${lp}@${dom.toLowerCase()}` : lp) || '';
-  };
+  const atIndex = val.indexOf('@');
+  if (atIndex === -1) return val; // no @ yet, return raw input
+  const local = val.slice(0, atIndex);
+  const domain = val.slice(atIndex + 1).toLowerCase();
+  return `${local}@${domain}`;
+};
 
   // Helper: Detect disposable provider
   const isDisposableDomain = (domain: string) =>
