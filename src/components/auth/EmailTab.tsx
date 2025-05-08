@@ -68,26 +68,24 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
 
   // Suggest domains as user types
   const generateSuggestions = useCallback((input: string) => {
-    if (!input.includes('@')) return [];
-    const [username, partialDomain] = input.split('@');
-    if (!username) return [];
-    
-    // If there's nothing after @ or just starting to type, show all suggestions
-    if (!partialDomain) {
-      return premiumDomains
-        .slice(0, 4)
-        .map(({ domain }) => `${username}@${domain}`);
-    }
-    
-    // If already contains a dot, don't show suggestions
-    if (partialDomain.includes('.')) return [];
-    
-    const lowerPartial = partialDomain.toLowerCase();
-    return premiumDomains
-      .filter(({ domain }) => domain.startsWith(lowerPartial))
-      .slice(0, 4)
-      .map(({ domain }) => `${username}@${domain}`);
-  }, []);
+  const trimmed = input.trim();
+  if (trimmed.length < 3) return [];
+
+  let username = trimmed;
+  let partialDomain = '';
+  
+  if (trimmed.includes('@')) {
+    [username, partialDomain] = trimmed.split('@');
+  }
+
+  if (!username) return [];
+
+  const lowerPartial = partialDomain.toLowerCase();
+  return premiumDomains
+    .filter(({ domain }) => domain.startsWith(lowerPartial))
+    .slice(0, 4)
+    .map(({ domain }) => `${username}@${domain}`);
+}, []);
 
   // Debounced validation and suggestions
   useEffect(() => {
