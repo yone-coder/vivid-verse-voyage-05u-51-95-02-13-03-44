@@ -8,9 +8,10 @@ interface EmailTabProps {
   email: string;
   setEmail: (email: string) => void;
   onSubmit?: (e: React.FormEvent) => void;
+  showSubmitButton?: boolean; // Add optional prop to control button visibility
 }
 
-const EmailTab = ({ email, setEmail, onSubmit }: EmailTabProps) => {
+const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: EmailTabProps) => {
   return (
     <div>
       <Label htmlFor="email" className="block text-base font-medium mb-1 text-gray-700">
@@ -28,7 +29,7 @@ const EmailTab = ({ email, setEmail, onSubmit }: EmailTabProps) => {
           required
         />
       </div>
-      {onSubmit && (
+      {showSubmitButton && onSubmit && (
         <div className="mt-4 mb-2">
           <button 
             type="button"

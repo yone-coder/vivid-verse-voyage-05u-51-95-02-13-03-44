@@ -2,7 +2,8 @@
 import React from 'react';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Smartphone } from 'lucide-react';
+import { Phone } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface PhoneTabProps {
   phone: string;
@@ -10,39 +11,44 @@ interface PhoneTabProps {
   countryCode: string;
   setCountryCode: (code: string) => void;
   onSubmit?: (e: React.FormEvent) => void;
+  showSubmitButton?: boolean; // Add optional prop to control button visibility
 }
 
 const PhoneTab = ({ 
   phone, 
   setPhone, 
   countryCode, 
-  setCountryCode,
-  onSubmit
+  setCountryCode, 
+  onSubmit,
+  showSubmitButton = false 
 }: PhoneTabProps) => {
   return (
     <div>
-      <Label htmlFor="phone" className="block text-base font-medium mb-1 text-gray-700">Phone number</Label>
-      <div className="flex">
-        <div className="relative w-24 mr-2">
-          <select
+      <Label htmlFor="phone" className="block text-base font-medium mb-1 text-gray-700">
+        Phone number
+      </Label>
+      <div className="flex gap-2">
+        <div className="w-1/4">
+          <Select
             value={countryCode}
-            onChange={(e) => setCountryCode(e.target.value)}
-            className="h-10 w-full rounded-md border border-[#eaeaea] bg-background px-3 py-1.5 text-base focus-visible:ring-[#ff4747] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+            onValueChange={setCountryCode}
           >
-            <option value="+1">+1</option>
-            <option value="+44">+44</option>
-            <option value="+33">+33</option>
-            <option value="+49">+49</option>
-            <option value="+86">+86</option>
-            <option value="+91">+91</option>
-            <option value="+234">+234</option>
-            <option value="+27">+27</option>
-            <option value="+81">+81</option>
-            <option value="+55">+55</option>
-          </select>
+            <SelectTrigger className="w-full border-[#eaeaea] focus:ring-[#ff4747]">
+              <SelectValue placeholder="+1" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="+1">+1 (US)</SelectItem>
+              <SelectItem value="+44">+44 (UK)</SelectItem>
+              <SelectItem value="+33">+33 (FR)</SelectItem>
+              <SelectItem value="+49">+49 (DE)</SelectItem>
+              <SelectItem value="+86">+86 (CN)</SelectItem>
+              <SelectItem value="+91">+91 (IN)</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
-        <div className="relative group flex-1">
-          <Smartphone className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-[#ff4747] transition-colors" />
+        
+        <div className="relative flex-1 group">
+          <Phone className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-[#ff4747] transition-colors" />
           <Input
             id="phone"
             type="tel"
@@ -54,7 +60,8 @@ const PhoneTab = ({
           />
         </div>
       </div>
-      {onSubmit && (
+      
+      {showSubmitButton && onSubmit && (
         <div className="mt-4 mb-2">
           <button 
             type="button"
@@ -65,9 +72,6 @@ const PhoneTab = ({
           </button>
         </div>
       )}
-      <p className="text-xs text-gray-500 text-center mt-2">
-        We'll send a verification code to this number
-      </p>
     </div>
   );
 };

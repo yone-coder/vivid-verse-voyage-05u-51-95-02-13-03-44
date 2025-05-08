@@ -1,7 +1,9 @@
+
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { ArrowRight } from 'lucide-react';
 
 // Import new component structure
 import AuthContainer from '@/components/auth/AuthContainer';
@@ -67,6 +69,12 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
 
     if (activeTab === 'phone' && !phone) {
       toast.error("Please enter your phone number.");
+      return;
+    }
+
+    // For signup mode, validate full name
+    if (authMode === 'signup' && !fullName && (activeTab === 'email' || activeTab === 'phone')) {
+      toast.error("Please enter your full name.");
       return;
     }
 
@@ -185,7 +193,10 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
               step={step}
             />
             
-            <SubmitButton isLoading={isLoading} label={authMode === 'signin' ? "Continue to Login" : "Continue to Signup"} />
+            <SubmitButton 
+              isLoading={isLoading} 
+              label="Next" 
+            />
             
             <div className="text-center mt-4 flex items-center justify-center space-x-2">
               <span className="text-sm text-gray-600">
@@ -231,7 +242,10 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
               handlePasswordReset={handlePasswordReset}
             />
             
-            <SubmitButton isLoading={isLoading} label={authMode === 'signin' ? "Sign in" : "Create account"} />
+            <SubmitButton 
+              isLoading={isLoading} 
+              label={authMode === 'signin' ? "Sign in" : "Create account"} 
+            />
             
             <div className="text-center mt-4 flex items-center justify-center space-x-2">
               <span className="text-sm text-gray-600">
@@ -268,7 +282,10 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
               activeTab={activeTab}
             />
             
-            <SubmitButton isLoading={isLoading} label="Verify & Continue" />
+            <SubmitButton 
+              isLoading={isLoading} 
+              label="Verify & Continue" 
+            />
             
             <div className="text-center mt-4 flex items-center justify-center space-x-2">
               <span className="text-sm text-gray-600">
