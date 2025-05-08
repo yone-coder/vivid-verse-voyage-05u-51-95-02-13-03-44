@@ -1,7 +1,10 @@
+
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { User, Check, X, AlertCircle, Info, Loader2 } from 'lucide-react';
+import { User, Check, X, AlertCircle, Info, Loader2, Mail, Shield, ExternalLink } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface EmailTabProps {
   email: string;
@@ -17,11 +20,110 @@ const premiumDomains = [
   { name: 'iCloud', domain: 'icloud.com', url: 'https://icloud.com' },
   { name: 'ProtonMail', domain: 'protonmail.com', url: 'https://protonmail.com' },
   { name: 'AOL', domain: 'aol.com', url: 'https://aol.com' },
+  { name: 'Zoho', domain: 'zoho.com', url: 'https://zoho.com' },
+  { name: 'Tutanota', domain: 'tutanota.com', url: 'https://tutanota.com' },
 ];
 
 const disposableDomainPatterns = [
-  /10minutemail/, /mailinator/, /tempmail/, /guerrillamail/, /yopmail/
+  /10minutemail/, /mailinator/, /tempmail/, /guerrillamail/, /yopmail/, /throwawaymail/,
+  /tempinbox/, /fakeinbox/, /mailnesia/, /dispostable/, /mailnull/, /spamgourmet/,
+  /mytemp.email/, /sharklasers/, /trashmail/, /mailcatch/, /discard.email/, /temp-mail/
 ];
+
+// Common email typos to suggest corrections for
+const commonTypos: Record<string, string> = {
+  'gmail.co': 'gmail.com',
+  'gamil.com': 'gmail.com',
+  'gnail.com': 'gmail.com',
+  'gmial.com': 'gmail.com',
+  'gmal.com': 'gmail.com',
+  'hotmail.co': 'hotmail.com',
+  'hotmal.com': 'hotmail.com',
+  'yahoomail.com': 'yahoo.com',
+  'yaho.com': 'yahoo.com',
+  'yahooo.com': 'yahoo.com',
+  'ymail.co': 'ymail.com',
+  'outloo.com': 'outlook.com',
+  'outlok.com': 'outlook.com',
+  'iclod.com': 'icloud.com',
+  'icoud.com': 'icloud.com'
+};
+
+// Email strength criteria
+const getEmailStrength = (email: string): {
+  score: number;
+  messages: {text: string, positive: boolean}[];
+} => {
+  if (!email || !email.includes('@')) return { score: 0, messages: [] };
+  
+  const [localPart, domain] = email.split('@');
+  if (!localPart || !domain) return { score: 0, messages: [] };
+  
+  let score = 0;
+  const messages: {text: string, positive: boolean}[] = [];
+  
+  // Domain checks
+  if (domain && domain.includes('.')) {
+    score += 2;
+    
+    // Check for premium domain
+    const isPremium = premiumDomains.some(pd => pd.domain === domain.toLowerCase());
+    if (isPremium) {
+      score += 1;
+      messages.push({text: 'Using a recognized email provider', positive: true});
+    }
+    
+    // Check for typos
+    const potentialTypo = Object.keys(commonTypos).find(typo => domain.toLowerCase() === typo);
+    if (potentialTypo) {
+      score -= 1;
+      messages.push({text: `Did you mean ${commonTypos[potentialTypo]}?`, positive: false});
+    }
+    
+    // Check for disposable domain
+    const isDisposable = disposableDomainPatterns.some(pattern => pattern.test(domain.toLowerCase()));
+    if (isDisposable) {
+      score -= 3;
+      messages.push({text: 'Temporary email addresses are not accepted', positive: false});
+    }
+  }
+  
+  // Local part checks
+  if (localPart) {
+    // Length
+    if (localPart.length > 5) {
+      score += 1;
+    }
+    
+    // Contains numbers
+    if (/\d/.test(localPart)) {
+      score += 1;
+    }
+    
+    // Contains special chars
+    if (/[._-]/.test(localPart)) {
+      score += 1;
+      messages.push({text: 'Email contains special characters', positive: true});
+    }
+    
+    // Contains both letters and numbers
+    if (/[a-zA-Z]/.test(localPart) && /\d/.test(localPart)) {
+      score += 1;
+      messages.push({text: 'Good mix of letters and numbers', positive: true});
+    }
+  }
+  
+  // Email format validation
+  const strictRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (strictRegex.test(email)) {
+    score += 2;
+  } else {
+    score -= 2;
+    messages.push({text: 'Invalid email format', positive: false});
+  }
+  
+  return { score, messages };
+};
 
 const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: EmailTabProps) => {
   const [focused, setFocused] = useState(false);
@@ -30,10 +132,12 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   const [hoveredIndex, setHoveredIndex] = useState<number>(-1);
   const [submitted, setSubmitted] = useState(false);
   const [checking, setChecking] = useState(false);
+  const [showStrengthMeter, setShowStrengthMeter] = useState(false);
+  const [typoSuggestion, setTypoSuggestion] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const suggestionsRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
-
+  
   // Helper: Normalize and lowercase domain
   const normalizeEmail = (val: string) => {
     const atIndex = val.indexOf('@');
@@ -59,6 +163,16 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     if (domainPart.split('.').length < 2 || domainPart.endsWith('.'))
       return 'Invalid domain format. Example: example.com';
     if (isDisposableDomain(domainPart)) return 'Please use a permanent, non-disposable email.';
+    
+    // Check for common typos in domain
+    for (const typo in commonTypos) {
+      if (domainPart === typo) {
+        setTypoSuggestion(`${localPart}@${commonTypos[typo]}`);
+        return `Did you mean ${commonTypos[typo]}? (Click to correct)`;
+      }
+    }
+    setTypoSuggestion(null);
+    
     // Stricter validation
     const strictRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!strictRegex.test(normalizeEmail(email))) return 'Please enter a valid email address';
@@ -67,8 +181,9 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
 
   const validationMessage = (submitted || (!focused && email.length > 0)) ? getValidationMessage(email) : null;
   const isValid = !validationMessage && email.length > 0;
+  const emailStrength = getEmailStrength(email);
 
-  // Suggest domains as user types
+  // Generate suggestions as user types
   const generateSuggestions = useCallback((input: string) => {
     const trimmed = input.trim();
     if (trimmed.length < 3) return [];
@@ -88,7 +203,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     return premiumDomains
       .filter(({ domain }) => domain.startsWith(lowerPartial))
       .slice(0, 6)
-      .map(({ domain }) => domain);
+      .map(({ domain }) => `${username}@${domain}`);
   }, []);
 
   // Simulate validation check
@@ -97,8 +212,12 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
       setChecking(true);
       const timer = setTimeout(() => {
         setChecking(false);
+        // Show strength meter after checking completes
+        setShowStrengthMeter(true);
       }, 600);
       return () => clearTimeout(timer);
+    } else {
+      setShowStrengthMeter(false);
     }
   }, [email]);
 
@@ -153,11 +272,16 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   const clearInput = () => {
     setEmail('');
     setSuggestions([]);
+    setShowStrengthMeter(false);
     inputRef.current?.focus();
   };
 
-  // Tooltip on input icon
-  const tooltip = "We'll never share your email. Format: name@example.com";
+  const applyTypoSuggestion = () => {
+    if (typoSuggestion) {
+      setEmail(typoSuggestion);
+      setTypoSuggestion(null);
+    }
+  };
 
   // Handle form submit
   const handleSubmit = (e: React.FormEvent) => {
@@ -166,26 +290,53 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     if (onSubmit && isValid) onSubmit(e);
   };
 
+  // Strength meter coloration
+  const getStrengthColor = (score: number) => {
+    if (score < 0) return 'bg-red-500';
+    if (score < 3) return 'bg-orange-400';
+    if (score < 5) return 'bg-yellow-400';
+    if (score < 7) return 'bg-green-400';
+    return 'bg-emerald-500';
+  };
+
+  const getStrengthWidth = (score: number) => {
+    const baseScore = Math.max(0, Math.min(score, 10));
+    return `${(baseScore / 10) * 100}%`;
+  };
+
+  const getStrengthLabel = (score: number) => {
+    if (score < 0) return 'Poor';
+    if (score < 3) return 'Weak';
+    if (score < 5) return 'Fair';
+    if (score < 7) return 'Good';
+    return 'Excellent';
+  };
+
   return (
     <div className="w-full max-w-md mx-auto space-y-2">
       <Label htmlFor="email" className="block font-medium text-sm mb-1.5 text-gray-700 flex items-center">
         Email address
-        <div className="relative group ml-1.5">
-          <Info 
-            className="h-3.5 w-3.5 text-gray-400 group-hover:text-gray-600 transition-colors" 
-            aria-label="Info" 
-          />
-          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 w-48 p-2 bg-gray-800 text-xs text-white rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-10">
-            {tooltip}
-            <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
-          </div>
-        </div>
+        <TooltipProvider>
+          <Tooltip delayDuration={300}>
+            <TooltipTrigger asChild>
+              <div className="relative group ml-1.5">
+                <Info 
+                  className="h-3.5 w-3.5 text-gray-400 group-hover:text-gray-600 transition-colors" 
+                  aria-label="Info" 
+                />
+              </div>
+            </TooltipTrigger>
+            <TooltipContent className="max-w-[220px] p-3">
+              <p className="text-xs">We'll never share your email. Format: name@example.com</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </Label>
 
       {/* Input Field */}
       <div className="relative">
         <div className={`absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center h-5 w-5 transition-all duration-200 ${focused ? 'text-[#ff4747]' : 'text-gray-400'}`}>
-          <User className="h-[15px] w-[15px]" />
+          <Mail className="h-[15px] w-[15px]" />
         </div>
         
         <Input
@@ -248,72 +399,147 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         </div>
       </div>
 
-      {/* Validation Message */}
-      {validationMessage && (
-        <div
-          className="flex items-start gap-1.5 text-xs text-red-500 mt-1.5 bg-red-50 px-3 py-1.5 rounded border border-red-100 animate-slideIn"
-          id="email-validation-error"
-          role="alert"
+      {/* Typo Suggestion */}
+      {typoSuggestion && (
+        <button
+          type="button"
+          onClick={applyTypoSuggestion}
+          className="flex items-center gap-1.5 mt-1 text-xs text-blue-500 hover:text-blue-700 hover:underline"
         >
-          <AlertCircle className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
-          <span>{validationMessage}</span>
-        </div>
+          <span>Did you mean: <strong>{typoSuggestion}</strong>?</span>
+          <Check className="h-3 w-3" />
+        </button>
       )}
 
-      {/* Suggestions Dropdown */}
+      {/* Validation Message */}
+      <AnimatePresence>
+        {validationMessage && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="flex items-start gap-1.5 text-xs text-red-500 mt-1.5 bg-red-50 px-3 py-1.5 rounded border border-red-100 overflow-hidden"
+            id="email-validation-error"
+            role="alert"
+          >
+            <AlertCircle className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
+            <span>{validationMessage}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Email Strength Meter */}
+      <AnimatePresence>
+        {showStrengthMeter && isValid && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="mt-1.5 space-y-1.5 overflow-hidden"
+          >
+            <div className="flex justify-between items-center text-xs">
+              <div className="flex items-center gap-1">
+                <Shield className={`h-3.5 w-3.5 ${emailStrength.score < 3 ? 'text-orange-400' : emailStrength.score < 7 ? 'text-yellow-500' : 'text-green-500'}`} />
+                <span className="font-medium">Email security: {getStrengthLabel(emailStrength.score)}</span>
+              </div>
+              <span className="text-gray-500">{Math.max(0, Math.min(emailStrength.score, 10))}/10</span>
+            </div>
+            <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+              <div 
+                className={`h-full ${getStrengthColor(emailStrength.score)} transition-all duration-500 ease-out`}
+                style={{ width: getStrengthWidth(emailStrength.score) }}
+              ></div>
+            </div>
+            
+            {/* Email Strength Feedback Messages */}
+            <div className="space-y-1">
+              {emailStrength.messages.map((msg, idx) => (
+                <div key={idx} className="flex items-start gap-1.5 text-xs">
+                  {msg.positive ? (
+                    <Check className="h-3 w-3 text-green-500 mt-0.5" />
+                  ) : (
+                    <X className="h-3 w-3 text-red-500 mt-0.5" />
+                  )}
+                  <span className={msg.positive ? 'text-green-600' : 'text-red-500'}>
+                    {msg.text}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Premium Domain Suggestions */}
       {showSuggestions && suggestions.length > 0 && (
         <div 
           ref={suggestionsRef}
           className="flex flex-wrap gap-2 mt-2 animate-fadeIn"
         >
-          {suggestions.map((domain, index) => (
-            <button
-              key={domain}
-              type="button"
-              onClick={() => {
-                const [localPart] = email.split('@');
-                setEmail(`${localPart}@${domain}`);
-                inputRef.current?.focus();
-              }}
-              onMouseEnter={() => setHoveredIndex(index)}
-              className={`text-xs px-3 py-1.5 rounded-full transition-all duration-150 ${
-                hoveredIndex === index
-                  ? 'bg-[#ff4747]/10 text-[#ff4747] shadow-sm'
-                  : 'bg-gray-100 text-gray-600 hover:bg-[#ff4747]/5 hover:text-[#ff4747]/90'
-              }`}
-            >
-              @{domain}
-            </button>
-          ))}
+          {suggestions.map((sugg, index) => {
+            const domain = sugg.split('@')[1];
+            const provider = premiumDomains.find(pd => pd.domain === domain);
+            
+            return (
+              <button
+                key={sugg}
+                type="button"
+                onClick={() => selectSuggestion(sugg)}
+                onMouseEnter={() => setHoveredIndex(index)}
+                className={`flex items-center text-xs px-3 py-1.5 rounded-full transition-all duration-150 ${
+                  hoveredIndex === index
+                    ? 'bg-[#ff4747]/10 text-[#ff4747] shadow-sm'
+                    : 'bg-gray-100 text-gray-600 hover:bg-[#ff4747]/5 hover:text-[#ff4747]/90'
+                }`}
+              >
+                @{domain}
+                {provider && (
+                  <a 
+                    href={provider.url} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="ml-1.5 text-gray-400 hover:text-gray-600"
+                    title={`Visit ${provider.name}`}
+                  >
+                    <ExternalLink className="h-3 w-3" />
+                  </a>
+                )}
+              </button>
+            );
+          })}
         </div>
       )}
 
       {/* Submit Button */}
       {showSubmitButton && (
-        <button
-          type="submit"
-          onClick={handleSubmit}
-          disabled={!isValid || checking}
-          className={`w-full mt-4 py-2.5 rounded-lg font-medium transition-all duration-200 relative overflow-hidden ${
-            isValid && !checking
-              ? 'bg-[#ff4747] hover:bg-[#ff2727] text-white shadow-sm hover:shadow'
-              : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-          }`}
+        <motion.div
+          initial={{ y: 10, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.1 }}
         >
-          {checking ? (
-            <span className="flex items-center justify-center gap-2">
-              <Loader2 className="h-4 w-4 animate-spin" />
-              Checking...
-            </span>
-          ) : (
-            <>
-              <span className="relative z-10">Continue</span>
-              {isValid && (
-                <div className="absolute inset-0 bg-[#ff2727] transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-200"></div>
-              )}
-            </>
-          )}
-        </button>
+          <button
+            type="submit"
+            onClick={handleSubmit}
+            disabled={!isValid || checking}
+            className={`w-full mt-4 py-2.5 rounded-lg font-medium transition-all duration-200 relative overflow-hidden ${
+              isValid && !checking
+                ? 'bg-[#ff4747] hover:bg-[#ff2727] text-white shadow-sm hover:shadow'
+                : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+            }`}
+          >
+            {checking ? (
+              <span className="flex items-center justify-center gap-2">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Checking...
+              </span>
+            ) : (
+              <>
+                <span className="relative z-10">Continue</span>
+              </>
+            )}
+          </button>
+        </motion.div>
       )}
 
       <style>
