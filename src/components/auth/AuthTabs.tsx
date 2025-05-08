@@ -1,9 +1,11 @@
 
 import React, { useState } from 'react';
-import { Tabs } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import TabDivider from './TabDivider';
 import TabNavigation from './TabNavigation';
-import TabContent from './TabContent';
+import EmailTab from './EmailTab';
+import PhoneTab from './PhoneTab';
+import PasskeyTab from './PasskeyTab';
 
 interface AuthTabsProps {
   activeTab: string;
@@ -16,7 +18,7 @@ interface AuthTabsProps {
   setCountryCode: (code: string) => void;
   isSignUp: boolean;
   onSubmit?: (e: React.FormEvent) => void;
-  step: number; // Add step property
+  step: number;
 }
 
 const AuthTabs = ({ 
@@ -47,6 +49,7 @@ const AuthTabs = ({
 
   // Only show forms in the tabs during step 1
   const showFormsInTabs = step === 1;
+  const showInlineButtons = false;
 
   return (
     <div className="mb-4">
@@ -59,20 +62,33 @@ const AuthTabs = ({
           showTooltips={true}
           animationStyle="grow"
         />
-        <TabContent 
-          activeTab={activeTab} 
-          tabTransition={tabTransition} 
-          email={email} 
-          setEmail={setEmail} 
-          phone={phone} 
-          setPhone={setPhone} 
-          countryCode={countryCode} 
-          setCountryCode={setCountryCode}
-          onSubmit={onSubmit}
-          showForms={showFormsInTabs}
-          showInlineButtons={false}
-          isSignUp={isSignUp}
-        />
+        
+        <div className={`transition-all duration-200 ${tabTransition ? 'opacity-0 transform -translate-y-1' : 'opacity-100 transform translate-y-0'}`}>
+          <TabsContent value="email" className="pt-3 mb-0">
+            <EmailTab 
+              email={email} 
+              setEmail={setEmail} 
+              onSubmit={showFormsInTabs ? onSubmit : undefined} 
+              showSubmitButton={showInlineButtons} 
+            />
+          </TabsContent>
+          <TabsContent value="phone" className="pt-3 mb-0">
+            <PhoneTab 
+              phone={phone} 
+              setPhone={setPhone} 
+              countryCode={countryCode} 
+              setCountryCode={setCountryCode} 
+              onSubmit={showFormsInTabs ? onSubmit : undefined}
+              showSubmitButton={showInlineButtons}
+            />
+          </TabsContent>
+          <TabsContent value="passkey" className="pt-3 mb-0">
+            <PasskeyTab 
+              onSubmit={showFormsInTabs ? onSubmit : undefined} 
+              showSubmitButton={showInlineButtons} 
+            />
+          </TabsContent>
+        </div>
       </Tabs>
     </div>
   );
