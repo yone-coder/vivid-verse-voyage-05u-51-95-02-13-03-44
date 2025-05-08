@@ -19,12 +19,13 @@ const TabNavigation = ({ activeTab, handleTabChange }: TabNavigationProps) => {
           key={key}
           value={key}
           onClick={() => handleTabChange(key)}
-          className="group flex-1 flex items-center justify-center text-xs font-medium py-2 border-b-2 data-[state=active]:border-[#ff4747] data-[state=active]:text-[#ff4747] data-[state=inactive]:text-gray-500 data-[state=inactive]:border-transparent transition-all duration-300 ease-in-out hover:bg-gray-50 rounded-none"
+          className="group relative flex-1 flex items-center justify-center text-xs font-medium py-2 border-b-2 data-[state=active]:border-[#ff4747] data-[state=active]:text-[#ff4747] data-[state=inactive]:text-gray-500 data-[state=inactive]:border-transparent transition-all duration-300 ease-in-out hover:bg-gray-50 rounded-none"
         >
-          <Icon
-            className="h-3.5 w-3.5 mr-1.5 fill-none group-data-[state=active]:fill-[#ff4747] stroke-current text-current transition-all duration-300 ease-in-out transform group-data-[state=active]:scale-110 group-data-[state=active]:translate-y-[-1px] group-hover:rotate-[-5deg]"
-          />
-          <span className="transition-all duration-300 ease-in-out group-data-[state=active]:font-medium group-hover:tracking-wide">
+          <div className="relative w-5 h-5 flex items-center justify-center">
+            <div className="absolute inset-0 rounded-full bg-[#ff4747]/10 scale-0 group-data-[state=active]:scale-100 transition-transform duration-300 ease-out" />
+            <Icon className="h-3.5 w-3.5 text-current transition-all duration-300 ease-in-out group-data-[state=active]:scale-110 group-hover:rotate-[-5deg]" />
+          </div>
+          <span className="ml-1.5 transition-all duration-300 ease-in-out group-data-[state=active]:font-medium group-hover:tracking-wide">
             {label}
           </span>
         </TabsTrigger>
