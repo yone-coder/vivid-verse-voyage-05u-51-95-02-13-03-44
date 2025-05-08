@@ -31,6 +31,7 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
   const [activeTab, setActiveTab] = useState('email'); // 'email', 'phone', or 'passkey'
   const [step, setStep] = useState(1); // Multi-step process
   const [isSignUp, setIsSignUp] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Auth context
   const { signIn, signUp, user } = useAuth();
@@ -81,6 +82,7 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
         }
       }
 
+      setIsLoading(true);
       try {
         if (isSignUp) {
           await signUp(email, password);
@@ -89,6 +91,9 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
         }
       } catch (error) {
         console.error("Authentication error:", error);
+        toast.error("Authentication failed. Please try again.");
+      } finally {
+        setIsLoading(false);
       }
     }
   };
@@ -116,6 +121,7 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
           isSignUp={isSignUp}
           fullName={fullName}
           setFullName={setFullName}
+          onSubmit={handleSubmit}
         />
         
         <AuthForm 

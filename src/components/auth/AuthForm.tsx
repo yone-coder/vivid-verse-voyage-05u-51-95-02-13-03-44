@@ -2,7 +2,6 @@
 import React from 'react';
 import SignInForm from './SignInForm';
 import SignUpForm from './SignUpForm';
-import EmailTab from './EmailTab';
 
 interface AuthFormProps {
   step: number;
@@ -60,37 +59,42 @@ const AuthForm = ({
   onSubmit
 }: AuthFormProps) => {
   const goBack = () => setStep(1);
+  
+  // Only show signin/signup forms when we're in step 2 or a non-email tab is active
+  const showAuthForms = step === 2 || activeTab !== 'email';
 
   return (
     <>
-      {isSignUp ? (
-        <SignUpForm
-          email={email}
-          password={password}
-          confirmPassword={confirmPassword}
-          agreeToTerms={agreeToTerms}
-          setPassword={setPassword}
-          setConfirmPassword={setConfirmPassword}
-          setAgreeToTerms={setAgreeToTerms}
-          showPassword={showPassword}
-          setShowPassword={setShowPassword}
-          handleSubmit={onSubmit}
-          goBack={goBack}
-          step={step}
-        />
-      ) : (
-        <SignInForm
-          email={email}
-          password={password}
-          rememberMe={rememberMe}
-          setPassword={setPassword}
-          setRememberMe={setRememberMe}
-          showPassword={showPassword}
-          setShowPassword={setShowPassword}
-          handleSubmit={onSubmit}
-          goBack={goBack}
-          step={step}
-        />
+      {showAuthForms && (
+        isSignUp ? (
+          <SignUpForm
+            email={email}
+            password={password}
+            confirmPassword={confirmPassword}
+            agreeToTerms={agreeToTerms}
+            setPassword={setPassword}
+            setConfirmPassword={setConfirmPassword}
+            setAgreeToTerms={setAgreeToTerms}
+            showPassword={showPassword}
+            setShowPassword={setShowPassword}
+            handleSubmit={onSubmit}
+            goBack={goBack}
+            step={step}
+          />
+        ) : (
+          <SignInForm
+            email={email}
+            password={password}
+            rememberMe={rememberMe}
+            setPassword={setPassword}
+            setRememberMe={setRememberMe}
+            showPassword={showPassword}
+            setShowPassword={setShowPassword}
+            handleSubmit={onSubmit}
+            goBack={goBack}
+            step={step}
+          />
+        )
       )}
 
       {step === 1 && (

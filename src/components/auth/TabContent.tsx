@@ -14,6 +14,7 @@ interface TabContentProps {
   setPhone: (phone: string) => void;
   countryCode: string;
   setCountryCode: (code: string) => void;
+  onSubmit?: (e: React.FormEvent) => void;
 }
 
 const TabContent = ({ 
@@ -24,12 +25,13 @@ const TabContent = ({
   phone, 
   setPhone, 
   countryCode, 
-  setCountryCode 
+  setCountryCode,
+  onSubmit
 }: TabContentProps) => {
   return (
     <div className={`transition-all duration-200 ${tabTransition ? 'opacity-0 transform -translate-y-1' : 'opacity-100 transform translate-y-0'}`}>
       <TabsContent value="email" className="pt-3 mb-0">
-        <EmailTab email={email} setEmail={setEmail} />
+        <EmailTab email={email} setEmail={setEmail} onSubmit={onSubmit} />
       </TabsContent>
       <TabsContent value="phone" className="pt-3 mb-0">
         <PhoneTab 

@@ -18,6 +18,7 @@ interface AuthTabsProps {
   isSignUp: boolean;
   fullName: string;
   setFullName: (name: string) => void;
+  onSubmit?: (e: React.FormEvent) => void;
 }
 
 const AuthTabs = ({ 
@@ -31,7 +32,8 @@ const AuthTabs = ({
   setCountryCode,
   isSignUp,
   fullName,
-  setFullName
+  setFullName,
+  onSubmit
 }: AuthTabsProps) => {
   const [tabTransition, setTabTransition] = useState(false);
 
@@ -65,7 +67,8 @@ const AuthTabs = ({
           phone={phone} 
           setPhone={setPhone} 
           countryCode={countryCode} 
-          setCountryCode={setCountryCode} 
+          setCountryCode={setCountryCode}
+          onSubmit={onSubmit} 
         />
       </Tabs>
 
