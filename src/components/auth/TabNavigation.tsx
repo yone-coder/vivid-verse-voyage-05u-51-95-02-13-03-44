@@ -10,7 +10,8 @@ interface TabNavigationProps {
 
 const TabNavigation = ({ activeTab, handleTabChange }: TabNavigationProps) => {
   const tabsRef = useRef<(HTMLButtonElement | null)[]>([]);
-  const [underlineStyle, setUnderlineStyle] = useState({ left: 0, width: 0 });
+  const [underline, setUnderline] = useState({ left: 0, width: 0 });
+  const [showUnderline, setShowUnderline] = useState(true);
 
   const tabs = [
     { key: 'email', icon: Mail, label: 'Email' },
@@ -22,10 +23,17 @@ const TabNavigation = ({ activeTab, handleTabChange }: TabNavigationProps) => {
     const index = tabs.findIndex(tab => tab.key === activeTab);
     const el = tabsRef.current[index];
     if (el) {
-      setUnderlineStyle({
-        left: el.offsetLeft,
-        width: el.offsetWidth,
-      });
+      // Start exit animation
+      setShowUnderline(false);
+
+      // Wait for exit to finish, then reposition and grow underline
+      setTimeout(() => {
+        setUnderline({
+          left: el.offsetLeft,
+          width: el.offsetWidth,
+        });
+        setShowUnderline(true);
+      }, 200); // exit duration
     }
   }, [activeTab]);
 
@@ -44,7 +52,6 @@ const TabNavigation = ({ activeTab, handleTabChange }: TabNavigationProps) => {
               className="group relative flex-1 flex items-center justify-center text-xs font-medium py-2 border-b-2 border-transparent data-[state=inactive]:text-gray-500 transition-all duration-300 ease-in-out hover:bg-gray-50 rounded-none"
             >
               <div className="relative w-6 h-6 flex items-center justify-center">
-                {/* Circle background */}
                 <div className="absolute inset-0 rounded-full bg-[#ff4747]/10 scale-0 group-data-[state=active]:scale-100 transition-transform duration-300 ease-out" />
                 <Icon
                   className="h-4 w-4 text-current transition-transform duration-300 ease-in-out group-data-[state=active]:scale-110 group-data-[state=active]:drop-shadow-[0_0_6px_#ff4747]"
@@ -57,21 +64,16 @@ const TabNavigation = ({ activeTab, handleTabChange }: TabNavigationProps) => {
           );
         })}
 
-        {/* Animated filling underline */}
+        {/* Exit and Entry Underline Animation */}
         <motion.div
           className="absolute bottom-0 h-[2px] bg-[#ff4747] origin-left"
-          initial={{ scaleX: 0 }}
-          animate={{
-            left: underlineStyle.left,
-            width: underlineStyle.width,
-            scaleX: 1,
-          }}
-          transition={{
-            left: { type: 'tween', duration: 0.2 },
-            width: { type: 'tween', duration: 0.2 },
-            scaleX: { type: 'spring', stiffness: 250, damping: 20 },
-          }}
+          key={showUnderline ? 'grow' : 'shrink'}
+          initial={{ scaleX: showUnderline ? 0 : 1 }}
+          animate={{ scaleX: showUnderline ? 1 : 0 }}
+          transition={{ duration: 0.2, ease: 'easeInOut' }}
           style={{
+            left: underline.left,
+            width: underline.width,
             transformOrigin: 'left center',
           }}
         />
