@@ -213,9 +213,9 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
 
       {/* Suggestions Dropdown */}
       {/* Horizontal domain suggestions */}
-{/* Horizontal domain suggestions with @ */}
+{/* Domain Suggestions Row */}
 {showSuggestions && suggestions.length > 0 && (
-  <div className="flex flex-wrap items-center gap-2 mt-2 overflow-x-auto">
+  <div className="flex flex-wrap gap-2 mt-1.5">
     {suggestions.map((domain) => (
       <button
         key={domain}
@@ -225,28 +225,14 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
           setEmail(`${localPart}@${domain}`);
           inputRef.current?.focus();
         }}
-        className="px-3 py-1.5 rounded-full bg-gray-100 text-sm text-gray-600 hover:bg-[#ff4747]/10 hover:text-[#ff4747] transition-colors"
+        className="text-xs px-3 py-1.5 rounded-full bg-gray-100 text-gray-600 hover:bg-[#ff4747]/10 hover:text-[#ff4747] transition-colors"
       >
         @{domain}
       </button>
     ))}
   </div>
 )}
-
-      {/* Provider Links Row */}
-      <div className="flex flex-wrap gap-2 mt-1.5">
-        {premiumDomains.map((d) => (
-          <a
-            href={d.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            key={d.domain}
-            className="text-xs text-gray-400 hover:text-[#ff4747] underline"
-          >
-            {d.name}
-          </a>
-        ))}
-      </div>
+   
 
       {/* Submit Button */}
       {showSubmitButton && onSubmit && (
