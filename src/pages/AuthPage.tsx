@@ -142,7 +142,10 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
 
   return (
     <AuthContainer isOverlay={isOverlay} onClose={onClose}>
-      <AuthHeader title={authMode === 'signin' ? "Log in to Mima" : "Sign up for Mima"} />
+      <AuthHeader
+  title={authMode === 'signin' ? "Log in to Mima" : "Sign up for Mima"}
+  subtitle={authMode === 'signin' ? "Welcome back! Please log in to your account." : "Join us today! Create your account to get started."}
+/>
 
       <form onSubmit={step === 1 ? handleStep1Submit : step === 2 ? handleStep2Submit : handleFinalSubmit} className="w-full">
         {step === 1 && (
