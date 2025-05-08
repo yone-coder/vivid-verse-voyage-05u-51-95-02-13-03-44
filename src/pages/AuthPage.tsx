@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -188,13 +187,16 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
             
             <SubmitButton isLoading={isLoading} label={authMode === 'signin' ? "Continue to Login" : "Continue to Signup"} />
             
-            <div className="text-center mt-4">
+            <div className="text-center mt-4 flex items-center justify-center space-x-2">
+              <span className="text-sm text-gray-600">
+                {authMode === 'signin' ? "Don't have an account?" : "Already have an account?"}
+              </span>
               <button 
                 type="button" 
                 onClick={toggleAuthMode}
-                className="text-sm text-[#ff4747] hover:underline"
+                className="text-sm font-medium text-[#ff4747] hover:text-[#ff2727] hover:underline"
               >
-                {authMode === 'signin' ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
+                {authMode === 'signin' ? "Sign up" : "Sign in"}
               </button>
             </div>
           </div>
@@ -230,6 +232,19 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
             />
             
             <SubmitButton isLoading={isLoading} label={authMode === 'signin' ? "Sign in" : "Create account"} />
+            
+            <div className="text-center mt-4 flex items-center justify-center space-x-2">
+              <span className="text-sm text-gray-600">
+                {authMode === 'signin' ? "Don't have an account?" : "Already have an account?"}
+              </span>
+              <button 
+                type="button" 
+                onClick={toggleAuthMode}
+                className="text-sm font-medium text-[#ff4747] hover:text-[#ff2727] hover:underline"
+              >
+                {authMode === 'signin' ? "Sign up" : "Sign in"}
+              </button>
+            </div>
           </div>
         )}
 
@@ -254,6 +269,19 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
             />
             
             <SubmitButton isLoading={isLoading} label="Verify & Continue" />
+            
+            <div className="text-center mt-4 flex items-center justify-center space-x-2">
+              <span className="text-sm text-gray-600">
+                {authMode === 'signin' ? "Don't have an account?" : "Already have an account?"}
+              </span>
+              <button 
+                type="button" 
+                onClick={toggleAuthMode}
+                className="text-sm font-medium text-[#ff4747] hover:text-[#ff2727] hover:underline"
+              >
+                {authMode === 'signin' ? "Sign up" : "Sign in"}
+              </button>
+            </div>
           </div>
         )}
       </form>
