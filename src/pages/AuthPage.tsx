@@ -20,8 +20,9 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
   const [phone, setPhone] = useState('');
   const [countryCode, setCountryCode] = useState('+1');
   const [fullName, setFullName] = useState('');
-  const [isSignUp, setIsSignUp] = useState(false);
   const [activeTab, setActiveTab] = useState('email');
+  const [step, setStep] = useState(1);
+  const [isSignUp, setIsSignUp] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const { signIn, signUp, user } = useAuth();
@@ -36,25 +37,29 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (activeTab === 'email') {
-      if (!email) {
+    if (step === 1) {
+      if (!email && activeTab === 'email') {
         toast.error("Please enter your email address.");
         return;
       }
 
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        toast.error("Please enter a valid email address.");
+      if (activeTab === 'email') {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          toast.error("Please enter a valid email address.");
+          return;
+        }
+      }
+
+      if (activeTab === 'phone' && !phone) {
+        toast.error("Please enter your phone number.");
         return;
       }
-    }
 
-    if (activeTab === 'phone' && !phone) {
-      toast.error("Please enter your phone number.");
-      return;
+      setStep(2);
+    } else {
+      toast.info("Password input and handling have been removed.");
     }
-
-    toast.success(`Submitted ${activeTab === 'email' ? email : phone}`);
   };
 
   const handleSocialLogin = async (provider: 'github' | 'twitter' | 'google' | 'facebook' | 'apple') => {
@@ -81,6 +86,7 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
           fullName={fullName}
           setFullName={setFullName}
           onSubmit={handleSubmit}
+          step={step}
         />
       </div>
 
