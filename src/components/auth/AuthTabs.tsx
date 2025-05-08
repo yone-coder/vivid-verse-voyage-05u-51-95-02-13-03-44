@@ -75,10 +75,12 @@ const AuthTabs = ({
           setCountryCode={setCountryCode}
           onSubmit={onSubmit}
           showForms={showFormsInTabs}
+          showInlineButtons={false}
+          isSignUp={isSignUp}
+          fullName={fullName}
+          setFullName={setFullName}
         />
       </Tabs>
-
-      {isSignUp && <FullNameField fullName={fullName} setFullName={setFullName} />}
     </div>
   );
 };
