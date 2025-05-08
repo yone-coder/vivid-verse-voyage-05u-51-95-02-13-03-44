@@ -213,10 +213,10 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         )}  
       </div>  
   
-      {/* Validation Message */}  
+      {/* Validation Message (Below the Input Field) */}  
       {validationMessage && (  
         <div  
-          className="flex items-start gap-1.5 text-xs text-red-500 mt-0.5"  
+          className="flex items-start gap-1.5 text-xs text-red-500 mt-1"  
           id="email-validation-error"  
           role="alert"  
         >  
