@@ -1,122 +1,133 @@
 import React, { useState } from 'react';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { User, AlertCircle, CheckCircle } from 'lucide-react';
+import { User, Check, X } from 'lucide-react';
 
 interface EmailTabProps {
   email: string;
   setEmail: (email: string) => void;
   onSubmit?: (e: React.FormEvent) => void;
   showSubmitButton?: boolean;
-  isLoading?: boolean;
 }
 
-const EmailTab = ({ 
-  email, 
-  setEmail, 
-  onSubmit, 
-  showSubmitButton = false,
-  isLoading = false
-}: EmailTabProps) => {
-  const [focused, setFocused] = useState(false);
+const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = true }: EmailTabProps) => {
+  const [isFocused, setIsFocused] = useState(false);
   const [isValid, setIsValid] = useState<boolean | null>(null);
   
   const validateEmail = (value: string) => {
     if (!value) return null;
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const isValidEmail = emailRegex.test(value);
-    const isValidUsername = value.length >= 3 && !value.includes(' ');
-    return isValidEmail || isValidUsername;
+    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) || value.length > 3;
+    setIsValid(isValidEmail);
+    return isValidEmail;
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setEmail(value);
-    if (value) {
-      setIsValid(validateEmail(value));
-    } else {
-      setIsValid(null);
-    }
+    const newValue = e.target.value;
+    setEmail(newValue);
+    if (newValue.length > 2) validateEmail(newValue);
   };
 
-  const getIconColor = () => {
-    if (!email) return 'text-gray-400';
-    if (isValid === null) return 'text-gray-400';
-    return isValid ? 'text-green-500' : 'text-red-500';
+  const handleBlur = () => {
+    setIsFocused(false);
+    if (email) validateEmail(email);
   };
 
-  const getBorderColor = () => {
-    if (focused) return 'border-[#ff4747]';
-    if (!email) return 'border-[#eaeaea]';
-    if (isValid === null) return 'border-[#eaeaea]';
-    return isValid ? 'border-green-500' : 'border-red-500';
-  };
-  
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
+    <div className="w-full max-w-md mx-auto">
+      <div className="mb-2 flex items-center justify-between">
         <Label 
           htmlFor="email" 
-          className="text-base font-medium text-gray-700 transition-all"
+          className="text-base font-semibold text-gray-800 tracking-wide"
         >
-          Email or username
+          Your Account
         </Label>
-        {isValid === false && email && (
-          <span className="text-xs text-red-500 flex items-center">
-            <AlertCircle className="h-3 w-3 mr-1" />
-            Invalid format
+        {isValid !== null && (
+          <span className={`text-xs font-medium flex items-center ${isValid ? 'text-green-500' : 'text-red-500'}`}>
+            {isValid ? (
+              <>
+                <Check className="w-3 h-3 mr-1" /> Valid format
+              </>
+            ) : (
+              <>
+                <X className="w-3 h-3 mr-1" /> Please check format
+              </>
+            )}
           </span>
         )}
       </div>
       
-      <div className={`relative group rounded-md shadow-sm transition-all duration-300 ${focused ? 'shadow-md' : ''}`}>
-        <div className="absolute left-3 top-3 transition-all duration-300">
-          {isValid === true && email ? (
-            <CheckCircle className="h-5 w-5 text-green-500" />
-          ) : (
-            <User className={`h-5 w-5 transition-colors duration-300 ${getIconColor()}`} />
-          )}
+      <div className={`relative rounded-lg transition-all duration-300 ${
+        isFocused 
+          ? 'shadow-[0_0_0_4px_rgba(255,71,71,0.1)]' 
+          : 'hover:shadow-[0_0_0_2px_rgba(255,71,71,0.05)]'
+      }`}>
+        {/* Gradient border */}
+        <div className={`absolute inset-0 rounded-lg ${
+          isFocused 
+            ? 'bg-gradient-to-r from-[#ff4747] via-[#ff9147] to-[#ffcc47] p-[1.5px]' 
+            : 'bg-gradient-to-r from-gray-200 to-gray-300 p-[1px]'
+        }`}>
+          <div className="absolute inset-0 bg-white rounded-lg"></div>
         </div>
-        
+
+        {/* Icon with animated background */}
+        <div className={`absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center w-8 h-8 rounded-full transition-all duration-300 ${
+          isFocused 
+            ? 'bg-gradient-to-br from-[#ff4747] to-[#ff9147]'
+            : 'bg-gray-100'
+        }`}>
+          <User className={`h-4 w-4 transition-colors ${
+            isFocused ? 'text-white' : 'text-gray-500'
+          }`} />
+        </div>
+
         <Input
           id="email"
           type="text"
           value={email}
           onChange={handleChange}
-          onFocus={() => setFocused(true)}
-          onBlur={() => setFocused(false)}
+          onFocus={() => setIsFocused(true)}
+          onBlur={handleBlur}
           placeholder="Email address or username"
-          className={`w-full pl-10 pr-3 py-2 transition-all duration-300 ring-offset-2 ${getBorderColor()} focus-visible:ring-[#ff4747]`}
+          className={`w-full pl-12 pr-3 py-3 border-none bg-transparent relative z-10 text-base ${
+            isValid === false ? 'text-red-600' : 'text-gray-800'
+          } placeholder:text-gray-400 focus-visible:ring-0 focus-visible:outline-none`}
           required
         />
       </div>
-      
+
+      {/* Premium badge */}
+      <div className="mt-1 flex items-center">
+        <span className="text-xs text-gray-500 flex items-center">
+          <span className="inline-block w-4 h-4 rounded-full bg-gradient-to-r from-[#ffcc47] to-[#ff9147] mr-1.5"></span>
+          Premium Account Protection
+        </span>
+      </div>
+
       {showSubmitButton && onSubmit && (
         <div className="mt-6">
           <button 
             type="button"
             onClick={(e) => onSubmit(e)}
-            disabled={isLoading || !email || isValid === false}
-            className={`w-full flex items-center justify-center text-white font-medium py-3 px-4 rounded-md transition-all duration-300 transform focus:outline-none focus:ring-2 focus:ring-[#ff4747] focus:ring-offset-2
-              ${isLoading ? 'bg-gray-400 cursor-not-allowed' : email && isValid !== false ? 'bg-[#ff4747] hover:bg-[#ff2727] active:scale-98 hover:-translate-y-0.5 shadow-md hover:shadow-lg' : 'bg-gray-300 cursor-not-allowed'}`}
+            className="w-full relative overflow-hidden group"
           >
-            {isLoading ? (
-              <span className="flex items-center">
-                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Processing...
-              </span>
-            ) : (
-              <span className="flex items-center">
-                Next
-                <svg className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                </svg>
-              </span>
-            )}
+            {/* Button shine effect */}
+            <div className="absolute inset-0 w-1/3 h-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-30 -translate-x-full group-hover:animate-[shine_1s_ease_forwards]"></div>
+            
+            {/* Main button */}
+            <div className="flex items-center justify-center bg-gradient-to-r from-[#ff4747] via-[#ff7847] to-[#ff9147] text-white font-semibold py-3.5 px-4 rounded-lg shadow-lg shadow-[#ff4747]/20 transition-all duration-300 group-hover:shadow-xl group-hover:shadow-[#ff4747]/30 group-active:scale-[0.98]">
+              <span className="mr-1">Continue</span>
+              <svg className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M13 7L18 12L13 17M6 12H18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
           </button>
+          
+          <div className="mt-3 text-center">
+            <span className="text-xs text-gray-500">
+              Secure login powered by <span className="text-[#ff4747] font-medium">AliGuard™</span>
+            </span>
+          </div>
         </div>
       )}
     </div>
