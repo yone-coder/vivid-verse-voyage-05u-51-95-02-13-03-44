@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { User, Check, X } from 'lucide-react';
+import { User, Check, AlertCircle, X, Loader2 } from 'lucide-react';
 
 interface EmailTabProps {
   email: string;
@@ -10,126 +10,202 @@ interface EmailTabProps {
   showSubmitButton?: boolean;
 }
 
-const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = true }: EmailTabProps) => {
-  const [isFocused, setIsFocused] = useState(false);
+const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: EmailTabProps) => {
+  const [focused, setFocused] = useState(false);
   const [isValid, setIsValid] = useState<boolean | null>(null);
-  
-  const validateEmail = (value: string) => {
-    if (!value) return null;
-    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) || value.length > 3;
-    setIsValid(isValidEmail);
-    return isValidEmail;
-  };
+  const [typing, setTyping] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
-    setEmail(newValue);
-    if (newValue.length > 2) validateEmail(newValue);
+  // Common email domains for suggestions
+  const commonDomains = ['gmail.com', 'outlook.com', 'yahoo.com', 'icloud.com', 'hotmail.com'];
+
+  useEffect(() => {
+    // Validate email format whenever email changes
+    if (email.length > 0) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      setIsValid(emailRegex.test(email));
+
+      // Show the typing indicator while user is typing
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+      setTyping(true);
+      typingTimeoutRef.current = setTimeout(() => {
+        setTyping(false);
+      }, 1000);
+
+      // Generate email suggestions if email contains @ but no domain or incomplete domain
+      if (email.includes('@') && !email.split('@')[1]?.includes('.')) {
+        const username = email.split('@')[0];
+        const partialDomain = email.split('@')[1] || '';
+        
+        const filteredDomains = commonDomains.filter(domain => 
+          domain.startsWith(partialDomain)
+        );
+        
+        const emailSuggestions = filteredDomains.map(domain => `${username}@${domain}`);
+        setSuggestions(emailSuggestions);
+        setShowSuggestions(emailSuggestions.length > 0);
+      } else {
+        setShowSuggestions(false);
+      }
+    } else {
+      setIsValid(null);
+      setShowSuggestions(false);
+    }
+
+    return () => {
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+    };
+  }, [email]);
+
+  const handleFocus = () => {
+    setFocused(true);
   };
 
   const handleBlur = () => {
-    setIsFocused(false);
-    if (email) validateEmail(email);
+    setFocused(false);
+    setShowSuggestions(false);
+  };
+
+  const selectSuggestion = (suggestion: string) => {
+    setEmail(suggestion);
+    setShowSuggestions(false);
+    inputRef.current?.focus();
+  };
+
+  const clearInput = () => {
+    setEmail('');
+    inputRef.current?.focus();
+  };
+
+  const getInputStatusClass = () => {
+    if (email.length === 0) return 'border-[#eaeaea]';
+    if (typing) return 'border-blue-400';
+    if (isValid === true) return 'border-green-500';
+    if (isValid === false) return 'border-red-500';
+    return 'border-[#eaeaea]';
+  };
+
+  const getStatusIcon = () => {
+    if (email.length === 0) {
+      return <User className="absolute right-3 top-3 h-5 w-5 text-gray-400" />;
+    }
+    
+    if (typing) {
+      return <Loader2 className="absolute right-3 top-3 h-5 w-5 text-blue-400 animate-spin" />;
+    }
+    
+    if (isValid === true) {
+      return <Check className="absolute right-3 top-3 h-5 w-5 text-green-500" />;
+    }
+    
+    if (isValid === false) {
+      return <AlertCircle className="absolute right-3 top-3 h-5 w-5 text-red-500" />;
+    }
+    
+    return null;
   };
 
   return (
     <div className="w-full max-w-md mx-auto">
-      <div className="mb-2 flex items-center justify-between">
+      <div className={`transition-all duration-300 ${focused ? 'transform -translate-y-1' : ''}`}>
         <Label 
           htmlFor="email" 
-          className="text-base font-semibold text-gray-800 tracking-wide"
+          className={`block text-base font-medium mb-2 transition-colors duration-300 ${
+            focused ? 'text-[#ff4747]' : isValid === true ? 'text-green-600' : isValid === false ? 'text-red-600' : 'text-gray-700'
+          }`}
         >
-          Your Account
+          Email or username
         </Label>
-        {isValid !== null && (
-          <span className={`text-xs font-medium flex items-center ${isValid ? 'text-green-500' : 'text-red-500'}`}>
-            {isValid ? (
-              <>
-                <Check className="w-3 h-3 mr-1" /> Valid format
-              </>
-            ) : (
-              <>
-                <X className="w-3 h-3 mr-1" /> Please check format
-              </>
-            )}
-          </span>
+        
+        <div className="relative group">
+          <div className={`absolute left-0 top-0 w-1 h-full rounded-l-md transition-all duration-300 ${
+            focused ? 'bg-[#ff4747]' : isValid === true ? 'bg-green-500' : isValid === false ? 'bg-red-500' : 'bg-transparent'
+          }`} />
+          
+          <User className={`absolute left-3 top-3 h-5 w-5 transition-colors duration-300 ${
+            focused ? 'text-[#ff4747]' : isValid === true ? 'text-green-500' : isValid === false ? 'text-red-500' : 'text-gray-400'
+          }`} />
+          
+          {email.length > 0 && (
+            <div 
+              className="absolute right-12 top-3 cursor-pointer hover:bg-gray-100 p-1 rounded-full"
+              onClick={clearInput}
+            >
+              <X className="h-4 w-4 text-gray-500" />
+            </div>
+          )}
+          
+          {getStatusIcon()}
+          
+          <Input
+            ref={inputRef}
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            placeholder="premium@example.com"
+            className={`w-full pl-10 pr-12 py-3 bg-white border-2 rounded-md shadow-sm transition-all duration-300 hover:shadow-md ${getInputStatusClass()} ${
+              focused ? 'ring-2 ring-[#ff4747] ring-opacity-50 border-[#ff4747]' : ''
+            }`}
+            required
+            autoComplete="email"
+          />
+        </div>
+        
+        {isValid === false && email.length > 0 && !typing && (
+          <p className="mt-1 text-sm text-red-500 transition-opacity duration-300 opacity-100">
+            Please enter a valid email address
+          </p>
+        )}
+        
+        {showSuggestions && (
+          <div className="absolute z-10 mt-1 w-full max-w-md bg-white border border-gray-200 rounded-md shadow-lg py-1 animate-fadeIn">
+            {suggestions.map((suggestion, index) => (
+              <div
+                key={index}
+                className="px-4 py-2 hover:bg-gray-50 cursor-pointer flex items-center"
+                onClick={() => selectSuggestion(suggestion)}
+              >
+                <User className="h-4 w-4 mr-2 text-gray-400" />
+                <span>{suggestion}</span>
+              </div>
+            ))}
+          </div>
+        )}
+        
+        {showSubmitButton && onSubmit && (
+          <div className="mt-4 mb-2">
+            <button 
+              type="button"
+              onClick={(e) => onSubmit(e)}
+              disabled={!isValid}
+              className={`w-full flex items-center justify-center text-white font-medium py-3 px-4 rounded-md transition-all duration-300 ${
+                isValid 
+                  ? 'bg-[#ff4747] hover:bg-[#ff2727] shadow-md hover:shadow-lg' 
+                  : 'bg-gray-300 cursor-not-allowed'
+              } focus:outline-none focus:ring-2 focus:ring-[#ff4747] focus:ring-offset-2`}
+            >
+              {typing ? (
+                <>
+                  <Loader2 className="animate-spin mr-2 h-5 w-5" />
+                  Checking...
+                </>
+              ) : (
+                'Next'
+              )}
+            </button>
+          </div>
         )}
       </div>
-      
-      <div className={`relative rounded-lg transition-all duration-300 ${
-        isFocused 
-          ? 'shadow-[0_0_0_4px_rgba(255,71,71,0.1)]' 
-          : 'hover:shadow-[0_0_0_2px_rgba(255,71,71,0.05)]'
-      }`}>
-        {/* Gradient border */}
-        <div className={`absolute inset-0 rounded-lg ${
-          isFocused 
-            ? 'bg-gradient-to-r from-[#ff4747] via-[#ff9147] to-[#ffcc47] p-[1.5px]' 
-            : 'bg-gradient-to-r from-gray-200 to-gray-300 p-[1px]'
-        }`}>
-          <div className="absolute inset-0 bg-white rounded-lg"></div>
-        </div>
-
-        {/* Icon with animated background */}
-        <div className={`absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center w-8 h-8 rounded-full transition-all duration-300 ${
-          isFocused 
-            ? 'bg-gradient-to-br from-[#ff4747] to-[#ff9147]'
-            : 'bg-gray-100'
-        }`}>
-          <User className={`h-4 w-4 transition-colors ${
-            isFocused ? 'text-white' : 'text-gray-500'
-          }`} />
-        </div>
-
-        <Input
-          id="email"
-          type="text"
-          value={email}
-          onChange={handleChange}
-          onFocus={() => setIsFocused(true)}
-          onBlur={handleBlur}
-          placeholder="Email address or username"
-          className={`w-full pl-12 pr-3 py-3 border-none bg-transparent relative z-10 text-base ${
-            isValid === false ? 'text-red-600' : 'text-gray-800'
-          } placeholder:text-gray-400 focus-visible:ring-0 focus-visible:outline-none`}
-          required
-        />
-      </div>
-
-      {/* Premium badge */}
-      <div className="mt-1 flex items-center">
-        <span className="text-xs text-gray-500 flex items-center">
-          <span className="inline-block w-4 h-4 rounded-full bg-gradient-to-r from-[#ffcc47] to-[#ff9147] mr-1.5"></span>
-          Premium Account Protection
-        </span>
-      </div>
-
-      {showSubmitButton && onSubmit && (
-        <div className="mt-6">
-          <button 
-            type="button"
-            onClick={(e) => onSubmit(e)}
-            className="w-full relative overflow-hidden group"
-          >
-            {/* Button shine effect */}
-            <div className="absolute inset-0 w-1/3 h-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-30 -translate-x-full group-hover:animate-[shine_1s_ease_forwards]"></div>
-            
-            {/* Main button */}
-            <div className="flex items-center justify-center bg-gradient-to-r from-[#ff4747] via-[#ff7847] to-[#ff9147] text-white font-semibold py-3.5 px-4 rounded-lg shadow-lg shadow-[#ff4747]/20 transition-all duration-300 group-hover:shadow-xl group-hover:shadow-[#ff4747]/30 group-active:scale-[0.98]">
-              <span className="mr-1">Continue</span>
-              <svg className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M13 7L18 12L13 17M6 12H18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </div>
-          </button>
-          
-          <div className="mt-3 text-center">
-            <span className="text-xs text-gray-500">
-              Secure login powered by <span className="text-[#ff4747] font-medium">AliGuard™</span>
-            </span>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
