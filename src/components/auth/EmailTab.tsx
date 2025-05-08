@@ -158,7 +158,9 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     if (!email) return null;
     if (email.length < 4) return 'Enter at least 4 characters.';
     if (!email.includes('@')) return 'Missing "@" symbol. Example: name@example.com';
-    const [localPart, domainPart] = email.split('@');
+    const parts = email.split('@');
+    if (parts.length !== 2) return 'Invalid email format. Example: name@example.com';
+    const [localPart, domainPart] = parts;
     if (!localPart) return 'Please enter your email username (before @)';
     if (!domainPart) return 'Please enter a domain (after @)';
     if (domainPart.length < 5) return 'Incomplete domain. Example: gmail.com';
@@ -194,7 +196,12 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     let username = trimmed;
 
     if (trimmed.includes('@')) {
-      [username, partialDomain] = trimmed.split('@');
+      const parts = trimmed.split('@');
+      if (parts.length !== 2) return [];
+      
+      username = parts[0];
+      partialDomain = parts[1];
+      
       // If domain includes dot, assume complete — don't show suggestions
       if (partialDomain && partialDomain.includes('.')) return [];
     }
