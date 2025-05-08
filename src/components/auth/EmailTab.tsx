@@ -213,6 +213,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
 
       {/* Suggestions Dropdown */}
       {/* Horizontal domain suggestions */}
+{/* Horizontal domain suggestions with @ */}
 {showSuggestions && suggestions.length > 0 && (
   <div className="flex flex-wrap items-center gap-2 mt-2 overflow-x-auto">
     {suggestions.map((domain) => (
@@ -226,7 +227,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         }}
         className="px-3 py-1.5 rounded-full bg-gray-100 text-sm text-gray-600 hover:bg-[#ff4747]/10 hover:text-[#ff4747] transition-colors"
       >
-        {domain}
+        @{domain}
       </button>
     ))}
   </div>
