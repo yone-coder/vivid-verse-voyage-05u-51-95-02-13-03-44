@@ -200,7 +200,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
 
     if (!username) return [];
 
-    const lowerPartial = partialDomain.toLowerCase();
+    const lowerPartial = partialDomain?.toLowerCase() || '';
     return premiumDomains
       .filter(({ domain }) => domain.startsWith(lowerPartial))
       .slice(0, 6)
@@ -266,11 +266,17 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     }
   };
 
-  const handleBlur = () => {
+  const handleBlur = (e: React.FocusEvent) => {
+    // Don't hide suggestions if we're clicking on them
+    if (suggestionsRef.current?.contains(e.relatedTarget as Node)) {
+      return;
+    }
+    
     // Use setTimeout to allow click events on suggestions to fire before hiding them
     setTimeout(() => {
       if (document.activeElement !== inputRef.current && 
           !suggestionsRef.current?.contains(document.activeElement)) {
+        setFocused(false);
         setShowSuggestions(false);
       }
     }, 200);
@@ -278,15 +284,18 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
 
   // Updated to ensure selected suggestion is properly set in the input field
   const selectSuggestion = (suggestion: string) => {
-    setEmail(normalizeEmail(suggestion));
+    // Normalize and set the email
+    const normalizedEmail = normalizeEmail(suggestion);
+    setEmail(normalizedEmail);
     setShowSuggestions(false);
     
     // Ensure we focus the input field after selection
     setTimeout(() => {
       if (inputRef.current) {
         inputRef.current.focus();
+        setFocused(true);
       }
-    }, 50);
+    }, 10);
   };
 
   const clearInput = () => {
@@ -377,10 +386,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
           value={email}
           onChange={(e) => setEmail(normalizeEmail(e.target.value))}
           onFocus={handleFocus}
-          onBlur={() => {
-            setFocused(false);
-            handleBlur();
-          }}
+          onBlur={handleBlur}
           onKeyDown={handleKeyDown}
           placeholder="name@example.com"
           className={`w-full pl-10 pr-10 h-11 text-sm bg-background transition-all duration-200 rounded-md shadow-sm ${
