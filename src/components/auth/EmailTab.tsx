@@ -56,10 +56,9 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
       return 'Invalid domain format. Example: example.com';
     if (isDisposableDomain(domainPart)) return 'Please use a permanent, non-disposable email.';
     // Stricter validation
-    const strictRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$
-/;
-    if (!strictRegex.test(normalizeEmail(email))) return 'Please enter a valid email address';
-    return null;
+    const strictRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+if (!strictRegex.test(normalizeEmail(email))) return 'Please enter a valid email address';
+return null;
   };
 
   const validationMessage = getValidationMessage(email);
