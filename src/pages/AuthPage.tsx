@@ -48,14 +48,21 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
     e.preventDefault();
     if (step === 1) {
       // Basic validation
-      if (!email) {
+      if (!email && activeTab === 'email') {
         toast.error("Please enter your email address.");
         return;
       }
-      // Simple email validation
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        toast.error("Please enter a valid email address.");
+      // Simple email validation for email tab
+      if (activeTab === 'email') {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          toast.error("Please enter a valid email address.");
+          return;
+        }
+      }
+      // Phone validation for phone tab
+      if (activeTab === 'phone' && !phone) {
+        toast.error("Please enter your phone number.");
         return;
       }
       setStep(2); // Move to password step
@@ -122,6 +129,7 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
           fullName={fullName}
           setFullName={setFullName}
           onSubmit={handleSubmit}
+          step={step}
         />
         
         <AuthForm 

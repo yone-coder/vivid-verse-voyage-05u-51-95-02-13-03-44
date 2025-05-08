@@ -19,6 +19,7 @@ interface AuthTabsProps {
   fullName: string;
   setFullName: (name: string) => void;
   onSubmit?: (e: React.FormEvent) => void;
+  step: number; // Add step property
 }
 
 const AuthTabs = ({ 
@@ -33,7 +34,8 @@ const AuthTabs = ({
   isSignUp,
   fullName,
   setFullName,
-  onSubmit
+  onSubmit,
+  step
 }: AuthTabsProps) => {
   const [tabTransition, setTabTransition] = useState(false);
 
@@ -47,6 +49,9 @@ const AuthTabs = ({
       setTabTransition(false);
     }, 150);
   };
+
+  // Only show forms in the tabs during step 1
+  const showFormsInTabs = step === 1;
 
   return (
     <div className="mb-4">
@@ -68,7 +73,8 @@ const AuthTabs = ({
           setPhone={setPhone} 
           countryCode={countryCode} 
           setCountryCode={setCountryCode}
-          onSubmit={onSubmit} 
+          onSubmit={onSubmit}
+          showForms={showFormsInTabs}
         />
       </Tabs>
 

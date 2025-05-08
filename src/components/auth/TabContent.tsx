@@ -15,6 +15,7 @@ interface TabContentProps {
   countryCode: string;
   setCountryCode: (code: string) => void;
   onSubmit?: (e: React.FormEvent) => void;
+  showForms: boolean; // Add a new property to control form visibility
 }
 
 const TabContent = ({ 
@@ -26,12 +27,13 @@ const TabContent = ({
   setPhone, 
   countryCode, 
   setCountryCode,
-  onSubmit
+  onSubmit,
+  showForms
 }: TabContentProps) => {
   return (
     <div className={`transition-all duration-200 ${tabTransition ? 'opacity-0 transform -translate-y-1' : 'opacity-100 transform translate-y-0'}`}>
       <TabsContent value="email" className="pt-3 mb-0">
-        <EmailTab email={email} setEmail={setEmail} onSubmit={onSubmit} />
+        <EmailTab email={email} setEmail={setEmail} onSubmit={showForms ? onSubmit : undefined} />
       </TabsContent>
       <TabsContent value="phone" className="pt-3 mb-0">
         <PhoneTab 
@@ -39,11 +41,11 @@ const TabContent = ({
           setPhone={setPhone} 
           countryCode={countryCode} 
           setCountryCode={setCountryCode} 
-          onSubmit={onSubmit}
+          onSubmit={showForms ? onSubmit : undefined}
         />
       </TabsContent>
       <TabsContent value="passkey" className="pt-3 mb-0">
-        <PasskeyTab onSubmit={onSubmit} />
+        <PasskeyTab onSubmit={showForms ? onSubmit : undefined} />
       </TabsContent>
     </div>
   );
