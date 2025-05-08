@@ -1,10 +1,8 @@
-
 import React from 'react';
 import SignInForm from './SignInForm';
 import SignUpForm from './SignUpForm';
 
 interface AuthFormProps {
-  step: number;
   isSignUp: boolean;
   email: string;
   phone: string;
@@ -16,7 +14,6 @@ interface AuthFormProps {
   agreeToTerms: boolean;
   showPassword: boolean;
   activeTab: string;
-  setStep: (step: number) => void;
   setActiveTab: (tab: string) => void;
   setEmail: (email: string) => void;
   setPhone: (phone: string) => void;
@@ -31,8 +28,7 @@ interface AuthFormProps {
   onSubmit: (e: React.FormEvent) => Promise<void>;
 }
 
-const AuthForm = ({ 
-  step, 
+const AuthForm = ({
   isSignUp,
   email,
   phone,
@@ -43,8 +39,7 @@ const AuthForm = ({
   rememberMe,
   agreeToTerms,
   showPassword,
-  activeTab, 
-  setStep,
+  activeTab,
   setActiveTab,
   setEmail,
   setPhone,
@@ -58,70 +53,60 @@ const AuthForm = ({
   setIsSignUp,
   onSubmit
 }: AuthFormProps) => {
-  const goBack = () => setStep(1);
-  
   return (
     <>
-      {step === 2 && (
-        isSignUp ? (
-          <SignUpForm
-            email={email}
-            password={password}
-            confirmPassword={confirmPassword}
-            agreeToTerms={agreeToTerms}
-            setPassword={setPassword}
-            setConfirmPassword={setConfirmPassword}
-            setAgreeToTerms={setAgreeToTerms}
-            showPassword={showPassword}
-            setShowPassword={setShowPassword}
-            handleSubmit={onSubmit}
-            goBack={goBack}
-            step={step}
-          />
-        ) : (
-          <SignInForm
-            email={email}
-            password={password}
-            rememberMe={rememberMe}
-            setPassword={setPassword}
-            setRememberMe={setRememberMe}
-            showPassword={showPassword}
-            setShowPassword={setShowPassword}
-            handleSubmit={onSubmit}
-            goBack={goBack}
-            step={step}
-          />
-        )
+      {isSignUp ? (
+        <SignUpForm
+          email={email}
+          password={password}
+          confirmPassword={confirmPassword}
+          agreeToTerms={agreeToTerms}
+          setPassword={setPassword}
+          setConfirmPassword={setConfirmPassword}
+          setAgreeToTerms={setAgreeToTerms}
+          showPassword={showPassword}
+          setShowPassword={setShowPassword}
+          handleSubmit={onSubmit}
+        />
+      ) : (
+        <SignInForm
+          email={email}
+          password={password}
+          rememberMe={rememberMe}
+          setPassword={setPassword}
+          setRememberMe={setRememberMe}
+          showPassword={showPassword}
+          setShowPassword={setShowPassword}
+          handleSubmit={onSubmit}
+        />
       )}
 
-      {step === 1 && (
-        <div className="relative transition-opacity duration-150 mt-4">
-          <div className="flex items-center justify-center">
-            <div className="h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent w-full"></div>
-          </div>
-          
-          <div className="mt-4 text-center">
-            <div className="inline-block relative">
-              <span className="text-[#999] text-xs">
-                {isSignUp ? "Already have an account?" : "Don't have an account?"}
-              </span>{' '}
-              <a 
-                href="#" 
-                onClick={(e) => {
-                  e.preventDefault();
-                  setIsSignUp(!isSignUp);
-                }}
-                className="relative inline-block group ml-1"
-              >
-                <span className="text-[#ff4747] font-medium text-xs group-hover:text-[#ff2727] transition-colors">
-                  {isSignUp ? "Log in" : "Sign up"}
-                </span>
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#ff4747] group-hover:w-full transition-all duration-300"></span>
-              </a>
-            </div>
+      <div className="relative transition-opacity duration-150 mt-4">
+        <div className="flex items-center justify-center">
+          <div className="h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent w-full"></div>
+        </div>
+
+        <div className="mt-4 text-center">
+          <div className="inline-block relative">
+            <span className="text-[#999] text-xs">
+              {isSignUp ? "Already have an account?" : "Don't have an account?"}
+            </span>{' '}
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                setIsSignUp(!isSignUp);
+              }}
+              className="relative inline-block group ml-1"
+            >
+              <span className="text-[#ff4747] font-medium text-xs group-hover:text-[#ff2727] transition-colors">
+                {isSignUp ? "Log in" : "Sign up"}
+              </span>
+              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#ff4747] group-hover:w-full transition-all duration-300"></span>
+            </a>
           </div>
         </div>
-      )}
+      </div>
     </>
   );
 };
