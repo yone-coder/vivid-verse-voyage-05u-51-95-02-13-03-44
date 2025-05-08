@@ -60,12 +60,9 @@ const AuthForm = ({
 }: AuthFormProps) => {
   const goBack = () => setStep(1);
   
-  // Only show signin/signup forms when we're in step 2 or a non-email tab is active
-  const showAuthForms = step === 2 || activeTab !== 'email';
-
   return (
     <>
-      {showAuthForms && (
+      {step === 2 && (
         isSignUp ? (
           <SignUpForm
             email={email}
