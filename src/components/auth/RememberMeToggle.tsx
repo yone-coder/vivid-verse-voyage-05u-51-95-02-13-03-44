@@ -1,5 +1,7 @@
 
 import React from 'react';
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 
 interface RememberMeToggleProps {
   rememberMe: boolean;
@@ -8,21 +10,16 @@ interface RememberMeToggleProps {
 
 const RememberMeToggle = ({ rememberMe, setRememberMe }: RememberMeToggleProps) => {
   return (
-    <div className="flex items-center">
-      <div className="relative inline-block w-9 mr-2 align-middle select-none">
-        <input
-          id="remember-me"
-          type="checkbox"
-          checked={rememberMe}
-          onChange={() => setRememberMe(!rememberMe)}
-          className="absolute opacity-0 w-0 h-0"
-        />
-        <div className="block bg-gray-200 w-9 h-5 rounded-full cursor-pointer"></div>
-        <div className={`absolute left-1 top-1 bg-white w-3 h-3 rounded-full transition-transform duration-300 ease-in-out ${rememberMe ? 'transform translate-x-4 bg-[#ff4747]' : ''}`}></div>
-      </div>
-      <label htmlFor="remember-me" className="text-xs text-gray-600 cursor-pointer">
+    <div className="flex items-center space-x-2">
+      <Switch
+        id="remember-me"
+        checked={rememberMe}
+        onCheckedChange={setRememberMe}
+        className="data-[state=checked]:bg-[#ff4747]"
+      />
+      <Label htmlFor="remember-me" className="text-sm text-gray-700 cursor-pointer">
         Remember me
-      </label>
+      </Label>
     </div>
   );
 };
