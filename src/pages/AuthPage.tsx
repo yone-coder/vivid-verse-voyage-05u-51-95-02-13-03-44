@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -149,6 +150,14 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
     setShowPassword(!showPassword);
   };
 
+  // Toggle between signin and signup modes
+  const toggleAuthMode = () => {
+    setAuthMode(authMode === 'signin' ? 'signup' : 'signin');
+    // Reset password fields when switching modes
+    setPassword('');
+    setConfirmPassword('');
+  };
+
   return (
     <AuthContainer isOverlay={isOverlay} onClose={onClose}>
       <AuthHeader title={authMode === 'signin' ? "Log in to Mima" : "Sign up for Mima"} />
@@ -176,13 +185,13 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
               onSubmit={handleStep1Submit}
               step={step}
             />
-
             
+            <SubmitButton isLoading={isLoading} label={authMode === 'signin' ? "Continue to Login" : "Continue to Signup"} />
             
             <div className="text-center mt-4">
               <button 
                 type="button" 
-                onClick={() => setAuthMode(authMode === 'signin' ? 'signup' : 'signin')}
+                onClick={toggleAuthMode}
                 className="text-sm text-[#ff4747] hover:underline"
               >
                 {authMode === 'signin' ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
