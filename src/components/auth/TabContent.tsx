@@ -39,10 +39,11 @@ const TabContent = ({
           setPhone={setPhone} 
           countryCode={countryCode} 
           setCountryCode={setCountryCode} 
+          onSubmit={onSubmit}
         />
       </TabsContent>
       <TabsContent value="passkey" className="pt-3 mb-0">
-        <PasskeyTab />
+        <PasskeyTab onSubmit={onSubmit} />
       </TabsContent>
     </div>
   );

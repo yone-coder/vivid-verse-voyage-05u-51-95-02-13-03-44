@@ -9,9 +9,16 @@ interface PhoneTabProps {
   setPhone: (phone: string) => void;
   countryCode: string;
   setCountryCode: (code: string) => void;
+  onSubmit?: (e: React.FormEvent) => void;
 }
 
-const PhoneTab = ({ phone, setPhone, countryCode, setCountryCode }: PhoneTabProps) => {
+const PhoneTab = ({ 
+  phone, 
+  setPhone, 
+  countryCode, 
+  setCountryCode,
+  onSubmit
+}: PhoneTabProps) => {
   return (
     <div>
       <Label htmlFor="phone" className="block text-base font-medium mb-1 text-gray-700">Phone number</Label>
@@ -47,11 +54,17 @@ const PhoneTab = ({ phone, setPhone, countryCode, setCountryCode }: PhoneTabProp
           />
         </div>
       </div>
-      <div className="mt-4 mb-2">
-        <button className="w-full flex items-center justify-center bg-[#ff4747] text-white font-medium py-3 px-4 rounded-md hover:bg-[#ff2727] transition-all focus:outline-none focus:ring-2 focus:ring-[#ff4747] focus:ring-offset-2">
-          Next
-        </button>
-      </div>
+      {onSubmit && (
+        <div className="mt-4 mb-2">
+          <button 
+            type="button"
+            onClick={(e) => onSubmit(e)}
+            className="w-full flex items-center justify-center bg-[#ff4747] text-white font-medium py-3 px-4 rounded-md hover:bg-[#ff2727] transition-all focus:outline-none focus:ring-2 focus:ring-[#ff4747] focus:ring-offset-2"
+          >
+            Next
+          </button>
+        </div>
+      )}
       <p className="text-xs text-gray-500 text-center mt-2">
         We'll send a verification code to this number
       </p>
