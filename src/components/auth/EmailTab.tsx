@@ -247,7 +247,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
       setHoveredIndex((i) => (i - 1 + suggestions.length) % suggestions.length);
       e.preventDefault();
     } else if (e.key === 'Enter' && hoveredIndex !== -1) {
-      setEmail(suggestions[hoveredIndex]);
+      setEmail(normalizeEmail(suggestions[hoveredIndex]));
       setShowSuggestions(false);
       inputRef.current?.focus();
       e.preventDefault();
@@ -276,10 +276,17 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     }, 200);
   };
 
+  // Updated to ensure selected suggestion is properly set in the input field
   const selectSuggestion = (suggestion: string) => {
-    setEmail(suggestion);
+    setEmail(normalizeEmail(suggestion));
     setShowSuggestions(false);
-    inputRef.current?.focus();
+    
+    // Ensure we focus the input field after selection
+    setTimeout(() => {
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
+    }, 50);
   };
 
   const clearInput = () => {
