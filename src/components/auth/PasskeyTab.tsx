@@ -1,8 +1,6 @@
-
 import React, { useCallback, useState, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { KeyRound, AlertCircle, Fingerprint, Info, Loader2, CheckCircle, Smartphone } from 'lucide-react';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { KeyRound, AlertCircle, Fingerprint, Loader2, CheckCircle, Smartphone } from 'lucide-react';
 
 interface PasskeyTabProps {
   onSubmit?: (e: React.FormEvent) => void;
@@ -170,23 +168,6 @@ const PasskeyTab = ({
               )}
             </AnimatePresence>
           </div>
-          
-          {/* Info tooltip */}
-          <TooltipProvider>
-            <Tooltip delayDuration={300}>
-              <TooltipTrigger asChild>
-                <div className="absolute -top-1 -right-1 p-1 bg-background rounded-full border border-border/30 shadow-sm">
-                  <Info 
-                    className="h-3.5 w-3.5 text-muted-foreground/70 hover:text-foreground transition-colors" 
-                    aria-label="Info about passkeys" 
-                  />
-                </div>
-              </TooltipTrigger>
-              <TooltipContent className="max-w-[260px] p-3 text-xs">
-                <p className="leading-relaxed">Passkeys are a new way to sign in without passwords. They use your device's built-in authentication like fingerprint or face recognition.</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
         </div>
 
         {/* Status text */}
@@ -220,53 +201,26 @@ const PasskeyTab = ({
             transition={{ delay: 0.2 }}
             className="flex items-center justify-center gap-6 text-muted-foreground/70"
           >
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className="flex flex-col items-center gap-1.5 group">
-                    <div className="p-2 rounded-full bg-background border border-border/30 shadow-sm group-hover:border-border/50 transition-colors">
-                      <Fingerprint className="h-4 w-4 group-hover:text-foreground transition-colors" strokeWidth={1.5} />
-                    </div>
-                    <span className="text-xs group-hover:text-foreground transition-colors">Fingerprint</span>
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p className="text-xs">Sign in with fingerprint</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <div className="flex flex-col items-center gap-1.5 group">
+              <div className="p-2 rounded-full bg-background border border-border/30 shadow-sm group-hover:border-border/50 transition-colors">
+                <Fingerprint className="h-4 w-4 group-hover:text-foreground transition-colors" strokeWidth={1.5} />
+              </div>
+              <span className="text-xs group-hover:text-foreground transition-colors">Fingerprint</span>
+            </div>
             
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className="flex flex-col items-center gap-1.5 group">
-                    <div className="p-2 rounded-full bg-background border border-border/30 shadow-sm group-hover:border-border/50 transition-colors">
-                      <KeyRound className="h-4 w-4 group-hover:text-foreground transition-colors" strokeWidth={1.5} />
-                    </div>
-                    <span className="text-xs group-hover:text-foreground transition-colors">Face ID</span>
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p className="text-xs">Sign in with Face ID</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <div className="flex flex-col items-center gap-1.5 group">
+              <div className="p-2 rounded-full bg-background border border-border/30 shadow-sm group-hover:border-border/50 transition-colors">
+                <KeyRound className="h-4 w-4 group-hover:text-foreground transition-colors" strokeWidth={1.5} />
+              </div>
+              <span className="text-xs group-hover:text-foreground transition-colors">Face ID</span>
+            </div>
             
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className="flex flex-col items-center gap-1.5 group">
-                    <div className="p-2 rounded-full bg-background border border-border/30 shadow-sm group-hover:border-border/50 transition-colors">
-                      <Smartphone className="h-4 w-4 group-hover:text-foreground transition-colors" strokeWidth={1.5} />
-                    </div>
-                    <span className="text-xs group-hover:text-foreground transition-colors">Phone</span>
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p className="text-xs">Sign in with your phone</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <div className="flex flex-col items-center gap-1.5 group">
+              <div className="p-2 rounded-full bg-background border border-border/30 shadow-sm group-hover:border-border/50 transition-colors">
+                <Smartphone className="h-4 w-4 group-hover:text-foreground transition-colors" strokeWidth={1.5} />
+              </div>
+              <span className="text-xs group-hover:text-foreground transition-colors">Phone</span>
+            </div>
           </motion.div>
         )}
 
@@ -308,7 +262,7 @@ const PasskeyTab = ({
               onClick={() => handleAuthenticate()}
               className="w-full py-2.5 px-4 rounded-md font-medium transition-all duration-200 bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm hover:shadow flex items-center justify-center gap-2"
             >
-              <span>Authenticate with Passkey</span>
+              <span>Continue with Passkey</span>
               <KeyRound className="h-4 w-4" strokeWidth={1.5} />
             </button>
           </motion.div>

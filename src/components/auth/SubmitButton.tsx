@@ -13,7 +13,7 @@ const SubmitButton = ({ isLoading, label }: SubmitButtonProps) => {
     <Button
       type="submit"
       disabled={isLoading}
-      className="w-full flex items-center justify-center bg-[#ff4747] hover:bg-[#ff2727] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#ff4747] text-white font-medium py-3 px-4 rounded-lg transition-all relative overflow-hidden h-12"
+      className="w-full flex items-center justify-center bg-[#ff4747] hover:bg-[#ff2727] focus:ring-2 focus:ring-offset-1 focus:ring-[#ff4747]/50 text-white font-medium py-3 px-4 rounded-lg transition-all relative overflow-hidden h-12 shadow-sm"
     >
       {isLoading ? (
         <Loader className="h-5 w-5 animate-spin" />

@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useCallback, useMemo } from 'react';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -237,7 +236,9 @@ const PhoneTab = ({
                 }`}
                 aria-label="Select country code"
               >
-                <span className="mr-1 text-lg">{currentCountry.flag}</span>
+                <div className="w-6 h-6 rounded-full flex items-center justify-center bg-gray-100 mr-1.5 overflow-hidden">
+                  <span className="text-base leading-none">{currentCountry.flag}</span>
+                </div>
                 <span className="text-sm font-medium">{countryCode}</span>
                 <ChevronDown className="ml-1 h-4 w-4 text-muted-foreground" />
               </button>
@@ -264,7 +265,9 @@ const PhoneTab = ({
                       onClick={() => handleCountrySelect(country.dialCode)}
                     >
                       <div className="flex items-center space-x-2">
-                        <span className="text-lg">{country.flag}</span>
+                        <div className="w-6 h-6 rounded-full flex items-center justify-center bg-gray-100 overflow-hidden">
+                          <span className="text-base leading-none">{country.flag}</span>
+                        </div>
                         <span>{country.name}</span>
                       </div>
                       <span className="text-muted-foreground">{country.dialCode}</span>
