@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -195,7 +196,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     if (trimmed.includes('@')) {
       [username, partialDomain] = trimmed.split('@');
       // If domain includes dot, assume complete — don't show suggestions
-      if (partialDomain.includes('.')) return [];
+      if (partialDomain && partialDomain.includes('.')) return [];
     }
 
     if (!username) return [];
@@ -240,20 +241,21 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   // Keyboard navigation (ArrowDown/Up/Enter/Escape)
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (!showSuggestions || suggestions.length === 0) return;
+    
     if (e.key === 'ArrowDown') {
+      e.preventDefault();
       setHoveredIndex((i) => (i + 1) % suggestions.length);
-      e.preventDefault();
     } else if (e.key === 'ArrowUp') {
-      setHoveredIndex((i) => (i - 1 + suggestions.length) % suggestions.length);
       e.preventDefault();
+      setHoveredIndex((i) => (i - 1 + suggestions.length) % suggestions.length);
     } else if (e.key === 'Enter' && hoveredIndex !== -1) {
+      e.preventDefault();
       setEmail(normalizeEmail(suggestions[hoveredIndex]));
       setShowSuggestions(false);
-      inputRef.current?.focus();
-      e.preventDefault();
+      if (inputRef.current) inputRef.current.focus();
     } else if (e.key === 'Escape') {
-      setShowSuggestions(false);
       e.preventDefault();
+      setShowSuggestions(false);
     }
   };
 
@@ -302,7 +304,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     setEmail('');
     setSuggestions([]);
     setShowStrengthMeter(false);
-    inputRef.current?.focus();
+    if (inputRef.current) inputRef.current.focus();
   };
 
   const applyTypoSuggestion = () => {
@@ -341,14 +343,6 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     return 'Excellent';
   };
 
-  // Theme-aware style constants
-  const primaryColor = 'hsl(var(--primary))';
-  const primaryHoverColor = theme === 'dark' ? 'hsl(var(--primary-foreground))' : 'hsl(var(--primary))';
-  const focusRingColor = 'hsl(var(--ring))';
-  const inputBgColor = theme === 'dark' ? 'hsl(var(--input))' : 'hsl(var(--background))';
-  const errorColor = 'hsl(var(--destructive))';
-  const successColor = 'hsl(var(--success, 142 71% 45%))';
-
   return (
     <div className="w-full max-w-md mx-auto space-y-2">
       <Label htmlFor="email" className="block font-medium text-sm mb-1.5 text-foreground flex items-center">
@@ -370,7 +364,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         </TooltipProvider>
       </Label>
 
-      {/* Input Field - Cleaned up design */}
+      {/* Input Field */}
       <div className="relative">
         <div className={`absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center h-5 w-5 transition-all duration-200 ${focused ? 'text-primary' : 'text-muted-foreground'}`}>
           <Mail className="h-[15px] w-[15px]" />
@@ -398,10 +392,6 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
                   ? 'border-primary/30 focus:border-primary focus:ring-primary/20' 
                   : 'border-input hover:border-input focus:border-input focus:ring-ring/20'
           }`}
-          style={{
-            boxShadow: focused ? `0 0 0 1px ${validationMessage ? 'hsl(var(--destructive))' : isValid ? 'hsl(142, 71%, 45%)' : 'hsl(var(--primary))'}` : 'none',
-            transition: 'all 0.2s ease',
-          }}
           autoComplete="email"
           aria-invalid={!!validationMessage}
           aria-describedby={validationMessage ? "email-validation-error" : undefined}
@@ -409,12 +399,10 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
 
         {/* Status Indicators */}
         <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
-          {/* Checking Indicator */}
           {checking && (
             <Loader2 className="h-4 w-4 text-muted-foreground animate-spin mr-1" aria-label="Checking email" />
           )}
           
-          {/* Clear Button */}
           {email.length > 0 && (
             <button
               type="button"
@@ -427,7 +415,6 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
             </button>
           )}
 
-          {/* Success Icon */}
           {isValid && !checking && (
             <Check
               className="h-4 w-4 text-green-500 animate-fadeIn"
@@ -572,16 +559,13 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
                 Checking...
               </span>
             ) : (
-              <>
-                <span className="relative z-10">Continue</span>
-              </>
+              <span className="relative z-10">Continue</span>
             )}
           </button>
         </motion.div>
       )}
 
-      <style>
-        {`
+      <style>{`
         @keyframes fadeIn {
           from { opacity: 0; }
           to { opacity: 1; }
@@ -596,8 +580,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         .animate-slideIn {
           animation: slideIn 0.2s ease-in-out;
         }
-        `}
-      </style>
+      `}</style>
     </div>
   );
 };
