@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+,import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { User, Check, X, AlertCircle } from 'lucide-react';
@@ -113,19 +113,19 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         }`} />
         
         <Input
-          ref={inputRef}
-          id="email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          placeholder="name@example.com"
-          className={`w-full pl-10 pr-10 ${
-            validationMessage ? 'border-red-300' : isValid ? 'border-green-300' : 'border-gray-300'
-          }`}
-          autoComplete="email"
-        />
+  ref={inputRef}
+  id="email"
+  type="email"
+  value={email}
+  onChange={(e) => setEmail(e.target.value)}
+  onFocus={handleFocus}
+  onBlur={handleBlur}
+  placeholder="name@example.com"
+  className={`w-full pl-10 pr-10 appearance-none outline-none shadow-none ring-0 focus:outline-none focus:ring-0 ${  
+    validationMessage ? 'border-red-300' : isValid ? 'border-green-300' : 'border-gray-300'  
+  }`}  
+  autoComplete="email"
+/>
         
         {email.length > 0 && (
           <button
