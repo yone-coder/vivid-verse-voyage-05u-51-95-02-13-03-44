@@ -76,6 +76,8 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
 
   if (trimmed.includes('@')) {
     [username, partialDomain] = trimmed.split('@');
+    // If domain includes dot, assume complete — don't show suggestions
+    if (partialDomain.includes('.')) return [];
   }
 
   if (!username) return [];
