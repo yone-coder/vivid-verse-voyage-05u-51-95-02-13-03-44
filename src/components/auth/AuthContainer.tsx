@@ -1,35 +1,72 @@
 
-import React from 'react';
-import { X } from 'lucide-react';
+import React, { useState } from 'react';
+import { Card } from "@/components/ui/card";
+import AuthHeader from './AuthHeader';
+import AuthTabs from './AuthTabs';
+import VerificationStep from './VerificationStep';
+import StepProgress from "@/components/ui/step-progress";
 
 interface AuthContainerProps {
-  isOverlay?: boolean;
-  onClose?: () => void;
-  children: React.ReactNode;
+  isSignUp?: boolean;
 }
 
-const AuthContainer = ({ isOverlay = false, onClose, children }: AuthContainerProps) => {
-  const containerClasses = isOverlay 
-    ? "flex flex-col justify-between items-center min-h-full bg-white text-[#333] pt-8 pb-4 relative" 
-    : "flex flex-col justify-center items-center min-h-screen bg-gradient-to-br from-white to-gray-50 text-[#333] py-8";
+const AuthContainer: React.FC<AuthContainerProps> = ({ isSignUp = false }) => {
+  const [activeTab, setActiveTab] = useState('email');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [countryCode, setCountryCode] = useState('+1');
+  const [step, setStep] = useState(1);
+  
+  const handleSetActiveTab = (value: string) => {
+    setActiveTab(value);
+  };
+  
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setStep(2);
+  };
+
+  const handleBack = () => {
+    setStep(1);
+  };
+  
+  const totalSteps = 2;
 
   return (
-    <div className={containerClasses}>
-      {isOverlay && onClose && (
-        <button 
-          onClick={onClose} 
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 transition-colors"
-          aria-label="Close"
-        >
-          <X size={24} />
-        </button>
-      )}
-      <div className="w-full max-w-md px-4 flex flex-col items-center justify-center py-4">
-        <div className={`w-full ${!isOverlay ? "bg-white shadow-lg rounded-xl p-6 border border-gray-100" : ""}`}>
-          {children}
-        </div>
+    <Card className="w-full max-w-md mx-auto shadow-lg">
+      <div className="p-6">
+        <AuthHeader isSignUp={isSignUp} />
+        
+        <StepProgress 
+          currentStep={step}
+          totalSteps={totalSteps}
+          className="my-6"
+        />
+        
+        {step === 1 ? (
+          <AuthTabs 
+            activeTab={activeTab}
+            setActiveTab={handleSetActiveTab}
+            email={email}
+            setEmail={setEmail}
+            phone={phone}
+            setPhone={setPhone}
+            countryCode={countryCode}
+            setCountryCode={setCountryCode}
+            isSignUp={isSignUp}
+            onSubmit={handleSubmit}
+            step={step}
+          />
+        ) : (
+          <VerificationStep 
+            onBack={handleBack}
+            method={activeTab}
+            value={activeTab === 'email' ? email : phone}
+            isSignUp={isSignUp}
+          />
+        )}
       </div>
-    </div>
+    </Card>
   );
 };
 
