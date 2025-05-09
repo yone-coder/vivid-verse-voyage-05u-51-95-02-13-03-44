@@ -56,7 +56,7 @@ const AuthTabs = ({
   const showInlineButtons = false;
 
   return (
-    <div className="mb-4">
+    <div className="mb-4 flex flex-col items-center">
       <TabDivider />
 
       <Tabs defaultValue={activeTab} value={activeTab} onValueChange={handleTabChange} className="w-full">
@@ -67,8 +67,8 @@ const AuthTabs = ({
           animationStyle="grow"
         />
         
-        <div className={`transition-all duration-200 ${tabTransition ? 'opacity-0 transform -translate-y-1' : 'opacity-100 transform translate-y-0'}`}>
-          <TabsContent value="email" className="pt-3 mb-0">
+        <div className={`transition-all duration-200 w-full flex justify-center ${tabTransition ? 'opacity-0 transform -translate-y-1' : 'opacity-100 transform translate-y-0'}`}>
+          <TabsContent value="email" className="pt-3 mb-0 w-full">
             <EmailTab 
               email={email} 
               setEmail={setEmail} 
@@ -77,7 +77,7 @@ const AuthTabs = ({
               key={`email-tab-${tabKey}-${activeTab === 'email'}`}
             />
           </TabsContent>
-          <TabsContent value="phone" className="pt-3 mb-0">
+          <TabsContent value="phone" className="pt-3 mb-0 w-full">
             <PhoneTab 
               phone={phone} 
               setPhone={setPhone} 
@@ -88,7 +88,7 @@ const AuthTabs = ({
               key={`phone-tab-${tabKey}-${activeTab === 'phone'}`}
             />
           </TabsContent>
-          <TabsContent value="passkey" className="pt-3 mb-0">
+          <TabsContent value="passkey" className="pt-3 mb-0 w-full">
             <PasskeyTab 
               onSubmit={showFormsInTabs ? onSubmit : undefined} 
               showSubmitButton={showInlineButtons}

@@ -95,34 +95,34 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     };
   }, [email, focused]);
 
-  // Check if email exists in Supabase database
-  const checkEmailExists = async () => {
-    if (!isValid || !email) return false;
+  // IMPORTANT: Fix TS error - separate checkEmailExists function to break circular dependency
+  const checkEmailExists = async (emailToCheck: string): Promise<boolean> => {
+    if (!isValid || !emailToCheck) return false;
     
     setVerifying(true);
     setErrorMessage(null);
     
     try {
-      console.log("Checking if email exists:", email);
+      console.log("Checking if email exists:", emailToCheck);
       
       // First approach: Check auth.users table via RPC (requires proper function)
       try {
         const { data, error } = await supabase.auth.signInWithOtp({
-          email,
+          email: emailToCheck,
           options: {
             shouldCreateUser: false,
           }
         });
         
         if (!error) {
-          console.log("Email exists (OTP method):", email);
+          console.log("Email exists (OTP method):", emailToCheck);
           setEmailExists(true);
           setVerifying(false);
           return true;
         }
 
         if (error && error.message && error.message.includes("Email not confirmed")) {
-          console.log("Email exists but not confirmed:", email);
+          console.log("Email exists but not confirmed:", emailToCheck);
           setEmailExists(true);
           setVerifying(false);
           return true;
@@ -139,7 +139,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
       const { data, error } = await supabase
         .from('profiles')
         .select('id')
-        .eq('email', email)
+        .eq('email', emailToCheck)
         .maybeSingle();
       
       if (error) {
@@ -177,23 +177,23 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
       // Final fallback: try auth API directly with invalid password
       try {
         const { error } = await supabase.auth.signInWithPassword({
-          email,
+          email: emailToCheck,
           password: "check_if_email_exists_" + Math.random().toString(36)
         });
         
         // If error includes "Invalid login credentials", the email likely exists
         if (error && error.message && error.message.includes("Invalid login credentials")) {
-          console.log("Fallback detection - email exists:", email);
+          console.log("Fallback detection - email exists:", emailToCheck);
           setEmailExists(true);
           setVerifying(false);
           return true;
         } else if (error && error.message && error.message.includes("Email not confirmed")) {
-          console.log("Email exists but not confirmed:", email);
+          console.log("Email exists but not confirmed:", emailToCheck);
           setEmailExists(true);
           setVerifying(false);
           return true;
         } else {
-          console.log("Fallback detection - email doesn't exist:", email);
+          console.log("Fallback detection - email doesn't exist:", emailToCheck);
           setEmailExists(false);
           setErrorMessage("This email is not registered");
           setVerifying(false);
@@ -280,7 +280,6 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     }
   }, [typoSuggestion, setEmail]);
 
-  // Fix the TypeScript error by breaking the circular dependency
   // Extract the submit handler to avoid capturing checkEmailExists in its closure
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -288,7 +287,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     
     if (isValid) {
       try {
-        const exists = await checkEmailExists();
+        const exists = await checkEmailExists(email);
         
         if (exists) {
           if (onSubmit) onSubmit(e);
@@ -307,7 +306,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   const handleSubmit = showSubmitButton ? handleEmailSubmit : undefined;
 
   return (
-    <div className="w-full max-w-md mx-auto space-y-2">
+    <div className="w-full max-w-md mx-auto flex flex-col items-center justify-center space-y-2">
       {/* Email input section with better organized instructions */}
       <div className="text-center mb-4">
         <h2 className="text-base font-medium text-foreground mb-1">Email Address</h2>
@@ -316,8 +315,8 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         </p>
       </div>
 
-      {/* Email Input with icons */}
-      <div className="relative">
+      {/* Email Input with icons - made narrower and cleaner */}
+      <div className="relative w-full max-w-sm">
         <div className={`absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center h-5 w-5 transition-all duration-200 ${focused ? 'text-primary' : 'text-muted-foreground'}`}>
           <Mail className="h-[15px] w-[15px]" />
         </div>
@@ -392,7 +391,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
 
       {/* Error Message - Improved styling */}
       {errorMessage && (
-        <div className="flex items-center justify-center gap-1.5 mt-2 p-2 rounded-md bg-destructive/10 text-destructive text-sm">
+        <div className="flex items-center justify-center gap-1.5 mt-2 p-2 rounded-md bg-destructive/10 text-destructive text-sm max-w-sm">
           <AlertTriangle className="h-4 w-4" />
           <span className="font-medium">{errorMessage}</span>
         </div>
@@ -407,7 +406,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
 
       {/* Email Suggestions */}
       {showSuggestions && suggestions.length > 0 && (
-        <div ref={suggestionsRef}>
+        <div ref={suggestionsRef} className="w-full max-w-sm">
           <EmailSuggestions 
             suggestions={suggestions}
             hoveredIndex={hoveredIndex}
@@ -424,7 +423,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
           type="submit"
           onClick={handleEmailSubmit}
           disabled={!isValid || checking || verifying}
-          className={`w-full mt-4 py-2.5 rounded-lg font-medium transition-all duration-200 relative overflow-hidden ${
+          className={`w-full max-w-sm mt-4 py-2.5 rounded-lg font-medium transition-all duration-200 relative overflow-hidden ${
             isValid && !checking && !verifying
               ? 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm hover:shadow'
               : 'bg-muted text-muted-foreground cursor-not-allowed'

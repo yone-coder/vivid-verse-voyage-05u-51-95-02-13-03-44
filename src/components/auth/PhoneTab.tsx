@@ -79,21 +79,21 @@ const PhoneTab = ({
     if (inputRef.current) inputRef.current.focus();
   };
 
-  // Check if phone exists in database - separated from submit handler
-  const checkPhoneExists = async () => {
-    if (!isValid || !phone) return false;
+  // Check if phone exists in database - FIXED: Added parameter to break circular dependency
+  const checkPhoneExists = async (phoneToCheck: string): Promise<boolean> => {
+    if (!isValid || !phoneToCheck) return false;
     
     setChecking(true);
     setErrorMessage(null);
     
     try {
-      console.log("Checking if phone exists:", countryCode + phone);
+      console.log("Checking if phone exists:", countryCode + phoneToCheck);
       
       // Query profiles table for the phone number
       const { data, error } = await supabase
         .from('profiles')
         .select('id')
-        .eq('phone', countryCode + phone)
+        .eq('phone', countryCode + phoneToCheck)
         .maybeSingle();
       
       if (error) {
@@ -123,14 +123,14 @@ const PhoneTab = ({
     }
   };
 
-  // Fixed to avoid circular reference
+  // Fixed to avoid circular reference by adding phone parameter
   const handlePhoneSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
     
     if (isValid) {
       try {
-        const exists = await checkPhoneExists();
+        const exists = await checkPhoneExists(phone);
         
         if (exists) {
           if (onSubmit) onSubmit(e);
@@ -146,7 +146,7 @@ const PhoneTab = ({
   };
 
   return (
-    <div className="w-full max-w-md mx-auto space-y-2">
+    <div className="w-full max-w-md mx-auto flex flex-col items-center justify-center space-y-2">
       {/* Phone input section with better organized instructions */}
       <div className="text-center mb-4">
         <h2 className="text-base font-medium text-foreground mb-1">Phone Number</h2>
@@ -155,8 +155,8 @@ const PhoneTab = ({
         </p>
       </div>
 
-      {/* Phone input field */}
-      <div className="flex gap-2">
+      {/* Phone input field - Made narrower and more centered */}
+      <div className="flex gap-2 w-full max-w-sm">
         {/* Country code select */}
         <div className="flex-shrink-0 w-24">
           <CountryCodeSelect 
@@ -223,7 +223,7 @@ const PhoneTab = ({
 
       {/* Error Message */}
       {errorMessage && (
-        <div className="flex items-center justify-center gap-1.5 mt-2 p-2 rounded-md bg-destructive/10 text-destructive text-sm">
+        <div className="flex items-center justify-center gap-1.5 mt-2 p-2 rounded-md bg-destructive/10 text-destructive text-sm max-w-sm">
           <AlertTriangle className="h-4 w-4" />
           <span className="font-medium">{errorMessage}</span>
         </div>
@@ -231,7 +231,7 @@ const PhoneTab = ({
 
       {/* Validation message for invalid phone */}
       {!isValid && submitted && !errorMessage && (
-        <div className="flex items-center justify-center gap-1.5 mt-2 p-2 rounded-md bg-destructive/10 text-destructive text-sm">
+        <div className="flex items-center justify-center gap-1.5 mt-2 p-2 rounded-md bg-destructive/10 text-destructive text-sm max-w-sm">
           <AlertTriangle className="h-4 w-4" />
           <span className="font-medium">Please enter a valid phone number</span>
         </div>
@@ -243,7 +243,7 @@ const PhoneTab = ({
           type="submit"
           onClick={handlePhoneSubmit}
           disabled={!isValid || checking}
-          className={`w-full mt-4 py-2.5 rounded-lg font-medium transition-all duration-200 relative overflow-hidden ${
+          className={`w-full max-w-sm mt-4 py-2.5 rounded-lg font-medium transition-all duration-200 relative overflow-hidden ${
             isValid && !checking
               ? 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm hover:shadow'
               : 'bg-muted text-muted-foreground cursor-not-allowed'
