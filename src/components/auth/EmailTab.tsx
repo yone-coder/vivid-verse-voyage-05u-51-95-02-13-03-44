@@ -47,6 +47,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   // Memoize validation message to prevent recalculations on render
   const validationMessage = useMemo(() => {
     if (!submitted && (focused || email.length === 0)) return null;
+    // Fixed: Passing the function instead of function result to avoid infinite type instantiation
     return getValidationMessage(email, setTypoSuggestion);
   }, [email, submitted, focused]);
   

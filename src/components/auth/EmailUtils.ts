@@ -159,8 +159,9 @@ export const getEmailStrength = (email: string): {
   return { score, messages };
 };
 
-// Contextual email validation
-export const getValidationMessage = (emailValue: string, typoSuggestionSetter: (suggestion: string | null) => void) => {
+// Fixed: Changed the function signature to avoid infinite type instantiation
+// The issue was that setTypoSuggestion's type was involving the return type of this function
+export const getValidationMessage = (emailValue: string, setTypoSuggestionFn: (suggestion: string | null) => void): string | null => {
   if (!emailValue) return null;
   if (emailValue.length < 4) return 'Enter at least 4 characters.';
   if (!emailValue.includes('@')) return 'Missing "@" symbol. Example: name@example.com';
@@ -180,12 +181,12 @@ export const getValidationMessage = (emailValue: string, typoSuggestionSetter: (
   // Check for common typos in domain
   for (const typo in commonTypos) {
     if (domainPart === typo) {
-      typoSuggestionSetter(`${localPart}@${commonTypos[typo]}`);
+      setTypoSuggestionFn(`${localPart}@${commonTypos[typo]}`);
       return `Did you mean ${commonTypos[typo]}? (Click to correct)`;
     }
   }
   
-  typoSuggestionSetter(null);
+  setTypoSuggestionFn(null);
   
   // Stricter validation
   const strictRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
