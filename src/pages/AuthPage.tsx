@@ -47,6 +47,7 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
     }
   }, [user, navigate]);
 
+  // Simplified function signature with explicit return type
   const checkEmailExists = async (email: string): Promise<boolean> => {
     setIsLoading(true);
     setErrorMessage(null);
