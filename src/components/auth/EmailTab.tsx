@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { Input } from "@/components/ui/input";
 import { Mail, Check, X, Info, Loader2, AlertTriangle } from 'lucide-react';
@@ -102,31 +103,57 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     setErrorMessage(null);
     
     try {
-      // We can't use the admin.listUsers with filter directly due to TypeScript limitations
-      // Instead, we'll use the OTP method to check if the email exists
-      
-      const { data, error } = await supabase.auth.signInWithOtp({
-        email: email,
-        options: {
-          shouldCreateUser: false, // Don't create the user
-        }
+      // Try to sign in with password - since we're providing an incorrect password,
+      // we can analyze the error to determine if the email exists
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password: "check_if_email_exists_" + Math.random().toString(36)
       });
       
-      // Analyze error message to determine if email exists
-      // This is imperfect but our best option without admin access
-      const errorMessage = error?.message || '';
+      // Analyze the error message to determine if email exists
+      if (error) {
+        console.log("Auth check response:", error.message);
+        
+        // If error includes "Invalid login credentials", the email likely exists
+        // but the password is wrong (which is expected)
+        if (error.message.includes("Invalid login credentials")) {
+          console.log("Email exists (invalid credentials):", email);
+          setEmailExists(true);
+          setVerifying(false);
+          return true;
+        }
+        
+        // If error includes "Email not confirmed", the email exists but isn't confirmed
+        if (error.message.includes("Email not confirmed")) {
+          console.log("Email exists (not confirmed):", email);
+          setEmailExists(true);
+          setVerifying(false);
+          return true;
+        }
+        
+        // If error suggests user doesn't exist
+        if (error.message.includes("doesn't exist") || 
+            error.message.includes("user not found")) {
+          console.log("Email doesn't exist:", email);
+          setEmailExists(false);
+          setErrorMessage("This email is not registered");
+          setVerifying(false);
+          return false;
+        }
+        
+        // Fallback for other errors - assume email doesn't exist
+        console.log("Unknown auth error:", error.message);
+        setEmailExists(false);
+        setErrorMessage("This email is not registered");
+        setVerifying(false);
+        return false;
+      }
       
-      // If no error or error is "Email not confirmed", the email likely exists
-      // If error contains "Invalid login credentials" or "doesn't exist" then email doesn't exist
-      const exists = !error || 
-                     errorMessage === "Email not confirmed" ||
-                     !(errorMessage.includes("Invalid login credentials") || 
-                       errorMessage.includes("doesn't exist"));
-      
-      console.log("Email check result:", { email, exists, errorMessage });
-      setEmailExists(exists);
+      // If no error (unlikely with incorrect password), assume email exists
+      console.log("No auth error - email likely exists:", email);
+      setEmailExists(true);
       setVerifying(false);
-      return exists;
+      return true;
       
     } catch (err: any) {
       console.error("Error checking email:", err);
