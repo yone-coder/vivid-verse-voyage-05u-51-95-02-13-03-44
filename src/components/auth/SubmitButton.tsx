@@ -73,7 +73,7 @@ const SubmitButton = ({
       aria-label={isLoading ? loadingText : showSuccessState ? successText : label}
     >
       {isLoading && (
-        <div className="flex items-center justify-center gap-2 animate-pulse-fade">
+        <div className="flex items-center justify-center gap-2">
           <Loader2 className="h-5 w-5 animate-spin" />
           <span>{loadingText}</span>
         </div>
@@ -124,14 +124,6 @@ const SubmitButton = ({
         }
         .animate-ripple {
           animation: ripple 1s linear;
-        }
-        
-        @keyframes pulseFade {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.7; }
-        }
-        .animate-pulse-fade {
-          animation: pulseFade 1.5s infinite ease-in-out;
         }
         
         @keyframes glow {

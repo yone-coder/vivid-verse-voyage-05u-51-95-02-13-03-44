@@ -111,12 +111,14 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         }
       });
       
-      // This is a hack to determine if the email exists
-      // If there's no error about user not existing, we assume the email exists
-      const exists = !error || (error.message !== "Email not confirmed" && 
-                               !error.message?.includes("not found") && 
-                               !error.message?.includes("doesn't exist"));
+      // Check the error to determine if the email exists
+      // If the error includes "Invalid login credentials", the email doesn't exist
+      const exists = !error || 
+                    error.message === "Email not confirmed" || 
+                    !error.message?.includes("Invalid login credentials") ||
+                    !error.message?.includes("doesn't exist");
       
+      console.log("Email check result:", { exists, error: error?.message });
       setEmailExists(exists);
       return exists;
     } catch (err: any) {
@@ -213,6 +215,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
           if (onSubmit) onSubmit(e);
         } else {
           setErrorMessage("This email is not registered");
+          toast.error("This email is not registered");
         }
       } catch (error) {
         console.error("Email verification error:", error);
