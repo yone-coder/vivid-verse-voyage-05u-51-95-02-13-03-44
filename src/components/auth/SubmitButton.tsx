@@ -43,7 +43,8 @@ const SubmitButton = ({ isLoading, label, onClick, disabled = false }: SubmitBut
       )}
       
       {/* Animation styles */}
-      <style jsx>{`
+      <style>
+        {`
         @keyframes ripple {
           from { transform: translateX(-100%); }
           to { transform: translateX(100%); }
@@ -59,7 +60,8 @@ const SubmitButton = ({ isLoading, label, onClick, disabled = false }: SubmitBut
         .animate-pulse-fade {
           animation: pulseFade 1.5s infinite ease-in-out;
         }
-      `}</style>
+      `}
+      </style>
     </Button>
   );
 };
