@@ -29,6 +29,16 @@ const PasskeyTab = ({ onSubmit, showSubmitButton = false }: PasskeyTabProps) => 
     }
   };
 
+  // Fix: Create handleButtonClick function that creates a synthetic event when no event is available
+  const handleButtonClick = () => {
+    // Create a synthetic event object that matches the minimum interface needed
+    const syntheticEvent = {
+      preventDefault: () => {},
+    } as React.FormEvent;
+    
+    handleSubmit(syntheticEvent);
+  };
+
   return (
     <div className="w-full max-w-md mx-auto space-y-4">
       {/* Centered message */}
@@ -61,7 +71,7 @@ const PasskeyTab = ({ onSubmit, showSubmitButton = false }: PasskeyTabProps) => 
               loadingText="Verifying passkey..."
               showSuccess={authSuccess}
               successText="Passkey verified!"
-              onClick={handleSubmit}
+              onClick={handleButtonClick} // Fix: Use the new handler function
             />
           ) : (
             <button
