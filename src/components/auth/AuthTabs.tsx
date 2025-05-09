@@ -56,10 +56,10 @@ const AuthTabs = ({
   const showInlineButtons = false;
 
   return (
-    <div className="w-full flex flex-col items-center mb-4">
+    <div className="mb-4 flex flex-col items-center">
       <TabDivider />
 
-      <Tabs defaultValue={activeTab} value={activeTab} onValueChange={handleTabChange} className="w-full max-w-md mx-auto">
+      <Tabs defaultValue={activeTab} value={activeTab} onValueChange={handleTabChange} className="w-full">
         <TabNavigation 
           activeTab={activeTab} 
           handleTabChange={handleTabChange} 

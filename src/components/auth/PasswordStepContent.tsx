@@ -35,52 +35,50 @@ const PasswordStepContent = ({
   handlePasswordReset
 }: PasswordStepContentProps) => {
   return (
-    <div className="w-full max-w-md mx-auto">
-      <div className="bg-white/50 dark:bg-gray-800/30 rounded-lg shadow-sm p-6 mb-6 backdrop-blur-sm">
-        <PasswordField
-          id="password"
-          label="Password"
-          password={password}
-          setPassword={setPassword}
-          showPassword={showPassword}
-          toggleShowPassword={toggleShowPassword}
-          hasConfirmation={authMode === 'signup'}
-        />
+    <div className="mb-6">
+      <PasswordField
+        id="password"
+        label="Password"
+        password={password}
+        setPassword={setPassword}
+        showPassword={showPassword}
+        toggleShowPassword={toggleShowPassword}
+        hasConfirmation={authMode === 'signup'}
+      />
 
-        {authMode === 'signup' && (
-          <>
-            <ConfirmPasswordField
-              confirmPassword={confirmPassword}
-              setConfirmPassword={setConfirmPassword}
-              password={password}
-              showPassword={showPassword}
-            />
-            
-            <TermsCheckbox
-              agreeToTerms={agreeToTerms}
-              setAgreeToTerms={setAgreeToTerms}
-            />
-          </>
-        )}
+      {authMode === 'signup' && (
+        <>
+          <ConfirmPasswordField
+            confirmPassword={confirmPassword}
+            setConfirmPassword={setConfirmPassword}
+            password={password}
+            showPassword={showPassword}
+          />
+          
+          <TermsCheckbox
+            agreeToTerms={agreeToTerms}
+            setAgreeToTerms={setAgreeToTerms}
+          />
+        </>
+      )}
 
-        {authMode === 'signin' && (
-          <div className="flex items-center justify-between mt-4">
-            <RememberMeToggle
-              rememberMe={rememberMe}
-              setRememberMe={setRememberMe}
-            />
-            <div className="text-sm">
-              <button 
-                type="button"
-                onClick={handlePasswordReset}
-                className="font-medium text-[#ff4747] hover:text-[#ff2727] transition-colors cursor-pointer"
-              >
-                Forgot password?
-              </button>
-            </div>
+      {authMode === 'signin' && (
+        <div className="flex items-center justify-between mb-6">
+          <RememberMeToggle
+            rememberMe={rememberMe}
+            setRememberMe={setRememberMe}
+          />
+          <div className="text-sm">
+            <button 
+              type="button"
+              onClick={handlePasswordReset}
+              className="font-medium text-[#ff4747] hover:text-[#ff2727] transition-colors cursor-pointer"
+            >
+              Forgot password?
+            </button>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

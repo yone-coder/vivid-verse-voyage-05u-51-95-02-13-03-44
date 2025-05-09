@@ -19,16 +19,16 @@ const ConfirmPasswordField = ({
 }: ConfirmPasswordFieldProps) => {
   return (
     <div className="mb-4">
-      <Label htmlFor="confirmPassword" className="block mb-1.5 text-foreground/90">Confirm Password</Label>
+      <Label htmlFor="confirmPassword" className="block text-gray-700 mb-1">Confirm Password</Label>
       <div className="relative group">
-        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-[#ff4747] transition-colors" />
+        <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-[#ff4747] transition-colors" />
         <Input
           id="confirmPassword"
           type={showPassword ? "text" : "password"}
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           placeholder="Confirm your password"
-          className={`w-full pl-10 pr-3 h-11 border-input bg-background/80 focus-visible:ring-[#ff4747] ${
+          className={`w-full pl-10 pr-10 py-3 border-[#eaeaea] focus-visible:ring-[#ff4747] ${
             confirmPassword && password !== confirmPassword 
               ? 'border-red-500 focus:ring-red-500' 
               : ''

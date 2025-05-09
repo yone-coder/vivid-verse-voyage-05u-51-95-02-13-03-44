@@ -95,7 +95,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     };
   }, [email, focused]);
 
-  // FIXED: Break circular dependency by extracting the function into a named local function
+  // IMPORTANT: Fix TS error - separate checkEmailExists function to break circular dependency
   const checkEmailExists = async (emailToCheck: string): Promise<boolean> => {
     if (!isValid || !emailToCheck) return false;
     
@@ -280,15 +280,14 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     }
   }, [typoSuggestion, setEmail]);
 
-  // FIXED: Break circular dependency by not capturing checkEmailExists in the closure
+  // Extract the submit handler to avoid capturing checkEmailExists in its closure
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
     
     if (isValid) {
-      const emailToVerify = email; // Create a local copy to avoid closure issues
       try {
-        const exists = await checkEmailExists(emailToVerify);
+        const exists = await checkEmailExists(email);
         
         if (exists) {
           if (onSubmit) onSubmit(e);

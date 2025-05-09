@@ -36,24 +36,24 @@ const PasswordField = ({
 
   return (
     <div className="mb-4">
-      <Label htmlFor={id} className="block mb-1.5 text-foreground/90">{label}</Label>
+      <Label htmlFor={id} className="block text-gray-700 mb-1">{label}</Label>
       <div className="relative group">
-        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-[#ff4747] transition-colors" />
+        <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-[#ff4747] transition-colors" />
         <Input
           id={id}
           type={showPassword ? "text" : "password"}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder={`Enter your ${label.toLowerCase()}`}
-          className="w-full pl-10 pr-10 h-11 border-input focus-visible:ring-[#ff4747] bg-background/80"
+          className="w-full pl-10 pr-10 py-3 border-[#eaeaea] focus-visible:ring-[#ff4747]"
           required
         />
         <button
           type="button"
           onClick={toggleShowPassword}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+          className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 transition-colors"
         >
-          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+          {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
         </button>
       </div>
 
@@ -66,7 +66,7 @@ const PasswordField = ({
             <div className={`h-full rounded-full w-1/4 ${/[^A-Za-z0-9]/.test(password) ? 'bg-[#ff4747]' : 'bg-gray-200'}`}></div>
           </div>
           <div className="flex justify-between mt-1">
-            <span className="text-xs text-muted-foreground">Password strength: {getPasswordStrength()}</span>
+            <span className="text-xs text-gray-500">Password strength: {getPasswordStrength()}</span>
           </div>
         </div>
       )}
