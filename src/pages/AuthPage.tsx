@@ -3,14 +3,13 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, AlertTriangle } from 'lucide-react';
 
 import AuthContainer from '@/components/auth/AuthContainer';
 import AuthHeader from '@/components/auth/AuthHeader';
 import AuthSocialButtons from '@/components/auth/AuthSocialButtons';
 import AuthTabs from '@/components/auth/AuthTabs';
 import AuthFooter from '@/components/auth/AuthFooter';
-import TwoFactorAuth from '@/components/auth/TwoFactorAuth';
 import PasswordStepContent from '@/components/auth/PasswordStepContent';
 import SubmitButton from '@/components/auth/SubmitButton';
 import BackButton from '@/components/auth/BackButton';
@@ -27,7 +26,6 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
   const [countryCode, setCountryCode] = useState('+1');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [twoFactorCode, setTwoFactorCode] = useState('');
   const [authSuccess, setAuthSuccess] = useState(false);
 
   const [activeTab, setActiveTab] = useState('email');
@@ -220,27 +218,10 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
         setIsLoading(false);
       }
     } else {
-      // For signin, proceed to next step or complete
-      if (activeTab === 'email' || activeTab === 'phone') {
-        setIsLoading(false);
-        setStep(3);
-        toast.info(`Verification code sent to your ${activeTab === 'email' ? 'email' : 'phone'}`);
-      } else {
-        handleFinalSubmit();
-      }
-    }
-  };
-
-  const handleFinalSubmit = async () => {
-    setIsLoading(true);
-    setAuthSuccess(false);
-
-    try {
-      if (activeTab === 'email') {
-        // Show success animation first
+      // For signin, complete authentication immediately without going to verification step
+      try {
         setAuthSuccess(true);
         
-        // Wait a moment before actual authentication
         setTimeout(async () => {
           try {
             await signIn(email, password, rememberMe);
@@ -252,20 +233,12 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
             setIsLoading(false);
           }
         }, 1000);
-      } else if (activeTab === 'phone') {
-        toast.info("Phone authentication is not fully implemented yet.");
-        setIsLoading(false);
+      } catch (error) {
+        console.error("Auth error:", error);
+        toast.error("Authentication failed. Please try again.");
         setAuthSuccess(false);
-      } else if (activeTab === 'passkey') {
-        toast.info("Passkey authentication is not fully implemented yet.");
         setIsLoading(false);
-        setAuthSuccess(false);
       }
-    } catch (error) {
-      console.error("Auth error:", error);
-      toast.error("Authentication failed. Please try again.");
-      setAuthSuccess(false);
-      setIsLoading(false);
     }
   };
 
@@ -316,7 +289,7 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
         subtitle={authMode === 'signin' ? "Welcome back! Please log in to your account." : "Join us today! Create your account to get started."}
       />
 
-      <form onSubmit={step === 1 ? handleStep1Submit : step === 2 ? handleStep2Submit : handleFinalSubmit} className="w-full">
+      <form onSubmit={step === 1 ? handleStep1Submit : handleStep2Submit} className="w-full">
         {step === 1 && (
           <div className="w-full mb-4 space-y-3">
             <AuthSocialButtons handleSocialLogin={(provider) => toast.info(`${provider.charAt(0).toUpperCase() + provider.slice(1)} login is not configured yet`)} />
@@ -395,50 +368,8 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
 
             <SubmitButton 
               isLoading={isLoading} 
-              label={authMode === 'signin' ? "Continue" : "Create account"}
-              loadingText="Validating..."
-              showSuccess={authSuccess}
-              successText="Validated!"
-            />
-
-            <div className="text-center mt-4 flex items-center justify-center space-x-2">
-              <span className="text-sm text-gray-600">
-                {authMode === 'signin' ? "Don't have an account?" : "Already have an account?"}
-              </span>
-              <button 
-                type="button" 
-                onClick={toggleAuthMode}
-                className="text-sm font-medium text-[#ff4747] hover:text-[#ff2727] hover:underline"
-              >
-                {authMode === 'signin' ? "Sign up" : "Sign in"}
-              </button>
-            </div>
-          </div>
-        )}
-
-        {step === 3 && (
-          <div className="w-full mb-4 space-y-3">
-            <BackButton onClick={handleGoBack} />
-
-            <div className="mb-4">
-              <h3 className="text-lg font-semibold mb-1">
-                Verify your identity
-              </h3>
-              <p className="text-sm text-gray-600">
-                We've sent a verification code to {activeTab === 'email' ? email : `${countryCode} ${phone}`}
-              </p>
-            </div>
-
-            <TwoFactorAuth 
-              twoFactorCode={twoFactorCode} 
-              setTwoFactorCode={setTwoFactorCode} 
-              activeTab={activeTab}
-            />
-
-            <SubmitButton 
-              isLoading={isLoading} 
-              label="Continue" 
-              loadingText="Authenticating..."
+              label={authMode === 'signin' ? "Sign in" : "Create account"}
+              loadingText={authMode === 'signin' ? "Signing in..." : "Creating account..."}
               showSuccess={authSuccess}
               successText="Success!"
             />

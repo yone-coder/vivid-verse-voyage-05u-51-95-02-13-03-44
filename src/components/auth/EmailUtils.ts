@@ -159,10 +159,10 @@ export const getEmailStrength = (email: string): {
   return { score, messages };
 };
 
-// Fixed: Changed function signature to avoid excessive type instantiation
+// Fixed type signature to avoid excessive instantiation
 export const getValidationMessage = (
   emailValue: string, 
-  setTypoSuggestionFn: (suggestion: string | null) => void
+  setTypoSuggestion: (suggestion: string | null) => void
 ): string | null => {
   if (!emailValue) return null;
   if (emailValue.length < 4) return 'Enter at least 4 characters.';
@@ -183,12 +183,12 @@ export const getValidationMessage = (
   // Check for common typos in domain
   for (const typo in commonTypos) {
     if (domainPart === typo) {
-      setTypoSuggestionFn(`${localPart}@${commonTypos[typo]}`);
+      setTypoSuggestion(`${localPart}@${commonTypos[typo]}`);
       return `Did you mean ${commonTypos[typo]}? (Click to correct)`;
     }
   }
   
-  setTypoSuggestionFn(null);
+  setTypoSuggestion(null);
   
   // Stricter validation
   const strictRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
