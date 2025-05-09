@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { Input } from "@/components/ui/input";
 import { Mail, Check, X, Info, Loader2, AlertTriangle } from 'lucide-react';
@@ -7,14 +8,12 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
 // Import our extracted components
-import EmailStrengthMeter from './EmailStrengthMeter';
 import EmailSuggestions from './EmailSuggestions';
 import EmailValidationMessage from './EmailValidationMessage';
 import { 
   premiumDomains, 
   normalizeEmail, 
   generateSuggestions, 
-  getEmailStrength,
   getValidationMessage
 } from './EmailUtils';
 
@@ -34,7 +33,6 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   const [submitted, setSubmitted] = useState(false);
   const [checking, setChecking] = useState(false);
   const [verifying, setVerifying] = useState(false);
-  const [showStrengthMeter, setShowStrengthMeter] = useState(false);
   const [typoSuggestion, setTypoSuggestion] = useState<string | null>(null);
   const [showValidationSuccess, setShowValidationSuccess] = useState(false);
   const [emailExists, setEmailExists] = useState<boolean | null>(null);
@@ -62,20 +60,14 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     }
   }, [isValid, email]);
 
-  // Memoize email strength to prevent recalculation
-  const emailStrength = useMemo(() => getEmailStrength(email), [email]);
-
   // Check email format and simulate validation
   useEffect(() => {
     if (email.includes('@') && email.includes('.') && email.length > 8) {
       setChecking(true);
       const timer = setTimeout(() => {
         setChecking(false);
-        setShowStrengthMeter(true);
       }, 600);
       return () => clearTimeout(timer);
-    } else {
-      setShowStrengthMeter(false);
     }
   }, [email]);
 
@@ -95,7 +87,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   }, [email, focused]);
 
   // Check if email exists in Supabase database
-  const checkEmailExists = async () => {
+  const checkEmailExists = async (): Promise<boolean> => {
     if (!isValid || !email) return false;
     
     setVerifying(true);
@@ -267,7 +259,6 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   const clearInput = useCallback(() => {
     setEmail('');
     setSuggestions([]);
-    setShowStrengthMeter(false);
     setEmailExists(null);
     setErrorMessage(null);
     if (inputRef.current) inputRef.current.focus();
@@ -299,7 +290,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         toast.error("Failed to verify email");
       }
     }
-  }, [onSubmit, isValid, checkEmailExists, email]);
+  }, [onSubmit, isValid, email]);
 
   return (
     <div className="w-full max-w-md mx-auto space-y-2">
@@ -396,13 +387,6 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
       <AnimatePresence>
         {validationMessage && !errorMessage && (
           <EmailValidationMessage message={validationMessage} />
-        )}
-      </AnimatePresence>
-
-      {/* Email Strength Meter */}
-      <AnimatePresence>
-        {showStrengthMeter && isValid && !errorMessage && (
-          <EmailStrengthMeter score={emailStrength.score} messages={[]} />
         )}
       </AnimatePresence>
 
