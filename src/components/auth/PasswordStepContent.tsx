@@ -4,6 +4,7 @@ import PasswordField from './PasswordField';
 import ConfirmPasswordField from './ConfirmPasswordField';
 import TermsCheckbox from './TermsCheckbox';
 import RememberMeToggle from './RememberMeToggle';
+import { AlertCircle } from 'lucide-react';
 
 interface PasswordStepContentProps {
   authMode: 'signin' | 'signup';
@@ -34,6 +35,11 @@ const PasswordStepContent = ({
   setRememberMe,
   handlePasswordReset
 }: PasswordStepContentProps) => {
+  // Validate form based on auth mode
+  const hasPasswordError = authMode === 'signup' && password.length > 0 && password.length < 8;
+  const hasConfirmPasswordError = authMode === 'signup' && confirmPassword.length > 0 && password !== confirmPassword;
+  const hasTermsError = authMode === 'signup' && !agreeToTerms;
+  
   return (
     <div className="w-full max-w-md mx-auto px-4 mb-6">
       <PasswordField
@@ -45,6 +51,13 @@ const PasswordStepContent = ({
         toggleShowPassword={toggleShowPassword}
         hasConfirmation={authMode === 'signup'}
       />
+
+      {hasPasswordError && (
+        <div className="flex items-center gap-1.5 mt-1 mb-3 text-xs text-red-500">
+          <AlertCircle className="h-3.5 w-3.5" />
+          <span>Password must be at least 8 characters long</span>
+        </div>
+      )}
 
       {authMode === 'signup' && (
         <>
@@ -59,6 +72,13 @@ const PasswordStepContent = ({
             agreeToTerms={agreeToTerms}
             setAgreeToTerms={setAgreeToTerms}
           />
+
+          {hasTermsError && (
+            <div className="flex items-center gap-1.5 mt-1 mb-3 text-xs text-red-500">
+              <AlertCircle className="h-3.5 w-3.5" />
+              <span>You must agree to the Terms of Service</span>
+            </div>
+          )}
         </>
       )}
 

@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { User, Session } from "@supabase/supabase-js";
@@ -30,9 +31,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(currentSession?.user ?? null);
         
         if (event === 'SIGNED_IN') {
-          navigate('/for-you');
+          // Use setTimeout to prevent React state update loops
+          setTimeout(() => {
+            navigate('/for-you');
+          }, 0);
         } else if (event === 'SIGNED_OUT') {
-          navigate('/auth');
+          // Use setTimeout to prevent React state update loops
+          setTimeout(() => {
+            navigate('/auth');
+          }, 0);
         }
       }
     );
@@ -49,6 +56,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
   }, [navigate]);
 
+  const handleAuthError = (error: any, defaultMessage: string) => {
+    console.error(defaultMessage, error);
+    
+    // Map common error messages to user-friendly versions
+    const errorMessage = error?.message || '';
+    
+    if (errorMessage.includes('Email not confirmed')) {
+      return toast.error('Please check your email and confirm your account before signing in.');
+    } else if (errorMessage.includes('Invalid login credentials')) {
+      return toast.error('Incorrect email or password. Please try again.');
+    } else if (errorMessage.includes('already registered')) {
+      return toast.error('This email is already registered. Please try signing in instead.');
+    } else if (errorMessage.includes('Password should be')) {
+      return toast.error('Your password must be at least 8 characters long.');
+    } else {
+      return toast.error(defaultMessage);
+    }
+  };
+
   const signIn = async (email: string, password: string, rememberMe: boolean = false) => {
     try {
       setIsLoading(true);
@@ -58,8 +84,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
       
       if (error) {
-        console.error("Login error:", error);
-        toast.error(error.message || "Failed to sign in");
+        handleAuthError(error, 'Failed to sign in');
         throw error;
       }
       
@@ -68,8 +93,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return;
       
     } catch (error: any) {
-      console.error("Sign in error:", error);
-      toast.error(error.message || "Failed to sign in");
+      handleAuthError(error, 'Failed to sign in');
       throw error;
     } finally {
       setIsLoading(false);
@@ -85,8 +109,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
       
       if (error) {
-        console.error("Signup error:", error);
-        toast.error(error.message || "Failed to create account");
+        handleAuthError(error, 'Failed to create account');
         throw error;
       }
       
@@ -102,8 +125,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return;
       
     } catch (error: any) {
-      console.error("Sign up error:", error);
-      toast.error(error.message || "Failed to create account");
+      handleAuthError(error, 'Failed to create account');
       throw error;
     } finally {
       setIsLoading(false);
@@ -116,8 +138,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const { error } = await supabase.auth.signOut();
       
       if (error) {
-        console.error("Signout error:", error);
-        toast.error(error.message || "Failed to sign out");
+        handleAuthError(error, 'Failed to sign out');
         throw error;
       }
       
@@ -126,8 +147,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return;
       
     } catch (error: any) {
-      console.error("Sign out error:", error);
-      toast.error(error.message || "Failed to sign out");
+      handleAuthError(error, 'Failed to sign out');
       throw error;
     } finally {
       setIsLoading(false);
