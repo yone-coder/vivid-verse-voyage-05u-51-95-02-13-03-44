@@ -26,6 +26,7 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [twoFactorCode, setTwoFactorCode] = useState('');
+  const [authSuccess, setAuthSuccess] = useState(false);
 
   const [activeTab, setActiveTab] = useState('email');
   const [step, setStep] = useState(1);
@@ -65,7 +66,13 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
       return;
     }
 
-    setStep(2);
+    setIsLoading(true);
+    
+    // Simulate loading to demonstrate the loading state
+    setTimeout(() => {
+      setIsLoading(false);
+      setStep(2);
+    }, 1200);
   };
 
   const handleStep2Submit = async (e: React.FormEvent) => {
@@ -91,31 +98,48 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
       return;
     }
 
-    if (activeTab === 'email' || activeTab === 'phone') {
-      setStep(3);
-      toast.info(`Verification code sent to your ${activeTab === 'email' ? 'email' : 'phone'}`);
-      return;
-    }
+    setIsLoading(true);
 
-    await handleFinalSubmit();
+    // Simulate verification loading for demonstration
+    setTimeout(() => {
+      if (activeTab === 'email' || activeTab === 'phone') {
+        setIsLoading(false);
+        setStep(3);
+        toast.info(`Verification code sent to your ${activeTab === 'email' ? 'email' : 'phone'}`);
+      } else {
+        handleFinalSubmit();
+      }
+    }, 1500);
   };
 
   const handleFinalSubmit = async () => {
     setIsLoading(true);
 
     try {
-      if (activeTab === 'email') {
-        await signIn(email, password, rememberMe);
-        toast.success("Login successful!");
-      } else if (activeTab === 'phone') {
-        toast.info("Phone authentication is not fully implemented yet.");
-      } else if (activeTab === 'passkey') {
-        toast.info("Passkey authentication is not fully implemented yet.");
-      }
+      // Simulate login delay to show loading state
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Show success state
+      setAuthSuccess(true);
+      
+      // Wait a moment before completing the authentication
+      setTimeout(async () => {
+        if (activeTab === 'email') {
+          await signIn(email, password, rememberMe);
+          toast.success("Login successful!");
+        } else if (activeTab === 'phone') {
+          toast.info("Phone authentication is not fully implemented yet.");
+        } else if (activeTab === 'passkey') {
+          toast.info("Passkey authentication is not fully implemented yet.");
+        }
+        
+        setAuthSuccess(false);
+        setIsLoading(false);
+      }, 1000);
     } catch (error) {
       console.error("Auth error:", error);
       toast.error("Authentication failed. Please try again.");
-    } finally {
+      setAuthSuccess(false);
       setIsLoading(false);
     }
   };
@@ -169,6 +193,9 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
             <SubmitButton 
               isLoading={isLoading} 
               label="Continue" 
+              loadingText="Verifying..."
+              showSuccess={authSuccess}
+              successText="Verified!"
             />
 
             <div className="text-center mt-4 flex items-center justify-center space-x-2">
@@ -216,7 +243,10 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
 
             <SubmitButton 
               isLoading={isLoading} 
-              label={authMode === 'signin' ? "Continue" : "Create account"} 
+              label={authMode === 'signin' ? "Continue" : "Create account"}
+              loadingText="Validating..."
+              showSuccess={authSuccess}
+              successText="Validated!"
             />
 
             <div className="text-center mt-4 flex items-center justify-center space-x-2">
@@ -256,6 +286,9 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
             <SubmitButton 
               isLoading={isLoading} 
               label="Continue" 
+              loadingText="Authenticating..."
+              showSuccess={authSuccess}
+              successText="Success!"
             />
 
             <div className="text-center mt-4 flex items-center justify-center space-x-2">

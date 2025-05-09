@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { Fingerprint, KeyRound, ShieldCheck } from 'lucide-react';
+import SubmitButton from './SubmitButton';
 
 interface PasskeyTabProps {
   onSubmit?: (e: React.FormEvent) => void;
@@ -10,6 +11,7 @@ interface PasskeyTabProps {
 const PasskeyTab = ({ onSubmit, showSubmitButton = false }: PasskeyTabProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [authSuccess, setAuthSuccess] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,9 +19,13 @@ const PasskeyTab = ({ onSubmit, showSubmitButton = false }: PasskeyTabProps) => 
       setIsLoading(true);
       // Simulate loading for demonstration
       setTimeout(() => {
-        setIsLoading(false);
-        onSubmit(e);
-      }, 1000);
+        setAuthSuccess(true);
+        setTimeout(() => {
+          setIsLoading(false);
+          setAuthSuccess(false);
+          onSubmit(e);
+        }, 1000);
+      }, 1500);
     }
   };
 
@@ -48,30 +54,41 @@ const PasskeyTab = ({ onSubmit, showSubmitButton = false }: PasskeyTabProps) => 
             Sign in without a password using your biometrics or security key
           </p>
           
-          <button
-            type="button"
-            onClick={handleSubmit}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-            disabled={isLoading}
-            className="bg-[#ff4747] hover:bg-[#ff2727] text-white font-medium py-2.5 px-4 rounded-lg transition-all flex items-center justify-center w-full relative overflow-hidden"
-          >
-            {isLoading ? (
-              <>
-                <span className="absolute inset-0 bg-black/10"></span>
-                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                <span>Verifying...</span>
-              </>
-            ) : (
-              <>
-                <KeyRound className={`h-4 w-4 mr-2 transition-transform ${isHovered ? 'animate-subtle-pulse' : ''}`} />
-                <span>Continue with Passkey</span>
-              </>
-            )}
-          </button>
+          {showSubmitButton ? (
+            <SubmitButton
+              isLoading={isLoading}
+              label="Continue with Passkey"
+              loadingText="Verifying passkey..."
+              showSuccess={authSuccess}
+              successText="Passkey verified!"
+              onClick={handleSubmit}
+            />
+          ) : (
+            <button
+              type="button"
+              onClick={handleSubmit}
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+              disabled={isLoading}
+              className="bg-[#ff4747] hover:bg-[#ff2727] text-white font-medium py-2.5 px-4 rounded-lg transition-all flex items-center justify-center w-full relative overflow-hidden"
+            >
+              {isLoading ? (
+                <>
+                  <span className="absolute inset-0 bg-black/10"></span>
+                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  <span>Verifying...</span>
+                </>
+              ) : (
+                <>
+                  <KeyRound className={`h-4 w-4 mr-2 transition-transform ${isHovered ? 'animate-subtle-pulse' : ''}`} />
+                  <span>Continue with Passkey</span>
+                </>
+              )}
+            </button>
+          )}
         </div>
       </div>
 
@@ -118,7 +135,7 @@ const PasskeyTab = ({ onSubmit, showSubmitButton = false }: PasskeyTabProps) => 
         .animate-pulse-glow {
           animation: pulseGlow 1.5s infinite;
         }
-      `}
+        `}
       </style>
     </div>
   );
