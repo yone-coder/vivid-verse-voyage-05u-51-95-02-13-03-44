@@ -103,7 +103,23 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     setErrorMessage(null);
     
     try {
-      // Check email existence in auth data
+      // First, try to fetch a user profile that matches this email
+      // This is more reliable than the OTP method for checking existence
+      const { data: users, error: fetchError } = await supabase.auth.admin.listUsers({
+        filter: {
+          email: email
+        }
+      }).catch(() => ({ data: { users: [] }, error: null })); // Handle if not admin access
+      
+      // If we can verify with admin API
+      if (users && users.length > 0) {
+        console.log("Email exists via admin API:", email);
+        setEmailExists(true);
+        setVerifying(false);
+        return true;
+      }
+      
+      // Fallback to OTP method - this method is less reliable but works for non-admin access
       const { data, error } = await supabase.auth.signInWithOtp({
         email: email,
         options: {
@@ -111,22 +127,27 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         }
       });
       
-      // Check the error to determine if the email exists
-      // If the error includes "Invalid login credentials", the email doesn't exist
-      const exists = !error || 
-                    error.message === "Email not confirmed" || 
-                    !error.message?.includes("Invalid login credentials") ||
-                    !error.message?.includes("doesn't exist");
+      // Analyze error message to determine if email exists
+      // This is imperfect but our best option without admin access
+      const errorMessage = error?.message || '';
       
-      console.log("Email check result:", { exists, error: error?.message });
+      // If no error or error is "Email not confirmed", the email likely exists
+      // If error contains "Invalid login credentials" or "doesn't exist" then email doesn't exist
+      const exists = !error || 
+                     error.message === "Email not confirmed" ||
+                     !(errorMessage.includes("Invalid login credentials") || 
+                       errorMessage.includes("doesn't exist"));
+      
+      console.log("Email check result:", { email, exists, errorMessage });
       setEmailExists(exists);
+      setVerifying(false);
       return exists;
+      
     } catch (err: any) {
       console.error("Error checking email:", err);
       setErrorMessage("Failed to verify email");
-      return false;
-    } finally {
       setVerifying(false);
+      return false;
     }
   };
 
