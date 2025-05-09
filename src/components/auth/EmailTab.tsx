@@ -95,7 +95,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     };
   }, [email, focused]);
 
-  // Check if email exists in Supabase auth
+  // Check if email exists in Supabase database
   const checkEmailExists = async () => {
     if (!isValid || !email) return false;
     
@@ -103,63 +103,63 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     setErrorMessage(null);
     
     try {
-      // Try to sign in with password - since we're providing an incorrect password,
-      // we can analyze the error to determine if the email exists
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password: "check_if_email_exists_" + Math.random().toString(36)
-      });
+      console.log("Checking if email exists:", email);
       
-      // Analyze the error message to determine if email exists
+      // Query the database directly for the email
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('email', email)
+        .maybeSingle();
+      
       if (error) {
-        console.log("Auth check response:", error.message);
+        console.error("Database query error:", error);
+        throw error;
+      }
+      
+      console.log("Email lookup result:", data);
+      
+      // If we got data back, the email exists
+      const exists = !!data;
+      setEmailExists(exists);
+      
+      if (!exists) {
+        setErrorMessage("This email is not registered");
+        toast.error("This email is not registered");
+      }
+      
+      setVerifying(false);
+      return exists;
+      
+    } catch (err: any) {
+      console.error("Error checking email:", err);
+      // If we encounter an error, use the auth API as fallback
+      try {
+        // Fallback method using auth API
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password: "check_if_email_exists_" + Math.random().toString(36)
+        });
         
         // If error includes "Invalid login credentials", the email likely exists
-        // but the password is wrong (which is expected)
-        if (error.message.includes("Invalid login credentials")) {
-          console.log("Email exists (invalid credentials):", email);
+        if (error && error.message.includes("Invalid login credentials")) {
+          console.log("Fallback detection - email exists:", email);
           setEmailExists(true);
           setVerifying(false);
           return true;
-        }
-        
-        // If error includes "Email not confirmed", the email exists but isn't confirmed
-        if (error.message.includes("Email not confirmed")) {
-          console.log("Email exists (not confirmed):", email);
-          setEmailExists(true);
-          setVerifying(false);
-          return true;
-        }
-        
-        // If error suggests user doesn't exist
-        if (error.message.includes("doesn't exist") || 
-            error.message.includes("user not found")) {
-          console.log("Email doesn't exist:", email);
+        } else {
+          console.log("Fallback detection - email doesn't exist:", email);
           setEmailExists(false);
           setErrorMessage("This email is not registered");
           setVerifying(false);
           return false;
         }
-        
-        // Fallback for other errors - assume email doesn't exist
-        console.log("Unknown auth error:", error.message);
-        setEmailExists(false);
-        setErrorMessage("This email is not registered");
+      } catch (fallbackErr) {
+        console.error("Fallback email check failed:", fallbackErr);
+        setErrorMessage("Failed to verify email");
         setVerifying(false);
         return false;
       }
-      
-      // If no error (unlikely with incorrect password), assume email exists
-      console.log("No auth error - email likely exists:", email);
-      setEmailExists(true);
-      setVerifying(false);
-      return true;
-      
-    } catch (err: any) {
-      console.error("Error checking email:", err);
-      setErrorMessage("Failed to verify email");
-      setVerifying(false);
-      return false;
     }
   };
 
