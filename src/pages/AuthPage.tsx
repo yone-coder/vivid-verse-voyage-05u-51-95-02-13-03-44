@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -13,6 +14,7 @@ import TwoFactorAuth from '@/components/auth/TwoFactorAuth';
 import PasswordStepContent from '@/components/auth/PasswordStepContent';
 import SubmitButton from '@/components/auth/SubmitButton';
 import BackButton from '@/components/auth/BackButton';
+import { supabase } from '@/integrations/supabase/client';
 
 interface AuthPageProps {
   isOverlay?: boolean;
@@ -35,8 +37,10 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
+  const [emailExists, setEmailExists] = useState<boolean | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const { user, signIn } = useAuth();
+  const { user, signIn, signUp } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -44,6 +48,99 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
       navigate('/for-you');
     }
   }, [user, navigate]);
+
+  const checkEmailExists = async (email: string): Promise<boolean> => {
+    setIsLoading(true);
+    setErrorMessage(null);
+    
+    try {
+      console.log("Checking if email exists:", email);
+      
+      // Try using OTP method to check if email exists
+      try {
+        const { data, error } = await supabase.auth.signInWithOtp({
+          email,
+          options: {
+            shouldCreateUser: false,
+          }
+        });
+        
+        if (!error) {
+          console.log("Email exists (OTP method):", email);
+          setIsLoading(false);
+          return true;
+        }
+
+        if (error && error.message && error.message.includes("Email not confirmed")) {
+          console.log("Email exists but not confirmed:", email);
+          setIsLoading(false);
+          return true;
+        }
+
+        console.log("OTP check error:", error);
+      } catch (err) {
+        console.error("OTP check error:", err);
+      }
+      
+      // Check profiles table
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('email', email)
+        .maybeSingle();
+      
+      if (error) {
+        console.error("Database query error:", error);
+        
+        // Check if profiles table exists by doing a sample query
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
+          .select('id')
+          .limit(1);
+          
+        if (profileError) {
+          console.error("Profile table query error:", profileError);
+          // Continue to next method
+        } else if (profileData) {
+          // Table exists but email wasn't found
+          setIsLoading(false);
+          return false;
+        }
+      } else {
+        // If we got data back, the email exists
+        const exists = !!data;
+        console.log("Email lookup result:", data, "Exists:", exists);
+        setIsLoading(false);
+        return exists;
+      }
+      
+      // Final fallback: try auth API directly with invalid password
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password: "check_if_email_exists_" + Math.random().toString(36)
+      });
+      
+      // If error includes "Invalid login credentials", the email likely exists
+      if (signInError && signInError.message.includes("Invalid login credentials")) {
+        console.log("Fallback detection - email exists:", email);
+        setIsLoading(false);
+        return true;
+      } else if (signInError && signInError.message.includes("Email not confirmed")) {
+        console.log("Email exists but not confirmed:", email);
+        setIsLoading(false);
+        return true;
+      }
+      
+      console.log("Email doesn't exist:", email);
+      setIsLoading(false);
+      return false;
+      
+    } catch (error) {
+      console.error("Error checking email:", error);
+      setIsLoading(false);
+      return false;
+    }
+  };
 
   const handleStep1Submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,6 +156,19 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
         toast.error("Please enter a valid email address.");
         return;
       }
+      
+      // Only check if email exists when in signin mode
+      if (authMode === 'signin') {
+        setIsLoading(true);
+        const exists = await checkEmailExists(email);
+        if (!exists) {
+          setErrorMessage("This email is not registered");
+          toast.error("This email is not registered. Please sign up first.");
+          setIsLoading(false);
+          return;
+        }
+        setEmailExists(true);
+      }
     }
 
     if (activeTab === 'phone' && !phone) {
@@ -68,11 +178,10 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
 
     setIsLoading(true);
     
-    // Simulate loading to demonstrate the loading state
     setTimeout(() => {
       setIsLoading(false);
       setStep(2);
-    }, 1200);
+    }, 800);
   };
 
   const handleStep2Submit = async (e: React.FormEvent) => {
@@ -100,8 +209,18 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
 
     setIsLoading(true);
 
-    // Simulate verification loading for demonstration
-    setTimeout(() => {
+    if (authMode === 'signup') {
+      try {
+        await signUp(email, password);
+        // If signUp is successful, handleFinalSubmit will be called by the context
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Signup error:", error);
+        toast.error("Signup failed. Please try again.");
+        setIsLoading(false);
+      }
+    } else {
+      // For signin, proceed to next step or complete
       if (activeTab === 'email' || activeTab === 'phone') {
         setIsLoading(false);
         setStep(3);
@@ -109,33 +228,39 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
       } else {
         handleFinalSubmit();
       }
-    }, 1500);
+    }
   };
 
   const handleFinalSubmit = async () => {
     setIsLoading(true);
+    setAuthSuccess(false);
 
     try {
-      // Simulate login delay to show loading state
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Show success state
-      setAuthSuccess(true);
-      
-      // Wait a moment before completing the authentication
-      setTimeout(async () => {
-        if (activeTab === 'email') {
-          await signIn(email, password, rememberMe);
-          toast.success("Login successful!");
-        } else if (activeTab === 'phone') {
-          toast.info("Phone authentication is not fully implemented yet.");
-        } else if (activeTab === 'passkey') {
-          toast.info("Passkey authentication is not fully implemented yet.");
-        }
+      if (activeTab === 'email') {
+        // Show success animation first
+        setAuthSuccess(true);
         
-        setAuthSuccess(false);
+        // Wait a moment before actual authentication
+        setTimeout(async () => {
+          try {
+            await signIn(email, password, rememberMe);
+            // If successful, user will be redirected by the context effect
+          } catch (error) {
+            console.error("Login error:", error);
+            toast.error("Login failed. Please check your credentials and try again.");
+            setAuthSuccess(false);
+            setIsLoading(false);
+          }
+        }, 1000);
+      } else if (activeTab === 'phone') {
+        toast.info("Phone authentication is not fully implemented yet.");
         setIsLoading(false);
-      }, 1000);
+        setAuthSuccess(false);
+      } else if (activeTab === 'passkey') {
+        toast.info("Passkey authentication is not fully implemented yet.");
+        setIsLoading(false);
+        setAuthSuccess(false);
+      }
     } catch (error) {
       console.error("Auth error:", error);
       toast.error("Authentication failed. Please try again.");
@@ -145,13 +270,32 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
   };
 
   const handleGoBack = () => {
+    setErrorMessage(null);
     if (step > 1) {
       setStep(step - 1);
     }
   };
 
   const handlePasswordReset = () => {
-    toast.info("Password reset functionality not implemented yet.");
+    if (!email) {
+      toast.error("Please enter your email address first.");
+      setStep(1);
+      return;
+    }
+    
+    setIsLoading(true);
+    
+    supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    }).then(({ error }) => {
+      setIsLoading(false);
+      if (error) {
+        console.error("Password reset error:", error);
+        toast.error("Failed to send password reset link. Please try again.");
+      } else {
+        toast.success("Password reset link sent to your email.");
+      }
+    });
   };
 
   const toggleShowPassword = () => {
@@ -162,6 +306,7 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
     setAuthMode(authMode === 'signin' ? 'signup' : 'signin');
     setPassword('');
     setConfirmPassword('');
+    setErrorMessage(null);
   };
 
   return (
@@ -190,10 +335,17 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
               step={step}
             />
 
+            {errorMessage && (
+              <div className="flex items-center gap-1.5 mt-1 ml-1 text-xs text-destructive">
+                <AlertTriangle className="h-3 w-3" />
+                <span>{errorMessage}</span>
+              </div>
+            )}
+
             <SubmitButton 
               isLoading={isLoading} 
               label="Continue" 
-              loadingText="Verifying..."
+              loadingText={authMode === 'signin' ? "Verifying..." : "Checking..."}
               showSuccess={authSuccess}
               successText="Verified!"
             />

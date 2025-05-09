@@ -1,6 +1,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { authService, User, Session } from "../services/authService";
+import { supabase } from "@/integrations/supabase/client";
+import { User, Session } from "@supabase/supabase-js";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -22,81 +23,115 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Get initial session
-    const initializeAuth = async () => {
-      const { data } = await authService.getSession();
-      if (data.session) {
-        setSession(data.session);
-        setUser(data.session.user);
+    // Set up auth state change listener FIRST
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, currentSession) => {
+        console.log("Auth state changed:", event);
+        setSession(currentSession);
+        setUser(currentSession?.user ?? null);
+        
+        if (event === 'SIGNED_IN') {
+          navigate('/for-you');
+        } else if (event === 'SIGNED_OUT') {
+          navigate('/auth');
+        }
       }
+    );
+
+    // THEN check for existing session
+    supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+      setSession(currentSession);
+      setUser(currentSession?.user ?? null);
       setIsLoading(false);
-    };
-
-    // Set up auth state change listener
-    const { data: { subscription } } = authService.onAuthStateChange((event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
     });
-
-    initializeAuth();
 
     return () => {
       subscription.unsubscribe();
     };
-  }, []);
+  }, [navigate]);
 
   const signIn = async (email: string, password: string, rememberMe: boolean = false) => {
     try {
-      const { data, error } = await authService.signIn(email, password);
+      setIsLoading(true);
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
       
       if (error) {
-        toast.error(error.message);
-        return;
+        console.error("Login error:", error);
+        toast.error(error.message || "Failed to sign in");
+        throw error;
       }
       
-      if (data.session) {
-        navigate("/for-you");
-        toast.success("Signed in successfully!");
-      }
-    } catch (error) {
-      console.error("Error during sign in:", error);
-      toast.error("Failed to sign in. Please try again.");
+      console.log("Signed in successfully:", data);
+      toast.success("Signed in successfully!");
+      return;
+      
+    } catch (error: any) {
+      console.error("Sign in error:", error);
+      toast.error(error.message || "Failed to sign in");
+      throw error;
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const signUp = async (email: string, password: string) => {
     try {
-      const { data, error } = await authService.signUp(email, password);
+      setIsLoading(true);
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
       
       if (error) {
-        toast.error(error.message);
-        return;
+        console.error("Signup error:", error);
+        toast.error(error.message || "Failed to create account");
+        throw error;
       }
       
-      if (data.user) {
-        navigate("/for-you");
-        toast.success("Account created successfully!");
+      console.log("Signed up successfully:", data);
+      toast.success("Account created successfully!");
+      
+      // If email confirmation is enabled in Supabase settings
+      if (data.session === null) {
+        toast.info("Please check your email to confirm your account");
+        navigate('/auth');
       }
-    } catch (error) {
-      console.error("Error during sign up:", error);
-      toast.error("Failed to create account. Please try again.");
+      
+      return;
+      
+    } catch (error: any) {
+      console.error("Sign up error:", error);
+      toast.error(error.message || "Failed to create account");
+      throw error;
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const signOut = async () => {
     try {
-      const { error } = await authService.signOut();
+      setIsLoading(true);
+      const { error } = await supabase.auth.signOut();
       
       if (error) {
-        toast.error(error.message);
-        return;
+        console.error("Signout error:", error);
+        toast.error(error.message || "Failed to sign out");
+        throw error;
       }
       
-      navigate("/auth");
+      // Auth state listener will handle the navigation
       toast.success("Signed out successfully!");
-    } catch (error) {
-      console.error("Error during sign out:", error);
-      toast.error("Failed to sign out. Please try again.");
+      return;
+      
+    } catch (error: any) {
+      console.error("Sign out error:", error);
+      toast.error(error.message || "Failed to sign out");
+      throw error;
+    } finally {
+      setIsLoading(false);
     }
   };
 
