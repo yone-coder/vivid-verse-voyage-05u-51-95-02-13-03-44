@@ -41,6 +41,14 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   const suggestionsRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
   
+  // Clean up error state when component unmounts or tab changes
+  useEffect(() => {
+    return () => {
+      setErrorMessage(null);
+      setEmailExists(null);
+    };
+  }, []);
+  
   // Memoize validation message to prevent recalculations on render
   const validationMessage = useMemo(() => {
     if (!submitted && (focused || email.length === 0)) return null;
@@ -290,7 +298,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         toast.error("Failed to verify email");
       }
     }
-  }, [isValid, email, checkEmailExists, onSubmit]);
+  }, [isValid, email, onSubmit]);
 
   return (
     <div className="w-full max-w-md mx-auto space-y-2">

@@ -70,6 +70,7 @@ const AuthTabs = ({
               setEmail={setEmail} 
               onSubmit={showFormsInTabs ? onSubmit : undefined} 
               showSubmitButton={showInlineButtons} 
+              key={`email-tab-${activeTab === 'email'}`}
             />
           </TabsContent>
           <TabsContent value="phone" className="pt-3 mb-0">
@@ -80,12 +81,14 @@ const AuthTabs = ({
               setCountryCode={setCountryCode} 
               onSubmit={showFormsInTabs ? onSubmit : undefined}
               showSubmitButton={showInlineButtons}
+              key={`phone-tab-${activeTab === 'phone'}`}
             />
           </TabsContent>
           <TabsContent value="passkey" className="pt-3 mb-0">
             <PasskeyTab 
               onSubmit={showFormsInTabs ? onSubmit : undefined} 
-              showSubmitButton={showInlineButtons} 
+              showSubmitButton={showInlineButtons}
+              key={`passkey-tab-${activeTab === 'passkey'}`}
             />
           </TabsContent>
         </div>

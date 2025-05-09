@@ -1,5 +1,5 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Input } from "@/components/ui/input";
 import { Phone, Check, X, AlertTriangle, Loader2 } from 'lucide-react';
 import { useTheme } from "@/components/theme-provider";
@@ -33,6 +33,14 @@ const PhoneTab = ({
   const [phoneExists, setPhoneExists] = useState<boolean | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  
+  // Clean up error state when component unmounts or tab changes
+  useEffect(() => {
+    return () => {
+      setErrorMessage(null);
+      setPhoneExists(null);
+    };
+  }, []);
   
   // Validation logic
   const validatePhone = (phoneNumber: string): boolean => {

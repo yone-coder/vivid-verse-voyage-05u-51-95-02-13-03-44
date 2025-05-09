@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { KeyRound, Fingerprint, AlertTriangle, Lock, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
@@ -12,6 +12,13 @@ interface PasskeyTabProps {
 const PasskeyTab = ({ onSubmit, showSubmitButton = false }: PasskeyTabProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  
+  // Clean up error state when component unmounts or tab changes
+  useEffect(() => {
+    return () => {
+      setErrorMessage(null);
+    };
+  }, []);
   
   const handlePasskeyAuth = async () => {
     setIsLoading(true);
