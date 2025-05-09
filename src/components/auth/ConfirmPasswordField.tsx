@@ -28,7 +28,7 @@ const ConfirmPasswordField = ({
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           placeholder="Confirm your password"
-          className={`w-full pl-10 pr-10 py-3 border-[#eaeaea] focus-visible:ring-[#ff4747] ${
+          className={`w-full pl-10 py-3 border-[#eaeaea] focus-visible:ring-[#ff4747] ${
             confirmPassword && password !== confirmPassword 
               ? 'border-red-500 focus:ring-red-500' 
               : ''

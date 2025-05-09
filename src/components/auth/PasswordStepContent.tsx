@@ -35,7 +35,7 @@ const PasswordStepContent = ({
   handlePasswordReset
 }: PasswordStepContentProps) => {
   return (
-    <div className="mb-6">
+    <div className="w-full max-w-md mx-auto mb-6">
       <PasswordField
         id="password"
         label="Password"

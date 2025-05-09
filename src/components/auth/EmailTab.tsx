@@ -46,7 +46,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     return () => {
       setErrorMessage(null);
       setEmailExists(null);
-      setSubmitted(false); // Add this to reset submission state
+      setSubmitted(false);
     };
   }, []);
   
@@ -95,8 +95,8 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     };
   }, [email, focused]);
 
-  // IMPORTANT: Fix TS error - separate checkEmailExists function to break circular dependency
-  const checkEmailExists = async (emailToCheck: string): Promise<boolean> => {
+  // Check if email exists function as a standalone function, not a method
+  const checkEmailExists = async (emailToCheck: string) => {
     if (!isValid || !emailToCheck) return false;
     
     setVerifying(true);
@@ -105,7 +105,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     try {
       console.log("Checking if email exists:", emailToCheck);
       
-      // First approach: Check auth.users table via RPC (requires proper function)
+      // First approach: Check auth.users table via OTP
       try {
         const { data, error } = await supabase.auth.signInWithOtp({
           email: emailToCheck,
@@ -127,12 +127,8 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
           setVerifying(false);
           return true;
         }
-
-        console.log("OTP check error:", error);
-        // Continue to other methods if OTP check fails
       } catch (err) {
         console.error("OTP check error:", err);
-        // Continue to other methods
       }
       
       // Second approach: Check profiles table directly
@@ -315,7 +311,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         </p>
       </div>
 
-      {/* Email Input with icons - made narrower and cleaner */}
+      {/* Email Input with icons */}
       <div className="relative w-full max-w-sm">
         <div className={`absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center h-5 w-5 transition-all duration-200 ${focused ? 'text-primary' : 'text-muted-foreground'}`}>
           <Mail className="h-[15px] w-[15px]" />
@@ -389,7 +385,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         </button>
       )}
 
-      {/* Error Message - Improved styling */}
+      {/* Error Message */}
       {errorMessage && (
         <div className="flex items-center justify-center gap-1.5 mt-2 p-2 rounded-md bg-destructive/10 text-destructive text-sm max-w-sm">
           <AlertTriangle className="h-4 w-4" />
