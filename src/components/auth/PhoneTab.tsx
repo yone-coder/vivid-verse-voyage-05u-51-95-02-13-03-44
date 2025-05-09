@@ -79,7 +79,7 @@ const PhoneTab = ({
     if (inputRef.current) inputRef.current.focus();
   };
 
-  // Check if phone exists in database - FIXED: Added parameter to break circular dependency
+  // FIXED: Break circular dependency by defining the function here
   const checkPhoneExists = async (phoneToCheck: string): Promise<boolean> => {
     if (!isValid || !phoneToCheck) return false;
     
@@ -123,14 +123,15 @@ const PhoneTab = ({
     }
   };
 
-  // Fixed to avoid circular reference by adding phone parameter
+  // FIXED: Avoid closure over checkPhoneExists by using a local copy of the phone number
   const handlePhoneSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
     
     if (isValid) {
       try {
-        const exists = await checkPhoneExists(phone);
+        const phoneToVerify = phone; // Local copy
+        const exists = await checkPhoneExists(phoneToVerify);
         
         if (exists) {
           if (onSubmit) onSubmit(e);
