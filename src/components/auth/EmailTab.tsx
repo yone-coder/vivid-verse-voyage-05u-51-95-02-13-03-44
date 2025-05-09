@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { Input } from "@/components/ui/input";
 import { Mail, Check, X, Info, Loader2, AlertTriangle } from 'lucide-react';
@@ -103,23 +102,9 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     setErrorMessage(null);
     
     try {
-      // First, try to fetch a user profile that matches this email
-      // This is more reliable than the OTP method for checking existence
-      const { data: users, error: fetchError } = await supabase.auth.admin.listUsers({
-        filter: {
-          email: email
-        }
-      }).catch(() => ({ data: { users: [] }, error: null })); // Handle if not admin access
+      // We can't use the admin.listUsers with filter directly due to TypeScript limitations
+      // Instead, we'll use the OTP method to check if the email exists
       
-      // If we can verify with admin API
-      if (users && users.length > 0) {
-        console.log("Email exists via admin API:", email);
-        setEmailExists(true);
-        setVerifying(false);
-        return true;
-      }
-      
-      // Fallback to OTP method - this method is less reliable but works for non-admin access
       const { data, error } = await supabase.auth.signInWithOtp({
         email: email,
         options: {
@@ -134,7 +119,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
       // If no error or error is "Email not confirmed", the email likely exists
       // If error contains "Invalid login credentials" or "doesn't exist" then email doesn't exist
       const exists = !error || 
-                     error.message === "Email not confirmed" ||
+                     errorMessage === "Email not confirmed" ||
                      !(errorMessage.includes("Invalid login credentials") || 
                        errorMessage.includes("doesn't exist"));
       

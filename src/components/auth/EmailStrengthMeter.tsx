@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Shield } from 'lucide-react';
 
 interface EmailStrengthProps {
   score: number;
@@ -40,7 +39,6 @@ const EmailStrengthMeter = ({ score }: EmailStrengthProps) => {
     >
       <div className="flex justify-between items-center text-xs">
         <div className="flex items-center gap-1">
-          <Shield className={`h-3.5 w-3.5 ${score < 3 ? 'text-orange-400' : score < 7 ? 'text-yellow-500' : 'text-green-500'}`} />
           <span className="font-medium">Email security: {getStrengthLabel(score)}</span>
         </div>
         <span className="text-muted-foreground">{Math.max(0, Math.min(score, 10))}/10</span>
