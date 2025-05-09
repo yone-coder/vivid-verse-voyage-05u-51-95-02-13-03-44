@@ -79,7 +79,7 @@ const PhoneTab = ({
     if (inputRef.current) inputRef.current.focus();
   };
 
-  // Define check phone function separately to avoid circular references
+  // The phone existence checking function - defined independently to avoid circular references
   const checkPhoneExists = async (phoneToCheck: string) => {
     if (!isValid || !phoneToCheck) return false;
     
@@ -122,13 +122,14 @@ const PhoneTab = ({
     }
   };
 
-  // Define submit handler separately to avoid circular references
+  // The phone submission handler - defined independently to avoid circular references
   const handlePhoneSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
     
     if (isValid) {
       try {
+        // Call the phone check function directly
         const exists = await checkPhoneExists(phone);
         
         if (exists) {

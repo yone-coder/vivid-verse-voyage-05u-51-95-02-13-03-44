@@ -95,7 +95,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     };
   }, [email, focused]);
 
-  // Check if email exists function as a standalone function
+  // Check if email exists function - defined outside of other functions to avoid circular refs
   const checkEmailExists = async (emailToCheck: string) => {
     if (!isValid || !emailToCheck) return false;
     
@@ -276,13 +276,14 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     }
   }, [typoSuggestion, setEmail]);
 
-  // Extract the submit handler to avoid capturing checkEmailExists in its closure
+  // Handle email submission - separate from function that checks email
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
     
     if (isValid) {
       try {
+        // Call the email check function without capturing it in a closure
         const exists = await checkEmailExists(email);
         
         if (exists) {

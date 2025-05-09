@@ -36,7 +36,7 @@ const PasswordField = ({
 
   return (
     <div className="mb-4">
-      <Label htmlFor={id} className="block text-gray-700 mb-1">{label}</Label>
+      <Label htmlFor={id} className="block font-medium text-gray-700 mb-1">{label}</Label>
       <div className="relative group">
         <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400 group-focus-within:text-[#ff4747] transition-colors" />
         <Input
@@ -45,8 +45,9 @@ const PasswordField = ({
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder={`Enter your ${label.toLowerCase()}`}
-          className="w-full pl-10 pr-10 py-3 border-[#eaeaea] focus-visible:ring-[#ff4747]"
+          className="w-full pl-10 pr-10 py-2.5 border-[#eaeaea] focus-visible:ring-[#ff4747] text-base"
           required
+          autoFocus
         />
         <button
           type="button"
