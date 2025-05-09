@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { Input } from "@/components/ui/input";
 import { Mail, Check, X, Info, Loader2, AlertTriangle } from 'lucide-react';
@@ -162,7 +161,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
       setVerifying(false);
       return exists;
       
-    } catch (err: any) {
+    } catch (err) {
       console.error("Error checking email:", err);
       
       // Final fallback: try auth API directly with invalid password

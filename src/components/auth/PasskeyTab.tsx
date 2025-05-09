@@ -1,7 +1,8 @@
 
 import React, { useState } from 'react';
-import { Fingerprint, KeyRound, ShieldCheck } from 'lucide-react';
-import SubmitButton from './SubmitButton';
+import { KeyRound, Fingerprint, AlertTriangle, Lock, Loader2 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { toast } from 'sonner';
 
 interface PasskeyTabProps {
   onSubmit?: (e: React.FormEvent) => void;
@@ -10,143 +11,97 @@ interface PasskeyTabProps {
 
 const PasskeyTab = ({ onSubmit, showSubmitButton = false }: PasskeyTabProps) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-  const [authSuccess, setAuthSuccess] = useState(false);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (onSubmit) {
-      setIsLoading(true);
-      // Simulate loading for demonstration
-      setTimeout(() => {
-        setAuthSuccess(true);
-        setTimeout(() => {
-          setIsLoading(false);
-          setAuthSuccess(false);
-          onSubmit(e);
-        }, 1000);
-      }, 1500);
-    }
-  };
-
-  // Fix: Create handleButtonClick function that creates a synthetic event when no event is available
-  const handleButtonClick = () => {
-    // Create a synthetic event object that matches the minimum interface needed
-    const syntheticEvent = {
-      preventDefault: () => {},
-    } as React.FormEvent;
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  
+  const handlePasskeyAuth = async () => {
+    setIsLoading(true);
+    setErrorMessage(null);
     
-    handleSubmit(syntheticEvent);
+    try {
+      // In a real implementation, this would use WebAuthn API
+      // For demonstration, we'll simulate the process
+      toast.info("Passkey authentication isn't fully implemented yet.");
+      
+      setTimeout(() => {
+        setIsLoading(false);
+        setErrorMessage("Passkeys are not fully supported yet");
+      }, 1500);
+      
+      // If implemented, would look something like this:
+      // const credential = await navigator.credentials.get({
+      //   publicKey: publicKeyCredentialRequestOptions,
+      // });
+      // Then verify with your backend
+      
+    } catch (error) {
+      console.error("Passkey error:", error);
+      setErrorMessage("Failed to authenticate with passkey");
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="w-full max-w-md mx-auto space-y-4">
-      {/* Centered message */}
-      <div className="text-center mb-3">
+      {/* Passkey section with better organized instructions */}
+      <div className="text-center mb-4">
+        <h2 className="text-base font-medium text-foreground mb-1">Passkey Authentication</h2>
         <p className="text-sm text-muted-foreground">
-          Please use a passkey to continue
+          Sign in securely without a password
         </p>
       </div>
 
-      <div className="rounded-lg border border-[#eaeaea] bg-[#f9f9f9] p-4">
-        <div className="flex flex-col items-center justify-center py-4">
-          <div 
-            className={`mb-4 bg-[#ffeae8] p-3 rounded-full transition-all duration-500 ${
-              isHovered ? 'animate-pulse-glow' : ''
-            }`}
-          >
-            <Fingerprint className={`h-6 w-6 text-[#ff4747] transition-transform duration-300 ${
-              isHovered ? 'scale-110' : ''
-            }`} />
-          </div>
-          <h3 className="font-medium text-base mb-1 text-center">Use a passkey</h3>
-          <p className="text-sm text-muted-foreground text-center mb-4">
-            Sign in without a password using your biometrics or security key
-          </p>
-          
-          {showSubmitButton ? (
-            <SubmitButton
-              isLoading={isLoading}
-              label="Continue with Passkey"
-              loadingText="Verifying passkey..."
-              showSuccess={authSuccess}
-              successText="Passkey verified!"
-              onClick={handleButtonClick} // Fix: Use the new handler function
-            />
+      {/* Passkey UI */}
+      <div className="flex flex-col items-center justify-center px-6 py-8 bg-background border border-[#eaeaea] rounded-xl">
+        <motion.div
+          className="flex items-center justify-center bg-primary/10 w-20 h-20 rounded-full mb-5"
+          initial={{ scale: 0.8 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 0.3 }}
+        >
+          <Fingerprint className="h-9 w-9 text-primary" />
+        </motion.div>
+        
+        <h3 className="text-lg font-medium mb-2">Use Passkey</h3>
+        <p className="text-sm text-center text-muted-foreground mb-4">
+          Authenticate quickly and securely using your device's biometric sensor or PIN
+        </p>
+
+        <button
+          onClick={handlePasskeyAuth}
+          disabled={isLoading}
+          className={`flex items-center justify-center gap-2 mt-2 w-full max-w-[220px] py-3 px-5 rounded-lg font-medium text-sm transition-all duration-200 ${
+            isLoading
+              ? 'bg-muted text-muted-foreground cursor-not-allowed'
+              : 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm hover:shadow'
+          }`}
+        >
+          {isLoading ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" />
+              <span>Authenticating...</span>
+            </>
           ) : (
-            <button
-              type="button"
-              onClick={handleSubmit}
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
-              disabled={isLoading}
-              className="bg-[#ff4747] hover:bg-[#ff2727] text-white font-medium py-2.5 px-4 rounded-lg transition-all flex items-center justify-center w-full relative overflow-hidden"
-            >
-              {isLoading ? (
-                <>
-                  <span className="absolute inset-0 bg-black/10"></span>
-                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  <span>Verifying...</span>
-                </>
-              ) : (
-                <>
-                  <KeyRound className={`h-4 w-4 mr-2 transition-transform ${isHovered ? 'animate-subtle-pulse' : ''}`} />
-                  <span>Continue with Passkey</span>
-                </>
-              )}
-            </button>
+            <>
+              <KeyRound className="h-4 w-4" />
+              <span>Use Passkey</span>
+            </>
           )}
-        </div>
+        </button>
       </div>
 
-      {/* Benefits */}
-      <div className="mt-2 border-t border-[#eaeaea] pt-3">
-        <h4 className="text-sm font-medium mb-2">Why use a passkey?</h4>
-        <ul className="space-y-2">
-          <li className="flex items-center text-sm text-muted-foreground">
-            <div className="h-5 w-5 mr-2 flex items-center justify-center text-green-500">
-              <ShieldCheck className="h-4 w-4" />
-            </div>
-            <span>More secure than passwords</span>
-          </li>
-          <li className="flex items-center text-sm text-muted-foreground">
-            <div className="h-5 w-5 mr-2 flex items-center justify-center text-green-500">
-              <ShieldCheck className="h-4 w-4" />
-            </div>
-            <span>Works across your devices</span>
-          </li>
-          <li className="flex items-center text-sm text-muted-foreground">
-            <div className="h-5 w-5 mr-2 flex items-center justify-center text-green-500">
-              <ShieldCheck className="h-4 w-4" />
-            </div>
-            <span>Fast sign-in with biometrics</span>
-          </li>
-        </ul>
+      {/* Error Message */}
+      {errorMessage && (
+        <div className="flex items-center justify-center gap-1.5 mt-2 p-2 rounded-md bg-destructive/10 text-destructive text-sm">
+          <AlertTriangle className="h-4 w-4" />
+          <span className="font-medium">{errorMessage}</span>
+        </div>
+      )}
+
+      {/* Browser support notice */}
+      <div className="flex items-center justify-center gap-1.5 mt-4 p-3 bg-muted/40 rounded-md text-sm text-muted-foreground">
+        <Lock className="h-3.5 w-3.5" />
+        <span>Passkey support varies by browser and device</span>
       </div>
-      
-      {/* Animation Styles */}
-      <style>
-        {`
-        @keyframes subtlePulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.7; }
-        }
-        .animate-subtle-pulse {
-          animation: subtlePulse 1.5s infinite;
-        }
-        
-        @keyframes pulseGlow {
-          0%, 100% { box-shadow: 0 0 0 rgba(255, 71, 71, 0.4); }
-          50% { box-shadow: 0 0 10px rgba(255, 71, 71, 0.7); }
-        }
-        .animate-pulse-glow {
-          animation: pulseGlow 1.5s infinite;
-        }
-        `}
-      </style>
     </div>
   );
 };
