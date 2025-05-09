@@ -87,7 +87,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   }, [email, focused]);
 
   // Check if email exists in Supabase database
-  const checkEmailExists = async (): Promise<boolean> => {
+  const checkEmailExists = async () => {
     if (!isValid || !email) return false;
     
     setVerifying(true);
@@ -290,14 +290,15 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         toast.error("Failed to verify email");
       }
     }
-  }, [onSubmit, isValid, email]);
+  }, [onSubmit, isValid, email, checkEmailExists]);
 
   return (
     <div className="w-full max-w-md mx-auto space-y-2">
-      {/* Centered message */}
-      <div className="text-center mb-3">
+      {/* Email input section with better organized instructions */}
+      <div className="text-center mb-4">
+        <h2 className="text-base font-medium text-foreground mb-1">Email Address</h2>
         <p className="text-sm text-muted-foreground">
-          Please enter your email address to continue
+          Please enter your email to {emailExists === false ? "create your account" : "continue"}
         </p>
       </div>
 
@@ -375,11 +376,11 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         </button>
       )}
 
-      {/* Error Message */}
+      {/* Error Message - Improved styling */}
       {errorMessage && (
-        <div className="flex items-center gap-1.5 mt-1 ml-1 text-xs text-destructive">
-          <AlertTriangle className="h-3 w-3" />
-          <span>{errorMessage}</span>
+        <div className="flex items-center justify-center gap-1.5 mt-2 p-2 rounded-md bg-destructive/10 text-destructive text-sm">
+          <AlertTriangle className="h-4 w-4" />
+          <span className="font-medium">{errorMessage}</span>
         </div>
       )}
 
