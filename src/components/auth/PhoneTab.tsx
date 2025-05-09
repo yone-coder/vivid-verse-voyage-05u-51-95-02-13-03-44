@@ -39,7 +39,7 @@ const PhoneTab = ({
     return () => {
       setErrorMessage(null);
       setPhoneExists(null);
-      setSubmitted(false); // Add this to reset submission state
+      setSubmitted(false);
     };
   }, []);
   
@@ -79,8 +79,8 @@ const PhoneTab = ({
     if (inputRef.current) inputRef.current.focus();
   };
 
-  // Check if phone exists in database - FIXED: Added parameter to break circular dependency
-  const checkPhoneExists = async (phoneToCheck: string): Promise<boolean> => {
+  // Define check phone function separately to avoid circular references
+  const checkPhoneExists = async (phoneToCheck: string) => {
     if (!isValid || !phoneToCheck) return false;
     
     setChecking(true);
@@ -114,7 +114,6 @@ const PhoneTab = ({
       
       setChecking(false);
       return exists;
-      
     } catch (error) {
       console.error("Error checking phone:", error);
       setErrorMessage("Failed to verify phone number");
@@ -123,7 +122,7 @@ const PhoneTab = ({
     }
   };
 
-  // Fixed to avoid circular reference by adding phone parameter
+  // Define submit handler separately to avoid circular references
   const handlePhoneSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);

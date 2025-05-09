@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -331,7 +330,7 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
           <div className="w-full mb-4 space-y-3">
             <BackButton onClick={handleGoBack} />
 
-            <div className="mb-4">
+            <div className="mb-4 text-center">
               <h3 className="text-lg font-semibold mb-1">
                 {activeTab === 'email' ? email : `${countryCode} ${phone}`}
               </h3>

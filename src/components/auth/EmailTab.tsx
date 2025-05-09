@@ -95,7 +95,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     };
   }, [email, focused]);
 
-  // Check if email exists function as a standalone function, not a method
+  // Check if email exists function as a standalone function
   const checkEmailExists = async (emailToCheck: string) => {
     if (!isValid || !emailToCheck) return false;
     
