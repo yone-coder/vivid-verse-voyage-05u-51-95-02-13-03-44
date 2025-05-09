@@ -39,6 +39,7 @@ const PhoneTab = ({
     return () => {
       setErrorMessage(null);
       setPhoneExists(null);
+      setSubmitted(false); // Add this to reset submission state
     };
   }, []);
   
@@ -78,7 +79,7 @@ const PhoneTab = ({
     if (inputRef.current) inputRef.current.focus();
   };
 
-  // Check if phone exists in database - extracted to avoid circular references
+  // Check if phone exists in database - separated from submit handler
   const checkPhoneExists = async () => {
     if (!isValid || !phone) return false;
     
@@ -122,8 +123,8 @@ const PhoneTab = ({
     }
   };
 
-  // Fixed handleSubmit to avoid circular reference by separating it from checkPhoneExists
-  const handleSubmit = async (e: React.FormEvent) => {
+  // Fixed to avoid circular reference
+  const handlePhoneSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
     
@@ -240,7 +241,7 @@ const PhoneTab = ({
       {showSubmitButton && (
         <button
           type="submit"
-          onClick={handleSubmit}
+          onClick={handlePhoneSubmit}
           disabled={!isValid || checking}
           className={`w-full mt-4 py-2.5 rounded-lg font-medium transition-all duration-200 relative overflow-hidden ${
             isValid && !checking

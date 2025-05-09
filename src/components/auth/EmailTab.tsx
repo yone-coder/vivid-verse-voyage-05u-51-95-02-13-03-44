@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { Input } from "@/components/ui/input";
 import { Mail, Check, X, Info, Loader2, AlertTriangle } from 'lucide-react';
@@ -45,6 +46,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     return () => {
       setErrorMessage(null);
       setEmailExists(null);
+      setSubmitted(false); // Add this to reset submission state
     };
   }, []);
   
@@ -278,8 +280,9 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     }
   }, [typoSuggestion, setEmail]);
 
-  // Fix the infinite type instantiation - extract the dependency on "checkEmailExists"
-  const handleSubmit = useCallback(async (e: React.FormEvent) => {
+  // Fix the TypeScript error by breaking the circular dependency
+  // Extract the submit handler to avoid capturing checkEmailExists in its closure
+  const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
     
@@ -298,7 +301,10 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         toast.error("Failed to verify email");
       }
     }
-  }, [isValid, email, onSubmit]);
+  };
+
+  // Use this handler for the submit button
+  const handleSubmit = showSubmitButton ? handleEmailSubmit : undefined;
 
   return (
     <div className="w-full max-w-md mx-auto space-y-2">
@@ -416,7 +422,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
       {showSubmitButton && (
         <button
           type="submit"
-          onClick={handleSubmit}
+          onClick={handleEmailSubmit}
           disabled={!isValid || checking || verifying}
           className={`w-full mt-4 py-2.5 rounded-lg font-medium transition-all duration-200 relative overflow-hidden ${
             isValid && !checking && !verifying

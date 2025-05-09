@@ -1,5 +1,5 @@
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import TabDivider from './TabDivider';
 import TabNavigation from './TabNavigation';
@@ -35,6 +35,8 @@ const AuthTabs = ({
   step
 }: AuthTabsProps) => {
   const [tabTransition, setTabTransition] = useState(false);
+  // Add a key state to force re-render of tabs when switching
+  const [tabKey, setTabKey] = useState(Date.now());
 
   // Handle tab switching with animation - use useCallback to prevent recreating this function on each render
   const handleTabChange = useCallback((tab: string) => {
@@ -43,6 +45,8 @@ const AuthTabs = ({
     setTabTransition(true);
     setTimeout(() => {
       setActiveTab(tab);
+      // Generate a new key to force tab content to unmount/remount
+      setTabKey(Date.now());
       setTabTransition(false);
     }, 150);
   }, [activeTab, setActiveTab]);
@@ -70,7 +74,7 @@ const AuthTabs = ({
               setEmail={setEmail} 
               onSubmit={showFormsInTabs ? onSubmit : undefined} 
               showSubmitButton={showInlineButtons} 
-              key={`email-tab-${activeTab === 'email'}`}
+              key={`email-tab-${tabKey}-${activeTab === 'email'}`}
             />
           </TabsContent>
           <TabsContent value="phone" className="pt-3 mb-0">
@@ -81,14 +85,14 @@ const AuthTabs = ({
               setCountryCode={setCountryCode} 
               onSubmit={showFormsInTabs ? onSubmit : undefined}
               showSubmitButton={showInlineButtons}
-              key={`phone-tab-${activeTab === 'phone'}`}
+              key={`phone-tab-${tabKey}-${activeTab === 'phone'}`}
             />
           </TabsContent>
           <TabsContent value="passkey" className="pt-3 mb-0">
             <PasskeyTab 
               onSubmit={showFormsInTabs ? onSubmit : undefined} 
               showSubmitButton={showInlineButtons}
-              key={`passkey-tab-${activeTab === 'passkey'}`}
+              key={`passkey-tab-${tabKey}-${activeTab === 'passkey'}`}
             />
           </TabsContent>
         </div>
