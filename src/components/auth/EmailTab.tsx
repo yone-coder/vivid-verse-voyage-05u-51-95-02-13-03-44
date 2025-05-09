@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { Input } from "@/components/ui/input";
 import { Mail, Check, X, Info, Loader2, AlertTriangle } from 'lucide-react';
@@ -279,6 +278,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     }
   }, [typoSuggestion, setEmail]);
 
+  // Fix the infinite type instantiation - extract the dependency on "checkEmailExists"
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);

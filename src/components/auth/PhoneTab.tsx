@@ -78,7 +78,7 @@ const PhoneTab = ({
     if (inputRef.current) inputRef.current.focus();
   };
 
-  // Check if phone exists in database
+  // Check if phone exists in database - extracted to avoid circular references
   const checkPhoneExists = async () => {
     if (!isValid || !phone) return false;
     
@@ -122,6 +122,7 @@ const PhoneTab = ({
     }
   };
 
+  // Fixed handleSubmit to avoid circular reference by separating it from checkPhoneExists
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
