@@ -4,7 +4,6 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Mail, Check, X, Info, Loader2 } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useTheme } from "@/components/theme-provider";
 
 // Import our extracted components
@@ -158,25 +157,12 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
 
   return (
     <div className="w-full max-w-md mx-auto space-y-2">
-      {/* Label with tooltip */}
-      <Label htmlFor="email" className="block font-medium text-sm mb-1.5 text-foreground flex items-center">
-        Email address
-        <TooltipProvider>
-          <Tooltip delayDuration={300}>
-            <TooltipTrigger asChild>
-              <div className="relative group ml-1.5">
-                <Info 
-                  className="h-3.5 w-3.5 text-muted-foreground group-hover:text-foreground transition-colors" 
-                  aria-label="Info" 
-                />
-              </div>
-            </TooltipTrigger>
-            <TooltipContent className="max-w-[220px] p-3">
-              <p className="text-xs">We'll never share your email. Format: name@example.com</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      </Label>
+      {/* Centered message instead of label */}
+      <div className="text-center mb-3">
+        <p className="text-sm text-muted-foreground">
+          Please enter your email address to continue
+        </p>
+      </div>
 
       {/* Email Input with icons */}
       <div className="relative">
