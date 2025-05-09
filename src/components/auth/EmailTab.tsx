@@ -1,9 +1,11 @@
 
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { Input } from "@/components/ui/input";
-import { Mail, Check, X, Info, Loader2 } from 'lucide-react';
+import { Mail, Check, X, Info, Loader2, AlertTriangle } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 import { useTheme } from "@/components/theme-provider";
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 // Import our extracted components
 import EmailStrengthMeter from './EmailStrengthMeter';
@@ -32,9 +34,12 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   const [hoveredIndex, setHoveredIndex] = useState<number>(-1);
   const [submitted, setSubmitted] = useState(false);
   const [checking, setChecking] = useState(false);
+  const [verifying, setVerifying] = useState(false);
   const [showStrengthMeter, setShowStrengthMeter] = useState(false);
   const [typoSuggestion, setTypoSuggestion] = useState<string | null>(null);
   const [showValidationSuccess, setShowValidationSuccess] = useState(false);
+  const [emailExists, setEmailExists] = useState<boolean | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const suggestionsRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
@@ -90,6 +95,39 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     };
   }, [email, focused]);
 
+  // Check if email exists in Supabase auth
+  const checkEmailExists = async () => {
+    if (!isValid || !email) return false;
+    
+    setVerifying(true);
+    setErrorMessage(null);
+    
+    try {
+      // Check email existence in auth data
+      const { data, error } = await supabase.auth.signInWithOtp({
+        email: email,
+        options: {
+          shouldCreateUser: false, // Don't create the user
+        }
+      });
+      
+      // This is a hack to determine if the email exists
+      // If there's no error about user not existing, we assume the email exists
+      const exists = !error || (error.message !== "Email not confirmed" && 
+                               !error.message?.includes("not found") && 
+                               !error.message?.includes("doesn't exist"));
+      
+      setEmailExists(exists);
+      return exists;
+    } catch (err: any) {
+      console.error("Error checking email:", err);
+      setErrorMessage("Failed to verify email");
+      return false;
+    } finally {
+      setVerifying(false);
+    }
+  };
+
   // Handle keyboard navigation for suggestions
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (!showSuggestions || suggestions.length === 0) return;
@@ -114,6 +152,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   const handleFocus = useCallback(() => {
     setFocused(true);
     setSubmitted(false);
+    setErrorMessage(null);
     if (suggestions.length > 0 && email.length > 0) {
       setShowSuggestions(true);
     }
@@ -150,6 +189,8 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     setEmail('');
     setSuggestions([]);
     setShowStrengthMeter(false);
+    setEmailExists(null);
+    setErrorMessage(null);
     if (inputRef.current) inputRef.current.focus();
   }, [setEmail]);
 
@@ -160,11 +201,25 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     }
   }, [typoSuggestion, setEmail]);
 
-  const handleSubmit = useCallback((e: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
-    if (onSubmit && isValid) onSubmit(e);
-  }, [onSubmit, isValid]);
+    
+    if (isValid) {
+      try {
+        const exists = await checkEmailExists();
+        
+        if (exists) {
+          if (onSubmit) onSubmit(e);
+        } else {
+          setErrorMessage("This email is not registered");
+        }
+      } catch (error) {
+        console.error("Email verification error:", error);
+        toast.error("Failed to verify email");
+      }
+    }
+  }, [onSubmit, isValid, checkEmailExists, email]);
 
   return (
     <div className="w-full max-w-md mx-auto space-y-2">
@@ -195,7 +250,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
           onKeyDown={handleKeyDown}
           placeholder="name@example.com"
           className={`w-full pl-10 pr-10 h-11 text-sm bg-background transition-all duration-200 rounded-md shadow-sm ${
-            validationMessage 
+            validationMessage || errorMessage
               ? 'border-destructive focus:border-destructive focus:ring-destructive/20 bg-destructive/5' 
               : isValid 
                 ? 'border-green-500 focus:border-green-600 focus:ring-green-200 bg-green-50/30 dark:bg-green-950/10' 
@@ -204,13 +259,13 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
                   : 'border-input hover:border-input focus:border-input focus:ring-ring/20'
           }`}
           autoComplete="email"
-          aria-invalid={!!validationMessage}
+          aria-invalid={!!validationMessage || !!errorMessage}
           aria-describedby={validationMessage ? "email-validation-error" : undefined}
         />
 
         {/* Status Indicators */}
         <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
-          {checking && (
+          {(checking || verifying) && (
             <Loader2 className="h-4 w-4 text-muted-foreground animate-spin mr-1" aria-label="Checking email" />
           )}
           
@@ -226,7 +281,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
             </button>
           )}
 
-          {isValid && !checking && (
+          {isValid && !checking && !verifying && !errorMessage && (
             <Check
               className={`h-4 w-4 text-green-500 ${
                 showValidationSuccess ? 'animate-pulse-success' : 'animate-fadeIn'
@@ -249,17 +304,25 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         </button>
       )}
 
+      {/* Error Message */}
+      {errorMessage && (
+        <div className="flex items-center gap-1.5 mt-1 ml-1 text-xs text-destructive">
+          <AlertTriangle className="h-3 w-3" />
+          <span>{errorMessage}</span>
+        </div>
+      )}
+
       {/* Validation Message */}
       <AnimatePresence>
-        {validationMessage && (
+        {validationMessage && !errorMessage && (
           <EmailValidationMessage message={validationMessage} />
         )}
       </AnimatePresence>
 
       {/* Email Strength Meter */}
       <AnimatePresence>
-        {showStrengthMeter && isValid && (
-          <EmailStrengthMeter score={emailStrength.score} messages={emailStrength.messages} />
+        {showStrengthMeter && isValid && !errorMessage && (
+          <EmailStrengthMeter score={emailStrength.score} messages={[]} />
         )}
       </AnimatePresence>
 
@@ -281,17 +344,17 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         <button
           type="submit"
           onClick={handleSubmit}
-          disabled={!isValid || checking}
+          disabled={!isValid || checking || verifying}
           className={`w-full mt-4 py-2.5 rounded-lg font-medium transition-all duration-200 relative overflow-hidden ${
-            isValid && !checking
+            isValid && !checking && !verifying
               ? 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm hover:shadow'
               : 'bg-muted text-muted-foreground cursor-not-allowed'
           }`}
         >
-          {checking ? (
+          {checking || verifying ? (
             <span className="flex items-center justify-center gap-2">
               <Loader2 className="h-4 w-4 animate-spin" />
-              Checking...
+              {verifying ? "Verifying..." : "Checking..."}
             </span>
           ) : (
             <span className="relative z-10">Continue</span>

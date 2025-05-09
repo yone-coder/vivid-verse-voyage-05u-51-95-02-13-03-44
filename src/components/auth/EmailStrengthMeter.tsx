@@ -1,14 +1,14 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Shield, Check, X } from 'lucide-react';
+import { Shield } from 'lucide-react';
 
 interface EmailStrengthProps {
   score: number;
   messages: {text: string, positive: boolean}[];
 }
 
-const EmailStrengthMeter = ({ score, messages }: EmailStrengthProps) => {
+const EmailStrengthMeter = ({ score }: EmailStrengthProps) => {
   // Helper functions for styling based on score
   const getStrengthColor = (score: number) => {
     if (score < 0) return 'bg-red-500';
@@ -50,22 +50,6 @@ const EmailStrengthMeter = ({ score, messages }: EmailStrengthProps) => {
           className={`h-full ${getStrengthColor(score)} transition-all duration-500 ease-out`}
           style={{ width: getStrengthWidth(score) }}
         ></div>
-      </div>
-      
-      {/* Email Strength Feedback Messages */}
-      <div className="space-y-1">
-        {messages.map((msg, idx) => (
-          <div key={idx} className="flex items-start gap-1.5 text-xs">
-            {msg.positive ? (
-              <Check className="h-3 w-3 text-green-500 mt-0.5" />
-            ) : (
-              <X className="h-3 w-3 text-destructive mt-0.5" />
-            )}
-            <span className={msg.positive ? 'text-green-600 dark:text-green-400' : 'text-destructive'}>
-              {msg.text}
-            </span>
-          </div>
-        ))}
       </div>
     </motion.div>
   );

@@ -24,25 +24,11 @@ const SubmitButton = ({
 }: SubmitButtonProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
-  const [loadingProgress, setLoadingProgress] = useState(0);
   const [showSuccessState, setShowSuccessState] = useState(false);
 
-  // Progress animation during loading
+  // Handle success state
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-    
-    if (isLoading) {
-      setLoadingProgress(0);
-      interval = setInterval(() => {
-        setLoadingProgress(prev => {
-          // Slow down as we approach 100%
-          const increment = Math.max(1, 15 - Math.floor(prev / 10));
-          const newProgress = Math.min(90, prev + increment); // Cap at 90% until actually complete
-          return newProgress;
-        });
-      }, 200);
-    } else if (showSuccess) {
-      setLoadingProgress(100);
+    if (showSuccess) {
       setShowSuccessState(true);
       
       // Reset success state after a delay
@@ -52,11 +38,7 @@ const SubmitButton = ({
       
       return () => clearTimeout(timeout);
     }
-    
-    return () => {
-      if (interval) clearInterval(interval);
-    };
-  }, [isLoading, showSuccess]);
+  }, [showSuccess]);
 
   return (
     <Button
@@ -91,24 +73,10 @@ const SubmitButton = ({
       aria-label={isLoading ? loadingText : showSuccessState ? successText : label}
     >
       {isLoading && (
-        <>
-          {/* Progress bar */}
-          <div className="absolute left-0 bottom-0 h-1 bg-white/30 w-full overflow-hidden">
-            <div 
-              className="h-full bg-white/80 transition-all duration-300 ease-out"
-              style={{ width: `${loadingProgress}%` }}
-            ></div>
-          </div>
-          
-          {/* Loading animation background */}
-          <span className="absolute inset-0 bg-black/5 animate-pulse-subtle"></span>
-          
-          {/* Loading content */}
-          <div className="flex items-center justify-center gap-2 animate-pulse-fade">
-            <Loader2 className="h-5 w-5 animate-spin" />
-            <span>{loadingText}</span>
-          </div>
-        </>
+        <div className="flex items-center justify-center gap-2 animate-pulse-fade">
+          <Loader2 className="h-5 w-5 animate-spin" />
+          <span>{loadingText}</span>
+        </div>
       )}
       
       {showSuccessState && (
@@ -172,14 +140,6 @@ const SubmitButton = ({
         }
         .animate-glow {
           animation: glow 1.5s infinite ease-in-out;
-        }
-        
-        @keyframes pulseSubtle {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.85; }
-        }
-        .animate-pulse-subtle {
-          animation: pulseSubtle 1.5s infinite ease-in-out;
         }
         
         @keyframes scaleIn {
