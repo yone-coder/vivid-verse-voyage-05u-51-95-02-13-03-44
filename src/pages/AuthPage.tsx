@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -206,39 +207,26 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
     }
 
     setIsLoading(true);
+    setAuthSuccess(false); // Reset success state before attempting auth
 
-    if (authMode === 'signup') {
-      try {
+    try {
+      if (authMode === 'signup') {
         await signUp(email, password);
-        // If signUp is successful, handleFinalSubmit will be called by the context
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Signup error:", error);
-        toast.error("Signup failed. Please try again.");
-        setIsLoading(false);
+        setAuthSuccess(true); // Only set success if no error was thrown
+      } else {
+        // For signin
+        await signIn(email, password, rememberMe);
+        setAuthSuccess(true); // Only set success if no error was thrown
+        // If successful, user will be redirected by the context effect
       }
-    } else {
-      // For signin, complete authentication immediately without going to verification step
-      try {
-        setAuthSuccess(true);
-        
-        setTimeout(async () => {
-          try {
-            await signIn(email, password, rememberMe);
-            // If successful, user will be redirected by the context effect
-          } catch (error) {
-            console.error("Login error:", error);
-            toast.error("Login failed. Please check your credentials and try again.");
-            setAuthSuccess(false);
-            setIsLoading(false);
-          }
-        }, 1000);
-      } catch (error) {
-        console.error("Auth error:", error);
-        toast.error("Authentication failed. Please try again.");
-        setAuthSuccess(false);
-        setIsLoading(false);
-      }
+    } catch (error) {
+      console.error("Auth error:", error);
+      toast.error(authMode === 'signin' 
+        ? "Login failed. Please check your credentials and try again." 
+        : "Signup failed. Please try again.");
+      setAuthSuccess(false); // Ensure success state is false on error
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -280,6 +268,7 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
     setPassword('');
     setConfirmPassword('');
     setErrorMessage(null);
+    setAuthSuccess(false); // Reset success state when toggling auth mode
   };
 
   return (

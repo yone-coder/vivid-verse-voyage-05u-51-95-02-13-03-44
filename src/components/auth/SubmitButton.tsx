@@ -28,7 +28,14 @@ const SubmitButton = ({
 
   // Handle success state
   useEffect(() => {
-    if (showSuccess) {
+    // Reset success state when loading starts
+    if (isLoading) {
+      setShowSuccessState(false);
+      return;
+    }
+    
+    // Only show success state if showSuccess is true and we're not loading
+    if (showSuccess && !isLoading) {
       setShowSuccessState(true);
       
       // Reset success state after a delay
@@ -37,8 +44,10 @@ const SubmitButton = ({
       }, 2000);
       
       return () => clearTimeout(timeout);
+    } else {
+      setShowSuccessState(false);
     }
-  }, [showSuccess]);
+  }, [showSuccess, isLoading]);
 
   return (
     <Button
@@ -79,7 +88,7 @@ const SubmitButton = ({
         </div>
       )}
       
-      {showSuccessState && (
+      {showSuccessState && !isLoading && (
         <>
           {/* Success animation background */}
           <span className="absolute inset-0 bg-green-500/10"></span>
