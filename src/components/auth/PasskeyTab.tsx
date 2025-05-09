@@ -1,273 +1,73 @@
 
-import React, { useCallback, useState, useRef, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { KeyRound, AlertCircle, Fingerprint, Loader2, CheckCircle, Smartphone } from 'lucide-react';
+import React from 'react';
+import { Fingerprint, KeyRound, ShieldCheck } from 'lucide-react';
 
 interface PasskeyTabProps {
   onSubmit?: (e: React.FormEvent) => void;
   showSubmitButton?: boolean;
 }
 
-enum PasskeyStatus {
-  IDLE = 'idle',
-  CHECKING = 'checking',
-  SUCCESS = 'success',
-  ERROR = 'error',
-}
-
-const PasskeyTab = ({ 
-  onSubmit,
-  showSubmitButton = false 
-}: PasskeyTabProps) => {
-  const [status, setStatus] = useState<PasskeyStatus>(PasskeyStatus.IDLE);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const submitButtonRef = useRef<HTMLButtonElement>(null);
-  const [animation, setAnimation] = useState<boolean>(false);
-
-  // Check for passkey browser support
-  const isPasskeySupported = useMemo(() => 
-    typeof window !== 'undefined' && 
-    window.PublicKeyCredential !== undefined && 
-    typeof window.PublicKeyCredential === 'function', []);
-
-  // Simulate passkey authentication
-  const handleAuthenticate = useCallback((e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    if (status === PasskeyStatus.CHECKING) return;
-    
-    setStatus(PasskeyStatus.CHECKING);
-    setErrorMessage(null);
-    setAnimation(true);
-
-    // Simulate passkey authentication process
-    setTimeout(() => {
-      if (!isPasskeySupported) {
-        setStatus(PasskeyStatus.ERROR);
-        setErrorMessage("Your browser doesn't support passkeys. Please use a different authentication method.");
-        return;
-      }
-
-      // For demo purposes, randomly succeed or fail
-      const success = Math.random() > 0.3; // 70% success rate
-      
-      if (success) {
-        setStatus(PasskeyStatus.SUCCESS);
-        setTimeout(() => {
-          if (onSubmit) onSubmit({} as React.FormEvent);
-        }, 500);
-      } else {
-        setStatus(PasskeyStatus.ERROR);
-        setErrorMessage("Authentication failed. Please try again.");
-      }
-      
-      setAnimation(false);
-    }, 1500);
-  }, [status, isPasskeySupported, onSubmit]);
-
-  // Reset state
-  const handleTryAgain = useCallback(() => {
-    setStatus(PasskeyStatus.IDLE);
-    setErrorMessage(null);
-  }, []);
-
-  // Handle keyboard accessibility
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      handleAuthenticate();
+const PasskeyTab = ({ onSubmit, showSubmitButton = false }: PasskeyTabProps) => {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (onSubmit) {
+      onSubmit(e);
     }
-  }, [handleAuthenticate]);
+  };
 
   return (
-    <div className="w-full max-w-sm mx-auto">
-      <div className="flex flex-col items-center justify-center text-center space-y-5">
-        {/* Passkey Icon/Button */}
-        <div 
-          className={`relative group cursor-pointer transition-all duration-300 ${
-            status === PasskeyStatus.CHECKING 
-              ? 'scale-[0.98]' 
-              : 'hover:scale-[1.02]'
-          }`}
-        >
-          <div 
-            className={`flex-shrink-0 h-28 w-28 flex items-center justify-center rounded-full mx-auto transition-all duration-300 shadow-sm ${
-              status === PasskeyStatus.CHECKING 
-                ? 'bg-amber-50 dark:bg-amber-900/20 shadow-inner' 
-                : status === PasskeyStatus.SUCCESS
-                  ? 'bg-green-50 dark:bg-green-900/20'
-                  : status === PasskeyStatus.ERROR
-                    ? 'bg-red-50 dark:bg-red-900/20'
-                    : 'bg-primary/5 dark:bg-primary/10'
-            }`}
-            role="button"
-            tabIndex={0}
-            onClick={() => status !== PasskeyStatus.SUCCESS && handleAuthenticate()}
-            onKeyDown={handleKeyDown}
-            aria-label="Authenticate with passkey"
-          >
-            <AnimatePresence mode="wait">
-              {status === PasskeyStatus.CHECKING ? (
-                <motion.div
-                  key="checking"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  className="text-amber-500 dark:text-amber-400"
-                >
-                  <div className="relative">
-                    <Fingerprint className="h-14 w-14" strokeWidth={1.5} />
-                    <div className="absolute -top-1 -right-1">
-                      <Loader2 className="h-5 w-5 animate-spin" strokeWidth={1.5} />
-                    </div>
-                  </div>
-                </motion.div>
-              ) : status === PasskeyStatus.SUCCESS ? (
-                <motion.div
-                  key="success"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  className="text-green-500 dark:text-green-400"
-                >
-                  <div className="relative">
-                    <Fingerprint className="h-14 w-14" strokeWidth={1.5} />
-                    <div className="absolute -top-1 -right-1 bg-white dark:bg-gray-900 rounded-full shadow-sm">
-                      <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400" strokeWidth={1.5} />
-                    </div>
-                  </div>
-                </motion.div>
-              ) : status === PasskeyStatus.ERROR ? (
-                <motion.div
-                  key="error"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  className="text-red-500 dark:text-red-400"
-                >
-                  <div className="relative">
-                    <Fingerprint className="h-14 w-14" strokeWidth={1.5} />
-                    <div className="absolute -top-1 -right-1 bg-white dark:bg-gray-900 rounded-full shadow-sm">
-                      <AlertCircle className="h-5 w-5 text-red-500 dark:text-red-400" strokeWidth={1.5} />
-                    </div>
-                  </div>
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="idle"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ 
-                    opacity: 1, 
-                    scale: animation ? [1, 1.05, 1] : 1,
-                    transition: animation ? { 
-                      scale: { repeat: Infinity, duration: 2 },
-                    } : {}
-                  }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  className="text-primary"
-                >
-                  <KeyRound className="h-14 w-14" strokeWidth={1.5} />
-                </motion.div>
-              )}
-            </AnimatePresence>
+    <div className="w-full max-w-md mx-auto space-y-4">
+      {/* Centered message */}
+      <div className="text-center mb-3">
+        <p className="text-sm text-muted-foreground">
+          Please use a passkey to continue
+        </p>
+      </div>
+
+      <div className="rounded-lg border border-[#eaeaea] bg-[#f9f9f9] p-4">
+        <div className="flex flex-col items-center justify-center py-4">
+          <div className="mb-4 bg-[#ffeae8] p-3 rounded-full">
+            <Fingerprint className="h-6 w-6 text-[#ff4747]" />
           </div>
-        </div>
-
-        {/* Status text */}
-        <div className="space-y-1.5">
-          <h3 className="text-base font-medium">
-            {status === PasskeyStatus.CHECKING
-              ? "Verifying passkey..."
-              : status === PasskeyStatus.SUCCESS
-              ? "Passkey verified!"
-              : status === PasskeyStatus.ERROR
-              ? "Passkey error"
-              : "Use your passkey"}
-          </h3>
-          
-          <p className="text-sm text-muted-foreground/80">
-            {status === PasskeyStatus.CHECKING
-              ? "Follow the instructions on your device"
-              : status === PasskeyStatus.SUCCESS
-              ? "You've been successfully authenticated"
-              : status === PasskeyStatus.ERROR
-              ? errorMessage || "Authentication failed. Please try again."
-              : "A safer and easier way to sign in without passwords"}
+          <h3 className="font-medium text-base mb-1 text-center">Use a passkey</h3>
+          <p className="text-sm text-muted-foreground text-center mb-4">
+            Sign in without a password using your biometrics or security key
           </p>
-        </div>
-
-        {/* Device icons - show only in idle state */}
-        {status === PasskeyStatus.IDLE && (
-          <motion.div
-            initial={{ opacity: 0, y: 5 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="flex items-center justify-center gap-6 text-muted-foreground/70"
-          >
-            <div className="flex flex-col items-center gap-1.5 group">
-              <div className="p-2 rounded-full bg-background border border-border/30 shadow-sm group-hover:border-border/50 transition-colors">
-                <Fingerprint className="h-4 w-4 group-hover:text-foreground transition-colors" strokeWidth={1.5} />
-              </div>
-              <span className="text-xs group-hover:text-foreground transition-colors">Fingerprint</span>
-            </div>
-            
-            <div className="flex flex-col items-center gap-1.5 group">
-              <div className="p-2 rounded-full bg-background border border-border/30 shadow-sm group-hover:border-border/50 transition-colors">
-                <KeyRound className="h-4 w-4 group-hover:text-foreground transition-colors" strokeWidth={1.5} />
-              </div>
-              <span className="text-xs group-hover:text-foreground transition-colors">Face ID</span>
-            </div>
-            
-            <div className="flex flex-col items-center gap-1.5 group">
-              <div className="p-2 rounded-full bg-background border border-border/30 shadow-sm group-hover:border-border/50 transition-colors">
-                <Smartphone className="h-4 w-4 group-hover:text-foreground transition-colors" strokeWidth={1.5} />
-              </div>
-              <span className="text-xs group-hover:text-foreground transition-colors">Phone</span>
-            </div>
-          </motion.div>
-        )}
-
-        {/* Error Message */}
-        <AnimatePresence>
-          {errorMessage && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="flex items-start gap-2 text-xs text-destructive mt-0 bg-destructive/5 px-4 py-2.5 rounded-md border border-destructive/10 overflow-hidden w-full"
-              role="alert"
-            >
-              <AlertCircle className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" strokeWidth={1.5} />
-              <span>{errorMessage}</span>
-            </motion.div>
-          )}
-        </AnimatePresence>
-        
-        {/* Action Buttons */}
-        {status === PasskeyStatus.ERROR ? (
+          
           <button
             type="button"
-            onClick={handleTryAgain}
-            className="w-full py-2.5 px-4 mt-1 bg-muted hover:bg-muted/80 text-foreground rounded-md text-sm font-medium transition-colors border border-border/40 shadow-sm"
+            onClick={handleSubmit}
+            className="bg-[#ff4747] hover:bg-[#ff2727] text-white font-medium py-2.5 px-4 rounded-lg transition-all flex items-center justify-center w-full"
           >
-            Try Again
+            <KeyRound className="h-4 w-4 mr-2" />
+            <span>Continue with Passkey</span>
           </button>
-        ) : showSubmitButton && status === PasskeyStatus.IDLE ? (
-          <motion.div
-            initial={{ y: 5, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.1 }}
-            className="w-full"
-          >
-            <button
-              ref={submitButtonRef}
-              type="button"
-              onClick={() => handleAuthenticate()}
-              className="w-full py-2.5 px-4 rounded-md font-medium transition-all duration-200 bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm hover:shadow flex items-center justify-center gap-2"
-            >
-              <span>Continue with Passkey</span>
-              <KeyRound className="h-4 w-4" strokeWidth={1.5} />
-            </button>
-          </motion.div>
-        ) : null}
+        </div>
+      </div>
+
+      {/* Benefits */}
+      <div className="mt-2 border-t border-[#eaeaea] pt-3">
+        <h4 className="text-sm font-medium mb-2">Why use a passkey?</h4>
+        <ul className="space-y-2">
+          <li className="flex items-center text-sm text-muted-foreground">
+            <div className="h-5 w-5 mr-2 flex items-center justify-center text-green-500">
+              <ShieldCheck className="h-4 w-4" />
+            </div>
+            <span>More secure than passwords</span>
+          </li>
+          <li className="flex items-center text-sm text-muted-foreground">
+            <div className="h-5 w-5 mr-2 flex items-center justify-center text-green-500">
+              <ShieldCheck className="h-4 w-4" />
+            </div>
+            <span>Works across your devices</span>
+          </li>
+          <li className="flex items-center text-sm text-muted-foreground">
+            <div className="h-5 w-5 mr-2 flex items-center justify-center text-green-500">
+              <ShieldCheck className="h-4 w-4" />
+            </div>
+            <span>Fast sign-in with biometrics</span>
+          </li>
+        </ul>
       </div>
     </div>
   );
