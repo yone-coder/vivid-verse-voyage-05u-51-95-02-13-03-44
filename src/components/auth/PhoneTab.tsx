@@ -39,13 +39,24 @@ const PhoneTab = ({
   const [isValidPhone, setIsValidPhone] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showValidationSuccess, setShowValidationSuccess] = useState(false);
   const phoneInputRef = useRef<HTMLInputElement>(null);
 
   // Validate phone number format (basic validation)
   useEffect(() => {
     // Just a basic check, in a real app we'd use a proper phone validation library
     const phoneRegex = /^\d{7,15}$/;
-    setIsValidPhone(phoneRegex.test(phone));
+    const isValid = phoneRegex.test(phone);
+    setIsValidPhone(isValid);
+    
+    // Show validation success animation when validation passes
+    if (isValid && phone.length > 0) {
+      setShowValidationSuccess(true);
+      const timer = setTimeout(() => {
+        setShowValidationSuccess(false);
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
   }, [phone]);
 
   // Handle country code change
@@ -141,7 +152,7 @@ const PhoneTab = ({
           />
 
           {isValidPhone && (
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 animate-fadeIn">
+            <div className={`absolute right-3 top-1/2 -translate-y-1/2 text-green-500 ${showValidationSuccess ? 'animate-pulse-success' : 'animate-fadeIn'}`}>
               <CheckCircle2 className="h-4 w-4" />
             </div>
           )}
@@ -179,6 +190,14 @@ const PhoneTab = ({
         }
         .animate-fadeIn {
           animation: fadeIn 0.2s ease-in-out;
+        }
+        
+        @keyframes pulseSuccess {
+          0%, 100% { transform: scale(1); opacity: 1; }
+          50% { transform: scale(1.2); opacity: 0.8; }
+        }
+        .animate-pulse-success {
+          animation: pulseSuccess 0.6s ease-in-out;
         }
       `}</style>
     </div>

@@ -1,6 +1,5 @@
 
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Mail, Check, X, Info, Loader2 } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
@@ -35,6 +34,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   const [checking, setChecking] = useState(false);
   const [showStrengthMeter, setShowStrengthMeter] = useState(false);
   const [typoSuggestion, setTypoSuggestion] = useState<string | null>(null);
+  const [showValidationSuccess, setShowValidationSuccess] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const suggestionsRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
@@ -46,6 +46,17 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   }, [email, submitted, focused]);
   
   const isValid = !validationMessage && email.length > 0;
+
+  // Show validation success animation
+  useEffect(() => {
+    if (isValid && email.includes('@') && email.includes('.') && email.length > 8) {
+      setShowValidationSuccess(true);
+      const timer = setTimeout(() => {
+        setShowValidationSuccess(false);
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [isValid, email]);
 
   // Memoize email strength to prevent recalculation
   const emailStrength = useMemo(() => getEmailStrength(email), [email]);
@@ -157,7 +168,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
 
   return (
     <div className="w-full max-w-md mx-auto space-y-2">
-      {/* Centered message instead of label */}
+      {/* Centered message */}
       <div className="text-center mb-3">
         <p className="text-sm text-muted-foreground">
           Please enter your email address to continue
@@ -217,7 +228,9 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
 
           {isValid && !checking && (
             <Check
-              className="h-4 w-4 text-green-500 animate-fadeIn"
+              className={`h-4 w-4 text-green-500 ${
+                showValidationSuccess ? 'animate-pulse-success' : 'animate-fadeIn'
+              }`}
               aria-label="Valid email"
             />
           )}
@@ -294,6 +307,14 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         }
         .animate-fadeIn {
           animation: fadeIn 0.2s ease-in-out;
+        }
+        
+        @keyframes pulseSuccess {
+          0%, 100% { transform: scale(1); opacity: 1; }
+          50% { transform: scale(1.2); opacity: 0.8; }
+        }
+        .animate-pulse-success {
+          animation: pulseSuccess 0.6s ease-in-out;
         }
       `}</style>
     </div>
