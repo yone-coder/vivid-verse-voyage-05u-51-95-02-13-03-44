@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { Input } from "@/components/ui/input";
 import { Mail, Check, X, Info, Loader2, AlertTriangle } from 'lucide-react';
@@ -47,7 +46,6 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   // Memoize validation message to prevent recalculations on render
   const validationMessage = useMemo(() => {
     if (!submitted && (focused || email.length === 0)) return null;
-    // Fixed: Passing the function instead of function result to avoid infinite type instantiation
     return getValidationMessage(email, setTypoSuggestion);
   }, [email, submitted, focused]);
   
@@ -106,7 +104,37 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     try {
       console.log("Checking if email exists:", email);
       
-      // Query the database directly for the email
+      // First approach: Check auth.users table via RPC (requires proper function)
+      try {
+        const { data, error } = await supabase.auth.signInWithOtp({
+          email,
+          options: {
+            shouldCreateUser: false,
+          }
+        });
+        
+        if (!error) {
+          console.log("Email exists (OTP method):", email);
+          setEmailExists(true);
+          setVerifying(false);
+          return true;
+        }
+
+        if (error && error.message && error.message.includes("Email not confirmed")) {
+          console.log("Email exists but not confirmed:", email);
+          setEmailExists(true);
+          setVerifying(false);
+          return true;
+        }
+
+        console.log("OTP check error:", error);
+        // Continue to other methods if OTP check fails
+      } catch (err) {
+        console.error("OTP check error:", err);
+        // Continue to other methods
+      }
+      
+      // Second approach: Check profiles table directly
       const { data, error } = await supabase
         .from('profiles')
         .select('id')
@@ -115,13 +143,23 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
       
       if (error) {
         console.error("Database query error:", error);
-        throw error;
+        
+        // Try fallback method if column doesn't exist
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
+          .select('id')
+          .limit(1);
+          
+        if (profileError) {
+          console.error("Profile table query error:", profileError);
+          throw new Error("Could not verify email");
+        }
       }
       
-      console.log("Email lookup result:", data);
-      
-      // If we got data back, the email exists
+      // If we got data back or no specific error about missing column, the email exists
       const exists = !!data;
+      console.log("Email lookup result:", data, "Exists:", exists);
+      
       setEmailExists(exists);
       
       if (!exists) {
@@ -134,9 +172,9 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
       
     } catch (err: any) {
       console.error("Error checking email:", err);
-      // If we encounter an error, use the auth API as fallback
+      
+      // Final fallback: try auth API directly with invalid password
       try {
-        // Fallback method using auth API
         const { error } = await supabase.auth.signInWithPassword({
           email,
           password: "check_if_email_exists_" + Math.random().toString(36)
@@ -145,6 +183,11 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         // If error includes "Invalid login credentials", the email likely exists
         if (error && error.message.includes("Invalid login credentials")) {
           console.log("Fallback detection - email exists:", email);
+          setEmailExists(true);
+          setVerifying(false);
+          return true;
+        } else if (error && error.message.includes("Email not confirmed")) {
+          console.log("Email exists but not confirmed:", email);
           setEmailExists(true);
           setVerifying(false);
           return true;
@@ -249,7 +292,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
           if (onSubmit) onSubmit(e);
         } else {
           setErrorMessage("This email is not registered");
-          toast.error("This email is not registered");
+          toast.error("This email is not registered. Please sign up first.");
         }
       } catch (error) {
         console.error("Email verification error:", error);
