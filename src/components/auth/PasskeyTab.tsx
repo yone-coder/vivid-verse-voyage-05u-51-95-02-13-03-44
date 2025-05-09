@@ -89,7 +89,7 @@ const PasskeyTab = ({ onSubmit, showSubmitButton = false }: PasskeyTabProps) => 
         </button>
       </div>
 
-      {/* Error Message */}
+      {/* Error Message - Specific to passkeys */}
       {errorMessage && (
         <div className="flex items-center justify-center gap-1.5 mt-2 p-2 rounded-md bg-destructive/10 text-destructive text-sm">
           <AlertTriangle className="h-4 w-4" />

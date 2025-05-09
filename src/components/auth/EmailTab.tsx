@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { Input } from "@/components/ui/input";
 import { Mail, Check, X, Info, Loader2, AlertTriangle } from 'lucide-react';
@@ -172,12 +173,12 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         });
         
         // If error includes "Invalid login credentials", the email likely exists
-        if (error && error.message.includes("Invalid login credentials")) {
+        if (error && error.message && error.message.includes("Invalid login credentials")) {
           console.log("Fallback detection - email exists:", email);
           setEmailExists(true);
           setVerifying(false);
           return true;
-        } else if (error && error.message.includes("Email not confirmed")) {
+        } else if (error && error.message && error.message.includes("Email not confirmed")) {
           console.log("Email exists but not confirmed:", email);
           setEmailExists(true);
           setVerifying(false);
@@ -289,7 +290,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         toast.error("Failed to verify email");
       }
     }
-  }, [onSubmit, isValid, email, checkEmailExists]);
+  }, [isValid, email, checkEmailExists, onSubmit]);
 
   return (
     <div className="w-full max-w-md mx-auto space-y-2">
