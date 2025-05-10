@@ -2,14 +2,14 @@
 // Email validation utilities
 
 export const premiumDomains = [
-  { name: 'Gmail', domain: 'gmail.com', url: 'https://gmail.com' },
-  { name: 'Yahoo', domain: 'yahoo.com', url: 'https://yahoo.com' },
-  { name: 'Outlook', domain: 'outlook.com', url: 'https://outlook.com' },
-  { name: 'iCloud', domain: 'icloud.com', url: 'https://icloud.com' },
-  { name: 'ProtonMail', domain: 'protonmail.com', url: 'https://protonmail.com' },
-  { name: 'AOL', domain: 'aol.com', url: 'https://aol.com' },
-  { name: 'Zoho', domain: 'zoho.com', url: 'https://zoho.com' },
-  { name: 'Tutanota', domain: 'tutanota.com', url: 'https://tutanota.com' },
+  { name: 'Gmail', domain: 'gmail.com', url: 'https://gmail.com', icon: 'https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico' },
+  { name: 'Yahoo', domain: 'yahoo.com', url: 'https://yahoo.com', icon: 'https://s.yimg.com/nq/fav/y.ico' },
+  { name: 'Outlook', domain: 'outlook.com', url: 'https://outlook.com', icon: 'https://outlook.live.com/favicon.ico' },
+  { name: 'iCloud', domain: 'icloud.com', url: 'https://icloud.com', icon: 'https://www.icloud.com/favicon.ico' },
+  { name: 'ProtonMail', domain: 'protonmail.com', url: 'https://protonmail.com', icon: 'https://protonmail.com/favicon.ico' },
+  { name: 'AOL', domain: 'aol.com', url: 'https://aol.com', icon: 'https://s.yimg.com/nq/fav/y.ico' },
+  { name: 'Zoho', domain: 'zoho.com', url: 'https://zoho.com', icon: 'https://www.zoho.com/favicon.ico' },
+  { name: 'Tutanota', domain: 'tutanota.com', url: 'https://tutanota.com', icon: 'https://tutanota.com/favicon.ico' },
 ];
 
 export const disposableDomainPatterns = [
@@ -99,40 +99,89 @@ export const checkForTypos = (emailValue: string): string | null => {
   return null;
 };
 
-// Email validation function with explicit return type
-export const getValidationMessage = (
-  emailValue: string, 
-  setTypoSuggestion: (suggestion: string | null) => void
-): string | null => {
-  if (!emailValue) return null;
-  if (emailValue.length < 4) return 'Enter at least 4 characters.';
-  if (!emailValue.includes('@')) return 'Missing "@" symbol. Example: name@example.com';
+// Find email provider info based on domain
+export const findEmailProvider = (email: string) => {
+  if (!email || !email.includes('@')) return null;
   
-  const parts = emailValue.split('@');
-  if (parts.length !== 2) return 'Invalid email format. Example: name@example.com';
+  const domain = email.split('@')[1]?.toLowerCase();
+  if (!domain) return null;
+  
+  return premiumDomains.find(provider => domain === provider.domain || domain.endsWith(`.${provider.domain}`));
+};
+
+// Validate email and provide suggestions
+export const validateEmail = (email: string) => {
+  const typoSuggestion = checkForTypos(email);
+  let message = '';
+  let isValid = false;
+  let suggestions: string[] = [];
+  
+  // First handle blank cases
+  if (!email) {
+    return { isValid: false, message: '', suggestions: [] };
+  }
+  
+  if (email.length < 4) {
+    message = 'Enter at least 4 characters.';
+    return { isValid, message, suggestions };
+  }
+  
+  if (!email.includes('@')) {
+    message = 'Missing "@" symbol. Example: name@example.com';
+    return { isValid, message, suggestions };
+  }
+  
+  const parts = email.split('@');
+  if (parts.length !== 2) {
+    message = 'Invalid email format. Example: name@example.com';
+    return { isValid, message, suggestions };
+  }
   
   const [localPart, domainPart] = parts;
-  if (!localPart) return 'Please enter your email username (before @)';
-  if (!domainPart) return 'Please enter a domain (after @)';
-  if (domainPart.length < 5) return 'Incomplete domain. Example: gmail.com';
-  if (domainPart.split('.').length < 2 || domainPart.endsWith('.'))
-    return 'Invalid domain format. Example: example.com';
-  if (isDisposableDomain(domainPart)) 
-    return 'Please use a permanent, non-disposable email.';
+  if (!localPart) {
+    message = 'Please enter your email username (before @)';
+    return { isValid, message, suggestions };
+  }
   
-  // Check for common typos in domain
-  const typoSuggestion = checkForTypos(emailValue);
-  setTypoSuggestion(typoSuggestion);
+  if (!domainPart) {
+    message = 'Please enter a domain (after @)';
+    // Generate domain suggestions
+    suggestions = generateSuggestions(email);
+    return { isValid, message, suggestions };
+  }
+  
+  if (domainPart.length < 5) {
+    message = 'Incomplete domain. Example: gmail.com';
+    // Generate domain suggestions if partial domain entered
+    suggestions = generateSuggestions(email);
+    return { isValid, message, suggestions };
+  }
+  
+  if (domainPart.split('.').length < 2 || domainPart.endsWith('.')) {
+    message = 'Invalid domain format. Example: example.com';
+    return { isValid, message, suggestions };
+  }
+  
+  if (isDisposableDomain(domainPart)) {
+    message = 'Please use a permanent, non-disposable email.';
+    return { isValid, message, suggestions };
+  }
   
   if (typoSuggestion) {
     const domain = typoSuggestion.split('@')[1];
-    return `Did you mean ${domain}?`;
+    message = `Did you mean ${domain}?`;
+    suggestions = [typoSuggestion];
+    return { isValid, message, suggestions };
   }
   
   // Stricter validation
   const strictRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!strictRegex.test(normalizeEmail(emailValue))) 
-    return 'Please enter a valid email address';
-    
-  return null;
+  if (!strictRegex.test(normalizeEmail(email))) {
+    message = 'Please enter a valid email address';
+    return { isValid, message, suggestions };
+  }
+  
+  // If we got here, email is valid
+  isValid = true;
+  return { isValid, message, suggestions };
 };

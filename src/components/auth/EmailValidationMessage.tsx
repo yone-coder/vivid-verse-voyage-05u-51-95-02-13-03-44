@@ -16,7 +16,7 @@ const EmailValidationMessage = ({
   onApplySuggestion,
   showWhileTyping = false
 }: EmailValidationMessageProps) => {
-  if (!message && !typoSuggestion) return null;
+  if (!message) return null;
   
   // Extract domain from typo suggestion for simpler display
   const extractDomain = () => {
@@ -38,13 +38,9 @@ const EmailValidationMessage = ({
     >
       <AlertCircle className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
       
-      {domain ? (
-        <span>Did you mean <strong>{domain}</strong>?</span>
-      ) : (
-        <span>{message}</span>
-      )}
+      <span>{message}</span>
       
-      {typoSuggestion && (
+      {typoSuggestion && onApplySuggestion && (
         <button 
           type="button" 
           onClick={onApplySuggestion} 

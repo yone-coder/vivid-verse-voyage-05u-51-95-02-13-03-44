@@ -29,6 +29,7 @@ const EmailTab: React.FC<EmailTabProps> = ({
   const [validationMessage, setValidationMessage] = useState("");
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [typoSuggestion, setTypoSuggestion] = useState<string | null>(null);
 
   // Validate email and update UI states
   useEffect(() => {
@@ -37,6 +38,7 @@ const EmailTab: React.FC<EmailTabProps> = ({
       setSuggestions([]);
       setShowSuggestions(false);
       setEmailStrength(0);
+      setTypoSuggestion(null);
       return;
     }
 
@@ -55,6 +57,10 @@ const EmailTab: React.FC<EmailTabProps> = ({
       // Validate email
       const { isValid, message, suggestions: emailSuggestions } = validateEmail(email);
       setValidationMessage(message);
+      
+      // Check for typo suggestions
+      const typo = emailSuggestions.find(sugg => sugg !== email && sugg.includes('@'));
+      setTypoSuggestion(typo || null);
       
       // Only show suggestions if email is not empty and has @ symbol
       const shouldShowSuggestions = email.includes('@') && email.split('@')[1] !== '';
@@ -82,6 +88,13 @@ const EmailTab: React.FC<EmailTabProps> = ({
   const handleSuggestionClick = (suggestion: string) => {
     setEmail(suggestion);
     setShowSuggestions(false);
+  };
+
+  const applyTypoSuggestion = () => {
+    if (typoSuggestion) {
+      setEmail(typoSuggestion);
+      setTypoSuggestion(null);
+    }
   };
 
   // Get email provider info for icon
@@ -134,7 +147,11 @@ const EmailTab: React.FC<EmailTabProps> = ({
         )}
         
         {validationMessage && !isTyping && (
-          <EmailValidationMessage message={validationMessage} />
+          <EmailValidationMessage 
+            message={validationMessage} 
+            typoSuggestion={typoSuggestion}
+            onApplySuggestion={applyTypoSuggestion}
+          />
         )}
       </div>
       
