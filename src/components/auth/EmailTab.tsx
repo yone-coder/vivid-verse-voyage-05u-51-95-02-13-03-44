@@ -87,6 +87,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   const [checking, setChecking] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [validationTimer, setValidationTimer] = useState(false);
+  const [lastTypedAt, setLastTypedAt] = useState<number>(Date.now());
   const [typoSuggestion, setTypoSuggestion] = useState<string | null>(null);
   const [showValidationSuccess, setShowValidationSuccess] = useState(false);
   const [emailExists, setEmailExists] = useState<boolean | null>(null);
@@ -167,19 +168,33 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     };
   }, [isValid, focused, email, checking, verifying, emailExists]);
 
-  // Auto-blur the input field when a valid email ending with .com is detected the first time
+  // Auto-blur the input field only after user stops typing (inactivity)
   useEffect(() => {
-    // Only auto-blur on the first successful completion, not during validation timer period
-    if (isValid && focused && !validationTimer && email.toLowerCase().endsWith('.com') && email.includes('@') && email.length > 10) {
-      // Small delay to ensure the user has finished typing
-      const blurTimer = setTimeout(() => {
-        if (inputRef.current) {
-          inputRef.current?.blur();
+    let inactivityTimer: NodeJS.Timeout | null = null;
+    
+    // Only setup the timer when conditions are met
+    if (isValid && focused && email.toLowerCase().endsWith('.com') && email.includes('@') && email.length > 10) {
+      // Set a timer to check for inactivity
+      inactivityTimer = setTimeout(() => {
+        // Check if user has been inactive since the timer started
+        const timeElapsedSinceLastType = Date.now() - lastTypedAt;
+        
+        // If it's been more than 1.5 seconds since the last keystroke, blur the input
+        if (timeElapsedSinceLastType >= 1500) {
+          if (inputRef.current && document.activeElement === inputRef.current) {
+            inputRef.current.blur();
+          }
         }
-      }, 500);
-      return () => clearTimeout(blurTimer);
+      }, 1500);
     }
-  }, [isValid, email, focused, validationTimer]);
+    
+    // Clean up the timer
+    return () => {
+      if (inactivityTimer) {
+        clearTimeout(inactivityTimer);
+      }
+    };
+  }, [isValid, email, focused, lastTypedAt]);
 
   useEffect(() => {
     if (!focused && email.includes('@') && email.includes('.') && email.length > 8) {
@@ -245,6 +260,9 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   };
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    // Update the last typed timestamp on any key press
+    setLastTypedAt(Date.now());
+    
     if (!showSuggestions || suggestions.length === 0) return;
     if (e.key === 'ArrowDown') {
       e.preventDefault();
@@ -267,26 +285,14 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     setFocused(true);
     setSubmitted(false);
     setErrorMessage(null);
-
-    // Start validation timer when refocusing a valid email
-    if (isValid && email.toLowerCase().endsWith('.com')) {
-      setValidationTimer(true);
-
-      // Start 5-second timer to auto-blur
-      const timer = setTimeout(() => {
-        if (inputRef.current) {
-          inputRef.current.blur();
-          setValidationTimer(false);
-        }
-      }, 5000);
-
-      return () => clearTimeout(timer);
-    }
+    
+    // Reset validation timer when focusing
+    setValidationTimer(false);
 
     if (suggestions.length > 0 && email.length > 0) {
       setShowSuggestions(true);
     }
-  }, [suggestions.length, email.length, isValid, email]);
+  }, [suggestions.length, email.length]);
 
   const handleBlur = useCallback((e: React.FocusEvent) => {
     setTimeout(() => {
@@ -354,9 +360,10 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
       return <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />;
     }
     
-    // When in validation timer mode
-    if (validationTimer && focused) {
-      return <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />;
+    // Don't show loading spinner when actively typing
+    const timeElapsedSinceLastType = Date.now() - lastTypedAt;
+    if (timeElapsedSinceLastType < 1000 && focused) {
+      return null;
     }
     
     // Case: Email exists in database, show green check in circle when not focused
@@ -438,7 +445,10 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
             id="email"  
             type="email"  
             value={email}  
-            onChange={(e) => setEmail(normalizeEmail(e.target.value))}  
+            onChange={(e) => {
+            setEmail(normalizeEmail(e.target.value));
+            setLastTypedAt(Date.now());
+          }}  
             onFocus={handleFocus}  
             onBlur={handleBlur}  
             onKeyDown={handleKeyDown}  
