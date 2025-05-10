@@ -48,7 +48,7 @@ const getDomainFromEmail = (email: string): string | null => {
 };
 
 const getFaviconUrl = (domain: string) =>
-  `https://www.google.com/s2/favicons?sz=32&domain_url=https://${domain}`;
+  `https://www.google.com/s2/favicons?sz=32&domain=${domain}`;
 
 const domainLogos: Record<string, string> = {
   'gmail.com': '/logos/gmail.png',
