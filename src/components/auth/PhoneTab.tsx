@@ -3,8 +3,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Phone, Check, X, Loader2, AlertTriangle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import CountryCodeSelect from './CountryCodeSelect';
 import { toast } from 'sonner';
 
@@ -427,22 +425,13 @@ const PhoneTab = ({
         <form onSubmit={handleSubmit} className="w-full">
           <div className="flex items-center space-x-2">
             <div className="w-24">
-              <Select value={countryCode} onValueChange={setCountryCode}>
-                <SelectTrigger className={`w-full ${
+              <CountryCodeSelect
+                value={countryCode}
+                onChange={setCountryCode}
+                className={`w-full ${
                   isFocused ? 'border-[#ff4747] ring-2 ring-[#ff4747]/30' : 'border-input'
-                }`}>
-                  <SelectValue placeholder="+1" />
-                </SelectTrigger>
-                <SelectContent>
-                  <ScrollArea className="h-72">
-                    {countryCodes.map((item) => (
-                      <SelectItem key={item.code} value={item.code}>
-                        <span>{item.code} ({item.country})</span>
-                      </SelectItem>
-                    ))}
-                  </ScrollArea>
-                </SelectContent>
-              </Select>
+                }`}
+              />
             </div>
             
             <div className="flex-grow relative">
