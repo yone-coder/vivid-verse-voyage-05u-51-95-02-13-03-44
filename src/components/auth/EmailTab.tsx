@@ -1,3 +1,4 @@
+'use client';
 
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { Input } from "@/components/ui/input";
@@ -28,12 +29,7 @@ const containerVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: {
-      type: "spring",
-      stiffness: 60,
-      damping: 12,
-      staggerChildren: 0.15,
-    },
+    transition: { type: "spring", stiffness: 60, damping: 12, staggerChildren: 0.15 },
   },
 };
 
@@ -42,12 +38,23 @@ const childVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: {
-      type: "spring",
-      stiffness: 80,
-      damping: 15,
-    },
+    transition: { type: "spring", stiffness: 80, damping: 15 },
   },
+};
+
+const getDomainFromEmail = (email: string): string | null => {
+  const match = email.match(/@([\w.-]+\.\w+)/);
+  return match ? match[1].toLowerCase() : null;
+};
+
+const getFaviconUrl = (domain: string) =>
+  `https://www.google.com/s2/favicons?sz=32&domain_url=https://${domain}`;
+
+const domainLogos: Record<string, string> = {
+  'gmail.com': '/logos/gmail.png',
+  'outlook.com': '/logos/outlook.png',
+  'yahoo.com': '/logos/yahoo.png',
+  'icloud.com': '/logos/icloud.png',
 };
 
 const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: EmailTabProps) => {
@@ -66,6 +73,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   const inputRef = useRef<HTMLInputElement>(null);
   const suggestionsRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
+  const [emailDomain, setEmailDomain] = useState<string | null>(null);
 
   useEffect(() => {
     return () => {
@@ -75,7 +83,6 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     };
   }, []);
 
-  // Check for typos in real-time
   useEffect(() => {
     if (email.includes('@')) {
       const typo = checkForTypos(email);
@@ -83,9 +90,11 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     } else {
       setTypoSuggestion(null);
     }
+
+    const domain = getDomainFromEmail(email);
+    setEmailDomain(domain);
   }, [email]);
 
-  // Generate validation message in real-time while typing or when submitted/unfocused
   const validationMessage = useMemo(() => {
     if (email.length === 0) return null;
     return getValidationMessage(email, setTypoSuggestion);
@@ -121,31 +130,27 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
       setShowSuggestions(newSuggestions.length > 0 && focused);
       setHoveredIndex(-1);
     }, 180);
-
-    return () => { 
+    return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
   }, [email, focused]);
 
-  // Function to check if email exists with explicit return type
   const checkEmailExists = async (emailToCheck: string): Promise<boolean> => {
     if (!isValid || !emailToCheck) return false;
-
-    setVerifying(true); 
-    setErrorMessage(null); 
-    try { 
-      const { data, error } = await supabase.auth.signInWithOtp({ 
+    setVerifying(true);
+    setErrorMessage(null);
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
         email: emailToCheck,
-        options: { shouldCreateUser: false } 
+        options: { shouldCreateUser: false },
       });
-
       if (!error) {
         setEmailExists(true);
         setVerifying(false);
         return true;
       }
 
-      const { data: profileData, error: profileError } = await supabase
+      const { data: profileData } = await supabase
         .from('profiles')
         .select('id')
         .eq('email', emailToCheck)
@@ -164,10 +169,8 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     }
   };
 
-  // Handle keyboard navigation with explicit types
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     if (!showSuggestions || suggestions.length === 0) return;
-
     if (e.key === 'ArrowDown') {
       e.preventDefault();
       setHoveredIndex((i) => (i + 1) % suggestions.length);
@@ -195,12 +198,14 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   }, [suggestions.length, email.length]);
 
   const handleBlur = useCallback((e: React.FocusEvent) => {
-    setTimeout(() => { 
-      if (document.activeElement !== inputRef.current && 
-          !suggestionsRef.current?.contains(document.activeElement)) {
+    setTimeout(() => {
+      if (
+        document.activeElement !== inputRef.current &&
+        !suggestionsRef.current?.contains(document.activeElement)
+      ) {
         setFocused(false);
         setShowSuggestions(false);
-      } 
+      }
     }, 200);
   }, []);
 
@@ -219,22 +224,23 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   }, [setEmail]);
 
   const applyTypoSuggestion = useCallback(() => {
-    typoSuggestion && setEmail(typoSuggestion);
-    setTypoSuggestion(null);
+    if (typoSuggestion) {
+      setEmail(typoSuggestion);
+      setTypoSuggestion(null);
+    }
   }, [typoSuggestion, setEmail]);
 
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
-
-    if (isValid) { 
+    if (isValid) {
       try {
         const exists = await checkEmailExists(email);
         if (exists && onSubmit) onSubmit(e);
-      } catch (error) {
+      } catch {
         toast.error("Failed to verify email");
       }
-    } 
+    }
   };
 
   const handleSubmit = showSubmitButton ? handleEmailSubmit : undefined;
@@ -256,10 +262,17 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
       </motion.header>
 
       <div className="relative w-full max-w-sm">
-        {/* Fixed positioning structure for the input and its icons */}
         <div className="relative">
           <div className="absolute left-3 top-1/2 -translate-y-1/2 z-10 pointer-events-none">
-            <Mail className="h-4 w-4 text-muted-foreground" />
+            {emailDomain ? (
+              <img
+                src={domainLogos[emailDomain] || getFaviconUrl(emailDomain)}
+                alt="domain"
+                className="h-4 w-4 rounded-sm object-contain"
+              />
+            ) : (
+              <Mail className="h-4 w-4 text-muted-foreground" />
+            )}
           </div>
 
           <Input
@@ -272,40 +285,33 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
             onBlur={handleBlur}
             onKeyDown={handleKeyDown}
             placeholder="john.doe@example.com"
+            autoComplete="email"
             className={`w-full pl-10 pr-10 h-11 text-sm transition-all duration-300 ease-in-out rounded-md shadow-sm ${
-              validationMessage || errorMessage 
+              validationMessage || errorMessage
                 ? 'border-destructive focus:border-destructive bg-destructive/5'
-                : isValid 
+                : isValid
                   ? 'border-green-500 focus:border-green-600 bg-green-50/30'
                   : 'border-border bg-background text-foreground'
             }`}
-            autoComplete="email"
           />
 
           <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5 z-10">
-            {(checking || verifying) && (
-              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-            )}
+            {(checking || verifying) && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
             {isValid && !checking && !verifying && !errorMessage && (
               <Check className="h-4 w-4 text-green-500 animate-fadeIn" />
             )}
             {email.length > 0 && (
-              <button
-                type="button"
-                onClick={clearInput}
-                className="text-muted-foreground hover:text-foreground transition-colors"
-              >
+              <button type="button" onClick={clearInput} className="text-muted-foreground hover:text-foreground transition-colors">
                 <X className="h-3.5 w-3.5" />
               </button>
             )}
           </div>
         </div>
 
-        {/* Validation message now positioned absolutely below the input field */}
         <div className="relative mt-1">
           <AnimatePresence>
             {(validationMessage || typoSuggestion) && !errorMessage && (
-              <EmailValidationMessage 
+              <EmailValidationMessage
                 message={validationMessage}
                 typoSuggestion={typoSuggestion}
                 onApplySuggestion={applyTypoSuggestion}
