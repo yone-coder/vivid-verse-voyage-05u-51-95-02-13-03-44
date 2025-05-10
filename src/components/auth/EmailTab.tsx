@@ -323,8 +323,12 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
             {isValid && !checking && !verifying && !errorMessage && (  
               <Check className="h-4 w-4 text-green-500 animate-fadeIn" />  
             )}  
-            {email.length > 0 && (  
-              <button type="button" onClick={clearInput} className="text-muted-foreground hover:text-foreground transition-colors">  
+            {email.length > 0 && focused && (  
+              <button 
+                type="button" 
+                onClick={clearInput} 
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >  
                 <X className="h-3.5 w-3.5" />  
               </button>  
             )}  
