@@ -308,35 +308,15 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
       {/* Email input section with better organized instructions */}
 
 <div className="text-center mb-6">
-  {/* Icon with soft circle background */}
-  <div className="flex justify-center mb-3">
-    <div className="bg-primary/10 p-2 rounded-full shadow-sm">
-      <MailIcon className="w-5 h-5 text-primary" aria-hidden="true" />
-    </div>
-  </div>
-
-  {/* Strong, inviting heading */}
   <h2 className="text-lg font-semibold text-foreground">
     Let’s get started
   </h2>
 
-  {/* Dynamic subtitle with friendly message */}
   <p className="text-sm text-muted-foreground mt-1 transition-all">
     {emailExists === false
       ? "Create your account by entering your email."
-      : "Welcome back! Please enter your email to continue."}
+      : "Please enter your email to continue."}
   </p>
-
-  {/* Optional privacy assurance or help text */}
-  <div className="mt-3 flex items-center justify-center text-xs text-muted-foreground gap-1">
-    <InfoIcon className="w-3 h-3" />
-    <span>We’ll never share your email with anyone.</span>
-  </div>
-
-  {/* Optional step indicator */}
-  <div className="mt-4 text-xs text-muted-foreground">
-    Step <span className="font-medium text-foreground">1</span> of 3
-  </div>
 </div>
 
       {/* Email Input with icons */}
