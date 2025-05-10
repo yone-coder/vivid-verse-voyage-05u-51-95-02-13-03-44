@@ -9,13 +9,15 @@ interface TabNavigationProps {
   handleTabChange: (tab: string) => void;
   showTooltips?: boolean;
   animationStyle?: 'slide' | 'grow';
+  hiddenTabs?: string[]; // Add this prop to hide specific tabs
 }
 
 const TabNavigation = ({ 
   activeTab, 
   handleTabChange, 
   showTooltips = false,
-  animationStyle = 'slide' 
+  animationStyle = 'slide',
+  hiddenTabs = [] // Default to empty array (show all tabs)
 }: TabNavigationProps) => {
   const tabsRef = useRef<(HTMLButtonElement | null)[]>([]);
   const [underline, setUnderline] = useState({ left: 0, width: 0 });
@@ -25,7 +27,7 @@ const TabNavigation = ({
     { key: 'email', icon: Mail, label: 'Email' },
     { key: 'phone', icon: Phone, label: 'Phone' },
     { key: 'passkey', icon: KeyRound, label: 'Passkey' },
-  ];
+  ].filter(tab => !hiddenTabs.includes(tab.key)); // Filter out hidden tabs
 
   useEffect(() => {
     const index = tabs.findIndex(tab => tab.key === activeTab);

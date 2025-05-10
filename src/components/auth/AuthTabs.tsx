@@ -18,6 +18,7 @@ interface AuthTabsProps {
   isSignUp: boolean;
   onSubmit?: (e: React.FormEvent) => void;
   step: number;
+  hiddenTabs?: string[]; // Add this prop
 }
 
 const AuthTabs = ({ 
@@ -31,7 +32,8 @@ const AuthTabs = ({
   setCountryCode,
   isSignUp,
   onSubmit,
-  step
+  step,
+  hiddenTabs = [] // Default to empty array
 }: AuthTabsProps) => {
   const [tabTransition, setTabTransition] = useState(false);
   // Add a key state to force re-render of tabs when switching
@@ -50,6 +52,16 @@ const AuthTabs = ({
     }, 150);
   }, [activeTab, setActiveTab]);
 
+  // If the active tab is hidden, switch to the first available tab
+  useEffect(() => {
+    if (hiddenTabs.includes(activeTab) && !tabTransition) {
+      const availableTabs = ['email', 'phone', 'passkey'].filter(tab => !hiddenTabs.includes(tab));
+      if (availableTabs.length > 0) {
+        setActiveTab(availableTabs[0]);
+      }
+    }
+  }, [hiddenTabs, activeTab, setActiveTab, tabTransition]);
+
   // Only show forms in the tabs during step 1
   const showFormsInTabs = step === 1;
   const showInlineButtons = false;
@@ -62,6 +74,7 @@ const AuthTabs = ({
           handleTabChange={handleTabChange} 
           showTooltips={true}
           animationStyle="grow"
+          hiddenTabs={hiddenTabs}
         />
         
         <div className={`transition-all duration-200 w-full flex justify-center ${tabTransition ? 'opacity-0 transform -translate-y-1' : 'opacity-100 transform translate-y-0'}`}>
@@ -85,13 +98,15 @@ const AuthTabs = ({
               key={`phone-tab-${tabKey}-${activeTab === 'phone'}`}
             />
           </TabsContent>
-          <TabsContent value="passkey" className="pt-3 mb-0 w-full">
-            <PasskeyTab 
-              onSubmit={showFormsInTabs ? onSubmit : undefined} 
-              showSubmitButton={showInlineButtons}
-              key={`passkey-tab-${tabKey}-${activeTab === 'passkey'}`}
-            />
-          </TabsContent>
+          {!hiddenTabs.includes('passkey') && (
+            <TabsContent value="passkey" className="pt-3 mb-0 w-full">
+              <PasskeyTab 
+                onSubmit={showFormsInTabs ? onSubmit : undefined} 
+                showSubmitButton={showInlineButtons}
+                key={`passkey-tab-${tabKey}-${activeTab === 'passkey'}`}
+              />
+            </TabsContent>
+          )}
         </div>
       </Tabs>
     </div>

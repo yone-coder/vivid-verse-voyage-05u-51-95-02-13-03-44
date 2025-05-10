@@ -39,6 +39,9 @@ const StepOneContent: React.FC<StepOneContentProps> = ({
     authSuccess, errorMessage
   } = formState;
   
+  // Hide passkey tab for signup mode
+  const hiddenTabs = authMode === 'signup' ? ['passkey'] : [];
+  
   // Determine if the continue button should be disabled
   const isContinueDisabled = () => {
     if (activeTab === 'email') {
@@ -114,6 +117,7 @@ const StepOneContent: React.FC<StepOneContentProps> = ({
         isSignUp={authMode === 'signup'}
         onSubmit={onSubmit}
         step={1}
+        hiddenTabs={hiddenTabs}
       />
 
       {errorMessage && (
