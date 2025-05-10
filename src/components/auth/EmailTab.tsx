@@ -254,12 +254,12 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
           onKeyDown={handleKeyDown}
           placeholder="john.doe@example.com"
           className={`w-full pl-10 pr-10 h-11 text-sm transition-all duration-300 ease-in-out rounded-md shadow-sm ${
-            validationMessage || errorMessage 
-              ? 'border-destructive focus:border-destructive bg-destructive/5'
-              : isValid 
-              ? 'border-green-500 focus:border-green-600 bg-green-50/30'
-              : 'border-input hover:border-input'
-          }`}
+  validationMessage || errorMessage 
+    ? 'border-destructive focus:border-destructive bg-destructive/5'
+    : isValid 
+    ? 'border-green-500 focus:border-green-600 bg-green-50/30'
+    : 'border-border bg-background text-foreground'
+}`}
           autoComplete="email"
         />
 
