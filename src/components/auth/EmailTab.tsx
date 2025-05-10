@@ -47,37 +47,25 @@ const getDomainFromEmail = (email: string): string | null => {
   return match ? match[1].toLowerCase() : null;
 };
 
-// Enhanced favicon retrieval with special case handling for known domains
+// Simplified favicon retrieval that uses direct domain icons
 const getFaviconUrl = (domain: string): string => {
-  // Use local images for common domains if available
+  // First check if we have a local logo for this domain
   if (domain in domainLogos) {
     return domainLogos[domain];
   }
   
-  // Special case for Gmail and other Google services
-  if (domain === 'gmail.com') {
-    return 'https://www.google.com/s2/favicons?sz=32&domain=mail.google.com';
-  }
-  
-  // Handle subdomains of google.com
-  if (domain.endsWith('google.com')) {
-    return `https://www.google.com/s2/favicons?sz=32&domain=${domain}`;
-  }
-  
-  // Default case for all other domains
-  return `https://www.google.com/s2/favicons?sz=32&domain=${domain}`;
+  // For the rest, use a direct favicon approach
+  return `https://icon.horse/icon/${domain}`;
 };
 
 // Custom domain logos for common email providers
+// Only include entries where you actually have the files in your /public/logos/ directory
 const domainLogos: Record<string, string> = {
-  'gmail.com': '/logos/gmail.png',
-  'outlook.com': '/logos/outlook.png',
-  'yahoo.com': '/logos/yahoo.png',
-  'icloud.com': '/logos/icloud.png',
-  'hotmail.com': '/logos/outlook.png',
-  'live.com': '/logos/outlook.png',
-  'protonmail.com': '/logos/proton.png',
-  'aol.com': '/logos/aol.png',
+  // You can uncomment these if you have the actual image files
+  // 'gmail.com': '/logos/gmail.png',
+  // 'outlook.com': '/logos/outlook.png',
+  // 'yahoo.com': '/logos/yahoo.png',
+  // 'icloud.com': '/logos/icloud.png',
 };
 
 const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: EmailTabProps) => {
@@ -271,6 +259,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   };
 
   const handleFaviconError = () => {
+    console.log(`Favicon failed to load for domain: ${emailDomain}`);
     setFaviconError(true);
   };
 
