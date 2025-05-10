@@ -86,6 +86,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   const [submitted, setSubmitted] = useState(false);
   const [checking, setChecking] = useState(false);
   const [verifying, setVerifying] = useState(false);
+  const [validationTimer, setValidationTimer] = useState(false);
   const [typoSuggestion, setTypoSuggestion] = useState<string | null>(null);
   const [showValidationSuccess, setShowValidationSuccess] = useState(false);
   const [emailExists, setEmailExists] = useState<boolean | null>(null);
@@ -136,9 +137,10 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     }
   }, [isValid, email]);
   
-  // Auto-blur the input field when a valid email ending with .com is detected
+  // Auto-blur the input field when a valid email ending with .com is detected the first time
   useEffect(() => {
-    if (isValid && focused && email.toLowerCase().endsWith('.com') && email.includes('@') && email.length > 10) {
+    // Only auto-blur on the first successful completion, not during validation timer period
+    if (isValid && focused && !validationTimer && email.toLowerCase().endsWith('.com') && email.includes('@') && email.length > 10) {
       // Small delay to ensure the user has finished typing
       const blurTimer = setTimeout(() => {
         if (inputRef.current) {
@@ -147,7 +149,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
       }, 500);
       return () => clearTimeout(blurTimer);
     }
-  }, [isValid, email, focused]);
+  }, [isValid, email, focused, validationTimer]);
 
   useEffect(() => {
     if (email.includes('@') && email.includes('.') && email.length > 8) {
@@ -229,10 +231,26 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     setFocused(true);
     setSubmitted(false);
     setErrorMessage(null);
+    
+    // Start validation timer when refocusing a valid email
+    if (isValid && email.toLowerCase().endsWith('.com')) {
+      setValidationTimer(true);
+      
+      // Start 5-second timer to auto-blur
+      const timer = setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.blur();
+          setValidationTimer(false);
+        }
+      }, 5000);
+      
+      return () => clearTimeout(timer);
+    }
+    
     if (suggestions.length > 0 && email.length > 0) {
       setShowSuggestions(true);
     }
-  }, [suggestions.length, email.length]);
+  }, [suggestions.length, email.length, isValid, email]);
 
   const handleBlur = useCallback((e: React.FocusEvent) => {
     setTimeout(() => {
@@ -242,6 +260,8 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
       ) {
         setFocused(false);
         setShowSuggestions(false);
+        // Reset validation timer state when blurring
+        setValidationTimer(false);
       }
     }, 200);
   }, []);
@@ -342,15 +362,24 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
           />  
 
           <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5 z-10">  
-            {(checking || verifying) && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}  
-            {isValid && !checking && !verifying && !errorMessage && !focused && (  
+            {/* Show spinner when original checking/verifying OR when validation timer is active */}
+            {(checking || verifying || (validationTimer && focused)) && 
+              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+            }  
+            
+            {/* Show green circle with white check when valid and not focused */}
+            {isValid && !checking && !verifying && !errorMessage && !focused && !validationTimer && (  
               <div className="flex items-center justify-center w-5 h-5 rounded-full bg-green-500 animate-fadeIn">
                 <Check className="h-3 w-3 text-white" />
               </div>
             )}
-            {isValid && !checking && !verifying && !errorMessage && focused && (  
+            
+            {/* Show regular green check when valid, focused, but not in validation timer mode */}
+            {isValid && !checking && !verifying && !errorMessage && focused && !validationTimer && (  
               <Check className="h-4 w-4 text-green-500 animate-fadeIn" />  
             )}  
+            
+            {/* X button to clear input */}
             {email.length > 0 && focused && (  
               <button 
                 type="button" 
