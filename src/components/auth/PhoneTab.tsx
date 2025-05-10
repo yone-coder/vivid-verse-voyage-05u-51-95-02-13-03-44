@@ -458,7 +458,6 @@ const PhoneTab = ({
                       ? 'border-green-500 focus:border-green-600 bg-green-50/30'
                       : 'border-border bg-background text-foreground'
                 }`}
-                autoFocus
               />
               
               <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5 z-10">
