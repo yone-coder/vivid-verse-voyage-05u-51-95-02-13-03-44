@@ -51,11 +51,21 @@ const getDomainFromEmail = (email: string): string | null => {
 const getFaviconUrl = (domain: string): string => {
   const normalizedDomain = domain.toLowerCase().trim();
 
-  // Hardcoded Gmail favicon (Google's official icon)
-  if (normalizedDomain === 'gmail.com' || normalizedDomain === 'googlemail.com') {
+  // Handle Gmail (including common typos)
+  const gmailVariants = [
+    'gmail.com',        
+    'googlemail.com',   
+    'gmail.co',         
+    'gmail.c',        
+    'gmail.',         
+    'gmail',         
+  ];
+
+  if (gmailVariants.includes(normalizedDomain)) {
     return 'https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico';
   }
 
+  // Rest of the logic for other domains...
   const specialDomains: Record<string, string> = {
     'protonmail.com': 'proton.me',
     'hotmail.com': 'outlook.live.com',
