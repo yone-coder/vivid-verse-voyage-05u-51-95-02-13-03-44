@@ -409,6 +409,10 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
       return "The email address format appears to be incorrect.";
     }
     
+    if (isValid && emailExists === null && email.length > 0) {
+      return "Wait for email verification to continue.";
+    }
+    
     if (isValid && email.length > 0) {
       return "Click continue when you're ready.";
     }
@@ -596,12 +600,16 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         <button  
           type="submit"  
           onClick={handleEmailSubmit}  
-          disabled={!isValid || checking || verifying}  
-          className={`w-full max-w-sm mt-4 py-2.5 rounded-lg font-medium ${  
-            isValid ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'  
+          disabled={!isValid || checking || verifying || emailExists === null}  
+          className={`w-full max-w-sm mt-4 py-2.5 rounded-lg font-medium transition-all duration-300 ${  
+            isValid && emailExists !== null ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground cursor-not-allowed opacity-70'  
           }`}  
         >  
-          {verifying ? "Verifying..." : emailExists === false ? "Create Account" : emailExists === true ? "Sign In" : "Continue"}  
+          {verifying ? "Verifying..." : 
+           checking ? "Checking..." : 
+           emailExists === false ? "Create Account" : 
+           emailExists === true ? "Sign In" : 
+           "Continue"}  
         </button>  
       )}  
     </div>
