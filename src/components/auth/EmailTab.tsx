@@ -16,6 +16,7 @@ import {
   getValidationMessage,
   checkForTypos
 } from './EmailUtils';
+import { useEmailCheck } from '@/hooks/useEmailCheck';
 
 interface EmailTabProps {
   email: string;
@@ -99,10 +100,10 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   const [emailDomain, setEmailDomain] = useState<string | null>(null);
   const verificationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [hasInteracted, setHasInteracted] = useState(false);
-  // Add a check attempts counter to avoid giving up too early
   const checkAttemptsRef = useRef<number>(0);
-  // Add a state to track if we're retrying authentication
   const [isRetrying, setIsRetrying] = useState(false);
+  const { checkEmailExists, isCheckingEmail } = useEmailCheck();
+  const [manualOverrideMode, setManualOverrideMode] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -134,6 +135,11 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
       setErrorMessage(null);
       // Reset check attempts when email changes
       checkAttemptsRef.current = 0;
+    }
+
+    // Reset manual override mode when email changes
+    if (manualOverrideMode) {
+      setManualOverrideMode(false);
     }
 
     // Set hasInteracted to true if user has typed anything
@@ -169,7 +175,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
       }
 
       verificationTimeoutRef.current = setTimeout(() => {
-        checkEmailExists(email);
+        verifyEmailExists(email);
       }, 800);
     }
 
@@ -231,91 +237,25 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     };
   }, [email, focused]);
 
-  // Improved email verification function with retry logic and better error handling
-  const checkEmailExists = async (emailToCheck: string): Promise<boolean> => {
-    if (!isValid || !emailToCheck) return false;
+  const verifyEmailExists = async (emailToCheck: string): Promise<void> => {
+    if (!isValid || !emailToCheck) return;
     
     setVerifying(true);
     setErrorMessage(null);
     
     try {
-      // First check the profiles table
-      const { data: profileData, error: profileError } = await supabase  
-        .from('profiles')  
-        .select('id')  
-        .eq('email', emailToCheck)  
-        .maybeSingle();
-        
-      // If profile exists, we can confirm the email exists
-      if (profileData) {
-        setEmailExists(true);
-        setVerifying(false);
-        checkAttemptsRef.current = 0;
-        return true;
-      }
-      
-      // If there was a database error, try the auth method
-      if (profileError) {
-        console.warn("Error checking profiles table:", profileError);
-      }
-      
-      // Try to check if the user exists in auth
-      try {
-        const { error: authError } = await supabase.auth.signInWithOtp({
-          email: emailToCheck,
-          options: { shouldCreateUser: false },
-        });
-
-        // No error means the email exists
-        if (!authError) {
-          setEmailExists(true);
-          setVerifying(false);
-          checkAttemptsRef.current = 0;
-          return true;
-        }
-        
-        // If the error is "User not found", we can confirm the email doesn't exist
-        if (authError.message && (
-            authError.message.includes("User not found") || 
-            authError.message.includes("Invalid login credentials")
-        )) {
-          setEmailExists(false);
-          setVerifying(false);
-          checkAttemptsRef.current = 0;
-          return false;
-        }
-        
-        // For other errors, we might need to retry or fallback
-        console.warn("Auth check error:", authError);
-        
-        // Implement retry logic for potentially transient errors
-        if (checkAttemptsRef.current < 2) {
-          checkAttemptsRef.current++;
-          setIsRetrying(true);
-          
-          // Wait and retry
-          await new Promise(resolve => setTimeout(resolve, 1000));
-          setIsRetrying(false);
-          return checkEmailExists(emailToCheck);
-        }
-        
-        // After retries, make a best guess based on available information
-        // Default to considering it a new user if we can't determine for sure
-        setEmailExists(false);
-        setVerifying(false);
-        return false;
-      } catch (authException) {
-        console.error("Exception during auth check:", authException);
-        // Handle unexpected exceptions - default to allowing sign-in attempt
-        setEmailExists(false);
-        setVerifying(false);
-        return false;
-      }
-    } catch (err) {  
-      console.error("Error checking email:", err);  
-      setErrorMessage("Failed to verify email");  
-      setVerifying(false);  
-      return false;  
+      // Use our improved email check hook
+      const exists = await checkEmailExists(emailToCheck);
+      setEmailExists(exists);
+      checkAttemptsRef.current = 0;
+    } catch (err) {
+      console.error("Email verification error:", err);
+      setErrorMessage("Failed to verify email");
+      // Default to treating as new user on errors
+      setEmailExists(false);
+    } finally {
+      setVerifying(false);
+      setIsRetrying(false);
     }
   };
 
@@ -389,25 +329,36 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     }
   }, [typoSuggestion, setEmail]);
 
+  const handleToggleEmailStatus = useCallback(() => {
+    setManualOverrideMode(true);
+    setEmailExists(prev => !prev);
+    toast.success(`You've been changed to ${!emailExists ? 'existing' : 'new'} user mode`);
+  }, [emailExists]);
+
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
     
     if (isValid) {
       try {
-        // Force a fresh check of email status
-        setEmailExists(null);
-        checkAttemptsRef.current = 0;
-        const exists = await checkEmailExists(email);
+        // If manual override is active or we already know the email status,
+        // skip verification and proceed with form submission
+        if (!manualOverrideMode && emailExists === null) {
+          await verifyEmailExists(email);
+        }
         
         if (onSubmit) {
           // Proceed with form submission regardless of email existence status
-          // This allows the parent component to handle new or existing users appropriately
           onSubmit(e);
         }
       } catch (error) {
         console.error("Submit error:", error);
         toast.error("Failed to verify email");
+        
+        // Still allow submission even on error
+        if (onSubmit) {
+          onSubmit(e);
+        }
       }
     }
   };
@@ -421,7 +372,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   // Generate dynamic header text based on the component state
   const getDynamicHeaderText = () => {
     if (!hasInteracted) {
-      return "Please enter your email to create your account.";
+      return "Please enter your email to continue.";
     }
 
     if (verifying) {
@@ -447,14 +398,14 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     }
 
     if (isValid && email.length > 0) {
-      return "Great! You can create your account now.";
+      return "Great! You can continue now.";
     }
 
     if (email.length > 0) {
       return "Please complete your email address.";
     }
 
-    return "Please enter your email to create your account.";
+    return "Please enter your email to continue.";
   };
 
   // Generate dynamic subheader text based on the component state
@@ -466,11 +417,15 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     }
 
     if (emailExists === true) {
-      return "Use the button below to sign in.";
+      return manualOverrideMode 
+        ? "You've manually set your status to existing user."
+        : "Use the button below to sign in.";
     }
 
     if (emailExists === false) {
-      return "We'll set up a new account with this email.";
+      return manualOverrideMode 
+        ? "You've manually set your status to new user."
+        : "We'll set up a new account with this email.";
     }
 
     if (validationMessage) {
@@ -495,7 +450,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   // Render function for the right icon based on all states
   const renderRightIcon = () => {
     // If checking, verifying or retrying, show spinner
-    if (checking || verifying || isRetrying) {
+    if (checking || verifying || isRetrying || isCheckingEmail) {
       return <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />;
     }
 
@@ -551,6 +506,24 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
 
   const headerText = getDynamicHeaderText();
   const subheaderText = getDynamicSubheaderText();
+
+  // Add a manual override option if verification might be wrong
+  const renderManualOverrideOption = () => {
+    if (emailExists !== null && !verifying && !checking && !isCheckingEmail) {
+      return (
+        <div className="w-full max-w-sm mt-2">
+          <button
+            type="button"
+            onClick={handleToggleEmailStatus}
+            className="text-xs text-primary-500 hover:text-primary-600 transition-all duration-200"
+          >
+            {emailExists ? "Actually, I'm a new user" : "Actually, I already have an account"}
+          </button>
+        </div>
+      );
+    }
+    return null;
+  };
 
   return (
     <div className="flex flex-col items-center w-full">
@@ -661,16 +634,18 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
               premiumDomains={premiumDomains}  
             />  
           </div>  
-        )}  
+        )}
+
+        {renderManualOverrideOption()}  
       </div>  
 
      {showSubmitButton && (  
   <button  
     type="submit"  
     onClick={handleEmailSubmit}  
-    disabled={!isValid || checking || verifying || emailExists === null}  
+    disabled={!isValid || (checking && !manualOverrideMode) || (verifying && !manualOverrideMode) || (emailExists === null && !manualOverrideMode)}  
     className={`w-full max-w-sm mt-4 py-2.5 rounded-lg font-medium transition-all duration-300 ${  
-      isValid && !checking && !verifying && (emailExists === true || emailExists === false)
+      (isValid && !checking && !verifying && (emailExists !== null || manualOverrideMode))
         ? 'bg-primary text-primary-foreground hover:bg-primary/90' 
         : 'bg-muted text-muted-foreground cursor-not-allowed opacity-70'  
     }`}  
