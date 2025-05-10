@@ -47,14 +47,37 @@ const getDomainFromEmail = (email: string): string | null => {
   return match ? match[1].toLowerCase() : null;
 };
 
-const getFaviconUrl = (domain: string) =>
-  `https://www.google.com/s2/favicons?sz=32&domain=${domain}`;
+// Enhanced favicon retrieval with special case handling for known domains
+const getFaviconUrl = (domain: string): string => {
+  // Use local images for common domains if available
+  if (domain in domainLogos) {
+    return domainLogos[domain];
+  }
+  
+  // Special case for Gmail and other Google services
+  if (domain === 'gmail.com') {
+    return 'https://www.google.com/s2/favicons?sz=32&domain=mail.google.com';
+  }
+  
+  // Handle subdomains of google.com
+  if (domain.endsWith('google.com')) {
+    return `https://www.google.com/s2/favicons?sz=32&domain=${domain}`;
+  }
+  
+  // Default case for all other domains
+  return `https://www.google.com/s2/favicons?sz=32&domain=${domain}`;
+};
 
+// Custom domain logos for common email providers
 const domainLogos: Record<string, string> = {
   'gmail.com': '/logos/gmail.png',
   'outlook.com': '/logos/outlook.png',
   'yahoo.com': '/logos/yahoo.png',
   'icloud.com': '/logos/icloud.png',
+  'hotmail.com': '/logos/outlook.png',
+  'live.com': '/logos/outlook.png',
+  'protonmail.com': '/logos/proton.png',
+  'aol.com': '/logos/aol.png',
 };
 
 const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: EmailTabProps) => {
@@ -70,6 +93,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   const [showValidationSuccess, setShowValidationSuccess] = useState(false);
   const [emailExists, setEmailExists] = useState<boolean | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [faviconError, setFaviconError] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const suggestionsRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
@@ -91,8 +115,11 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
       setTypoSuggestion(null);
     }
 
-    const domain = getDomainFromEmail(email);
+    const domain = getDomainFromEmail(email);  
     setEmailDomain(domain);
+    // Reset favicon error when domain changes
+    setFaviconError(false);
+
   }, [email]);
 
   const validationMessage = useMemo(() => {
@@ -150,22 +177,22 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         return true;
       }
 
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('email', emailToCheck)
-        .maybeSingle();
+      const { data: profileData } = await supabase  
+        .from('profiles')  
+        .select('id')  
+        .eq('email', emailToCheck)  
+        .maybeSingle();  
 
-      const exists = !!profileData;
-      setEmailExists(exists);
-      if (!exists) setErrorMessage("This email is not registered");
-      setVerifying(false);
-      return exists;
-    } catch (err) {
-      console.error("Error checking email:", err);
-      setErrorMessage("Failed to verify email");
-      setVerifying(false);
-      return false;
+      const exists = !!profileData;  
+      setEmailExists(exists);  
+      if (!exists) setErrorMessage("This email is not registered");  
+      setVerifying(false);  
+      return exists;  
+    } catch (err) {  
+      console.error("Error checking email:", err);  
+      setErrorMessage("Failed to verify email");  
+      setVerifying(false);  
+      return false;  
     }
   };
 
@@ -243,6 +270,10 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     }
   };
 
+  const handleFaviconError = () => {
+    setFaviconError(true);
+  };
+
   const handleSubmit = showSubmitButton ? handleEmailSubmit : undefined;
 
   return (
@@ -261,98 +292,103 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         </motion.p>
       </motion.header>
 
-      <div className="relative w-full max-w-sm">
-        <div className="relative">
-          <div className="absolute left-3 top-1/2 -translate-y-1/2 z-10 pointer-events-none">
+      <div className="relative w-full max-w-sm">  
+        <div className="relative">  
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 z-10 pointer-events-none">  
             {emailDomain ? (
-              <img
-  src={getFaviconUrl(emailDomain)}
-  alt="domain"
-  className="h-4 w-4 rounded-sm object-contain"
-/>
+              faviconError ? (
+                <Mail className="h-4 w-4 text-muted-foreground" />
+              ) : (
+                <img
+                  src={getFaviconUrl(emailDomain)}
+                  alt="domain"
+                  className="h-4 w-4 rounded-sm object-contain"
+                  onError={handleFaviconError}
+                />
+              )
             ) : (
               <Mail className="h-4 w-4 text-muted-foreground" />
             )}
           </div>
 
-          <Input
-            ref={inputRef}
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(normalizeEmail(e.target.value))}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-            onKeyDown={handleKeyDown}
-            placeholder="john.doe@example.com"
-            autoComplete="email"
-            className={`w-full pl-10 pr-10 h-11 text-sm transition-all duration-300 ease-in-out rounded-md shadow-sm ${
-              validationMessage || errorMessage
-                ? 'border-destructive focus:border-destructive bg-destructive/5'
-                : isValid
-                  ? 'border-green-500 focus:border-green-600 bg-green-50/30'
-                  : 'border-border bg-background text-foreground'
-            }`}
-          />
+          <Input  
+            ref={inputRef}  
+            id="email"  
+            type="email"  
+            value={email}  
+            onChange={(e) => setEmail(normalizeEmail(e.target.value))}  
+            onFocus={handleFocus}  
+            onBlur={handleBlur}  
+            onKeyDown={handleKeyDown}  
+            placeholder="john.doe@example.com"  
+            autoComplete="email"  
+            className={`w-full pl-10 pr-10 h-11 text-sm transition-all duration-300 ease-in-out rounded-md shadow-sm ${  
+              validationMessage || errorMessage  
+                ? 'border-destructive focus:border-destructive bg-destructive/5'  
+                : isValid  
+                  ? 'border-green-500 focus:border-green-600 bg-green-50/30'  
+                  : 'border-border bg-background text-foreground'  
+            }`}  
+          />  
 
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5 z-10">
-            {(checking || verifying) && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
-            {isValid && !checking && !verifying && !errorMessage && (
-              <Check className="h-4 w-4 text-green-500 animate-fadeIn" />
-            )}
-            {email.length > 0 && (
-              <button type="button" onClick={clearInput} className="text-muted-foreground hover:text-foreground transition-colors">
-                <X className="h-3.5 w-3.5" />
-              </button>
-            )}
-          </div>
-        </div>
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5 z-10">  
+            {(checking || verifying) && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}  
+            {isValid && !checking && !verifying && !errorMessage && (  
+              <Check className="h-4 w-4 text-green-500 animate-fadeIn" />  
+            )}  
+            {email.length > 0 && (  
+              <button type="button" onClick={clearInput} className="text-muted-foreground hover:text-foreground transition-colors">  
+                <X className="h-3.5 w-3.5" />  
+              </button>  
+            )}  
+          </div>  
+        </div>  
 
-        <div className="relative mt-1">
-          <AnimatePresence>
-            {(validationMessage || typoSuggestion) && !errorMessage && (
-              <EmailValidationMessage
-                message={validationMessage}
-                typoSuggestion={typoSuggestion}
-                onApplySuggestion={applyTypoSuggestion}
-                showWhileTyping={true}
-              />
-            )}
-          </AnimatePresence>
-        </div>
+        <div className="relative mt-1">  
+          <AnimatePresence>  
+            {(validationMessage || typoSuggestion) && !errorMessage && (  
+              <EmailValidationMessage  
+                message={validationMessage}  
+                typoSuggestion={typoSuggestion}  
+                onApplySuggestion={applyTypoSuggestion}  
+                showWhileTyping={true}  
+              />  
+            )}  
+          </AnimatePresence>  
+        </div>  
 
-        {errorMessage && (
-          <div className="flex items-center gap-2 mt-2 p-2 rounded-md bg-destructive/10 text-destructive text-sm">
-            <AlertTriangle className="h-4 w-4" />
-            <span className="font-medium">{errorMessage}</span>
-          </div>
-        )}
+        {errorMessage && (  
+          <div className="flex items-center gap-2 mt-2 p-2 rounded-md bg-destructive/10 text-destructive text-sm">  
+            <AlertTriangle className="h-4 w-4" />  
+            <span className="font-medium">{errorMessage}</span>  
+          </div>  
+        )}  
 
-        {showSuggestions && suggestions.length > 0 && (
-          <div ref={suggestionsRef} className="w-full max-w-sm mt-2">
-            <EmailSuggestions
-              suggestions={suggestions}
-              hoveredIndex={hoveredIndex}
-              setHoveredIndex={setHoveredIndex}
-              selectSuggestion={selectSuggestion}
-              premiumDomains={premiumDomains}
-            />
-          </div>
-        )}
-      </div>
+        {showSuggestions && suggestions.length > 0 && (  
+          <div ref={suggestionsRef} className="w-full max-w-sm mt-2">  
+            <EmailSuggestions  
+              suggestions={suggestions}  
+              hoveredIndex={hoveredIndex}  
+              setHoveredIndex={setHoveredIndex}  
+              selectSuggestion={selectSuggestion}  
+              premiumDomains={premiumDomains}  
+            />  
+          </div>  
+        )}  
+      </div>  
 
-      {showSubmitButton && (
-        <button
-          type="submit"
-          onClick={handleEmailSubmit}
-          disabled={!isValid || checking || verifying}
-          className={`w-full max-w-sm mt-4 py-2.5 rounded-lg font-medium ${
-            isValid ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
-          }`}
-        >
-          {verifying ? "Verifying..." : "Continue"}
-        </button>
-      )}
+      {showSubmitButton && (  
+        <button  
+          type="submit"  
+          onClick={handleEmailSubmit}  
+          disabled={!isValid || checking || verifying}  
+          className={`w-full max-w-sm mt-4 py-2.5 rounded-lg font-medium ${  
+            isValid ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'  
+          }`}  
+        >  
+          {verifying ? "Verifying..." : "Continue"}  
+        </button>  
+      )}  
     </div>
   );
 };
