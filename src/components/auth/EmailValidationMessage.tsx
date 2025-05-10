@@ -1,14 +1,16 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, Check } from 'lucide-react';
 
 interface EmailValidationMessageProps {
   message: string | null;
+  typoSuggestion?: string | null;
+  onApplySuggestion?: () => void;
 }
 
-const EmailValidationMessage = ({ message }: EmailValidationMessageProps) => {
-  if (!message) return null;
+const EmailValidationMessage = ({ message, typoSuggestion, onApplySuggestion }: EmailValidationMessageProps) => {
+  if (!message && !typoSuggestion) return null;
   
   return (
     <motion.div
@@ -21,6 +23,17 @@ const EmailValidationMessage = ({ message }: EmailValidationMessageProps) => {
     >
       <AlertCircle className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
       <span>{message}</span>
+      
+      {typoSuggestion && (
+        <button 
+          type="button" 
+          onClick={onApplySuggestion} 
+          className="flex items-center gap-1 ml-auto text-xs text-primary hover:text-primary/90 hover:underline"
+        >
+          <span>Use <strong>{typoSuggestion}</strong></span>
+          <Check className="h-3 w-3" />
+        </button>
+      )}
     </motion.div>
   );
 };

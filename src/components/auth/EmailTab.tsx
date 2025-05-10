@@ -222,6 +222,8 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     } 
   };
 
+  const handleSubmit = showSubmitButton ? handleEmailSubmit : undefined;
+
   return (
     <div className="flex flex-col items-center w-full">
       <motion.header
@@ -231,7 +233,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         animate="visible"
       >
         <motion.h2 className="text-base font-semibold text-foreground mb-1" variants={childVariants}>
-          Let’s get started
+          Let's get started
         </motion.h2>
         <motion.p className="text-sm text-muted-foreground" variants={childVariants}>
           Please enter your email to {emailExists === false ? "create your account" : "continue"}.
@@ -239,7 +241,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
       </motion.header>
 
       <div className="relative w-full max-w-sm">
-        <div className="absolute left-3 top-1/2 -translate-y-1/2">
+        <div className="absolute left-3 top-1/2 -translate-y-1/2 z-10">
           <Mail className="h-4 w-4 text-muted-foreground" />
         </div>
 
@@ -254,16 +256,16 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
           onKeyDown={handleKeyDown}
           placeholder="john.doe@example.com"
           className={`w-full pl-10 pr-10 h-11 text-sm transition-all duration-300 ease-in-out rounded-md shadow-sm ${
-  validationMessage || errorMessage 
-    ? 'border-destructive focus:border-destructive bg-destructive/5'
-    : isValid 
-    ? 'border-green-500 focus:border-green-600 bg-green-50/30'
-    : 'border-border bg-background text-foreground'
-}`}
+            validationMessage || errorMessage 
+              ? 'border-destructive focus:border-destructive bg-destructive/5'
+              : isValid 
+                ? 'border-green-500 focus:border-green-600 bg-green-50/30'
+                : 'border-border bg-background text-foreground'
+          }`}
           autoComplete="email"
         />
 
-        <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5">
+        <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5 z-10">
           {(checking || verifying) && (
             <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
           )}
@@ -282,7 +284,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         </div>
 
         <AnimatePresence>
-          {(validationMessage || typoSuggestion) && !errorMessage && (
+          {validationMessage && !errorMessage && (
             <EmailValidationMessage 
               message={validationMessage}
               typoSuggestion={typoSuggestion}
