@@ -303,123 +303,95 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   const handleSubmit = showSubmitButton ? handleEmailSubmit : undefined;
 
   return (
-    <div className="w-full max-w-md mx-auto flex flex-col items-center justify-center space-y-2">
-      {/* Email input section with improved design and functionality */}
-<div className="max-w-md mx-auto w-full px-4 py-6 bg-card rounded-lg shadow-sm border border-border">
-  <div className="text-center mb-5">
-    <h2 className="text-xl font-semibold text-foreground mb-2">
-      {emailExists === false ? "Create Your Account" : "Welcome Back"}
-    </h2>
-    <p className="text-sm text-muted-foreground">
-      {emailExists === false 
-        ? "Enter your email to get started with our service" 
-        : "Please enter your email to continue to your account"}
-    </p>
-  </div>
-  
-  <div className="space-y-4">
-    <div className="space-y-2">
-      <label htmlFor="email" className="text-sm font-medium text-foreground block">
-        Email Address
-      </label>
-      <div className="relative">
-        <input
-          id="email"
-          type="email"
-          placeholder="you@example.com"
-          className="w-full px-4 py-2 rounded-md border border-input bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-          required
-          aria-describedby="email-error"
-        />
-        <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-          {isValidating && <Spinner className="h-4 w-4 text-muted-foreground" />}
-          {isValid && <CheckCircle className="h-4 w-4 text-success" />}
-        </div>
-      </div>
-      {emailError && (
-        <p id="email-error" className="text-sm text-destructive mt-1">
-          {emailError}
-        </p>
-      )}
+    <div className="w-full max-w-md mx-auto">
+  {/* Card container with header from first section */}
+  <div className="w-full px-4 py-6 bg-card rounded-lg shadow-sm border border-border">
+    {/* Heading section */}
+    <div className="text-center mb-5">
+      <h2 className="text-xl font-semibold text-foreground mb-2">
+        {emailExists === false ? "Create Your Account" : "Welcome Back"}
+      </h2>
+      <p className="text-sm text-muted-foreground">
+        {emailExists === false 
+          ? "Enter your email to get started with our service" 
+          : "Please enter your email to continue to your account"}
+      </p>
     </div>
-    
-    <button 
-      type="submit" 
-      className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-2 px-4 rounded-md transition-colors"
-      disabled={isValidating || !isValid}
-    >
-      {isValidating ? "Checking..." : emailExists === false ? "Create Account" : "Continue"}
-    </button>
-    
-    <div className="text-center text-xs text-muted-foreground mt-4">
-      By continuing, you agree to our <a href="/terms" className="underline hover:text-foreground">Terms</a> and <a href="/privacy" className="underline hover:text-foreground">Privacy Policy</a>
-    </div>
-  </div>
-</div>
 
-      {/* Email Input with icons */}
-      <div className="relative w-full max-w-sm">
-        <div className={`absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center h-5 w-5 transition-all duration-200 ${focused ? 'text-primary' : 'text-muted-foreground'}`}>
-          <Mail className="h-[15px] w-[15px]" />
-        </div>
+    <div className="space-y-4">
+      {/* Label from first section */}
+      <div className="space-y-2">
+        <label htmlFor="email" className="text-sm font-medium text-foreground block">
+          Email Address
+        </label>
         
-        <Input
-          ref={inputRef}
-          id="email"
-          type="email"
-          spellCheck="false"
-          autoCorrect="off"
-          autoCapitalize="none"
-          value={email}
-          onChange={(e) => setEmail(normalizeEmail(e.target.value))}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          onKeyDown={handleKeyDown}
-          placeholder="name@example.com"
-          className={`w-full pl-10 pr-10 h-11 text-sm bg-background transition-all duration-200 rounded-md shadow-sm ${
-            validationMessage || errorMessage
-              ? 'border-destructive focus:border-destructive focus:ring-destructive/20 bg-destructive/5' 
-              : isValid 
-                ? 'border-green-500 focus:border-green-600 focus:ring-green-200 bg-green-50/30 dark:bg-green-950/10' 
-                : focused 
-                  ? 'border-primary/30 focus:border-primary focus:ring-primary/20' 
-                  : 'border-input hover:border-input focus:border-input focus:ring-ring/20'
-          }`}
-          autoComplete="email"
-          aria-invalid={!!validationMessage || !!errorMessage}
-          aria-describedby={validationMessage ? "email-validation-error" : undefined}
-        />
-
-        {/* Status Indicators */}
-        <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
-          {(checking || verifying) && (
-            <Loader2 className="h-4 w-4 text-muted-foreground animate-spin mr-1" aria-label="Checking email" />
-          )}
+        {/* Email input with functionality from second section */}
+        <div className="relative">
+          {/* Mail icon from second section */}
+          <div className={`absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center h-5 w-5 transition-all duration-200 ${focused ? 'text-primary' : 'text-muted-foreground'}`}>
+            <Mail className="h-[15px] w-[15px]" />
+          </div>
           
-          {email.length > 0 && (
-            <button
-              type="button"
-              onClick={clearInput}
-              tabIndex={0}
-              className="text-muted-foreground hover:text-foreground hover:bg-muted rounded-full p-1 transition-colors"
-              aria-label="Clear input"
-            >
-              <X className="h-3.5 w-3.5" />
-            </button>
-          )}
+          {/* Functional input from second section with styling elements from first */}
+          <Input
+            ref={inputRef}
+            id="email"
+            type="email"
+            spellCheck="false"
+            autoCorrect="off"
+            autoCapitalize="none"
+            value={email}
+            onChange={(e) => setEmail(normalizeEmail(e.target.value))}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            onKeyDown={handleKeyDown}
+            placeholder="name@example.com"
+            className={`w-full pl-10 pr-10 h-11 text-sm bg-background transition-all duration-200 rounded-md shadow-sm ${
+              validationMessage || errorMessage
+                ? 'border-destructive focus:border-destructive focus:ring-destructive/20 bg-destructive/5' 
+                : isValid 
+                  ? 'border-green-500 focus:border-green-600 focus:ring-green-200 bg-green-50/30 dark:bg-green-950/10' 
+                  : focused 
+                    ? 'border-primary/30 focus:border-primary focus:ring-primary/20' 
+                    : 'border-input hover:border-input focus:border-input focus:ring-ring/20'
+            }`}
+            autoComplete="email"
+            aria-invalid={!!validationMessage || !!errorMessage}
+            aria-describedby={validationMessage ? "email-validation-error" : undefined}
+            required
+          />
+          
+          {/* Status indicators from second section */}
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
+            {(checking || verifying) && (
+              <Loader2 className="h-4 w-4 text-muted-foreground animate-spin mr-1" aria-label="Checking email" />
+            )}
 
-          {isValid && !checking && !verifying && !errorMessage && (
-            <Check
-              className={`h-4 w-4 text-green-500 ${
-                showValidationSuccess ? 'animate-pulse-success' : 'animate-fadeIn'
-              }`}
-              aria-label="Valid email"
-            />
-          )}
+            {email.length > 0 && (
+              <button
+                type="button"
+                onClick={clearInput}
+                tabIndex={0}
+                className="text-muted-foreground hover:text-foreground hover:bg-muted rounded-full p-1 transition-colors"
+                aria-label="Clear input"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            )}
+
+            {isValid && !checking && !verifying && !errorMessage && (
+              <Check
+                className={`h-4 w-4 text-green-500 ${
+                  showValidationSuccess ? 'animate-pulse-success' : 'animate-fadeIn'
+                }`}
+                aria-label="Valid email"
+              />
+            )}
+          </div>
         </div>
       </div>
-
-      {/* Typo Suggestion */}
+      
+      {/* Typo suggestion from second section */}
       {typoSuggestion && (
         <button
           type="button"
@@ -430,25 +402,25 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
           <Check className="h-3 w-3" />
         </button>
       )}
-
-      {/* Error Message */}
+      
+      {/* Error message from second section */}
       {errorMessage && (
-        <div className="flex items-center justify-center gap-1.5 mt-2 p-2 rounded-md bg-destructive/10 text-destructive text-sm max-w-sm">
+        <div className="flex items-center justify-center gap-1.5 mt-2 p-2 rounded-md bg-destructive/10 text-destructive text-sm">
           <AlertTriangle className="h-4 w-4" />
           <span className="font-medium">{errorMessage}</span>
         </div>
       )}
-
-      {/* Validation Message */}
+      
+      {/* Validation message from second section */}
       <AnimatePresence>
         {validationMessage && !errorMessage && (
           <EmailValidationMessage message={validationMessage} />
         )}
       </AnimatePresence>
-
-      {/* Email Suggestions */}
+      
+      {/* Email suggestions from second section */}
       {showSuggestions && suggestions.length > 0 && (
-        <div ref={suggestionsRef} className="w-full max-w-sm">
+        <div ref={suggestionsRef}>
           <EmailSuggestions 
             suggestions={suggestions}
             hoveredIndex={hoveredIndex}
@@ -459,48 +431,55 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         </div>
       )}
 
-      {/* Submit Button */}
-      {showSubmitButton && (
-        <button
-          type="submit"
-          onClick={handleEmailSubmit}
-          disabled={!isValid || checking || verifying}
-          className={`w-full max-w-sm mt-4 py-2.5 rounded-lg font-medium transition-all duration-200 relative overflow-hidden ${
-            isValid && !checking && !verifying
-              ? 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm hover:shadow'
-              : 'bg-muted text-muted-foreground cursor-not-allowed'
-          }`}
-        >
-          {checking || verifying ? (
-            <span className="flex items-center justify-center gap-2">
-              <Loader2 className="h-4 w-4 animate-spin" />
-              {verifying ? "Verifying..." : "Checking..."}
-            </span>
-          ) : (
-            <span className="relative z-10">Continue</span>
-          )}
-        </button>
-      )}
-
-      {/* Animation Styles */}
-      <style>{`
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        .animate-fadeIn {
-          animation: fadeIn 0.2s ease-in-out;
-        }
-        
-        @keyframes pulseSuccess {
-          0%, 100% { transform: scale(1); opacity: 1; }
-          50% { transform: scale(1.2); opacity: 0.8; }
-        }
-        .animate-pulse-success {
-          animation: pulseSuccess 0.6s ease-in-out;
-        }
-      `}</style>
+      {/* Submit button from first section with functionality from second */}
+      <button
+        type="submit"
+        onClick={handleEmailSubmit}
+        disabled={!isValid || checking || verifying}
+        className={`w-full mt-4 py-2.5 rounded-lg font-medium transition-all duration-200 relative overflow-hidden ${
+          isValid && !checking && !verifying
+            ? 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm hover:shadow'
+            : 'bg-muted text-muted-foreground cursor-not-allowed'
+        }`}
+      >
+        {checking || verifying ? (
+          <span className="flex items-center justify-center gap-2">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            {verifying ? "Verifying..." : "Checking..."}
+          </span>
+        ) : (
+          <span className="relative z-10">
+            {emailExists === false ? "Create Account" : "Continue"}
+          </span>
+        )}
+      </button>
+      
+      {/* Terms from first section */}
+      <div className="text-center text-xs text-muted-foreground mt-4">
+        By continuing, you agree to our <a href="/terms" className="underline hover:text-foreground">Terms</a> and <a href="/privacy" className="underline hover:text-foreground">Privacy Policy</a>
+      </div>
     </div>
+  </div>
+  
+  {/* Animation styles */}
+  <style>{`
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .animate-fadeIn {
+      animation: fadeIn 0.2s ease-in-out;
+    }
+    
+    @keyframes pulseSuccess {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.2); opacity: 0.8; }
+    }
+    .animate-pulse-success {
+      animation: pulseSuccess 0.6s ease-in-out;
+    }
+  `}</style>
+</div>
   );
 };
 
