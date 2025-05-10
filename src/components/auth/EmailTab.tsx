@@ -361,65 +361,74 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
 
       {/* Email Input with icons */}
       <div className="relative w-full max-w-sm">
-        <div className={`absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center h-5 w-5 transition-all duration-200 ${focused ? 'text-primary' : 'text-muted-foreground'}`}>
-          <Mail className="h-[15px] w-[15px]" />
-        </div>
-        
-        <Input
-          ref={inputRef}
-          id="email"
-          type="email"
-          spellCheck="false"
-          autoCorrect="off"
-          autoCapitalize="none"
-          value={email}
-          onChange={(e) => setEmail(normalizeEmail(e.target.value))}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          onKeyDown={handleKeyDown}
-          placeholder="name@example.com"
-          className={`w-full pl-10 pr-10 h-11 text-sm bg-background transition-all duration-200 rounded-md shadow-sm ${
-            validationMessage || errorMessage
-              ? 'border-destructive focus:border-destructive focus:ring-destructive/20 bg-destructive/5' 
-              : isValid 
-                ? 'border-green-500 focus:border-green-600 focus:ring-green-200 bg-green-50/30 dark:bg-green-950/10' 
-                : focused 
-                  ? 'border-primary/30 focus:border-primary focus:ring-primary/20' 
-                  : 'border-input hover:border-input focus:border-input focus:ring-ring/20'
-          }`}
-          autoComplete="email"
-          aria-invalid={!!validationMessage || !!errorMessage}
-          aria-describedby={validationMessage ? "email-validation-error" : undefined}
-        />
+  {/* Mail Icon */}
+  <div
+    className={`absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center h-5 w-5 transition-all duration-200 ${
+      focused ? 'text-primary' : 'text-muted-foreground'
+    }`}
+  >
+    <Mail className="h-[15px] w-[15px]" />
+  </div>
 
-        {/* Status Indicators */}
-        <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
-          {(checking || verifying) && (
-            <Loader2 className="h-4 w-4 text-muted-foreground animate-spin mr-1" aria-label="Checking email" />
-          )}
-          
-          {email.length > 0 && (
-            <button
-              type="button"
-              onClick={clearInput}
-              tabIndex={0}
-              className="text-muted-foreground hover:text-foreground hover:bg-muted rounded-full p-1 transition-colors"
-              aria-label="Clear input"
-            >
-              <X className="h-3.5 w-3.5" />
-            </button>
-          )}
+  {/* Email Input */}
+  <Input
+    ref={inputRef}
+    id="email"
+    type="email"
+    spellCheck="false"
+    autoCorrect="off"
+    autoCapitalize="none"
+    value={email}
+    onChange={(e) => setEmail(normalizeEmail(e.target.value))}
+    onFocus={handleFocus}
+    onBlur={handleBlur}
+    onKeyDown={handleKeyDown}
+    placeholder="john.doe@example.com"
+    className={`w-full pl-10 pr-10 h-11 text-sm bg-background transition-all duration-200 rounded-md shadow-sm ${
+      validationMessage || errorMessage
+        ? 'border-destructive focus:border-destructive focus:ring-destructive/20 bg-destructive/5'
+        : isValid
+        ? 'border-green-500 focus:border-green-600 focus:ring-green-200 bg-green-50/30 dark:bg-green-950/10'
+        : focused
+        ? 'border-primary/30 focus:border-primary focus:ring-primary/20'
+        : 'border-input hover:border-input focus:border-input focus:ring-ring/20'
+    }`}
+    autoComplete="email"
+    aria-invalid={!!validationMessage || !!errorMessage}
+    aria-describedby={validationMessage ? 'email-validation-error' : undefined}
+  />
 
-          {isValid && !checking && !verifying && !errorMessage && (
-            <Check
-              className={`h-4 w-4 text-green-500 ${
-                showValidationSuccess ? 'animate-pulse-success' : 'animate-fadeIn'
-              }`}
-              aria-label="Valid email"
-            />
-          )}
-        </div>
-      </div>
+  {/* Status Indicators */}
+  <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+    {(checking || verifying) && (
+      <Loader2
+        className="h-4 w-4 text-muted-foreground animate-spin"
+        aria-label="Checking email"
+      />
+    )}
+
+    {isValid && !checking && !verifying && !errorMessage && (
+      <Check
+        className={`h-4 w-4 text-green-500 ${
+          showValidationSuccess ? 'animate-pulse-success' : 'animate-fadeIn'
+        }`}
+        aria-label="Valid email"
+      />
+    )}
+
+    {email.length > 0 && (
+      <button
+        type="button"
+        onClick={clearInput}
+        tabIndex={0}
+        className="ml-1 text-muted-foreground hover:text-foreground hover:bg-muted rounded-full p-1 transition-colors"
+        aria-label="Clear input"
+      >
+        <X className="h-3.5 w-3.5" />
+      </button>
+    )}
+  </div>
+</div>
 
       {/* Typo Suggestion */}
       {typoSuggestion && (
