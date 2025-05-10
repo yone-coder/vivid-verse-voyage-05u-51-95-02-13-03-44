@@ -49,14 +49,19 @@ const getDomainFromEmail = (email: string): string | null => {
 
 // Enhanced favicon retrieval with special case handling for known domains
 const getFaviconUrl = (domain: string): string => {
-  // Use local images for common domains if available
-  if (domain in domainLogos) {
-    return domainLogos[domain];
-  }
-  
-  // Special case for Gmail and other Google services
+  // Special case for Gmail - uses mail.google.com instead
   if (domain === 'gmail.com') {
     return 'https://www.google.com/s2/favicons?sz=32&domain=mail.google.com';
+  }
+  
+  // Special case for Protonmail
+  if (domain === 'protonmail.com') {
+    return 'https://www.google.com/s2/favicons?sz=32&domain=proton.me';
+  }
+  
+  // Special cases for Microsoft email services
+  if (['hotmail.com', 'live.com', 'outlook.com'].includes(domain)) {
+    return 'https://www.google.com/s2/favicons?sz=32&domain=outlook.live.com';
   }
   
   // Handle subdomains of google.com
@@ -66,18 +71,6 @@ const getFaviconUrl = (domain: string): string => {
   
   // Default case for all other domains
   return `https://www.google.com/s2/favicons?sz=32&domain=${domain}`;
-};
-
-// Custom domain logos for common email providers
-const domainLogos: Record<string, string> = {
-  'gmail.com': '/logos/gmail.png',
-  'outlook.com': '/logos/outlook.png',
-  'yahoo.com': '/logos/yahoo.png',
-  'icloud.com': '/logos/icloud.png',
-  'hotmail.com': '/logos/outlook.png',
-  'live.com': '/logos/outlook.png',
-  'protonmail.com': '/logos/proton.png',
-  'aol.com': '/logos/aol.png',
 };
 
 const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: EmailTabProps) => {
