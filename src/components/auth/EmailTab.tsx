@@ -596,13 +596,13 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         )}  
       </div>  
 
-      {showSubmitButton && (  
+     {showSubmitButton && (  
   <button  
     type="submit"  
     onClick={handleEmailSubmit}  
     disabled={!isValid || checking || verifying || emailExists === null}  
     className={`w-full max-w-sm mt-4 py-2.5 rounded-lg font-medium transition-all duration-300 ${  
-      isValid && emailExists !== null && !checking && !verifying 
+      isValid && !checking && !verifying && (emailExists === true || emailExists === false)
         ? 'bg-primary text-primary-foreground hover:bg-primary/90' 
         : 'bg-muted text-muted-foreground cursor-not-allowed opacity-70'  
     }`}  
