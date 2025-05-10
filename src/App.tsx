@@ -19,6 +19,7 @@ import AdminPanel from "./pages/AdminPanel";
 import MainLayout from "./components/layout/MainLayout";
 import { ThemeProvider } from "@/components/theme-provider";
 import AuthPage from "./pages/AuthPage";
+import SignupPage from "./pages/SignupPage";
 import { AuthProvider } from "./context/AuthContext";
 
 // Create a client
@@ -47,7 +48,8 @@ const App = () => (
                   <Route path="/admin" element={<AdminPanel />} />
                   <Route path="/search" element={<SearchPage />} />
                   <Route path="/categories" element={<Navigate to="/reels" replace />} />
-                  <Route path="/auth" element={<AuthPage />} /> {/* Updated to use AuthPage */}
+                  <Route path="/auth" element={<AuthPage />} />
+                  <Route path="/signup" element={<SignupPage />} />
                   <Route path="/cart" element={<NotFound />} />
                   <Route path="/wishlist" element={<NotFound />} />
                   <Route path="/account" element={<NotFound />} />

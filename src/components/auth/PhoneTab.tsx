@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
@@ -17,6 +16,12 @@ interface PhoneTabProps {
   onSubmit?: (e: React.FormEvent) => void;
   showSubmitButton?: boolean;
 }
+
+// Define verification result type to avoid excessive type recursion
+type VerificationResult = {
+  exists: boolean | null;
+  error: string | null;
+};
 
 const PhoneTab = ({ 
   phone, 

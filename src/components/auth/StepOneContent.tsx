@@ -1,6 +1,7 @@
 
 import React, { useEffect } from 'react';
 import { AlertTriangle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import AuthSocialButtons from '@/components/auth/AuthSocialButtons';
 import AuthTabs from '@/components/auth/AuthTabs';
 import TabDivider from '@/components/auth/TabDivider';
@@ -36,6 +37,8 @@ const StepOneContent: React.FC<StepOneContentProps> = ({
     activeTab, email, phone, countryCode, authMode, isLoading, 
     authSuccess, errorMessage
   } = formState;
+  
+  const navigate = useNavigate();
   
   // Determine if the continue button should be disabled
   const isContinueDisabled = () => {
@@ -94,6 +97,15 @@ const StepOneContent: React.FC<StepOneContentProps> = ({
     return authMode === 'signin' ? "Verifying..." : "Checking...";
   };
   
+  // Handle switch to other authentication page
+  const handleAuthModeSwitch = () => {
+    if (authMode === 'signin') {
+      navigate('/signup');
+    } else {
+      navigate('/auth');
+    }
+  };
+  
   return (
     <div className="w-full mb-4 space-y-3">
       <AuthSocialButtons handleSocialLogin={handleSocialLogin} />
@@ -136,7 +148,7 @@ const StepOneContent: React.FC<StepOneContentProps> = ({
         </span>
         <button 
           type="button" 
-          onClick={toggleAuthMode}
+          onClick={handleAuthModeSwitch}
           className="text-sm font-medium text-[#ff4747] hover:text-[#ff2727] hover:underline"
         >
           {authMode === 'signin' ? "Sign up" : "Sign in"}

@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import BackButton from '@/components/auth/BackButton';
 import PasswordStepContent from '@/components/auth/PasswordStepContent';
 import SubmitButton from '@/components/auth/SubmitButton';
@@ -34,6 +35,17 @@ const StepTwoContent: React.FC<StepTwoContentProps> = ({
     activeTab, email, phone, countryCode, password, confirmPassword, 
     showPassword, agreeToTerms, rememberMe, authMode, isLoading, authSuccess 
   } = formState;
+  
+  const navigate = useNavigate();
+
+  // Handle switch to other authentication page
+  const handleAuthModeSwitch = () => {
+    if (authMode === 'signin') {
+      navigate('/signup');
+    } else {
+      navigate('/auth');
+    }
+  };
   
   return (
     <div className="w-full mb-4 space-y-3">
@@ -77,7 +89,7 @@ const StepTwoContent: React.FC<StepTwoContentProps> = ({
         </span>
         <button 
           type="button" 
-          onClick={toggleAuthMode}
+          onClick={handleAuthModeSwitch}
           className="text-sm font-medium text-[#ff4747] hover:text-[#ff2727] hover:underline"
         >
           {authMode === 'signin' ? "Sign up" : "Sign in"}
