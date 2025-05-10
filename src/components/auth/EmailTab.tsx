@@ -305,12 +305,23 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   return (
     <div className="w-full max-w-md mx-auto flex flex-col items-center justify-center space-y-2">
       {/* Email input section with better organized instructions */}
-      <div className="text-center mb-4">
-        <h2 className="text-base font-medium text-foreground mb-1">Email Address</h2>
-        <p className="text-sm text-muted-foreground">
-          Please enter your email to {emailExists === false ? "create your account" : "continue"}
-        </p>
-      </div>
+      <div className="text-center mb-4 animate-fade-in">
+  <div className="flex justify-center mb-2">
+    <MailIcon className="w-6 h-6 text-primary" />
+  </div>
+  <h2 className="text-lg font-semibold text-foreground mb-1">Enter Your Email</h2>
+  <p className="text-sm text-muted-foreground">
+    {emailExists === false
+      ? (
+        <>
+          <span className="inline-flex items-center gap-1">
+            <SparklesIcon className="w-4 h-4 text-yellow-500" />
+            Let's create your new account
+          </span>
+        </>
+      ) : "Welcome back! Continue by entering your email."}
+  </p>
+</div>
 
       {/* Email Input with icons */}
       <div className="relative w-full max-w-sm">
