@@ -9,7 +9,6 @@ import { supabase } from '@/integrations/supabase/client';
 export const useEmailCheck = () => {
   const [isCheckingEmail, setIsCheckingEmail] = useState(false);
 
-  // Fixed the function signature to remove recursive type reference
   const checkEmailExists = async (email: string): Promise<boolean> => {
     setIsCheckingEmail(true);
     
