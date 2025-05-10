@@ -79,7 +79,7 @@ const PhoneTab = ({
     if (inputRef.current) inputRef.current.focus();
   };
 
-  // The phone existence checking function - defined independently to avoid circular references
+  // The phone existence checking function
   const checkPhoneExists = async (phoneToCheck: string) => {
     if (!isValid || !phoneToCheck) return false;
     
@@ -122,7 +122,7 @@ const PhoneTab = ({
     }
   };
 
-  // The phone submission handler - defined independently to avoid circular references
+  // The phone submission handler
   const handlePhoneSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
@@ -167,7 +167,7 @@ const PhoneTab = ({
         
         {/* Phone number input */}
         <div className="relative flex-grow">
-          <div className={`absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center h-5 w-5 transition-all duration-200 ${focused ? 'text-primary' : 'text-muted-foreground'}`}>
+          <div className={`absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center h-5 w-5 transition-all duration-200 z-10 ${focused ? 'text-primary' : 'text-muted-foreground'}`}>
             <Phone className="h-[15px] w-[15px]" />
           </div>
           
@@ -194,7 +194,7 @@ const PhoneTab = ({
           />
 
           {/* Status indicators */}
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 z-10">
             {checking && (
               <Loader2 className="h-4 w-4 text-muted-foreground animate-spin mr-1" aria-label="Checking phone" />
             )}
@@ -259,17 +259,6 @@ const PhoneTab = ({
           )}
         </button>
       )}
-
-      {/* Animation Styles */}
-      <style>{`
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        .animate-fadeIn {
-          animation: fadeIn 0.2s ease-in-out;
-        }
-      `}</style>
     </div>
   );
 };
