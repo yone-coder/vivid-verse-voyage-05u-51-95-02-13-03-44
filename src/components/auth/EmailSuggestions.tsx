@@ -1,31 +1,22 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { ExternalLink } from 'lucide-react';
 
 interface EmailSuggestionsProps {
   suggestions: string[];
-  onSelect: (suggestion: string) => void;
-  premiumDomains?: { name: string; domain: string; url: string }[];
+  hoveredIndex: number;
+  setHoveredIndex: (index: number) => void;
+  selectSuggestion: (suggestion: string) => void;
+  premiumDomains: { name: string; domain: string; url: string }[];
 }
 
 const EmailSuggestions = ({ 
   suggestions, 
-  onSelect
+  hoveredIndex, 
+  setHoveredIndex, 
+  selectSuggestion,
+  premiumDomains
 }: EmailSuggestionsProps) => {
-  const [hoveredIndex, setHoveredIndex] = useState<number>(-1);
-  
-  // Use the imported premium domains from EmailUtils
-  const premiumDomains = [
-    { name: 'Gmail', domain: 'gmail.com', url: 'https://gmail.com' },
-    { name: 'Yahoo', domain: 'yahoo.com', url: 'https://yahoo.com' },
-    { name: 'Outlook', domain: 'outlook.com', url: 'https://outlook.com' },
-    { name: 'iCloud', domain: 'icloud.com', url: 'https://icloud.com' },
-    { name: 'ProtonMail', domain: 'protonmail.com', url: 'https://protonmail.com' },
-    { name: 'AOL', domain: 'aol.com', url: 'https://aol.com' },
-    { name: 'Zoho', domain: 'zoho.com', url: 'https://zoho.com' },
-    { name: 'Tutanota', domain: 'tutanota.com', url: 'https://tutanota.com' },
-  ];
-
   return (
     <div className="flex flex-wrap gap-2 mt-2 animate-fadeIn">
       {suggestions.map((suggestion, index) => {
@@ -39,9 +30,8 @@ const EmailSuggestions = ({
           <button
             key={suggestion}
             type="button"
-            onClick={() => onSelect(suggestion)}
+            onClick={() => selectSuggestion(suggestion)}
             onMouseEnter={() => setHoveredIndex(index)}
-            onMouseLeave={() => setHoveredIndex(-1)}
             className={`flex items-center text-xs px-3 py-1.5 rounded-full transition-all duration-150 ${
               hoveredIndex === index
                 ? 'bg-primary/10 text-primary shadow-sm'
