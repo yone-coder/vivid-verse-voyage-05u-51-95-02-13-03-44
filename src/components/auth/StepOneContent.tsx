@@ -37,7 +37,7 @@ const StepOneContent: React.FC<StepOneContentProps> = ({
     <div className="w-full mb-4 space-y-3">
       <AuthSocialButtons handleSocialLogin={handleSocialLogin} />
       
-      <TabDivider text="or continue with" />
+      <TabDivider text="OR" />
 
       <AuthTabs
         activeTab={activeTab}
