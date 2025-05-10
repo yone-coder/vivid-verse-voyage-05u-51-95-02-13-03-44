@@ -49,7 +49,9 @@ const getDomainFromEmail = (email: string): string | null => {
 
 // Special case handling for domains that need different favicon URLs
 const getFaviconUrl = (domain: string): string => {
-  // Map domains to their correct favicon domains
+  // Normalize the domain to lowercase to handle case sensitivity
+  const normalizedDomain = domain.toLowerCase();
+
   const specialDomains: Record<string, string> = {
     'gmail.com': 'mail.google.com',
     'googlemail.com': 'mail.google.com',
@@ -58,12 +60,11 @@ const getFaviconUrl = (domain: string): string => {
     'live.com': 'outlook.live.com'
   };
 
-  // If it's a special domain, use the mapped domain for favicon
-  const faviconDomain = specialDomains[domain] || domain;
-  
-  // Return the favicon URL
+  const faviconDomain = specialDomains[normalizedDomain] || normalizedDomain;
+
   return `https://www.google.com/s2/favicons?sz=32&domain=${faviconDomain}`;
 };
+
 
 const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: EmailTabProps) => {
   const { theme } = useTheme();
