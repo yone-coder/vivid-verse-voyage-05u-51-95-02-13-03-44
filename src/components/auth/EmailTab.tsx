@@ -25,34 +25,6 @@ interface EmailTabProps {
   showSubmitButton?: boolean;
 }
 
-const containerVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      type: "spring",
-      stiffness: 60,
-      damping: 12,
-      staggerChildren: 0.15,
-    },
-  },
-};
-
-const childVariants = {
-  hidden: { opacity: 0, y: 10 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      type: "spring",
-      stiffness: 80,
-      damping: 15,
-    },
-  },
-};
-
-
 const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: EmailTabProps) => {
   const { theme } = useTheme();
   const [focused, setFocused] = useState(false);
@@ -336,29 +308,29 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
       {/* Email input section with better organized instructions */}
 
 
-
-
 <motion.header
   className="text-center mb-4"
-  variants={containerVariants}
-  initial="hidden"
-  animate="visible"
+  initial={{ opacity: 0, y: 10 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.5, ease: "easeOut" }}
 >
   <motion.h2
     className="text-base font-semibold text-foreground mb-1"
-    variants={childVariants}
+    initial={{ opacity: 0, y: -5 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ delay: 0.2, duration: 0.4 }}
   >
     Let’s get started
   </motion.h2>
   <motion.p
     className="text-sm text-muted-foreground"
-    variants={childVariants}
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ delay: 0.4, duration: 0.4 }}
   >
     Please enter your email to {emailExists === false ? "create your account" : "continue"}.
   </motion.p>
 </motion.header>
-
-
       {/* Email Input with icons */}
       <div className="relative w-full max-w-sm">
         <div className={`absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center h-5 w-5 transition-all duration-200 ${focused ? 'text-primary' : 'text-muted-foreground'}`}>
