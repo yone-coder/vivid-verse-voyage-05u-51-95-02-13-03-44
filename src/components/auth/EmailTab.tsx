@@ -304,13 +304,58 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
 
   return (
     <div className="w-full max-w-md mx-auto flex flex-col items-center justify-center space-y-2">
-      {/* Email input section with better organized instructions */}
-      <div className="text-center mb-4">
-        <h2 className="text-base font-medium text-foreground mb-1">Email Address</h2>
-        <p className="text-sm text-muted-foreground">
-          Please enter your email to {emailExists === false ? "create your account" : "continue"}
-        </p>
+      {/* Email input section with improved design and functionality */}
+<div className="max-w-md mx-auto w-full px-4 py-6 bg-card rounded-lg shadow-sm border border-border">
+  <div className="text-center mb-5">
+    <h2 className="text-xl font-semibold text-foreground mb-2">
+      {emailExists === false ? "Create Your Account" : "Welcome Back"}
+    </h2>
+    <p className="text-sm text-muted-foreground">
+      {emailExists === false 
+        ? "Enter your email to get started with our service" 
+        : "Please enter your email to continue to your account"}
+    </p>
+  </div>
+  
+  <div className="space-y-4">
+    <div className="space-y-2">
+      <label htmlFor="email" className="text-sm font-medium text-foreground block">
+        Email Address
+      </label>
+      <div className="relative">
+        <input
+          id="email"
+          type="email"
+          placeholder="you@example.com"
+          className="w-full px-4 py-2 rounded-md border border-input bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+          required
+          aria-describedby="email-error"
+        />
+        <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+          {isValidating && <Spinner className="h-4 w-4 text-muted-foreground" />}
+          {isValid && <CheckCircle className="h-4 w-4 text-success" />}
+        </div>
       </div>
+      {emailError && (
+        <p id="email-error" className="text-sm text-destructive mt-1">
+          {emailError}
+        </p>
+      )}
+    </div>
+    
+    <button 
+      type="submit" 
+      className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-2 px-4 rounded-md transition-colors"
+      disabled={isValidating || !isValid}
+    >
+      {isValidating ? "Checking..." : emailExists === false ? "Create Account" : "Continue"}
+    </button>
+    
+    <div className="text-center text-xs text-muted-foreground mt-4">
+      By continuing, you agree to our <a href="/terms" className="underline hover:text-foreground">Terms</a> and <a href="/privacy" className="underline hover:text-foreground">Privacy Policy</a>
+    </div>
+  </div>
+</div>
 
       {/* Email Input with icons */}
       <div className="relative w-full max-w-sm">
