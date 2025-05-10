@@ -8,7 +8,7 @@ interface AuthContainerProps {
   children: React.ReactNode;
 }
 
-const AuthContainer = ({ isOverlay = false, onClose, children }: AuthContainerProps) => {
+const AuthContainer = ({ isOverlay = true, onClose, children }: AuthContainerProps) => {
   const containerClasses = isOverlay 
     ? "flex flex-col justify-between items-center min-h-full bg-white text-[#333] pt-8 pb-4 relative" 
     : "flex flex-col justify-center items-center min-h-screen bg-gradient-to-br from-white to-gray-50 text-[#333] py-8";

@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from 'react';
 import { useScrollProgress } from '@/hooks/useScrollProgress';
 import { Home, ShoppingBag, Users, Image, MessageSquare, Store } from 'lucide-react';
@@ -9,6 +8,7 @@ import VoiceSearchOverlay from './header/VoiceSearchOverlay';
 import HeaderLocation from './header/HeaderLocation';
 import NotificationBadge from './header/NotificationBadge';
 import HeaderLogoToggle from './header/HeaderLogoToggle';
+import { useAuthOverlay } from '@/context/AuthOverlayContext';
 
 interface AliExpressHeaderProps {
   activeTabId?: string;

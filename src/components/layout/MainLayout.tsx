@@ -6,6 +6,7 @@ import IndexBottomNav from "@/components/layout/IndexBottomNav";
 import { Outlet, useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import AliExpressHeader from "@/components/home/AliExpressHeader";
+import { useAuthOverlay } from "@/context/AuthOverlayContext";
 
 export default function MainLayout() {
   const isMobile = useIsMobile();
@@ -15,11 +16,13 @@ export default function MainLayout() {
                      location.pathname === "/posts" || location.pathname === "/shops" ||
                      location.pathname === "/trending" || location.pathname === "/videos";
   const isReelsPage = location.pathname === "/reels";
-  const isAuthPage = location.pathname === "/auth";
   const { toast } = useToast();
   const [isFavorite, setIsFavorite] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  
+  // Get auth overlay context
+  const { openAuthOverlay } = useAuthOverlay();
 
   const getActiveTabFromRoute = () => {
     if (location.pathname === "/" || location.pathname === "/for-you") return "recommendations";
@@ -74,6 +77,17 @@ export default function MainLayout() {
     }
   `;
 
+  // Redirect auth-related URLs to use the overlay instead
+  React.useEffect(() => {
+    if (location.pathname === "/auth") {
+      openAuthOverlay("signin");
+      window.history.replaceState({}, "", "/for-you");
+    } else if (location.pathname === "/signup") {
+      openAuthOverlay("signup");
+      window.history.replaceState({}, "", "/for-you");
+    }
+  }, [location.pathname, openAuthOverlay]);
+
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <style dangerouslySetInnerHTML={{ __html: headerHeightStyle }} />
@@ -83,23 +97,11 @@ export default function MainLayout() {
         <AliExpressHeader activeTabId={getActiveTabFromRoute()} />
       )}
 
-      {/* Removed the regular Header component completely */}
-
-      {isAuthPage ? (
-        <main className="flex-grow w-full">
-          <Outlet />
-        </main>
-      ) : isProductPage || isHomePage || isReelsPage ? (
-        <main className="flex-grow relative">
-          <Outlet />
-        </main>
-      ) : (
-        <main className="flex-grow pb-12">
-          <Outlet />
-        </main>
-      )}
+      <main className="flex-grow relative">
+        <Outlet />
+      </main>
       
-      {!isMobile && !isHomePage && !isReelsPage && !isAuthPage && <Footer />}
+      {!isMobile && !isHomePage && !isReelsPage && <Footer />}
 
       {/* Show bottom nav on mobile for home, reels and product pages */}
       {isMobile && (isHomePage || isProductPage || isReelsPage) && <IndexBottomNav />}
