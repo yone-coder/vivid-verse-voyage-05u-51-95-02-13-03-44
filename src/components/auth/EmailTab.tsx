@@ -99,6 +99,10 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   const [emailDomain, setEmailDomain] = useState<string | null>(null);
   const verificationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [hasInteracted, setHasInteracted] = useState(false);
+  // Add a check attempts counter to avoid giving up too early
+  const checkAttemptsRef = useRef<number>(0);
+  // Add a state to track if we're retrying authentication
+  const [isRetrying, setIsRetrying] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -128,6 +132,8 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     if (emailExists !== null) {
       setEmailExists(null);
       setErrorMessage(null);
+      // Reset check attempts when email changes
+      checkAttemptsRef.current = 0;
     }
 
     // Set hasInteracted to true if user has typed anything
@@ -161,12 +167,12 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
       if (verificationTimeoutRef.current) {
         clearTimeout(verificationTimeoutRef.current);
       }
-      
+
       verificationTimeoutRef.current = setTimeout(() => {
         checkEmailExists(email);
       }, 800);
     }
-    
+
     return () => {
       if (verificationTimeoutRef.current) {
         clearTimeout(verificationTimeoutRef.current);
@@ -177,14 +183,14 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   // Auto-blur the input field only after user stops typing (inactivity)
   useEffect(() => {
     let inactivityTimer: NodeJS.Timeout | null = null;
-    
+
     // Only setup the timer when conditions are met
     if (isValid && focused && email.toLowerCase().endsWith('.com') && email.includes('@') && email.length > 10) {
       // Set a timer to check for inactivity
       inactivityTimer = setTimeout(() => {
         // Check if user has been inactive since the timer started
         const timeElapsedSinceLastType = Date.now() - lastTypedAt;
-        
+
         // If it's been more than 1.5 seconds since the last keystroke, blur the input
         if (timeElapsedSinceLastType >= 1500) {
           if (inputRef.current && document.activeElement === inputRef.current) {
@@ -193,7 +199,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         }
       }, 1500);
     }
-    
+
     // Clean up the timer
     return () => {
       if (inactivityTimer) {
@@ -225,38 +231,86 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     };
   }, [email, focused]);
 
+  // Improved email verification function with retry logic and better error handling
   const checkEmailExists = async (emailToCheck: string): Promise<boolean> => {
     if (!isValid || !emailToCheck) return false;
+    
     setVerifying(true);
     setErrorMessage(null);
+    
     try {
-      // First try to check if the user exists in auth
-      const { error } = await supabase.auth.signInWithOtp({
-        email: emailToCheck,
-        options: { shouldCreateUser: false },
-      });
-      
-      if (!error) {
-        setEmailExists(true);
-        setVerifying(false);
-        return true;
-      }
-
-      // Then check if the email exists in profiles table
-      const { data: profileData } = await supabase  
+      // First check the profiles table
+      const { data: profileData, error: profileError } = await supabase  
         .from('profiles')  
         .select('id')  
         .eq('email', emailToCheck)  
-        .maybeSingle();  
-
-      const exists = !!profileData;  
-      setEmailExists(exists);  
-      if (!exists) {
-        // The user doesn't exist in the database
-        setErrorMessage(null); // Don't show error when not focused
+        .maybeSingle();
+        
+      // If profile exists, we can confirm the email exists
+      if (profileData) {
+        setEmailExists(true);
+        setVerifying(false);
+        checkAttemptsRef.current = 0;
+        return true;
       }
-      setVerifying(false);  
-      return exists;  
+      
+      // If there was a database error, try the auth method
+      if (profileError) {
+        console.warn("Error checking profiles table:", profileError);
+      }
+      
+      // Try to check if the user exists in auth
+      try {
+        const { error: authError } = await supabase.auth.signInWithOtp({
+          email: emailToCheck,
+          options: { shouldCreateUser: false },
+        });
+
+        // No error means the email exists
+        if (!authError) {
+          setEmailExists(true);
+          setVerifying(false);
+          checkAttemptsRef.current = 0;
+          return true;
+        }
+        
+        // If the error is "User not found", we can confirm the email doesn't exist
+        if (authError.message && (
+            authError.message.includes("User not found") || 
+            authError.message.includes("Invalid login credentials")
+        )) {
+          setEmailExists(false);
+          setVerifying(false);
+          checkAttemptsRef.current = 0;
+          return false;
+        }
+        
+        // For other errors, we might need to retry or fallback
+        console.warn("Auth check error:", authError);
+        
+        // Implement retry logic for potentially transient errors
+        if (checkAttemptsRef.current < 2) {
+          checkAttemptsRef.current++;
+          setIsRetrying(true);
+          
+          // Wait and retry
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          setIsRetrying(false);
+          return checkEmailExists(emailToCheck);
+        }
+        
+        // After retries, make a best guess based on available information
+        // Default to considering it a new user if we can't determine for sure
+        setEmailExists(false);
+        setVerifying(false);
+        return false;
+      } catch (authException) {
+        console.error("Exception during auth check:", authException);
+        // Handle unexpected exceptions - default to allowing sign-in attempt
+        setEmailExists(false);
+        setVerifying(false);
+        return false;
+      }
     } catch (err) {  
       console.error("Error checking email:", err);  
       setErrorMessage("Failed to verify email");  
@@ -268,7 +322,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     // Update the last typed timestamp on any key press
     setLastTypedAt(Date.now());
-    
+
     if (!showSuggestions || suggestions.length === 0) return;
     if (e.key === 'ArrowDown') {
       e.preventDefault();
@@ -291,7 +345,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     setFocused(true);
     setSubmitted(false);
     setErrorMessage(null);
-    
+
     // Reset validation timer when focusing
     setValidationTimer(false);
 
@@ -338,11 +392,21 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
+    
     if (isValid) {
       try {
+        // Force a fresh check of email status
+        setEmailExists(null);
+        checkAttemptsRef.current = 0;
         const exists = await checkEmailExists(email);
-        if (onSubmit) onSubmit(e);
-      } catch {
+        
+        if (onSubmit) {
+          // Proceed with form submission regardless of email existence status
+          // This allows the parent component to handle new or existing users appropriately
+          onSubmit(e);
+        }
+      } catch (error) {
+        console.error("Submit error:", error);
         toast.error("Failed to verify email");
       }
     }
@@ -359,89 +423,93 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     if (!hasInteracted) {
       return "Please enter your email to create your account.";
     }
-    
+
     if (verifying) {
-      return "Verifying your email address...";
+      return isRetrying 
+        ? "Retrying email verification..." 
+        : "Verifying your email address...";
     }
-    
+
     if (checking) {
       return "Checking your email...";
     }
-    
+
     if (emailExists === true) {
       return "Welcome back! Please continue to your account.";
     }
-    
+
     if (emailExists === false) {
       return "No account found. Let's create one for you.";
     }
-    
+
     if (validationMessage) {
       return "Please enter a valid email address.";
     }
-    
+
     if (isValid && email.length > 0) {
       return "Great! You can create your account now.";
     }
-    
+
     if (email.length > 0) {
       return "Please complete your email address.";
     }
-    
+
     return "Please enter your email to create your account.";
   };
-  
+
   // Generate dynamic subheader text based on the component state
   const getDynamicSubheaderText = () => {
     if (verifying) {
-      return "This will only take a moment.";
+      return isRetrying 
+        ? "We're trying once more to verify your account." 
+        : "This will only take a moment.";
     }
-    
+
     if (emailExists === true) {
       return "Use the button below to sign in.";
     }
-    
+
     if (emailExists === false) {
       return "We'll set up a new account with this email.";
     }
-    
+
     if (validationMessage) {
       return "The email address format appears to be incorrect.";
     }
-    
+
     if (isValid && emailExists === null && email.length > 0) {
       return "Wait for email verification to continue.";
     }
-    
+
     if (isValid && email.length > 0) {
       return "Click continue when you're ready.";
     }
-    
+
     if (typoSuggestion) {
       return "Did you mean to type something else?";
     }
-    
+
     return "We'll use this to set up your account.";
   };
 
   // Render function for the right icon based on all states
   const renderRightIcon = () => {
-    // If checking or verifying, show spinner
-    if (checking || verifying) {
+    // If checking, verifying or retrying, show spinner
+    if (checking || verifying || isRetrying) {
       return <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />;
     }
-    
+
     // If valid email with no verification result yet, show spinner when not focused
     if (isValid && emailExists === null && !focused) {
       return <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />;
     }
-    
+
     // Don't show loading spinner when actively typing
     const timeElapsedSinceLastType = Date.now() - lastTypedAt;
     if (timeElapsedSinceLastType < 1000 && focused) {
       return null;
     }
-    
+
     // Case: Email exists in database, show green check in circle when not focused
     if (isValid && emailExists === true && !focused) {
       return (
@@ -450,7 +518,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         </div>
       );
     }
-    
+
     // Case: Email doesn't exist, show red X in circle when not focused
     if (isValid && emailExists === false && !focused) {
       return (
@@ -459,12 +527,12 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         </div>
       );
     }
-    
+
     // Case: Valid email when focused
     if (isValid && focused) {
       return <Check className="h-4 w-4 text-green-500 animate-fadeIn" />;
     }
-    
+
     // Clear button when input has content and is focused
     if (email.length > 0 && focused) {
       return (
@@ -477,7 +545,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         </button>
       );
     }
-    
+
     return null;
   };
 
@@ -607,7 +675,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         : 'bg-muted text-muted-foreground cursor-not-allowed opacity-70'  
     }`}  
   >  
-    {verifying ? "Verifying..." : 
+    {verifying ? (isRetrying ? "Retrying..." : "Verifying...") : 
      checking ? "Checking..." : 
      emailExists === false ? "Create Account" : 
      emailExists === true ? "Sign In" : 
