@@ -360,10 +360,10 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
 
 
       {/* Email Input with icons */}
-      <div className="relative w-full max-w-sm">
+     <div className="relative w-full max-w-sm">
   {/* Mail Icon */}
   <div
-    className={`absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center h-5 w-5 transition-all duration-200 ${
+    className={`absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center h-5 w-5 transition-colors duration-200 ${
       focused ? 'text-primary' : 'text-muted-foreground'
     }`}
   >
@@ -384,7 +384,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     onBlur={handleBlur}
     onKeyDown={handleKeyDown}
     placeholder="john.doe@example.com"
-    className={`w-full pl-10 pr-10 h-11 text-sm bg-background transition-all duration-200 rounded-md shadow-sm ${
+    className={`w-full pl-10 pr-10 h-11 text-sm bg-background transition-all duration-300 ease-in-out rounded-md shadow-sm focus:shadow-md ${
       validationMessage || errorMessage
         ? 'border-destructive focus:border-destructive focus:ring-destructive/20 bg-destructive/5'
         : isValid
@@ -409,8 +409,8 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
 
     {isValid && !checking && !verifying && !errorMessage && (
       <Check
-        className={`h-4 w-4 text-green-500 ${
-          showValidationSuccess ? 'animate-pulse-success' : 'animate-fadeIn'
+        className={`h-4 w-4 text-green-500 transition-transform duration-300 ease-out ${
+          showValidationSuccess ? 'animate-bounce' : 'animate-fadeIn'
         }`}
         aria-label="Valid email"
       />
@@ -421,7 +421,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         type="button"
         onClick={clearInput}
         tabIndex={0}
-        className="ml-1 text-muted-foreground hover:text-foreground hover:bg-muted rounded-full p-1 transition-colors"
+        className="ml-1 text-muted-foreground hover:text-foreground hover:bg-muted rounded-full p-1 transition-all duration-200 transform hover:scale-110"
         aria-label="Clear input"
       >
         <X className="h-3.5 w-3.5" />
