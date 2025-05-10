@@ -103,7 +103,6 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   const checkAttemptsRef = useRef<number>(0);
   const [isRetrying, setIsRetrying] = useState(false);
   const { checkEmailExists, isCheckingEmail, emailVerified } = useEmailCheck();
-  const [manualOverrideMode, setManualOverrideMode] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -135,11 +134,6 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
       setErrorMessage(null);
       // Reset check attempts when email changes
       checkAttemptsRef.current = 0;
-    }
-
-    // Reset manual override mode when email changes
-    if (manualOverrideMode) {
-      setManualOverrideMode(false);
     }
 
     // Set hasInteracted to true if user has typed anything
@@ -329,21 +323,14 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     }
   }, [typoSuggestion, setEmail]);
 
-  const handleToggleEmailStatus = useCallback(() => {
-    setManualOverrideMode(true);
-    setEmailExists(prev => !prev);
-    toast.success(`You've been changed to ${!emailExists ? 'existing' : 'new'} user mode`);
-  }, [emailExists]);
-
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
     
     if (isValid) {
       try {
-        // If manual override is active or we already know the email status,
-        // skip verification and proceed with form submission
-        if (!manualOverrideMode && emailExists === null) {
+        // If we already know the email status, skip verification
+        if (emailExists === null) {
           await verifyEmailExists(email);
         }
         
@@ -417,15 +404,11 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     }
 
     if (emailExists === true) {
-      return manualOverrideMode 
-        ? "You've manually set your status to existing user."
-        : "Use the button below to sign in.";
+      return "Use the button below to sign in.";
     }
 
     if (emailExists === false) {
-      return manualOverrideMode 
-        ? "You've manually set your status to new user."
-        : "We'll set up a new account with this email.";
+      return "We'll set up a new account with this email.";
     }
 
     if (validationMessage) {
@@ -506,24 +489,6 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
 
   const headerText = getDynamicHeaderText();
   const subheaderText = getDynamicSubheaderText();
-
-  // Add a manual override option if verification might be wrong
-  const renderManualOverrideOption = () => {
-    if (emailExists !== null && !verifying && !checking && !isCheckingEmail) {
-      return (
-        <div className="w-full max-w-sm mt-2">
-          <button
-            type="button"
-            onClick={handleToggleEmailStatus}
-            className="text-xs text-primary-500 hover:text-primary-600 transition-all duration-200"
-          >
-            {emailExists ? "Actually, I'm a new user" : "Actually, I already have an account"}
-          </button>
-        </div>
-      );
-    }
-    return null;
-  };
 
   return (
     <div className="flex flex-col items-center w-full">
@@ -634,18 +599,16 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
               premiumDomains={premiumDomains}  
             />  
           </div>  
-        )}
-
-        {renderManualOverrideOption()}  
+        )}  
       </div>  
 
      {showSubmitButton && (  
   <button  
     type="submit"  
     onClick={handleEmailSubmit}  
-    disabled={!isValid || (checking && !manualOverrideMode) || (verifying && !manualOverrideMode) || (emailExists === null && !manualOverrideMode)}  
+    disabled={!isValid || (checking && emailExists === null) || (verifying && emailExists === null) || (emailExists === null)}  
     className={`w-full max-w-sm mt-4 py-2.5 rounded-lg font-medium transition-all duration-300 ${  
-      (isValid && !checking && !verifying && (emailExists !== null || manualOverrideMode))
+      (isValid && !checking && !verifying && emailExists !== null)
         ? 'bg-primary text-primary-foreground hover:bg-primary/90' 
         : 'bg-muted text-muted-foreground cursor-not-allowed opacity-70'  
     }`}  

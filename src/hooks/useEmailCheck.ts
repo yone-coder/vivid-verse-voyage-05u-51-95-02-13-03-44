@@ -12,6 +12,10 @@ export const useEmailCheck = () => {
 
   // Added explicit Promise<boolean> return type to fix type instantiation issue
   const checkEmailExists = useCallback(async (email: string): Promise<boolean> => {
+    if (!email || !email.includes('@') || !email.includes('.')) {
+      return false;
+    }
+    
     setIsCheckingEmail(true);
     setEmailVerified(null);
     
@@ -76,7 +80,7 @@ export const useEmailCheck = () => {
       try {
         const { error } = await supabase.auth.signInWithPassword({
           email,
-          password: "check_if_email_exists_" + Math.random().toString(36)
+          password: "check_if_email_exists_" + Math.random().toString(36).substr(2, 9)
         });
         
         if (error?.message) {
