@@ -1,123 +1,105 @@
 
-interface PremiumDomain {
-  name: string;
-  domain: string;
-  url: string;
-}
-
-export const premiumDomains: PremiumDomain[] = [
-  { name: 'Gmail', domain: 'gmail.com', url: 'https://gmail.com' },
-  { name: 'Outlook', domain: 'outlook.com', url: 'https://outlook.com' },
-  { name: 'Yahoo', domain: 'yahoo.com', url: 'https://mail.yahoo.com' },
-  { name: 'iCloud', domain: 'icloud.com', url: 'https://www.icloud.com' },
-  { name: 'Proton Mail', domain: 'proton.me', url: 'https://proton.me' },
-  { name: 'Zoho', domain: 'zoho.com', url: 'https://www.zoho.com/mail/' },
-];
-
-// Common email domains to suggest
-const commonDomains = [
+// List of common email domains
+export const premiumDomains = [
   'gmail.com',
-  'yahoo.com',
   'outlook.com',
+  'yahoo.com',
   'hotmail.com',
-  'icloud.com',
   'aol.com',
+  'icloud.com',
   'proton.me',
   'protonmail.com',
-  'me.com',
   'mail.com',
+  'zoho.com'
 ];
 
-// Normalize email input by trimming and converting to lowercase
+// Helper to clean up email inputs
 export const normalizeEmail = (email: string): string => {
   return email.trim().toLowerCase();
 };
 
-// Generate email suggestions based on input
+// Generate email suggestions based on partial input
 export const generateSuggestions = (email: string): string[] => {
   if (!email || email.length < 2) return [];
-
-  const normalizedEmail = normalizeEmail(email);
   
-  // If email already contains @ and a domain part
-  if (normalizedEmail.includes('@')) {
-    const [username, domainPart] = normalizedEmail.split('@');
+  // If email already has an @ symbol
+  if (email.includes('@')) {
+    const [username, domainPart] = email.split('@');
     
-    if (!domainPart) {
-      // If there's just a @ with no domain yet, suggest all common domains
-      return commonDomains.map(domain => `${username}@${domain}`);
-    } else if (domainPart.length > 0) {
-      // If there's a partial domain, filter matching domains
-      return commonDomains
-        .filter(domain => domain.startsWith(domainPart))
-        .map(domain => `${username}@${domain}`);
+    // If domain part is empty or very short, show all suggestions
+    if (!domainPart || domainPart.length === 0) {
+      return premiumDomains.map(domain => `${username}@${domain}`);
     }
+    
+    // Filter domains that start with the entered domain part
+    return premiumDomains
+      .filter(domain => domain.startsWith(domainPart) && domain !== domainPart)
+      .map(domain => `${username}@${domain}`);
   }
   
-  // No @ yet, don't suggest
-  return [];
+  // If no @ symbol, suggest adding common domains
+  return premiumDomains.slice(0, 3).map(domain => `${email}@${domain}`);
 };
 
-// Simple email validation with typo detection
+// Validate email and provide specific error message
 export const getValidationMessage = (
-  email: string, 
+  email: string,
   setTypoSuggestion?: (suggestion: string | null) => void
 ): string | null => {
-  // Empty validation
-  if (!email) return null;
+  if (!email) return "Email is required";
   
-  // Basic format validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    // Check for common typos
-    if (email.includes('@')) {
-      const [username, domain] = email.split('@');
-      
-      // Missing or incorrect domain end
-      if (domain && !domain.includes('.')) {
-        // Check if it's a common domain without the .com/.net/etc
-        const commonDomainBase = commonDomains.find(d => {
-          const parts = d.split('.');
-          return domain === parts[0];
-        });
-        
-        if (commonDomainBase) {
-          const suggestion = `${username}@${commonDomainBase}`;
-          if (setTypoSuggestion) setTypoSuggestion(suggestion);
-          return "Please include a valid domain (like .com, .net)";
-        }
-      }
-      
-      // Check for common typos in domain names
-      const commonTypos: Record<string, string> = {
-        'gmial': 'gmail',
-        'gmaii': 'gmail',
-        'gmai': 'gmail',
-        'yahooo': 'yahoo',
-        'yaho': 'yahoo',
-        'hotnail': 'hotmail',
-        'hotmal': 'hotmail',
-        'outllok': 'outlook',
-        'outlok': 'outlook',
-      };
-      
-      if (domain) {
-        const domainParts = domain.split('.');
-        const domainBase = domainParts[0];
-        
-        if (commonTypos[domainBase]) {
-          const correctedDomain = domain.replace(domainBase, commonTypos[domainBase]);
-          const suggestion = `${username}@${correctedDomain}`;
-          if (setTypoSuggestion) setTypoSuggestion(suggestion);
-          return "There may be a typo in your email domain";
-        }
-      }
-      
-      return "Please enter a valid email address";
-    }
-    
-    return "Email should be in the format name@example.com";
+  // Basic format check
+  const basicEmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!basicEmailRegex.test(email)) {
+    return "Please enter a valid email address";
   }
   
+  // More specific validations
+  const [localPart, domain] = email.split('@');
+  
+  // Check local part
+  if (localPart.length > 64) {
+    return "The part before @ is too long";
+  }
+  
+  // Check domain
+  if (domain.length > 255) {
+    return "Domain name is too long";
+  }
+  
+  if (!/^[a-z0-9.-]+\.[a-z]{2,}$/i.test(domain)) {
+    return "Please check the domain part of your email";
+  }
+  
+  // Common typos in domain
+  const typoPatterns: [RegExp, string][] = [
+    [/gmail\.co$/, 'gmail.com'],
+    [/gamil\.com$/, 'gmail.com'],
+    [/gmial\.com$/, 'gmail.com'],
+    [/gmal\.com$/, 'gmail.com'],
+    [/hotmail\.co$/, 'hotmail.com'],
+    [/homail\.com$/, 'hotmail.com'],
+    [/outlook\.co$/, 'outlook.com'],
+    [/yahoo\.co$/, 'yahoo.com'],
+    [/yaho\.com$/, 'yahoo.com'],
+    [/protonmail\.co$/, 'protonmail.com'],
+    [/icloud\.co$/, 'icloud.com']
+  ];
+  
+  for (const [pattern, correction] of typoPatterns) {
+    if (pattern.test(domain)) {
+      const suggestedDomain = domain.replace(pattern, correction);
+      const suggestion = `${localPart}@${suggestedDomain}`;
+      
+      // Set typo suggestion if callback provided
+      if (setTypoSuggestion) {
+        setTypoSuggestion(suggestion);
+      }
+      
+      return "Possible typo in email domain";
+    }
+  }
+  
+  // Email looks good
   return null;
 };

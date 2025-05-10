@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { KeyRound, Fingerprint, AlertTriangle, Lock, Loader2 } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { toast } from 'sonner';
+
+import React from 'react';
+import { Key } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface PasskeyTabProps {
   onSubmit?: (e: React.FormEvent) => void;
@@ -9,104 +9,44 @@ interface PasskeyTabProps {
 }
 
 const PasskeyTab = ({ onSubmit, showSubmitButton = false }: PasskeyTabProps) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  // This is a simplified passkey component, as actual WebAuthn implementation
+  // would require more complex setup with credential management API
   
-  // Clean up error state when component unmounts or tab changes
-  useEffect(() => {
-    return () => {
-      setErrorMessage(null);
-    };
-  }, []);
-  
-  const handlePasskeyAuth = async () => {
-    setIsLoading(true);
-    setErrorMessage(null);
-    
-    try {
-      // In a real implementation, this would use WebAuthn API
-      // For demonstration, we'll simulate the process
-      toast.info("Passkey authentication isn't fully implemented yet.");
-      
-      setTimeout(() => {
-        setIsLoading(false);
-        setErrorMessage("Passkeys are not fully supported yet");
-      }, 1500);
-      
-      // If implemented, would look something like this:
-      // const credential = await navigator.credentials.get({
-      //   publicKey: publicKeyCredentialRequestOptions,
-      // });
-      // Then verify with your backend
-      
-    } catch (error) {
-      console.error("Passkey error:", error);
-      setErrorMessage("Failed to authenticate with passkey");
-      setIsLoading(false);
+  const handlePasskeyLogin = () => {
+    // In a real implementation, this would interact with the WebAuthn API
+    if (onSubmit) {
+      const event = new Event('submit', { cancelable: true }) as unknown as React.FormEvent;
+      onSubmit(event);
     }
   };
 
   return (
-    <div className="w-full max-w-md mx-auto space-y-4">
-      {/* Passkey section with better organized instructions */}
-      <div className="text-center mb-4">
+    <div className="w-full max-w-md mx-auto flex flex-col items-center justify-center space-y-6 py-4">
+      <div className="text-center">
         <h2 className="text-base font-medium text-foreground mb-1">Passkey Authentication</h2>
         <p className="text-sm text-muted-foreground">
-          Sign in securely without a password
+          Sign in with your device's biometrics or security key
         </p>
       </div>
 
-      {/* Passkey UI */}
-      <div className="flex flex-col items-center justify-center px-6 py-8 bg-background border border-[#eaeaea] rounded-xl">
-        <motion.div
-          className="flex items-center justify-center bg-primary/10 w-20 h-20 rounded-full mb-5"
-          initial={{ scale: 0.8 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 0.3 }}
-        >
-          <Fingerprint className="h-9 w-9 text-primary" />
-        </motion.div>
-        
-        <h3 className="text-lg font-medium mb-2">Use Passkey</h3>
-        <p className="text-sm text-center text-muted-foreground mb-4">
-          Authenticate quickly and securely using your device's biometric sensor or PIN
-        </p>
-
-        <button
-          onClick={handlePasskeyAuth}
-          disabled={isLoading}
-          className={`flex items-center justify-center gap-2 mt-2 w-full max-w-[220px] py-3 px-5 rounded-lg font-medium text-sm transition-all duration-200 ${
-            isLoading
-              ? 'bg-muted text-muted-foreground cursor-not-allowed'
-              : 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm hover:shadow'
-          }`}
-        >
-          {isLoading ? (
-            <>
-              <Loader2 className="h-4 w-4 animate-spin" />
-              <span>Authenticating...</span>
-            </>
-          ) : (
-            <>
-              <KeyRound className="h-4 w-4" />
-              <span>Use Passkey</span>
-            </>
-          )}
-        </button>
-      </div>
-
-      {/* Error Message - Specific to passkeys */}
-      {errorMessage && (
-        <div className="flex items-center justify-center gap-1.5 mt-2 p-2 rounded-md bg-destructive/10 text-destructive text-sm">
-          <AlertTriangle className="h-4 w-4" />
-          <span className="font-medium">{errorMessage}</span>
+      <div className="w-full max-w-sm flex flex-col items-center pt-4">
+        <div className="rounded-full bg-primary/10 p-6 mb-6">
+          <Key className="h-12 w-12 text-primary" />
         </div>
-      )}
 
-      {/* Browser support notice */}
-      <div className="flex items-center justify-center gap-1.5 mt-4 p-3 bg-muted/40 rounded-md text-sm text-muted-foreground">
-        <Lock className="h-3.5 w-3.5" />
-        <span>Passkey support varies by browser and device</span>
+        <p className="text-sm text-center text-muted-foreground mb-6 max-w-xs">
+          Passkeys offer a more secure alternative to passwords by using your device's biometrics or security key.
+        </p>
+
+        <Button 
+          onClick={handlePasskeyLogin}
+          className="w-full flex items-center justify-center gap-2 bg-primary"
+          size="lg"
+          type={showSubmitButton ? "submit" : "button"}
+        >
+          <Key className="h-4 w-4 mr-2" />
+          Continue with Passkey
+        </Button>
       </div>
     </div>
   );

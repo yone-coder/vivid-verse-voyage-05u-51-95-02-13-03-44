@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { Input } from "@/components/ui/input";
 import { Mail, Check, X, Loader2, AlertTriangle } from 'lucide-react';
@@ -176,9 +175,6 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
       onSubmit(e);
     }
   };
-
-  // Use this handler for the submit button
-  const handleSubmit = showSubmitButton ? handleEmailSubmit : undefined;
 
   return (
     <div className="w-full max-w-md mx-auto flex flex-col items-center justify-center space-y-2">

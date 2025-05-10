@@ -1,58 +1,59 @@
+
 import React from 'react';
-import { ExternalLink } from 'lucide-react';
+import { Check } from 'lucide-react';
 
 interface EmailSuggestionsProps {
   suggestions: string[];
   hoveredIndex: number;
   setHoveredIndex: (index: number) => void;
   selectSuggestion: (suggestion: string) => void;
-  premiumDomains: { name: string; domain: string; url: string }[];
+  premiumDomains: string[];
 }
 
-const EmailSuggestions = ({ 
-  suggestions, 
-  hoveredIndex, 
-  setHoveredIndex, 
+const EmailSuggestions = ({
+  suggestions,
+  hoveredIndex,
+  setHoveredIndex,
   selectSuggestion,
   premiumDomains
 }: EmailSuggestionsProps) => {
+  if (suggestions.length === 0) return null;
+  
   return (
-    <div className="flex flex-wrap gap-2 mt-2 animate-fadeIn">
-      {suggestions.map((suggestion, index) => {
-        const parts = suggestion.split('@');
-        if (parts.length !== 2) return null;
-        
-        const domain = parts[1];
-        const provider = premiumDomains.find(pd => pd.domain === domain);
-        
-        return (
-          <button
-            key={suggestion}
-            type="button"
-            onClick={() => selectSuggestion(suggestion)}
-            onMouseEnter={() => setHoveredIndex(index)}
-            className={`flex items-center text-xs px-3 py-1.5 rounded-full transition-all duration-150 ${
-              hoveredIndex === index
-                ? 'bg-primary/10 text-primary shadow-sm'
-                : 'bg-muted text-muted-foreground hover:bg-primary/5 hover:text-primary/90'
-            }`}
-          >
-            @{domain}
-            {provider && (
-              <a 
-                href={provider.url} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                className="ml-1.5 text-muted-foreground hover:text-foreground"
-                title={`Visit ${provider.name}`}
-              >
-                <ExternalLink className="h-3 w-3" />
-              </a>
-            )}
-          </button>
-        );
-      })}
+    <div className="mt-1 border border-input bg-popover shadow-md rounded-md overflow-hidden z-50">
+      <ul className="max-h-56 overflow-auto p-1">
+        {suggestions.map((suggestion, index) => {
+          const [username, domain] = suggestion.split('@');
+          const isPremium = premiumDomains.includes(domain);
+          
+          return (
+            <li 
+              key={suggestion} 
+              className={`
+                px-3 py-2 text-sm rounded-sm cursor-pointer flex items-center justify-between
+                ${hoveredIndex === index ? 'bg-muted' : ''}
+                ${hoveredIndex === index ? 'text-emphasis' : 'text-popover-foreground'}
+              `}
+              onMouseEnter={() => setHoveredIndex(index)}
+              onMouseLeave={() => setHoveredIndex(-1)}
+              onClick={() => selectSuggestion(suggestion)}
+            >
+              <div className="flex items-center">
+                <span className="font-medium">{username}</span>
+                <span className="text-muted-foreground">@{domain}</span>
+                {isPremium && (
+                  <span className="ml-2 text-xs bg-primary/20 text-primary px-1.5 rounded-full">
+                    Popular
+                  </span>
+                )}
+              </div>
+              {hoveredIndex === index && (
+                <Check className="h-4 w-4 text-primary" />
+              )}
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 };
