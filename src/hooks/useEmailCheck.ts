@@ -8,10 +8,12 @@ import { supabase } from '@/integrations/supabase/client';
  */
 export const useEmailCheck = () => {
   const [isCheckingEmail, setIsCheckingEmail] = useState(false);
+  const [emailVerified, setEmailVerified] = useState<boolean | null>(null);
 
   // Added explicit Promise<boolean> return type to fix type instantiation issue
   const checkEmailExists = async (email: string): Promise<boolean> => {
     setIsCheckingEmail(true);
+    setEmailVerified(null);
     
     try {
       console.log("Checking if email exists:", email);
@@ -26,6 +28,7 @@ export const useEmailCheck = () => {
         
         if (!error && data) {
           console.log("Email found in profiles table:", email);
+          setEmailVerified(true);
           return true;
         }
       } catch (err) {
@@ -41,6 +44,7 @@ export const useEmailCheck = () => {
         
         if (!error) {
           console.log("Email exists (OTP method):", email);
+          setEmailVerified(true);
           return true;
         }
 
@@ -48,6 +52,7 @@ export const useEmailCheck = () => {
           // Look for specific error messages that indicate the user exists
           if (error.message.includes("Email not confirmed")) {
             console.log("Email exists but not confirmed:", email);
+            setEmailVerified(true);
             return true;
           }
           
@@ -55,6 +60,7 @@ export const useEmailCheck = () => {
           if (error.message.includes("User not found") || 
               error.message.includes("Invalid login credentials")) {
             console.log("User not found in auth system:", email);
+            setEmailVerified(false);
             return false;
           }
         }
@@ -73,17 +79,20 @@ export const useEmailCheck = () => {
           // "Invalid login credentials" means the user exists but password is wrong
           if (error.message.includes("Invalid login credentials")) {
             console.log("Email exists (password method):", email);
+            setEmailVerified(true);
             return true;
           } 
           
           // "Email not confirmed" means user exists but hasn't confirmed email
           if (error.message.includes("Email not confirmed")) {
             console.log("Email exists but not confirmed:", email);
+            setEmailVerified(true);
             return true;
           }
           
           // For other error messages, assume user doesn't exist
           console.log("Other auth error for email:", email, error.message);
+          setEmailVerified(false);
           return false;
         }
       } catch (err) {
@@ -93,9 +102,11 @@ export const useEmailCheck = () => {
       // If we've reached this point with no conclusive result,
       // conservatively assume the user doesn't exist
       console.log("Email verification inconclusive, assuming new user:", email);
+      setEmailVerified(false);
       return false;
     } catch (error) {
       console.error("Error checking email:", error);
+      setEmailVerified(false);
       return false;
     } finally {
       setIsCheckingEmail(false);
@@ -104,6 +115,7 @@ export const useEmailCheck = () => {
 
   return { 
     checkEmailExists, 
-    isCheckingEmail 
+    isCheckingEmail,
+    emailVerified
   };
 };

@@ -49,6 +49,19 @@ const SubmitButton = ({
     }
   }, [showSuccess, isLoading]);
 
+  // Determine the button state labels and styles
+  const getButtonLabel = () => {
+    if (isLoading) {
+      return loadingText;
+    } else if (showSuccessState) {
+      return successText;
+    } else if (disabled) {
+      return "Waiting for verification...";
+    } else {
+      return label;
+    }
+  };
+
   return (
     <Button
       type="submit"
@@ -79,7 +92,7 @@ const SubmitButton = ({
         group ${isPressed ? 'transform scale-[0.98]' : ''}
         ${disabled || isLoading ? 'opacity-80 cursor-not-allowed' : 'cursor-pointer'}
       `}
-      aria-label={isLoading ? loadingText : showSuccessState ? successText : label}
+      aria-label={getButtonLabel()}
     >
       {isLoading && (
         <div className="flex items-center justify-center gap-2">
@@ -103,15 +116,15 @@ const SubmitButton = ({
       
       {!isLoading && !showSuccessState && (
         <span className="flex items-center gap-2 relative z-10">
-          {label}
+          {disabled ? "Waiting for verification..." : label}
           <ArrowRight className={`h-4 w-4 transition-transform duration-300 
-            ${isHovered ? 'translate-x-1' : ''}`} 
+            ${isHovered && !disabled ? 'translate-x-1' : ''}`} 
           />
         </span>
       )}
       
-      {/* Ripple effect on button - visible when not loading */}
-      {!isLoading && !showSuccessState && (
+      {/* Ripple effect on button - visible when not loading or disabled */}
+      {!isLoading && !showSuccessState && !disabled && (
         <span className="absolute inset-0 overflow-hidden rounded-lg">
           <span className={`absolute inset-0 -translate-x-full ${
             isHovered ? 'animate-ripple' : ''
@@ -120,7 +133,7 @@ const SubmitButton = ({
       )}
 
       {/* Pulsing glow effect on hover */}
-      {isHovered && !isLoading && !showSuccessState && (
+      {isHovered && !isLoading && !showSuccessState && !disabled && (
         <span className="absolute inset-0 -z-10 animate-glow rounded-lg"></span>
       )}
       

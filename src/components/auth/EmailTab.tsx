@@ -102,7 +102,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   const [hasInteracted, setHasInteracted] = useState(false);
   const checkAttemptsRef = useRef<number>(0);
   const [isRetrying, setIsRetrying] = useState(false);
-  const { checkEmailExists, isCheckingEmail } = useEmailCheck();
+  const { checkEmailExists, isCheckingEmail, emailVerified } = useEmailCheck();
   const [manualOverrideMode, setManualOverrideMode] = useState(false);
 
   useEffect(() => {

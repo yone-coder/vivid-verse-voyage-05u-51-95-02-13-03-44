@@ -16,6 +16,8 @@ interface StepOneContentProps {
   toggleAuthMode: () => void;
   onSubmit: (e: React.FormEvent) => void;
   handleSocialLogin: (provider: string) => void;
+  isCheckingEmail?: boolean;
+  emailVerified?: boolean | null;
 }
 
 const StepOneContent: React.FC<StepOneContentProps> = ({
@@ -26,12 +28,29 @@ const StepOneContent: React.FC<StepOneContentProps> = ({
   setCountryCode,
   toggleAuthMode,
   onSubmit,
-  handleSocialLogin
+  handleSocialLogin,
+  isCheckingEmail = false,
+  emailVerified = null
 }) => {
   const { 
     activeTab, email, phone, countryCode, authMode, isLoading, 
     authSuccess, errorMessage
   } = formState;
+  
+  // Determine if the continue button should be disabled
+  const isContinueDisabled = () => {
+    if (activeTab === 'email') {
+      // For email tab: disable if we're checking email or if email verification is needed but not complete
+      return isCheckingEmail || (email.length > 0 && emailVerified === null);
+    } else if (activeTab === 'phone') {
+      // For phone tab: disable if phone is empty
+      return phone.trim().length === 0;
+    } else if (activeTab === 'passkey') {
+      // For passkey tab: enable the continue button (passkey logic is handled separately)
+      return false;
+    }
+    return false;
+  };
   
   return (
     <div className="w-full mb-4 space-y-3">
@@ -66,6 +85,7 @@ const StepOneContent: React.FC<StepOneContentProps> = ({
         loadingText={authMode === 'signin' ? "Verifying..." : "Checking..."}
         showSuccess={authSuccess}
         successText="Verified!"
+        disabled={isContinueDisabled()}
       />
 
       <div className="text-center mt-4 flex items-center justify-center space-x-2">

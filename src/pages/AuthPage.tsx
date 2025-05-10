@@ -39,7 +39,7 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
     handleGoBack
   } = useAuthForm();
   
-  const { checkEmailExists } = useEmailCheck();
+  const { checkEmailExists, isCheckingEmail, emailVerified } = useEmailCheck();
   const { user, signIn, signUp } = useAuth();
   const navigate = useNavigate();
 
@@ -177,6 +177,8 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
             toggleAuthMode={toggleAuthMode}
             onSubmit={handleStep1Submit}
             handleSocialLogin={handleSocialLogin}
+            isCheckingEmail={isCheckingEmail}
+            emailVerified={emailVerified}
           />
         ) : (
           <StepTwoContent
