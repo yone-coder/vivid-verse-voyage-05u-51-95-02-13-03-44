@@ -266,10 +266,10 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
           <div className="absolute left-3 top-1/2 -translate-y-1/2 z-10 pointer-events-none">
             {emailDomain ? (
               <img
-                src={domainLogos[emailDomain] || getFaviconUrl(emailDomain)}
-                alt="domain"
-                className="h-4 w-4 rounded-sm object-contain"
-              />
+  src={getFaviconUrl(emailDomain)}
+  alt="domain"
+  className="h-4 w-4 rounded-sm object-contain"
+/>
             ) : (
               <Mail className="h-4 w-4 text-muted-foreground" />
             )}
