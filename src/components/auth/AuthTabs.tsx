@@ -1,7 +1,6 @@
 
 import React, { useState, useCallback, useEffect } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import TabDivider from './TabDivider';
 import TabNavigation from './TabNavigation';
 import EmailTab from './EmailTab';
 import PhoneTab from './PhoneTab';
@@ -57,8 +56,6 @@ const AuthTabs = ({
 
   return (
     <div className="mb-4 flex flex-col items-center w-full max-w-md mx-auto">
-      <TabDivider />
-
       <Tabs defaultValue={activeTab} value={activeTab} onValueChange={handleTabChange} className="w-full">
         <TabNavigation 
           activeTab={activeTab} 

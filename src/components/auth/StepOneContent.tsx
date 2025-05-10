@@ -3,6 +3,7 @@ import React from 'react';
 import { AlertTriangle } from 'lucide-react';
 import AuthSocialButtons from '@/components/auth/AuthSocialButtons';
 import AuthTabs from '@/components/auth/AuthTabs';
+import TabDivider from '@/components/auth/TabDivider';
 import SubmitButton from '@/components/auth/SubmitButton';
 import { AuthFormState } from '@/hooks/useAuthForm';
 
@@ -35,6 +36,8 @@ const StepOneContent: React.FC<StepOneContentProps> = ({
   return (
     <div className="w-full mb-4 space-y-3">
       <AuthSocialButtons handleSocialLogin={handleSocialLogin} />
+      
+      <TabDivider text="or continue with" />
 
       <AuthTabs
         activeTab={activeTab}
