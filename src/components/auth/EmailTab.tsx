@@ -98,6 +98,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
   const [emailDomain, setEmailDomain] = useState<string | null>(null);
   const verificationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [hasInteracted, setHasInteracted] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -127,6 +128,11 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     if (emailExists !== null) {
       setEmailExists(null);
       setErrorMessage(null);
+    }
+
+    // Set hasInteracted to true if user has typed anything
+    if (email.length > 0) {
+      setHasInteracted(true);
     }
 
   }, [email]);
@@ -348,6 +354,72 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
 
   const handleSubmit = showSubmitButton ? handleEmailSubmit : undefined;
 
+  // Generate dynamic header text based on the component state
+  const getDynamicHeaderText = () => {
+    if (!hasInteracted) {
+      return "Please enter your email to create your account.";
+    }
+    
+    if (verifying) {
+      return "Verifying your email address...";
+    }
+    
+    if (checking) {
+      return "Checking your email...";
+    }
+    
+    if (emailExists === true) {
+      return "Welcome back! Please continue to your account.";
+    }
+    
+    if (emailExists === false) {
+      return "No account found. Let's create one for you.";
+    }
+    
+    if (validationMessage) {
+      return "Please enter a valid email address.";
+    }
+    
+    if (isValid && email.length > 0) {
+      return "Great! You can create your account now.";
+    }
+    
+    if (email.length > 0) {
+      return "Please complete your email address.";
+    }
+    
+    return "Please enter your email to create your account.";
+  };
+  
+  // Generate dynamic subheader text based on the component state
+  const getDynamicSubheaderText = () => {
+    if (verifying) {
+      return "This will only take a moment.";
+    }
+    
+    if (emailExists === true) {
+      return "Use the button below to sign in.";
+    }
+    
+    if (emailExists === false) {
+      return "We'll set up a new account with this email.";
+    }
+    
+    if (validationMessage) {
+      return "The email address format appears to be incorrect.";
+    }
+    
+    if (isValid && email.length > 0) {
+      return "Click continue when you're ready.";
+    }
+    
+    if (typoSuggestion) {
+      return "Did you mean to type something else?";
+    }
+    
+    return "We'll use this to set up your account.";
+  };
+
   // Render function for the right icon based on all states
   const renderRightIcon = () => {
     // If checking or verifying, show spinner
@@ -405,6 +477,9 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     return null;
   };
 
+  const headerText = getDynamicHeaderText();
+  const subheaderText = getDynamicSubheaderText();
+
   return (
     <div className="flex flex-col items-center w-full">
       <motion.header
@@ -417,8 +492,20 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
           Let's get started
         </motion.h2>
         <motion.p className="text-sm text-muted-foreground" variants={childVariants}>
-          Please enter your email to {emailExists === false ? "create your account" : "continue"}.
+          {headerText}
         </motion.p>
+        <AnimatePresence mode="wait">
+          <motion.p 
+            key={subheaderText}
+            className="text-xs text-muted-foreground mt-1 h-4"
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 5 }}
+            transition={{ duration: 0.2 }}
+          >
+            {subheaderText}
+          </motion.p>
+        </AnimatePresence>
       </motion.header>
 
       <div className="relative w-full max-w-sm">  
@@ -446,9 +533,9 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
             type="email"  
             value={email}  
             onChange={(e) => {
-            setEmail(normalizeEmail(e.target.value));
-            setLastTypedAt(Date.now());
-          }}  
+              setEmail(normalizeEmail(e.target.value));
+              setLastTypedAt(Date.now());
+            }}  
             onFocus={handleFocus}  
             onBlur={handleBlur}  
             onKeyDown={handleKeyDown}  
@@ -514,7 +601,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
             isValid ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'  
           }`}  
         >  
-          {verifying ? "Verifying..." : emailExists === false ? "Create Account" : "Continue"}  
+          {verifying ? "Verifying..." : emailExists === false ? "Create Account" : emailExists === true ? "Sign In" : "Continue"}  
         </button>  
       )}  
     </div>
