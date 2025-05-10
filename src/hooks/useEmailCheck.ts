@@ -29,6 +29,7 @@ export const useEmailCheck = () => {
         if (!error && data) {
           console.log("Email found in profiles table:", email);
           setEmailVerified(true);
+          setIsCheckingEmail(false);
           return true;
         }
       } catch (err) {
@@ -45,6 +46,7 @@ export const useEmailCheck = () => {
         if (!error) {
           console.log("Email exists (OTP method):", email);
           setEmailVerified(true);
+          setIsCheckingEmail(false);
           return true;
         }
 
@@ -53,6 +55,7 @@ export const useEmailCheck = () => {
           if (error.message.includes("Email not confirmed")) {
             console.log("Email exists but not confirmed:", email);
             setEmailVerified(true);
+            setIsCheckingEmail(false);
             return true;
           }
           
@@ -61,6 +64,7 @@ export const useEmailCheck = () => {
               error.message.includes("Invalid login credentials")) {
             console.log("User not found in auth system:", email);
             setEmailVerified(false);
+            setIsCheckingEmail(false);
             return false;
           }
         }
@@ -80,6 +84,7 @@ export const useEmailCheck = () => {
           if (error.message.includes("Invalid login credentials")) {
             console.log("Email exists (password method):", email);
             setEmailVerified(true);
+            setIsCheckingEmail(false);
             return true;
           } 
           
@@ -87,12 +92,14 @@ export const useEmailCheck = () => {
           if (error.message.includes("Email not confirmed")) {
             console.log("Email exists but not confirmed:", email);
             setEmailVerified(true);
+            setIsCheckingEmail(false);
             return true;
           }
           
           // For other error messages, assume user doesn't exist
           console.log("Other auth error for email:", email, error.message);
           setEmailVerified(false);
+          setIsCheckingEmail(false);
           return false;
         }
       } catch (err) {
@@ -103,10 +110,12 @@ export const useEmailCheck = () => {
       // conservatively assume the user doesn't exist
       console.log("Email verification inconclusive, assuming new user:", email);
       setEmailVerified(false);
+      setIsCheckingEmail(false);
       return false;
     } catch (error) {
       console.error("Error checking email:", error);
       setEmailVerified(false);
+      setIsCheckingEmail(false);
       return false;
     } finally {
       setIsCheckingEmail(false);

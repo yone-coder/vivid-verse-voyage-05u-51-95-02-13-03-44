@@ -49,8 +49,8 @@ const SubmitButton = ({
     }
   }, [showSuccess, isLoading]);
 
-  // Determine the button state labels and styles
-  const getButtonLabel = () => {
+  // Get display text based on button state
+  const getDisplayText = () => {
     if (isLoading) {
       return loadingText;
     } else if (showSuccessState) {
@@ -92,7 +92,7 @@ const SubmitButton = ({
         group ${isPressed ? 'transform scale-[0.98]' : ''}
         ${disabled || isLoading ? 'opacity-80 cursor-not-allowed' : 'cursor-pointer'}
       `}
-      aria-label={getButtonLabel()}
+      aria-label={getDisplayText()}
     >
       {isLoading && (
         <div className="flex items-center justify-center gap-2">
@@ -116,10 +116,12 @@ const SubmitButton = ({
       
       {!isLoading && !showSuccessState && (
         <span className="flex items-center gap-2 relative z-10">
-          {disabled ? "Waiting for verification..." : label}
-          <ArrowRight className={`h-4 w-4 transition-transform duration-300 
-            ${isHovered && !disabled ? 'translate-x-1' : ''}`} 
-          />
+          {getDisplayText()}
+          {!disabled && 
+            <ArrowRight className={`h-4 w-4 transition-transform duration-300 
+              ${isHovered && !disabled ? 'translate-x-1' : ''}`} 
+            />
+          }
         </span>
       )}
       

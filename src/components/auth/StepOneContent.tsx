@@ -40,8 +40,16 @@ const StepOneContent: React.FC<StepOneContentProps> = ({
   // Determine if the continue button should be disabled
   const isContinueDisabled = () => {
     if (activeTab === 'email') {
-      // For email tab: disable if we're checking email or if email verification is needed but not complete
-      return isCheckingEmail || (email.length > 0 && emailVerified === null);
+      // For email tab: disable if email is empty OR if we're checking email
+      // But ENABLE if email is verified (regardless of whether checking is complete)
+      if (email.trim().length === 0) return true;
+      if (isCheckingEmail) return true;
+      
+      // Important: If emailVerified is explicitly true, enable the button
+      if (emailVerified === true) return false;
+      
+      // If email verification is needed but not complete, disable button
+      return emailVerified === null;
     } else if (activeTab === 'phone') {
       // For phone tab: disable if phone is empty
       return phone.trim().length === 0;
@@ -50,6 +58,26 @@ const StepOneContent: React.FC<StepOneContentProps> = ({
       return false;
     }
     return false;
+  };
+
+  // Make sure we display the proper button state based on verification
+  const getButtonLabel = () => {
+    if (isLoading) {
+      return authMode === 'signin' ? "Verifying..." : "Checking...";
+    }
+    
+    if (activeTab === 'email' && isCheckingEmail) {
+      return "Verifying Email...";
+    }
+    
+    return "Continue";
+  };
+
+  const getLoadingText = () => {
+    if (activeTab === 'email' && isCheckingEmail) {
+      return "Verifying Email...";
+    }
+    return authMode === 'signin' ? "Verifying..." : "Checking...";
   };
   
   return (
@@ -80,9 +108,9 @@ const StepOneContent: React.FC<StepOneContentProps> = ({
       )}
 
       <SubmitButton 
-        isLoading={isLoading} 
-        label="Continue" 
-        loadingText={authMode === 'signin' ? "Verifying..." : "Checking..."}
+        isLoading={isLoading || isCheckingEmail} 
+        label={getButtonLabel()}
+        loadingText={getLoadingText()}
         showSuccess={authSuccess}
         successText="Verified!"
         disabled={isContinueDisabled()}
