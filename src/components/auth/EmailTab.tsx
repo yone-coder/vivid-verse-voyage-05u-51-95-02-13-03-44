@@ -135,6 +135,19 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
       return () => clearTimeout(timer);
     }
   }, [isValid, email]);
+  
+  // Auto-blur the input field when a valid email ending with .com is detected
+  useEffect(() => {
+    if (isValid && focused && email.toLowerCase().endsWith('.com') && email.includes('@') && email.length > 10) {
+      // Small delay to ensure the user has finished typing
+      const blurTimer = setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.blur();
+        }
+      }, 500);
+      return () => clearTimeout(blurTimer);
+    }
+  }, [isValid, email, focused]);
 
   useEffect(() => {
     if (email.includes('@') && email.includes('.') && email.length > 8) {
