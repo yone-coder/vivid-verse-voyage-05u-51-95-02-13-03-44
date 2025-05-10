@@ -21,7 +21,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import AuthPage from "./pages/AuthPage";
 import SignupPage from "./pages/SignupPage";
 import { AuthProvider } from "./context/AuthContext";
-import { AuthOverlayProvider } from "./context/AuthOverlayContext";
+import { AuthOverlayProvider, useAuthOverlay } from "./context/AuthOverlayContext";
 import AuthOverlay from "./components/auth/AuthOverlay";
 
 // Create a client
