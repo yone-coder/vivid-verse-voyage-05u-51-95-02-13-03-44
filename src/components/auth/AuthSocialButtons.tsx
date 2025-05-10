@@ -1,7 +1,7 @@
-
 import React, { useRef, useState, useEffect } from 'react';
 import { Twitter, Github } from 'lucide-react';
 import { toast } from 'sonner';
+import TabDivider from './TabDivider';
 
 interface AuthSocialButtonsProps {
   handleSocialLogin?: (provider: 'github' | 'twitter' | 'google' | 'facebook' | 'apple') => void;

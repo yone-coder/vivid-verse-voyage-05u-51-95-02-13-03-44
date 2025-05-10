@@ -1,12 +1,19 @@
 
 import React from 'react';
+import { Separator } from "@/components/ui/separator";
 
-const TabDivider = () => {
+interface TabDividerProps {
+  text?: string;
+  className?: string;
+}
+
+const TabDivider = ({ text = "OR", className = "" }: TabDividerProps) => {
   return (
-    <div className="flex items-center my-2">
-      <div className="flex-grow border-t border-[#eaeaea]"></div>
-      <span className="px-3 text-xs text-[#999] font-medium">OR</span>
-      <div className="flex-grow border-t border-[#eaeaea]"></div>
+    <div className={`relative flex items-center justify-center my-4 ${className}`}>
+      <Separator className="w-full" />
+      <span className="px-3 text-xs font-medium text-muted-foreground bg-background absolute">
+        {text}
+      </span>
     </div>
   );
 };

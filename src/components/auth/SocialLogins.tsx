@@ -2,6 +2,7 @@
 import React from 'react';
 import { Github, Twitter } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
+import TabDivider from './TabDivider';
 
 interface SocialLoginsProps {
   handleSocialLogin: (provider: 'github' | 'twitter') => Promise<void>;
@@ -12,10 +13,7 @@ const SocialLogins = ({ handleSocialLogin }: SocialLoginsProps) => {
   
   return (
     <div className="px-6 pt-0 pb-6 max-w-4xl mx-auto w-full">
-      <div className="relative flex items-center justify-center my-4">
-        <div className="border-t w-full absolute"></div>
-        <span className="bg-white px-4 text-sm text-gray-500 relative">or continue with</span>
-      </div>
+      <TabDivider text="or continue with" />
 
       <div className="grid grid-cols-3 gap-3">
         <button 
