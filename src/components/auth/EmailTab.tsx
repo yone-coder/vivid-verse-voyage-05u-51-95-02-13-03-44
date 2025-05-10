@@ -330,7 +330,12 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
 
           <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5 z-10">  
             {(checking || verifying) && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}  
-            {isValid && !checking && !verifying && !errorMessage && (  
+            {isValid && !checking && !verifying && !errorMessage && !focused && (  
+              <div className="flex items-center justify-center w-5 h-5 rounded-full bg-green-500 animate-fadeIn">
+                <Check className="h-3 w-3 text-white" />
+              </div>
+            )}
+            {isValid && !checking && !verifying && !errorMessage && focused && (  
               <Check className="h-4 w-4 text-green-500 animate-fadeIn" />  
             )}  
             {email.length > 0 && focused && (  
