@@ -144,7 +144,11 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
       // Small delay to ensure the user has finished typing
       const blurTimer = setTimeout(() => {
         if (inputRef.current) {
-          inputRef.current.blur();
+          // Check if the email exists in the database before blurring
+          checkEmailExists(email)
+            .then(() => {
+              inputRef.current?.blur();
+            });
         }
       }, 500);
       return () => clearTimeout(blurTimer);
