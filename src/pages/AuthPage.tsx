@@ -36,8 +36,15 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
     toggleShowPassword,
     toggleAuthMode,
     handlePasswordReset,
-    handleGoBack
+    handleGoBack,
+    updateFormState
   } = useAuthForm();
+  
+  // Force auth mode to signin on component mount
+  useEffect(() => {
+    // Use updateFormState to set the auth mode to signin
+    updateFormState({ authMode: 'signin' });
+  }, [updateFormState]);
   
   const { checkEmailExists, isCheckingEmail, emailVerified, setEmailVerified } = useEmailCheck();
   const { user, signIn, signUp } = useAuth();

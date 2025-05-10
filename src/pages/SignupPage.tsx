@@ -36,15 +36,15 @@ const SignupPage = ({ isOverlay = false, onClose }: SignupPageProps) => {
     toggleShowPassword,
     toggleAuthMode,
     handlePasswordReset,
-    handleGoBack
+    handleGoBack,
+    updateFormState
   } = useAuthForm();
   
   // Force auth mode to signup on component mount
   useEffect(() => {
-    if (formState.authMode !== 'signup') {
-      formState.authMode = 'signup';
-    }
-  }, [formState]);
+    // Use updateFormState to set the auth mode to signup
+    updateFormState({ authMode: 'signup' });
+  }, [updateFormState]);
   
   const { checkEmailExists, isCheckingEmail, emailVerified, setEmailVerified } = useEmailCheck();
   const { user, signUp } = useAuth();
