@@ -2,10 +2,11 @@
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { Input } from "@/components/ui/input";
 import { Mail,MailIcon, SparklesIcon, Check, X, Info, Loader2, AlertTriangle } from 'lucide-react';
-import { AnimatePresence } from 'framer-motion';
+import {motion,AnimatePresence } from 'framer-motion';
 import { useTheme } from "@/components/theme-provider";
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+
 
 // Import our extracted components
 import EmailSuggestions from './EmailSuggestions';
@@ -305,23 +306,29 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   return (
     <div className="w-full max-w-md mx-auto flex flex-col items-center justify-center space-y-2">
       {/* Email input section with better organized instructions */}
-      <div className="text-center mb-4 animate-fade-in">
-  <div className="flex justify-center mb-2">
-    <MailIcon className="w-6 h-6 text-primary" />
-  </div>
-  <h2 className="text-lg font-semibold text-foreground mb-1">Enter Your Email</h2>
-  <p className="text-sm text-muted-foreground">
-    {emailExists === false
-      ? (
-        <>
-          <span className="inline-flex items-center gap-1">
-            <SparklesIcon className="w-4 h-4 text-yellow-500" />
-            Let's create your new account
-          </span>
-        </>
-      ) : "Welcome back! Continue by entering your email."}
-  </p>
-</div>
+      
+<AnimatePresence mode="wait">
+  <motion.div
+    key={emailExists === false ? "signup" : "login"}
+    initial={{ opacity: 0, y: 10 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -10 }}
+    transition={{ duration: 0.3 }}
+    className="text-center mb-5"
+  >
+    <MailIcon className="mx-auto mb-3 h-6 w-6 text-primary" />
+
+    <h2 className="text-lg font-semibold text-foreground mb-1">
+      Email Address
+    </h2>
+
+    <p className="text-sm text-muted-foreground">
+      {emailExists === false
+        ? "Enter your email to create an account."
+        : "Enter your email to continue."}
+    </p>
+  </motion.div>
+</AnimatePresence>
 
       {/* Email Input with icons */}
       <div className="relative w-full max-w-sm">
