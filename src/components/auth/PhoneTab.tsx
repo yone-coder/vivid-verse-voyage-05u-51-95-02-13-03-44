@@ -79,8 +79,8 @@ const PhoneTab = ({
     if (inputRef.current) inputRef.current.focus();
   };
 
-  // The phone existence checking function
-  const checkPhoneExists = async (phoneToCheck: string) => {
+  // Fixed return type to avoid infinite type instantiation
+  const checkPhoneExists = async (phoneToCheck: string): Promise<boolean> => {
     if (!isValid || !phoneToCheck) return false;
     
     setChecking(true);
@@ -147,7 +147,6 @@ const PhoneTab = ({
 
   return (
     <div className="w-full max-w-md mx-auto flex flex-col items-center justify-center space-y-2">
-      {/* Phone input section with better organized instructions */}
       <div className="text-center mb-4">
         <h2 className="text-base font-medium text-foreground mb-1">Phone Number</h2>
         <p className="text-sm text-muted-foreground">
@@ -155,7 +154,6 @@ const PhoneTab = ({
         </p>
       </div>
 
-      {/* Phone input field - Made narrower and more centered */}
       <div className="flex gap-2 w-full max-w-sm">
         {/* Country code select */}
         <div className="flex-shrink-0 w-24">
@@ -165,9 +163,10 @@ const PhoneTab = ({
           />
         </div>
         
-        {/* Phone number input */}
+        {/* Phone number input with fixed positioning structure */}
         <div className="relative flex-grow">
-          <div className={`absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center h-5 w-5 transition-all duration-200 z-10 ${focused ? 'text-primary' : 'text-muted-foreground'}`}>
+          {/* Icon container with proper positioning */}
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center justify-center h-5 w-5 transition-all duration-200 z-10 pointer-events-none">
             <Phone className="h-[15px] w-[15px]" />
           </div>
           
@@ -193,7 +192,7 @@ const PhoneTab = ({
             autoComplete="tel"
           />
 
-          {/* Status indicators */}
+          {/* Status indicators with fixed positioning */}
           <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1 z-10">
             {checking && (
               <Loader2 className="h-4 w-4 text-muted-foreground animate-spin mr-1" aria-label="Checking phone" />

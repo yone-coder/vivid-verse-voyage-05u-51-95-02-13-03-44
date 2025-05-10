@@ -115,7 +115,8 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     };
   }, [email, focused]);
 
-  const checkEmailExists = async (emailToCheck: string) => {
+  // Fixed type for checkEmailExists to avoid infinite type instantiation
+  const checkEmailExists = async (emailToCheck: string): Promise<boolean> => {
     if (!isValid || !emailToCheck) return false;
 
     setVerifying(true); 
@@ -151,6 +152,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     }
   };
 
+  // Fixed type for handleKeyDown to avoid type errors
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     if (!showSuggestions || suggestions.length === 0) return;
 
@@ -242,57 +244,63 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
       </motion.header>
 
       <div className="relative w-full max-w-sm">
-        <div className="absolute left-3 top-1/2 -translate-y-1/2 z-10">
-          <Mail className="h-4 w-4 text-muted-foreground" />
+        {/* Fixed positioning structure for the input and its icons */}
+        <div className="relative">
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 z-10 pointer-events-none">
+            <Mail className="h-4 w-4 text-muted-foreground" />
+          </div>
+
+          <Input
+            ref={inputRef}
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(normalizeEmail(e.target.value))}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            onKeyDown={handleKeyDown}
+            placeholder="john.doe@example.com"
+            className={`w-full pl-10 pr-10 h-11 text-sm transition-all duration-300 ease-in-out rounded-md shadow-sm ${
+              validationMessage || errorMessage 
+                ? 'border-destructive focus:border-destructive bg-destructive/5'
+                : isValid 
+                  ? 'border-green-500 focus:border-green-600 bg-green-50/30'
+                  : 'border-border bg-background text-foreground'
+            }`}
+            autoComplete="email"
+          />
+
+          <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5 z-10">
+            {(checking || verifying) && (
+              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+            )}
+            {isValid && !checking && !verifying && !errorMessage && (
+              <Check className="h-4 w-4 text-green-500 animate-fadeIn" />
+            )}
+            {email.length > 0 && (
+              <button
+                type="button"
+                onClick={clearInput}
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
         </div>
 
-        <Input
-          ref={inputRef}
-          id="email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(normalizeEmail(e.target.value))}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          onKeyDown={handleKeyDown}
-          placeholder="john.doe@example.com"
-          className={`w-full pl-10 pr-10 h-11 text-sm transition-all duration-300 ease-in-out rounded-md shadow-sm ${
-            validationMessage || errorMessage 
-              ? 'border-destructive focus:border-destructive bg-destructive/5'
-              : isValid 
-                ? 'border-green-500 focus:border-green-600 bg-green-50/30'
-                : 'border-border bg-background text-foreground'
-          }`}
-          autoComplete="email"
-        />
-
-        <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5 z-10">
-          {(checking || verifying) && (
-            <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-          )}
-          {isValid && !checking && !verifying && !errorMessage && (
-            <Check className="h-4 w-4 text-green-500 animate-fadeIn" />
-          )}
-          {email.length > 0 && (
-            <button
-              type="button"
-              onClick={clearInput}
-              className="text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <X className="h-3.5 w-3.5" />
-            </button>
-          )}
+        {/* Validation message now positioned absolutely below the input field */}
+        <div className="relative mt-1">
+          <AnimatePresence>
+            {validationMessage && !errorMessage && (
+              <EmailValidationMessage 
+                message={validationMessage}
+                typoSuggestion={typoSuggestion}
+                onApplySuggestion={applyTypoSuggestion}
+              />
+            )}
+          </AnimatePresence>
         </div>
-
-        <AnimatePresence>
-          {validationMessage && !errorMessage && (
-            <EmailValidationMessage 
-              message={validationMessage}
-              typoSuggestion={typoSuggestion}
-              onApplySuggestion={applyTypoSuggestion}
-            />
-          )}
-        </AnimatePresence>
 
         {errorMessage && (
           <div className="flex items-center gap-2 mt-2 p-2 rounded-md bg-destructive/10 text-destructive text-sm">
