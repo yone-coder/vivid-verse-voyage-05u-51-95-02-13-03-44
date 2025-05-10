@@ -96,12 +96,16 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   const suggestionsRef = useRef<HTMLDivElement>(null);
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
   const [emailDomain, setEmailDomain] = useState<string | null>(null);
+  const verificationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     return () => {
       setErrorMessage(null);
       setEmailExists(null);
       setSubmitted(false);
+      if (verificationTimeoutRef.current) {
+        clearTimeout(verificationTimeoutRef.current);
+      }
     };
   }, []);
 
@@ -117,6 +121,12 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     setEmailDomain(domain);
     // Reset favicon error when domain changes
     setFaviconError(false);
+
+    // Reset email verification state when email changes
+    if (emailExists !== null) {
+      setEmailExists(null);
+      setErrorMessage(null);
+    }
 
   }, [email]);
 
@@ -136,7 +146,27 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
       return () => clearTimeout(timer);
     }
   }, [isValid, email]);
-  
+
+  // Auto-verify the email when valid and not focused
+  useEffect(() => {
+    if (isValid && !focused && !checking && !verifying && email.includes('@') && email.includes('.') && emailExists === null) {
+      // Delayed verification to prevent too many requests
+      if (verificationTimeoutRef.current) {
+        clearTimeout(verificationTimeoutRef.current);
+      }
+      
+      verificationTimeoutRef.current = setTimeout(() => {
+        checkEmailExists(email);
+      }, 800);
+    }
+    
+    return () => {
+      if (verificationTimeoutRef.current) {
+        clearTimeout(verificationTimeoutRef.current);
+      }
+    };
+  }, [isValid, focused, email, checking, verifying, emailExists]);
+
   // Auto-blur the input field when a valid email ending with .com is detected the first time
   useEffect(() => {
     // Only auto-blur on the first successful completion, not during validation timer period
@@ -144,11 +174,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
       // Small delay to ensure the user has finished typing
       const blurTimer = setTimeout(() => {
         if (inputRef.current) {
-          // Check if the email exists in the database before blurring
-          checkEmailExists(email)
-            .then(() => {
-              inputRef.current?.blur();
-            });
+          inputRef.current?.blur();
         }
       }, 500);
       return () => clearTimeout(blurTimer);
@@ -156,14 +182,14 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   }, [isValid, email, focused, validationTimer]);
 
   useEffect(() => {
-    if (email.includes('@') && email.includes('.') && email.length > 8) {
+    if (!focused && email.includes('@') && email.includes('.') && email.length > 8) {
       setChecking(true);
       const timer = setTimeout(() => {
         setChecking(false);
       }, 600);
       return () => clearTimeout(timer);
     }
-  }, [email]);
+  }, [email, focused]);
 
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -183,16 +209,19 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     setVerifying(true);
     setErrorMessage(null);
     try {
+      // First try to check if the user exists in auth
       const { error } = await supabase.auth.signInWithOtp({
         email: emailToCheck,
         options: { shouldCreateUser: false },
       });
+      
       if (!error) {
         setEmailExists(true);
         setVerifying(false);
         return true;
       }
 
+      // Then check if the email exists in profiles table
       const { data: profileData } = await supabase  
         .from('profiles')  
         .select('id')  
@@ -201,7 +230,10 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
 
       const exists = !!profileData;  
       setEmailExists(exists);  
-      if (!exists) setErrorMessage("This email is not registered");  
+      if (!exists) {
+        // The user doesn't exist in the database
+        setErrorMessage(null); // Don't show error when not focused
+      }
       setVerifying(false);  
       return exists;  
     } catch (err) {  
@@ -235,11 +267,11 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     setFocused(true);
     setSubmitted(false);
     setErrorMessage(null);
-    
+
     // Start validation timer when refocusing a valid email
     if (isValid && email.toLowerCase().endsWith('.com')) {
       setValidationTimer(true);
-      
+
       // Start 5-second timer to auto-blur
       const timer = setTimeout(() => {
         if (inputRef.current) {
@@ -247,10 +279,10 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
           setValidationTimer(false);
         }
       }, 5000);
-      
+
       return () => clearTimeout(timer);
     }
-    
+
     if (suggestions.length > 0 && email.length > 0) {
       setShowSuggestions(true);
     }
@@ -297,7 +329,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     if (isValid) {
       try {
         const exists = await checkEmailExists(email);
-        if (exists && onSubmit) onSubmit(e);
+        if (onSubmit) onSubmit(e);
       } catch {
         toast.error("Failed to verify email");
       }
@@ -309,6 +341,62 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   };
 
   const handleSubmit = showSubmitButton ? handleEmailSubmit : undefined;
+
+  // Render function for the right icon based on all states
+  const renderRightIcon = () => {
+    // If checking or verifying, show spinner
+    if (checking || verifying) {
+      return <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />;
+    }
+    
+    // If valid email with no verification result yet, show spinner when not focused
+    if (isValid && emailExists === null && !focused) {
+      return <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />;
+    }
+    
+    // When in validation timer mode
+    if (validationTimer && focused) {
+      return <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />;
+    }
+    
+    // Case: Email exists in database, show green check in circle when not focused
+    if (isValid && emailExists === true && !focused) {
+      return (
+        <div className="flex items-center justify-center w-5 h-5 rounded-full bg-green-500 animate-fadeIn">
+          <Check className="h-3 w-3 text-white" />
+        </div>
+      );
+    }
+    
+    // Case: Email doesn't exist, show red X in circle when not focused
+    if (isValid && emailExists === false && !focused) {
+      return (
+        <div className="flex items-center justify-center w-5 h-5 rounded-full bg-red-500 animate-fadeIn">
+          <X className="h-3 w-3 text-white" />
+        </div>
+      );
+    }
+    
+    // Case: Valid email when focused
+    if (isValid && focused) {
+      return <Check className="h-4 w-4 text-green-500 animate-fadeIn" />;
+    }
+    
+    // Clear button when input has content and is focused
+    if (email.length > 0 && focused) {
+      return (
+        <button 
+          type="button" 
+          onClick={clearInput} 
+          className="text-muted-foreground hover:text-foreground transition-colors"
+        >  
+          <X className="h-3.5 w-3.5" />  
+        </button>
+      );
+    }
+    
+    return null;
+  };
 
   return (
     <div className="flex flex-col items-center w-full">
@@ -359,6 +447,10 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
             className={`w-full pl-10 pr-10 h-11 text-sm transition-all duration-300 ease-in-out rounded-md shadow-sm ${  
               validationMessage || errorMessage  
                 ? 'border-destructive focus:border-destructive bg-destructive/5'  
+                : isValid && emailExists === false && !focused
+                  ? 'border-red-500 focus:border-red-600 bg-red-50/30'
+                : isValid && emailExists === true && !focused
+                  ? 'border-green-500 focus:border-green-600 bg-green-50/30'
                 : isValid  
                   ? 'border-green-500 focus:border-green-600 bg-green-50/30'  
                   : 'border-border bg-background text-foreground'  
@@ -366,33 +458,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
           />  
 
           <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5 z-10">  
-            {/* Show spinner when original checking/verifying OR when validation timer is active */}
-            {(checking || verifying || (validationTimer && focused)) && 
-              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-            }  
-            
-            {/* Show green circle with white check when valid and not focused */}
-            {isValid && !checking && !verifying && !errorMessage && !focused && !validationTimer && (  
-              <div className="flex items-center justify-center w-5 h-5 rounded-full bg-green-500 animate-fadeIn">
-                <Check className="h-3 w-3 text-white" />
-              </div>
-            )}
-            
-            {/* Show regular green check when valid, focused, but not in validation timer mode */}
-            {isValid && !checking && !verifying && !errorMessage && focused && !validationTimer && (  
-              <Check className="h-4 w-4 text-green-500 animate-fadeIn" />  
-            )}  
-            
-            {/* X button to clear input */}
-            {email.length > 0 && focused && (  
-              <button 
-                type="button" 
-                onClick={clearInput} 
-                className="text-muted-foreground hover:text-foreground transition-colors"
-              >  
-                <X className="h-3.5 w-3.5" />  
-              </button>  
-            )}  
+            {renderRightIcon()}
           </div>  
         </div>  
 
@@ -438,7 +504,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
             isValid ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'  
           }`}  
         >  
-          {verifying ? "Verifying..." : "Continue"}  
+          {verifying ? "Verifying..." : emailExists === false ? "Create Account" : "Continue"}  
         </button>  
       )}  
     </div>
