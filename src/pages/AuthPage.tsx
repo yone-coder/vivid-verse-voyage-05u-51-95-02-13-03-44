@@ -4,11 +4,11 @@ import { useAuth } from '@/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
-import AuthContainer from '@/components/auth/AuthContainer';
-import AuthHeader from '@/components/auth/AuthHeader';
-import AuthFooter from '@/components/auth/AuthFooter';
-import StepOneContent from '@/components/auth/StepOneContent';
-import StepTwoContent from '@/components/auth/StepTwoContent';
+import AuthContainer from '@/components/auth/common/AuthContainer';
+import AuthHeader from '@/components/auth/common/AuthHeader';
+import AuthFooter from '@/components/auth/common/AuthFooter';
+import StepOneContent from '@/components/auth/form/StepOneContent';
+import StepTwoContent from '@/components/auth/form/StepTwoContent';
 import { useAuthForm } from '@/hooks/useAuthForm';
 import { useEmailCheck } from '@/hooks/useEmailCheck';
 
