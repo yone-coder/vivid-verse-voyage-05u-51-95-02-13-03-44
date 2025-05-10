@@ -1,4 +1,3 @@
-
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
@@ -100,9 +99,12 @@ const PhoneTab = ({
     <div className="flex flex-col items-center w-full">
       <div className="relative w-full max-w-sm mb-4">
         <div className="flex">
+          {/* Pass valueKey and labelKey to make TypeScript happy */}
           <CountryCodeSelect 
             value={countryCode} 
             onChange={setCountryCode} 
+            valueKey="code"
+            labelKey="name"
             className="w-24 flex-shrink-0"
           />
           

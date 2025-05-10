@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { AlertTriangle } from 'lucide-react';
 import AuthSocialButtons from '@/components/auth/AuthSocialButtons';
 import AuthTabs from '@/components/auth/AuthTabs';
@@ -49,7 +49,10 @@ const StepOneContent: React.FC<StepOneContentProps> = ({
       if (emailVerified === true) return false;
       
       // If email verification is needed but not complete, disable button
-      return emailVerified === null;
+      if (emailVerified === null) return true;
+      
+      // Allow submitting even if user doesn't exist (for signup)
+      return false;
     } else if (activeTab === 'phone') {
       // For phone tab: disable if phone is empty
       return phone.trim().length === 0;
@@ -68,6 +71,17 @@ const StepOneContent: React.FC<StepOneContentProps> = ({
     
     if (activeTab === 'email' && isCheckingEmail) {
       return "Verifying Email...";
+    }
+
+    // For email tab, show different text based on verification state
+    if (activeTab === 'email') {
+      if (emailVerified === true) {
+        return "Continue";
+      } else if (emailVerified === false) {
+        return authMode === 'signin' ? "Continue to Sign In" : "Continue to Create Account";
+      } else if (emailVerified === null && !isCheckingEmail) {
+        return "Waiting for verification...";
+      }
     }
     
     return "Continue";

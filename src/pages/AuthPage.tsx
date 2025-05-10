@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -42,6 +43,14 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
   const { user, signIn, signUp } = useAuth();
   const navigate = useNavigate();
 
+  // Track if email verification has been attempted
+  const [verificationAttempted, setVerificationAttempted] = useState(false);
+
+  useEffect(() => {
+    // When email changes, reset verification attempted status
+    setVerificationAttempted(false);
+  }, [formState.email]);
+
   // Redirect if user is already logged in
   useEffect(() => {
     if (user) {
@@ -51,6 +60,22 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
       }, 0);
     }
   }, [user, navigate]);
+
+  // Auto-verify email when it changes (debounced)
+  useEffect(() => {
+    const { email, activeTab } = formState;
+    
+    if (activeTab === 'email' && email && email.includes('@') && email.includes('.')) {
+      const timer = setTimeout(() => {
+        if (!verificationAttempted) {
+          checkEmailExists(email);
+          setVerificationAttempted(true);
+        }
+      }, 800);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [formState.email, formState.activeTab, checkEmailExists, verificationAttempted]);
 
   // Handle step 1 form submission (email/phone verification)
   const handleStep1Submit = async (e: React.FormEvent) => {
@@ -70,8 +95,8 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
         return;
       }
       
-      // Only check email existence for sign in
-      if (authMode === 'signin') {
+      // Only check email existence for sign in if not already verified
+      if (authMode === 'signin' && emailVerified === null) {
         setIsLoading(true);
         const exists = await checkEmailExists(email);
         setIsLoading(false);
@@ -89,6 +114,9 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
       toast.error("Please enter your phone number.");
       return;
     }
+
+    // Clear any error message when proceeding
+    setErrorMessage(null);
 
     // Proceed to step 2
     setIsLoading(true);
