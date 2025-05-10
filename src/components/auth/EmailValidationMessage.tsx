@@ -7,9 +7,15 @@ interface EmailValidationMessageProps {
   message: string | null;
   typoSuggestion?: string | null;
   onApplySuggestion?: () => void;
+  showWhileTyping?: boolean;
 }
 
-const EmailValidationMessage = ({ message, typoSuggestion, onApplySuggestion }: EmailValidationMessageProps) => {
+const EmailValidationMessage = ({ 
+  message, 
+  typoSuggestion, 
+  onApplySuggestion,
+  showWhileTyping = false
+}: EmailValidationMessageProps) => {
   if (!message && !typoSuggestion) return null;
   
   // Extract domain from typo suggestion for simpler display

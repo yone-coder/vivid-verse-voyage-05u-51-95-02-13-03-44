@@ -1,3 +1,4 @@
+
 // Email validation utilities
 
 export const premiumDomains = [
@@ -79,6 +80,25 @@ export const generateSuggestions = (input: string): string[] => {
     .map(({ domain }) => `${username}@${domain}`);
 };
 
+// Check for typos in domain part and return corrected email if a typo is found
+export const checkForTypos = (emailValue: string): string | null => {
+  if (!emailValue || !emailValue.includes('@')) return null;
+  
+  const parts = emailValue.split('@');
+  if (parts.length !== 2) return null;
+  
+  const [localPart, domainPart] = parts;
+  
+  // Check for common typos in domain
+  for (const typo in commonTypos) {
+    if (domainPart === typo) {
+      return `${localPart}@${commonTypos[typo]}`;
+    }
+  }
+  
+  return null;
+};
+
 // Email validation function with explicit return type
 export const getValidationMessage = (
   emailValue: string, 
@@ -101,15 +121,13 @@ export const getValidationMessage = (
     return 'Please use a permanent, non-disposable email.';
   
   // Check for common typos in domain
-  for (const typo in commonTypos) {
-    if (domainPart === typo) {
-      // Create the corrected email address
-      setTypoSuggestion(`${localPart}@${commonTypos[typo]}`);
-      return `Did you mean ${commonTypos[typo]}?`;
-    }
-  }
+  const typoSuggestion = checkForTypos(emailValue);
+  setTypoSuggestion(typoSuggestion);
   
-  setTypoSuggestion(null);
+  if (typoSuggestion) {
+    const domain = typoSuggestion.split('@')[1];
+    return `Did you mean ${domain}?`;
+  }
   
   // Stricter validation
   const strictRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

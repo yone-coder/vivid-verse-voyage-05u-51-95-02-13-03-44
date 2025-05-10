@@ -12,7 +12,8 @@ import {
   premiumDomains,
   normalizeEmail,
   generateSuggestions,
-  getValidationMessage
+  getValidationMessage,
+  checkForTypos
 } from './EmailUtils';
 
 interface EmailTabProps {
@@ -74,10 +75,21 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     };
   }, []);
 
+  // Check for typos in real-time
+  useEffect(() => {
+    if (email.includes('@')) {
+      const typo = checkForTypos(email);
+      setTypoSuggestion(typo);
+    } else {
+      setTypoSuggestion(null);
+    }
+  }, [email]);
+
+  // Generate validation message in real-time while typing or when submitted/unfocused
   const validationMessage = useMemo(() => {
-    if (!submitted && (focused || email.length === 0)) return null;
+    if (email.length === 0) return null;
     return getValidationMessage(email, setTypoSuggestion);
-  }, [email, submitted, focused]);
+  }, [email]);
 
   const isValid = !validationMessage && email.length > 0;
 
@@ -115,7 +127,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     };
   }, [email, focused]);
 
-  // Fixed type for checkEmailExists to avoid infinite type instantiation
+  // Function to check if email exists with explicit return type
   const checkEmailExists = async (emailToCheck: string): Promise<boolean> => {
     if (!isValid || !emailToCheck) return false;
 
@@ -152,7 +164,7 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     }
   };
 
-  // Fixed type for handleKeyDown to avoid type errors
+  // Handle keyboard navigation with explicit types
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     if (!showSuggestions || suggestions.length === 0) return;
 
@@ -292,11 +304,12 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
         {/* Validation message now positioned absolutely below the input field */}
         <div className="relative mt-1">
           <AnimatePresence>
-            {validationMessage && !errorMessage && (
+            {(validationMessage || typoSuggestion) && !errorMessage && (
               <EmailValidationMessage 
                 message={validationMessage}
                 typoSuggestion={typoSuggestion}
                 onApplySuggestion={applyTypoSuggestion}
+                showWhileTyping={true}
               />
             )}
           </AnimatePresence>
