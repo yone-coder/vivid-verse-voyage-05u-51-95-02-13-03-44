@@ -47,30 +47,22 @@ const getDomainFromEmail = (email: string): string | null => {
   return match ? match[1].toLowerCase() : null;
 };
 
-// Enhanced favicon retrieval with special case handling for known domains
+// Special case handling for domains that need different favicon URLs
 const getFaviconUrl = (domain: string): string => {
-  // Special case for Gmail - uses mail.google.com instead
-  if (domain === 'gmail.com') {
-    return 'https://www.google.com/s2/favicons?sz=32&domain=mail.google.com';
-  }
+  // Map domains to their correct favicon domains
+  const specialDomains: Record<string, string> = {
+    'gmail.com': 'mail.google.com',
+    'googlemail.com': 'mail.google.com',
+    'protonmail.com': 'proton.me',
+    'hotmail.com': 'outlook.live.com',
+    'live.com': 'outlook.live.com'
+  };
+
+  // If it's a special domain, use the mapped domain for favicon
+  const faviconDomain = specialDomains[domain] || domain;
   
-  // Special case for Protonmail
-  if (domain === 'protonmail.com') {
-    return 'https://www.google.com/s2/favicons?sz=32&domain=proton.me';
-  }
-  
-  // Special cases for Microsoft email services
-  if (['hotmail.com', 'live.com', 'outlook.com'].includes(domain)) {
-    return 'https://www.google.com/s2/favicons?sz=32&domain=outlook.live.com';
-  }
-  
-  // Handle subdomains of google.com
-  if (domain.endsWith('google.com')) {
-    return `https://www.google.com/s2/favicons?sz=32&domain=${domain}`;
-  }
-  
-  // Default case for all other domains
-  return `https://www.google.com/s2/favicons?sz=32&domain=${domain}`;
+  // Return the favicon URL
+  return `https://www.google.com/s2/favicons?sz=32&domain=${faviconDomain}`;
 };
 
 const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: EmailTabProps) => {
