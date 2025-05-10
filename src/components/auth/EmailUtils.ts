@@ -1,4 +1,3 @@
-
 // Email validation utilities
 
 export const premiumDomains = [
@@ -80,7 +79,7 @@ export const generateSuggestions = (input: string): string[] => {
     .map(({ domain }) => `${username}@${domain}`);
 };
 
-// Email strength criteria - simplified, no score calculation needed
+// Email validation function with explicit return type
 export const getValidationMessage = (
   emailValue: string, 
   setTypoSuggestion: (suggestion: string | null) => void
@@ -104,8 +103,9 @@ export const getValidationMessage = (
   // Check for common typos in domain
   for (const typo in commonTypos) {
     if (domainPart === typo) {
+      // Create the corrected email address
       setTypoSuggestion(`${localPart}@${commonTypos[typo]}`);
-      return `Did you mean ${commonTypos[typo]}? (Click to correct)`;
+      return `Did you mean ${commonTypos[typo]}?`;
     }
   }
   

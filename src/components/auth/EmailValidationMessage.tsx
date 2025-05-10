@@ -12,6 +12,15 @@ interface EmailValidationMessageProps {
 const EmailValidationMessage = ({ message, typoSuggestion, onApplySuggestion }: EmailValidationMessageProps) => {
   if (!message && !typoSuggestion) return null;
   
+  // Extract domain from typo suggestion for simpler display
+  const extractDomain = () => {
+    if (!typoSuggestion) return null;
+    const match = typoSuggestion.match(/@([^@]+)$/);
+    return match ? match[1] : null;
+  };
+
+  const domain = extractDomain();
+  
   return (
     <motion.div
       initial={{ opacity: 0, height: 0 }}
@@ -22,15 +31,21 @@ const EmailValidationMessage = ({ message, typoSuggestion, onApplySuggestion }: 
       role="alert"
     >
       <AlertCircle className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
-      <span>{message}</span>
+      
+      {domain ? (
+        <span>Did you mean <strong>{domain}</strong>?</span>
+      ) : (
+        <span>{message}</span>
+      )}
       
       {typoSuggestion && (
         <button 
           type="button" 
           onClick={onApplySuggestion} 
           className="flex items-center gap-1 ml-auto text-xs text-primary hover:text-primary/90 hover:underline"
+          aria-label="Use corrected email"
         >
-          <span>Use <strong>{typoSuggestion}</strong></span>
+          <span>Click to correct</span>
           <Check className="h-3 w-3" />
         </button>
       )}

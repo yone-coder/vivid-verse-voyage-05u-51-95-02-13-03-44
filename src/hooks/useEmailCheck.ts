@@ -9,6 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 export const useEmailCheck = () => {
   const [isCheckingEmail, setIsCheckingEmail] = useState(false);
 
+  // Added explicit Promise<boolean> return type to fix type instantiation issue
   const checkEmailExists = async (email: string): Promise<boolean> => {
     setIsCheckingEmail(true);
     
