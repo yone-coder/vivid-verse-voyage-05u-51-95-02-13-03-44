@@ -49,22 +49,23 @@ const getDomainFromEmail = (email: string): string | null => {
 
 // Special case handling for domains that need different favicon URLs
 const getFaviconUrl = (domain: string): string => {
-  // Normalize the domain to lowercase to handle case sensitivity
-  const normalizedDomain = domain.toLowerCase();
+  const normalizedDomain = domain.toLowerCase().trim();
+
+  // Hardcoded Gmail favicon (Google's official icon)
+  if (normalizedDomain === 'gmail.com' || normalizedDomain === 'googlemail.com') {
+    return 'https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico';
+  }
 
   const specialDomains: Record<string, string> = {
-    'gmail.com': 'mail.google.com',
-    'googlemail.com': 'mail.google.com',
     'protonmail.com': 'proton.me',
     'hotmail.com': 'outlook.live.com',
-    'live.com': 'outlook.live.com'
+    'live.com': 'outlook.live.com',
+    'outlook.com': 'outlook.live.com',
   };
 
   const faviconDomain = specialDomains[normalizedDomain] || normalizedDomain;
-
   return `https://www.google.com/s2/favicons?sz=32&domain=${faviconDomain}`;
 };
-
 
 const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: EmailTabProps) => {
   const { theme } = useTheme();
