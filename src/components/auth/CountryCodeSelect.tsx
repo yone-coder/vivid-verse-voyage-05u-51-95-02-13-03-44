@@ -26,9 +26,10 @@ const countryOptions: CountryOption[] = [
 interface CountryCodeSelectProps {
   value: string;
   onChange: (value: string) => void;
+  className?: string;
 }
 
-const CountryCodeSelect = ({ value, onChange }: CountryCodeSelectProps) => {
+const CountryCodeSelect = ({ value, onChange, className = "" }: CountryCodeSelectProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState<CountryOption | null>(
     countryOptions.find(option => option.dialCode === value) || countryOptions[0]
@@ -62,7 +63,7 @@ const CountryCodeSelect = ({ value, onChange }: CountryCodeSelectProps) => {
   };
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className={`relative ${className}`} ref={dropdownRef}>
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}

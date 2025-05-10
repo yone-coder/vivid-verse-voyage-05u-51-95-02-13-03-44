@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 /**
@@ -11,7 +11,7 @@ export const useEmailCheck = () => {
   const [emailVerified, setEmailVerified] = useState<boolean | null>(null);
 
   // Added explicit Promise<boolean> return type to fix type instantiation issue
-  const checkEmailExists = async (email: string): Promise<boolean> => {
+  const checkEmailExists = useCallback(async (email: string): Promise<boolean> => {
     setIsCheckingEmail(true);
     setEmailVerified(null);
     
@@ -120,11 +120,12 @@ export const useEmailCheck = () => {
     } finally {
       setIsCheckingEmail(false);
     }
-  };
+  }, []);
 
   return { 
     checkEmailExists, 
     isCheckingEmail,
-    emailVerified
+    emailVerified,
+    setEmailVerified
   };
 };

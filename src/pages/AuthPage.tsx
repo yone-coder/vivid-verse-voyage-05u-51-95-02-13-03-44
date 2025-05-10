@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -39,17 +39,20 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
     handleGoBack
   } = useAuthForm();
   
-  const { checkEmailExists, isCheckingEmail, emailVerified } = useEmailCheck();
+  const { checkEmailExists, isCheckingEmail, emailVerified, setEmailVerified } = useEmailCheck();
   const { user, signIn, signUp } = useAuth();
   const navigate = useNavigate();
 
-  // Track if email verification has been attempted
+  // Track verification status separately for synchronization
   const [verificationAttempted, setVerificationAttempted] = useState(false);
+  const [verificationInProgress, setVerificationInProgress] = useState(false);
 
+  // Reset verification status when email/tab changes
   useEffect(() => {
-    // When email changes, reset verification attempted status
-    setVerificationAttempted(false);
-  }, [formState.email]);
+    if (formState.activeTab === 'email') {
+      setVerificationAttempted(false);
+    }
+  }, [formState.email, formState.activeTab]);
 
   // Redirect if user is already logged in
   useEffect(() => {
@@ -61,21 +64,41 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
     }
   }, [user, navigate]);
 
-  // Auto-verify email when it changes (debounced)
+  // Sync verification status with emailVerified
+  useEffect(() => {
+    if (emailVerified !== null) {
+      setVerificationInProgress(false);
+      setVerificationAttempted(true);
+    }
+  }, [emailVerified]);
+
+  // Wrapped email verification in useCallback to prevent recreation
+  const verifyEmail = useCallback(async (email: string) => {
+    if (!email || !email.includes('@') || !email.includes('.')) return;
+    
+    setVerificationInProgress(true);
+    try {
+      await checkEmailExists(email);
+    } finally {
+      setVerificationAttempted(true);
+    }
+  }, [checkEmailExists]);
+  
+  // Auto-verify email with improved debounce
   useEffect(() => {
     const { email, activeTab } = formState;
     
     if (activeTab === 'email' && email && email.includes('@') && email.includes('.')) {
+      // Don't try to verify if already in progress or attempted
+      if (verificationInProgress || verificationAttempted) return;
+      
       const timer = setTimeout(() => {
-        if (!verificationAttempted) {
-          checkEmailExists(email);
-          setVerificationAttempted(true);
-        }
+        verifyEmail(email);
       }, 800);
       
       return () => clearTimeout(timer);
     }
-  }, [formState.email, formState.activeTab, checkEmailExists, verificationAttempted]);
+  }, [formState.email, formState.activeTab, verificationInProgress, verificationAttempted, verifyEmail]);
 
   // Handle step 1 form submission (email/phone verification)
   const handleStep1Submit = async (e: React.FormEvent) => {
@@ -95,17 +118,18 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
         return;
       }
       
-      // Only check email existence for sign in if not already verified
-      if (authMode === 'signin' && emailVerified === null) {
+      // If verification hasn't been attempted or is still in progress, do it now
+      if (!verificationAttempted || verificationInProgress) {
         setIsLoading(true);
-        const exists = await checkEmailExists(email);
+        await verifyEmail(email);
         setIsLoading(false);
-        
-        if (!exists) {
-          setErrorMessage("This email is not registered");
-          toast.error("This email is not registered. Please sign up first.");
-          return;
-        }
+      }
+      
+      // Only block sign in if we know the email doesn't exist
+      if (authMode === 'signin' && emailVerified === false) {
+        setErrorMessage("This email is not registered");
+        toast.error("This email is not registered. Please sign up first.");
+        return;
       }
     }
 
@@ -204,7 +228,7 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
             toggleAuthMode={toggleAuthMode}
             onSubmit={handleStep1Submit}
             handleSocialLogin={handleSocialLogin}
-            isCheckingEmail={isCheckingEmail}
+            isCheckingEmail={isCheckingEmail || verificationInProgress}
             emailVerified={emailVerified}
           />
         ) : (
