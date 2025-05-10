@@ -1,7 +1,7 @@
 
 import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { Input } from "@/components/ui/input";
-import { Mail,MailIcon, SparklesIcon, Check, X, Info, Loader2, AlertTriangle } from 'lucide-react';
+import { Mail,MailIcon, SparklesIcon, Check, X, Info,InfoIcon, Loader2, AlertTriangle } from 'lucide-react';
 import {motion,AnimatePresence } from 'framer-motion';
 import { useTheme } from "@/components/theme-provider";
 import { supabase } from '@/integrations/supabase/client';
