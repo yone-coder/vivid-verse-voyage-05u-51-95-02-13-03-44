@@ -22,17 +22,8 @@ const CategoryTabs = ({ progress, activeTab, setActiveTab, categories }: Categor
   const tabsRef = useRef<(HTMLAnchorElement | null)[]>([]);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   
-  // Set initial underline position when component mounts
-  useEffect(() => {
-    updateUnderlinePosition();
-  }, []); // Empty dependency array ensures it only runs once on mount
-  
   // Update underline position when active tab changes
   useEffect(() => {
-    updateUnderlinePosition();
-  }, [activeTab, categories]);
-  
-  const updateUnderlinePosition = () => {
     const activeIndex = categories.findIndex(category => category.id === activeTab);
     if (activeIndex >= 0 && tabsRef.current[activeIndex]) {
       const currentTab = tabsRef.current[activeIndex];
@@ -42,23 +33,18 @@ const CategoryTabs = ({ progress, activeTab, setActiveTab, categories }: Categor
           width: currentTab.offsetWidth,
         });
         
-        // Scroll active tab into view with smoother behavior
+        // Scroll active tab into view
         if (scrollContainerRef.current) {
           const container = scrollContainerRef.current;
           const tabElement = currentTab;
           
           // Calculate position to center the tab
           const scrollLeft = tabElement.offsetLeft - (container.offsetWidth / 2) + (tabElement.offsetWidth / 2);
-          
-          // Use smooth scrolling with a custom behavior
-          container.scrollTo({
-            left: scrollLeft,
-            behavior: 'smooth'
-          });
+          container.scrollTo({ left: scrollLeft, behavior: 'smooth' });
         }
       }
     }
-  };
+  }, [activeTab, categories]);
   
   // Style for the container - removed the bottom border
   const containerStyle = {
@@ -68,7 +54,7 @@ const CategoryTabs = ({ progress, activeTab, setActiveTab, categories }: Categor
 
   return (
     <div
-      className="overflow-x-auto no-scrollbar relative overscroll-x-none"
+      className="overflow-x-auto no-scrollbar relative"
       style={containerStyle}
       ref={scrollContainerRef}
     >
@@ -82,11 +68,7 @@ const CategoryTabs = ({ progress, activeTab, setActiveTab, categories }: Categor
                 ? "text-orange-500 font-medium"
                 : "text-gray-600"
             }`}
-            onClick={(e) => {
-              e.preventDefault(); // Prevent full page reload
-              setActiveTab(category.id);
-              window.history.pushState(null, '', category.path);
-            }}
+            onClick={() => setActiveTab(category.id)}
             ref={el => tabsRef.current[index] = el}
           >
             <div className="flex items-center gap-1.5">
@@ -97,19 +79,17 @@ const CategoryTabs = ({ progress, activeTab, setActiveTab, categories }: Categor
         ))}
       </div>
       
-      {/* Animated underline with improved transition */}
+      {/* Animated underline */}
       <motion.div
         className="absolute bottom-0 left-0 h-0.5 bg-orange-500 rounded-full"
-        initial={false}
         animate={{
           left: underline.left,
           width: underline.width,
         }}
         transition={{
           type: "spring",
-          stiffness: 400,
-          damping: 30,
-          mass: 0.8
+          stiffness: 300,
+          damping: 30
         }}
       />
     </div>
