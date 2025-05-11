@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { X, Upload, Camera, Film, Image } from "lucide-react";
+
+import React, { useState, useRef } from "react";
+import { X, Upload, Camera, Film, Image, Trash2, AlertCircle, Info, PlusCircle, Check, Loader2, Tag, GripVertical, Copy } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { 
@@ -13,6 +14,28 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useQueryClient } from "@tanstack/react-query";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { motion, AnimatePresence } from "framer-motion";
 
 type ContentType = "product" | "reel" | "post";
 
@@ -28,16 +51,39 @@ export default function ProductUploadOverlay({ isOpen, onClose }: ProductUploadO
   const [isUploading, setIsUploading] = useState(false);
   const [images, setImages] = useState<File[]>([]);
   const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([]);
-  const [productName, setProductName] = useState("");
-  const [productDescription, setProductDescription] = useState("");
-  const [productPrice, setProductPrice] = useState("");
-  const [discountPrice, setDiscountPrice] = useState("");
+  
+  // Product form state
+  const productForm = useForm({
+    defaultValues: {
+      name: "",
+      description: "",
+      price: "",
+      discountPrice: "",
+      category: "",
+      tags: [] as string[],
+      isFeatured: false,
+      hasVariants: false
+    }
+  });
+  
+  // Reel form state
   const [reelTitle, setReelTitle] = useState("");
   const [reelDescription, setReelDescription] = useState("");
   const [reelVideo, setReelVideo] = useState<File | null>(null);
   const [reelVideoUrl, setReelVideoUrl] = useState<string>("");
+  const [reelTags, setReelTags] = useState<string[]>([]);
+  const [reelCategory, setReelCategory] = useState("");
+  
+  // Post form state
   const [postTitle, setPostTitle] = useState("");
   const [postContent, setPostContent] = useState("");
+  const [postTags, setPostTags] = useState<string[]>([]);
+  const [postCategory, setPostCategory] = useState("");
+  const [currentTag, setCurrentTag] = useState("");
+  
+  // Advanced options state
+  const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
+  const imageInputRef = useRef<HTMLInputElement>(null);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -72,8 +118,24 @@ export default function ProductUploadOverlay({ isOpen, onClose }: ProductUploadO
     setImagePreviewUrls(newImagePreviewUrls);
   };
 
+  const addTag = (tagsList: string[], setTagsList: React.Dispatch<React.SetStateAction<string[]>>) => (e: React.FormEvent) => {
+    e.preventDefault();
+    if (currentTag.trim() && !tagsList.includes(currentTag.trim())) {
+      setTagsList([...tagsList, currentTag.trim()]);
+      setCurrentTag("");
+    }
+  };
+
+  const removeTag = (tagsList: string[], setTagsList: React.Dispatch<React.SetStateAction<string[]>>) => (index: number) => {
+    const newTags = [...tagsList];
+    newTags.splice(index, 1);
+    setTagsList(newTags);
+  };
+
   const validateProductForm = () => {
-    if (!productName.trim()) {
+    const { name, price } = productForm.getValues();
+    
+    if (!name.trim()) {
       toast({
         title: "Missing information",
         description: "Please enter a product name",
@@ -82,19 +144,10 @@ export default function ProductUploadOverlay({ isOpen, onClose }: ProductUploadO
       return false;
     }
 
-    if (!productPrice.trim() || isNaN(parseFloat(productPrice))) {
+    if (!price.trim() || isNaN(parseFloat(price))) {
       toast({
         title: "Invalid price",
         description: "Please enter a valid price",
-        variant: "destructive"
-      });
-      return false;
-    }
-
-    if (discountPrice.trim() && isNaN(parseFloat(discountPrice))) {
-      toast({
-        title: "Invalid discount price",
-        description: "Please enter a valid discount price or leave it empty",
         variant: "destructive"
       });
       return false;
@@ -166,16 +219,19 @@ export default function ProductUploadOverlay({ isOpen, onClose }: ProductUploadO
   };
 
   const resetForm = () => {
-    setProductName("");
-    setProductDescription("");
-    setProductPrice("");
-    setDiscountPrice("");
+    productForm.reset();
     setReelTitle("");
     setReelDescription("");
     setReelVideo(null);
     setReelVideoUrl("");
     setPostTitle("");
     setPostContent("");
+    setPostTags([]);
+    setReelTags([]);
+    setPostCategory("");
+    setReelCategory("");
+    setCurrentTag("");
+    setShowAdvancedOptions(false);
     
     // Clean up image previews
     imagePreviewUrls.forEach(url => URL.revokeObjectURL(url));
@@ -197,14 +253,16 @@ export default function ProductUploadOverlay({ isOpen, onClose }: ProductUploadO
     setIsUploading(true);
     
     try {
+      const formValues = productForm.getValues();
+      
       // 1. Create product entry
       const { data: product, error: productError } = await supabase
         .from('products')
         .insert({
-          name: productName,
-          description: productDescription,
-          price: parseFloat(productPrice),
-          discount_price: discountPrice ? parseFloat(discountPrice) : null
+          name: formValues.name,
+          description: formValues.description,
+          price: parseFloat(formValues.price),
+          discount_price: formValues.discountPrice ? parseFloat(formValues.discountPrice) : null
         })
         .select()
         .single();
@@ -235,7 +293,7 @@ export default function ProductUploadOverlay({ isOpen, onClose }: ProductUploadO
           .insert({
             product_id: product.id,
             src: publicURL.publicUrl,
-            alt: productName
+            alt: formValues.name
           });
       });
       
@@ -332,12 +390,158 @@ export default function ProductUploadOverlay({ isOpen, onClose }: ProductUploadO
       setIsUploading(false);
     }
   };
+  
+  const AdvancedOptionsButton = () => (
+    <Button 
+      type="button" 
+      variant="outline" 
+      className="w-full mt-2 flex items-center justify-center gap-2"
+      onClick={() => setShowAdvancedOptions(!showAdvancedOptions)}
+    >
+      {showAdvancedOptions ? "Hide" : "Show"} Advanced Options
+      <Info className="h-4 w-4" />
+    </Button>
+  );
+
+  const ProductImageUploader = () => (
+    <div className="space-y-2">
+      <div className="flex justify-between items-center">
+        <label className="text-sm font-medium">Product Images (Max 5)</label>
+        {images.length > 0 && (
+          <Button 
+            type="button" 
+            variant="ghost" 
+            size="sm" 
+            className="h-8 px-2 text-xs" 
+            onClick={() => imageInputRef.current?.click()}
+          >
+            <PlusCircle className="h-3.5 w-3.5 mr-1" /> Add More
+          </Button>
+        )}
+      </div>
+      
+      <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
+        {imagePreviewUrls.map((url, index) => (
+          <div key={index} className="relative aspect-square rounded-md overflow-hidden bg-gray-100 border border-gray-200 group">
+            <img 
+              src={url}
+              alt={`Preview ${index}`}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
+              <Button
+                type="button"
+                variant="destructive"
+                size="sm"
+                className="h-8 w-8 p-0 rounded-full"
+                onClick={() => removeImage(index)}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
+            <Badge className="absolute top-1 left-1 bg-black/50 hover:bg-black/50 text-white text-[10px] px-1.5 py-0.5">
+              #{index + 1}
+            </Badge>
+          </div>
+        ))}
+        
+        {images.length < 5 && (
+          <label className="aspect-square rounded-md border-2 border-dashed border-gray-300 flex flex-col items-center justify-center cursor-pointer hover:border-gray-400 transition-colors">
+            <Camera className="w-6 h-6 text-gray-400 mb-1" />
+            <span className="text-xs text-gray-500">Add</span>
+            <input 
+              ref={imageInputRef}
+              type="file" 
+              accept="image/*" 
+              onChange={handleImageUpload} 
+              className="sr-only"
+              multiple
+            />
+          </label>
+        )}
+      </div>
+    </div>
+  );
+
+  const TagsInput = ({ 
+    tags, 
+    removeTagFn, 
+    category, 
+    setCategory 
+  }: { 
+    tags: string[], 
+    removeTagFn: (index: number) => void, 
+    category: string, 
+    setCategory: React.Dispatch<React.SetStateAction<string>> 
+  }) => (
+    <div className="space-y-4">
+      <div>
+        <label htmlFor="category" className="text-sm font-medium block mb-1">Category</label>
+        <Select value={category} onValueChange={setCategory}>
+          <SelectTrigger id="category">
+            <SelectValue placeholder="Select a category" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="fashion">Fashion</SelectItem>
+            <SelectItem value="electronics">Electronics</SelectItem>
+            <SelectItem value="home">Home & Garden</SelectItem>
+            <SelectItem value="beauty">Beauty</SelectItem>
+            <SelectItem value="sports">Sports</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      
+      <div>
+        <label htmlFor="tags" className="text-sm font-medium block mb-1">Tags</label>
+        <form className="flex" onSubmit={addTag(tags, (newTags) => {
+          if (contentType === "post") setPostTags(newTags);
+          else if (contentType === "reel") setReelTags(newTags);
+        })}>
+          <Input 
+            id="tags" 
+            value={currentTag} 
+            onChange={(e) => setCurrentTag(e.target.value)}
+            placeholder="Add a tag" 
+            className="flex-1 rounded-r-none"
+          />
+          <Button 
+            type="submit" 
+            className="rounded-l-none px-3"
+          >
+            Add
+          </Button>
+        </form>
+        
+        {tags.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-2">
+            {tags.map((tag, index) => (
+              <Badge 
+                key={index} 
+                variant="secondary"
+                className="pl-2 pr-1 py-1 flex items-center gap-1 text-xs"
+              >
+                <Tag className="h-3 w-3" />
+                {tag}
+                <button
+                  type="button"
+                  className="hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full p-0.5 ml-1"
+                  onClick={() => removeTagFn(index)}
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </Badge>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent 
         side="bottom" 
-        className="h-[95vh] p-0 inset-x-0 w-full sm:max-w-none"
+        className="h-[95vh] p-0 inset-x-0 w-full sm:max-w-none bg-white"
       >
         <SheetHeader className="text-left px-4 pt-4 pb-2">
           <SheetTitle>Create New Content</SheetTitle>
@@ -345,45 +549,10 @@ export default function ProductUploadOverlay({ isOpen, onClose }: ProductUploadO
         
         <div className="relative h-[calc(100%-50px)]">
           <Tabs value={contentType} onValueChange={(value) => setContentType(value as ContentType)} className="h-full flex flex-col">
-            <TabsContent value="product" className="flex-1 overflow-auto px-4 pb-16">
+            <TabsContent value="product" className="flex-1 overflow-auto px-4 pb-20">
               <form onSubmit={handleSubmitProduct} className="space-y-6 py-2">
                 {/* Image Upload Section */}
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Product Images (Max 5)</label>
-                  
-                  <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
-                    {imagePreviewUrls.map((url, index) => (
-                      <div key={index} className="relative aspect-square rounded-md overflow-hidden bg-gray-100">
-                        <img 
-                          src={url}
-                          alt={`Preview ${index}`}
-                          className="w-full h-full object-cover"
-                        />
-                        <button
-                          type="button"
-                          className="absolute top-1 right-1 bg-black/70 text-white p-1 rounded-full"
-                          onClick={() => removeImage(index)}
-                        >
-                          <X className="h-3 w-3" />
-                        </button>
-                      </div>
-                    ))}
-                    
-                    {images.length < 5 && (
-                      <label className="aspect-square rounded-md border-2 border-dashed border-gray-300 flex flex-col items-center justify-center cursor-pointer hover:border-gray-400 transition-colors">
-                        <Camera className="w-6 h-6 text-gray-400 mb-1" />
-                        <span className="text-xs text-gray-500">Add</span>
-                        <input 
-                          type="file" 
-                          accept="image/*" 
-                          onChange={handleImageUpload} 
-                          className="sr-only"
-                          multiple
-                        />
-                      </label>
-                    )}
-                  </div>
-                </div>
+                <ProductImageUploader />
                 
                 {/* Product Details */}
                 <div className="space-y-4">
@@ -391,8 +560,7 @@ export default function ProductUploadOverlay({ isOpen, onClose }: ProductUploadO
                     <label htmlFor="name" className="text-sm font-medium">Product Name</label>
                     <Input
                       id="name"
-                      value={productName}
-                      onChange={(e) => setProductName(e.target.value)}
+                      {...productForm.register('name')}
                       placeholder="Enter product name"
                       className="mt-1"
                       required
@@ -403,8 +571,7 @@ export default function ProductUploadOverlay({ isOpen, onClose }: ProductUploadO
                     <label htmlFor="description" className="text-sm font-medium">Description</label>
                     <Textarea
                       id="description"
-                      value={productDescription}
-                      onChange={(e) => setProductDescription(e.target.value)}
+                      {...productForm.register('description')}
                       placeholder="Describe your product..."
                       className="mt-1"
                       rows={4}
@@ -420,8 +587,7 @@ export default function ProductUploadOverlay({ isOpen, onClose }: ProductUploadO
                           id="price"
                           type="text"
                           inputMode="decimal"
-                          value={productPrice}
-                          onChange={(e) => setProductPrice(e.target.value)}
+                          {...productForm.register('price')}
                           placeholder="0.00"
                           className="pl-7"
                           required
@@ -437,15 +603,80 @@ export default function ProductUploadOverlay({ isOpen, onClose }: ProductUploadO
                           id="discount"
                           type="text"
                           inputMode="decimal"
-                          value={discountPrice}
-                          onChange={(e) => setDiscountPrice(e.target.value)}
+                          {...productForm.register('discountPrice')}
                           placeholder="0.00"
                           className="pl-7"
                         />
                       </div>
                     </div>
                   </div>
+                  
+                  <TagsInput 
+                    tags={productForm.watch('tags')} 
+                    removeTagFn={(index) => {
+                      const currentTags = [...productForm.watch('tags')];
+                      currentTags.splice(index, 1);
+                      productForm.setValue('tags', currentTags);
+                    }}
+                    category={productForm.watch('category')}
+                    setCategory={(value) => productForm.setValue('category', value)}
+                  />
                 </div>
+                
+                <AdvancedOptionsButton />
+                
+                <AnimatePresence>
+                  {showAdvancedOptions && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="border rounded-md p-4 space-y-4 mt-2 bg-gray-50">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <label htmlFor="featured" className="text-sm font-medium">Featured Product</label>
+                            <p className="text-xs text-gray-500">Show this product in the featured section</p>
+                          </div>
+                          <Switch
+                            id="featured"
+                            checked={productForm.watch('isFeatured')}
+                            onCheckedChange={(checked) => productForm.setValue('isFeatured', checked)}
+                          />
+                        </div>
+                        
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <label htmlFor="variants" className="text-sm font-medium">Product Variants</label>
+                            <p className="text-xs text-gray-500">Create multiple options (size, color, etc.)</p>
+                          </div>
+                          <Switch
+                            id="variants"
+                            checked={productForm.watch('hasVariants')}
+                            onCheckedChange={(checked) => productForm.setValue('hasVariants', checked)}
+                          />
+                        </div>
+
+                        {productForm.watch('hasVariants') && (
+                          <Drawer>
+                            <DrawerTrigger asChild>
+                              <Button variant="outline" type="button" className="w-full">
+                                Configure Product Variants
+                              </Button>
+                            </DrawerTrigger>
+                            <DrawerContent className="p-4">
+                              <div className="text-center pb-4 pt-2">
+                                <h3 className="text-lg font-semibold">Product Variants</h3>
+                                <p className="text-sm text-gray-500">Coming soon</p>
+                              </div>
+                            </DrawerContent>
+                          </Drawer>
+                        )}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
                 
                 {/* Submit Button */}
                 <div className="pt-4">
@@ -456,10 +687,7 @@ export default function ProductUploadOverlay({ isOpen, onClose }: ProductUploadO
                   >
                     {isUploading ? (
                       <span className="flex items-center">
-                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
+                        <Loader2 className="animate-spin mr-2 h-4 w-4" />
                         Uploading...
                       </span>
                     ) : (
@@ -473,7 +701,7 @@ export default function ProductUploadOverlay({ isOpen, onClose }: ProductUploadO
               </form>
             </TabsContent>
             
-            <TabsContent value="reel" className="flex-1 overflow-auto px-4 pb-16">
+            <TabsContent value="reel" className="flex-1 overflow-auto px-4 pb-20">
               <form onSubmit={handleSubmitReel} className="space-y-6 py-2">
                 {/* Video Upload Section */}
                 <div className="space-y-2">
@@ -481,7 +709,7 @@ export default function ProductUploadOverlay({ isOpen, onClose }: ProductUploadO
                   
                   <div className="flex flex-col items-center">
                     {reelVideoUrl ? (
-                      <div className="relative w-full aspect-[9/16] rounded-md overflow-hidden bg-gray-100 mb-2">
+                      <div className="relative w-full max-w-[300px] aspect-[9/16] rounded-md overflow-hidden bg-gray-100 mb-2 mx-auto">
                         <video 
                           src={reelVideoUrl}
                           controls
@@ -489,18 +717,18 @@ export default function ProductUploadOverlay({ isOpen, onClose }: ProductUploadO
                         />
                         <button
                           type="button"
-                          className="absolute top-2 right-2 bg-black/70 text-white p-1 rounded-full"
+                          className="absolute top-2 right-2 bg-black/70 text-white p-1.5 rounded-full"
                           onClick={() => {
                             URL.revokeObjectURL(reelVideoUrl);
                             setReelVideo(null);
                             setReelVideoUrl("");
                           }}
                         >
-                          <X className="h-4 w-4" />
+                          <Trash2 className="h-4 w-4" />
                         </button>
                       </div>
                     ) : (
-                      <label className="w-full aspect-[9/16] rounded-md border-2 border-dashed border-gray-300 flex flex-col items-center justify-center cursor-pointer hover:border-gray-400 transition-colors">
+                      <label className="w-full max-w-[300px] aspect-[9/16] rounded-md border-2 border-dashed border-gray-300 flex flex-col items-center justify-center cursor-pointer hover:border-gray-400 transition-colors mx-auto">
                         <Film className="w-12 h-12 text-gray-400 mb-2" />
                         <span className="text-sm text-gray-500">Upload a video</span>
                         <span className="text-xs text-gray-400 mt-1">MP4, MOV, or WebM format</span>
@@ -540,7 +768,59 @@ export default function ProductUploadOverlay({ isOpen, onClose }: ProductUploadO
                       rows={3}
                     />
                   </div>
+                  
+                  <TagsInput 
+                    tags={reelTags} 
+                    removeTagFn={removeTag(reelTags, setReelTags)}
+                    category={reelCategory}
+                    setCategory={setReelCategory}
+                  />
                 </div>
+                
+                <AdvancedOptionsButton />
+                
+                <AnimatePresence>
+                  {showAdvancedOptions && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="border rounded-md p-4 space-y-4 mt-2 bg-gray-50">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <label htmlFor="searchable" className="text-sm font-medium">Searchable</label>
+                            <p className="text-xs text-gray-500">Allow this reel to appear in search results</p>
+                          </div>
+                          <Switch id="searchable" defaultChecked />
+                        </div>
+                        
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <label htmlFor="comments" className="text-sm font-medium">Allow Comments</label>
+                            <p className="text-xs text-gray-500">Let viewers comment on your reel</p>
+                          </div>
+                          <Switch id="comments" defaultChecked />
+                        </div>
+                        
+                        <div>
+                          <label htmlFor="visibility" className="text-sm font-medium block mb-1">Visibility</label>
+                          <Select defaultValue="public">
+                            <SelectTrigger id="visibility">
+                              <SelectValue placeholder="Select visibility" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="public">Public</SelectItem>
+                              <SelectItem value="followers">Followers Only</SelectItem>
+                              <SelectItem value="private">Private</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
                 
                 {/* Submit Button */}
                 <div className="pt-4">
@@ -551,10 +831,7 @@ export default function ProductUploadOverlay({ isOpen, onClose }: ProductUploadO
                   >
                     {isUploading ? (
                       <span className="flex items-center">
-                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
+                        <Loader2 className="animate-spin mr-2 h-4 w-4" />
                         Uploading...
                       </span>
                     ) : (
@@ -568,43 +845,10 @@ export default function ProductUploadOverlay({ isOpen, onClose }: ProductUploadO
               </form>
             </TabsContent>
             
-            <TabsContent value="post" className="flex-1 overflow-auto px-4 pb-16">
+            <TabsContent value="post" className="flex-1 overflow-auto px-4 pb-20">
               <form onSubmit={handleSubmitPost} className="space-y-6 py-2">
                 {/* Image Upload Section */}
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Post Images</label>
-                  
-                  <div className="grid grid-cols-3 sm:grid-cols-5 gap-2">
-                    {imagePreviewUrls.map((url, index) => (
-                      <div key={index} className="relative aspect-square rounded-md overflow-hidden bg-gray-100">
-                        <img 
-                          src={url}
-                          alt={`Preview ${index}`}
-                          className="w-full h-full object-cover"
-                        />
-                        <button
-                          type="button"
-                          className="absolute top-1 right-1 bg-black/70 text-white p-1 rounded-full"
-                          onClick={() => removeImage(index)}
-                        >
-                          <X className="h-3 w-3" />
-                        </button>
-                      </div>
-                    ))}
-                    
-                    <label className="aspect-square rounded-md border-2 border-dashed border-gray-300 flex flex-col items-center justify-center cursor-pointer hover:border-gray-400 transition-colors">
-                      <Image className="w-6 h-6 text-gray-400 mb-1" />
-                      <span className="text-xs text-gray-500">Add</span>
-                      <input 
-                        type="file" 
-                        accept="image/*" 
-                        onChange={handleImageUpload} 
-                        className="sr-only"
-                        multiple
-                      />
-                    </label>
-                  </div>
-                </div>
+                <ProductImageUploader />
                 
                 {/* Post Details */}
                 <div className="space-y-4">
@@ -632,7 +876,59 @@ export default function ProductUploadOverlay({ isOpen, onClose }: ProductUploadO
                       required
                     />
                   </div>
+                  
+                  <TagsInput 
+                    tags={postTags} 
+                    removeTagFn={removeTag(postTags, setPostTags)}
+                    category={postCategory}
+                    setCategory={setPostCategory}
+                  />
                 </div>
+                
+                <AdvancedOptionsButton />
+                
+                <AnimatePresence>
+                  {showAdvancedOptions && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="border rounded-md p-4 space-y-4 mt-2 bg-gray-50">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <label htmlFor="featured" className="text-sm font-medium">Featured Post</label>
+                            <p className="text-xs text-gray-500">Show this post on the featured section</p>
+                          </div>
+                          <Switch id="featured" />
+                        </div>
+                        
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <label htmlFor="post-comments" className="text-sm font-medium">Allow Comments</label>
+                            <p className="text-xs text-gray-500">Let users comment on your post</p>
+                          </div>
+                          <Switch id="post-comments" defaultChecked />
+                        </div>
+                        
+                        <div>
+                          <label htmlFor="post-visibility" className="text-sm font-medium block mb-1">Visibility</label>
+                          <Select defaultValue="public">
+                            <SelectTrigger id="post-visibility">
+                              <SelectValue placeholder="Select visibility" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="public">Public</SelectItem>
+                              <SelectItem value="followers">Followers Only</SelectItem>
+                              <SelectItem value="private">Private</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
                 
                 {/* Submit Button */}
                 <div className="pt-4">
@@ -643,10 +939,7 @@ export default function ProductUploadOverlay({ isOpen, onClose }: ProductUploadO
                   >
                     {isUploading ? (
                       <span className="flex items-center">
-                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
+                        <Loader2 className="animate-spin mr-2 h-4 w-4" />
                         Uploading...
                       </span>
                     ) : (
