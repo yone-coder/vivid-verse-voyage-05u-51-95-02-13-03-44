@@ -13,6 +13,8 @@ export interface HeroBanner {
 
 export const fetchHeroBanners = async (): Promise<HeroBanner[]> => {
   try {
+    console.log('Starting fetchHeroBanners...');
+    
     // Need to explicitly type the response to avoid type errors
     const { data, error } = await supabase
       .from('hero_banners')
@@ -26,18 +28,25 @@ export const fetchHeroBanners = async (): Promise<HeroBanner[]> => {
       console.error('Error fetching hero banners:', error);
       return [];
     }
+
+    console.log('Raw data from Supabase:', data);
     
     // Transform the data to ensure image URLs are properly formatted
     const banners = data?.map(banner => {
       // Check if the image is a full URL or just a path
-      if (banner.image && !banner.image.startsWith('http') && !banner.image.startsWith('/lovable-uploads')) {
+      let imageUrl = banner.image;
+      
+      // Handle different image path formats
+      if (imageUrl && !imageUrl.startsWith('http') && !imageUrl.startsWith('/lovable-uploads')) {
         // Assume it's a path in the hero-banners bucket
-        return {
-          ...banner,
-          image: getPublicUrl('hero-banners', banner.image)
-        };
+        imageUrl = getPublicUrl('hero-banners', imageUrl);
+        console.log(`Transformed image URL: ${banner.image} -> ${imageUrl}`);
       }
-      return banner;
+      
+      return {
+        ...banner,
+        image: imageUrl
+      };
     }) || [];
     
     console.log('Transformed hero banners:', banners);
