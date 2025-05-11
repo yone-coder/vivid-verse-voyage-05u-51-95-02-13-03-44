@@ -318,6 +318,25 @@ export type Database = {
           winner: string | null
         }[]
       }
+      update_product: {
+        Args: {
+          p_id: string
+          p_name?: string
+          p_description?: string
+          p_price?: number
+          p_discount_price?: number
+          p_inventory?: number
+        }
+        Returns: {
+          created_at: string
+          description: string
+          discount_price: number | null
+          id: string
+          name: string
+          price: number
+          updated_at: string
+        }[]
+      }
     }
     Enums: {
       tournament_status: "in-progress" | "closed" | "completed" | "upcoming"

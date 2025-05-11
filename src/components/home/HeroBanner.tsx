@@ -8,10 +8,10 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function HeroBanner() {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [previousIndex, setPreviousIndex] = useState(null);
+  const [previousIndex, setPreviousIndex] = useState<number | null>(null);
   const [showNews, setShowNews] = useState(true);
   const [activeNewsIndex, setActiveNewsIndex] = useState(0);
-  const [previousNewsIndex, setPreviousNewsIndex] = useState(null);
+  const [previousNewsIndex, setPreviousNewsIndex] = useState<number | null>(null);
   const [progress, setProgress] = useState(0);
   const isMobile = useIsMobile();
   const slideDuration = 5000;
@@ -64,12 +64,12 @@ export default function HeroBanner() {
 
   // Set up intervals for banner rotation and progress tracking
   useEffect(() => {
-    let intervalRef = null;
-    let progressIntervalRef = null;
+    let intervalRef: ReturnType<typeof setInterval> | null = null;
+    let progressIntervalRef: ReturnType<typeof setInterval> | null = null;
 
     const startSlideTimer = () => {
-      clearInterval(intervalRef);
-      clearInterval(progressIntervalRef);
+      clearInterval(intervalRef as ReturnType<typeof setInterval>);
+      clearInterval(progressIntervalRef as ReturnType<typeof setInterval>);
       setProgress(0);
       const progressStep = (50 / slideDuration) * 100;
 
@@ -87,17 +87,17 @@ export default function HeroBanner() {
     startSlideTimer();
     
     return () => {
-      clearInterval(intervalRef);
-      clearInterval(progressIntervalRef);
+      clearInterval(intervalRef as ReturnType<typeof setInterval>);
+      clearInterval(progressIntervalRef as ReturnType<typeof setInterval>);
     };
   }, [activeIndex, slidesToShow.length]);
 
   // Set up interval for news ticker
   useEffect(() => {
-    let newsIntervalRef = null;
+    let newsIntervalRef: ReturnType<typeof setInterval> | null = null;
 
     const startNewsTimer = () => {
-      clearInterval(newsIntervalRef);
+      clearInterval(newsIntervalRef as ReturnType<typeof setInterval>);
       newsIntervalRef = setInterval(() => {
         setPreviousNewsIndex(activeNewsIndex);
         setActiveNewsIndex(current => (current + 1) % newsItems.length);
@@ -107,11 +107,11 @@ export default function HeroBanner() {
     startNewsTimer();
 
     return () => {
-      clearInterval(newsIntervalRef);
+      clearInterval(newsIntervalRef as ReturnType<typeof setInterval>);
     };
   }, [activeNewsIndex]);
 
-  const handleDotClick = (index) => {
+  const handleDotClick = (index: number) => {
     setPreviousIndex(activeIndex);
     setActiveIndex(index);
   };

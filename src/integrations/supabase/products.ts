@@ -122,24 +122,30 @@ export const createProduct = async (product: {
   }
 };
 
-// Update a product - Fixed return type to avoid infinite type instantiation
+// Update a product - Fixed to use the function we created
 export const updateProduct = async (
   id: string, 
   updates: Partial<Omit<Product, 'id' | 'created_at' | 'updated_at'>>
 ): Promise<Product | null> => {
   try {
+    // Use RPC to call the function we created
     const { data, error } = await supabase
-      .from('products')
-      .update(updates)
-      .eq('id', id)
-      .select();
+      .rpc('update_product', {
+        p_id: id,
+        p_name: updates.name,
+        p_description: updates.description,
+        p_price: updates.price,
+        p_discount_price: updates.discount_price,
+        p_inventory: updates.inventory
+      });
     
     if (error) {
       console.error(`Error updating product with id ${id}:`, error);
       return null;
     }
     
-    return data?.[0] || null;
+    // Get the updated product
+    return await fetchProductById(id);
   } catch (error) {
     console.error(`Error in updateProduct for id ${id}:`, error);
     return null;
