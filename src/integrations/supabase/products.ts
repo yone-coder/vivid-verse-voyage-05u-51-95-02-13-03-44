@@ -122,7 +122,7 @@ export const createProduct = async (product: {
   }
 };
 
-// Update a product
+// Update a product - Fixed return type to avoid infinite type instantiation
 export const updateProduct = async (
   id: string, 
   updates: Partial<Omit<Product, 'id' | 'created_at' | 'updated_at'>>
