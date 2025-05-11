@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { createProduct, updateProduct, subscribeToProductChanges } from '@/integrations/supabase/products';
+import { fetchHeroBanners, createHeroBanner, deleteHeroBanner, updateHeroBannerPosition } from '@/integrations/supabase/hero';
 
 import { useNavigate } from "react-router-dom";
-import { Plus, Trash2, Edit, Eye, X, Check, Save, Pencil } from "lucide-react";
+import { Plus, Trash2, Edit, Eye, X, Check, Save, Pencil, ArrowUp, ArrowDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,6 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 interface Product {
   id: string;
@@ -61,8 +63,22 @@ const AdminPanel: React.FC = () => {
   });
   const [creatingProduct, setCreatingProduct] = useState(false);
   const [editableProducts, setEditableProducts] = useState<EditableProduct[]>([]);
+  
+  // New state for hero banners
+  const [isHeroUploadDialogOpen, setIsHeroUploadDialogOpen] = useState(false);
+  const [heroUploadFile, setHeroUploadFile] = useState<File | null>(null);
+  const [heroAlt, setHeroAlt] = useState("");
+  const [uploadingHero, setUploadingHero] = useState(false);
+  const queryClient = useQueryClient();
+  
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  // Fetch hero banners
+  const { data: heroBanners = [], isLoading: isLoadingHeroBanners } = useQuery({
+    queryKey: ["hero-banners"],
+    queryFn: fetchHeroBanners,
+  });
 
   useEffect(() => {
     fetchProducts();
@@ -449,6 +465,150 @@ const AdminPanel: React.FC = () => {
     }
   };
 
+  const handleHeroUploadClick = () => {
+    setIsHeroUploadDialogOpen(true);
+  };
+
+  const handleHeroFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setHeroUploadFile(e.target.files[0]);
+    }
+  };
+
+  const handleUploadHeroBanner = async () => {
+    if (!heroUploadFile || !heroAlt) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please provide both an image and alt text.",
+      });
+      return;
+    }
+
+    try {
+      setUploadingHero(true);
+      const fileExt = heroUploadFile.name.split('.').pop();
+      const fileName = `hero_banner_${Date.now()}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      const { error: uploadError, data } = await supabase.storage
+        .from('hero-banners')
+        .upload(filePath, heroUploadFile);
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      const { data: publicUrlData } = supabase.storage
+        .from('hero-banners')
+        .getPublicUrl(filePath);
+
+      const imageUrl = publicUrlData.publicUrl;
+
+      // Get highest current position
+      let position = 0;
+      if (heroBanners.length > 0) {
+        const maxPosition = Math.max(...heroBanners.map(banner => banner.position || 0));
+        position = maxPosition + 1;
+      }
+
+      await createHeroBanner({
+        image: imageUrl,
+        alt: heroAlt,
+        position: position
+      });
+
+      queryClient.invalidateQueries({ queryKey: ["hero-banners"] });
+      
+      toast({
+        title: "Success",
+        description: "Hero banner uploaded successfully",
+      });
+
+      setIsHeroUploadDialogOpen(false);
+      setHeroUploadFile(null);
+      setHeroAlt("");
+    } catch (error) {
+      console.error('Error uploading hero banner:', error);
+      toast({
+        variant: "destructive",
+        title: "Upload Failed",
+        description: "There was an error uploading the hero banner.",
+      });
+    } finally {
+      setUploadingHero(false);
+    }
+  };
+
+  const handleDeleteHeroBanner = async (id: string, imagePath: string) => {
+    try {
+      const url = new URL(imagePath);
+      const pathname = url.pathname;
+      const filename = pathname.substring(pathname.lastIndexOf('/') + 1);
+
+      // Delete from database
+      await deleteHeroBanner(id);
+
+      try {
+        // Try to delete from storage
+        await supabase.storage
+          .from('hero-banners')
+          .remove([filename]);
+      } catch (storageError) {
+        console.warn('Could not delete from storage:', storageError);
+      }
+
+      queryClient.invalidateQueries({ queryKey: ["hero-banners"] });
+      
+      toast({
+        title: "Success",
+        description: "Hero banner deleted successfully",
+      });
+    } catch (error) {
+      console.error('Error deleting hero banner:', error);
+      toast({
+        variant: "destructive",
+        title: "Delete Failed",
+        description: "There was an error deleting the hero banner.",
+      });
+    }
+  };
+
+  const handleMoveHeroBanner = async (id: string, currentPosition: number, direction: 'up' | 'down') => {
+    const sortedBanners = [...heroBanners].sort((a, b) => (a.position || 0) - (b.position || 0));
+    const currentIndex = sortedBanners.findIndex(banner => banner.id === id);
+    
+    if (currentIndex === -1) return;
+    
+    const newIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+    
+    if (newIndex < 0 || newIndex >= sortedBanners.length) return;
+    
+    const otherBanner = sortedBanners[newIndex];
+    const otherPosition = otherBanner.position || 0;
+    
+    try {
+      await Promise.all([
+        updateHeroBannerPosition(id, otherPosition),
+        updateHeroBannerPosition(otherBanner.id, currentPosition)
+      ]);
+      
+      queryClient.invalidateQueries({ queryKey: ["hero-banners"] });
+      
+      toast({
+        title: "Success",
+        description: "Banner position updated successfully",
+      });
+    } catch (error) {
+      console.error('Error updating banner position:', error);
+      toast({
+        variant: "destructive",
+        title: "Update Failed",
+        description: "There was an error updating the banner position.",
+      });
+    }
+  };
+
   return (
     <div className="container mx-auto py-6">
       <div className="flex justify-between items-center mb-6">
@@ -463,6 +623,7 @@ const AdminPanel: React.FC = () => {
         <TabsList className="mb-4">
           <TabsTrigger value="products">Products</TabsTrigger>
           <TabsTrigger value="images">Product Images</TabsTrigger>
+          <TabsTrigger value="hero-banners">Hero Banners</TabsTrigger>
         </TabsList>
         
         <TabsContent value="products">
@@ -656,6 +817,75 @@ const AdminPanel: React.FC = () => {
             </div>
           </div>
         </TabsContent>
+        
+        <TabsContent value="hero-banners">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle>Hero Banners</CardTitle>
+              <Button onClick={handleHeroUploadClick}>
+                <Plus className="mr-1 h-4 w-4" />
+                Add Banner
+              </Button>
+            </CardHeader>
+            <CardContent>
+              {isLoadingHeroBanners ? (
+                <div className="text-center py-8 text-gray-500">
+                  Loading hero banners...
+                </div>
+              ) : heroBanners.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  No hero banners found. Add some banners to display in the hero slider.
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {heroBanners
+                    .sort((a, b) => (a.position || 0) - (b.position || 0))
+                    .map((banner) => (
+                      <div key={banner.id} className="border rounded-md overflow-hidden">
+                        <div className="relative h-40">
+                          <img 
+                            src={banner.image} 
+                            alt={banner.alt} 
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="p-3">
+                          <p className="text-sm truncate mb-2">{banner.alt}</p>
+                          <div className="flex justify-between items-center">
+                            <div className="space-x-1">
+                              <Button 
+                                size="sm" 
+                                variant="outline"
+                                onClick={() => handleMoveHeroBanner(banner.id, banner.position || 0, 'up')}
+                                disabled={banner === heroBanners.sort((a, b) => (a.position || 0) - (b.position || 0))[0]}
+                              >
+                                <ArrowUp className="h-4 w-4" />
+                              </Button>
+                              <Button 
+                                size="sm" 
+                                variant="outline"
+                                onClick={() => handleMoveHeroBanner(banner.id, banner.position || 0, 'down')}
+                                disabled={banner === heroBanners.sort((a, b) => (a.position || 0) - (b.position || 0))[heroBanners.length - 1]}
+                              >
+                                <ArrowDown className="h-4 w-4" />
+                              </Button>
+                            </div>
+                            <Button 
+                              size="sm" 
+                              variant="destructive"
+                              onClick={() => handleDeleteHeroBanner(banner.id, banner.image)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
       </Tabs>
 
       <Dialog open={isUploadDialogOpen} onOpenChange={setIsUploadDialogOpen}>
@@ -829,6 +1059,60 @@ const AdminPanel: React.FC = () => {
               disabled={creatingProduct || !newProduct.name || !newProduct.description || !newProduct.price}
             >
               {creatingProduct ? "Creating..." : "Create Product"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Hero Banner Upload Dialog */}
+      <Dialog open={isHeroUploadDialogOpen} onOpenChange={setIsHeroUploadDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Upload New Hero Banner</DialogTitle>
+            <DialogDescription>
+              Upload a new image for the hero banner slider. 
+              Recommended size: 1920x600 pixels or similar aspect ratio.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div>
+              <label htmlFor="hero-image" className="block text-sm font-medium mb-1">
+                Select Image (PNG, JPG, GIF)
+              </label>
+              <Input
+                id="hero-image"
+                type="file"
+                accept="image/*"
+                onChange={handleHeroFileChange}
+                disabled={uploadingHero}
+              />
+            </div>
+            <div>
+              <label htmlFor="hero-alt" className="block text-sm font-medium mb-1">
+                Alt Text
+              </label>
+              <Input
+                id="hero-alt"
+                placeholder="Image description"
+                value={heroAlt}
+                onChange={(e) => setHeroAlt(e.target.value)}
+                disabled={uploadingHero}
+              />
+            </div>
+          </div>
+          <div className="flex justify-end gap-2">
+            <Button 
+              variant="outline" 
+              onClick={() => setIsHeroUploadDialogOpen(false)}
+              disabled={uploadingHero}
+            >
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleUploadHeroBanner}
+              disabled={!heroUploadFile || !heroAlt || uploadingHero}
+            >
+              {uploadingHero ? "Uploading..." : "Upload"}
             </Button>
           </div>
         </DialogContent>

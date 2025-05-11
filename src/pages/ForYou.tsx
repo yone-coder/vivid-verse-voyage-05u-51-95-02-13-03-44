@@ -2,7 +2,7 @@
 import React from "react";
 import { fetchAllProducts } from "@/integrations/supabase/products";
 import { useQuery } from "@tanstack/react-query";
-import HeroBannerSection from "@/components/home/HeroBanner";
+import HeroBannerSection from "@/components/HeroBanner";
 import PageSkeleton from "@/components/skeletons/PageSkeleton";
 import SuperDealsSection from "@/components/home/SuperDealsSection";
 import SecondaryHeroBanner from "@/components/home/SecondaryHeroBanner";
@@ -19,6 +19,7 @@ import Newsletter from "@/components/home/Newsletter";
 import LogoutButton from "@/components/auth/LogoutButton";
 import PopularSearches from "@/components/home/PopularSearches";
 import TranslationExample from "@/components/home/TranslationExample";
+import NewArrivals from "@/components/home/NewArrivals";
 
 export default function ForYou() {
   const { data: products, isLoading } = useQuery({
@@ -46,7 +47,7 @@ export default function ForYou() {
         <FlashDeals />
         
         {/* Pass products array safely */}
-        {Array.isArray(products) && (
+        {Array.isArray(products) && products.length > 0 && (
           <SuperDealsSection 
             products={products} 
             isLoading={isLoading} 
@@ -59,7 +60,7 @@ export default function ForYou() {
         <TopBrands />
         
         {/* Pass products array safely */}
-        {Array.isArray(products) && (
+        {Array.isArray(products) && products.length > 0 && (
           <VendorProductCarousel 
             title="Technology" 
             products={products.slice(0, 10)} 
@@ -72,10 +73,15 @@ export default function ForYou() {
         <TopVendorsCompact />
         
         <div className="bg-white mb-1">
-          {Array.isArray(products) && (
+          {Array.isArray(products) && products.length > 0 && (
             <ProductRecommendations products={products} />
           )}
         </div>
+        
+        {/* New Arrivals section */}
+        {Array.isArray(products) && products.length > 0 && (
+          <NewArrivals products={products.slice(0, 4)} />
+        )}
         
         <Newsletter />
       </div>
