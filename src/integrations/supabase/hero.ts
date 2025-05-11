@@ -1,5 +1,6 @@
 
 import { supabase } from './client';
+import { getPublicUrl } from './setupStorage';
 
 export interface HeroBanner {
   id: string;
@@ -26,7 +27,20 @@ export const fetchHeroBanners = async (): Promise<HeroBanner[]> => {
       return [];
     }
     
-    return data || [];
+    // Transform the data to ensure image URLs are properly formatted
+    const banners = data?.map(banner => {
+      // Check if the image is a full URL or just a path
+      if (banner.image && !banner.image.startsWith('http') && !banner.image.startsWith('/lovable-uploads')) {
+        // Assume it's a path in the hero-banners bucket
+        return {
+          ...banner,
+          image: getPublicUrl('hero-banners', banner.image)
+        };
+      }
+      return banner;
+    }) || [];
+    
+    return banners;
   } catch (error) {
     console.error('Error in fetchHeroBanners:', error);
     return [];

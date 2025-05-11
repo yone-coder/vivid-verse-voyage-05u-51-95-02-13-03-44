@@ -17,17 +17,18 @@ export default function HeroBanner() {
   const slideDuration = 5000;
   const newsDuration = 4000;
 
+  // Initialize storage buckets if needed
+  useEffect(() => {
+    setupStorageBuckets();
+  }, []);
+
   // Fetch banners from Supabase
   const { data: banners, isLoading } = useQuery({
     queryKey: ["hero-banners"],
     queryFn: fetchHeroBanners,
     staleTime: 60000, // 1 minute
+    refetchInterval: 300000, // 5 minutes - to pick up new banners
   });
-
-  // Initialize storage buckets if needed
-  useEffect(() => {
-    setupStorageBuckets();
-  }, []);
 
   // Fallback banners in case database is empty
   const fallbackBanners = [
@@ -53,6 +54,12 @@ export default function HeroBanner() {
 
   // Use banners from database or fallback banners
   const slidesToShow = banners?.length > 0 ? banners : fallbackBanners;
+  
+  // Log the banners we're using to help debug
+  useEffect(() => {
+    console.log("Banners data:", banners);
+    console.log("Using slides:", slidesToShow);
+  }, [banners, slidesToShow]);
 
   // News items for the ticker
   const newsItems = [
@@ -147,6 +154,10 @@ export default function HeroBanner() {
                   src={banner.image} 
                   alt={banner.alt || "Banner image"}
                   className="w-full h-full object-cover"
+                  onError={(e) => {
+                    console.error("Error loading image:", banner.image);
+                    (e.target as HTMLImageElement).src = "/placeholder.svg"; // Fallback image
+                  }}
                 />
               </div>
             );
