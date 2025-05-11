@@ -10,6 +10,8 @@ export interface Product {
   created_at?: string;
   updated_at?: string;
   product_images?: ProductImage[];
+  user_id?: string;
+  inventory?: number;
 }
 
 export interface ProductImage {
@@ -67,6 +69,37 @@ export const fetchProductById = async (id: string): Promise<Product | null> => {
   }
 };
 
+// Add the missing fetchUserProducts function
+export const fetchUserProducts = async (userId: string): Promise<Product[]> => {
+  try {
+    if (!userId) {
+      console.error('No user ID provided to fetchUserProducts');
+      return [];
+    }
+    
+    console.log(`Fetching products for user: ${userId}`);
+    
+    const { data, error } = await supabase
+      .from('products')
+      .select(`
+        *,
+        product_images(*)
+      `)
+      .eq('user_id', userId);
+      
+    if (error) {
+      console.error(`Error fetching products for user ${userId}:`, error);
+      return [];
+    }
+    
+    console.log(`Found ${data?.length || 0} products for user ${userId}`);
+    return data || [];
+  } catch (error) {
+    console.error(`Error in fetchUserProducts for user ${userId}:`, error);
+    return [];
+  }
+};
+
 // Subscribe to realtime changes - return cleanup function
 export const subscribeToProductChanges = (
   callback: () => void
@@ -98,6 +131,7 @@ export const createProduct = async (productData: {
   description: string;
   price: number;
   discount_price: number | null;
+  user_id?: string; // Add user_id to productData
 }): Promise<Product | null> => {
   try {
     // Need to explicitly type the response to avoid type errors

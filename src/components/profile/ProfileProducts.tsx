@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,26 +9,11 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
-import { fetchUserProducts } from "@/integrations/supabase/products";
+import { fetchUserProducts, Product } from "@/integrations/supabase/products";
 import { useQuery } from "@tanstack/react-query";
 
 interface ProfileProductsProps {
   user: any;
-}
-
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-  status: string;
-  inventory?: number;
-  image?: string;
-  sales?: number;
-  createdAt?: string;
-  created_at: string;
-  description?: string;
-  user_id: string;
-  product_images?: {id: string, src: string}[];
 }
 
 export default function ProfileProducts({ user }: ProfileProductsProps) {
@@ -45,22 +29,25 @@ export default function ProfileProducts({ user }: ProfileProductsProps) {
     enabled: !!user?.id,
   });
   
+  console.log("User products loaded:", products);
+  
   // Transform products from the database to match our component's expected format
-  const transformedProducts: Product[] = products.map((product: any) => ({
+  const transformedProducts: Product[] = products.map((product: Product) => ({
     id: product.id,
     name: product.name,
     price: product.price,
     description: product.description,
-    status: product.inventory <= 0 ? "out_of_stock" : "active", // Derive status
+    status: product.inventory && product.inventory <= 0 ? "out_of_stock" : "active", // Derive status
     inventory: product.inventory || 0,
     image: product.product_images?.length > 0 
       ? product.product_images[0].src 
       : `https://api.dicebear.com/7.x/shapes/svg?seed=product${product.id}`,
     sales: product.sales || 0,
-    createdAt: new Date(product.created_at).toLocaleDateString(),
-    created_at: product.created_at,
-    user_id: product.user_id,
-    product_images: product.product_images
+    createdAt: new Date(product.created_at || "").toLocaleDateString(),
+    created_at: product.created_at || "",
+    user_id: product.user_id || "",
+    product_images: product.product_images,
+    discount_price: product.discount_price
   }));
   
   const handleDeleteConfirm = () => {
