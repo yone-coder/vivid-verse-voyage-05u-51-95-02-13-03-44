@@ -1,7 +1,9 @@
+
 // English translations (default)
 const en = {
   home: {
     forYou: "For You",
+    recommendations: "For You", // Added this key for compatibility
     posts: "Posts",
     shops: "Shops",
     trending: "Trending",
@@ -53,6 +55,7 @@ const en = {
 const es = {
   home: {
     forYou: "Para Ti",
+    recommendations: "Para Ti", // Added this key for compatibility
     posts: "Publicaciones",
     shops: "Tiendas",
     trending: "Tendencias",
@@ -104,6 +107,7 @@ const es = {
 const fr = {
   home: {
     forYou: "Pour Vous",
+    recommendations: "Pour Vous", // Added this key for compatibility
     posts: "Publications",
     shops: "Boutiques",
     trending: "Tendances",
@@ -155,6 +159,7 @@ const fr = {
 const de = {
   home: {
     forYou: "Für Dich",
+    recommendations: "Für Dich", // Added this key for compatibility
     posts: "Beiträge",
     shops: "Geschäfte",
     trending: "Im Trend",
@@ -204,7 +209,10 @@ const de = {
 
 // Add minimal translations for other supported languages
 const it = {
-  home: { forYou: "Per Te" },
+  home: { 
+    forYou: "Per Te", 
+    recommendations: "Per Te", // Added this key for compatibility
+  },
   header: { language: "Lingua", location: "Posizione" },
   categories: {
     fashion: "Moda",
@@ -216,7 +224,10 @@ const it = {
 };
 
 const pt = {
-  home: { forYou: "Para Você" },
+  home: { 
+    forYou: "Para Você", 
+    recommendations: "Para Você", // Added this key for compatibility
+  },
   header: { language: "Idioma", location: "Localização" },
   categories: {
     fashion: "Moda",
@@ -228,7 +239,10 @@ const pt = {
 };
 
 const ru = {
-  home: { forYou: "Для вас" },
+  home: { 
+    forYou: "Для вас", 
+    recommendations: "Для вас", // Added this key for compatibility
+  },
   header: { language: "Язык", location: "Местоположение" },
   categories: {
     fashion: "Мода",
@@ -240,7 +254,10 @@ const ru = {
 };
 
 const zh = {
-  home: { forYou: "为您推荐" },
+  home: { 
+    forYou: "为您推荐", 
+    recommendations: "为您推荐", // Added this key for compatibility
+  },
   header: { language: "语言", location: "位置" },
   categories: {
     fashion: "时尚",
@@ -252,7 +269,10 @@ const zh = {
 };
 
 const ja = {
-  home: { forYou: "あなたへ" },
+  home: { 
+    forYou: "あなたへ", 
+    recommendations: "あなたへ", // Added this key for compatibility
+  },
   header: { language: "言語", location: "場所" },
   categories: {
     fashion: "ファッション",
@@ -264,7 +284,10 @@ const ja = {
 };
 
 const ko = {
-  home: { forYou: "회원님을 위한 추천" },
+  home: { 
+    forYou: "회원님을 위한 추천", 
+    recommendations: "회원님을 위한 추천", // Added this key for compatibility
+  },
   header: { language: "언어", location: "위치" },
   categories: {
     fashion: "패션",
