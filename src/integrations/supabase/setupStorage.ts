@@ -52,6 +52,21 @@ export const setupStorageBuckets = async () => {
       }
     } else {
       console.log('Hero banners bucket already exists');
+      
+      // Update bucket to be public if it exists
+      try {
+        const { error: updateError } = await supabase
+          .storage
+          .updateBucket('hero-banners', {
+            public: true,
+          });
+        
+        if (!updateError) {
+          console.log('Updated hero-banners bucket to be public');
+        }
+      } catch (e) {
+        console.error('Failed to update hero-banners bucket visibility:', e);
+      }
     }
     
     // Check for product-images bucket and create it if it doesn't exist
@@ -81,6 +96,21 @@ export const setupStorageBuckets = async () => {
       }
     } else {
       console.log('Product images bucket already exists');
+      
+      // Update bucket to be public if it exists
+      try {
+        const { error: updateError } = await supabase
+          .storage
+          .updateBucket('product-images', {
+            public: true,
+          });
+        
+        if (!updateError) {
+          console.log('Updated product-images bucket to be public');
+        }
+      } catch (e) {
+        console.error('Failed to update product-images bucket visibility:', e);
+      }
     }
   } catch (error) {
     console.error('Error setting up storage buckets:', error);

@@ -5,6 +5,7 @@ import { setupStorageBuckets } from "@/integrations/supabase/setupStorage";
 import { ChevronLeft, ChevronRight, AlertCircle, TrendingUp, Clock, Newspaper } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "sonner";
+import BannerImage from "@/components/hero/BannerImage";
 
 // News items for the ticker
 const newsItems = [
@@ -34,12 +35,12 @@ export default function HeroBanner() {
     initStorage();
   }, []);
 
-  // Fetch banners from Supabase
+  // Fetch banners from Supabase with a shorter cache time for testing
   const { data: banners, isLoading, error, refetch } = useQuery({
     queryKey: ["hero-banners"],
     queryFn: fetchHeroBanners,
-    staleTime: 30000, // 30 seconds - reduced for testing
-    refetchInterval: 60000, // 1 minute - reduced for testing
+    staleTime: 5000, // 5 seconds - reduced for testing
+    refetchInterval: 10000, // 10 seconds - reduced for testing
   });
 
   // Show error if we failed to fetch banners
@@ -146,7 +147,7 @@ export default function HeroBanner() {
     setActiveIndex(index);
   };
 
-  // Manual refetch button for debugging - will be hidden in production
+  // Manual refetch button for debugging
   const debugRefetch = () => {
     console.log("Manual refetch triggered");
     refetch();
@@ -165,15 +166,13 @@ export default function HeroBanner() {
   return (
     <>
       <div className="relative mt-[44px] overflow-hidden">
-        {/* Debug button - only visible during development */}
-        {process.env.NODE_ENV !== 'production' && (
-          <button 
-            onClick={debugRefetch}
-            className="absolute top-0 right-0 z-50 bg-blue-500 text-white px-2 py-1 text-xs"
-          >
-            Refresh Banners
-          </button>
-        )}
+        {/* Always show debug button during development */}
+        <button 
+          onClick={debugRefetch}
+          className="absolute top-0 right-0 z-50 bg-blue-500 text-white px-2 py-1 text-xs"
+        >
+          Refresh Banners
+        </button>
         
         <div className="relative h-[180px] md:h-[250px] lg:h-[300px]">
           {/* Banner Images */}
@@ -189,16 +188,10 @@ export default function HeroBanner() {
                   isPrevious ? "-translate-y-full z-0" : "translate-y-full z-0"
                 }`}
               >
-                <img 
+                <BannerImage
                   src={banner.image} 
                   alt={banner.alt || "Banner image"}
                   className="w-full h-full object-cover"
-                  onLoad={() => console.log(`Banner image loaded successfully: ${banner.image}`)}
-                  onError={(e) => {
-                    console.error(`Error loading image: ${banner.image}`);
-                    console.error("Error details:", e);
-                    (e.target as HTMLImageElement).src = "/placeholder.svg"; // Fallback image
-                  }}
                 />
               </div>
             );

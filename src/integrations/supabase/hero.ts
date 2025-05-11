@@ -1,4 +1,3 @@
-
 import { supabase } from './client';
 import { getPublicUrl } from './setupStorage';
 
@@ -84,10 +83,29 @@ export const createHeroBanner = async (banner: {
 
     console.log('Creating hero banner with data:', banner);
 
+    // For debugging - extract the filename from the image URL if it's a storage URL
+    let storageImagePath = banner.image;
+    if (storageImagePath.includes('storage/v1/object/public/')) {
+      try {
+        // Extract just the filename for storage
+        const urlObj = new URL(storageImagePath);
+        const pathParts = urlObj.pathname.split('/');
+        // The last part should be the filename
+        storageImagePath = pathParts[pathParts.length - 1];
+        console.log('Extracted storage path:', storageImagePath);
+      } catch (e) {
+        console.error('Failed to parse storage URL:', e);
+      }
+    }
+
     // Need to explicitly type the response to avoid type errors
     const { data, error } = await supabase
       .from('hero_banners')
-      .insert(banner)
+      .insert({
+        ...banner,
+        // Use the extracted path if it's a storage URL
+        image: storageImagePath
+      })
       .select()
       .single() as {
         data: HeroBanner | null;
