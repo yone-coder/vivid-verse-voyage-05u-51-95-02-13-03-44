@@ -3,7 +3,7 @@ import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 /**
- * Custom hook to check if an email exists in the system
+ * Custom hook to check if an email exists in the Supabase auth system
  * This improves email verification reliability by handling various edge cases
  */
 export const useEmailCheck = () => {
@@ -22,7 +22,7 @@ export const useEmailCheck = () => {
     try {
       console.log("Checking if email exists:", email);
       
-      // Method 1: Check profiles table first
+      // First try: Check profiles table - most reliable if user exists
       try {
         const { data, error } = await supabase
           .from('profiles')
@@ -30,6 +30,7 @@ export const useEmailCheck = () => {
           .ilike('email', email) // Use case-insensitive comparison
           .maybeSingle();
         
+        // If profile exists, user definitely exists
         if (!error && data) {
           console.log("Email found in profiles table:", email);
           setEmailVerified(true);
@@ -38,82 +39,76 @@ export const useEmailCheck = () => {
         }
       } catch (err) {
         console.error("Profile check error:", err);
+        // Continue to other methods if this fails
       }
-      
-      // Method 2: Try using OTP method to check if email exists
+
+      // Second try: Better password login check - most reliable distinction
       try {
-        const { error } = await supabase.auth.signInWithOtp({
+        // Try a fake password login - will return different errors based on if user exists
+        const { error } = await supabase.auth.signInWithPassword({
           email,
-          options: { shouldCreateUser: false }
+          password: "check_email_exists_" + Math.random().toString(36).substring(2, 9)
         });
         
-        if (!error) {
-          console.log("Email exists (OTP method):", email);
-          setEmailVerified(true);
-          setIsCheckingEmail(false);
-          return true;
-        }
-
-        if (error?.message) {
-          // Look for specific error messages that indicate the user exists
-          if (error.message.includes("Email not confirmed")) {
-            console.log("Email exists but not confirmed:", email);
+        if (error) {
+          // User exists but invalid credentials
+          if (error.message && (
+              error.message.includes("Invalid login credentials") || 
+              error.message.includes("Email not confirmed") ||
+              error.message.includes("Invalid email or password")
+            )) {
+            console.log("Email exists (password check):", email);
             setEmailVerified(true);
             setIsCheckingEmail(false);
             return true;
           }
           
-          // Messages that clearly indicate the user doesn't exist
-          if (error.message.includes("User not found") || 
-              error.message.includes("Invalid login credentials")) {
-            console.log("User not found in auth system:", email);
+          // This is the key improvement - "User not found" indicates the email is not registered
+          if (error.message && error.message.includes("User not found")) {
+            console.log("Email does not exist (user not found):", email);
             setEmailVerified(false);
             setIsCheckingEmail(false);
             return false;
           }
         }
       } catch (err) {
-        console.error("OTP check error:", err);
+        console.error("Login check error:", err);
+        // Continue to final method
       }
-      
-      // Method 3: Final fallback - try auth API with invalid password
+
+      // Third try: OTP method - last resort
       try {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { error } = await supabase.auth.signInWithOtp({
           email,
-          password: "check_if_email_exists_" + Math.random().toString(36).substr(2, 9)
+          options: { shouldCreateUser: false }
         });
         
-        if (error?.message) {
-          // "Invalid login credentials" means the user exists but password is wrong
-          if (error.message.includes("Invalid login credentials")) {
-            console.log("Email exists (password method):", email);
-            setEmailVerified(true);
-            setIsCheckingEmail(false);
-            return true;
-          } 
-          
-          // "Email not confirmed" means user exists but hasn't confirmed email
-          if (error.message.includes("Email not confirmed")) {
-            console.log("Email exists but not confirmed:", email);
-            setEmailVerified(true);
-            setIsCheckingEmail(false);
-            return true;
-          }
-          
-          // For other error messages, assume user doesn't exist
-          console.log("Other auth error for email:", email, error.message);
+        // Error indicates OTP couldn't be sent - usually because user doesn't exist
+        if (error && (
+            error.message.includes("User not found") || 
+            error.message.includes("Unable to validate email address")
+          )) {
+          console.log("Email not found (OTP method):", email);
           setEmailVerified(false);
           setIsCheckingEmail(false);
           return false;
         }
+        
+        // No error generally means OTP was sent - user probably exists
+        if (!error) {
+          console.log("Email exists (OTP sent successfully):", email);
+          setEmailVerified(true);
+          setIsCheckingEmail(false);
+          return true;
+        }
       } catch (err) {
-        console.error("Login check error:", err);
+        console.error("OTP check error:", err);
       }
       
-      // If we've reached this point with no conclusive result,
+      // If we've reached this point without a conclusive result,
       // conservatively assume the user doesn't exist
       console.log("Email verification inconclusive, assuming new user:", email);
-      setEmailVerified(false); // Important: Default to false for unregistered emails
+      setEmailVerified(false);
       setIsCheckingEmail(false);
       return false;
     } catch (error) {
