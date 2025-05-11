@@ -1,5 +1,6 @@
 
 import { supabase } from './client';
+import { PostgrestFilterBuilder } from '@supabase/supabase-js';
 
 export interface Product {
   id: string;
@@ -9,7 +10,7 @@ export interface Product {
   discount_price?: number;
   created_at?: string;
   updated_at?: string;
-  user_id?: string | null;
+  user_id?: string;
   product_images?: ProductImage[];
 }
 
@@ -81,7 +82,7 @@ export const fetchUserProducts = async (userId: string): Promise<Product[]> => {
 
 export const searchProducts = async (query: string): Promise<Product[]> => {
   try {
-    let searchBuilder = supabase
+    let searchBuilder: PostgrestFilterBuilder<any, any, any> = supabase
       .from('products')
       .select('*, product_images(*)');
       

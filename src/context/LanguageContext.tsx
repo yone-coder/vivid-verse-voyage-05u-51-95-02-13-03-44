@@ -2,7 +2,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { Language, Location, LanguageContextType } from '@/types/language';
 import { translations } from '@/translations';
-import { translateText } from '@/services/translationService';
 
 // Default supported languages
 export const supportedLanguages: Language[] = [
@@ -35,9 +34,6 @@ export const supportedLocations: Location[] = [
 // Create the context
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-// Store for dynamic translations that were fetched from Google Translate
-const dynamicTranslationsCache: Record<string, Record<string, string>> = {};
-
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Try to get stored preferences or use defaults
   const [currentLanguage, setCurrentLanguage] = useState<Language>(() => {
@@ -62,9 +58,6 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     // Default to US if no preference
     return supportedLocations[0];
   });
-
-  // Add a loading state for translations
-  const [isTranslating, setIsTranslating] = useState(false);
   
   // Save preferences to localStorage when they change
   useEffect(() => {
@@ -90,24 +83,8 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setCurrentLocation(location);
   };
 
-  // Check if we have a cached translation
-  const getCachedTranslation = (key: string, langCode: string): string | null => {
-    if (dynamicTranslationsCache[langCode] && dynamicTranslationsCache[langCode][key]) {
-      return dynamicTranslationsCache[langCode][key];
-    }
-    return null;
-  };
-
-  // Add a translation to the cache
-  const cacheTranslation = (key: string, langCode: string, translation: string): void => {
-    if (!dynamicTranslationsCache[langCode]) {
-      dynamicTranslationsCache[langCode] = {};
-    }
-    dynamicTranslationsCache[langCode][key] = translation;
-  };
-
   // Translation function
-  const t = async (key: string, params?: Record<string, string>): Promise<string> => {
+  const t = (key: string, params?: Record<string, string>) => {
     // Get translations for current language
     const currentTranslations = translations[currentLanguage.code] || translations.en;
     
@@ -131,80 +108,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
               break;
             }
           }
-          
-          if (fallback && typeof fallback === 'string') {
-            translatedText = fallback;
-            
-            // Try to get a cached dynamic translation
-            const cachedTranslation = getCachedTranslation(fallback, currentLanguage.code);
-            if (cachedTranslation) {
-              translatedText = cachedTranslation;
-            } else {
-              // Use Google Translate API for missing translations
-              try {
-                setIsTranslating(true);
-                const translated = await translateText(fallback, currentLanguage.code);
-                cacheTranslation(fallback, currentLanguage.code, translated);
-                translatedText = translated;
-              } catch (error) {
-                console.error('Translation error:', error);
-              } finally {
-                setIsTranslating(false);
-              }
-            }
-          } else {
-            translatedText = key;
-          }
-        } else {
-          translatedText = key;
-        }
-        break;
-      }
-    }
-    
-    // Replace parameters if provided
-    if (params && typeof translatedText === 'string') {
-      Object.entries(params).forEach(([paramKey, paramValue]) => {
-        translatedText = translatedText.replace(new RegExp(`{{${paramKey}}}`, 'g'), paramValue);
-      });
-    }
-    
-    return typeof translatedText === 'string' ? translatedText : key;
-  };
-
-  // Synchronous version for cases where async cannot be used
-  const tSync = (key: string, params?: Record<string, string>): string => {
-    // Get translations for current language
-    const currentTranslations = translations[currentLanguage.code] || translations.en;
-    
-    // Get the translation string
-    let parts = key.split('.');
-    let translatedText: any = currentTranslations;
-    
-    // Traverse the translations object to find the right key
-    for (let part of parts) {
-      if (translatedText && typeof translatedText === 'object' && part in translatedText) {
-        translatedText = translatedText[part];
-      } else {
-        // If key doesn't exist in current language, try English as fallback
-        if (currentLanguage.code !== 'en') {
-          let fallback = translations.en;
-          for (let p of parts) {
-            if (fallback && typeof fallback === 'object' && p in fallback) {
-              fallback = fallback[p];
-            } else {
-              fallback = null;
-              break;
-            }
-          }
-          
-          // Check if we have a cached dynamic translation
-          if (fallback && typeof fallback === 'string') {
-            const cachedTranslation = getCachedTranslation(fallback, currentLanguage.code);
-            translatedText = cachedTranslation || fallback;
-          } else {
-            translatedText = key;
-          }
+          translatedText = fallback || key;
         } else {
           translatedText = key;
         }
@@ -234,15 +138,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   }, []);
   
   return (
-    <LanguageContext.Provider value={{ 
-      currentLanguage, 
-      setLanguage, 
-      currentLocation, 
-      setLocation, 
-      t: tSync, 
-      tAsync: t,
-      isTranslating 
-    }}>
+    <LanguageContext.Provider value={{ currentLanguage, setLanguage, currentLocation, setLocation, t }}>
       {children}
     </LanguageContext.Provider>
   );

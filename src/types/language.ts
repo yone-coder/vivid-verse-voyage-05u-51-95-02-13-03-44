@@ -18,6 +18,4 @@ export interface LanguageContextType {
   currentLocation: Location;
   setLocation: (location: Location) => void;
   t: (key: string, params?: Record<string, string>) => string;
-  tAsync: (key: string, params?: Record<string, string>) => Promise<string>;
-  isTranslating: boolean;
 }
