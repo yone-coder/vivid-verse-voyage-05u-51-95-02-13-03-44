@@ -16,9 +16,9 @@ const AuthFooter = ({ children }: AuthFooterProps) => {
             <span className="text-xs text-gray-500 font-medium">Secure Authentication</span>
           </div>
           <span className="text-xs text-[#888]">
-            By continuing, you agree to our{' '}
+            By proceeding, you confirm that you've read and agree to our{' '}
             <a href="/terms" className="text-red-600 hover:text-red-700 font-medium border-b border-red-200 hover:border-red-500 transition-colors">
-              Terms
+              Terms of Service
             </a>{' '}
             and{' '}
             <a href="/privacy" className="text-red-600 hover:text-red-700 font-medium border-b border-red-200 hover:border-red-500 transition-colors">
