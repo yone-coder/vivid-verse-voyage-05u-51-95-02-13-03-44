@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback } from 'react';
 import { useQuery } from "@tanstack/react-query";
 import { fetchHeroBanners } from "@/integrations/supabase/hero";
@@ -36,7 +37,7 @@ export default function HeroBanner() {
   }, []);
 
   // Fetch banners from Supabase with a shorter cache time for testing
-  const { data: banners, isLoading, error, refetch } = useQuery({
+  const { data: banners = [], isLoading, error, refetch } = useQuery({
     queryKey: ["hero-banners"],
     queryFn: fetchHeroBanners,
     staleTime: 5000, // 5 seconds - reduced for testing
@@ -68,31 +69,6 @@ export default function HeroBanner() {
     }
   }, [banners]);
 
-  // Fallback banners in case database is empty
-  const fallbackBanners = [
-    {
-      id: "1",
-      image: "/lovable-uploads/2102d3a1-ec6e-4c76-8ee0-549c3ae3d54e.png",
-      alt: "Banner 1",
-      position: 0
-    },
-    {
-      id: "2",
-      image: "/lovable-uploads/4dbaee7c-2ac5-4a1b-9f9b-121275273e79.png",
-      alt: "Banner 2",
-      position: 1
-    },
-    {
-      id: "3",
-      image: "/lovable-uploads/dd1cad7b-c3b6-43a6-9bc6-deb38a120604.png",
-      alt: "Banner 3",
-      position: 2
-    }
-  ];
-
-  // Use banners from database or fallback banners
-  const slidesToShow = banners?.length > 0 ? banners : fallbackBanners;
-
   // Set up intervals for banner rotation and progress tracking
   useEffect(() => {
     let intervalRef: ReturnType<typeof setInterval> | null = null;
@@ -111,17 +87,19 @@ export default function HeroBanner() {
       intervalRef = setInterval(() => {
         setProgress(0);
         setPreviousIndex(activeIndex);
-        setActiveIndex(current => (current + 1) % slidesToShow.length);
+        setActiveIndex(current => (current + 1) % (banners.length || 1));
       }, slideDuration);
     };
 
-    startSlideTimer();
+    if (banners.length > 0) {
+      startSlideTimer();
+    }
     
     return () => {
-      clearInterval(intervalRef as ReturnType<typeof setInterval>);
-      clearInterval(progressIntervalRef as ReturnType<typeof setInterval>);
+      if (intervalRef) clearInterval(intervalRef);
+      if (progressIntervalRef) clearInterval(progressIntervalRef);
     };
-  }, [activeIndex, slidesToShow.length]);
+  }, [activeIndex, banners.length]);
 
   // Set up interval for news ticker
   useEffect(() => {
@@ -138,7 +116,7 @@ export default function HeroBanner() {
     startNewsTimer();
 
     return () => {
-      clearInterval(newsIntervalRef as ReturnType<typeof setInterval>);
+      if (newsIntervalRef) clearInterval(newsIntervalRef);
     };
   }, [activeNewsIndex]);
 
@@ -163,10 +141,27 @@ export default function HeroBanner() {
     );
   }
 
+  // If no banners are available from Supabase, show a placeholder
+  if (!banners || banners.length === 0) {
+    return (
+      <div className="relative mt-[44px] bg-gray-100 h-[60vh] min-h-[400px] max-h-[600px] flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-gray-500 mb-2">No banner images found</div>
+          <button
+            onClick={debugRefetch}
+            className="px-4 py-2 bg-blue-500 text-white rounded-md text-sm"
+          >
+            Refresh Banners
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="relative mt-[44px] overflow-hidden">
-        {/* Always show debug button during development */}
+        {/* Debug button for development */}
         <button 
           onClick={debugRefetch}
           className="absolute top-0 right-0 z-50 bg-blue-500 text-white px-2 py-1 text-xs"
@@ -175,8 +170,8 @@ export default function HeroBanner() {
         </button>
         
         <div className="relative h-[180px] md:h-[250px] lg:h-[300px]">
-          {/* Banner Images */}
-          {slidesToShow.map((banner, index) => {
+          {/* Banner Images - Only showing images from Supabase */}
+          {banners.map((banner, index) => {
             const isActive = index === activeIndex;
             const isPrevious = index === previousIndex;
             
@@ -199,13 +194,13 @@ export default function HeroBanner() {
         </div>
 
         {/* Navigation Controls */}
-        {!isMobile && (
+        {!isMobile && banners.length > 1 && (
           <>
             <button 
               className="absolute left-6 top-1/2 -translate-y-1/2 rounded-full p-2 bg-white/80 hover:bg-white hidden md:flex items-center justify-center z-20"
               onClick={() => {
                 setPreviousIndex(activeIndex);
-                setActiveIndex((current) => (current - 1 + slidesToShow.length) % slidesToShow.length);
+                setActiveIndex((current) => (current - 1 + banners.length) % banners.length);
               }}
             >
               <ChevronLeft className="h-4 w-4" />
@@ -214,7 +209,7 @@ export default function HeroBanner() {
               className="absolute right-6 top-1/2 -translate-y-1/2 rounded-full p-2 bg-white/80 hover:bg-white hidden md:flex items-center justify-center z-20"
               onClick={() => {
                 setPreviousIndex(activeIndex);
-                setActiveIndex((current) => (current + 1) % slidesToShow.length);
+                setActiveIndex((current) => (current + 1) % banners.length);
               }}
             >
               <ChevronRight className="h-4 w-4" />
@@ -223,26 +218,28 @@ export default function HeroBanner() {
         )}
 
         {/* Animated Dots */}
-        <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5">
-          {slidesToShow.map((_, index) => (
-            <button
-              key={index}
-              className="relative h-1 rounded-full bg-gray-300 w-5 overflow-hidden"
-              onClick={() => handleDotClick(index)}
-            >
-              <div className="absolute inset-0 bg-gray-300 rounded-full"></div>
-              {activeIndex === index && (
-                <div
-                  className="absolute inset-0 bg-orange-500 rounded-full origin-left"
-                  style={{
-                    width: `${progress}%`,
-                    transition: 'width 0.05s linear'
-                  }}
-                ></div>
-              )}
-            </button>
-          ))}
-        </div>
+        {banners.length > 1 && (
+          <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5">
+            {banners.map((_, index) => (
+              <button
+                key={index}
+                className="relative h-1 rounded-full bg-gray-300 w-5 overflow-hidden"
+                onClick={() => handleDotClick(index)}
+              >
+                <div className="absolute inset-0 bg-gray-300 rounded-full"></div>
+                {activeIndex === index && (
+                  <div
+                    className="absolute inset-0 bg-orange-500 rounded-full origin-left"
+                    style={{
+                      width: `${progress}%`,
+                      transition: 'width 0.05s linear'
+                    }}
+                  ></div>
+                )}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Smooth Vertical Sliding News Banner */}

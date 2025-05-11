@@ -1,4 +1,3 @@
-
 import { supabase } from './client';
 
 export interface Product {
@@ -12,6 +11,8 @@ export interface Product {
   product_images?: ProductImage[];
   user_id?: string;
   inventory?: number;
+  sales?: number; // Add missing property
+  status?: string; // Add missing property
 }
 
 export interface ProductImage {

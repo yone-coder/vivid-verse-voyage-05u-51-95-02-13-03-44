@@ -27,6 +27,24 @@ const BannerImage: React.FC<BannerImageProps> = ({ src, alt, className = "" }) =
     setLoaded(true);
   };
   
+  // Validate image source is from Supabase storage
+  const isValidSource = src && (
+    src.includes('supabase.co/storage/v1') || 
+    src.startsWith('https://') || 
+    src.startsWith('http://')
+  );
+  
+  if (!isValidSource) {
+    return (
+      <div className={`flex items-center justify-center bg-gray-200 ${className}`}>
+        <div className="text-center p-4">
+          <span className="text-gray-500 block">Invalid image source</span>
+          <span className="text-xs text-gray-400 block mt-1">{src || 'No source provided'}</span>
+        </div>
+      </div>
+    );
+  }
+  
   return (
     <>
       {error ? (

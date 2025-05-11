@@ -45,7 +45,7 @@ export const fetchHeroBanners = async (): Promise<HeroBanner[]> => {
       // If the image already starts with http or https, assume it's a complete URL
       if (imageUrl && !imageUrl.startsWith('http') && !imageUrl.startsWith('/lovable-uploads')) {
         try {
-          // Assume it's a path in the hero-banners bucket
+          // Get public URL from Supabase storage
           imageUrl = getPublicUrl('hero-banners', imageUrl);
           console.log(`Transformed image URL for ${banner.id}: ${banner.image} -> ${imageUrl}`);
         } catch (err) {
@@ -53,11 +53,17 @@ export const fetchHeroBanners = async (): Promise<HeroBanner[]> => {
         }
       }
       
+      // Remove any fallback to local uploads - only use Supabase storage
+      if (imageUrl && imageUrl.startsWith('/lovable-uploads')) {
+        console.log(`Skipping local image: ${imageUrl}`);
+        return null;
+      }
+      
       return {
         ...banner,
         image: imageUrl
       };
-    });
+    }).filter(Boolean) as HeroBanner[]; // Filter out null values
     
     console.log('Transformed hero banners:', banners);
     return banners;

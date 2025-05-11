@@ -40,13 +40,12 @@ export const setupStorageBuckets = async () => {
       const { error: createError } = await supabase
         .storage
         .createBucket('hero-banners', {
-          public: true,
+          public: true, // Make sure bucket is public
           fileSizeLimit: 10485760, // 10MB
         });
       
       if (createError) {
         console.error('Error creating hero-banners bucket:', createError);
-        console.log('Note: You may need to enable bucket creation in your Supabase RLS policies');
       } else {
         console.log('Successfully created hero-banners bucket');
       }
@@ -58,11 +57,13 @@ export const setupStorageBuckets = async () => {
         const { error: updateError } = await supabase
           .storage
           .updateBucket('hero-banners', {
-            public: true,
+            public: true, // Ensure bucket is public
           });
         
         if (!updateError) {
           console.log('Updated hero-banners bucket to be public');
+        } else {
+          console.error('Failed to update hero-banners bucket visibility:', updateError);
         }
       } catch (e) {
         console.error('Failed to update hero-banners bucket visibility:', e);
