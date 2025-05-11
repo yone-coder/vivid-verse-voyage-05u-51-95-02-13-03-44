@@ -163,12 +163,14 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
   // Auto-verify the email when valid and not focused
   useEffect(() => {
     if (isValid && !focused && !checking && !verifying && email.includes('@') && email.includes('.') && emailExists === null) {
-      // Delayed verification to prevent too many requests
+      // Clear any existing verification timeouts
       if (verificationTimeoutRef.current) {
         clearTimeout(verificationTimeoutRef.current);
       }
 
+      // Set up a new verification timeout with a slight delay
       verificationTimeoutRef.current = setTimeout(() => {
+        console.log("Auto-verifying email:", email);
         verifyEmailExists(email);
       }, 800);
     }
@@ -238,16 +240,28 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
     setErrorMessage(null);
     
     try {
-      // Use our improved email check hook
-      const exists = await checkEmailExists(emailToCheck);
-      setEmailExists(exists);
-      checkAttemptsRef.current = 0;
+      // Use our improved email check hook with a slight delay to ensure UI feedback is visible
+      setTimeout(async () => {
+        try {
+          const exists = await checkEmailExists(emailToCheck);
+          console.log("Email verification result:", emailToCheck, exists);
+          setEmailExists(exists);
+          checkAttemptsRef.current = 0;
+        } catch (err) {
+          console.error("Email verification error:", err);
+          setErrorMessage("Failed to verify email");
+          // Important: When verification fails, explicitly set to false
+          // This ensures we show the "!" icon rather than defaulting
+          setEmailExists(false);
+        } finally {
+          setVerifying(false);
+          setIsRetrying(false);
+        }
+      }, 600); // Short delay for better UX
     } catch (err) {
-      console.error("Email verification error:", err);
+      console.error("Email verification outer error:", err);
       setErrorMessage("Failed to verify email");
-      // Default to treating as new user on errors
       setEmailExists(false);
-    } finally {
       setVerifying(false);
       setIsRetrying(false);
     }

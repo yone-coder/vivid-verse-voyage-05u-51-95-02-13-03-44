@@ -113,7 +113,7 @@ export const useEmailCheck = () => {
       // If we've reached this point with no conclusive result,
       // conservatively assume the user doesn't exist
       console.log("Email verification inconclusive, assuming new user:", email);
-      setEmailVerified(false);
+      setEmailVerified(false); // Important: Default to false for unregistered emails
       setIsCheckingEmail(false);
       return false;
     } catch (error) {
