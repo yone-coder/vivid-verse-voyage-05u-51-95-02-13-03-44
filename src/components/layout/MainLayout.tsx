@@ -7,6 +7,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import AliExpressHeader from "@/components/home/AliExpressHeader";
 import { useAuthOverlay } from "@/context/AuthOverlayContext";
+import { LanguageProvider } from "@/context/LanguageContext";
 
 export default function MainLayout() {
   const isMobile = useIsMobile();
@@ -87,22 +88,24 @@ export default function MainLayout() {
   }, [location.pathname, openAuthOverlay]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
-      <style dangerouslySetInnerHTML={{ __html: headerHeightStyle }} />
+    <LanguageProvider>
+      <div className="min-h-screen flex flex-col bg-white">
+        <style dangerouslySetInnerHTML={{ __html: headerHeightStyle }} />
 
-      {/* AliExpress Header for home pages */}
-      {isHomePage && (
-        <AliExpressHeader activeTabId={getActiveTabFromRoute()} />
-      )}
+        {/* AliExpress Header for home pages */}
+        {isHomePage && (
+          <AliExpressHeader activeTabId={getActiveTabFromRoute()} />
+        )}
 
-      <main className="flex-grow relative">
-        <Outlet />
-      </main>
-      
-      {!isMobile && !isHomePage && !isReelsPage && !isProfilePage && <Footer />}
+        <main className="flex-grow relative">
+          <Outlet />
+        </main>
+        
+        {!isMobile && !isHomePage && !isReelsPage && !isProfilePage && <Footer />}
 
-      {/* Show bottom nav on mobile for home, reels, product pages, and profile pages */}
-      {isMobile && (isHomePage || isProductPage || isReelsPage || isProfilePage) && <IndexBottomNav />}
-    </div>
+        {/* Show bottom nav on mobile for home, reels, product pages, and profile pages */}
+        {isMobile && (isHomePage || isProductPage || isReelsPage || isProfilePage) && <IndexBottomNav />}
+      </div>
+    </LanguageProvider>
   );
 }

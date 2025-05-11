@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from 'react';
 import { useScrollProgress } from '@/hooks/useScrollProgress';
 import { Home, ShoppingBag, Users, Image, MessageSquare, Store } from 'lucide-react';
@@ -5,7 +6,7 @@ import HeaderSearchBar from './header/HeaderSearchBar';
 import CategoryTabs from './header/CategoryTabs';
 import CategoryPanel from './header/CategoryPanel';
 import VoiceSearchOverlay from './header/VoiceSearchOverlay';
-import HeaderLocation from './header/HeaderLocation';
+import HeaderLanguage from './header/HeaderLanguage';
 import NotificationBadge from './header/NotificationBadge';
 import HeaderLogoToggle from './header/HeaderLogoToggle';
 import { useAuthOverlay } from '@/context/AuthOverlayContext';
@@ -82,9 +83,9 @@ export default function AliExpressHeader({ activeTabId = 'recommendations' }: Al
           />
         </div>
 
-        {/* Right: Location and Notifications */}
+        {/* Right: Language, Location, and Notifications */}
         <div className="flex items-center space-x-2 flex-shrink-0">
-          <HeaderLocation />
+          <HeaderLanguage />
           <NotificationBadge />
         </div>
       </div>
