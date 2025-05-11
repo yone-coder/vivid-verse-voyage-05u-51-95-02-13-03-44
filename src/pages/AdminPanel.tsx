@@ -507,7 +507,7 @@ const AdminPanel: React.FC = () => {
 
       // Get highest current position
       let position = 0;
-      if (heroBanners.length > 0) {
+      if (heroBanners && heroBanners.length > 0) {
         const maxPosition = Math.max(...heroBanners.map(banner => banner.position || 0));
         position = maxPosition + 1;
       }
@@ -515,7 +515,7 @@ const AdminPanel: React.FC = () => {
       await createHeroBanner({
         image: imageUrl,
         alt: heroAlt,
-        position: position
+        position
       });
 
       queryClient.invalidateQueries({ queryKey: ["hero-banners"] });

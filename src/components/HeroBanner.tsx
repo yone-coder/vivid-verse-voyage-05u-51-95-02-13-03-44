@@ -22,17 +22,20 @@ const HeroBanner = () => {
     {
       id: "1",
       image: "/lovable-uploads/2102d3a1-ec6e-4c76-8ee0-549c3ae3d54e.png",
-      alt: "Banner 1"
+      alt: "Banner 1",
+      position: 0
     },
     {
       id: "2",
       image: "/lovable-uploads/4dbaee7c-2ac5-4a1b-9f9b-121275273e79.png",
-      alt: "Banner 2"
+      alt: "Banner 2",
+      position: 1
     },
     {
       id: "3",
       image: "/lovable-uploads/dd1cad7b-c3b6-43a6-9bc6-deb38a120604.png",
-      alt: "Banner 3"
+      alt: "Banner 3",
+      position: 2
     }
   ];
 

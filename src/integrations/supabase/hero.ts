@@ -5,16 +5,21 @@ export interface HeroBanner {
   id: string;
   image: string;
   alt: string;
+  position: number;
   created_at?: string;
   updated_at?: string;
 }
 
 export const fetchHeroBanners = async (): Promise<HeroBanner[]> => {
   try {
+    // Need to explicitly type the response to avoid type errors
     const { data, error } = await supabase
       .from('hero_banners')
       .select('*')
-      .order('position', { ascending: true });
+      .order('position', { ascending: true }) as { 
+        data: HeroBanner[] | null; 
+        error: any; 
+      };
       
     if (error) {
       console.error('Error fetching hero banners:', error);
@@ -28,13 +33,21 @@ export const fetchHeroBanners = async (): Promise<HeroBanner[]> => {
   }
 };
 
-export const createHeroBanner = async (banner: Omit<HeroBanner, 'id' | 'created_at' | 'updated_at'>): Promise<HeroBanner | null> => {
+export const createHeroBanner = async (banner: { 
+  image: string; 
+  alt: string; 
+  position: number; 
+}): Promise<HeroBanner | null> => {
   try {
+    // Need to explicitly type the response to avoid type errors
     const { data, error } = await supabase
       .from('hero_banners')
       .insert(banner)
       .select()
-      .single();
+      .single() as {
+        data: HeroBanner | null;
+        error: any;
+      };
       
     if (error) {
       console.error('Error creating hero banner:', error);
@@ -53,7 +66,9 @@ export const deleteHeroBanner = async (id: string): Promise<boolean> => {
     const { error } = await supabase
       .from('hero_banners')
       .delete()
-      .eq('id', id);
+      .eq('id', id) as {
+        error: any;
+      };
       
     if (error) {
       console.error(`Error deleting hero banner with id ${id}:`, error);
@@ -72,7 +87,9 @@ export const updateHeroBannerPosition = async (id: string, position: number): Pr
     const { error } = await supabase
       .from('hero_banners')
       .update({ position })
-      .eq('id', id);
+      .eq('id', id) as {
+        error: any;
+      };
       
     if (error) {
       console.error(`Error updating hero banner position for id ${id}:`, error);

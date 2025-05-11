@@ -54,6 +54,33 @@ export type Database = {
         }
         Relationships: []
       }
+      hero_banners: {
+        Row: {
+          alt: string
+          created_at: string
+          id: string
+          image: string
+          position: number
+          updated_at: string
+        }
+        Insert: {
+          alt: string
+          created_at?: string
+          id?: string
+          image: string
+          position?: number
+          updated_at?: string
+        }
+        Update: {
+          alt?: string
+          created_at?: string
+          id?: string
+          image?: string
+          position?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       product_images: {
         Row: {
           alt: string
