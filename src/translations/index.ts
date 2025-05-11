@@ -3,7 +3,7 @@
 const en = {
   home: {
     forYou: "For You",
-    recommendations: "For You", // Added this key for compatibility
+    recommendations: "For You",
     posts: "Posts",
     shops: "Shops",
     trending: "Trending",
@@ -55,7 +55,7 @@ const en = {
 const es = {
   home: {
     forYou: "Para Ti",
-    recommendations: "Para Ti", // Added this key for compatibility
+    recommendations: "Para Ti",
     posts: "Publicaciones",
     shops: "Tiendas",
     trending: "Tendencias",
@@ -107,7 +107,7 @@ const es = {
 const fr = {
   home: {
     forYou: "Pour Vous",
-    recommendations: "Pour Vous", // Added this key for compatibility
+    recommendations: "Pour Vous",
     posts: "Publications",
     shops: "Boutiques",
     trending: "Tendances",
@@ -155,158 +155,61 @@ const fr = {
   }
 };
 
-// German translations
-const de = {
+// Haitian Creole translations
+const ht = {
   home: {
-    forYou: "Für Dich",
-    recommendations: "Für Dich", // Added this key for compatibility
-    posts: "Beiträge",
-    shops: "Geschäfte",
-    trending: "Im Trend",
-    videos: "Videos",
+    forYou: "Pou Ou",
+    recommendations: "Pou Ou",
+    posts: "Piblikasyon",
+    shops: "Boutik",
+    trending: "Tandans",
+    videos: "Videyo",
   },
   header: {
-    search: "Produkte suchen",
-    selectLanguage: "Wählen Sie Ihre Sprache",
-    selectLocation: "Wählen Sie Ihren Standort",
-    language: "Sprache",
-    location: "Standort",
+    search: "Chèche pwodwi",
+    selectLanguage: "Chwazi lang ou",
+    selectLocation: "Chwazi lokasyon ou",
+    language: "Lang",
+    location: "Lokasyon",
   },
   product: {
-    addToCart: "In den Warenkorb",
-    viewAll: "Alle anzeigen",
-    newArrivals: "Neuheiten",
-    trending: "Heute im Trend",
-    mostSearched: "Meist gesucht",
-    popularSearches: "Beliebte Suchanfragen",
+    addToCart: "Ajoute nan panye",
+    viewAll: "Wè tout",
+    newArrivals: "Nouvo Pwodwi",
+    trending: "Tandans Jodi a",
+    mostSearched: "Pi Chèche",
+    popularSearches: "Rechèch Popilè",
   },
   categories: {
-    fashion: "Mode",
-    sports: "Sport",
-    home: "Zuhause",
-    tools: "Werkzeuge",
-    gaming: "Spiele",
-    baby: "Baby",
-    auto: "Auto",
-    electronics: "Elektronik",
-    allCategories: "Alle Kategorien",
-    browseBy: "Stöbern nach"
+    fashion: "Mòd",
+    sports: "Espò",
+    home: "Kay",
+    tools: "Zouti",
+    gaming: "Jwèt",
+    baby: "Tibebe",
+    auto: "Oto",
+    electronics: "Elektwonik",
+    allCategories: "Tout Kategori",
+    browseBy: "Navige pa"
   },
   newsletter: {
-    title: "Abonnieren Sie unseren Newsletter",
-    description: "Erhalten Sie exklusive Angebote und Sonderangebote direkt in Ihren Posteingang",
-    placeholder: "Ihre E-Mail-Adresse",
-    subscribe: "Abonnieren",
-    subscribing: "Wird abonniert...",
-    terms: "Durch das Abonnieren stimmen Sie unseren Nutzungsbedingungen und Datenschutzrichtlinien zu",
+    title: "Abòne nan Bilten nou an",
+    description: "Resevwa òf eksklizif ak òf espesyal dirèkteman nan bwat ou",
+    placeholder: "Adrès imèl ou",
+    subscribe: "Abòne",
+    subscribing: "Abònman...",
+    terms: "Lè ou abòne, ou aksepte Tèm nou yo ak Règleman sou Vi Prive",
   },
   auth: {
-    login: "Anmelden",
-    signup: "Registrieren",
-    logout: "Abmelden",
+    login: "Konekte",
+    signup: "Enskri",
+    logout: "Dekonekte",
   }
-};
-
-// Add minimal translations for other supported languages
-const it = {
-  home: { 
-    forYou: "Per Te", 
-    recommendations: "Per Te", // Added this key for compatibility
-  },
-  header: { language: "Lingua", location: "Posizione" },
-  categories: {
-    fashion: "Moda",
-    sports: "Sport",
-    allCategories: "Tutte le categorie",
-    browseBy: "Sfoglia per"
-  },
-  // ... other keys inherit from English
-};
-
-const pt = {
-  home: { 
-    forYou: "Para Você", 
-    recommendations: "Para Você", // Added this key for compatibility
-  },
-  header: { language: "Idioma", location: "Localização" },
-  categories: {
-    fashion: "Moda",
-    sports: "Esportes",
-    allCategories: "Todas as categorias",
-    browseBy: "Navegar por"
-  },
-  // ... other keys inherit from English
-};
-
-const ru = {
-  home: { 
-    forYou: "Для вас", 
-    recommendations: "Для вас", // Added this key for compatibility
-  },
-  header: { language: "Язык", location: "Местоположение" },
-  categories: {
-    fashion: "Мода",
-    sports: "Спорт",
-    allCategories: "Все категории",
-    browseBy: "Просмотреть по"
-  },
-  // ... other keys inherit from English
-};
-
-const zh = {
-  home: { 
-    forYou: "为您推荐", 
-    recommendations: "为您推荐", // Added this key for compatibility
-  },
-  header: { language: "语言", location: "位置" },
-  categories: {
-    fashion: "时尚",
-    sports: "体育",
-    allCategories: "所有类别",
-    browseBy: "浏览方式"
-  },
-  // ... other keys inherit from English
-};
-
-const ja = {
-  home: { 
-    forYou: "あなたへ", 
-    recommendations: "あなたへ", // Added this key for compatibility
-  },
-  header: { language: "言語", location: "場所" },
-  categories: {
-    fashion: "ファッション",
-    sports: "スポーツ",
-    allCategories: "すべてのカテゴリー",
-    browseBy: "閲覧方法"
-  },
-  // ... other keys inherit from English
-};
-
-const ko = {
-  home: { 
-    forYou: "회원님을 위한 추천", 
-    recommendations: "회원님을 위한 추천", // Added this key for compatibility
-  },
-  header: { language: "언어", location: "위치" },
-  categories: {
-    fashion: "패션",
-    sports: "스포츠",
-    allCategories: "모든 카테고리",
-    browseBy: "브라우징 방법"
-  },
-  // ... other keys inherit from English
 };
 
 export const translations = {
   en,
   es,
   fr,
-  de,
-  it,
-  pt,
-  ru,
-  zh,
-  ja,
-  ko
+  ht
 };

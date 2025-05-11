@@ -3,32 +3,21 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import { Language, Location, LanguageContextType } from '@/types/language';
 import { translations } from '@/translations';
 
-// Default supported languages
+// Supported languages (English, Spanish, French, Haitian Creole)
 export const supportedLanguages: Language[] = [
   { code: 'en', name: 'English', nativeName: 'English', flag: 'us' },
   { code: 'es', name: 'Spanish', nativeName: 'Español', flag: 'es' },
   { code: 'fr', name: 'French', nativeName: 'Français', flag: 'fr' },
-  { code: 'de', name: 'German', nativeName: 'Deutsch', flag: 'de' },
-  { code: 'it', name: 'Italian', nativeName: 'Italiano', flag: 'it' },
-  { code: 'pt', name: 'Portuguese', nativeName: 'Português', flag: 'pt' },
-  { code: 'ru', name: 'Russian', nativeName: 'Русский', flag: 'ru' },
-  { code: 'zh', name: 'Chinese', nativeName: '中文', flag: 'cn' },
-  { code: 'ja', name: 'Japanese', nativeName: '日本語', flag: 'jp' },
-  { code: 'ko', name: 'Korean', nativeName: '한국어', flag: 'kr' },
+  { code: 'ht', name: 'Haitian Creole', nativeName: 'Kreyòl Ayisyen', flag: 'ht' },
 ];
 
-// Default supported locations
+// Supported locations (United States, Haiti, Canada, France, Spain)
 export const supportedLocations: Location[] = [
   { code: 'US', name: 'United States', flag: 'us' },
-  { code: 'GB', name: 'United Kingdom', flag: 'gb' },
+  { code: 'HT', name: 'Haiti', flag: 'ht' },
   { code: 'CA', name: 'Canada', flag: 'ca' },
-  { code: 'AU', name: 'Australia', flag: 'au' },
-  { code: 'DE', name: 'Germany', flag: 'de' },
   { code: 'FR', name: 'France', flag: 'fr' },
   { code: 'ES', name: 'Spain', flag: 'es' },
-  { code: 'IT', name: 'Italy', flag: 'it' },
-  { code: 'JP', name: 'Japan', flag: 'jp' },
-  { code: 'CN', name: 'China', flag: 'cn' },
 ];
 
 // Create the context
