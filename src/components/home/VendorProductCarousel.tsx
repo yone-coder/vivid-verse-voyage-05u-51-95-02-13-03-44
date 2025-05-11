@@ -1,4 +1,12 @@
+
 import React, { useRef } from 'react';
+import { Product } from '@/integrations/supabase/products';
+
+// Interface to define the component props
+interface VendorProductCarouselProps {
+  title: string;
+  products: Product[];
+}
 
 // Helper to format relative time
 const timeAgo = (dateString) => {
@@ -13,7 +21,7 @@ const timeAgo = (dateString) => {
   return 'Just now';
 };
 
-const VendorProductCarousel = () => {
+const VendorProductCarousel = ({ title, products }: VendorProductCarouselProps) => {
   const vendorData = {
     vendorName: "Fashion Boutique",
     profilePic: "https://picsum.photos/seed/vendor/50/50",
@@ -22,43 +30,13 @@ const VendorProductCarousel = () => {
     verified: true
   };
 
-  const products = [
-    {
-      id: 1,
-      currentPrice: "$23.99",
-      originalPrice: "$79.98",
-      discount: "70%",
-      image: "https://picsum.photos/seed/product1/320/320"
-    },
-    {
-      id: 2,
-      currentPrice: "$18.50",
-      originalPrice: "$61.67",
-      discount: "70%",
-      image: "https://picsum.photos/seed/product2/320/320"
-    },
-    {
-      id: 3,
-      currentPrice: "$32.99",
-      originalPrice: "$109.99",
-      discount: "70%",
-      image: "https://picsum.photos/seed/product3/320/320"
-    },
-    {
-      id: 4,
-      currentPrice: "$16.49",
-      originalPrice: "$54.99",
-      discount: "70%",
-      image: "https://picsum.photos/seed/product4/320/320"
-    },
-    {
-      id: 5,
-      currentPrice: "$21.99",
-      originalPrice: "$73.30",
-      discount: "70%",
-      image: "https://picsum.photos/seed/product5/320/320"
-    }
-  ];
+  const displayProducts = products.slice(0, 10).map(product => ({
+    id: product.id,
+    currentPrice: product.discount_price ? `$${product.discount_price}` : `$${product.price}`,
+    originalPrice: product.discount_price ? `$${product.price}` : undefined,
+    discount: product.discount_price ? `${Math.round(((product.price - product.discount_price) / product.price) * 100)}%` : null,
+    image: product.product_images?.[0]?.src || "https://picsum.photos/seed/product/320/320"
+  }));
 
   const carouselRef = useRef(null);
 
@@ -77,7 +55,7 @@ const VendorProductCarousel = () => {
         <div className="flex-1">
           <div className="flex items-center gap-1">
             <h3 className="font-bold text-gray-800 text-sm md:text-base">
-              {vendorData.vendorName}
+              {title || vendorData.vendorName}
             </h3>
             {vendorData.verified && (
               <svg className="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
@@ -107,7 +85,7 @@ const VendorProductCarousel = () => {
             scrollSnapType: 'x mandatory' 
           }}
         >
-          {products.map((product) => (
+          {displayProducts.map((product) => (
             <div 
               key={product.id}
               className="flex-shrink-0 rounded-lg overflow-hidden shadow-sm border border-gray-200 bg-white hover:shadow-md transition-shadow"
@@ -126,13 +104,17 @@ const VendorProductCarousel = () => {
                   loading="lazy"
                 />
                 {/* Discount Tag */}
-                <div className="absolute top-0 left-0 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-br-lg z-10">
-                  {product.discount} OFF
-                </div>
+                {product.discount && (
+                  <div className="absolute top-0 left-0 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-br-lg z-10">
+                    {product.discount} OFF
+                  </div>
+                )}
                 {/* Price Info Overlay */}
                 <div className="absolute bottom-0 w-full px-2 py-1 bg-gradient-to-t from-black/70 to-transparent text-white flex items-center justify-between text-xs z-10">
                   <span className="font-bold text-sm text-red-400">{product.currentPrice}</span>
-                  <span className="line-through text-gray-300">{product.originalPrice}</span>
+                  {product.originalPrice && (
+                    <span className="line-through text-gray-300">{product.originalPrice}</span>
+                  )}
                 </div>
               </div>
             </div>

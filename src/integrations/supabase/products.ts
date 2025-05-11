@@ -11,6 +11,9 @@ export interface Product {
   created_at?: string;
   updated_at?: string;
   product_images?: ProductImage[];
+  user_id?: string; // Add user_id field to support user-specific products
+  inventory?: number; // Add inventory field
+  sales?: number; // Add sales field
 }
 
 export interface ProductImage {
@@ -40,6 +43,53 @@ export const fetchAllProducts = async (): Promise<Product[]> => {
     return data || [];
   } catch (error) {
     console.error('Error in fetchAllProducts:', error);
+    return [];
+  }
+};
+
+// Fetch a single product by ID with its images
+export const fetchProductById = async (id: string): Promise<Product | null> => {
+  try {
+    const { data, error } = await supabase
+      .from('products')
+      .select(`
+        *,
+        product_images(*)
+      `)
+      .eq('id', id)
+      .single();
+    
+    if (error) {
+      console.error('Error fetching product:', error);
+      return null;
+    }
+    
+    return data;
+  } catch (error) {
+    console.error(`Error in fetchProductById for id ${id}:`, error);
+    return null;
+  }
+};
+
+// Fetch products by user ID
+export const fetchUserProducts = async (userId: string): Promise<Product[]> => {
+  try {
+    const { data, error } = await supabase
+      .from('products')
+      .select(`
+        *,
+        product_images(*)
+      `)
+      .eq('user_id', userId);
+    
+    if (error) {
+      console.error('Error fetching user products:', error);
+      return [];
+    }
+    
+    return data || [];
+  } catch (error) {
+    console.error(`Error in fetchUserProducts for user ${userId}:`, error);
     return [];
   }
 };

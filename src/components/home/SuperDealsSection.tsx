@@ -1,8 +1,13 @@
 
 import React, { useRef } from 'react';
 import { ChevronRight, Tv, Smartphone, Coffee, Headphones, Watch, Speaker, Star } from 'lucide-react';
+import { Product } from '@/integrations/supabase/products';
 
-const SuperDeals = () => {
+interface SuperDealsProps {
+  products?: Product[];
+}
+
+const SuperDeals = ({ products }: SuperDealsProps) => {
   const scrollContainerRef = useRef(null);
   
   const allDeals = [
