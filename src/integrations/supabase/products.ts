@@ -11,9 +11,9 @@ export interface Product {
   created_at?: string;
   updated_at?: string;
   product_images?: ProductImage[];
-  user_id?: string; // Add user_id field to support user-specific products
-  inventory?: number; // Add inventory field
-  sales?: number; // Add sales field
+  user_id?: string;
+  inventory?: number;
+  sales?: number;
 }
 
 export interface ProductImage {
@@ -100,8 +100,8 @@ export const createProduct = async (product: {
   description: string;
   price: number;
   discount_price?: number | null;
-  user_id?: string; // Add user_id parameter
-  inventory?: number; // Add inventory parameter
+  user_id?: string;
+  inventory?: number;
 }): Promise<Product | null> => {
   try {
     const { data, error } = await supabase
@@ -126,22 +126,8 @@ export const createProduct = async (product: {
 export const updateProduct = async (
   id: string, 
   updates: Partial<Omit<Product, 'id' | 'created_at' | 'updated_at'>>
-): Promise<any> => {
+): Promise<Product | null> => {
   try {
-    // Check if the name field is being updated and if it's the same as the current value
-    if ('name' in updates) {
-      const { data: currentProduct } = await supabase
-        .from('products')
-        .select('name')
-        .eq('id', id)
-        .single();
-      
-      if (currentProduct && currentProduct.name === updates.name) {
-        console.log('Name is the same as current value, no need to update');
-        return { noChanges: true };
-      }
-    }
-    
     const { data, error } = await supabase
       .from('products')
       .update(updates)
@@ -153,7 +139,7 @@ export const updateProduct = async (
       return null;
     }
     
-    return data;
+    return data?.[0] || null;
   } catch (error) {
     console.error(`Error in updateProduct for id ${id}:`, error);
     return null;

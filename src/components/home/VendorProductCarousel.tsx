@@ -30,6 +30,7 @@ const VendorProductCarousel = ({ title, products }: VendorProductCarouselProps) 
     verified: true
   };
 
+  // Transform products for display, using actual product images when available
   const displayProducts = products.slice(0, 10).map(product => ({
     id: product.id,
     currentPrice: product.discount_price ? `$${product.discount_price}` : `$${product.price}`,

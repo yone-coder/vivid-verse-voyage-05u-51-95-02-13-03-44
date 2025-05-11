@@ -10,103 +10,77 @@ interface SuperDealsProps {
 const SuperDeals = ({ products = [] }: SuperDealsProps) => {
   const scrollContainerRef = useRef(null);
   
-  const allDeals = [
-    {
-      id: 1,
-      title: 'Smart 4K TV 55-inch',
-      currentPrice: 499.99,
-      originalPrice: 699.99,
-      discount: 29,
-      color: 'bg-blue-500',
-      icon: <Tv size={24} color="white" />,
-      shortLabel: 'Smart TV'
-    },
-    {
-      id: 2,
-      title: 'Robot Vacuum Cleaner',
-      currentPrice: 189.99,
-      originalPrice: 299.99,
-      discount: 37,
-      color: 'bg-green-500',
-      icon: <Smartphone size={24} color="white" />,
-      shortLabel: 'Robot Vacuum'
-    },
-    {
-      id: 3,
-      title: 'Coffee Machine with Grinder',
-      currentPrice: 129.99,
-      originalPrice: 199.99,
-      discount: 35,
-      color: 'bg-purple-500',
-      icon: <Coffee size={24} color="white" />,
-      shortLabel: 'Coffee Machine'
-    },
-    {
-      id: 4,
-      title: 'Wireless Earbuds Pro',
-      currentPrice: 89.99,
-      originalPrice: 149.99,
-      discount: 40,
-      color: 'bg-red-500',
-      icon: <Headphones size={24} color="white" />,
-      shortLabel: 'Earbuds'
-    },
-    {
-      id: 5,
-      title: 'Smart Watch Series 5',
-      currentPrice: 199.99,
-      originalPrice: 279.99,
-      discount: 29,
-      color: 'bg-yellow-500',
-      icon: <Watch size={24} color="white" />,
-      shortLabel: 'Smart Watch'
-    },
-    {
-      id: 6,
-      title: 'Bluetooth Speaker Portable',
-      currentPrice: 59.99,
-      originalPrice: 99.99,
-      discount: 40,
-      color: 'bg-indigo-500',
-      icon: <Speaker size={24} color="white" />,
-      shortLabel: 'Speaker'
-    },
-    {
-      id: 7,
-      title: 'Air Fryer 5.5L',
-      currentPrice: 79.99,
-      originalPrice: 129.99,
-      discount: 38,
-      color: 'bg-pink-500',
-      icon: <Coffee size={24} color="white" />,
-      shortLabel: 'Air Fryer'
-    },
-    {
-      id: 8,
-      title: 'Gaming Keyboard RGB',
-      currentPrice: 49.99,
-      originalPrice: 89.99,
-      discount: 44,
-      color: 'bg-blue-400',
-      icon: <Smartphone size={24} color="white" />,
-      shortLabel: 'Keyboard'
-    },
-    {
-      id: 9,
-      title: 'Wireless Charging Pad',
-      currentPrice: 19.99,
-      originalPrice: 39.99,
-      discount: 50,
-      color: 'bg-gray-500',
-      icon: <Smartphone size={24} color="white" />,
-      shortLabel: 'Charger'
-    }
+  // Filter products with discount_price and with at least one product_image
+  const discountedProducts = products
+    .filter(product => 
+      product.discount_price !== null && 
+      product.product_images && 
+      product.product_images.length > 0
+    )
+    .slice(0, 9); // Limit to 9 products for display
+
+  // Fallback icons for products without specific category
+  const categoryIcons = {
+    tv: <Tv size={24} color="white" />,
+    phone: <Smartphone size={24} color="white" />,
+    coffee: <Coffee size={24} color="white" />,
+    headphones: <Headphones size={24} color="white" />,
+    watch: <Watch size={24} color="white" />,
+    speaker: <Speaker size={24} color="white" />
+  };
+  
+  // Colors for deal tiles
+  const colors = [
+    "bg-blue-500", "bg-green-500", "bg-purple-500", 
+    "bg-red-500", "bg-yellow-500", "bg-indigo-500",
+    "bg-pink-500", "bg-blue-400", "bg-gray-500"
   ];
 
+  // Map products to deal format with images from database
+  const deals = discountedProducts.map((product, index) => {
+    // Calculate discount percentage
+    const discountPercent = product.discount_price 
+      ? Math.round(((product.price - product.discount_price) / product.price) * 100) 
+      : 0;
+    
+    // Get first product image or use default
+    const image = product.product_images && product.product_images.length > 0 
+      ? product.product_images[0] 
+      : null;
+    
+    // Determine which icon to show based on product name (simple logic)
+    let iconComponent;
+    const productNameLower = product.name.toLowerCase();
+    if (productNameLower.includes('tv')) iconComponent = categoryIcons.tv;
+    else if (productNameLower.includes('phone')) iconComponent = categoryIcons.phone;
+    else if (productNameLower.includes('coffee')) iconComponent = categoryIcons.coffee;
+    else if (productNameLower.includes('earbuds') || productNameLower.includes('headphone')) iconComponent = categoryIcons.headphones;
+    else if (productNameLower.includes('watch')) iconComponent = categoryIcons.watch;
+    else if (productNameLower.includes('speaker')) iconComponent = categoryIcons.speaker;
+    else {
+      // Default to using the index to pick an icon
+      const iconKeys = Object.keys(categoryIcons);
+      const iconKey = iconKeys[index % iconKeys.length];
+      iconComponent = categoryIcons[iconKey];
+    }
+    
+    return {
+      id: product.id,
+      title: product.name,
+      currentPrice: product.discount_price,
+      originalPrice: product.price,
+      discount: discountPercent,
+      color: colors[index % colors.length],
+      icon: iconComponent,
+      shortLabel: product.name.split(' ')[0],
+      image: image?.src
+    };
+  });
+  
   // Group deals into columns of 3
   const groupedDeals = [];
-  for (let i = 0; i < allDeals.length; i += 3) {
-    groupedDeals.push(allDeals.slice(i, i + 3));
+  for (let i = 0; i < deals.length; i += 3) {
+    groupedDeals.push(deals.slice(i, i + 3));
   }
 
   // Function to render a product card
@@ -117,14 +91,25 @@ const SuperDeals = ({ products = [] }: SuperDealsProps) => {
           <div className="absolute top-0 left-0 bg-orange-500 text-white px-2 py-1 text-xs font-bold rounded-br">
             SUPER
           </div>
-          <div className={`${deal.color} p-2 w-24 h-24 flex items-center justify-center`}>
-            <div className="flex flex-col items-center">
-              {deal.icon}
-              <span className="text-xs font-medium text-white mt-1 text-center">
-                {deal.shortLabel}
-              </span>
+          {deal.image ? (
+            <div className={`${deal.color} p-2 w-24 h-24 flex items-center justify-center overflow-hidden`}>
+              <img 
+                src={deal.image} 
+                alt={deal.title} 
+                className="w-full h-full object-cover"
+                loading="lazy"
+              />
             </div>
-          </div>
+          ) : (
+            <div className={`${deal.color} p-2 w-24 h-24 flex items-center justify-center`}>
+              <div className="flex flex-col items-center">
+                {deal.icon}
+                <span className="text-xs font-medium text-white mt-1 text-center">
+                  {deal.shortLabel}
+                </span>
+              </div>
+            </div>
+          )}
         </div>
         
         <div className="p-2 flex-1 min-w-0">
@@ -146,6 +131,23 @@ const SuperDeals = ({ products = [] }: SuperDealsProps) => {
       </div>
     </div>
   );
+
+  // Show placeholder message if no deals available
+  if (groupedDeals.length === 0) {
+    return (
+      <div className="w-full bg-white p-4">
+        <div className="flex justify-between items-center mb-2">
+          <div className="flex items-center gap-1">
+            <Star className="h-3.5 w-3.5 text-orange-500" strokeWidth={2.5} fill="#FEF7CD" />
+            <h2 className="text-sm font-medium">Super Deals</h2>
+          </div>
+        </div>
+        <div className="p-4 border border-gray-200 rounded text-center text-gray-500">
+          No deals available at the moment
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full bg-white">
