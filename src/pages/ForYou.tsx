@@ -41,12 +41,14 @@ export default function ForYou() {
       
       <HeroBannerSection />
       {/* @ts-ignore - Ignoring TypeScript error for SuperDealsSection props */}
+ <SpaceSavingCategories />
+ <FlashDeals />
       <SuperDealsSection products={products || []} isLoading={isLoading} />
       <SecondaryHeroBanner />
       <TranslationExample />
       <PopularSearches />
-      <FlashDeals />
-      <SpaceSavingCategories />
+     
+     
       <TopBrands />
       {/* @ts-ignore - Ignoring TypeScript error for VendorProductCarousel props */}
       <VendorProductCarousel title="Technology" products={products?.slice(0, 10) || []} isLoading={isLoading} />
