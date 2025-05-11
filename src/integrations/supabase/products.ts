@@ -1,156 +1,82 @@
 
-import { supabase } from "./client";
+// Import the specific types needed to avoid circular references
+import { Product } from './types';
+import { supabase } from './client';
 
-/**
- * Fetches all products from the database
- */
-export const fetchAllProducts = async () => {
-  console.log('Fetching all products from database');
-  const { data, error } = await supabase
-    .from('products')
-    .select('*, product_images(*)');
-  
-  if (error) {
-    console.error('Error fetching products:', error);
-    throw error;
-  }
-  
-  return data || [];
-};
+// Fetch all products from the supabase table
+export async function fetchAllProducts(): Promise<Product[]> {
+  try {
+    const { data, error } = await supabase
+      .from('products')
+      .select('*, product_images(*)');
 
-/**
- * Fetches a single product by ID
- */
-export const fetchProductById = async (productId: string) => {
-  console.log(`Fetching product with ID: ${productId}`);
-  const { data, error } = await supabase
-    .from('products')
-    .select('*, product_images(*)')
-    .eq('id', productId)
-    .single();
-  
-  if (error) {
-    console.error(`Error fetching product ${productId}:`, error);
-    throw error;
-  }
-  
-  return data;
-};
+    if (error) {
+      console.error('Error fetching products:', error);
+      return [];
+    }
 
-/**
- * Fetches products created by a specific user
- */
-export const fetchUserProducts = async (userId: string) => {
-  console.log(`Fetching products for user: ${userId}`);
-  
-  if (!userId) {
-    console.error('No user ID provided');
+    const products = data.map(product => ({
+      ...product,
+      image: product.product_images && product.product_images.length > 0
+        ? product.product_images[0].src
+        : 'https://via.placeholder.com/400'
+    }));
+
+    return products;
+  } catch (err) {
+    console.error('Unexpected error fetching products:', err);
     return [];
   }
-  
-  const { data, error } = await supabase
-    .from('products')
-    .select('*, product_images(*)')
-    .eq('user_id', userId)
-    .order('created_at', { ascending: false });
-  
-  if (error) {
-    console.error(`Error fetching products for user ${userId}:`, error);
-    throw error;
-  }
-  
-  return data || [];
-};
+}
 
-/**
- * Creates a new product in the database
- */
-export const createProduct = async (productData: any) => {
-  console.log('Creating new product with data:', productData);
-  
-  const { data, error } = await supabase
-    .from('products')
-    .insert(productData)
-    .select();
-  
-  if (error) {
-    console.error('Error creating product:', error);
-    throw error;
-  }
-  
-  return data;
-};
+// Fetch a single product by its ID
+export async function fetchProductById(id: string): Promise<Product | null> {
+  try {
+    const { data, error } = await supabase
+      .from('products')
+      .select('*, product_images(*)')
+      .eq('id', id)
+      .single();
 
-/**
- * Updates a product by ID
- */
-export const updateProduct = async (productId: string, updates: any) => {
-  console.log(`Updating product ${productId} with:`, updates);
-  
-  // First, check if there are actually changes to make
-  const { data: existingProduct } = await supabase
-    .from('products')
-    .select('*')
-    .eq('id', productId)
-    .single();
-  
-  // Check if there are any actual changes to make
-  if (existingProduct) {
-    let hasChanges = false;
-    for (const key in updates) {
-      if (updates[key] !== existingProduct[key]) {
-        hasChanges = true;
-        break;
-      }
+    if (error) {
+      console.error(`Error fetching product with ID ${id}:`, error);
+      return null;
     }
-    
-    if (!hasChanges) {
-      console.log('No actual changes detected, skipping update');
-      return { noChanges: true };
-    }
-  }
-  
-  // Proceed with the update
-  const { data, error } = await supabase
-    .from('products')
-    .update(updates)
-    .eq('id', productId)
-    .select();
-  
-  if (error) {
-    console.error(`Error updating product ${productId}:`, error);
-    throw error;
-  }
-  
-  return data;
-};
 
-/**
- * Sets up a subscription to product changes
- */
-export const subscribeToProductChanges = (callback: () => void) => {
-  console.log('Setting up subscription to product changes');
-  
-  const channel = supabase
-    .channel('product-changes')
-    .on(
-      'postgres_changes',
-      {
-        event: '*',
-        schema: 'public',
-        table: 'products'
-      },
-      () => {
-        callback();
-      }
-    )
-    .subscribe((status) => {
-      console.log('Product subscription status:', status);
-    });
-  
-  // Return a cleanup function
-  return () => {
-    console.log('Removing product changes subscription');
-    supabase.removeChannel(channel);
-  };
-};
+    return {
+      ...data,
+      image: data.product_images && data.product_images.length > 0
+        ? data.product_images[0].src
+        : 'https://via.placeholder.com/400'
+    };
+  } catch (err) {
+    console.error(`Unexpected error fetching product with ID ${id}:`, err);
+    return null;
+  }
+}
+
+// Search products by a query string
+export async function searchProducts(query: string): Promise<Product[]> {
+  try {
+    // This will search the name column for the query string (ilike is case insensitive)
+    const { data, error } = await supabase
+      .from('products')
+      .select('*, product_images(*)')
+      .ilike('name', `%${query}%`);
+
+    if (error) {
+      console.error('Error searching products:', error);
+      return [];
+    }
+
+    return data.map(product => ({
+      ...product,
+      image: product.product_images && product.product_images.length > 0
+        ? product.product_images[0].src
+        : 'https://via.placeholder.com/400'
+    }));
+  } catch (err) {
+    console.error('Unexpected error searching products:', err);
+    return [];
+  }
+}

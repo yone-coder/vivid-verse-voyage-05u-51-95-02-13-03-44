@@ -5,7 +5,7 @@ import { useLanguage, supportedLanguages, supportedLocations } from '@/context/L
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
 const HeaderLanguage = () => {
-  const { currentLanguage, setLanguage, currentLocation, setLocation } = useLanguage();
+  const { currentLanguage, setLanguage, currentLocation, setLocation, t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
 
   const togglePanel = () => {
@@ -47,13 +47,13 @@ const HeaderLanguage = () => {
         <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-lg shadow-lg z-50 overflow-hidden">
           <Tabs defaultValue="language" className="w-full">
             <TabsList className="w-full grid grid-cols-2 h-10">
-              <TabsTrigger value="language">Language</TabsTrigger>
-              <TabsTrigger value="location">Location</TabsTrigger>
+              <TabsTrigger value="language">{t('header.language')}</TabsTrigger>
+              <TabsTrigger value="location">{t('header.location')}</TabsTrigger>
             </TabsList>
             
             <TabsContent value="language" className="max-h-80 overflow-y-auto">
               <div className="p-2">
-                <div className="text-xs text-gray-500 mb-2 px-2">Select your language</div>
+                <div className="text-xs text-gray-500 mb-2 px-2">{t('header.selectLanguage')}</div>
                 <div className="space-y-1">
                   {supportedLanguages.map((language) => (
                     <button
@@ -80,7 +80,7 @@ const HeaderLanguage = () => {
             
             <TabsContent value="location" className="max-h-80 overflow-y-auto">
               <div className="p-2">
-                <div className="text-xs text-gray-500 mb-2 px-2">Select your location</div>
+                <div className="text-xs text-gray-500 mb-2 px-2">{t('header.selectLocation')}</div>
                 <div className="space-y-1">
                   {supportedLocations.map((location) => (
                     <button

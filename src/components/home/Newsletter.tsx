@@ -5,12 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Mail, MessageSquare, CheckCircle, Facebook, Instagram, Twitter, Youtube } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function Newsletter() {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const isMobile = useIsMobile();
+  const { t } = useLanguage();
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,9 +43,9 @@ export default function Newsletter() {
     <div className="py-6 bg-gradient-to-r from-orange-50 to-red-50">
       <div className="container mx-auto px-3">
         <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-base md:text-lg font-bold mb-1">Subscribe to our Newsletter</h2>
+          <h2 className="text-base md:text-lg font-bold mb-1">{t('newsletter.title')}</h2>
           <p className="text-xs md:text-sm text-gray-600 mb-4">
-            Get exclusive deals and special offers right to your inbox
+            {t('newsletter.description')}
           </p>
           
           <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-2 items-center">
@@ -51,7 +53,7 @@ export default function Newsletter() {
               <Mail className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400" />
               <Input 
                 type="email"
-                placeholder="Your email address"
+                placeholder={t('newsletter.placeholder')}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="pl-9 h-10"
@@ -62,12 +64,12 @@ export default function Newsletter() {
               className="bg-orange-500 hover:bg-orange-600 w-full md:w-auto"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Subscribing..." : "Subscribe"}
+              {isSubmitting ? t('newsletter.subscribing') : t('newsletter.subscribe')}
             </Button>
           </form>
           
           <p className="text-[10px] md:text-xs text-gray-500 mt-2">
-            By subscribing, you agree to our Terms and Privacy Policy
+            {t('newsletter.terms')}
           </p>
           
           <div className="mt-4 flex justify-center gap-3">

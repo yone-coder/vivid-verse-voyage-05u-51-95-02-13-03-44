@@ -17,4 +17,5 @@ export interface LanguageContextType {
   setLanguage: (language: Language) => void;
   currentLocation: Location;
   setLocation: (location: Location) => void;
+  t: (key: string, params?: Record<string, string>) => string;
 }

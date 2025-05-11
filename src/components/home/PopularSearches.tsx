@@ -5,6 +5,7 @@ import { Search, TrendingUp, ArrowUp, Tags, Bookmark, Tag } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { useLanguage } from "@/context/LanguageContext";
 
 const popularSearches = [
   { id: 1, term: "Wireless Headphones", count: 1243 },
@@ -32,6 +33,7 @@ const popularSearches = [
 export default function PopularSearches() {
   const isMobile = useIsMobile();
   const scrollRef = useRef<HTMLDivElement>(null);
+  const { t } = useLanguage();
   
   // Group searches into rows for display
   const rows = [
@@ -47,11 +49,11 @@ export default function PopularSearches() {
         <div className="flex justify-between items-center mb-2">
           <div className="flex items-center gap-1.5">
             <Search className="h-3.5 w-3.5 text-gray-500" />
-            <h2 className="text-sm font-medium">Popular Searches</h2>
+            <h2 className="text-sm font-medium">{t('product.popularSearches')}</h2>
           </div>
           <Link to="/search/trending" className="text-xs text-orange-500 hover:underline flex items-center">
             <TrendingUp className="h-3 w-3 mr-0.5" />
-            View All
+            {t('product.viewAll')}
           </Link>
         </div>
         
@@ -81,14 +83,14 @@ export default function PopularSearches() {
           <div className="bg-orange-50 rounded-md p-2 flex items-center justify-between">
             <div className="flex items-center gap-1">
               <ArrowUp className="h-3 w-3 text-orange-500" />
-              <span className="text-xs font-medium">Trending Today</span>
+              <span className="text-xs font-medium">{t('product.trending')}</span>
             </div>
             <Badge variant="outline" className="text-[8px] border-orange-200 text-orange-600">HOT</Badge>
           </div>
           <div className="bg-blue-50 rounded-md p-2 flex items-center justify-between">
             <div className="flex items-center gap-1">
               <Tag className="h-3 w-3 text-blue-500" />
-              <span className="text-xs font-medium">Most Searched</span>
+              <span className="text-xs font-medium">{t('product.mostSearched')}</span>
             </div>
             <Badge variant="outline" className="text-[8px] border-blue-200 text-blue-600">TOP</Badge>
           </div>

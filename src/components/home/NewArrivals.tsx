@@ -5,9 +5,11 @@ import { ProductCard } from "./ProductGrid";
 import { ChevronRight, CirclePlus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function NewArrivals({ products }) {
   const isMobile = useIsMobile();
+  const { t } = useLanguage();
   
   if (!products?.length) return null;
   
@@ -16,11 +18,11 @@ export default function NewArrivals({ products }) {
       <div className="container mx-auto px-3">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
-            <h2 className="text-sm font-bold">New Arrivals</h2>
+            <h2 className="text-sm font-bold">{t('product.newArrivals')}</h2>
             <Badge variant="aliNew" className="text-[10px] py-0 h-4">NEW</Badge>
           </div>
           <Link to="/new-arrivals" className="text-xs text-orange-500 hover:underline flex items-center">
-            View All <ChevronRight className="h-3 w-3" />
+            {t('product.viewAll')} <ChevronRight className="h-3 w-3" />
           </Link>
         </div>
         

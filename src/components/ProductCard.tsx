@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Heart } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useLanguage } from "@/context/LanguageContext";
 
 export interface ProductProps {
   id: string; // Changed from number to string for compatibility
@@ -37,6 +38,7 @@ const ProductCard = ({
 }: ProductCardProps) => {
   const { id, name, price, discountPrice, rating, image, isNew, sold } = product;
   const discount = discountPrice ? Math.round(((price - discountPrice) / price) * 100) : 0;
+  const { t } = useLanguage();
 
   return (
     <Card className={`overflow-hidden group border rounded-sm h-full transition-all ${className}`}>
@@ -83,7 +85,7 @@ const ProductCard = ({
             </div>
             {showButton && (
               <button className="text-[10px] mt-1 px-2 py-0.5 bg-orange-500 text-white rounded-sm hover:bg-orange-600 transition-colors w-full">
-                Add to cart
+                {t('product.addToCart')}
               </button>
             )}
           </CardContent>

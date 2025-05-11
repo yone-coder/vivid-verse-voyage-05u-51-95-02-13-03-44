@@ -1,6 +1,7 @@
 
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { Language, Location, LanguageContextType } from '@/types/language';
+import { translations } from '@/translations';
 
 // Default supported languages
 export const supportedLanguages: Language[] = [
@@ -69,16 +70,33 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   
   const setLanguage = (language: Language) => {
     setCurrentLanguage(language);
-    // In a real app, you'd implement i18n translation loading here
     document.documentElement.lang = language.code;
   };
   
   const setLocation = (location: Location) => {
     setCurrentLocation(location);
   };
+
+  // Translation function
+  const t = (key: string, params?: Record<string, string>) => {
+    // Get translations for current language
+    const currentTranslations = translations[currentLanguage.code] || translations.en;
+    
+    // Get the translation string
+    let translatedText = key.split('.').reduce((obj, path) => obj && obj[path], currentTranslations as any) || key;
+    
+    // Replace parameters if provided
+    if (params && typeof translatedText === 'string') {
+      Object.entries(params).forEach(([paramKey, paramValue]) => {
+        translatedText = translatedText.replace(new RegExp(`{{${paramKey}}}`, 'g'), paramValue);
+      });
+    }
+    
+    return translatedText || key;
+  };
   
   return (
-    <LanguageContext.Provider value={{ currentLanguage, setLanguage, currentLocation, setLocation }}>
+    <LanguageContext.Provider value={{ currentLanguage, setLanguage, currentLocation, setLocation, t }}>
       {children}
     </LanguageContext.Provider>
   );

@@ -17,6 +17,8 @@ import TopVendorsCompact from "@/components/home/TopVendorsCompact";
 import ProductGrid from "@/components/home/ProductGrid";
 import Newsletter from "@/components/home/Newsletter";
 import LogoutButton from "@/components/auth/LogoutButton";
+import PopularSearches from "@/components/home/PopularSearches";
+import TranslationExample from "@/components/home/TranslationExample";
 
 export default function ForYou() {
   const { data: products, isLoading } = useQuery({
@@ -41,6 +43,8 @@ export default function ForYou() {
       {/* @ts-ignore - Ignoring TypeScript error for SuperDealsSection props */}
       <SuperDealsSection products={products || []} isLoading={isLoading} />
       <SecondaryHeroBanner />
+      <TranslationExample />
+      <PopularSearches />
       <FlashDeals />
       <SpaceSavingCategories />
       <TopBrands />
@@ -49,7 +53,7 @@ export default function ForYou() {
       <SecondaryFlashDeals />
       <BenefitsBanner />
       <TopVendorsCompact />
-            <div className="bg-white mb-1">
+      <div className="bg-white mb-1">
         <ProductRecommendations products={Array.isArray(products) ? products : []} />
       </div>
       <Newsletter />
