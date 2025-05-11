@@ -125,6 +125,12 @@ export const getPublicUrl = (bucket: string, path: string): string => {
     return '';
   }
   
+  // Check if path already includes the bucket in the URL
+  if (path.includes(`supabase.co/storage/v1/object/public/${bucket}/`)) {
+    console.log(`Path already contains bucket info: ${path}`);
+    return path;
+  }
+  
   console.log(`Getting public URL for ${bucket}/${path}`);
   const { data } = supabase.storage.from(bucket).getPublicUrl(path);
   console.log(`Public URL result:`, data);

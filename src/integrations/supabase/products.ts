@@ -1,3 +1,4 @@
+
 import { supabase } from './client';
 
 export interface Product {
@@ -11,8 +12,8 @@ export interface Product {
   product_images?: ProductImage[];
   user_id?: string;
   inventory?: number;
-  sales?: number; // Add missing property
-  status?: string; // Add missing property
+  sales?: number;
+  status?: string;
 }
 
 export interface ProductImage {
@@ -70,7 +71,7 @@ export const fetchProductById = async (id: string): Promise<Product | null> => {
   }
 };
 
-// Add the missing fetchUserProducts function
+// Implement the fetchUserProducts function to fix the missing export
 export const fetchUserProducts = async (userId: string): Promise<Product[]> => {
   try {
     if (!userId) {

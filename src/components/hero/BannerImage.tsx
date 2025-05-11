@@ -15,6 +15,7 @@ const BannerImage: React.FC<BannerImageProps> = ({ src, alt, className = "" }) =
   useEffect(() => {
     setError(false);
     setLoaded(false);
+    console.log(`Banner image source changed: ${src}`);
   }, [src]);
   
   const handleError = () => {
