@@ -457,11 +457,11 @@ const EmailTab = ({ email, setEmail, onSubmit, showSubmitButton = false }: Email
       );
     }
 
-    // Case: Email doesn't exist, show red X in circle when not focused
+    // Case: Email doesn't exist, show red exclamation mark in circle when not focused
     if (isValid && emailExists === false && !focused) {
       return (
         <div className="flex items-center justify-center w-5 h-5 rounded-full bg-red-500 animate-fadeIn">
-          <X className="h-3 w-3 text-white" />
+          <AlertTriangle className="h-3 w-3 text-white" />
         </div>
       );
     }
