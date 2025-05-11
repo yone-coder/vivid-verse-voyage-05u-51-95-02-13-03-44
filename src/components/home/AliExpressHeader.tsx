@@ -10,6 +10,7 @@ import HeaderLanguage from './header/HeaderLanguage';
 import NotificationBadge from './header/NotificationBadge';
 import HeaderLogoToggle from './header/HeaderLogoToggle';
 import { useAuthOverlay } from '@/context/AuthOverlayContext';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface AliExpressHeaderProps {
   activeTabId?: string;
@@ -17,6 +18,7 @@ interface AliExpressHeaderProps {
 
 export default function AliExpressHeader({ activeTabId = 'recommendations' }: AliExpressHeaderProps) {
   const { progress } = useScrollProgress();
+  const { t } = useLanguage();
 
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(activeTabId);
@@ -31,11 +33,11 @@ export default function AliExpressHeader({ activeTabId = 'recommendations' }: Al
   }, [activeTabId]);
 
   const categories = [
-    { id: 'recommendations', name: 'For You', icon: <Home className="h-3 w-3" />, path: '/for-you' },
-    { id: 'posts', name: 'Posts', icon: <MessageSquare className="h-3 w-3" />, path: '/posts' },
-    { id: 'shops', name: 'Shops', icon: <Store className="h-3 w-3" />, path: '/shops' },
-    { id: 'trending', name: 'Trending', icon: <Image className="h-3 w-3" />, path: '/trending' },
-    { id: 'videos', name: 'Videos', icon: <Image className="h-3 w-3" />, path: '/videos' },
+    { id: 'recommendations', name: t('home.forYou'), icon: <Home className="h-3 w-3" />, path: '/for-you' },
+    { id: 'posts', name: t('home.posts'), icon: <MessageSquare className="h-3 w-3" />, path: '/posts' },
+    { id: 'shops', name: t('home.shops'), icon: <Store className="h-3 w-3" />, path: '/shops' },
+    { id: 'trending', name: t('home.trending'), icon: <Image className="h-3 w-3" />, path: '/trending' },
+    { id: 'videos', name: t('home.videos'), icon: <Image className="h-3 w-3" />, path: '/videos' },
   ];
   
   const togglePanel = () => setIsOpen(!isOpen);

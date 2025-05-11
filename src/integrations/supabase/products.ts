@@ -61,15 +61,18 @@ export async function fetchUserProducts(userId: string): Promise<Product[]> {
     
     const { data, error } = await supabase
       .from('products')
-      .select('*, product_images(*)')
-      .eq('user_id', userId);
-
+      .select('*, product_images(*)');
+    
     if (error) {
       console.error('Error fetching user products:', error);
       return [];
     }
-
-    return data.map(product => ({
+    
+    // Filter products by user_id after fetching them
+    // This avoids the excessive depth issue with Supabase queries
+    const userProducts = data.filter(product => product.user_id === userId);
+    
+    return userProducts.map(product => ({
       ...product,
       image: product.product_images && product.product_images.length > 0
         ? product.product_images[0].src

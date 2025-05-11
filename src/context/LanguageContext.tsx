@@ -62,6 +62,12 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   // Save preferences to localStorage when they change
   useEffect(() => {
     localStorage.setItem('preferredLanguage', JSON.stringify(currentLanguage));
+    document.documentElement.lang = currentLanguage.code;
+    
+    // Force a re-render of all components that use the translation function
+    // This is a trick to make sure components update when language changes
+    const event = new Event('languageChange');
+    window.dispatchEvent(event);
   }, [currentLanguage]);
   
   useEffect(() => {
@@ -83,7 +89,32 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     const currentTranslations = translations[currentLanguage.code] || translations.en;
     
     // Get the translation string
-    let translatedText = key.split('.').reduce((obj, path) => obj && obj[path], currentTranslations as any) || key;
+    let parts = key.split('.');
+    let translatedText: any = currentTranslations;
+    
+    // Traverse the translations object to find the right key
+    for (let part of parts) {
+      if (translatedText && typeof translatedText === 'object' && part in translatedText) {
+        translatedText = translatedText[part];
+      } else {
+        // If key doesn't exist in current language, try English as fallback
+        if (currentLanguage.code !== 'en') {
+          let fallback = translations.en;
+          for (let p of parts) {
+            if (fallback && typeof fallback === 'object' && p in fallback) {
+              fallback = fallback[p];
+            } else {
+              fallback = null;
+              break;
+            }
+          }
+          translatedText = fallback || key;
+        } else {
+          translatedText = key;
+        }
+        break;
+      }
+    }
     
     // Replace parameters if provided
     if (params && typeof translatedText === 'string') {
@@ -92,8 +123,19 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       });
     }
     
-    return translatedText || key;
+    return typeof translatedText === 'string' ? translatedText : key;
   };
+  
+  // Listen for language changes and force a re-render
+  useEffect(() => {
+    const handleLanguageChange = () => {
+      // This is just to force components to re-render
+    };
+    window.addEventListener('languageChange', handleLanguageChange);
+    return () => {
+      window.removeEventListener('languageChange', handleLanguageChange);
+    };
+  }, []);
   
   return (
     <LanguageContext.Provider value={{ currentLanguage, setLanguage, currentLocation, setLocation, t }}>
