@@ -33,7 +33,7 @@ export default function ForYou() {
 
       <div className="pt-[72px]">
         <HeroBanner />
-        <FeaturedCategories />
+              <SpaceSavingCategories />
         <FlashDeals products={products} isLoading={isLoading} />
         <ProductCarousel title="Just For You" products={products} isLoading={isLoading} />
         <NewArrivals products={products} isLoading={isLoading} />
