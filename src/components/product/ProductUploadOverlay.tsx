@@ -3,11 +3,11 @@ import { X, Upload, Camera, Film, Image } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { 
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-} from "@/components/ui/drawer";
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -334,15 +334,18 @@ export default function ProductUploadOverlay({ isOpen, onClose }: ProductUploadO
   };
 
   return (
-    <Drawer open={isOpen} onOpenChange={onClose}>
-      <DrawerContent className="h-[90vh] max-h-[90vh] w-full p-0">
-        <DrawerHeader className="text-left px-4">
-          <DrawerTitle>Create New Content</DrawerTitle>
-        </DrawerHeader>
+    <Sheet open={isOpen} onOpenChange={onClose}>
+      <SheetContent 
+        side="bottom" 
+        className="h-[95vh] p-0 inset-x-0 w-full sm:max-w-none"
+      >
+        <SheetHeader className="text-left px-4 pt-4 pb-2">
+          <SheetTitle>Create New Content</SheetTitle>
+        </SheetHeader>
         
-        <div className="relative h-full pb-16">
-          <Tabs value={contentType} onValueChange={(value) => setContentType(value as ContentType)} className="h-full">
-            <TabsContent value="product" className="mt-0 h-full overflow-auto px-4 pb-4">
+        <div className="relative h-[calc(100%-50px)]">
+          <Tabs value={contentType} onValueChange={(value) => setContentType(value as ContentType)} className="h-full flex flex-col">
+            <TabsContent value="product" className="flex-1 overflow-auto px-4 pb-16">
               <form onSubmit={handleSubmitProduct} className="space-y-6 py-2">
                 {/* Image Upload Section */}
                 <div className="space-y-2">
@@ -470,7 +473,7 @@ export default function ProductUploadOverlay({ isOpen, onClose }: ProductUploadO
               </form>
             </TabsContent>
             
-            <TabsContent value="reel" className="mt-0 h-full overflow-auto px-4 pb-4">
+            <TabsContent value="reel" className="flex-1 overflow-auto px-4 pb-16">
               <form onSubmit={handleSubmitReel} className="space-y-6 py-2">
                 {/* Video Upload Section */}
                 <div className="space-y-2">
@@ -565,7 +568,7 @@ export default function ProductUploadOverlay({ isOpen, onClose }: ProductUploadO
               </form>
             </TabsContent>
             
-            <TabsContent value="post" className="mt-0 h-full overflow-auto px-4 pb-4">
+            <TabsContent value="post" className="flex-1 overflow-auto px-4 pb-16">
               <form onSubmit={handleSubmitPost} className="space-y-6 py-2">
                 {/* Image Upload Section */}
                 <div className="space-y-2">
@@ -657,26 +660,26 @@ export default function ProductUploadOverlay({ isOpen, onClose }: ProductUploadO
               </form>
             </TabsContent>
             
-            {/* Content Type Switcher Tabs - Now fixed at the bottom */}
-            <div className="fixed bottom-0 left-0 right-0 bg-white border-t py-2 px-4 z-10">
-              <TabsList className="grid grid-cols-3 w-full">
-                <TabsTrigger value="product" className="flex items-center justify-center gap-1">
+            {/* Content Type Switcher Tabs - Fixed at the bottom */}
+            <div className="absolute bottom-0 left-0 right-0 bg-white border-t z-10">
+              <TabsList className="grid grid-cols-3 w-full rounded-none h-14">
+                <TabsTrigger value="product" className="flex items-center justify-center gap-1.5 h-full">
                   <Camera className="h-4 w-4" />
-                  <span>Product</span>
+                  <span className="font-medium">Product</span>
                 </TabsTrigger>
-                <TabsTrigger value="reel" className="flex items-center justify-center gap-1">
+                <TabsTrigger value="reel" className="flex items-center justify-center gap-1.5 h-full">
                   <Film className="h-4 w-4" />
-                  <span>Reel</span>
+                  <span className="font-medium">Reel</span>
                 </TabsTrigger>
-                <TabsTrigger value="post" className="flex items-center justify-center gap-1">
+                <TabsTrigger value="post" className="flex items-center justify-center gap-1.5 h-full">
                   <Image className="h-4 w-4" />
-                  <span>Post</span>
+                  <span className="font-medium">Post</span>
                 </TabsTrigger>
               </TabsList>
             </div>
           </Tabs>
         </div>
-      </DrawerContent>
-    </Drawer>
+      </SheetContent>
+    </Sheet>
   );
 }
