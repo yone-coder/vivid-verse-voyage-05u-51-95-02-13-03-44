@@ -46,19 +46,20 @@ const CategoryTabs = ({ progress, activeTab, setActiveTab, categories }: Categor
     }
   }, [activeTab, categories]);
   
-  // Style for the container - removed the bottom border
+  // Style for the container with fixed width
   const containerStyle = {
     backgroundColor: `rgba(255, 255, 255, ${0.85 + (progress * 0.15)})`,
     backdropFilter: `blur(${progress * 8}px)`,
+    width: '100%'
   };
 
   return (
     <div
-      className="overflow-x-auto no-scrollbar relative"
+      className="overflow-x-auto no-scrollbar relative w-full"
       style={containerStyle}
       ref={scrollContainerRef}
     >
-      <div className="flex">
+      <div className="flex w-full">
         {categories.map((category, index) => (
           <Link
             to={category.path}

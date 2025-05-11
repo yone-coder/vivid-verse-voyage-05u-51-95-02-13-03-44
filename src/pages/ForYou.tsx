@@ -1,5 +1,5 @@
 
-import React, { useEffect } from "react";
+import React from "react";
 import { fetchAllProducts } from "@/integrations/supabase/products";
 import { useQuery } from "@tanstack/react-query";
 import HeroBannerSection from "@/components/home/HeroBanner";
@@ -33,32 +33,52 @@ export default function ForYou() {
   }
 
   return (
-    <div className="pb-16 relative">
+    <div className="max-w-screen overflow-hidden pb-16 relative">
       {/* Logout Test Button - Positioned in the top right corner */}
       <div className="absolute top-2 right-2 z-50">
         <LogoutButton />
       </div>
       
       <HeroBannerSection />
-      {/* @ts-ignore - Ignoring TypeScript error for SuperDealsSection props */}
- <SpaceSavingCategories />
- <FlashDeals />
-      <SuperDealsSection products={products || []} isLoading={isLoading} />
-      <SecondaryHeroBanner />
-      <TranslationExample />
-      <PopularSearches />
-     
-     
-      <TopBrands />
-      {/* @ts-ignore - Ignoring TypeScript error for VendorProductCarousel props */}
-      <VendorProductCarousel title="Technology" products={products?.slice(0, 10) || []} isLoading={isLoading} />
-      <SecondaryFlashDeals />
-      <BenefitsBanner />
-      <TopVendorsCompact />
-      <div className="bg-white mb-1">
-        <ProductRecommendations products={Array.isArray(products) ? products : []} />
+      
+      <div className="space-y-1">
+        <SpaceSavingCategories />
+        <FlashDeals />
+        
+        {/* Pass products array safely */}
+        {Array.isArray(products) && (
+          <SuperDealsSection 
+            products={products} 
+            isLoading={isLoading} 
+          />
+        )}
+        
+        <SecondaryHeroBanner />
+        <TranslationExample />
+        <PopularSearches />
+        <TopBrands />
+        
+        {/* Pass products array safely */}
+        {Array.isArray(products) && (
+          <VendorProductCarousel 
+            title="Technology" 
+            products={products.slice(0, 10)} 
+            isLoading={isLoading} 
+          />
+        )}
+        
+        <SecondaryFlashDeals />
+        <BenefitsBanner />
+        <TopVendorsCompact />
+        
+        <div className="bg-white mb-1">
+          {Array.isArray(products) && (
+            <ProductRecommendations products={products} />
+          )}
+        </div>
+        
+        <Newsletter />
       </div>
-      <Newsletter />
     </div>
   );
 }

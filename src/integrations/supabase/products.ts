@@ -1,9 +1,4 @@
-
 import { supabase } from './client';
-import { 
-  PostgrestFilterBuilder, 
-  PostgrestSingleResponse
-} from '@supabase/supabase-js';
 
 export interface Product {
   id: string;

@@ -6,15 +6,20 @@ import { ChevronRight, CirclePlus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useLanguage } from "@/context/LanguageContext";
+import { Product } from "@/integrations/supabase/products";
 
-export default function NewArrivals({ products }) {
+interface NewArrivalsProps {
+  products?: Product[];
+}
+
+export default function NewArrivals({ products = [] }: NewArrivalsProps) {
   const isMobile = useIsMobile();
   const { t } = useLanguage();
   
   if (!products?.length) return null;
   
   return (
-    <div className="py-3">
+    <div className="py-3 w-full">
       <div className="container mx-auto px-3">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
