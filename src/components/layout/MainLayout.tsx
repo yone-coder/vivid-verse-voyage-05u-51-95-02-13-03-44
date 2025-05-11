@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import AliExpressHeader from "@/components/home/AliExpressHeader";
 import { useAuthOverlay } from "@/context/AuthOverlayContext";
 import { LanguageProvider } from "@/context/LanguageContext";
+import TranslationLoadingIndicator from "@/components/ui/TranslationLoadingIndicator";
 
 export default function MainLayout() {
   const isMobile = useIsMobile();
@@ -105,6 +106,9 @@ export default function MainLayout() {
 
         {/* Show bottom nav on mobile for home, reels, product pages, and profile pages */}
         {isMobile && (isHomePage || isProductPage || isReelsPage || isProfilePage) && <IndexBottomNav />}
+        
+        {/* Translation loading indicator */}
+        <TranslationLoadingIndicator />
       </div>
     </LanguageProvider>
   );
