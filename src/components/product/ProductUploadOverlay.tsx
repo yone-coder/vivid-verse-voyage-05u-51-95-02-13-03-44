@@ -472,7 +472,7 @@ export default function ProductUploadOverlay({ isOpen, onClose }: ProductUploadO
     tags: string[], 
     removeTagFn: (index: number) => void, 
     category: string, 
-    setCategory: React.Dispatch<React.SetStateAction<string>> 
+    setCategory: (value: string) => void  // Fixed this line to expect a string parameter
   }) => (
     <div className="space-y-4">
       <div>
@@ -619,7 +619,7 @@ export default function ProductUploadOverlay({ isOpen, onClose }: ProductUploadO
                       productForm.setValue('tags', currentTags);
                     }}
                     category={productForm.watch('category')}
-                    setCategory={(value) => productForm.setValue('category', value)}
+                    setCategory={(value: string) => productForm.setValue('category', value)}
                   />
                 </div>
                 
@@ -773,7 +773,7 @@ export default function ProductUploadOverlay({ isOpen, onClose }: ProductUploadO
                     tags={reelTags} 
                     removeTagFn={removeTag(reelTags, setReelTags)}
                     category={reelCategory}
-                    setCategory={setReelCategory}
+                    setCategory={(value: string) => setReelCategory(value)}
                   />
                 </div>
                 
@@ -881,7 +881,7 @@ export default function ProductUploadOverlay({ isOpen, onClose }: ProductUploadO
                     tags={postTags} 
                     removeTagFn={removeTag(postTags, setPostTags)}
                     category={postCategory}
-                    setCategory={setPostCategory}
+                    setCategory={(value: string) => setPostCategory(value)}
                   />
                 </div>
                 
