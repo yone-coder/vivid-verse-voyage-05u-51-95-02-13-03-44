@@ -1,21 +1,17 @@
 
-// Import the specific types needed to avoid circular references
 import { supabase } from './client';
+import { PostgrestFilterBuilder } from '@supabase/supabase-js';
 
-// Define Product type directly in the file since it's not exported from types.ts
 export interface Product {
   id: string;
   name: string;
   description: string;
   price: number;
-  discount_price?: number | null;
-  created_at: string;
-  updated_at: string;
-  product_images?: ProductImage[];
-  image?: string;
-  inventory?: number;
-  sales?: number;
+  discount_price?: number;
+  created_at?: string;
+  updated_at?: string;
   user_id?: string;
+  product_images?: ProductImage[];
 }
 
 export interface ProductImage {
@@ -23,200 +19,143 @@ export interface ProductImage {
   product_id: string;
   src: string;
   alt: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
-// Fetch all products from the supabase table
-export async function fetchAllProducts(): Promise<Product[]> {
+export const fetchProducts = async (): Promise<Product[]> => {
   try {
     const { data, error } = await supabase
       .from('products')
       .select('*, product_images(*)');
-
+      
     if (error) {
       console.error('Error fetching products:', error);
       return [];
     }
-
-    const products = data.map(product => ({
-      ...product,
-      image: product.product_images && product.product_images.length > 0
-        ? product.product_images[0].src
-        : 'https://via.placeholder.com/400'
-    }));
-
-    return products;
-  } catch (err) {
-    console.error('Unexpected error fetching products:', err);
+    
+    return data || [];
+  } catch (error) {
+    console.error('Error in fetchProducts:', error);
     return [];
   }
-}
+};
 
-// Fetch products for a specific user
-export async function fetchUserProducts(userId: string): Promise<Product[]> {
-  try {
-    if (!userId) {
-      console.error('No user ID provided for fetching products');
-      return [];
-    }
-    
-    const { data, error } = await supabase
-      .from('products')
-      .select('*, product_images(*)');
-    
-    if (error) {
-      console.error('Error fetching user products:', error);
-      return [];
-    }
-    
-    // Filter products by user_id after fetching them
-    // This avoids the excessive depth issue with Supabase queries
-    const userProducts = data.filter(product => product.user_id === userId);
-    
-    return userProducts.map(product => ({
-      ...product,
-      image: product.product_images && product.product_images.length > 0
-        ? product.product_images[0].src
-        : 'https://via.placeholder.com/400'
-    }));
-  } catch (err) {
-    console.error('Unexpected error fetching user products:', err);
-    return [];
-  }
-}
-
-// Fetch a single product by its ID
-export async function fetchProductById(id: string): Promise<Product | null> {
+export const fetchProductById = async (id: string): Promise<Product | null> => {
   try {
     const { data, error } = await supabase
       .from('products')
       .select('*, product_images(*)')
       .eq('id', id)
       .single();
-
+      
     if (error) {
-      console.error(`Error fetching product with ID ${id}:`, error);
+      console.error(`Error fetching product with id ${id}:`, error);
       return null;
     }
-
-    return {
-      ...data,
-      image: data.product_images && data.product_images.length > 0
-        ? data.product_images[0].src
-        : 'https://via.placeholder.com/400'
-    };
-  } catch (err) {
-    console.error(`Unexpected error fetching product with ID ${id}:`, err);
+    
+    return data;
+  } catch (error) {
+    console.error(`Error in fetchProductById for id ${id}:`, error);
     return null;
   }
-}
+};
 
-// Search products by a query string
-export async function searchProducts(query: string): Promise<Product[]> {
+export const fetchUserProducts = async (userId: string): Promise<Product[]> => {
   try {
-    // This will search the name column for the query string (ilike is case insensitive)
     const { data, error } = await supabase
       .from('products')
       .select('*, product_images(*)')
-      .ilike('name', `%${query}%`);
+      .eq('user_id', userId);
+      
+    if (error) {
+      console.error(`Error fetching products for user ${userId}:`, error);
+      return [];
+    }
+    
+    return data || [];
+  } catch (error) {
+    console.error(`Error in fetchUserProducts for user ${userId}:`, error);
+    return [];
+  }
+};
 
+export const searchProducts = async (query: string): Promise<Product[]> => {
+  try {
+    let searchBuilder: PostgrestFilterBuilder<any, any, any> = supabase
+      .from('products')
+      .select('*, product_images(*)');
+      
+    // If we have a search query, filter by name or description
+    if (query && query.trim() !== '') {
+      searchBuilder = searchBuilder.or(`name.ilike.%${query}%,description.ilike.%${query}%`);
+    }
+    
+    const { data, error } = await searchBuilder;
+      
     if (error) {
       console.error('Error searching products:', error);
       return [];
     }
-
-    return data.map(product => ({
-      ...product,
-      image: product.product_images && product.product_images.length > 0
-        ? product.product_images[0].src
-        : 'https://via.placeholder.com/400'
-    }));
-  } catch (err) {
-    console.error('Unexpected error searching products:', err);
+    
+    return data || [];
+  } catch (error) {
+    console.error('Error in searchProducts:', error);
     return [];
   }
-}
+};
 
-// Create a new product
-export async function createProduct(productData: {
-  name: string;
-  description: string;
-  price: number;
-  discount_price?: number | null;
-  user_id?: string;
-}): Promise<Product | null> {
+export const createProduct = async (product: Omit<Product, 'id' | 'created_at' | 'updated_at'>): Promise<Product | null> => {
   try {
     const { data, error } = await supabase
       .from('products')
-      .insert([productData])
-      .select('*')
+      .insert(product)
+      .select()
       .single();
-
+      
     if (error) {
       console.error('Error creating product:', error);
       return null;
     }
-
+    
     return data;
-  } catch (err) {
-    console.error('Unexpected error creating product:', err);
+  } catch (error) {
+    console.error('Error in createProduct:', error);
     return null;
   }
-}
+};
 
-// Update an existing product
-export async function updateProduct(
-  id: string, 
-  updates: Partial<Product>
-): Promise<Product[] | null> {
+export const updateProduct = async (id: string, product: Partial<Omit<Product, 'id' | 'created_at' | 'updated_at'>>): Promise<Product | null> => {
   try {
-    // Check if there's actually something to update
-    if (Object.keys(updates).length === 0) {
-      console.warn('No updates provided for product update');
-      return { noChanges: true } as any;
-    }
-
     const { data, error } = await supabase
       .from('products')
-      .update(updates)
+      .update(product)
       .eq('id', id)
-      .select('*');
-
+      .select()
+      .single();
+      
     if (error) {
-      console.error('Error updating product:', error);
+      console.error(`Error updating product with id ${id}:`, error);
       return null;
     }
-
+    
     return data;
-  } catch (err) {
-    console.error('Unexpected error updating product:', err);
+  } catch (error) {
+    console.error(`Error in updateProduct for id ${id}:`, error);
     return null;
   }
-}
+};
 
-// Subscribe to product changes
-export function subscribeToProductChanges(callback: () => void): () => void {
-  // Subscribe to the products table
-  const channel = supabase
+export const subscribeToProductChanges = (callback: (payload: any) => void) => {
+  const subscription = supabase
     .channel('products_channel')
-    .on(
-      'postgres_changes',
-      {
-        event: '*', // Listen for all events (insert, update, delete)
-        schema: 'public',
-        table: 'products'
-      },
-      () => {
-        console.log('Product change detected');
-        callback();
-      }
-    )
-    .subscribe((status) => {
-      console.log(`Supabase channel status: ${status}`);
-    });
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, payload => {
+      callback(payload);
+    })
+    .subscribe();
 
   // Return a cleanup function
   return () => {
-    console.log('Unsubscribing from products channel');
-    supabase.removeChannel(channel);
+    supabase.removeChannel(subscription);
   };
-}
+};

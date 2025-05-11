@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface CategoryTabsProps {
   progress: number;
@@ -15,6 +16,8 @@ interface CategoryTabsProps {
 }
 
 const CategoryTabs = ({ progress, activeTab, setActiveTab, categories }: CategoryTabsProps) => {
+  const { t } = useLanguage();
+  
   return (
     <div
       className="overflow-x-auto no-scrollbar relative"
@@ -38,7 +41,7 @@ const CategoryTabs = ({ progress, activeTab, setActiveTab, categories }: Categor
           >
             <div className="flex items-center gap-1.5">
               {category.icon}
-              <span>{category.name}</span>
+              <span>{t(`home.${category.id}`)}</span>
             </div>
             {activeTab === category.id && (
               <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-orange-500"></div>
