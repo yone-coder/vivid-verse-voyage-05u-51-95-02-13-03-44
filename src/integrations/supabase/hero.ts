@@ -31,23 +31,34 @@ export const fetchHeroBanners = async (): Promise<HeroBanner[]> => {
 
     console.log('Raw data from Supabase:', data);
     
+    if (!data || data.length === 0) {
+      console.log('No hero banners found in database');
+      return [];
+    }
+    
     // Transform the data to ensure image URLs are properly formatted
-    const banners = data?.map(banner => {
+    const banners = data.map(banner => {
       // Check if the image is a full URL or just a path
       let imageUrl = banner.image;
       
-      // Handle different image path formats
+      console.log(`Processing banner ${banner.id} with image path: ${imageUrl}`);
+      
+      // If the image already starts with http or https, assume it's a complete URL
       if (imageUrl && !imageUrl.startsWith('http') && !imageUrl.startsWith('/lovable-uploads')) {
-        // Assume it's a path in the hero-banners bucket
-        imageUrl = getPublicUrl('hero-banners', imageUrl);
-        console.log(`Transformed image URL: ${banner.image} -> ${imageUrl}`);
+        try {
+          // Assume it's a path in the hero-banners bucket
+          imageUrl = getPublicUrl('hero-banners', imageUrl);
+          console.log(`Transformed image URL for ${banner.id}: ${banner.image} -> ${imageUrl}`);
+        } catch (err) {
+          console.error(`Failed to get public URL for ${banner.image}:`, err);
+        }
       }
       
       return {
         ...banner,
         image: imageUrl
       };
-    }) || [];
+    });
     
     console.log('Transformed hero banners:', banners);
     return banners;
@@ -71,6 +82,8 @@ export const createHeroBanner = async (banner: {
       return null;
     }
 
+    console.log('Creating hero banner with data:', banner);
+
     // Need to explicitly type the response to avoid type errors
     const { data, error } = await supabase
       .from('hero_banners')
@@ -86,6 +99,7 @@ export const createHeroBanner = async (banner: {
       return null;
     }
     
+    console.log('Successfully created hero banner:', data);
     return data;
   } catch (error) {
     console.error('Error in createHeroBanner:', error);

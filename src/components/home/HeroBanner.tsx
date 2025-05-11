@@ -20,15 +20,19 @@ export default function HeroBanner() {
 
   // Initialize storage buckets if needed
   useEffect(() => {
-    setupStorageBuckets();
+    const initStorage = async () => {
+      await setupStorageBuckets();
+      console.log('Storage buckets initialized');
+    };
+    initStorage();
   }, []);
 
   // Fetch banners from Supabase
-  const { data: banners, isLoading, error } = useQuery({
+  const { data: banners, isLoading, error, refetch } = useQuery({
     queryKey: ["hero-banners"],
     queryFn: fetchHeroBanners,
-    staleTime: 60000, // 1 minute
-    refetchInterval: 300000, // 5 minutes - to pick up new banners
+    staleTime: 30000, // 30 seconds - reduced for testing
+    refetchInterval: 60000, // 1 minute - reduced for testing
   });
 
   // Show error if we failed to fetch banners
@@ -38,6 +42,23 @@ export default function HeroBanner() {
       console.error("Banner fetch error:", error);
     }
   }, [error]);
+
+  // Log banners whenever they change
+  useEffect(() => {
+    if (banners) {
+      console.log("Banners loaded from query:", banners);
+      
+      // Force image preloading
+      banners.forEach(banner => {
+        if (banner.image) {
+          const img = new Image();
+          img.src = banner.image;
+          img.onload = () => console.log(`Preloaded image successfully: ${banner.image}`);
+          img.onerror = (e) => console.error(`Failed to preload image ${banner.image}:`, e);
+        }
+      });
+    }
+  }, [banners]);
 
   // Fallback banners in case database is empty
   const fallbackBanners = [
@@ -63,31 +84,6 @@ export default function HeroBanner() {
 
   // Use banners from database or fallback banners
   const slidesToShow = banners?.length > 0 ? banners : fallbackBanners;
-  
-  // Log the banners we're using to help debug
-  useEffect(() => {
-    console.log("Raw banners data:", banners);
-    console.log("Using slides:", slidesToShow);
-    
-    // Log individual banner images to check for issues
-    slidesToShow.forEach((banner, index) => {
-      console.log(`Banner ${index} (${banner.id}): ${banner.image}`);
-      
-      // Check if image exists by creating a dummy Image object
-      const img = new Image();
-      img.onload = () => console.log(`Image ${banner.image} loaded successfully`);
-      img.onerror = () => console.error(`Image ${banner.image} failed to load`);
-      img.src = banner.image;
-    });
-  }, [banners, slidesToShow]);
-
-  // News items for the ticker
-  const newsItems = [
-    { id: 1, icon: <AlertCircle className="w-3 h-3 text-white" />, text: "FLASH SALE: 30% OFF ALL ELECTRONICS TODAY ONLY!" },
-    { id: 2, icon: <TrendingUp className="w-3 h-3 text-white" />, text: "NEW USER BONUS: GET ¥50 OFF YOUR FIRST ORDER" },
-    { id: 3, icon: <Clock className="w-3 h-3 text-white" />, text: "24H DEALS: UP TO 70% OFF BESTSELLERS" },
-    { id: 4, icon: <Newspaper className="w-3 h-3 text-white" />, text: "FREE SHIPPING ON ORDERS OVER ¥199" }
-  ];
 
   // Set up intervals for banner rotation and progress tracking
   useEffect(() => {
@@ -143,6 +139,12 @@ export default function HeroBanner() {
     setActiveIndex(index);
   };
 
+  // Manual refetch button for debugging - will be hidden in production
+  const debugRefetch = () => {
+    console.log("Manual refetch triggered");
+    refetch();
+  };
+
   if (isLoading) {
     return (
       <div className="relative w-full h-[60vh] min-h-[400px] max-h-[600px] bg-gray-200 animate-pulse mt-[44px]">
@@ -156,6 +158,16 @@ export default function HeroBanner() {
   return (
     <>
       <div className="relative mt-[44px] overflow-hidden">
+        {/* Debug button - only visible during development */}
+        {process.env.NODE_ENV !== 'production' && (
+          <button 
+            onClick={debugRefetch}
+            className="absolute top-0 right-0 z-50 bg-blue-500 text-white px-2 py-1 text-xs"
+          >
+            Refresh Banners
+          </button>
+        )}
+        
         <div className="relative h-[180px] md:h-[250px] lg:h-[300px]">
           {/* Banner Images */}
           {slidesToShow.map((banner, index) => {
@@ -174,8 +186,10 @@ export default function HeroBanner() {
                   src={banner.image} 
                   alt={banner.alt || "Banner image"}
                   className="w-full h-full object-cover"
+                  onLoad={() => console.log(`Banner image loaded successfully: ${banner.image}`)}
                   onError={(e) => {
-                    console.error("Error loading image:", banner.image);
+                    console.error(`Error loading image: ${banner.image}`);
+                    console.error("Error details:", e);
                     (e.target as HTMLImageElement).src = "/placeholder.svg"; // Fallback image
                   }}
                 />

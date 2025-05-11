@@ -6,13 +6,8 @@ import { supabase } from "./client";
  */
 export const setupStorageBuckets = async () => {
   try {
-    // Check if the user is authenticated (needed for creating buckets)
-    const { data: userData } = await supabase.auth.getUser();
-    if (!userData?.user) {
-      console.log('User is not authenticated. Skipping bucket creation.');
-      return;
-    }
-
+    console.log('Setting up storage buckets...');
+    
     // Check if the needed buckets already exist
     const { data: buckets, error } = await supabase
       .storage
@@ -28,13 +23,20 @@ export const setupStorageBuckets = async () => {
       return;
     }
     
-    console.log('Available buckets:', buckets);
+    console.log('Available buckets:', buckets.map(b => b.name));
     
     // Check for hero-banners bucket and create it if it doesn't exist
     const heroBannersBucketExists = buckets.some(bucket => bucket.name === 'hero-banners');
     
     if (!heroBannersBucketExists) {
       console.log('Hero banners bucket does not exist, creating it...');
+      // Check if the user is authenticated (needed for creating buckets)
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData?.user) {
+        console.log('User is not authenticated. Skipping bucket creation.');
+        return;
+      }
+      
       const { error: createError } = await supabase
         .storage
         .createBucket('hero-banners', {
@@ -48,6 +50,8 @@ export const setupStorageBuckets = async () => {
       } else {
         console.log('Successfully created hero-banners bucket');
       }
+    } else {
+      console.log('Hero banners bucket already exists');
     }
     
     // Check for product-images bucket and create it if it doesn't exist
@@ -55,6 +59,13 @@ export const setupStorageBuckets = async () => {
     
     if (!productImagesBucketExists) {
       console.log('Product images bucket does not exist, creating it...');
+      // Check if the user is authenticated (needed for creating buckets)
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData?.user) {
+        console.log('User is not authenticated. Skipping bucket creation.');
+        return;
+      }
+      
       const { error: createError } = await supabase
         .storage
         .createBucket('product-images', {
@@ -68,6 +79,8 @@ export const setupStorageBuckets = async () => {
       } else {
         console.log('Successfully created product-images bucket');
       }
+    } else {
+      console.log('Product images bucket already exists');
     }
   } catch (error) {
     console.error('Error setting up storage buckets:', error);
@@ -76,6 +89,13 @@ export const setupStorageBuckets = async () => {
 
 // Helper function to generate public URL for a storage item
 export const getPublicUrl = (bucket: string, path: string): string => {
+  if (!path) {
+    console.error('Empty path provided to getPublicUrl');
+    return '';
+  }
+  
+  console.log(`Getting public URL for ${bucket}/${path}`);
   const { data } = supabase.storage.from(bucket).getPublicUrl(path);
+  console.log(`Public URL result:`, data);
   return data.publicUrl;
 };
