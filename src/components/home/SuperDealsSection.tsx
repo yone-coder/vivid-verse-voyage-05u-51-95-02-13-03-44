@@ -7,7 +7,7 @@ interface SuperDealsProps {
   products?: Product[];
 }
 
-const SuperDeals = ({ products }: SuperDealsProps) => {
+const SuperDeals = ({ products = [] }: SuperDealsProps) => {
   const scrollContainerRef = useRef(null);
   
   const allDeals = [

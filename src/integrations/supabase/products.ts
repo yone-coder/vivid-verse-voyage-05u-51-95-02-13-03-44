@@ -100,16 +100,15 @@ export const createProduct = async (product: {
   description: string;
   price: number;
   discount_price?: number | null;
+  user_id?: string; // Add user_id parameter
+  inventory?: number; // Add inventory parameter
 }): Promise<Product | null> => {
   try {
     const { data, error } = await supabase
       .from('products')
       .insert(product)
       .select()
-      .single() as {
-        data: Product | null;
-        error: any;
-      };
+      .single();
     
     if (error) {
       console.error('Error creating product:', error);
