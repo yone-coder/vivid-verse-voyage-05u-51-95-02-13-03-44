@@ -1,7 +1,8 @@
 
-import React from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/context/LanguageContext';
+import { motion } from 'framer-motion';
 
 interface CategoryTabsProps {
   progress: number;
@@ -17,18 +18,48 @@ interface CategoryTabsProps {
 
 const CategoryTabs = ({ progress, activeTab, setActiveTab, categories }: CategoryTabsProps) => {
   const { t } = useLanguage();
+  const [underline, setUnderline] = useState({ left: 0, width: 0 });
+  const tabsRef = useRef<(HTMLAnchorElement | null)[]>([]);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   
+  // Update underline position when active tab changes
+  useEffect(() => {
+    const activeIndex = categories.findIndex(category => category.id === activeTab);
+    if (activeIndex >= 0 && tabsRef.current[activeIndex]) {
+      const currentTab = tabsRef.current[activeIndex];
+      if (currentTab) {
+        setUnderline({
+          left: currentTab.offsetLeft,
+          width: currentTab.offsetWidth,
+        });
+        
+        // Scroll active tab into view
+        if (scrollContainerRef.current) {
+          const container = scrollContainerRef.current;
+          const tabElement = currentTab;
+          
+          // Calculate position to center the tab
+          const scrollLeft = tabElement.offsetLeft - (container.offsetWidth / 2) + (tabElement.offsetWidth / 2);
+          container.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+        }
+      }
+    }
+  }, [activeTab, categories]);
+  
+  // Style for the container - removed the bottom border
+  const containerStyle = {
+    backgroundColor: `rgba(255, 255, 255, ${0.85 + (progress * 0.15)})`,
+    backdropFilter: `blur(${progress * 8}px)`,
+  };
+
   return (
     <div
       className="overflow-x-auto no-scrollbar relative"
-      style={{
-        backgroundColor: `rgba(255, 255, 255, ${0.85 + (progress * 0.15)})`,
-        backdropFilter: `blur(${progress * 8}px)`,
-        borderBottom: '1px solid rgba(229, 231, 235, 0.8)',
-      }}
+      style={containerStyle}
+      ref={scrollContainerRef}
     >
       <div className="flex">
-        {categories.map((category) => (
+        {categories.map((category, index) => (
           <Link
             to={category.path}
             key={category.id}
@@ -38,17 +69,29 @@ const CategoryTabs = ({ progress, activeTab, setActiveTab, categories }: Categor
                 : "text-gray-600"
             }`}
             onClick={() => setActiveTab(category.id)}
+            ref={el => tabsRef.current[index] = el}
           >
             <div className="flex items-center gap-1.5">
               {category.icon}
               <span>{t(`home.${category.id}`)}</span>
             </div>
-            {activeTab === category.id && (
-              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-orange-500"></div>
-            )}
           </Link>
         ))}
       </div>
+      
+      {/* Animated underline */}
+      <motion.div
+        className="absolute bottom-0 left-0 h-0.5 bg-orange-500 rounded-full"
+        animate={{
+          left: underline.left,
+          width: underline.width,
+        }}
+        transition={{
+          type: "spring",
+          stiffness: 300,
+          damping: 30
+        }}
+      />
     </div>
   );
 };
