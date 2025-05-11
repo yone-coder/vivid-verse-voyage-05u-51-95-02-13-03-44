@@ -75,15 +75,13 @@ const StepOneContent: React.FC<StepOneContentProps> = ({
       return "Verifying Email...";
     }
 
-    // For email tab, show different text based on verification state
+    // For email tab, show different text based on tab
     if (activeTab === 'email') {
-      if (emailVerified === true) {
-        return "Continue to Sign In";
-      } else if (emailVerified === false) {
-        return "Continue to Create Account";
-      } else if (emailVerified === null && !isCheckingEmail) {
-        return "Waiting for verification...";
-      }
+      return "Continue with Email";
+    } else if (activeTab === 'phone') {
+      return "Continue with Phone";
+    } else if (activeTab === 'passkey') {
+      return "Continue with Passkey";
     }
     
     return "Continue";
