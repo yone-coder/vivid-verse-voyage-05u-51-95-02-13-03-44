@@ -1,6 +1,9 @@
 
 import { supabase } from './client';
-import { PostgrestFilterBuilder } from '@supabase/supabase-js';
+import { 
+  PostgrestFilterBuilder, 
+  PostgrestSingleResponse
+} from '@supabase/supabase-js';
 
 export interface Product {
   id: string;
@@ -40,6 +43,9 @@ export const fetchProducts = async (): Promise<Product[]> => {
     return [];
   }
 };
+
+// Create an alias for fetchProducts so existing code continues to work
+export const fetchAllProducts = fetchProducts;
 
 export const fetchProductById = async (id: string): Promise<Product | null> => {
   try {
@@ -82,7 +88,7 @@ export const fetchUserProducts = async (userId: string): Promise<Product[]> => {
 
 export const searchProducts = async (query: string): Promise<Product[]> => {
   try {
-    let searchBuilder: PostgrestFilterBuilder<any, any, any> = supabase
+    let searchBuilder = supabase
       .from('products')
       .select('*, product_images(*)');
       
