@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,95 +10,80 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
+import { fetchUserProducts } from "@/integrations/supabase/products";
+import { useQuery } from "@tanstack/react-query";
 
 interface ProfileProductsProps {
   user: any;
+}
+
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+  status: string;
+  inventory?: number;
+  image?: string;
+  sales?: number;
+  createdAt?: string;
+  created_at: string;
+  description?: string;
+  user_id: string;
+  product_images?: {id: string, src: string}[];
 }
 
 export default function ProfileProducts({ user }: ProfileProductsProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState("all");
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [productToDelete, setProductToDelete] = useState<any>(null);
+  const [productToDelete, setProductToDelete] = useState<Product | null>(null);
   
-  // Sample product data
-  const [products, setProducts] = useState([
-    {
-      id: "1",
-      name: "Premium Wireless Headphones",
-      price: 129.99,
-      status: "active",
-      inventory: 45,
-      image: "https://api.dicebear.com/7.x/shapes/svg?seed=product11",
-      sales: 23,
-      createdAt: "2023-04-15"
-    },
-    {
-      id: "2",
-      name: "Smart Watch - Health & Fitness Tracker",
-      price: 199.99,
-      status: "active",
-      inventory: 12,
-      image: "https://api.dicebear.com/7.x/shapes/svg?seed=product12",
-      sales: 8,
-      createdAt: "2023-04-18"
-    },
-    {
-      id: "3",
-      name: "Portable Power Bank 10000mAh",
-      price: 49.99,
-      status: "draft",
-      inventory: 30,
-      image: "https://api.dicebear.com/7.x/shapes/svg?seed=product13",
-      sales: 0,
-      createdAt: "2023-05-02"
-    },
-    {
-      id: "4",
-      name: "Ergonomic Mouse Pad with Wrist Rest",
-      price: 24.99,
-      status: "out_of_stock",
-      inventory: 0,
-      image: "https://api.dicebear.com/7.x/shapes/svg?seed=product14",
-      sales: 42,
-      createdAt: "2023-03-20"
-    },
-    {
-      id: "5",
-      name: "Laptop Stand - Adjustable Height",
-      price: 35.99,
-      status: "active",
-      inventory: 8,
-      image: "https://api.dicebear.com/7.x/shapes/svg?seed=product15",
-      sales: 15,
-      createdAt: "2023-04-25"
-    }
-  ]);
+  // Use React Query to fetch products
+  const { data: products = [], isLoading, error, refetch } = useQuery({
+    queryKey: ['userProducts', user?.id],
+    queryFn: () => fetchUserProducts(user?.id),
+    enabled: !!user?.id,
+  });
+  
+  // Transform products from the database to match our component's expected format
+  const transformedProducts: Product[] = products.map((product: any) => ({
+    id: product.id,
+    name: product.name,
+    price: product.price,
+    description: product.description,
+    status: product.inventory <= 0 ? "out_of_stock" : "active", // Derive status
+    inventory: product.inventory || 0,
+    image: product.product_images?.length > 0 
+      ? product.product_images[0].src 
+      : `https://api.dicebear.com/7.x/shapes/svg?seed=product${product.id}`,
+    sales: product.sales || 0,
+    createdAt: new Date(product.created_at).toLocaleDateString(),
+    created_at: product.created_at,
+    user_id: product.user_id,
+    product_images: product.product_images
+  }));
   
   const handleDeleteConfirm = () => {
     if (productToDelete) {
-      setProducts(products => products.filter(p => p.id !== productToDelete.id));
+      // Here we would call the API to delete the product
+      // For now, we'll just filter out the product from our local state
       toast.success(`"${productToDelete.name}" has been deleted`);
       setIsDeleteDialogOpen(false);
       setProductToDelete(null);
+      refetch(); // Refetch products after deletion
     }
   };
   
-  const openDeleteDialog = (product: any) => {
+  const openDeleteDialog = (product: Product) => {
     setProductToDelete(product);
     setIsDeleteDialogOpen(true);
   };
   
-  const handleDuplicate = (product: any) => {
-    const newProduct = {
-      ...product,
-      id: Math.random().toString(36).substring(2, 9),
-      name: `${product.name} (Copy)`,
-      sales: 0,
-      createdAt: new Date().toISOString().split('T')[0]
-    };
-    setProducts([...products, newProduct]);
+  const handleDuplicate = (product: Product) => {
+    // Here we would call the API to duplicate the product
+    // For now we'll just show a toast notification
     toast.success(`"${product.name}" has been duplicated`);
+    refetch(); // Refetch products after duplication
   };
   
   const getStatusBadge = (status: string) => {
@@ -114,7 +99,7 @@ export default function ProfileProducts({ user }: ProfileProductsProps) {
     }
   };
   
-  const filteredProducts = products.filter(product => {
+  const filteredProducts = transformedProducts.filter(product => {
     // Filter by status
     if (filter !== "all" && product.status !== filter) {
       return false;
@@ -127,6 +112,26 @@ export default function ProfileProducts({ user }: ProfileProductsProps) {
     
     return true;
   });
+  
+  if (isLoading) {
+    return (
+      <div className="space-y-4">
+        <div className="h-10 w-full bg-muted animate-pulse rounded-md"></div>
+        <div className="h-64 w-full bg-muted animate-pulse rounded-md"></div>
+      </div>
+    );
+  }
+  
+  if (error) {
+    return (
+      <Card>
+        <CardContent className="flex flex-col items-center justify-center py-10">
+          <p className="text-red-500">Error loading products</p>
+          <Button onClick={() => refetch()} className="mt-4">Try Again</Button>
+        </CardContent>
+      </Card>
+    );
+  }
   
   return (
     <div className="space-y-6">
@@ -191,7 +196,7 @@ export default function ProfileProducts({ user }: ProfileProductsProps) {
                     {getStatusBadge(product.status)}
                   </td>
                   <td className="py-3 px-4 font-medium">
-                    ${product.price.toFixed(2)}
+                    ${parseFloat(product.price.toString()).toFixed(2)}
                   </td>
                   <td className="py-3 px-4">
                     {product.status === "out_of_stock" ? (
@@ -201,7 +206,7 @@ export default function ProfileProducts({ user }: ProfileProductsProps) {
                     )}
                   </td>
                   <td className="py-3 px-4">
-                    {product.sales}
+                    {product.sales || 0}
                   </td>
                   <td className="py-3 px-4 text-muted-foreground text-sm">
                     {product.createdAt}

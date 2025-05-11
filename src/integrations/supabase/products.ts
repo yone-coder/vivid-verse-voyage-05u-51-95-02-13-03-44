@@ -38,6 +38,31 @@ export const fetchProductById = async (productId: string) => {
 };
 
 /**
+ * Fetches products created by a specific user
+ */
+export const fetchUserProducts = async (userId: string) => {
+  console.log(`Fetching products for user: ${userId}`);
+  
+  if (!userId) {
+    console.error('No user ID provided');
+    return [];
+  }
+  
+  const { data, error } = await supabase
+    .from('products')
+    .select('*, product_images(*)')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false });
+  
+  if (error) {
+    console.error(`Error fetching products for user ${userId}:`, error);
+    throw error;
+  }
+  
+  return data || [];
+};
+
+/**
  * Creates a new product in the database
  */
 export const createProduct = async (productData: any) => {
