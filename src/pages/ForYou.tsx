@@ -1,3 +1,4 @@
+
 import React, { useEffect } from "react";
 import { fetchAllProducts } from "@/integrations/supabase/products";
 import { useQuery } from "@tanstack/react-query";
@@ -21,6 +22,8 @@ export default function ForYou() {
   const { data: products, isLoading } = useQuery({
     queryKey: ["products"],
     queryFn: fetchAllProducts,
+    staleTime: 60000, // 1 minute
+    refetchOnWindowFocus: true,
   });
 
   if (isLoading) {

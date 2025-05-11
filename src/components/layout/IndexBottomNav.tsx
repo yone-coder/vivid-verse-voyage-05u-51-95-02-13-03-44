@@ -28,6 +28,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import SignInBanner from "./SignInBanner";
 import AuthPage from "@/pages/AuthPage";
+import ProductUploadOverlay from "@/components/product/ProductUploadOverlay";
 
 export default function IndexBottomNav() {
   const [activeTab, setActiveTab] = useState("home");
@@ -39,6 +40,7 @@ export default function IndexBottomNav() {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [showSignInBanner, setShowSignInBanner] = useState(true);
   const [showAuthDialog, setShowAuthDialog] = useState(false);
+  const [showProductUpload, setShowProductUpload] = useState(false);
 
   useEffect(() => {
     if (location.pathname === "/" || location.pathname === "/for-you") {
@@ -101,15 +103,15 @@ export default function IndexBottomNav() {
 
   const handleQuickAction = (action) => {
     setIsPopoverOpen(false);
-    toast({
-      title: `Adding new ${action}`,
-      description: `Creating a new ${action}...`
-    });
-    setTimeout(() => {
-      if (action === "Product") {
-        navigate("/admin");
-      }
-    }, 500);
+    
+    if (action === "Product") {
+      setShowProductUpload(true);
+    } else {
+      toast({
+        title: `Adding new ${action}`,
+        description: `Creating a new ${action}...`
+      });
+    }
   };
 
   const handleTabClick = (item) => {
@@ -168,6 +170,12 @@ export default function IndexBottomNav() {
           <AuthPage isOverlay={true} onClose={() => setShowAuthDialog(false)} />
         </DialogContent>
       </Dialog>
+
+      {/* Product Upload Overlay */}
+      <ProductUploadOverlay 
+        isOpen={showProductUpload} 
+        onClose={() => setShowProductUpload(false)}
+      />
 
       <motion.div
         initial={{ y: 100 }}

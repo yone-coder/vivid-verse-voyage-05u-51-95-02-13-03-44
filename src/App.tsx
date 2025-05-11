@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -22,11 +22,17 @@ import AuthPage from "./pages/AuthPage";
 import { AuthProvider } from "./context/AuthContext";
 import { AuthOverlayProvider, useAuthOverlay } from "./context/AuthOverlayContext";
 import AuthOverlay from "./components/auth/AuthOverlay";
+import { setupStorageBuckets } from "./integrations/supabase/setupStorage";
 
 // Create a client
 const queryClient = new QueryClient();
 
 const App = () => {
+  useEffect(() => {
+    // Initialize storage buckets on app startup
+    setupStorageBuckets().catch(console.error);
+  }, []);
+
   return (
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
