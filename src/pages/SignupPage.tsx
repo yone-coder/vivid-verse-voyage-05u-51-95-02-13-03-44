@@ -34,7 +34,6 @@ const SignupPage = ({ isOverlay = false, onClose }: SignupPageProps) => {
     setAuthSuccess,
     setErrorMessage,
     toggleShowPassword,
-    toggleAuthMode,
     handlePasswordReset,
     handleGoBack,
     updateFormState
@@ -227,7 +226,6 @@ const SignupPage = ({ isOverlay = false, onClose }: SignupPageProps) => {
             setEmail={setEmail}
             setPhone={setPhone}
             setCountryCode={setCountryCode}
-            toggleAuthMode={toggleAuthMode}
             onSubmit={handleStep1Submit}
             handleSocialLogin={handleSocialLogin}
             isCheckingEmail={isCheckingEmail || verificationInProgress}
@@ -241,7 +239,6 @@ const SignupPage = ({ isOverlay = false, onClose }: SignupPageProps) => {
             setAgreeToTerms={setAgreeToTerms}
             setRememberMe={setRememberMe}
             toggleShowPassword={toggleShowPassword}
-            toggleAuthMode={toggleAuthMode}
             handleGoBack={handleGoBack}
             handlePasswordReset={handlePasswordReset}
             onSubmit={handleStep2Submit}

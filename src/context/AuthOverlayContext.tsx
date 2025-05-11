@@ -3,7 +3,7 @@ import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 interface AuthOverlayContextType {
   isAuthOverlayOpen: boolean;
-  openAuthOverlay: () => void;
+  openAuthOverlay: (authMode?: 'signin' | 'signup') => void;
   closeAuthOverlay: () => void;
 }
 
@@ -12,7 +12,7 @@ const AuthOverlayContext = createContext<AuthOverlayContextType | undefined>(und
 export const AuthOverlayProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthOverlayOpen, setIsAuthOverlayOpen] = useState(false);
 
-  const openAuthOverlay = () => {
+  const openAuthOverlay = (authMode?: 'signin' | 'signup') => {
     setIsAuthOverlayOpen(true);
   };
 
