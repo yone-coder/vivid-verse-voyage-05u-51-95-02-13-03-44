@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Footer from "@/components/layout/Footer";
@@ -80,10 +79,7 @@ export default function MainLayout() {
   // Redirect auth-related URLs to use the overlay instead
   React.useEffect(() => {
     if (location.pathname === "/auth") {
-      openAuthOverlay("signin");
-      window.history.replaceState({}, "", "/for-you");
-    } else if (location.pathname === "/signup") {
-      openAuthOverlay("signup");
+      openAuthOverlay();
       window.history.replaceState({}, "", "/for-you");
     }
   }, [location.pathname, openAuthOverlay]);

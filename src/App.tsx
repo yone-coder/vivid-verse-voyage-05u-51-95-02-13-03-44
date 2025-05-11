@@ -19,7 +19,6 @@ import AdminPanel from "./pages/AdminPanel";
 import MainLayout from "./components/layout/MainLayout";
 import { ThemeProvider } from "@/components/theme-provider";
 import AuthPage from "./pages/AuthPage";
-import SignupPage from "./pages/SignupPage";
 import { AuthProvider } from "./context/AuthContext";
 import { AuthOverlayProvider, useAuthOverlay } from "./context/AuthOverlayContext";
 import AuthOverlay from "./components/auth/AuthOverlay";
@@ -52,6 +51,7 @@ const App = () => {
                       <Route path="/admin" element={<AdminPanel />} />
                       <Route path="/search" element={<SearchPage />} />
                       <Route path="/categories" element={<Navigate to="/reels" replace />} />
+                      <Route path="/auth" element={<AuthPage />} />
                       <Route path="/cart" element={<NotFound />} />
                       <Route path="/wishlist" element={<NotFound />} />
                       <Route path="/account" element={<NotFound />} />
@@ -72,13 +72,9 @@ const App = () => {
 
 // Component to handle the auth overlay
 const AppAuthOverlay = () => {
-  const { isAuthOverlayOpen, authMode, closeAuthOverlay } = useAuthOverlay();
+  const { isAuthOverlayOpen, closeAuthOverlay } = useAuthOverlay();
   return (
-    <AuthOverlay 
-      isOpen={isAuthOverlayOpen} 
-      onClose={closeAuthOverlay} 
-      defaultMode={authMode}
-    />
+    <AuthOverlay isOpen={isAuthOverlayOpen} onClose={closeAuthOverlay} />
   );
 };
 

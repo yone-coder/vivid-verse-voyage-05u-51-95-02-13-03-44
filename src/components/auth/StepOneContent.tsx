@@ -6,7 +6,6 @@ import AuthSocialButtons from '@/components/auth/AuthSocialButtons';
 import AuthTabs from '@/components/auth/AuthTabs';
 import TabDivider from '@/components/auth/TabDivider';
 import SubmitButton from '@/components/auth/SubmitButton';
-import AuthModeToggle from '@/components/auth/AuthModeToggle';
 import { AuthFormState } from '@/hooks/useAuthForm';
 
 interface StepOneContentProps {
@@ -15,7 +14,6 @@ interface StepOneContentProps {
   setEmail: (email: string) => void;
   setPhone: (phone: string) => void;
   setCountryCode: (code: string) => void;
-  toggleAuthMode: () => void;
   onSubmit: (e: React.FormEvent) => void;
   handleSocialLogin: (provider: string) => void;
   isCheckingEmail?: boolean;
@@ -28,7 +26,6 @@ const StepOneContent: React.FC<StepOneContentProps> = ({
   setEmail,
   setPhone,
   setCountryCode,
-  toggleAuthMode,
   onSubmit,
   handleSocialLogin,
   isCheckingEmail = false,
@@ -71,7 +68,7 @@ const StepOneContent: React.FC<StepOneContentProps> = ({
   // Make sure we display the proper button state based on verification
   const getButtonLabel = () => {
     if (isLoading) {
-      return authMode === 'signin' ? "Verifying..." : "Checking...";
+      return "Verifying...";
     }
     
     if (activeTab === 'email' && isCheckingEmail) {
@@ -81,9 +78,9 @@ const StepOneContent: React.FC<StepOneContentProps> = ({
     // For email tab, show different text based on verification state
     if (activeTab === 'email') {
       if (emailVerified === true) {
-        return "Continue";
+        return "Continue to Sign In";
       } else if (emailVerified === false) {
-        return authMode === 'signin' ? "Continue to Sign In" : "Continue to Create Account";
+        return "Continue to Create Account";
       } else if (emailVerified === null && !isCheckingEmail) {
         return "Waiting for verification...";
       }
@@ -96,7 +93,7 @@ const StepOneContent: React.FC<StepOneContentProps> = ({
     if (activeTab === 'email' && isCheckingEmail) {
       return "Verifying Email...";
     }
-    return authMode === 'signin' ? "Verifying..." : "Checking...";
+    return "Verifying...";
   };
   
   return (
@@ -135,9 +132,6 @@ const StepOneContent: React.FC<StepOneContentProps> = ({
         successText="Verified!"
         disabled={isContinueDisabled()}
       />
-
-      {/* Replace the inline auth toggle with the AuthModeToggle component */}
-      <AuthModeToggle authMode={authMode} />
     </div>
   );
 };

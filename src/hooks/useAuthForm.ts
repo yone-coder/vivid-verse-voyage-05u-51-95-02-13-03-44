@@ -62,17 +62,6 @@ export const useAuthForm = () => {
 
   const toggleShowPassword = () => setShowPassword(!formState.showPassword);
 
-  const toggleAuthMode = () => {
-    const newAuthMode = formState.authMode === 'signin' ? 'signup' : 'signin';
-    updateFormState({
-      authMode: newAuthMode,
-      password: '',
-      confirmPassword: '',
-      errorMessage: null,
-      authSuccess: false
-    });
-  };
-
   const handlePasswordReset = () => {
     const { email } = formState;
     
@@ -123,7 +112,6 @@ export const useAuthForm = () => {
     setEmailExists,
     setErrorMessage,
     toggleShowPassword,
-    toggleAuthMode,
     handlePasswordReset,
     handleGoBack
   };

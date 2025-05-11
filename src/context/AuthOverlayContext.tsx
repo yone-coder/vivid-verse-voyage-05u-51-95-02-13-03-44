@@ -3,8 +3,7 @@ import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 interface AuthOverlayContextType {
   isAuthOverlayOpen: boolean;
-  authMode: 'signin' | 'signup';
-  openAuthOverlay: (mode?: 'signin' | 'signup') => void;
+  openAuthOverlay: () => void;
   closeAuthOverlay: () => void;
 }
 
@@ -12,10 +11,8 @@ const AuthOverlayContext = createContext<AuthOverlayContextType | undefined>(und
 
 export const AuthOverlayProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthOverlayOpen, setIsAuthOverlayOpen] = useState(false);
-  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
 
-  const openAuthOverlay = (mode: 'signin' | 'signup' = 'signin') => {
-    setAuthMode(mode);
+  const openAuthOverlay = () => {
     setIsAuthOverlayOpen(true);
   };
 
@@ -26,7 +23,6 @@ export const AuthOverlayProvider = ({ children }: { children: ReactNode }) => {
   return (
     <AuthOverlayContext.Provider value={{
       isAuthOverlayOpen,
-      authMode,
       openAuthOverlay,
       closeAuthOverlay
     }}>

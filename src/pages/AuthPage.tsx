@@ -34,17 +34,10 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
     setAuthSuccess,
     setErrorMessage,
     toggleShowPassword,
-    toggleAuthMode,
     handlePasswordReset,
     handleGoBack,
     updateFormState
   } = useAuthForm();
-  
-  // Force auth mode to signin on component mount
-  useEffect(() => {
-    // Use updateFormState to set the auth mode to signin
-    updateFormState({ authMode: 'signin' });
-  }, [updateFormState]);
   
   const { checkEmailExists, isCheckingEmail, emailVerified, setEmailVerified } = useEmailCheck();
   const { user, signIn, signUp } = useAuth();
@@ -107,10 +100,19 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
     }
   }, [formState.email, formState.activeTab, verificationInProgress, verificationAttempted, verifyEmail]);
 
+  // Determine auth mode based on verification result
+  useEffect(() => {
+    if (emailVerified === true) {
+      updateFormState({ authMode: 'signin' });
+    } else if (emailVerified === false) {
+      updateFormState({ authMode: 'signup' });
+    }
+  }, [emailVerified, updateFormState]);
+
   // Handle step 1 form submission (email/phone verification)
   const handleStep1Submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const { activeTab, email, phone, authMode } = formState;
+    const { activeTab, email, phone } = formState;
 
     // Validate email field
     if (activeTab === 'email') {
@@ -130,13 +132,6 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
         setIsLoading(true);
         await verifyEmail(email);
         setIsLoading(false);
-      }
-      
-      // Only block sign in if we know the email doesn't exist
-      if (authMode === 'signin' && emailVerified === false) {
-        setErrorMessage("This email is not registered");
-        toast.error("This email is not registered. Please sign up first.");
-        return;
       }
     }
 
@@ -215,13 +210,31 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
     toast.info(`${provider.charAt(0).toUpperCase() + provider.slice(1)} login is not configured yet`);
   };
 
+  // Determine the title based on email verification
+  const getAuthTitle = () => {
+    if (emailVerified === true) {
+      return "Welcome back";
+    } else if (emailVerified === false) {
+      return "Create your account";
+    }
+    return "Continue to Mima";
+  };
+
+  // Determine subtitle based on email verification
+  const getAuthSubtitle = () => {
+    if (emailVerified === true) {
+      return "Enter your password to sign in";
+    } else if (emailVerified === false) {
+      return "Set up your new account";
+    }
+    return "Enter your email or phone number";
+  };
+
   return (
     <AuthContainer isOverlay={isOverlay} onClose={onClose}>
       <AuthHeader
-        title={formState.authMode === 'signin' ? "Log in to Mima" : "Sign up for Mima"}
-        subtitle={formState.authMode === 'signin' 
-          ? "Welcome back! Please log in to your account." 
-          : "Join us today! Create your account to get started."}
+        title={getAuthTitle()}
+        subtitle={getAuthSubtitle()}
       />
 
       <form onSubmit={formState.step === 1 ? handleStep1Submit : handleStep2Submit} className="w-full">
@@ -232,7 +245,6 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
             setEmail={setEmail}
             setPhone={setPhone}
             setCountryCode={setCountryCode}
-            toggleAuthMode={toggleAuthMode}
             onSubmit={handleStep1Submit}
             handleSocialLogin={handleSocialLogin}
             isCheckingEmail={isCheckingEmail || verificationInProgress}
@@ -246,7 +258,6 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
             setAgreeToTerms={setAgreeToTerms}
             setRememberMe={setRememberMe}
             toggleShowPassword={toggleShowPassword}
-            toggleAuthMode={toggleAuthMode}
             handleGoBack={handleGoBack}
             handlePasswordReset={handlePasswordReset}
             onSubmit={handleStep2Submit}

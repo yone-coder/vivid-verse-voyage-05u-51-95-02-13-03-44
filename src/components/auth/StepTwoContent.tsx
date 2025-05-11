@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import BackButton from '@/components/auth/BackButton';
 import PasswordStepContent from '@/components/auth/PasswordStepContent';
 import SubmitButton from '@/components/auth/SubmitButton';
-import AuthModeToggle from '@/components/auth/AuthModeToggle';
 import { AuthFormState } from '@/hooks/useAuthForm';
 
 interface StepTwoContentProps {
@@ -14,7 +13,6 @@ interface StepTwoContentProps {
   setAgreeToTerms: (agree: boolean) => void;
   setRememberMe: (remember: boolean) => void;
   toggleShowPassword: () => void;
-  toggleAuthMode: () => void;
   handleGoBack: () => void;
   handlePasswordReset: () => void;
   onSubmit: (e: React.FormEvent) => void;
@@ -27,7 +25,6 @@ const StepTwoContent: React.FC<StepTwoContentProps> = ({
   setAgreeToTerms,
   setRememberMe,
   toggleShowPassword,
-  toggleAuthMode,
   handleGoBack,
   handlePasswordReset,
   onSubmit
@@ -48,7 +45,7 @@ const StepTwoContent: React.FC<StepTwoContentProps> = ({
           {activeTab === 'email' ? email : `${countryCode} ${phone}`}
         </h3>
         <p className="text-sm text-gray-600">
-          Enter your password to continue
+          {authMode === 'signin' ? 'Enter your password to continue' : 'Create a password for your account'}
         </p>
       </div>
 
@@ -74,9 +71,6 @@ const StepTwoContent: React.FC<StepTwoContentProps> = ({
         showSuccess={authSuccess}
         successText="Success!"
       />
-
-      {/* Replace the inline auth toggle with the AuthModeToggle component */}
-      <AuthModeToggle authMode={authMode} />
     </div>
   );
 };
