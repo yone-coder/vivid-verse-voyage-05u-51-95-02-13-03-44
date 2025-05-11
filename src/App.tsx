@@ -23,6 +23,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { AuthOverlayProvider, useAuthOverlay } from "./context/AuthOverlayContext";
 import AuthOverlay from "./components/auth/AuthOverlay";
 import { setupStorageBuckets } from "./integrations/supabase/setupStorage";
+import ProfilePage from "./pages/ProfilePage";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -60,7 +61,7 @@ const App = () => {
                       <Route path="/auth" element={<AuthPage />} />
                       <Route path="/cart" element={<NotFound />} />
                       <Route path="/wishlist" element={<NotFound />} />
-                      <Route path="/account" element={<NotFound />} />
+                      <Route path="/account" element={<ProfilePage />} />
                       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                       <Route path="*" element={<NotFound />} />
                     </Route>
