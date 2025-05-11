@@ -50,7 +50,6 @@ export default function ForYou() {
         {Array.isArray(products) && products.length > 0 && (
           <SuperDealsSection 
             products={products} 
-            isLoading={isLoading} 
           />
         )}
         
@@ -64,7 +63,6 @@ export default function ForYou() {
           <VendorProductCarousel 
             title="Technology" 
             products={products.slice(0, 10)} 
-            isLoading={isLoading} 
           />
         )}
         

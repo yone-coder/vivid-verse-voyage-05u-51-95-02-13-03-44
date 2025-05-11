@@ -6,10 +6,16 @@ import HeroIndicators from "./hero/HeroIndicators";
 import HeroControls from "./hero/HeroControls";
 import { useQuery } from "@tanstack/react-query";
 import { fetchHeroBanners } from "@/integrations/supabase/hero";
+import { setupStorageBuckets } from "@/integrations/supabase/setupStorage";
 
 const HeroBanner = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const navigate = useNavigate();
+  
+  // Initialize storage buckets if needed
+  useEffect(() => {
+    setupStorageBuckets();
+  }, []);
   
   const { data: banners, isLoading } = useQuery({
     queryKey: ["hero-banners"],

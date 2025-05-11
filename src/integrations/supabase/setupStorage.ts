@@ -16,6 +16,24 @@ export const setupStorageBuckets = async () => {
       return;
     }
     
+    // Check for hero-banners bucket
+    const heroBannersBucketExists = buckets.some(bucket => bucket.name === 'hero-banners');
+    
+    if (!heroBannersBucketExists) {
+      // Create the bucket for hero banners
+      const { error: createHeroBannersError } = await supabase.storage.createBucket('hero-banners', {
+        public: true, // Make it publicly accessible
+        fileSizeLimit: 10 * 1024 * 1024 // 10MB limit per file
+      });
+      
+      if (createHeroBannersError) {
+        console.error('Error creating hero-banners bucket:', createHeroBannersError);
+      } else {
+        console.log('Created hero-banners storage bucket');
+      }
+    }
+    
+    // Check for product-images bucket
     const productImagesBucketExists = buckets.some(bucket => bucket.name === 'product-images');
     
     if (!productImagesBucketExists) {
