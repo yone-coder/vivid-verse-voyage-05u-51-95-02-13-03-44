@@ -57,6 +57,7 @@ export const fetchHeroBanners = async (): Promise<HeroBanner[]> => {
   }
 };
 
+// Only require authentication for create, update and delete operations
 export const createHeroBanner = async (banner: { 
   image: string; 
   alt: string; 
