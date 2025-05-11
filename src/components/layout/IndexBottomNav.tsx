@@ -21,6 +21,8 @@ import {
   DialogContent
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/context/AuthContext";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function IndexBottomNav() {
   const [activeTab, setActiveTab] = useState("home");
@@ -32,6 +34,7 @@ export default function IndexBottomNav() {
   const [showSignInBanner, setShowSignInBanner] = useState(true);
   const [showAuthDialog, setShowAuthDialog] = useState(false);
   const [showProductUpload, setShowProductUpload] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
     if (location.pathname === "/" || location.pathname === "/for-you") {
@@ -80,7 +83,26 @@ export default function IndexBottomNav() {
       icon: User,
       label: "Account",
       path: "/account",
-      badge: null
+      badge: null,
+      renderCustomIcon: (isActive: boolean) => {
+        if (!user) return null;
+        
+        // If user is logged in, render their avatar
+        return (
+          <Avatar className="w-5 h-5 border border-gray-200">
+            <AvatarImage 
+              src={user.user_metadata?.avatar_url || `https://api.dicebear.com/7.x/initials/svg?seed=${user.email}`} 
+              alt="User avatar" 
+            />
+            <AvatarFallback className={cn(
+              "text-xs font-medium",
+              isActive ? "bg-red-100 text-red-500" : "bg-gray-100 text-gray-500"
+            )}>
+              {user.email ? user.email.substring(0, 2).toUpperCase() : "U"}
+            </AvatarFallback>
+          </Avatar>
+        );
+      }
     }
   ];
 
@@ -155,18 +177,22 @@ export default function IndexBottomNav() {
                   boxShadow: "0 2px 8px rgba(239, 68, 68, 0.3)"
                 } : {}}
                 >
-                  <item.icon
-                    className={cn(
-                      "transition-colors",
-                      item.isSpecial 
-                        ? "w-4 h-4 text-white" 
-                        : "w-5 h-5",
-                      !item.isSpecial && activeTab === item.id
-                        ? "text-red-500"
-                        : !item.isSpecial ? "text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300" : ""
-                    )}
-                    strokeWidth={item.isSpecial ? 2 : 1.5}
-                  />
+                  {item.renderCustomIcon ? (
+                    item.renderCustomIcon(activeTab === item.id)
+                  ) : (
+                    <item.icon
+                      className={cn(
+                        "transition-colors",
+                        item.isSpecial 
+                          ? "w-4 h-4 text-white" 
+                          : "w-5 h-5",
+                        !item.isSpecial && activeTab === item.id
+                          ? "text-red-500"
+                          : !item.isSpecial ? "text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300" : ""
+                      )}
+                      strokeWidth={item.isSpecial ? 2 : 1.5}
+                    />
+                  )}
                   {item.badge && (
                     <motion.div
                       initial={{ scale: 0 }}
