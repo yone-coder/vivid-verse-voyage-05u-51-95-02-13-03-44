@@ -74,7 +74,7 @@ export default function MainLayout() {
 
   const headerHeightStyle = `
     :root {
-      --header-height: ${isMobile ? '44px' : '90px'};
+      --header-height: ${isMobile ? '36px' : '72px'};
       --bottom-nav-height: ${isMobile ? '48px' : '0px'};
     }
   `;

@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Heart, Share, Search, ShoppingCart, X } from "lucide-react";
@@ -95,7 +94,7 @@ const ProductPageHeader: React.FC<ProductPageHeaderProps> = ({
   }, [isSearchActive]);
 
   return (
-    <div className={`py-2 sm:py-2.5 px-1.5 sm:px-2 w-full sticky top-0 z-30 transition-colors duration-200 ${
+    <div className={`py-1.5 sm:py-2 px-1.5 sm:px-2 w-full sticky top-0 z-30 transition-colors duration-200 ${
       isScrolled ? 'bg-white shadow-sm' : 'bg-transparent'
     }`}>
       <div className="flex items-center justify-between">
@@ -112,7 +111,7 @@ const ProductPageHeader: React.FC<ProductPageHeaderProps> = ({
         )}
         
         <div className={`relative ${isSearchActive ? 'flex-1' : 'flex-1'} mx-1.5 sm:mx-2`}>
-          <form onSubmit={submitSearch} className="w-full">
+          <form onSubmit={handleSearch} className="w-full">
             <div className={`relative w-full ${isSearchActive ? 'max-w-full' : 'max-w-full'} mx-auto`}>
               <Popover open={open} onOpenChange={setOpen}>
                 <PopoverTrigger asChild>

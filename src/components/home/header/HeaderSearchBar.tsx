@@ -37,13 +37,13 @@ const HeaderSearchBar = ({
     <form onSubmit={handleSearch} className="w-full">
       <div className="relative flex items-center w-full">
         <div className="absolute left-2">
-          <Search className="h-4 w-4 text-gray-400" />
+          <Search className="h-3.5 w-3.5 text-gray-400" />
         </div>
         <input
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full pl-8 pr-12 py-1.5 rounded-full text-sm border border-gray-200 focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500"
+          className="w-full pl-7 pr-11 py-1 h-7 rounded-full text-xs border border-gray-200 focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500"
           placeholder={t('header.search')}
           onFocus={handleSearchFocus}
         />
@@ -52,7 +52,7 @@ const HeaderSearchBar = ({
             <button
               type="button"
               onClick={handleClearSearch}
-              className="p-1 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100"
+              className="p-0.5 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100"
             >
               <X className="h-3 w-3" />
             </button>
@@ -60,7 +60,7 @@ const HeaderSearchBar = ({
           <button
             type="button"
             onClick={handleVoiceSearch}
-            className="p-1 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100"
+            className="p-0.5 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100"
           >
             <Mic className="h-3 w-3" />
           </button>

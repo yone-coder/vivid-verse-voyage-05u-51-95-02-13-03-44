@@ -61,7 +61,7 @@ export default function AliExpressHeader({ activeTabId = 'recommendations' }: Al
       <div
         className="flex items-center justify-between px-2 bg-white shadow-sm transition-all duration-300"
         style={{
-          height: '44px',
+          height: '36px', // Reduced from 44px
         }}
       >
         {/* Left: Always show Logo */}
