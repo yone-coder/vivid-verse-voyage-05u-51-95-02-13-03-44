@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Footer from "@/components/layout/Footer";
@@ -15,6 +16,7 @@ export default function MainLayout() {
                      location.pathname === "/posts" || location.pathname === "/shops" ||
                      location.pathname === "/trending" || location.pathname === "/videos";
   const isReelsPage = location.pathname === "/reels";
+  const isProfilePage = location.pathname === "/account";
   const { toast } = useToast();
   const [isFavorite, setIsFavorite] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -97,10 +99,10 @@ export default function MainLayout() {
         <Outlet />
       </main>
       
-      {!isMobile && !isHomePage && !isReelsPage && <Footer />}
+      {!isMobile && !isHomePage && !isReelsPage && !isProfilePage && <Footer />}
 
-      {/* Show bottom nav on mobile for home, reels and product pages */}
-      {isMobile && (isHomePage || isProductPage || isReelsPage) && <IndexBottomNav />}
+      {/* Show bottom nav on mobile for home, reels, product pages, and profile pages */}
+      {isMobile && (isHomePage || isProductPage || isReelsPage || isProfilePage) && <IndexBottomNav />}
     </div>
   );
 }
