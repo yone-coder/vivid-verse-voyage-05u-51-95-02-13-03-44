@@ -40,6 +40,7 @@ export const fetchHeroBanners = async (): Promise<HeroBanner[]> => {
       return banner;
     }) || [];
     
+    console.log('Transformed hero banners:', banners);
     return banners;
   } catch (error) {
     console.error('Error in fetchHeroBanners:', error);
@@ -53,6 +54,13 @@ export const createHeroBanner = async (banner: {
   position: number; 
 }): Promise<HeroBanner | null> => {
   try {
+    // Check if user is authenticated before trying to create
+    const { data: user } = await supabase.auth.getUser();
+    if (!user || !user.user) {
+      console.error('User not authenticated. Cannot create hero banner.');
+      return null;
+    }
+
     // Need to explicitly type the response to avoid type errors
     const { data, error } = await supabase
       .from('hero_banners')
@@ -77,6 +85,13 @@ export const createHeroBanner = async (banner: {
 
 export const deleteHeroBanner = async (id: string): Promise<boolean> => {
   try {
+    // Check if user is authenticated before trying to delete
+    const { data: user } = await supabase.auth.getUser();
+    if (!user || !user.user) {
+      console.error('User not authenticated. Cannot delete hero banner.');
+      return false;
+    }
+
     const { error } = await supabase
       .from('hero_banners')
       .delete()
@@ -98,6 +113,13 @@ export const deleteHeroBanner = async (id: string): Promise<boolean> => {
 
 export const updateHeroBannerPosition = async (id: string, position: number): Promise<boolean> => {
   try {
+    // Check if user is authenticated before trying to update
+    const { data: user } = await supabase.auth.getUser();
+    if (!user || !user.user) {
+      console.error('User not authenticated. Cannot update hero banner position.');
+      return false;
+    }
+
     const { error } = await supabase
       .from('hero_banners')
       .update({ position })

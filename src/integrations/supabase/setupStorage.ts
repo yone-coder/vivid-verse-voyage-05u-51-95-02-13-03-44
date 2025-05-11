@@ -6,6 +6,13 @@ import { supabase } from "./client";
  */
 export const setupStorageBuckets = async () => {
   try {
+    // Check if the user is authenticated (needed for creating buckets)
+    const { data: userData } = await supabase.auth.getUser();
+    if (!userData?.user) {
+      console.log('User is not authenticated. Skipping bucket creation.');
+      return;
+    }
+
     // Check if the needed buckets already exist
     const { data: buckets, error } = await supabase
       .storage
@@ -13,6 +20,11 @@ export const setupStorageBuckets = async () => {
     
     if (error) {
       console.error('Error checking buckets:', error);
+      return;
+    }
+    
+    if (!buckets) {
+      console.error('No buckets returned from Supabase');
       return;
     }
     
@@ -32,6 +44,7 @@ export const setupStorageBuckets = async () => {
       
       if (createError) {
         console.error('Error creating hero-banners bucket:', createError);
+        console.log('Note: You may need to enable bucket creation in your Supabase RLS policies');
       } else {
         console.log('Successfully created hero-banners bucket');
       }
@@ -51,6 +64,7 @@ export const setupStorageBuckets = async () => {
       
       if (createError) {
         console.error('Error creating product-images bucket:', createError);
+        console.log('Note: You may need to enable bucket creation in your Supabase RLS policies');
       } else {
         console.log('Successfully created product-images bucket');
       }

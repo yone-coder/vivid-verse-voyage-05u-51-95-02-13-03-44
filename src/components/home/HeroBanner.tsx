@@ -5,6 +5,7 @@ import { fetchHeroBanners } from "@/integrations/supabase/hero";
 import { setupStorageBuckets } from "@/integrations/supabase/setupStorage";
 import { ChevronLeft, ChevronRight, AlertCircle, TrendingUp, Clock, Newspaper } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { toast } from "sonner";
 
 export default function HeroBanner() {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -23,12 +24,20 @@ export default function HeroBanner() {
   }, []);
 
   // Fetch banners from Supabase
-  const { data: banners, isLoading } = useQuery({
+  const { data: banners, isLoading, error } = useQuery({
     queryKey: ["hero-banners"],
     queryFn: fetchHeroBanners,
     staleTime: 60000, // 1 minute
     refetchInterval: 300000, // 5 minutes - to pick up new banners
   });
+
+  // Show error if we failed to fetch banners
+  useEffect(() => {
+    if (error) {
+      toast.error("Failed to load banner images");
+      console.error("Banner fetch error:", error);
+    }
+  }, [error]);
 
   // Fallback banners in case database is empty
   const fallbackBanners = [
@@ -57,7 +66,7 @@ export default function HeroBanner() {
   
   // Log the banners we're using to help debug
   useEffect(() => {
-    console.log("Banners data:", banners);
+    console.log("Raw banners data:", banners);
     console.log("Using slides:", slidesToShow);
   }, [banners, slidesToShow]);
 
