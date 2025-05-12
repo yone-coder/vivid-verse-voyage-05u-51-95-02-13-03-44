@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { createHeroBanner } from "@/integrations/supabase/hero";
 import { useQuery } from "@tanstack/react-query";
+import { Image } from "lucide-react";
 
 interface HeroBanner {
   id: string;
@@ -30,6 +31,7 @@ const HeroBannerUploadDialog: React.FC<HeroBannerUploadDialogProps> = ({
   const [heroUploadFile, setHeroUploadFile] = useState<File | null>(null);
   const [heroAlt, setHeroAlt] = useState("");
   const [uploadingHero, setUploadingHero] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const { data: heroBanners = [] } = useQuery<HeroBanner[]>({
     queryKey: ["hero-banners"],
@@ -38,9 +40,21 @@ const HeroBannerUploadDialog: React.FC<HeroBannerUploadDialogProps> = ({
   });
 
   const handleHeroFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setHeroUploadFile(e.target.files[0]);
-    }
+    if (!e.target.files || e.target.files.length === 0) return;
+    
+    const file = e.target.files[0];
+    setHeroUploadFile(file);
+    
+    // Create a preview URL for the selected image
+    const objectUrl = URL.createObjectURL(file);
+    setPreviewUrl(objectUrl);
+    
+    // Clean up the previous object URL if it exists
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
   };
 
   const handleUploadHeroBanner = async () => {
@@ -51,23 +65,33 @@ const HeroBannerUploadDialog: React.FC<HeroBannerUploadDialogProps> = ({
 
     try {
       setUploadingHero(true);
+      
+      // Create a unique filename with timestamp and original extension
       const fileExt = heroUploadFile.name.split('.').pop();
       const fileName = `hero_banner_${Date.now()}.${fileExt}`;
-      const filePath = `${fileName}`;
+      const filePath = fileName; // No need for additional folder structure
 
-      const { error: uploadError } = await supabase.storage
+      // Log upload attempt
+      console.log(`Attempting to upload ${fileName} to hero-banners bucket`);
+
+      // Upload to Supabase storage
+      const { data: uploadData, error: uploadError } = await supabase.storage
         .from('hero-banners')
         .upload(filePath, heroUploadFile);
 
       if (uploadError) {
+        console.error("Storage upload error:", uploadError);
         throw uploadError;
       }
 
+      console.log("File uploaded successfully:", uploadData);
+
+      // Get the public URL
       const { data: publicUrlData } = supabase.storage
         .from('hero-banners')
         .getPublicUrl(filePath);
 
-      const imageUrl = publicUrlData.publicUrl;
+      console.log("Generated public URL:", publicUrlData.publicUrl);
 
       // Get highest current position
       let position = 0;
@@ -76,17 +100,24 @@ const HeroBannerUploadDialog: React.FC<HeroBannerUploadDialogProps> = ({
         position = maxPosition + 1;
       }
 
-      await createHeroBanner({
-        image: imageUrl,
+      // Store only the filename in the database
+      const bannerResult = await createHeroBanner({
+        image: filePath, // Store just the filename
         alt: heroAlt,
         position
       });
       
+      console.log("Banner created in database:", bannerResult);
+      
       toast.success("Hero banner uploaded successfully");
-      onSuccess();
-      onOpenChange(false);
+      onSuccess(); // Trigger the success callback to refresh data
+      onOpenChange(false); // Close the dialog
+      
+      // Reset the form
       setHeroUploadFile(null);
       setHeroAlt("");
+      setPreviewUrl(null);
+      
     } catch (error) {
       console.error('Error uploading hero banner:', error);
       toast.error("There was an error uploading the hero banner.");
@@ -94,6 +125,14 @@ const HeroBannerUploadDialog: React.FC<HeroBannerUploadDialogProps> = ({
       setUploadingHero(false);
     }
   };
+  
+  // Cleanup preview URL when dialog closes
+  React.useEffect(() => {
+    if (!open && previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+      setPreviewUrl(null);
+    }
+  }, [open, previewUrl]);
   
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -121,6 +160,27 @@ const HeroBannerUploadDialog: React.FC<HeroBannerUploadDialogProps> = ({
               </p>
             )}
           </div>
+          
+          {/* Image Preview */}
+          {previewUrl && (
+            <div className="mt-2 border rounded-md overflow-hidden">
+              <img 
+                src={previewUrl} 
+                alt="Preview" 
+                className="w-full h-48 object-cover"
+              />
+            </div>
+          )}
+          
+          {!previewUrl && (
+            <div className="mt-2 border rounded-md p-8 flex items-center justify-center bg-muted">
+              <div className="text-center text-muted-foreground">
+                <Image className="mx-auto h-12 w-12 text-gray-400" />
+                <p className="mt-2">No image selected</p>
+              </div>
+            </div>
+          )}
+          
           <div className="grid gap-2">
             <Label htmlFor="hero-alt">Alt Text</Label>
             <Input
