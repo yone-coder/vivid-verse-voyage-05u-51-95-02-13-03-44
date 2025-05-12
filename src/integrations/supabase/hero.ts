@@ -1,3 +1,4 @@
+
 import { supabase } from './client';
 import { getPublicUrl } from './setupStorage';
 
@@ -13,6 +14,10 @@ export interface HeroBanner {
 export const fetchHeroBanners = async (): Promise<HeroBanner[]> => {
   try {
     console.log('Starting fetchHeroBanners...');
+    
+    // Check if user is authenticated for debugging
+    const { data: userData } = await supabase.auth.getUser();
+    console.log('Current auth state:', userData?.user ? 'Authenticated' : 'Not authenticated');
     
     // Need to explicitly type the response to avoid type errors
     const { data, error } = await supabase
@@ -43,7 +48,7 @@ export const fetchHeroBanners = async (): Promise<HeroBanner[]> => {
       console.log(`Processing banner ${banner.id} with image path: ${imageUrl}`);
       
       // If the image already starts with http or https, assume it's a complete URL
-      if (imageUrl && !imageUrl.startsWith('http') && !imageUrl.startsWith('/lovable-uploads')) {
+      if (imageUrl && !imageUrl.startsWith('http')) {
         try {
           // Get public URL from Supabase storage
           imageUrl = getPublicUrl('hero-banners', imageUrl);
@@ -53,17 +58,11 @@ export const fetchHeroBanners = async (): Promise<HeroBanner[]> => {
         }
       }
       
-      // Remove any fallback to local uploads - only use Supabase storage
-      if (imageUrl && imageUrl.startsWith('/lovable-uploads')) {
-        console.log(`Skipping local image: ${imageUrl}`);
-        return null;
-      }
-      
       return {
         ...banner,
         image: imageUrl
       };
-    }).filter(Boolean) as HeroBanner[]; // Filter out null values
+    });
     
     console.log('Transformed hero banners:', banners);
     return banners;
@@ -89,9 +88,9 @@ export const createHeroBanner = async (banner: {
 
     console.log('Creating hero banner with data:', banner);
 
-    // For debugging - extract the filename from the image URL if it's a storage URL
+    // Extract image filename from URL if it's a storage URL
     let storageImagePath = banner.image;
-    if (storageImagePath.includes('storage/v1/object/public/')) {
+    if (storageImagePath && storageImagePath.includes('storage/v1/object/public/')) {
       try {
         // Extract just the filename for storage
         const urlObj = new URL(storageImagePath);

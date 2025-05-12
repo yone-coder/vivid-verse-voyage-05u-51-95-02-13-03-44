@@ -1,11 +1,14 @@
+
 import { useState, useEffect, useCallback } from 'react';
 import { useQuery } from "@tanstack/react-query";
 import { fetchHeroBanners } from "@/integrations/supabase/hero";
 import { setupStorageBuckets } from "@/integrations/supabase/setupStorage";
-import { ChevronLeft, ChevronRight, AlertCircle, TrendingUp, Clock, Newspaper } from "lucide-react";
+import { ChevronLeft, ChevronRight, AlertCircle, TrendingUp, Clock, Newspaper, RefreshCw } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "sonner";
 import BannerImage from "@/components/hero/BannerImage";
+import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
 
 // News items for the ticker
 const newsItems = [
@@ -22,6 +25,7 @@ export default function HeroBanner() {
   const [activeNewsIndex, setActiveNewsIndex] = useState(0);
   const [previousNewsIndex, setPreviousNewsIndex] = useState<number | null>(null);
   const [progress, setProgress] = useState(0);
+  const [isAuthShown, setIsAuthShown] = useState(false);
   const isMobile = useIsMobile();
   const slideDuration = 5000;
   const newsDuration = 4000;
@@ -31,6 +35,10 @@ export default function HeroBanner() {
     const initStorage = async () => {
       await setupStorageBuckets();
       console.log('Storage buckets initialized');
+      
+      // Check auth status
+      const { data } = await supabase.auth.getUser();
+      console.log('Auth status check:', data?.user ? 'User is authenticated' : 'User is NOT authenticated');
     };
     initStorage();
   }, []);
@@ -74,6 +82,8 @@ export default function HeroBanner() {
     let progressIntervalRef: ReturnType<typeof setInterval> | null = null;
 
     const startSlideTimer = () => {
+      if (banners.length <= 1) return; // Don't start timer if there's only one or no images
+      
       clearInterval(intervalRef as ReturnType<typeof setInterval>);
       clearInterval(progressIntervalRef as ReturnType<typeof setInterval>);
       setProgress(0);
@@ -123,11 +133,19 @@ export default function HeroBanner() {
     setPreviousIndex(activeIndex);
     setActiveIndex(index);
   };
+  
+  // Toggle authentication status panel
+  const toggleAuthStatus = async () => {
+    const { data } = await supabase.auth.getUser();
+    setIsAuthShown(!isAuthShown);
+    toast(data?.user ? "User is authenticated" : "User is NOT authenticated");
+  };
 
   // Manual refetch button for debugging
   const debugRefetch = () => {
     console.log("Manual refetch triggered");
     refetch();
+    toast.info("Refreshing banners from database");
   };
 
   if (isLoading) {
@@ -146,12 +164,24 @@ export default function HeroBanner() {
       <div className="relative mt-[44px] bg-gray-100 h-[60vh] min-h-[400px] max-h-[600px] flex items-center justify-center">
         <div className="text-center">
           <div className="text-gray-500 mb-2">No banner images found</div>
-          <button
-            onClick={debugRefetch}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md text-sm"
-          >
-            Refresh Banners
-          </button>
+          <div className="flex flex-col gap-2">
+            <Button
+              onClick={debugRefetch}
+              className="px-4 py-2 flex items-center gap-1"
+              variant="outline"
+            >
+              <RefreshCw className="h-4 w-4" />
+              Refresh Banners
+            </Button>
+            
+            <Button
+              onClick={toggleAuthStatus}
+              className="px-4 py-2"
+              variant="secondary"
+            >
+              Check Auth Status
+            </Button>
+          </div>
         </div>
       </div>
     );
@@ -160,13 +190,27 @@ export default function HeroBanner() {
   return (
     <>
       <div className="relative mt-[44px] overflow-hidden">
-        {/* Debug button for development */}
-        <button 
-          onClick={debugRefetch}
-          className="absolute top-0 right-0 z-50 bg-blue-500 text-white px-2 py-1 text-xs"
-        >
-          Refresh Banners
-        </button>
+        {/* Debug buttons for development */}
+        <div className="absolute top-0 right-0 z-50 flex gap-1">
+          <Button 
+            onClick={debugRefetch}
+            size="sm" 
+            variant="outline"
+            className="bg-blue-500 text-white px-2 py-1 text-xs flex items-center gap-1"
+          >
+            <RefreshCw className="h-3 w-3" />
+            Refresh
+          </Button>
+          
+          <Button 
+            onClick={toggleAuthStatus}
+            size="sm" 
+            variant="outline"
+            className="bg-green-500 text-white px-2 py-1 text-xs"
+          >
+            Auth
+          </Button>
+        </div>
         
         <div className="relative h-[180px] md:h-[250px] lg:h-[300px]">
           {/* Banner Images - Only showing images from Supabase */}
