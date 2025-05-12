@@ -154,6 +154,7 @@ export const createProduct = async (productData: {
   }
 };
 
+// Fix the return type to avoid the circular reference issue
 export const updateProduct = async (
   id: string,
   updates: {
@@ -162,7 +163,7 @@ export const updateProduct = async (
     price?: number;
     discount_price?: number | null;
   }
-): Promise<Product[] | null | { noChanges: boolean }> => {
+): Promise<any> => {
   try {
     // Check if there are actually changes (for name specifically)
     if ('name' in updates) {
@@ -197,7 +198,7 @@ export const updateProduct = async (
     }
     
     console.log(`Successfully updated product ${id}:`, data);
-    return data as Product[];
+    return data;
   } catch (error) {
     console.error(`Error in updateProduct for id ${id}:`, error);
     return null;
