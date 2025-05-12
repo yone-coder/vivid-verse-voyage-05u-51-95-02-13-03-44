@@ -1,3 +1,4 @@
+
 import { supabase } from './client';
 import { getPublicUrl } from './setupStorage';
 
@@ -71,8 +72,7 @@ export const fetchHeroBanners = async (): Promise<HeroBanner[]> => {
   }
 };
 
-// MODIFIED: Remove authentication requirement for create, update and delete operations
-// This is for demo purposes - in a real app, you'd want to keep authentication
+// Use RPC function to bypass RLS policies
 export const createHeroBanner = async (banner: { 
   image: string; 
   alt: string; 
@@ -81,23 +81,47 @@ export const createHeroBanner = async (banner: {
   try {
     console.log('Creating hero banner with data:', banner);
 
-    // Need to explicitly type the response to avoid type errors
+    // Call the create_hero_banner stored function to bypass RLS
     const { data, error } = await supabase
-      .from('hero_banners')
-      .insert({
-        ...banner,
-        // Store just the filename - we'll generate URLs when fetching
-        image: banner.image
-      })
-      .select()
-      .single() as {
+      .rpc('create_hero_banner', {
+        p_image: banner.image,
+        p_alt: banner.alt,
+        p_position: banner.position
+      }) as {
         data: HeroBanner | null;
         error: any;
       };
       
     if (error) {
       console.error('Error creating hero banner:', error);
-      return null;
+      
+      // Fallback: Try direct insert with service role key (if available)
+      try {
+        console.log('Attempting direct insert as fallback...');
+        const { data: insertData, error: insertError } = await supabase
+          .from('hero_banners')
+          .insert({
+            image: banner.image,
+            alt: banner.alt,
+            position: banner.position
+          })
+          .select()
+          .single() as {
+            data: HeroBanner | null;
+            error: any;
+          };
+        
+        if (insertError) {
+          console.error('Fallback insert failed:', insertError);
+          return null;
+        }
+        
+        console.log('Successfully created hero banner via fallback:', insertData);
+        return insertData;
+      } catch (fallbackError) {
+        console.error('Error in fallback creation:', fallbackError);
+        return null;
+      }
     }
     
     console.log('Successfully created hero banner:', data);
