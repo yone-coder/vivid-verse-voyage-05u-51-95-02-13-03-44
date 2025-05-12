@@ -40,12 +40,13 @@ export const setupStorageBuckets = async () => {
       const { error: createError } = await supabase
         .storage
         .createBucket('hero-banners', {
-          public: true, // Make sure bucket is public
+          public: true,
           fileSizeLimit: 10485760, // 10MB
         });
       
       if (createError) {
         console.error('Error creating hero-banners bucket:', createError);
+        console.log('Note: You may need to enable bucket creation in your Supabase RLS policies');
       } else {
         console.log('Successfully created hero-banners bucket');
       }
@@ -57,13 +58,11 @@ export const setupStorageBuckets = async () => {
         const { error: updateError } = await supabase
           .storage
           .updateBucket('hero-banners', {
-            public: true, // Ensure bucket is public
+            public: true,
           });
         
         if (!updateError) {
           console.log('Updated hero-banners bucket to be public');
-        } else {
-          console.error('Failed to update hero-banners bucket visibility:', updateError);
         }
       } catch (e) {
         console.error('Failed to update hero-banners bucket visibility:', e);
@@ -123,12 +122,6 @@ export const getPublicUrl = (bucket: string, path: string): string => {
   if (!path) {
     console.error('Empty path provided to getPublicUrl');
     return '';
-  }
-  
-  // Check if path already includes the bucket in the URL
-  if (path.includes(`supabase.co/storage/v1/object/public/${bucket}/`)) {
-    console.log(`Path already contains bucket info: ${path}`);
-    return path;
   }
   
   console.log(`Getting public URL for ${bucket}/${path}`);

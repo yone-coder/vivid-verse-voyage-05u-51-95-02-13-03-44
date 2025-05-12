@@ -1,6 +1,5 @@
 
 import React from "react";
-import BannerImage from "./BannerImage";
 
 interface HeroSlideProps {
   image: string;
@@ -19,7 +18,7 @@ const HeroSlide: React.FC<HeroSlideProps> = ({
         isActive ? "opacity-100 z-10" : "opacity-0 z-0"
       } bg-cover bg-center`}
     >
-      <BannerImage 
+      <img 
         src={image} 
         alt={alt}
         className="w-full h-full object-cover" 

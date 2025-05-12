@@ -7,7 +7,6 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 const HeaderLanguage = () => {
   const { currentLanguage, setLanguage, currentLocation, setLocation, t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("language");
 
   const togglePanel = () => {
     setIsOpen(!isOpen);
@@ -46,7 +45,7 @@ const HeaderLanguage = () => {
       {/* Language Selection Panel */}
       {isOpen && (
         <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-lg shadow-lg z-50 overflow-hidden">
-          <Tabs defaultValue="language" value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <Tabs defaultValue="language" className="w-full">
             <TabsList className="w-full grid grid-cols-2 h-10">
               <TabsTrigger value="language">{t('header.language')}</TabsTrigger>
               <TabsTrigger value="location">{t('header.location')}</TabsTrigger>

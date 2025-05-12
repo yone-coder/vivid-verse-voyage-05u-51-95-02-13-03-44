@@ -1,155 +1,291 @@
 
 import React, { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Trash2, Edit, RefreshCw } from "lucide-react";
-import { useAuth } from "@/context/AuthContext";
-import { fetchUserProducts, Product } from "@/integrations/supabase/products";
-import { useToast } from "@/hooks/use-toast";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Search, Plus, Edit, Copy, Trash2, MoreHorizontal, Eye } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { toast } from "sonner";
+import { Link } from "react-router-dom";
+import { fetchUserProducts } from "@/integrations/supabase/products";
+import { useQuery } from "@tanstack/react-query";
 
-export default function ProfileProducts() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const { user } = useAuth(); // Get the user from auth context directly
-  const { toast } = useToast();
+interface ProfileProductsProps {
+  user: any;
+}
+
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+  status: string;
+  inventory?: number;
+  image?: string;
+  sales?: number;
+  createdAt?: string;
+  created_at: string;
+  description?: string;
+  user_id: string;
+  product_images?: {id: string, src: string}[];
+}
+
+export default function ProfileProducts({ user }: ProfileProductsProps) {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filter, setFilter] = useState("all");
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [productToDelete, setProductToDelete] = useState<Product | null>(null);
   
-  const loadProducts = async () => {
-    if (!user) return;
-    
-    setIsLoading(true);
-    try {
-      const userProducts = await fetchUserProducts(user.id);
-      setProducts(userProducts);
-      console.log("Loaded user products:", userProducts);
-    } catch (error) {
-      console.error("Error loading products:", error);
-      toast({
-        variant: "destructive",
-        title: "Error loading products",
-        description: "Failed to load your products. Please try again later."
-      });
-    } finally {
-      setIsLoading(false);
+  // Use React Query to fetch products
+  const { data: products = [], isLoading, error, refetch } = useQuery({
+    queryKey: ['userProducts', user?.id],
+    queryFn: () => fetchUserProducts(user?.id),
+    enabled: !!user?.id,
+  });
+  
+  // Transform products from the database to match our component's expected format
+  const transformedProducts: Product[] = products.map((product: any) => ({
+    id: product.id,
+    name: product.name,
+    price: product.price,
+    description: product.description,
+    status: product.inventory <= 0 ? "out_of_stock" : "active", // Derive status
+    inventory: product.inventory || 0,
+    image: product.product_images?.length > 0 
+      ? product.product_images[0].src 
+      : `https://api.dicebear.com/7.x/shapes/svg?seed=product${product.id}`,
+    sales: product.sales || 0,
+    createdAt: new Date(product.created_at).toLocaleDateString(),
+    created_at: product.created_at,
+    user_id: product.user_id,
+    product_images: product.product_images
+  }));
+  
+  const handleDeleteConfirm = () => {
+    if (productToDelete) {
+      // Here we would call the API to delete the product
+      // For now, we'll just filter out the product from our local state
+      toast.success(`"${productToDelete.name}" has been deleted`);
+      setIsDeleteDialogOpen(false);
+      setProductToDelete(null);
+      refetch(); // Refetch products after deletion
     }
   };
-
-  useEffect(() => {
-    loadProducts();
-  }, [user]);
-
-  const handleAddProduct = () => {
-    // Implement add product functionality
-    toast({
-      title: "Add product",
-      description: "Product creation feature coming soon!"
-    });
+  
+  const openDeleteDialog = (product: Product) => {
+    setProductToDelete(product);
+    setIsDeleteDialogOpen(true);
   };
-
-  const handleEditProduct = (id: string) => {
-    // Implement edit product functionality
-    toast({
-      title: "Edit product",
-      description: `Editing product ${id}`
-    });
+  
+  const handleDuplicate = (product: Product) => {
+    // Here we would call the API to duplicate the product
+    // For now we'll just show a toast notification
+    toast.success(`"${product.name}" has been duplicated`);
+    refetch(); // Refetch products after duplication
   };
-
-  const handleDeleteProduct = (id: string) => {
-    // Implement delete product functionality
-    toast({
-      title: "Delete product",
-      description: `Deleting product ${id}`
-    });
+  
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case "active":
+        return <Badge className="bg-green-100 text-green-800 border-green-200 hover:bg-green-200">Active</Badge>;
+      case "draft":
+        return <Badge className="bg-amber-100 text-amber-800 border-amber-200 hover:bg-amber-200">Draft</Badge>;
+      case "out_of_stock":
+        return <Badge className="bg-red-100 text-red-800 border-red-200 hover:bg-red-200">Out of Stock</Badge>;
+      default:
+        return <Badge variant="outline">{status}</Badge>;
+    }
+  };
+  
+  const filteredProducts = transformedProducts.filter(product => {
+    // Filter by status
+    if (filter !== "all" && product.status !== filter) {
+      return false;
+    }
     
-    // Mock deletion - in a real app, you would call an API
-    setProducts(products.filter(product => product.id !== id));
-  };
-
+    // Filter by search query
+    if (searchQuery && !product.name.toLowerCase().includes(searchQuery.toLowerCase())) {
+      return false;
+    }
+    
+    return true;
+  });
+  
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
+      <div className="space-y-4">
+        <div className="h-10 w-full bg-muted animate-pulse rounded-md"></div>
+        <div className="h-64 w-full bg-muted animate-pulse rounded-md"></div>
       </div>
     );
   }
-
+  
+  if (error) {
+    return (
+      <Card>
+        <CardContent className="flex flex-col items-center justify-center py-10">
+          <p className="text-red-500">Error loading products</p>
+          <Button onClick={() => refetch()} className="mt-4">Try Again</Button>
+        </CardContent>
+      </Card>
+    );
+  }
+  
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold">My Products</h2>
-        <div className="flex gap-2">
-          <Button 
-            onClick={loadProducts} 
-            variant="outline" 
-            size="sm"
-            className="flex items-center gap-1"
-          >
-            <RefreshCw className="h-4 w-4" />
-            Refresh
-          </Button>
-          <Button onClick={handleAddProduct} className="flex items-center gap-1">
-            <PlusCircle className="h-5 w-5" />
-            Add Product
-          </Button>
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between gap-4">
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="relative">
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input 
+              type="search"
+              placeholder="Search products..." 
+              className="w-full sm:w-[300px] pl-9" 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          
+          <Select value={filter} onValueChange={setFilter}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Filter by status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Products</SelectItem>
+              <SelectItem value="active">Active</SelectItem>
+              <SelectItem value="draft">Draft</SelectItem>
+              <SelectItem value="out_of_stock">Out of Stock</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
+        
+        <Button className="shrink-0">
+          <Plus className="h-4 w-4 mr-2" />
+          Add New Product
+        </Button>
       </div>
-
-      {products.length === 0 ? (
-        <div className="text-center py-12 border border-dashed border-gray-300 rounded-lg">
-          <p className="text-gray-500 mb-4">You haven't created any products yet.</p>
-          <Button onClick={handleAddProduct} variant="outline" className="flex items-center gap-1 mx-auto">
-            <PlusCircle className="h-5 w-5" />
-            Create your first product
-          </Button>
+      
+      {filteredProducts.length > 0 ? (
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr className="border-b">
+                <th className="text-left py-3 px-4 font-medium text-sm">Product</th>
+                <th className="text-left py-3 px-4 font-medium text-sm">Status</th>
+                <th className="text-left py-3 px-4 font-medium text-sm">Price</th>
+                <th className="text-left py-3 px-4 font-medium text-sm">Inventory</th>
+                <th className="text-left py-3 px-4 font-medium text-sm">Sales</th>
+                <th className="text-left py-3 px-4 font-medium text-sm">Date Added</th>
+                <th className="text-right py-3 px-4 font-medium text-sm">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredProducts.map((product) => (
+                <tr key={product.id} className="border-b hover:bg-muted/30">
+                  <td className="py-3 px-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded bg-muted flex items-center justify-center overflow-hidden">
+                        <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+                      </div>
+                      <span className="font-medium line-clamp-1">{product.name}</span>
+                    </div>
+                  </td>
+                  <td className="py-3 px-4">
+                    {getStatusBadge(product.status)}
+                  </td>
+                  <td className="py-3 px-4 font-medium">
+                    ${parseFloat(product.price.toString()).toFixed(2)}
+                  </td>
+                  <td className="py-3 px-4">
+                    {product.status === "out_of_stock" ? (
+                      <span className="text-red-600 font-medium">0</span>
+                    ) : (
+                      product.inventory
+                    )}
+                  </td>
+                  <td className="py-3 px-4">
+                    {product.sales || 0}
+                  </td>
+                  <td className="py-3 px-4 text-muted-foreground text-sm">
+                    {product.createdAt}
+                  </td>
+                  <td className="py-3 px-4">
+                    <div className="flex justify-end gap-2">
+                      <Button variant="ghost" size="icon" asChild>
+                        <Link to={`/product/${product.id}`}>
+                          <Eye className="h-4 w-4" />
+                          <span className="sr-only">View</span>
+                        </Link>
+                      </Button>
+                      <Button variant="ghost" size="icon">
+                        <Edit className="h-4 w-4" />
+                        <span className="sr-only">Edit</span>
+                      </Button>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon">
+                            <MoreHorizontal className="h-4 w-4" />
+                            <span className="sr-only">More</span>
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => handleDuplicate(product)}>
+                            <Copy className="h-4 w-4 mr-2" />
+                            Duplicate
+                          </DropdownMenuItem>
+                          <DropdownMenuItem 
+                            className="text-red-600 focus:text-red-600"
+                            onClick={() => openDeleteDialog(product)}
+                          >
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {products.map((product) => (
-            <div key={product.id} className="border rounded-lg overflow-hidden shadow-sm bg-white">
-              <div className="aspect-square overflow-hidden bg-gray-100">
-                <img
-                  src={product.image || "/placeholder.svg"}
-                  alt={product.name}
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    e.currentTarget.src = "/placeholder.svg";
-                  }}
-                />
-              </div>
-              <div className="p-4">
-                <h3 className="font-semibold text-lg mb-1">{product.name}</h3>
-                <p className="text-sm text-gray-500 line-clamp-2 mb-2">
-                  {product.description || "No description available."}
-                </p>
-                <div className="flex justify-between items-center">
-                  <div>
-                    <span className="font-semibold">${product.price.toFixed(2)}</span>
-                    {product.discount_price && (
-                      <span className="text-sm text-gray-500 line-through ml-2">
-                        ${product.discount_price.toFixed(2)}
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex space-x-2">
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => handleEditProduct(product.id)}
-                    >
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="icon"
-                      onClick={() => handleDeleteProduct(product.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              </div>
+        <Card>
+          <CardContent className="flex flex-col items-center justify-center py-10">
+            <div className="rounded-full bg-muted p-3 mb-4">
+              <Plus className="h-6 w-6 text-muted-foreground" />
             </div>
-          ))}
-        </div>
+            <h3 className="text-lg font-medium">No products found</h3>
+            <p className="text-muted-foreground text-center mt-1 max-w-sm">
+              {searchQuery || filter !== "all" ? 
+                "Try adjusting your filters or search terms" : 
+                "Start by adding your first product to your store"}
+            </p>
+            <Button className="mt-4">
+              <Plus className="h-4 w-4 mr-2" />
+              Add Your First Product
+            </Button>
+          </CardContent>
+        </Card>
       )}
+      
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Product</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete "{productToDelete?.name}"? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>Cancel</Button>
+            <Button variant="destructive" onClick={handleDeleteConfirm}>Delete</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

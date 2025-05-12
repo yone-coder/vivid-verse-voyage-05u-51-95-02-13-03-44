@@ -1,14 +1,11 @@
-
 import { useState, useEffect, useCallback } from 'react';
 import { useQuery } from "@tanstack/react-query";
 import { fetchHeroBanners } from "@/integrations/supabase/hero";
 import { setupStorageBuckets } from "@/integrations/supabase/setupStorage";
-import { ChevronLeft, ChevronRight, AlertCircle, TrendingUp, Clock, Newspaper, RefreshCw } from "lucide-react";
+import { ChevronLeft, ChevronRight, AlertCircle, TrendingUp, Clock, Newspaper } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "sonner";
 import BannerImage from "@/components/hero/BannerImage";
-import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
 
 // News items for the ticker
 const newsItems = [
@@ -25,7 +22,6 @@ export default function HeroBanner() {
   const [activeNewsIndex, setActiveNewsIndex] = useState(0);
   const [previousNewsIndex, setPreviousNewsIndex] = useState<number | null>(null);
   const [progress, setProgress] = useState(0);
-  const [isAuthShown, setIsAuthShown] = useState(false);
   const isMobile = useIsMobile();
   const slideDuration = 5000;
   const newsDuration = 4000;
@@ -35,16 +31,12 @@ export default function HeroBanner() {
     const initStorage = async () => {
       await setupStorageBuckets();
       console.log('Storage buckets initialized');
-      
-      // Check auth status
-      const { data } = await supabase.auth.getUser();
-      console.log('Auth status check:', data?.user ? 'User is authenticated' : 'User is NOT authenticated');
     };
     initStorage();
   }, []);
 
   // Fetch banners from Supabase with a shorter cache time for testing
-  const { data: banners = [], isLoading, error, refetch } = useQuery({
+  const { data: banners, isLoading, error, refetch } = useQuery({
     queryKey: ["hero-banners"],
     queryFn: fetchHeroBanners,
     staleTime: 5000, // 5 seconds - reduced for testing
@@ -76,14 +68,37 @@ export default function HeroBanner() {
     }
   }, [banners]);
 
+  // Fallback banners in case database is empty
+  const fallbackBanners = [
+    {
+      id: "1",
+      image: "/lovable-uploads/2102d3a1-ec6e-4c76-8ee0-549c3ae3d54e.png",
+      alt: "Banner 1",
+      position: 0
+    },
+    {
+      id: "2",
+      image: "/lovable-uploads/4dbaee7c-2ac5-4a1b-9f9b-121275273e79.png",
+      alt: "Banner 2",
+      position: 1
+    },
+    {
+      id: "3",
+      image: "/lovable-uploads/dd1cad7b-c3b6-43a6-9bc6-deb38a120604.png",
+      alt: "Banner 3",
+      position: 2
+    }
+  ];
+
+  // Use banners from database or fallback banners
+  const slidesToShow = banners?.length > 0 ? banners : fallbackBanners;
+
   // Set up intervals for banner rotation and progress tracking
   useEffect(() => {
     let intervalRef: ReturnType<typeof setInterval> | null = null;
     let progressIntervalRef: ReturnType<typeof setInterval> | null = null;
 
     const startSlideTimer = () => {
-      if (banners.length <= 1) return; // Don't start timer if there's only one or no images
-      
       clearInterval(intervalRef as ReturnType<typeof setInterval>);
       clearInterval(progressIntervalRef as ReturnType<typeof setInterval>);
       setProgress(0);
@@ -96,19 +111,17 @@ export default function HeroBanner() {
       intervalRef = setInterval(() => {
         setProgress(0);
         setPreviousIndex(activeIndex);
-        setActiveIndex(current => (current + 1) % (banners.length || 1));
+        setActiveIndex(current => (current + 1) % slidesToShow.length);
       }, slideDuration);
     };
 
-    if (banners.length > 0) {
-      startSlideTimer();
-    }
+    startSlideTimer();
     
     return () => {
-      if (intervalRef) clearInterval(intervalRef);
-      if (progressIntervalRef) clearInterval(progressIntervalRef);
+      clearInterval(intervalRef as ReturnType<typeof setInterval>);
+      clearInterval(progressIntervalRef as ReturnType<typeof setInterval>);
     };
-  }, [activeIndex, banners.length]);
+  }, [activeIndex, slidesToShow.length]);
 
   // Set up interval for news ticker
   useEffect(() => {
@@ -125,7 +138,7 @@ export default function HeroBanner() {
     startNewsTimer();
 
     return () => {
-      if (newsIntervalRef) clearInterval(newsIntervalRef);
+      clearInterval(newsIntervalRef as ReturnType<typeof setInterval>);
     };
   }, [activeNewsIndex]);
 
@@ -133,19 +146,11 @@ export default function HeroBanner() {
     setPreviousIndex(activeIndex);
     setActiveIndex(index);
   };
-  
-  // Toggle authentication status panel
-  const toggleAuthStatus = async () => {
-    const { data } = await supabase.auth.getUser();
-    setIsAuthShown(!isAuthShown);
-    toast(data?.user ? "User is authenticated" : "User is NOT authenticated");
-  };
 
   // Manual refetch button for debugging
   const debugRefetch = () => {
     console.log("Manual refetch triggered");
     refetch();
-    toast.info("Refreshing banners from database");
   };
 
   if (isLoading) {
@@ -158,63 +163,20 @@ export default function HeroBanner() {
     );
   }
 
-  // If no banners are available from Supabase, show a placeholder
-  if (!banners || banners.length === 0) {
-    return (
-      <div className="relative mt-[44px] bg-gray-100 h-[60vh] min-h-[400px] max-h-[600px] flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-gray-500 mb-2">No banner images found</div>
-          <div className="flex flex-col gap-2">
-            <Button
-              onClick={debugRefetch}
-              className="px-4 py-2 flex items-center gap-1"
-              variant="outline"
-            >
-              <RefreshCw className="h-4 w-4" />
-              Refresh Banners
-            </Button>
-            
-            <Button
-              onClick={toggleAuthStatus}
-              className="px-4 py-2"
-              variant="secondary"
-            >
-              Check Auth Status
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <>
       <div className="relative mt-[44px] overflow-hidden">
-        {/* Debug buttons for development */}
-        <div className="absolute top-0 right-0 z-50 flex gap-1">
-          <Button 
-            onClick={debugRefetch}
-            size="sm" 
-            variant="outline"
-            className="bg-blue-500 text-white px-2 py-1 text-xs flex items-center gap-1"
-          >
-            <RefreshCw className="h-3 w-3" />
-            Refresh
-          </Button>
-          
-          <Button 
-            onClick={toggleAuthStatus}
-            size="sm" 
-            variant="outline"
-            className="bg-green-500 text-white px-2 py-1 text-xs"
-          >
-            Auth
-          </Button>
-        </div>
+        {/* Always show debug button during development */}
+        <button 
+          onClick={debugRefetch}
+          className="absolute top-0 right-0 z-50 bg-blue-500 text-white px-2 py-1 text-xs"
+        >
+          Refresh Banners
+        </button>
         
         <div className="relative h-[180px] md:h-[250px] lg:h-[300px]">
-          {/* Banner Images - Only showing images from Supabase */}
-          {banners.map((banner, index) => {
+          {/* Banner Images */}
+          {slidesToShow.map((banner, index) => {
             const isActive = index === activeIndex;
             const isPrevious = index === previousIndex;
             
@@ -237,13 +199,13 @@ export default function HeroBanner() {
         </div>
 
         {/* Navigation Controls */}
-        {!isMobile && banners.length > 1 && (
+        {!isMobile && (
           <>
             <button 
               className="absolute left-6 top-1/2 -translate-y-1/2 rounded-full p-2 bg-white/80 hover:bg-white hidden md:flex items-center justify-center z-20"
               onClick={() => {
                 setPreviousIndex(activeIndex);
-                setActiveIndex((current) => (current - 1 + banners.length) % banners.length);
+                setActiveIndex((current) => (current - 1 + slidesToShow.length) % slidesToShow.length);
               }}
             >
               <ChevronLeft className="h-4 w-4" />
@@ -252,7 +214,7 @@ export default function HeroBanner() {
               className="absolute right-6 top-1/2 -translate-y-1/2 rounded-full p-2 bg-white/80 hover:bg-white hidden md:flex items-center justify-center z-20"
               onClick={() => {
                 setPreviousIndex(activeIndex);
-                setActiveIndex((current) => (current + 1) % banners.length);
+                setActiveIndex((current) => (current + 1) % slidesToShow.length);
               }}
             >
               <ChevronRight className="h-4 w-4" />
@@ -261,28 +223,26 @@ export default function HeroBanner() {
         )}
 
         {/* Animated Dots */}
-        {banners.length > 1 && (
-          <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5">
-            {banners.map((_, index) => (
-              <button
-                key={index}
-                className="relative h-1 rounded-full bg-gray-300 w-5 overflow-hidden"
-                onClick={() => handleDotClick(index)}
-              >
-                <div className="absolute inset-0 bg-gray-300 rounded-full"></div>
-                {activeIndex === index && (
-                  <div
-                    className="absolute inset-0 bg-orange-500 rounded-full origin-left"
-                    style={{
-                      width: `${progress}%`,
-                      transition: 'width 0.05s linear'
-                    }}
-                  ></div>
-                )}
-              </button>
-            ))}
-          </div>
-        )}
+        <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5">
+          {slidesToShow.map((_, index) => (
+            <button
+              key={index}
+              className="relative h-1 rounded-full bg-gray-300 w-5 overflow-hidden"
+              onClick={() => handleDotClick(index)}
+            >
+              <div className="absolute inset-0 bg-gray-300 rounded-full"></div>
+              {activeIndex === index && (
+                <div
+                  className="absolute inset-0 bg-orange-500 rounded-full origin-left"
+                  style={{
+                    width: `${progress}%`,
+                    transition: 'width 0.05s linear'
+                  }}
+                ></div>
+              )}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Smooth Vertical Sliding News Banner */}
