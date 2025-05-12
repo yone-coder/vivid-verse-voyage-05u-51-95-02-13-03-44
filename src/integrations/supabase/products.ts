@@ -1,3 +1,4 @@
+
 import { supabase } from './client';
 import { getPublicUrl } from './setupStorage';
 
@@ -12,6 +13,8 @@ export interface Product {
   created_at?: string;
   updated_at?: string;
   user_id?: string;
+  // Adding product_images property to interface
+  product_images?: { id: string; src: string; alt?: string }[];
 }
 
 export const fetchProducts = async (): Promise<Product[]> => {
@@ -21,8 +24,8 @@ export const fetchProducts = async (): Promise<Product[]> => {
     // Need to explicitly type the response to avoid type errors
     const { data, error } = await supabase
       .from('products')
-      .select('*') as { 
-        data: Product[] | null; 
+      .select('*, product_images(*)') as { 
+        data: (Product & { product_images: { id: string; src: string; alt?: string }[] }) [] | null; 
         error: any; 
       };
       
@@ -70,6 +73,9 @@ export const fetchProducts = async (): Promise<Product[]> => {
   }
 };
 
+// Add alias for fetchAllProducts
+export const fetchAllProducts = fetchProducts;
+
 // Fetch products for a specific user
 export const fetchUserProducts = async (userId: string): Promise<Product[]> => {
   try {
@@ -78,9 +84,9 @@ export const fetchUserProducts = async (userId: string): Promise<Product[]> => {
     // Need to explicitly type the response to avoid type errors
     const { data, error } = await supabase
       .from('products')
-      .select('*')
+      .select('*, product_images(*)')
       .eq('user_id', userId) as { 
-        data: Product[] | null; 
+        data: (Product & { product_images: { id: string; src: string; alt?: string }[] }) [] | null; 
         error: any; 
       };
       
@@ -124,6 +130,50 @@ export const fetchUserProducts = async (userId: string): Promise<Product[]> => {
   }
 };
 
+// Add fetchProductById function
+export const fetchProductById = async (productId: string): Promise<Product | null> => {
+  try {
+    console.log(`Fetching product details for id ${productId}...`);
+    
+    const { data, error } = await supabase
+      .from('products')
+      .select('*, product_images(*)')
+      .eq('id', productId)
+      .single() as { 
+        data: (Product & { product_images: { id: string; src: string; alt?: string }[] }) | null; 
+        error: any; 
+      };
+      
+    if (error) {
+      console.error(`Error fetching product ${productId}:`, error);
+      return null;
+    }
+
+    if (!data) {
+      console.log(`No product found for id ${productId}`);
+      return null;
+    }
+    
+    // Process image URL
+    let imageUrl = data.image;
+    if (imageUrl && !imageUrl.startsWith('http')) {
+      try {
+        imageUrl = getPublicUrl('products', imageUrl);
+      } catch (err) {
+        console.error(`Failed to get public URL for ${data.image}:`, err);
+      }
+    }
+    
+    return {
+      ...data,
+      image: imageUrl
+    };
+  } catch (error) {
+    console.error(`Error in fetchProductById for id ${productId}:`, error);
+    return null;
+  }
+};
+
 // Subscribe to realtime changes - return cleanup function
 export const subscribeToProductChanges = (
   callback: () => void
@@ -155,7 +205,7 @@ export const createProduct = async (productData: {
   description: string;
   price: number;
   discount_price: number | null;
-  user_id?: string; // Add user_id to productData
+  user_id?: string;
 }): Promise<Product | null> => {
   try {
     // Need to explicitly type the response to avoid type errors

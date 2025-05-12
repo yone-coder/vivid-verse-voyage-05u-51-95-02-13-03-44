@@ -67,37 +67,37 @@ export default function ProfilePage() {
       id: "dashboard",
       label: "Overview",
       icon: <UserCircle className="h-5 w-5" />,
-      content: <ProfileDashboard />,
+      content: <ProfileDashboard user={user} profile={{}} />,
     },
     {
       id: "orders",
       label: "Orders",
       icon: <Package className="h-5 w-5" />,
-      content: <ProfileOrders />,
+      content: <ProfileOrders user={user} />,
     },
     {
       id: "products",
       label: "My Products",
       icon: <ShoppingBag className="h-5 w-5" />,
-      content: <ProfileProducts />, // Removed the user prop here as it's causing a type error
+      content: <ProfileProducts />, // ProfileProducts already gets user from useAuth() internally
     },
     {
       id: "wishlist",
       label: "Wishlist",
       icon: <Heart className="h-5 w-5" />,
-      content: <ProfileWishlist />,
+      content: <ProfileWishlist user={user} />,
     },
     {
       id: "analytics",
       label: "Analytics",
       icon: <BarChart3 className="h-5 w-5" />,
-      content: <ProfileAnalytics />,
+      content: <ProfileAnalytics user={user} />,
     },
     {
       id: "settings",
       label: "Settings",
       icon: <Settings className="h-5 w-5" />,
-      content: <ProfileSettings />,
+      content: <ProfileSettings user={user} profile={{}} />,
     },
   ];
 
