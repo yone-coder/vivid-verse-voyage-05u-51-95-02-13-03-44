@@ -72,9 +72,11 @@ export default function MainLayout() {
     });
   };
 
+  // Updated header height styles to account for both mobile and desktop header heights
+  // These variables will be used by other components to properly position themselves
   const headerHeightStyle = `
     :root {
-      --header-height: ${isMobile ? '36px' : '72px'};
+      --header-height: ${isMobile ? '80px' : '120px'};
       --bottom-nav-height: ${isMobile ? '48px' : '0px'};
     }
   `;

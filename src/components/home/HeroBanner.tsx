@@ -150,7 +150,7 @@ export default function HeroBanner() {
 
   if (isLoading) {
     return (
-      <div className="relative w-full bg-gray-200 animate-pulse mt-[44px] aspect-[16/5]">
+      <div className="relative w-full bg-gray-200 animate-pulse aspect-[16/5]">
         <div className="absolute inset-0 flex items-center justify-center">
           <span className="text-gray-400">Loading banners...</span>
         </div>
@@ -160,7 +160,9 @@ export default function HeroBanner() {
 
   return (
     <>
-      <div className="relative mt-[44px] overflow-hidden">
+      {/* The hero banner container starts exactly below the fixed header, 
+          removing the mt-[44px] which was causing issues with the header height */}
+      <div className="relative overflow-hidden">
         {/* Responsive banner container - no fixed height */}
         <div className="relative w-full">
           {/* Banner Images */}

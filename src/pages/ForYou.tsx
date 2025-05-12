@@ -14,7 +14,6 @@ import SecondaryFlashDeals from "@/components/home/SecondaryFlashDeals";
 import BenefitsBanner from "@/components/home/BenefitsBanner";
 import TopVendorsCompact from "@/components/home/TopVendorsCompact";
 import Newsletter from "@/components/home/Newsletter";
-import LogoutButton from "@/components/auth/LogoutButton";
 import PopularSearches from "@/components/home/PopularSearches";
 import TranslationExample from "@/components/home/TranslationExample";
 import NewArrivals from "@/components/home/NewArrivals";
@@ -34,13 +33,11 @@ export default function ForYou() {
 
   return (
     <div className="max-w-screen overflow-hidden pb-16 relative">
-      {/* Logout Test Button - Positioned in the top right corner */}
-      <div className="absolute top-2 right-2 z-50">
-        <LogoutButton />
-      </div>
-      
       {/* Hero Banner - now using images from Supabase */}
-      <HeroBanner />
+      {/* Top margin is controlled by layout instead of inline margin */}
+      <div className="pt-[80px] md:pt-[92px]">
+        <HeroBanner />
+      </div>
       
       <div className="space-y-1">
         <SpaceSavingCategories />
