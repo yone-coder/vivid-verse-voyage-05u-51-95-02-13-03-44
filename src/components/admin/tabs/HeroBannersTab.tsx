@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Trash2, ArrowUp, ArrowDown } from "lucide-react";
+import { Trash2, ArrowUp, ArrowDown, Image } from "lucide-react";
 import { 
   fetchHeroBanners, 
   deleteHeroBanner, 
@@ -17,17 +17,34 @@ const HeroBannersTab: React.FC = () => {
   const [isHeroUploadDialogOpen, setIsHeroUploadDialogOpen] = useState(false);
   const queryClient = useQueryClient();
 
-  // Fetch hero banners
+  // Fetch hero banners with a shorter staleTime for testing
   const { data: heroBanners = [], isLoading, error, refetch } = useQuery({
     queryKey: ["hero-banners"],
     queryFn: fetchHeroBanners,
+    staleTime: 5000, // 5 seconds for testing
+    refetchInterval: 30000, // Refresh every 30 seconds
   });
+
+  const handleRefreshData = () => {
+    queryClient.invalidateQueries({ queryKey: ["hero-banners"] });
+    toast.success("Data refreshed");
+  };
 
   const handleDeleteHeroBanner = async (id: string, imagePath: string) => {
     try {
-      const url = new URL(imagePath);
-      const pathname = url.pathname;
-      const filename = pathname.substring(pathname.lastIndexOf('/') + 1);
+      // Extract just the filename if it's a full URL
+      let filename = imagePath;
+      if (imagePath.includes('/')) {
+        try {
+          const url = new URL(imagePath);
+          filename = url.pathname.split('/').pop() || imagePath;
+        } catch (e) {
+          // If not a valid URL, try to extract the filename from the path
+          filename = imagePath.split('/').pop() || imagePath;
+        }
+      }
+
+      console.log(`Deleting banner ${id} with image: ${filename}`);
 
       // Delete from database
       await deleteHeroBanner(id);
@@ -37,6 +54,7 @@ const HeroBannersTab: React.FC = () => {
         await supabase.storage
           .from('hero-banners')
           .remove([filename]);
+        console.log(`Deleted file ${filename} from storage`);
       } catch (storageError) {
         console.warn('Could not delete from storage:', storageError);
       }
@@ -106,9 +124,14 @@ const HeroBannersTab: React.FC = () => {
             <h2 className="text-lg font-semibold">Hero Banners</h2>
             <p className="text-sm text-gray-500">Manage the banners shown in the homepage hero section</p>
           </div>
-          <Button onClick={() => setIsHeroUploadDialogOpen(true)}>
-            Add Banner
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={handleRefreshData}>
+              Refresh Data
+            </Button>
+            <Button onClick={() => setIsHeroUploadDialogOpen(true)}>
+              Add Banner
+            </Button>
+          </div>
         </div>
         
         {sortedBanners.length > 0 ? (
@@ -116,11 +139,21 @@ const HeroBannersTab: React.FC = () => {
             {sortedBanners.map((banner, index) => (
               <Card key={banner.id} className="overflow-hidden border-gray-200">
                 <div className="aspect-[16/9] relative">
-                  <img 
-                    src={banner.image} 
-                    alt={banner.alt} 
-                    className="w-full h-full object-cover"
-                  />
+                  {banner.image ? (
+                    <img 
+                      src={banner.image} 
+                      alt={banner.alt} 
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        console.error(`Failed to load image: ${banner.image}`);
+                        e.currentTarget.src = "/placeholder.svg";
+                      }}
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                      <Image className="h-10 w-10 text-gray-400" />
+                    </div>
+                  )}
                   <div className="absolute top-2 right-2 bg-black/60 text-white text-xs font-medium px-2 py-1 rounded">
                     Position: {banner.position || index}
                   </div>
@@ -128,6 +161,7 @@ const HeroBannersTab: React.FC = () => {
                 <CardContent className="p-4">
                   <div className="mb-4">
                     <h3 className="font-medium text-sm truncate">{banner.alt}</h3>
+                    <p className="text-xs text-gray-500 truncate mt-1">{banner.image}</p>
                   </div>
                   <div className="flex justify-between">
                     <div className="space-x-1">
@@ -168,9 +202,7 @@ const HeroBannersTab: React.FC = () => {
           <Card>
             <CardContent className="flex flex-col items-center justify-center py-12">
               <div className="rounded-full bg-gray-100 p-4 mb-4">
-                <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
+                <Image className="w-8 h-8 text-gray-400" />
               </div>
               <h3 className="text-lg font-medium">No hero banners yet</h3>
               <p className="text-muted-foreground text-center mt-1 max-w-sm mb-4">

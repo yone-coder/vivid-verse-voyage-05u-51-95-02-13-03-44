@@ -1,4 +1,3 @@
-
 import { supabase } from './client';
 
 export interface Product {
@@ -12,10 +11,10 @@ export interface Product {
   product_images?: ProductImage[];
   user_id?: string;
   inventory?: number;
-  status?: string; // Add status field
-  sales?: number;  // Add sales field
-  image?: string;  // Add image field
-  createdAt?: string; // Add createdAt field for display
+  status?: string; 
+  sales?: number;  
+  image?: string;  
+  createdAt?: string;
 }
 
 export interface ProductImage {
@@ -71,7 +70,6 @@ export const fetchProductById = async (id: string): Promise<Product | null> => {
   }
 };
 
-// Add the missing fetchUserProducts function
 export const fetchUserProducts = async (userId: string): Promise<Product[]> => {
   try {
     if (!userId) {
@@ -102,7 +100,6 @@ export const fetchUserProducts = async (userId: string): Promise<Product[]> => {
   }
 };
 
-// Subscribe to realtime changes - return cleanup function
 export const subscribeToProductChanges = (
   callback: () => void
 ): (() => void) => {
@@ -154,7 +151,6 @@ export const createProduct = async (productData: {
   }
 };
 
-// Fix the return type to avoid the circular reference issue
 export const updateProduct = async (
   id: string,
   updates: {
@@ -163,7 +159,7 @@ export const updateProduct = async (
     price?: number;
     discount_price?: number | null;
   }
-): Promise<any> => {
+): Promise<{ id?: string; noChanges?: boolean } | null> => {
   try {
     // Check if there are actually changes (for name specifically)
     if ('name' in updates) {

@@ -42,12 +42,16 @@ export const fetchHeroBanners = async (): Promise<HeroBanner[]> => {
       
       console.log(`Processing banner ${banner.id} with image path: ${imageUrl}`);
       
-      // If the image already starts with http or https, assume it's a complete URL
+      // If the image doesn't start with http/https or isn't a local path, assume it's a filename in the bucket
       if (imageUrl && !imageUrl.startsWith('http') && !imageUrl.startsWith('/lovable-uploads')) {
         try {
-          // Assume it's a path in the hero-banners bucket
-          imageUrl = getPublicUrl('hero-banners', imageUrl);
-          console.log(`Transformed image URL for ${banner.id}: ${banner.image} -> ${imageUrl}`);
+          // Get the public URL for the file in the hero-banners bucket
+          const { data } = supabase.storage
+            .from('hero-banners')
+            .getPublicUrl(imageUrl);
+          
+          imageUrl = data.publicUrl;
+          console.log(`Generated public URL for ${banner.id}: ${imageUrl}`);
         } catch (err) {
           console.error(`Failed to get public URL for ${banner.image}:`, err);
         }
@@ -59,7 +63,7 @@ export const fetchHeroBanners = async (): Promise<HeroBanner[]> => {
       };
     });
     
-    console.log('Transformed hero banners:', banners);
+    console.log('Transformed hero banners with full URLs:', banners);
     return banners;
   } catch (error) {
     console.error('Error in fetchHeroBanners:', error);
@@ -83,28 +87,13 @@ export const createHeroBanner = async (banner: {
 
     console.log('Creating hero banner with data:', banner);
 
-    // For debugging - extract the filename from the image URL if it's a storage URL
-    let storageImagePath = banner.image;
-    if (storageImagePath.includes('storage/v1/object/public/')) {
-      try {
-        // Extract just the filename for storage
-        const urlObj = new URL(storageImagePath);
-        const pathParts = urlObj.pathname.split('/');
-        // The last part should be the filename
-        storageImagePath = pathParts[pathParts.length - 1];
-        console.log('Extracted storage path:', storageImagePath);
-      } catch (e) {
-        console.error('Failed to parse storage URL:', e);
-      }
-    }
-
     // Need to explicitly type the response to avoid type errors
     const { data, error } = await supabase
       .from('hero_banners')
       .insert({
         ...banner,
-        // Use the extracted path if it's a storage URL
-        image: storageImagePath
+        // Store just the filename - we'll generate URLs when fetching
+        image: banner.image
       })
       .select()
       .single() as {
