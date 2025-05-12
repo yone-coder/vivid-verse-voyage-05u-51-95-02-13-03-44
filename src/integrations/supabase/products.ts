@@ -57,8 +57,8 @@ export const fetchProducts = async (): Promise<Product[]> => {
         }
       }
       
-      // Ensure inventory is always a number, defaulting to 0
-      const inventoryValue = typeof product.inventory === 'number' ? product.inventory : 0;
+      // Always default inventory to 0 since it doesn't exist in the database response
+      const inventoryValue = 0;
       
       return {
         ...product,
@@ -118,8 +118,8 @@ export const fetchUserProducts = async (userId: string): Promise<Product[]> => {
         }
       }
       
-      // Ensure inventory is always a number, defaulting to 0
-      const inventoryValue = typeof product.inventory === 'number' ? product.inventory : 0;
+      // Always default inventory to 0 since it doesn't exist in the database response
+      const inventoryValue = 0;
       
       return {
         ...product,
@@ -169,8 +169,8 @@ export const fetchProductById = async (productId: string): Promise<Product | nul
       }
     }
     
-    // Ensure inventory is always a number, defaulting to 0
-    const inventoryValue = typeof data.inventory === 'number' ? data.inventory : 0;
+    // Always default inventory to 0 since it doesn't exist in the database response
+    const inventoryValue = 0;
     
     return {
       ...data,
