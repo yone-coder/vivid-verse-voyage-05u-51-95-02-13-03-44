@@ -33,8 +33,8 @@ export default function ForYou() {
 
   return (
     <div className="max-w-screen overflow-hidden pb-16 relative">
-      {/* Hero Banner - with padding to account for header height */}
-      <div className="pt-[80px] md:pt-[92px]">
+      {/* Hero Banner - with proper header spacing */}
+      <div className="mt-[80px] md:mt-[92px]">
         <HeroBanner />
       </div>
       

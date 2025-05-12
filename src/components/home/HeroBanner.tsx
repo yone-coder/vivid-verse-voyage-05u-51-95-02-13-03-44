@@ -3,29 +3,18 @@ import { useState, useEffect } from 'react';
 import { useQuery } from "@tanstack/react-query";
 import { fetchHeroBanners } from "@/integrations/supabase/hero";
 import { setupStorageBuckets } from "@/integrations/supabase/setupStorage";
-import { ChevronLeft, ChevronRight, AlertCircle, TrendingUp, Clock, Newspaper } from "lucide-react";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "sonner";
-import BannerImage from "@/components/hero/BannerImage";
-
-// News items for the ticker
-const newsItems = [
-  { id: 1, icon: <AlertCircle className="w-3 h-3 text-white" />, text: "EXTRA 10% OFF WITH CODE: SUMMER10" },
-  { id: 2, icon: <TrendingUp className="w-3 h-3 text-white" />, text: "FREE SHIPPING ON ORDERS OVER ¥99" },
-  { id: 3, icon: <Clock className="w-3 h-3 text-white" />, text: "LIMITED TIME: BUY 2 GET 1 FREE" },
-  { id: 4, icon: <Newspaper className="w-3 h-3 text-white" />, text: "NEW SEASON ITEMS JUST ARRIVED" }
-];
+import BannerSlides from './hero/BannerSlides';
+import BannerControls from './hero/BannerControls';
+import NewsTicker from './hero/NewsTicker';
+import { BannerType } from './hero/types';
 
 export default function HeroBanner() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [previousIndex, setPreviousIndex] = useState<number | null>(null);
   const [showNews, setShowNews] = useState(true);
-  const [activeNewsIndex, setActiveNewsIndex] = useState(0);
-  const [previousNewsIndex, setPreviousNewsIndex] = useState<number | null>(null);
   const [progress, setProgress] = useState(0);
-  const isMobile = useIsMobile();
   const slideDuration = 5000;
-  const newsDuration = 4000;
 
   // Initialize storage buckets if needed
   useEffect(() => {
@@ -70,7 +59,7 @@ export default function HeroBanner() {
   }, [banners]);
 
   // Fallback banners in case database is empty
-  const fallbackBanners = [
+  const fallbackBanners: BannerType[] = [
     {
       id: "1",
       image: "/lovable-uploads/2102d3a1-ec6e-4c76-8ee0-549c3ae3d54e.png",
@@ -124,30 +113,6 @@ export default function HeroBanner() {
     };
   }, [activeIndex, slidesToShow.length]);
 
-  // Set up interval for news ticker
-  useEffect(() => {
-    let newsIntervalRef: ReturnType<typeof setInterval> | null = null;
-
-    const startNewsTimer = () => {
-      clearInterval(newsIntervalRef as ReturnType<typeof setInterval>);
-      newsIntervalRef = setInterval(() => {
-        setPreviousNewsIndex(activeNewsIndex);
-        setActiveNewsIndex(current => (current + 1) % newsItems.length);
-      }, newsDuration);
-    };
-
-    startNewsTimer();
-
-    return () => {
-      clearInterval(newsIntervalRef as ReturnType<typeof setInterval>);
-    };
-  }, [activeNewsIndex]);
-
-  const handleDotClick = (index: number) => {
-    setPreviousIndex(activeIndex);
-    setActiveIndex(index);
-  };
-
   if (isLoading) {
     return (
       <div className="relative w-full bg-gray-200 animate-pulse aspect-[16/5]">
@@ -160,110 +125,26 @@ export default function HeroBanner() {
 
   return (
     <>
-      {/* Hero banner container with positioning that directly connects with header */}
+      {/* Banner container */}
       <div className="relative overflow-hidden w-full">
-        {/* Responsive banner container - no fixed height */}
-        <div className="relative w-full">
-          {/* Banner Images */}
-          {slidesToShow.map((banner, index) => {
-            const isActive = index === activeIndex;
-            const isPrevious = index === previousIndex;
-            
-            return (
-              <div
-                key={banner.id}
-                className={`absolute inset-0 w-full transition-transform duration-500 ease-out ${
-                  isActive ? "translate-y-0 z-10 relative" : 
-                  isPrevious ? "-translate-y-full z-0 hidden" : "translate-y-full z-0 hidden"
-                }`}
-              >
-                <BannerImage
-                  src={banner.image} 
-                  alt={banner.alt || "Banner image"}
-                  className="w-full"
-                />
-              </div>
-            );
-          })}
-        </div>
+        <BannerSlides 
+          slides={slidesToShow}
+          activeIndex={activeIndex}
+          previousIndex={previousIndex}
+        />
 
-        {/* Navigation Controls */}
-        {!isMobile && (
-          <>
-            <button 
-              className="absolute left-6 top-1/2 -translate-y-1/2 rounded-full p-2 bg-white/80 hover:bg-white hidden md:flex items-center justify-center z-20"
-              onClick={() => {
-                setPreviousIndex(activeIndex);
-                setActiveIndex((current) => (current - 1 + slidesToShow.length) % slidesToShow.length);
-              }}
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </button>
-            <button 
-              className="absolute right-6 top-1/2 -translate-y-1/2 rounded-full p-2 bg-white/80 hover:bg-white hidden md:flex items-center justify-center z-20"
-              onClick={() => {
-                setPreviousIndex(activeIndex);
-                setActiveIndex((current) => (current + 1) % slidesToShow.length);
-              }}
-            >
-              <ChevronRight className="h-4 w-4" />
-            </button>
-          </>
-        )}
-
-        {/* Animated Dots */}
-        <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 z-20">
-          {slidesToShow.map((_, index) => (
-            <button
-              key={index}
-              className="relative h-1 rounded-full bg-gray-300 w-5 overflow-hidden"
-              onClick={() => handleDotClick(index)}
-            >
-              <div className="absolute inset-0 bg-gray-300 rounded-full"></div>
-              {activeIndex === index && (
-                <div
-                  className="absolute inset-0 bg-orange-500 rounded-full origin-left"
-                  style={{
-                    width: `${progress}%`,
-                    transition: 'width 0.05s linear'
-                  }}
-                ></div>
-              )}
-            </button>
-          ))}
-        </div>
+        <BannerControls
+          slidesCount={slidesToShow.length}
+          activeIndex={activeIndex}
+          previousIndex={previousIndex}
+          setActiveIndex={setActiveIndex}
+          setPreviousIndex={setPreviousIndex}
+          progress={progress}
+        />
       </div>
 
-      {/* Smooth Vertical Sliding News Banner */}
-      {showNews && (
-        <div className="bg-red-50">
-          <div className="max-w-screen-xl mx-auto">
-            <div className="relative overflow-hidden h-7">
-              {newsItems.map((item, index) => {
-                const bgColors = [
-                  "bg-red-600", "bg-orange-500", "bg-blue-600", "bg-purple-600"
-                ];
-                const bgColor = bgColors[index % bgColors.length];
-                const isActive = index === activeNewsIndex;
-                const isPrevious = index === previousNewsIndex;
-
-                return (
-                  <div
-                    key={item.id}
-                    className={`absolute top-0 left-0 w-full h-7 flex items-center px-2 transform transition-transform duration-500 ease-in-out ${bgColor} ${
-                      isActive ? "translate-y-0 z-10" : 
-                      isPrevious ? "-translate-y-full z-0" : "translate-y-full z-0"
-                    }`}
-                  >
-                    <span className="flex-shrink-0 mr-1">{item.icon}</span>
-                    <span className="text-xs font-medium text-white truncate">{item.text}</span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      )}
+      {/* News Ticker */}
+      {showNews && <NewsTicker />}
     </>
   );
 }
