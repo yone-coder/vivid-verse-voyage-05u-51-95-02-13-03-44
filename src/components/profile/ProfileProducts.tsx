@@ -1,211 +1,155 @@
 
 import React, { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { fetchUserProducts, Product } from "@/integrations/supabase/products";
-import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, Edit, Trash2, Eye } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { PlusCircle, Trash2, Edit, RefreshCw } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import { fetchUserProducts, Product } from "@/integrations/supabase/products";
 import { useToast } from "@/hooks/use-toast";
 
-const ProfileProducts = () => {
-  const [userId, setUserId] = useState<string | null>(null);
+export default function ProfileProducts() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { user } = useAuth(); // Get the user from auth context directly
   const { toast } = useToast();
-  const navigate = useNavigate();
   
-  // Check if user is logged in
-  useEffect(() => {
-    const checkUser = async () => {
-      const { data, error } = await supabase.auth.getUser();
-      if (error) {
-        console.error('Error getting user:', error);
-        return;
-      }
-      
-      if (data?.user) {
-        console.log('User found:', data.user.id);
-        setUserId(data.user.id);
-      } else {
-        console.log('No user found');
-      }
-    };
+  const loadProducts = async () => {
+    if (!user) return;
     
-    checkUser();
-  }, []);
-  
-  // Fetch user's products
-  const { data: products, isLoading, error, refetch } = useQuery({
-    queryKey: ['user-products', userId],
-    queryFn: () => userId ? fetchUserProducts(userId) : Promise.resolve([]),
-    enabled: !!userId,
-  });
-  
-  // Handle viewing product details
-  const handleViewProduct = (productId: string) => {
-    navigate(`/product/${productId}`);
-  };
-  
-  // Handle editing product
-  const handleEditProduct = (productId: string) => {
-    // Navigate to edit page or open edit modal
-    toast({
-      title: "Edit Product",
-      description: "Edit functionality not yet implemented",
-    });
-  };
-  
-  // Handle deleting product
-  const handleDeleteProduct = async (productId: string) => {
+    setIsLoading(true);
     try {
-      // Confirm before deleting
-      if (!window.confirm('Are you sure you want to delete this product?')) {
-        return;
-      }
-      
-      // Delete product
-      const { error } = await supabase
-        .from('products')
-        .delete()
-        .eq('id', productId);
-      
-      if (error) {
-        throw error;
-      }
-      
-      // Refresh products list
-      refetch();
-      
-      toast({
-        title: "Product Deleted",
-        description: "Product has been successfully deleted",
-      });
+      const userProducts = await fetchUserProducts(user.id);
+      setProducts(userProducts);
+      console.log("Loaded user products:", userProducts);
     } catch (error) {
-      console.error('Error deleting product:', error);
+      console.error("Error loading products:", error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Failed to delete product",
+        title: "Error loading products",
+        description: "Failed to load your products. Please try again later."
       });
+    } finally {
+      setIsLoading(false);
     }
   };
-  
+
+  useEffect(() => {
+    loadProducts();
+  }, [user]);
+
+  const handleAddProduct = () => {
+    // Implement add product functionality
+    toast({
+      title: "Add product",
+      description: "Product creation feature coming soon!"
+    });
+  };
+
+  const handleEditProduct = (id: string) => {
+    // Implement edit product functionality
+    toast({
+      title: "Edit product",
+      description: `Editing product ${id}`
+    });
+  };
+
+  const handleDeleteProduct = (id: string) => {
+    // Implement delete product functionality
+    toast({
+      title: "Delete product",
+      description: `Deleting product ${id}`
+    });
+    
+    // Mock deletion - in a real app, you would call an API
+    setProducts(products.filter(product => product.id !== id));
+  };
+
   if (isLoading) {
-    return <div className="flex justify-center p-10">Loading your products...</div>;
-  }
-  
-  if (error) {
     return (
-      <div className="flex flex-col items-center p-10">
-        <p className="text-red-500 mb-4">Failed to load products</p>
-        <Button onClick={() => refetch()}>Try Again</Button>
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
       </div>
     );
   }
-  
-  if (!userId) {
-    return (
-      <div className="flex flex-col items-center p-10">
-        <p className="mb-4">Please log in to view your products</p>
-        <Button onClick={() => navigate('/auth')}>Log In</Button>
-      </div>
-    );
-  }
-  
+
   return (
-    <div className="container mx-auto p-4">
+    <div>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">My Products</h2>
-        <Button onClick={() => navigate('/admin')}>
-          <Plus className="mr-2 h-4 w-4" />
-          Add Product
-        </Button>
+        <h2 className="text-2xl font-semibold">My Products</h2>
+        <div className="flex gap-2">
+          <Button 
+            onClick={loadProducts} 
+            variant="outline" 
+            size="sm"
+            className="flex items-center gap-1"
+          >
+            <RefreshCw className="h-4 w-4" />
+            Refresh
+          </Button>
+          <Button onClick={handleAddProduct} className="flex items-center gap-1">
+            <PlusCircle className="h-5 w-5" />
+            Add Product
+          </Button>
+        </div>
       </div>
-      
-      {products && products.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {products.map((product) => (
-            <Card key={product.id} className="flex flex-col">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg">{product.name}</CardTitle>
-              </CardHeader>
-              
-              <CardContent>
-                {product.product_images && product.product_images.length > 0 ? (
-                  <div className="relative h-48 mb-4 overflow-hidden rounded-md">
-                    <img 
-                      src={product.product_images[0].src} 
-                      alt={product.product_images[0].alt || product.name}
-                      className="object-cover w-full h-full"
-                    />
-                  </div>
-                ) : (
-                  <div className="bg-gray-200 h-48 mb-4 flex items-center justify-center rounded-md">
-                    <p className="text-gray-500">No image available</p>
-                  </div>
-                )}
-                
-                <p className="text-sm text-gray-600 line-clamp-2 mb-2">{product.description}</p>
-                
-                <div className="flex items-baseline gap-2">
-                  <span className="font-medium">${product.price.toFixed(2)}</span>
-                  {product.discount_price && (
-                    <span className="text-sm text-gray-500 line-through">
-                      ${product.discount_price.toFixed(2)}
-                    </span>
-                  )}
-                </div>
-                
-                <p className="text-xs text-gray-500 mt-2">
-                  Added: {new Date(product.created_at || '').toLocaleDateString()}
-                </p>
-              </CardContent>
-              
-              <CardFooter className="pt-0 mt-auto">
-                <div className="flex gap-2 w-full">
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="flex-1"
-                    onClick={() => handleViewProduct(product.id)}
-                  >
-                    <Eye className="mr-1 h-4 w-4" />
-                    View
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="flex-1"
-                    onClick={() => handleEditProduct(product.id)}
-                  >
-                    <Edit className="mr-1 h-4 w-4" />
-                    Edit
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="flex-1 text-red-500 hover:text-red-700"
-                    onClick={() => handleDeleteProduct(product.id)}
-                  >
-                    <Trash2 className="mr-1 h-4 w-4" />
-                    Delete
-                  </Button>
-                </div>
-              </CardFooter>
-            </Card>
-          ))}
+
+      {products.length === 0 ? (
+        <div className="text-center py-12 border border-dashed border-gray-300 rounded-lg">
+          <p className="text-gray-500 mb-4">You haven't created any products yet.</p>
+          <Button onClick={handleAddProduct} variant="outline" className="flex items-center gap-1 mx-auto">
+            <PlusCircle className="h-5 w-5" />
+            Create your first product
+          </Button>
         </div>
       ) : (
-        <div className="text-center py-10 bg-gray-50 rounded-lg">
-          <p className="text-gray-600 mb-4">You don't have any products yet</p>
-          <Button onClick={() => navigate('/admin')}>
-            <Plus className="mr-2 h-4 w-4" />
-            Add Your First Product
-          </Button>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {products.map((product) => (
+            <div key={product.id} className="border rounded-lg overflow-hidden shadow-sm bg-white">
+              <div className="aspect-square overflow-hidden bg-gray-100">
+                <img
+                  src={product.image || "/placeholder.svg"}
+                  alt={product.name}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.src = "/placeholder.svg";
+                  }}
+                />
+              </div>
+              <div className="p-4">
+                <h3 className="font-semibold text-lg mb-1">{product.name}</h3>
+                <p className="text-sm text-gray-500 line-clamp-2 mb-2">
+                  {product.description || "No description available."}
+                </p>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <span className="font-semibold">${product.price.toFixed(2)}</span>
+                    {product.discount_price && (
+                      <span className="text-sm text-gray-500 line-through ml-2">
+                        ${product.discount_price.toFixed(2)}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex space-x-2">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => handleEditProduct(product.id)}
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      size="icon"
+                      onClick={() => handleDeleteProduct(product.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       )}
     </div>
   );
-};
-
-export default ProfileProducts;
+}

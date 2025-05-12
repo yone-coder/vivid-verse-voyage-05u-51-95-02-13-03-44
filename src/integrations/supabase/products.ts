@@ -1,101 +1,123 @@
-
 import { supabase } from './client';
+import { getPublicUrl } from './setupStorage';
 
 export interface Product {
   id: string;
   name: string;
-  description: string;
+  description?: string;
   price: number;
-  discount_price: number | null;
+  discount_price?: number;
+  image: string;
+  inventory: number;
   created_at?: string;
   updated_at?: string;
-  product_images?: ProductImage[];
   user_id?: string;
-  inventory?: number;
-  sales?: number;
-  status?: string;
 }
 
-export interface ProductImage {
-  id: string;
-  product_id: string;
-  src: string;
-  alt: string;
-  created_at?: string;
-  updated_at?: string;
-}
-
-export const fetchAllProducts = async (): Promise<Product[]> => {
+export const fetchProducts = async (): Promise<Product[]> => {
   try {
+    console.log('Starting fetchProducts...');
+    
     // Need to explicitly type the response to avoid type errors
     const { data, error } = await supabase
       .from('products')
-      .select(`
-        *,
-        product_images(*)
-      `);
+      .select('*') as { 
+        data: Product[] | null; 
+        error: any; 
+      };
       
     if (error) {
       console.error('Error fetching products:', error);
       return [];
     }
 
-    return data || [];
+    console.log('Raw data from Supabase:', data);
+    
+    if (!data || data.length === 0) {
+      console.log('No products found in database');
+      return [];
+    }
+    
+    // Transform the data to ensure image URLs are properly formatted
+    const products = data.map(product => {
+      // Check if the image is a full URL or just a path
+      let imageUrl = product.image;
+      
+      console.log(`Processing product ${product.id} with image path: ${imageUrl}`);
+      
+      // If the image already starts with http or https, assume it's a complete URL
+      if (imageUrl && !imageUrl.startsWith('http')) {
+        try {
+          // Get public URL from Supabase storage
+          imageUrl = getPublicUrl('products', imageUrl);
+          console.log(`Transformed image URL for ${product.id}: ${product.image} -> ${imageUrl}`);
+        } catch (err) {
+          console.error(`Failed to get public URL for ${product.image}:`, err);
+        }
+      }
+      
+      return {
+        ...product,
+        image: imageUrl
+      };
+    });
+    
+    console.log('Transformed products:', products);
+    return products;
   } catch (error) {
-    console.error('Error in fetchAllProducts:', error);
+    console.error('Error in fetchProducts:', error);
     return [];
   }
 };
 
-export const fetchProductById = async (id: string): Promise<Product | null> => {
+// Fetch products for a specific user
+export const fetchUserProducts = async (userId: string): Promise<Product[]> => {
   try {
+    console.log(`Fetching products for user ${userId}...`);
+    
     // Need to explicitly type the response to avoid type errors
     const { data, error } = await supabase
       .from('products')
-      .select(`
-        *,
-        product_images(*)
-      `)
-      .eq('id', id)
-      .single();
-      
-    if (error) {
-      console.error(`Error fetching product with id ${id}:`, error);
-      return null;
-    }
-    
-    return data;
-  } catch (error) {
-    console.error(`Error in fetchProductById for id ${id}:`, error);
-    return null;
-  }
-};
-
-// Implement the fetchUserProducts function to fix the missing export
-export const fetchUserProducts = async (userId: string): Promise<Product[]> => {
-  try {
-    if (!userId) {
-      console.error('No user ID provided to fetchUserProducts');
-      return [];
-    }
-    
-    console.log(`Fetching products for user: ${userId}`);
-    
-    const { data, error } = await supabase
-      .from('products')
-      .select(`
-        *,
-        product_images(*)
-      `)
-      .eq('user_id', userId);
+      .select('*')
+      .eq('user_id', userId) as { 
+        data: Product[] | null; 
+        error: any; 
+      };
       
     if (error) {
       console.error(`Error fetching products for user ${userId}:`, error);
       return [];
     }
+
+    console.log(`Raw data from Supabase for user ${userId}:`, data);
     
-    console.log(`Found ${data?.length || 0} products for user ${userId}`);
-    return data || [];
+    if (!data || data.length === 0) {
+      console.log(`No products found for user ${userId}`);
+      return [];
+    }
+    
+    // Transform the data to ensure image URLs are properly formatted
+    const products = data.map(product => {
+      // Check if the image is a full URL or just a path
+      let imageUrl = product.image;
+      
+      // If the image already starts with http or https, assume it's a complete URL
+      if (imageUrl && !imageUrl.startsWith('http')) {
+        try {
+          // Get public URL from Supabase storage
+          imageUrl = getPublicUrl('products', imageUrl);
+        } catch (err) {
+          console.error(`Failed to get public URL for ${product.image}:`, err);
+        }
+      }
+      
+      return {
+        ...product,
+        image: imageUrl
+      };
+    });
+    
+    return products;
   } catch (error) {
     console.error(`Error in fetchUserProducts for user ${userId}:`, error);
     return [];
