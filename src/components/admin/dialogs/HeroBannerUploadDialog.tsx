@@ -202,6 +202,7 @@ const HeroBannerUploadDialog: React.FC<HeroBannerUploadDialogProps> = ({
             />
           </div>
 
+          {/* Fix: Changed comparison to correct syntax */}
           {uploadStatus === 'storage-success' && uploadStatus !== 'db-success' && (
             <div className="p-2 bg-yellow-50 border border-yellow-200 rounded-md text-sm">
               Image uploaded to storage, saving to database...

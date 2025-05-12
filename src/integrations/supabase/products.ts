@@ -1,4 +1,3 @@
-
 import { supabase } from './client';
 
 export interface Product {
@@ -152,7 +151,7 @@ export const createProduct = async (productData: {
   }
 };
 
-// FIX: Fixed the return type and avoid excessive type recursion
+// Fix: Create a simple interface to fix the excessive type recursion
 export interface ProductUpdateResult {
   id?: string;
   noChanges?: boolean;
@@ -201,7 +200,7 @@ export const updateProduct = async (
     }
     
     console.log(`Successfully updated product ${id}:`, data);
-    return { id: id };
+    return { id };
   } catch (error) {
     console.error(`Error in updateProduct for id ${id}:`, error);
     return null;
