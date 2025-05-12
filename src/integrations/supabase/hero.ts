@@ -72,7 +72,7 @@ export const fetchHeroBanners = async (): Promise<HeroBanner[]> => {
   }
 };
 
-// Use RPC function to bypass RLS policies
+// Create hero banner function - without using RPC since that's causing errors
 export const createHeroBanner = async (banner: { 
   image: string; 
   alt: string; 
@@ -81,47 +81,23 @@ export const createHeroBanner = async (banner: {
   try {
     console.log('Creating hero banner with data:', banner);
 
-    // Call the create_hero_banner stored function to bypass RLS
+    // Direct insert approach since RPC is not working
     const { data, error } = await supabase
-      .rpc('create_hero_banner', {
-        p_image: banner.image,
-        p_alt: banner.alt,
-        p_position: banner.position
-      }) as {
+      .from('hero_banners')
+      .insert({
+        image: banner.image,
+        alt: banner.alt,
+        position: banner.position
+      })
+      .select()
+      .single() as {
         data: HeroBanner | null;
         error: any;
       };
       
     if (error) {
       console.error('Error creating hero banner:', error);
-      
-      // Fallback: Try direct insert with service role key (if available)
-      try {
-        console.log('Attempting direct insert as fallback...');
-        const { data: insertData, error: insertError } = await supabase
-          .from('hero_banners')
-          .insert({
-            image: banner.image,
-            alt: banner.alt,
-            position: banner.position
-          })
-          .select()
-          .single() as {
-            data: HeroBanner | null;
-            error: any;
-          };
-        
-        if (insertError) {
-          console.error('Fallback insert failed:', insertError);
-          return null;
-        }
-        
-        console.log('Successfully created hero banner via fallback:', insertData);
-        return insertData;
-      } catch (fallbackError) {
-        console.error('Error in fallback creation:', fallbackError);
-        return null;
-      }
+      return null;
     }
     
     console.log('Successfully created hero banner:', data);

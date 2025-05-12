@@ -27,6 +27,12 @@ export interface ProductImage {
   updated_at?: string;
 }
 
+// Simple interface for update result to avoid type recursion
+export interface ProductUpdateResult {
+  id?: string;
+  noChanges?: boolean;
+}
+
 export const fetchAllProducts = async (): Promise<Product[]> => {
   try {
     const { data, error } = await supabase
@@ -151,12 +157,6 @@ export const createProduct = async (productData: {
     return null;
   }
 };
-
-// Fix: Create a simple interface to fix the excessive type recursion
-export interface ProductUpdateResult {
-  id?: string;
-  noChanges?: boolean;
-}
 
 export const updateProduct = async (
   id: string,

@@ -202,8 +202,8 @@ const HeroBannerUploadDialog: React.FC<HeroBannerUploadDialogProps> = ({
             />
           </div>
 
-          {/* Fixed the TypeScript error by correcting the comparison */}
-          {uploadStatus === 'storage-success' && uploadStatus !== 'db-success' && (
+          {/* Fixed TypeScript error - using correct type comparison */}
+          {uploadStatus === 'storage-success' && (uploadStatus !== 'db-success') && (
             <div className="p-2 bg-yellow-50 border border-yellow-200 rounded-md text-sm">
               Image uploaded to storage, saving to database...
             </div>
