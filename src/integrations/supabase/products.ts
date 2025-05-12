@@ -24,10 +24,7 @@ export const fetchProducts = async (): Promise<Product[]> => {
     // Need to explicitly type the response to avoid type errors
     const { data, error } = await supabase
       .from('products')
-      .select('*, product_images(*)') as { 
-        data: (Product & { product_images: { id: string; src: string; alt?: string }[] }) [] | null; 
-        error: any; 
-      };
+      .select('*, product_images(*)');
       
     if (error) {
       console.error('Error fetching products:', error);
@@ -85,10 +82,7 @@ export const fetchUserProducts = async (userId: string): Promise<Product[]> => {
     const { data, error } = await supabase
       .from('products')
       .select('*, product_images(*)')
-      .eq('user_id', userId) as { 
-        data: (Product & { product_images: { id: string; src: string; alt?: string }[] }) [] | null; 
-        error: any; 
-      };
+      .eq('user_id', userId);
       
     if (error) {
       console.error(`Error fetching products for user ${userId}:`, error);
@@ -139,10 +133,7 @@ export const fetchProductById = async (productId: string): Promise<Product | nul
       .from('products')
       .select('*, product_images(*)')
       .eq('id', productId)
-      .single() as { 
-        data: (Product & { product_images: { id: string; src: string; alt?: string }[] }) | null; 
-        error: any; 
-      };
+      .single();
       
     if (error) {
       console.error(`Error fetching product ${productId}:`, error);
@@ -213,10 +204,7 @@ export const createProduct = async (productData: {
       .from('products')
       .insert(productData)
       .select()
-      .single() as {
-        data: Product | null;
-        error: any;
-      };
+      .single();
       
     if (error) {
       console.error('Error creating product:', error);
@@ -266,10 +254,7 @@ export const updateProduct = async (
         p_description: updates.description || null,
         p_price: updates.price || null,
         p_discount_price: updates.discount_price
-      }) as {
-        data: Product[] | null;
-        error: any;
-      };
+      });
     
     if (error) {
       console.error(`Error updating product ${id}:`, error);

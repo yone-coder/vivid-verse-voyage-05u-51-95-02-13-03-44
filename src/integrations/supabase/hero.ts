@@ -19,14 +19,10 @@ export const fetchHeroBanners = async (): Promise<HeroBanner[]> => {
     const { data: userData } = await supabase.auth.getUser();
     console.log('Current auth state:', userData?.user ? 'Authenticated' : 'Not authenticated');
     
-    // Need to explicitly type the response to avoid type errors
     const { data, error } = await supabase
       .from('hero_banners')
       .select('*')
-      .order('position', { ascending: true }) as { 
-        data: HeroBanner[] | null; 
-        error: any; 
-      };
+      .order('position', { ascending: true });
       
     if (error) {
       console.error('Error fetching hero banners:', error);
@@ -72,7 +68,7 @@ export const fetchHeroBanners = async (): Promise<HeroBanner[]> => {
   }
 };
 
-// Only require authentication for create, update and delete operations
+// Create a banner - simplified version without URL parsing
 export const createHeroBanner = async (banner: { 
   image: string; 
   alt: string; 
@@ -88,34 +84,11 @@ export const createHeroBanner = async (banner: {
 
     console.log('Creating hero banner with data:', banner);
 
-    // Extract image filename from URL if it's a storage URL
-    let storageImagePath = banner.image;
-    if (storageImagePath && storageImagePath.includes('storage/v1/object/public/')) {
-      try {
-        // Extract just the filename for storage
-        const urlObj = new URL(storageImagePath);
-        const pathParts = urlObj.pathname.split('/');
-        // The last part should be the filename
-        storageImagePath = pathParts[pathParts.length - 1];
-        console.log('Extracted storage path:', storageImagePath);
-      } catch (e) {
-        console.error('Failed to parse storage URL:', e);
-      }
-    }
-
-    // Need to explicitly type the response to avoid type errors
     const { data, error } = await supabase
       .from('hero_banners')
-      .insert({
-        ...banner,
-        // Use the extracted path if it's a storage URL
-        image: storageImagePath
-      })
+      .insert(banner)
       .select()
-      .single() as {
-        data: HeroBanner | null;
-        error: any;
-      };
+      .single();
       
     if (error) {
       console.error('Error creating hero banner:', error);
@@ -123,6 +96,12 @@ export const createHeroBanner = async (banner: {
     }
     
     console.log('Successfully created hero banner:', data);
+    
+    // Return the newly created banner with a proper image URL
+    if (data.image && !data.image.startsWith('http')) {
+      data.image = getPublicUrl('hero-banners', data.image);
+    }
+    
     return data;
   } catch (error) {
     console.error('Error in createHeroBanner:', error);
@@ -138,13 +117,47 @@ export const deleteHeroBanner = async (id: string): Promise<boolean> => {
       console.error('User not authenticated. Cannot delete hero banner.');
       return false;
     }
+    
+    // Get the banner to delete its image from storage
+    const { data: banner } = await supabase
+      .from('hero_banners')
+      .select('image')
+      .eq('id', id)
+      .single();
+    
+    if (banner && banner.image) {
+      // Extract the path from the image URL if it's a full URL
+      let storagePath = banner.image;
+      if (storagePath.startsWith('http')) {
+        try {
+          const url = new URL(storagePath);
+          // Extract just the filename from the path
+          const parts = url.pathname.split('/');
+          storagePath = parts[parts.length - 1];
+        } catch (e) {
+          console.log('Could not parse URL, might be a direct storage path');
+        }
+      }
+      
+      // Only delete from storage if it doesn't start with http (otherwise might be an external URL)
+      if (!banner.image.startsWith('http')) {
+        console.log(`Attempting to delete image from storage: ${storagePath}`);
+        const { error: storageError } = await supabase.storage
+          .from('hero-banners')
+          .remove([storagePath]);
+        
+        if (storageError) {
+          console.warn('Could not delete image file from storage:', storageError);
+          // Continue with deleting database record even if storage deletion fails
+        }
+      }
+    }
 
+    // Delete from database
     const { error } = await supabase
       .from('hero_banners')
       .delete()
-      .eq('id', id) as {
-        error: any;
-      };
+      .eq('id', id);
       
     if (error) {
       console.error(`Error deleting hero banner with id ${id}:`, error);
@@ -170,9 +183,7 @@ export const updateHeroBannerPosition = async (id: string, position: number): Pr
     const { error } = await supabase
       .from('hero_banners')
       .update({ position })
-      .eq('id', id) as {
-        error: any;
-      };
+      .eq('id', id);
       
     if (error) {
       console.error(`Error updating hero banner position for id ${id}:`, error);

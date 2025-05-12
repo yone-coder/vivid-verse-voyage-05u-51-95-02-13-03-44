@@ -10,20 +10,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from '@/integrations/supabase/client';
 import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
-import { PlusCircle, Upload, Trash2, X, RefreshCw } from "lucide-react";
+import { PlusCircle, Upload, Trash2, X, RefreshCw, Image } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Card, CardContent } from "@/components/ui/card";
+import BannerEditPanel from "@/components/admin/BannerEditPanel";
+import { toast } from "sonner";
 
 export default function AdminPanel() {
   const [activeTab, setActiveTab] = useState("hero");
   const [banners, setBanners] = useState<HeroBanner[]>([]);
   const [isLoadingBanners, setIsLoadingBanners] = useState(true);
-  const [newBannerFile, setNewBannerFile] = useState<File | null>(null);
-  const [newBannerAlt, setNewBannerAlt] = useState("");
-  const [isUploading, setIsUploading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { user } = useAuth();
-  const { toast } = useToast();
   const navigate = useNavigate();
 
   // Check if the user is authenticated
@@ -32,9 +30,7 @@ export default function AdminPanel() {
       const { data: { user: authUser } } = await supabase.auth.getUser();
       
       if (!authUser) {
-        toast({
-          variant: "destructive",
-          title: "Access Denied",
+        toast.error("Access Denied", {
           description: "You need to be logged in to access the admin panel."
         });
         navigate('/auth');
@@ -42,7 +38,7 @@ export default function AdminPanel() {
     };
     
     checkAuth();
-  }, [navigate, toast]);
+  }, [navigate]);
 
   // Fetch hero banners
   const loadBanners = async () => {
@@ -53,9 +49,7 @@ export default function AdminPanel() {
       setBanners(data);
     } catch (error) {
       console.error("Error fetching hero banners:", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
+      toast.error("Error", {
         description: "Failed to load hero banners"
       });
     } finally {
@@ -68,121 +62,6 @@ export default function AdminPanel() {
       loadBanners();
     }
   }, [user]);
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setNewBannerFile(e.target.files[0]);
-    }
-  };
-
-  const handleBannerUpload = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!user) {
-      toast({
-        variant: "destructive",
-        title: "Authentication Error",
-        description: "You must be logged in to upload banners."
-      });
-      return;
-    }
-
-    if (!newBannerFile) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Please select an image to upload"
-      });
-      return;
-    }
-
-    setIsUploading(true);
-    try {
-      // Upload file to Supabase Storage
-      const fileName = `${Date.now()}-${newBannerFile.name.replace(/\s+/g, '-').toLowerCase()}`;
-      const { data: storageData, error: storageError } = await supabase
-        .storage
-        .from('hero-banners')
-        .upload(fileName, newBannerFile);
-
-      if (storageError) {
-        throw storageError;
-      }
-
-      console.log("File uploaded successfully:", storageData);
-
-      // Get the URL of the uploaded file
-      const imageUrl = storageData.path;
-
-      // Add to hero_banners table with the highest position 
-      const highestPosition = banners.length > 0 
-        ? Math.max(...banners.map(banner => banner.position)) + 1 
-        : 0;
-
-      const newBanner = await createHeroBanner({
-        image: imageUrl,
-        alt: newBannerAlt || 'Hero banner image',
-        position: highestPosition,
-      });
-
-      if (newBanner) {
-        toast({
-          title: "Success",
-          description: "Banner uploaded successfully"
-        });
-        
-        // Refresh the banner list
-        loadBanners();
-        
-        // Reset form
-        setNewBannerFile(null);
-        setNewBannerAlt("");
-        setIsDialogOpen(false);
-      } else {
-        throw new Error("Failed to create banner record");
-      }
-
-    } catch (error) {
-      console.error("Error uploading banner:", error);
-      toast({
-        variant: "destructive",
-        title: "Upload Failed",
-        description: "There was an error uploading your banner"
-      });
-    } finally {
-      setIsUploading(false);
-    }
-  };
-
-  const handleDeleteBanner = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this banner?")) {
-      return;
-    }
-
-    try {
-      // Delete from database
-      const success = await deleteHeroBanner(id);
-      
-      if (success) {
-        // Remove from state
-        setBanners(banners.filter(banner => banner.id !== id));
-        
-        toast({
-          title: "Success",
-          description: "Banner deleted successfully"
-        });
-      } else {
-        throw new Error("Failed to delete banner");
-      }
-    } catch (error) {
-      console.error("Error deleting banner:", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to delete banner"
-      });
-    }
-  };
 
   const handleDragEnd = async (result) => {
     if (!result.destination) return;
@@ -201,13 +80,38 @@ export default function AdminPanel() {
       }
     } catch (error) {
       console.error("Failed to update banner positions:", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
+      toast.error("Error", {
         description: "Failed to save the new order"
       });
       // Reload the original order
       loadBanners();
+    }
+  };
+
+  const handleDeleteBanner = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this banner?")) {
+      return;
+    }
+
+    try {
+      // Delete from database
+      const success = await deleteHeroBanner(id);
+      
+      if (success) {
+        // Remove from state
+        setBanners(banners.filter(banner => banner.id !== id));
+        
+        toast.success("Success", {
+          description: "Banner deleted successfully"
+        });
+      } else {
+        throw new Error("Failed to delete banner");
+      }
+    } catch (error) {
+      console.error("Error deleting banner:", error);
+      toast.error("Error", {
+        description: "Failed to delete banner"
+      });
     }
   };
 
@@ -252,75 +156,13 @@ export default function AdminPanel() {
                 <DialogHeader>
                   <DialogTitle>Upload New Hero Banner</DialogTitle>
                 </DialogHeader>
-                <form onSubmit={handleBannerUpload} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="banner-image">Banner Image</Label>
-                    <div className="flex items-center gap-2">
-                      <Input
-                        id="banner-image"
-                        type="file"
-                        accept="image/*"
-                        onChange={handleFileChange}
-                        className="flex-1"
-                        required
-                      />
-                      {newBannerFile && (
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => setNewBannerFile(null)}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      )}
-                    </div>
-                    
-                    {newBannerFile && (
-                      <div className="mt-2 bg-gray-100 rounded-md p-2 text-sm text-gray-700">
-                        Selected: {newBannerFile.name} ({Math.round(newBannerFile.size / 1024)} KB)
-                      </div>
-                    )}
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="banner-alt">Alt Text (Accessibility)</Label>
-                    <Input
-                      id="banner-alt"
-                      value={newBannerAlt}
-                      onChange={(e) => setNewBannerAlt(e.target.value)}
-                      placeholder="Describe the image for screen readers"
-                    />
-                  </div>
-                  
-                  <div className="flex justify-end gap-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setIsDialogOpen(false)}
-                      disabled={isUploading}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      type="submit"
-                      disabled={!newBannerFile || isUploading}
-                      className="flex items-center gap-1"
-                    >
-                      {isUploading ? (
-                        <>
-                          <RefreshCw className="h-4 w-4 animate-spin" />
-                          Uploading...
-                        </>
-                      ) : (
-                        <>
-                          <Upload className="h-4 w-4" />
-                          Upload Banner
-                        </>
-                      )}
-                    </Button>
-                  </div>
-                </form>
+                <BannerEditPanel 
+                  onSuccess={() => {
+                    loadBanners();
+                    setIsDialogOpen(false);
+                  }}
+                  onCancel={() => setIsDialogOpen(false)}
+                />
               </DialogContent>
             </Dialog>
           </div>
