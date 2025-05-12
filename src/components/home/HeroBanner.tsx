@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery } from "@tanstack/react-query";
 import { fetchHeroBanners } from "@/integrations/supabase/hero";
 import { setupStorageBuckets } from "@/integrations/supabase/setupStorage";
@@ -160,9 +160,8 @@ export default function HeroBanner() {
 
   return (
     <>
-      {/* The hero banner container starts exactly below the fixed header, 
-          removing the mt-[44px] which was causing issues with the header height */}
-      <div className="relative overflow-hidden">
+      {/* Hero banner container with positioning that respects the header height */}
+      <div className="relative overflow-hidden w-full pt-[80px] md:pt-[92px]">
         {/* Responsive banner container - no fixed height */}
         <div className="relative w-full">
           {/* Banner Images */}

@@ -33,11 +33,8 @@ export default function ForYou() {
 
   return (
     <div className="max-w-screen overflow-hidden pb-16 relative">
-      {/* Hero Banner - now using images from Supabase */}
-      {/* Top margin is controlled by layout instead of inline margin */}
-      <div className="pt-[80px] md:pt-[92px]">
-        <HeroBanner />
-      </div>
+      {/* Hero Banner */}
+      <HeroBanner />
       
       <div className="space-y-1">
         <SpaceSavingCategories />
