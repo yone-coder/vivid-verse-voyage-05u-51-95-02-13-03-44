@@ -57,11 +57,13 @@ export const fetchProducts = async (): Promise<Product[]> => {
         }
       }
       
+      // Ensure inventory is always a number, defaulting to 0
+      const inventoryValue = typeof product.inventory === 'number' ? product.inventory : 0;
+      
       return {
         ...product,
         image: imageUrl,
-        // Default inventory to 0 if not available
-        inventory: product.inventory || 0
+        inventory: inventoryValue
       } as Product;
     });
     
@@ -116,10 +118,13 @@ export const fetchUserProducts = async (userId: string): Promise<Product[]> => {
         }
       }
       
+      // Ensure inventory is always a number, defaulting to 0
+      const inventoryValue = typeof product.inventory === 'number' ? product.inventory : 0;
+      
       return {
         ...product,
         image: imageUrl,
-        inventory: product.inventory || 0
+        inventory: inventoryValue
       } as Product;
     });
     
@@ -164,10 +169,13 @@ export const fetchProductById = async (productId: string): Promise<Product | nul
       }
     }
     
+    // Ensure inventory is always a number, defaulting to 0
+    const inventoryValue = typeof data.inventory === 'number' ? data.inventory : 0;
+    
     return {
       ...data,
       image: imageUrl,
-      inventory: data.inventory || 0
+      inventory: inventoryValue
     } as Product;
   } catch (error) {
     console.error(`Error in fetchProductById for id ${productId}:`, error);
