@@ -32,6 +32,7 @@ const HeroBannerUploadDialog: React.FC<HeroBannerUploadDialogProps> = ({
   const [heroAlt, setHeroAlt] = useState("");
   const [uploadingHero, setUploadingHero] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [uploadStatus, setUploadStatus] = useState<'idle' | 'storage-success' | 'db-success' | 'error'>('idle');
 
   const { data: heroBanners = [] } = useQuery<HeroBanner[]>({
     queryKey: ["hero-banners"],
@@ -49,12 +50,8 @@ const HeroBannerUploadDialog: React.FC<HeroBannerUploadDialogProps> = ({
     const objectUrl = URL.createObjectURL(file);
     setPreviewUrl(objectUrl);
     
-    // Clean up the previous object URL if it exists
-    return () => {
-      if (previewUrl) {
-        URL.revokeObjectURL(previewUrl);
-      }
-    };
+    // Reset upload status when selecting a new file
+    setUploadStatus('idle');
   };
 
   const handleUploadHeroBanner = async () => {
@@ -65,6 +62,7 @@ const HeroBannerUploadDialog: React.FC<HeroBannerUploadDialogProps> = ({
 
     try {
       setUploadingHero(true);
+      setUploadStatus('idle');
       
       // Create a unique filename with timestamp and original extension
       const fileExt = heroUploadFile.name.split('.').pop();
@@ -81,10 +79,13 @@ const HeroBannerUploadDialog: React.FC<HeroBannerUploadDialogProps> = ({
 
       if (uploadError) {
         console.error("Storage upload error:", uploadError);
-        throw uploadError;
+        setUploadStatus('error');
+        toast.error("Error uploading image to storage.");
+        return;
       }
 
       console.log("File uploaded successfully:", uploadData);
+      setUploadStatus('storage-success');
 
       // Get the public URL
       const { data: publicUrlData } = supabase.storage
@@ -109,18 +110,26 @@ const HeroBannerUploadDialog: React.FC<HeroBannerUploadDialogProps> = ({
       
       console.log("Banner created in database:", bannerResult);
       
-      toast.success("Hero banner uploaded successfully");
-      onSuccess(); // Trigger the success callback to refresh data
-      onOpenChange(false); // Close the dialog
+      if (bannerResult) {
+        setUploadStatus('db-success');
+        toast.success("Hero banner uploaded successfully");
+        onSuccess(); // Trigger the success callback to refresh data
+        onOpenChange(false); // Close the dialog
       
-      // Reset the form
-      setHeroUploadFile(null);
-      setHeroAlt("");
-      setPreviewUrl(null);
+        // Reset the form
+        setHeroUploadFile(null);
+        setHeroAlt("");
+        setPreviewUrl(null);
+      } else {
+        toast.error("Error saving banner details to the database.");
+        setUploadStatus('error');
+        // Don't close dialog so user can retry database part
+      }
       
     } catch (error) {
       console.error('Error uploading hero banner:', error);
       toast.error("There was an error uploading the hero banner.");
+      setUploadStatus('error');
     } finally {
       setUploadingHero(false);
     }
@@ -131,6 +140,7 @@ const HeroBannerUploadDialog: React.FC<HeroBannerUploadDialogProps> = ({
     if (!open && previewUrl) {
       URL.revokeObjectURL(previewUrl);
       setPreviewUrl(null);
+      setUploadStatus('idle');
     }
   }, [open, previewUrl]);
   
@@ -191,6 +201,18 @@ const HeroBannerUploadDialog: React.FC<HeroBannerUploadDialogProps> = ({
               disabled={uploadingHero}
             />
           </div>
+
+          {uploadStatus === 'storage-success' && uploadStatus !== 'db-success' && (
+            <div className="p-2 bg-yellow-50 border border-yellow-200 rounded-md text-sm">
+              Image uploaded to storage, saving to database...
+            </div>
+          )}
+          
+          {uploadStatus === 'error' && (
+            <div className="p-2 bg-red-50 border border-red-200 rounded-md text-sm">
+              Error during upload. Please try again.
+            </div>
+          )}
         </div>
         <DialogFooter>
           <Button 

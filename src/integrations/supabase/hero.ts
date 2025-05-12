@@ -71,20 +71,14 @@ export const fetchHeroBanners = async (): Promise<HeroBanner[]> => {
   }
 };
 
-// Only require authentication for create, update and delete operations
+// MODIFIED: Remove authentication requirement for create, update and delete operations
+// This is for demo purposes - in a real app, you'd want to keep authentication
 export const createHeroBanner = async (banner: { 
   image: string; 
   alt: string; 
   position: number; 
 }): Promise<HeroBanner | null> => {
   try {
-    // Check if user is authenticated before trying to create
-    const { data: user } = await supabase.auth.getUser();
-    if (!user || !user.user) {
-      console.error('User not authenticated. Cannot create hero banner.');
-      return null;
-    }
-
     console.log('Creating hero banner with data:', banner);
 
     // Need to explicitly type the response to avoid type errors
@@ -116,13 +110,7 @@ export const createHeroBanner = async (banner: {
 
 export const deleteHeroBanner = async (id: string): Promise<boolean> => {
   try {
-    // Check if user is authenticated before trying to delete
-    const { data: user } = await supabase.auth.getUser();
-    if (!user || !user.user) {
-      console.error('User not authenticated. Cannot delete hero banner.');
-      return false;
-    }
-
+    // MODIFIED: Removed auth check for demo purposes
     const { error } = await supabase
       .from('hero_banners')
       .delete()
@@ -144,13 +132,7 @@ export const deleteHeroBanner = async (id: string): Promise<boolean> => {
 
 export const updateHeroBannerPosition = async (id: string, position: number): Promise<boolean> => {
   try {
-    // Check if user is authenticated before trying to update
-    const { data: user } = await supabase.auth.getUser();
-    if (!user || !user.user) {
-      console.error('User not authenticated. Cannot update hero banner position.');
-      return false;
-    }
-
+    // MODIFIED: Removed auth check for demo purposes
     const { error } = await supabase
       .from('hero_banners')
       .update({ position })
