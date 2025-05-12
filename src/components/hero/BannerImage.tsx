@@ -30,7 +30,7 @@ const BannerImage: React.FC<BannerImageProps> = ({ src, alt, className = "" }) =
   return (
     <>
       {error ? (
-        <div className={`flex items-center justify-center bg-gray-200 ${className}`}>
+        <div className={`flex items-center justify-center bg-gray-200 ${className} aspect-[16/5]`}>
           <div className="text-center p-4">
             <span className="text-gray-500 block">Image could not be loaded</span>
             <span className="text-xs text-gray-400 block mt-1">{src}</span>
@@ -40,7 +40,7 @@ const BannerImage: React.FC<BannerImageProps> = ({ src, alt, className = "" }) =
         <img 
           src={src} 
           alt={alt}
-          className={`object-cover ${className} ${!loaded ? 'opacity-0' : 'opacity-100 transition-opacity duration-300'}`}
+          className={`w-full ${className} ${!loaded ? 'opacity-0' : 'opacity-100 transition-opacity duration-300'}`}
           onError={handleError}
           onLoad={handleLoad}
         />

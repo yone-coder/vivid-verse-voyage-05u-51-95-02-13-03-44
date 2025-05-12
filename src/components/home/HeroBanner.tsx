@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback } from 'react';
 import { useQuery } from "@tanstack/react-query";
 import { fetchHeroBanners } from "@/integrations/supabase/hero";
@@ -36,7 +37,7 @@ export default function HeroBanner() {
   }, []);
 
   // Fetch banners from Supabase with a shorter cache time for testing
-  const { data: banners, isLoading, error, refetch } = useQuery({
+  const { data: banners, isLoading, error } = useQuery({
     queryKey: ["hero-banners"],
     queryFn: fetchHeroBanners,
     staleTime: 5000, // 5 seconds - reduced for testing
@@ -147,15 +148,9 @@ export default function HeroBanner() {
     setActiveIndex(index);
   };
 
-  // Manual refetch button for debugging
-  const debugRefetch = () => {
-    console.log("Manual refetch triggered");
-    refetch();
-  };
-
   if (isLoading) {
     return (
-      <div className="relative w-full h-[60vh] min-h-[400px] max-h-[600px] bg-gray-200 animate-pulse mt-[44px]">
+      <div className="relative w-full bg-gray-200 animate-pulse mt-[44px] aspect-[16/5]">
         <div className="absolute inset-0 flex items-center justify-center">
           <span className="text-gray-400">Loading banners...</span>
         </div>
@@ -166,15 +161,8 @@ export default function HeroBanner() {
   return (
     <>
       <div className="relative mt-[44px] overflow-hidden">
-        {/* Always show debug button during development */}
-        <button 
-          onClick={debugRefetch}
-          className="absolute top-0 right-0 z-50 bg-blue-500 text-white px-2 py-1 text-xs"
-        >
-          Refresh Banners
-        </button>
-        
-        <div className="relative h-[180px] md:h-[250px] lg:h-[300px]">
+        {/* Responsive banner container - no fixed height */}
+        <div className="relative w-full">
           {/* Banner Images */}
           {slidesToShow.map((banner, index) => {
             const isActive = index === activeIndex;
@@ -184,14 +172,14 @@ export default function HeroBanner() {
               <div
                 key={banner.id}
                 className={`absolute inset-0 w-full transition-transform duration-500 ease-out ${
-                  isActive ? "translate-y-0 z-10" : 
-                  isPrevious ? "-translate-y-full z-0" : "translate-y-full z-0"
+                  isActive ? "translate-y-0 z-10 relative" : 
+                  isPrevious ? "-translate-y-full z-0 hidden" : "translate-y-full z-0 hidden"
                 }`}
               >
                 <BannerImage
                   src={banner.image} 
                   alt={banner.alt || "Banner image"}
-                  className="w-full h-full object-cover"
+                  className="w-full"
                 />
               </div>
             );
@@ -223,7 +211,7 @@ export default function HeroBanner() {
         )}
 
         {/* Animated Dots */}
-        <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5">
+        <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 z-20">
           {slidesToShow.map((_, index) => (
             <button
               key={index}
