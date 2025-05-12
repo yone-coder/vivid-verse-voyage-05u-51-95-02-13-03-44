@@ -12,6 +12,10 @@ export interface Product {
   product_images?: ProductImage[];
   user_id?: string;
   inventory?: number;
+  status?: string; // Add status field
+  sales?: number;  // Add sales field
+  image?: string;  // Add image field
+  createdAt?: string; // Add createdAt field for display
 }
 
 export interface ProductImage {
@@ -25,7 +29,6 @@ export interface ProductImage {
 
 export const fetchAllProducts = async (): Promise<Product[]> => {
   try {
-    // Need to explicitly type the response to avoid type errors
     const { data, error } = await supabase
       .from('products')
       .select(`
@@ -47,7 +50,6 @@ export const fetchAllProducts = async (): Promise<Product[]> => {
 
 export const fetchProductById = async (id: string): Promise<Product | null> => {
   try {
-    // Need to explicitly type the response to avoid type errors
     const { data, error } = await supabase
       .from('products')
       .select(`
@@ -134,23 +136,18 @@ export const createProduct = async (productData: {
   user_id?: string; // Add user_id to productData
 }): Promise<Product | null> => {
   try {
-    // Need to explicitly type the response to avoid type errors
     const { data, error } = await supabase
       .from('products')
       .insert(productData)
-      .select()
-      .single() as {
-        data: Product | null;
-        error: any;
-      };
+      .select();
       
     if (error) {
       console.error('Error creating product:', error);
       return null;
     }
     
-    console.log('Successfully created product:', data);
-    return data;
+    console.log('Successfully created product:', data[0]);
+    return data[0] as Product;
   } catch (error) {
     console.error('Error in createProduct:', error);
     return null;
@@ -192,10 +189,7 @@ export const updateProduct = async (
         p_description: updates.description || null,
         p_price: updates.price || null,
         p_discount_price: updates.discount_price
-      }) as {
-        data: Product[] | null;
-        error: any;
-      };
+      });
     
     if (error) {
       console.error(`Error updating product ${id}:`, error);
@@ -203,7 +197,7 @@ export const updateProduct = async (
     }
     
     console.log(`Successfully updated product ${id}:`, data);
-    return data;
+    return data as Product[];
   } catch (error) {
     console.error(`Error in updateProduct for id ${id}:`, error);
     return null;

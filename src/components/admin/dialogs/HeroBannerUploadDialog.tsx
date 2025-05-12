@@ -9,6 +9,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { createHeroBanner } from "@/integrations/supabase/hero";
 import { useQuery } from "@tanstack/react-query";
 
+interface HeroBanner {
+  id: string;
+  image: string;
+  alt: string;
+  position: number;
+}
+
 interface HeroBannerUploadDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -24,7 +31,7 @@ const HeroBannerUploadDialog: React.FC<HeroBannerUploadDialogProps> = ({
   const [heroAlt, setHeroAlt] = useState("");
   const [uploadingHero, setUploadingHero] = useState(false);
 
-  const { data: heroBanners = [] } = useQuery({
+  const { data: heroBanners = [] } = useQuery<HeroBanner[]>({
     queryKey: ["hero-banners"],
     enabled: open, // Only fetch when the dialog is open
     staleTime: 1000 * 60 * 5, // 5 minutes

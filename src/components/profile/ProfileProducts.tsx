@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search, Plus, Edit, Copy, Trash2, MoreHorizontal, Eye } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
 import { fetchUserProducts, Product } from "@/integrations/supabase/products";
@@ -16,11 +16,18 @@ interface ProfileProductsProps {
   user: any;
 }
 
+interface EnhancedProduct extends Product {
+  status: string;
+  image: string;
+  sales: number;
+  createdAt: string;
+}
+
 export default function ProfileProducts({ user }: ProfileProductsProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState("all");
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [productToDelete, setProductToDelete] = useState<Product | null>(null);
+  const [productToDelete, setProductToDelete] = useState<EnhancedProduct | null>(null);
   
   // Use React Query to fetch products
   const { data: products = [], isLoading, error, refetch } = useQuery({
@@ -32,22 +39,15 @@ export default function ProfileProducts({ user }: ProfileProductsProps) {
   console.log("User products loaded:", products);
   
   // Transform products from the database to match our component's expected format
-  const transformedProducts: Product[] = products.map((product: Product) => ({
-    id: product.id,
-    name: product.name,
-    price: product.price,
-    description: product.description,
+  const transformedProducts: EnhancedProduct[] = products.map((product: Product) => ({
+    ...product,
     status: product.inventory && product.inventory <= 0 ? "out_of_stock" : "active", // Derive status
     inventory: product.inventory || 0,
-    image: product.product_images?.length > 0 
-      ? product.product_images[0].src 
-      : `https://api.dicebear.com/7.x/shapes/svg?seed=product${product.id}`,
-    sales: product.sales || 0,
+    image: product.product_images?.length ? 
+      product.product_images[0].src : 
+      `https://api.dicebear.com/7.x/shapes/svg?seed=product${product.id}`,
+    sales: 0, // Default value for sales
     createdAt: new Date(product.created_at || "").toLocaleDateString(),
-    created_at: product.created_at || "",
-    user_id: product.user_id || "",
-    product_images: product.product_images,
-    discount_price: product.discount_price
   }));
   
   const handleDeleteConfirm = () => {
@@ -61,12 +61,12 @@ export default function ProfileProducts({ user }: ProfileProductsProps) {
     }
   };
   
-  const openDeleteDialog = (product: Product) => {
+  const openDeleteDialog = (product: EnhancedProduct) => {
     setProductToDelete(product);
     setIsDeleteDialogOpen(true);
   };
   
-  const handleDuplicate = (product: Product) => {
+  const handleDuplicate = (product: EnhancedProduct) => {
     // Here we would call the API to duplicate the product
     // For now we'll just show a toast notification
     toast.success(`"${product.name}" has been duplicated`);
