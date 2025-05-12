@@ -160,8 +160,8 @@ export default function HeroBanner() {
 
   return (
     <>
-      {/* Hero banner container with positioning that respects the header height */}
-      <div className="relative overflow-hidden w-full pt-[80px] md:pt-[92px]">
+      {/* Hero banner container with positioning that directly connects with header */}
+      <div className="relative overflow-hidden w-full">
         {/* Responsive banner container - no fixed height */}
         <div className="relative w-full">
           {/* Banner Images */}
