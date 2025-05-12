@@ -13,7 +13,6 @@ export interface Product {
   created_at?: string;
   updated_at?: string;
   user_id?: string;
-  // Adding product_images property to interface
   product_images?: { id: string; src: string; alt?: string }[];
 }
 
@@ -40,8 +39,10 @@ export const fetchProducts = async (): Promise<Product[]> => {
     
     // Transform the data to ensure image URLs are properly formatted
     const products = data.map(product => {
-      // Check if the image is a full URL or just a path
-      let imageUrl = product.image;
+      // Use the first product image as the main image or a placeholder
+      let imageUrl = product.product_images && product.product_images.length > 0 
+        ? product.product_images[0].src
+        : '';
       
       console.log(`Processing product ${product.id} with image path: ${imageUrl}`);
       
@@ -50,16 +51,18 @@ export const fetchProducts = async (): Promise<Product[]> => {
         try {
           // Get public URL from Supabase storage
           imageUrl = getPublicUrl('products', imageUrl);
-          console.log(`Transformed image URL for ${product.id}: ${product.image} -> ${imageUrl}`);
+          console.log(`Transformed image URL for ${product.id}: ${imageUrl}`);
         } catch (err) {
-          console.error(`Failed to get public URL for ${product.image}:`, err);
+          console.error(`Failed to get public URL for image:`, err);
         }
       }
       
       return {
         ...product,
-        image: imageUrl
-      };
+        image: imageUrl,
+        // Default inventory to 0 if not available
+        inventory: product.inventory || 0
+      } as Product;
     });
     
     console.log('Transformed products:', products);
@@ -98,8 +101,10 @@ export const fetchUserProducts = async (userId: string): Promise<Product[]> => {
     
     // Transform the data to ensure image URLs are properly formatted
     const products = data.map(product => {
-      // Check if the image is a full URL or just a path
-      let imageUrl = product.image;
+      // Use the first product image as the main image or a placeholder
+      let imageUrl = product.product_images && product.product_images.length > 0 
+        ? product.product_images[0].src
+        : '';
       
       // If the image already starts with http or https, assume it's a complete URL
       if (imageUrl && !imageUrl.startsWith('http')) {
@@ -107,14 +112,15 @@ export const fetchUserProducts = async (userId: string): Promise<Product[]> => {
           // Get public URL from Supabase storage
           imageUrl = getPublicUrl('products', imageUrl);
         } catch (err) {
-          console.error(`Failed to get public URL for ${product.image}:`, err);
+          console.error(`Failed to get public URL for image:`, err);
         }
       }
       
       return {
         ...product,
-        image: imageUrl
-      };
+        image: imageUrl,
+        inventory: product.inventory || 0
+      } as Product;
     });
     
     return products;
@@ -146,19 +152,23 @@ export const fetchProductById = async (productId: string): Promise<Product | nul
     }
     
     // Process image URL
-    let imageUrl = data.image;
+    let imageUrl = data.product_images && data.product_images.length > 0 
+      ? data.product_images[0].src
+      : '';
+      
     if (imageUrl && !imageUrl.startsWith('http')) {
       try {
         imageUrl = getPublicUrl('products', imageUrl);
       } catch (err) {
-        console.error(`Failed to get public URL for ${data.image}:`, err);
+        console.error(`Failed to get public URL for image:`, err);
       }
     }
     
     return {
       ...data,
-      image: imageUrl
-    };
+      image: imageUrl,
+      inventory: data.inventory || 0
+    } as Product;
   } catch (error) {
     console.error(`Error in fetchProductById for id ${productId}:`, error);
     return null;
@@ -212,7 +222,11 @@ export const createProduct = async (productData: {
     }
     
     console.log('Successfully created product:', data);
-    return data;
+    return {
+      ...data,
+      image: '',
+      inventory: 0
+    } as Product;
   } catch (error) {
     console.error('Error in createProduct:', error);
     return null;
@@ -262,7 +276,17 @@ export const updateProduct = async (
     }
     
     console.log(`Successfully updated product ${id}:`, data);
-    return data;
+    
+    // Transform data to match Product interface
+    if (Array.isArray(data)) {
+      return data.map(item => ({
+        ...item,
+        image: '', // Default image as empty string
+        inventory: 0 // Default inventory as 0
+      })) as Product[];
+    }
+    
+    return null;
   } catch (error) {
     console.error(`Error in updateProduct for id ${id}:`, error);
     return null;
