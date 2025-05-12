@@ -1,8 +1,8 @@
-
 import React, { useRef, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/context/LanguageContext';
 import { motion } from 'framer-motion';
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface CategoryTabsProps {
   progress: number;
@@ -59,28 +59,30 @@ const CategoryTabs = ({ progress, activeTab, setActiveTab, categories }: Categor
       style={containerStyle}
       ref={scrollContainerRef}
     >
-      <div className="flex w-full">
-        {categories.map((category, index) => (
-          <Link
-            to={category.path}
-            key={category.id}
-            className={`px-3 py-2 whitespace-nowrap text-xs flex flex-1 items-center justify-center relative ${
-              activeTab === category.id
-                ? "text-orange-500 font-medium"
-                : "text-gray-600"
-            }`}
-            onClick={() => setActiveTab(category.id)}
-            ref={el => tabsRef.current[index] = el}
-          >
-            <div className="flex items-center gap-1.5">
-              {category.icon}
-              <span>{t(`home.${category.id}`)}</span>
-            </div>
-          </Link>
-        ))}
-      </div>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="flex w-full">
+          {categories.map((category, index) => (
+            <TabsTrigger
+              key={category.id}
+              value={category.id}
+              asChild
+            >
+              <Link
+                to={category.path}
+                className={`px-3 py-2 whitespace-nowrap text-xs flex flex-1 items-center justify-center relative`}
+                ref={el => tabsRef.current[index] = el}
+              >
+                <div className="flex items-center gap-1.5">
+                  {category.icon}
+                  <span>{t(`home.${category.id}`)}</span>
+                </div>
+              </Link>
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </Tabs>
       
-      {/* Animated underline */}
+      {/* Animated underline - we'll keep this outside for custom styling */}
       <motion.div
         className="absolute bottom-0 left-0 h-0.5 bg-orange-500 rounded-full"
         animate={{
