@@ -1,8 +1,8 @@
 
 import { LayoutGrid } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { ReactNode, useRef, useEffect, useState } from 'react'; // Added useState
-import { motion } from 'framer-motion';
+import { ReactNode, useRef, useEffect } from 'react';
+import { motion, useMotionValue, animate as fmAnimate } from 'framer-motion'; // Updated imports
 
 interface CategoryTab {
   id: string;
@@ -27,13 +27,14 @@ const CategoryTabs = ({
   const navigate = useNavigate();
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const [targetScrollLeft, setTargetScrollLeft] = useState(0); // New state for target scroll position
+  const scrollX = useMotionValue(0); // Motion value for scrollLeft
 
   useEffect(() => {
     // Ensure tabRefs array is the same size as categories
     tabRefs.current = tabRefs.current.slice(0, categories.length);
   }, [categories]);
 
+  // Effect to animate scroll position when activeTab changes
   useEffect(() => {
     const activeTabIndex = categories.findIndex(cat => cat.id === activeTab);
     const activeTabElement = tabRefs.current[activeTabIndex];
@@ -42,9 +43,24 @@ const CategoryTabs = ({
     if (activeTabElement && containerElement) {
       // Calculate position to center the tab
       const newScrollLeft = activeTabElement.offsetLeft - (containerElement.offsetWidth / 2) + (activeTabElement.offsetWidth / 2);
-      setTargetScrollLeft(newScrollLeft); // Set target for framer-motion
+      
+      // Animate the scrollX motion value
+      fmAnimate(scrollX, newScrollLeft, {
+        duration: 0.4,
+        ease: "easeInOut",
+      });
     }
-  }, [activeTab, categories]); // scrollContainerRef.current.offsetWidth can change on resize, consider adding it or a resize listener if jittery on resize. For now, this should be fine for tab clicks.
+  }, [activeTab, categories, scrollX]);
+
+  // Effect to apply the scrollX motion value to the DOM element
+  useEffect(() => {
+    const unsubscribe = scrollX.on("change", (latestValue) => {
+      if (scrollContainerRef.current) {
+        scrollContainerRef.current.scrollLeft = latestValue;
+      }
+    });
+    return () => unsubscribe();
+  }, [scrollX]);
 
   const handleTabClick = (id: string, path: string) => {
     setActiveTab(id);
@@ -63,11 +79,11 @@ const CategoryTabs = ({
     >
       {/* Tabs List */}
       <div className="pr-[48px] h-full">
+        {/* Removed animate prop from motion.div, scroll is now handled by useMotionValue */}
         <motion.div
           ref={scrollContainerRef}
           className="flex items-center overflow-x-auto no-scrollbar h-full"
-          animate={{ scrollLeft: targetScrollLeft }} // Animate scrollLeft
-          transition={{ duration: 0.4, ease: "easeInOut" }} // Adjust timing & easing as needed
+          // transition prop is not needed here as animation is imperative
         >
           {categories.map(({ id, name, icon, path }, index) => (
             <button
@@ -111,4 +127,3 @@ const CategoryTabs = ({
 };
 
 export default CategoryTabs;
-
