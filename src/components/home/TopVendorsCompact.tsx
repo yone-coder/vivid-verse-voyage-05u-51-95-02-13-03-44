@@ -1,7 +1,7 @@
-
 import { useState, useRef, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Star, Award, Truck, ShieldCheck } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star, Award, Truck, Tag } from 'lucide-react';
 import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 const vendors = [
   {
@@ -142,33 +142,42 @@ const CompactVendorCard = ({ vendor }: { vendor: any }) => (
         alt={vendor.name} 
         className="w-full h-24 object-cover transition-transform duration-300 group-hover:scale-105"
       />
-      <div className="absolute top-1 left-1 flex gap-1">
+      <div className="absolute top-1.5 left-1.5 flex gap-1.5">
         {vendor.topSeller && (
-          <div className="bg-orange-500 text-white text-xs px-1.5 py-0.5 rounded flex items-center">
-            <Award size={10} className="mr-0.5" />Top
-          </div>
+          <Badge 
+            variant="orange" 
+            className="px-1.5 py-0.5 text-2xs font-semibold shadow-sm backdrop-blur-sm bg-opacity-90 rounded-md flex items-center gap-0.5"
+          >
+            <Award size={10} strokeWidth={2.5} className="mr-0.5" />TOP
+          </Badge>
         )}
         {vendor.fastShipping && (
-          <div className="bg-green-500 text-white text-xs px-1.5 py-0.5 rounded flex items-center">
-            <Truck size={10} className="mr-0.5" />Fast
-          </div>
+          <Badge 
+            variant="success" 
+            className="px-1.5 py-0.5 text-2xs font-semibold shadow-sm backdrop-blur-sm bg-opacity-90 rounded-md flex items-center gap-0.5"
+          >
+            <Truck size={10} strokeWidth={2.5} className="mr-0.5" />FAST
+          </Badge>
         )}
       </div>
-      <div className="absolute top-1 right-1">
-        <div className="bg-yellow-50 text-yellow-800 text-xs px-1.5 py-0.5 rounded-sm flex items-center shadow-sm">
-          <Star size={10} className="mr-0.5 text-yellow-500 fill-yellow-500" />
+      <div className="absolute top-1.5 right-1.5">
+        <Badge 
+          variant="info" 
+          className="px-1.5 py-0.5 text-2xs font-semibold shadow-sm backdrop-blur-sm bg-opacity-90 rounded-md flex items-center"
+        >
+          <Star size={10} className="mr-0.5 text-yellow-400 fill-yellow-400" />
           {vendor.rating}
-        </div>
+        </Badge>
       </div>
-      {vendor.verified && (
-        <div className="absolute bottom-1 right-1 bg-blue-500 text-white rounded-full p-0.5">
-          <ShieldCheck size={10} />
-        </div>
-      )}
     </div>
     
     <div className="p-2">
-      <h3 className="font-medium text-xs truncate">{vendor.name}</h3>
+      <div className="flex items-center gap-1">
+        <h3 className="font-medium text-xs truncate">{vendor.name}</h3>
+        {vendor.verified && (
+          <Tag size={12} className="text-blue-500 fill-blue-50" />
+        )}
+      </div>
       <div className="text-xs text-gray-500 flex items-center gap-1">
         <span>{vendor.sales} sales</span>
         <span className="inline-block w-1 h-1 bg-gray-300 rounded-full"></span>
