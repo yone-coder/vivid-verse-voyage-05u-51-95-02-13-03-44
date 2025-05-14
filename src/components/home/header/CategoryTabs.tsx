@@ -39,7 +39,7 @@ const CategoryTabs = ({
       tabRefs.current[activeTabIndex]?.scrollIntoView({
         behavior: 'smooth',
         block: 'nearest',
-        inline: 'center', // 'center' tries to put it in middle, 'nearest' if already visible.
+        inline: 'center',
       });
     }
   }, [activeTab, categories]);
@@ -61,14 +61,14 @@ const CategoryTabs = ({
     >
       {/* Tabs List */}
       <div className="pr-[48px] h-full">
-        <div ref={scrollContainerRef} className="flex overflow-x-auto no-scrollbar h-full">
+        <div ref={scrollContainerRef} className="flex items-center overflow-x-auto no-scrollbar h-full">
           {categories.map(({ id, name, icon, path }, index) => (
             <button
               key={id}
               ref={el => tabRefs.current[index] = el}
               onClick={() => handleTabClick(id, path)}
               aria-pressed={activeTab === id}
-              className={`relative flex items-center gap-1 px-3 py-2.5 text-xs font-medium whitespace-nowrap transition-colors duration-150 ease-in-out focus:outline-none focus-visible:ring-1 focus-visible:ring-orange-500 focus-visible:ring-offset-1 h-full ${
+              className={`relative flex items-center gap-1 px-3 py-1 text-xs font-medium whitespace-nowrap transition-colors duration-150 ease-in-out focus:outline-none focus-visible:ring-1 focus-visible:ring-orange-500 focus-visible:ring-offset-1 ${
                 activeTab === id
                   ? 'text-orange-500'
                   : 'text-gray-600 hover:text-orange-500 hover:bg-orange-50/70 rounded-md'
