@@ -135,23 +135,27 @@ const vendors = [
 ];
 
 const CompactVendorCard = ({ vendor }: { vendor: any }) => (
-  <Card className="flex-shrink-0 w-44 overflow-hidden transition-all duration-300 hover:shadow-md">
+  <Card className="flex-shrink-0 w-44 overflow-hidden hover:shadow-md transition-all duration-300 group">
     <div className="relative">
-      <img src={vendor.image} alt={vendor.name} className="w-full h-24 object-cover" />
+      <img 
+        src={vendor.image} 
+        alt={vendor.name} 
+        className="w-full h-24 object-cover transition-transform duration-300 group-hover:scale-105"
+      />
       <div className="absolute top-1 left-1 flex gap-1">
         {vendor.topSeller && (
-          <div className="bg-orange-500 text-white text-xs px-1.5 py-0.5 rounded-sm flex items-center">
+          <div className="bg-orange-500 text-white text-xs px-1.5 py-0.5 rounded flex items-center">
             <Award size={10} className="mr-0.5" />Top
           </div>
         )}
         {vendor.fastShipping && (
-          <div className="bg-green-500 text-white text-xs px-1.5 py-0.5 rounded-sm flex items-center">
+          <div className="bg-green-500 text-white text-xs px-1.5 py-0.5 rounded flex items-center">
             <Truck size={10} className="mr-0.5" />Fast
           </div>
         )}
       </div>
       <div className="absolute top-1 right-1">
-        <div className="bg-yellow-100 text-yellow-800 text-xs px-1.5 py-0.5 rounded-sm flex items-center">
+        <div className="bg-yellow-50 text-yellow-800 text-xs px-1.5 py-0.5 rounded-sm flex items-center shadow-sm">
           <Star size={10} className="mr-0.5 text-yellow-500 fill-yellow-500" />
           {vendor.rating}
         </div>
@@ -162,29 +166,36 @@ const CompactVendorCard = ({ vendor }: { vendor: any }) => (
         </div>
       )}
     </div>
+    
     <div className="p-2">
-      <h3 className="font-bold text-xs truncate">{vendor.name}</h3>
-      <div className="text-xs text-gray-500">{vendor.sales} sales</div>
+      <h3 className="font-medium text-xs truncate">{vendor.name}</h3>
+      <div className="text-xs text-gray-500 flex items-center gap-1">
+        <span>{vendor.sales} sales</span>
+        <span className="inline-block w-1 h-1 bg-gray-300 rounded-full"></span>
+        <span>{vendor.followers} followers</span>
+      </div>
     </div>
+    
     <div className="px-2 pb-2">
-      <div className="flex gap-1">
+      <div className="flex gap-1.5">
         {vendor.topProducts.map(product => (
-          <div key={product.id} className="relative w-1/3 aspect-square group">
+          <div key={product.id} className="relative w-1/3 aspect-square group/product">
             <img 
               src={product.image} 
               alt="" 
-              className="w-full h-full object-cover rounded-sm border" 
+              className="w-full h-full object-cover rounded shadow-sm border border-gray-100 hover:border-gray-300 transition-all" 
             />
-            <div className="absolute inset-0 group-hover:bg-black/20 rounded-sm transition-all" />
-            <span className="absolute bottom-0 left-0 right-0 text-xs text-white bg-black/50 px-1 opacity-0 group-hover:opacity-100">
+            <div className="absolute inset-0 bg-black/0 group-hover/product:bg-black/10 rounded transition-all" />
+            <span className="absolute bottom-0 left-0 right-0 text-2xs text-white bg-black/60 text-center py-0.5 opacity-0 group-hover/product:opacity-100 transition-opacity">
               {product.price}
             </span>
           </div>
         ))}
       </div>
     </div>
+    
     <div className="px-2 pb-2">
-      <button className="w-full bg-red-500 hover:bg-red-600 text-white text-xs font-medium py-1 px-2 rounded-sm">
+      <button className="w-full bg-red-500 hover:bg-red-600 text-white text-xs font-medium py-1.5 px-2 rounded transition-colors">
         Visit Store
       </button>
     </div>
@@ -217,11 +228,11 @@ const TopVendorsCompact = () => {
   };
 
   return (
-    <div className="w-full p-2 sm:p-3 bg-white">
-      <div className="flex justify-between items-center mb-2">
+    <div className="w-full p-3 sm:p-4 bg-white">
+      <div className="flex justify-between items-center mb-3">
         <div className="flex items-center">
           <h2 className="text-sm sm:text-base font-bold text-gray-800">Top Vendors</h2>
-          <span className="ml-2 px-1.5 py-0.5 bg-red-100 text-red-600 text-xs font-semibold rounded-sm">HOT</span>
+          <span className="ml-2 px-1.5 py-0.5 bg-red-100 text-red-600 text-xs font-semibold rounded">HOT</span>
         </div>
         <button className="text-xs text-red-500 hover:text-red-700 font-medium flex items-center">
           View All <ChevronRight size={14} />
@@ -232,7 +243,7 @@ const TopVendorsCompact = () => {
         {showLeft && (
           <button 
             onClick={() => scroll("left")} 
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-md rounded-full p-1.5 -ml-1"
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-md rounded-full p-1.5 -ml-1.5"
             aria-label="Scroll left"
           >
             <ChevronLeft size={16} />
@@ -243,7 +254,7 @@ const TopVendorsCompact = () => {
           className="overflow-x-auto scrollbar-hide scroll-smooth px-1"
           style={{ scrollPaddingLeft: '0.5rem' }}
         >
-          <div className="flex gap-2 pb-1">
+          <div className="flex gap-3 pb-1">
             {vendors.map(v => <CompactVendorCard key={v.id} vendor={v} />)}
             <div className="flex-none w-2" /> {/* Fake right padding */}
           </div>
@@ -251,7 +262,7 @@ const TopVendorsCompact = () => {
         {showRight && (
           <button 
             onClick={() => scroll("right")} 
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-md rounded-full p-1.5 -mr-1"
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-md rounded-full p-1.5 -mr-1.5"
             aria-label="Scroll right"
           >
             <ChevronRight size={16} />
