@@ -3,6 +3,7 @@ import React from 'react';
 import { Search, Mic, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/context/LanguageContext';
+import { cn } from '@/lib/utils';
 
 interface HeaderSearchBarProps {
   searchQuery: string;
@@ -12,6 +13,7 @@ interface HeaderSearchBarProps {
   handleClearSearch: () => void;
   voiceSearchActive: boolean;
   handleVoiceSearch: () => void;
+  isGlowing?: boolean;
 }
 
 const HeaderSearchBar = ({
@@ -21,7 +23,8 @@ const HeaderSearchBar = ({
   handleSearchFocus,
   handleClearSearch,
   voiceSearchActive,
-  handleVoiceSearch
+  handleVoiceSearch,
+  isGlowing = false
 }: HeaderSearchBarProps) => {
   const navigate = useNavigate();
   const { t } = useLanguage();
@@ -36,17 +39,25 @@ const HeaderSearchBar = ({
   return (
     <form onSubmit={handleSearch} className="w-full">
       <div className="relative flex items-center w-full">
-        <div className="absolute left-2">
+        <div className={cn(
+          "absolute left-2",
+          isGlowing && "text-orange-500 transition-colors duration-300"
+        )}>
           <Search className="h-3.5 w-3.5 text-gray-400" />
         </div>
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full pl-7 pr-11 py-1 h-7 rounded-full text-xs border border-gray-200 focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500"
-          placeholder={t('header.search')}
-          onFocus={handleSearchFocus}
-        />
+        <div className={cn(
+          "relative w-full",
+          isGlowing && "search-glow"
+        )}>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-7 pr-11 py-1 h-7 rounded-full text-xs border border-gray-200 focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500"
+            placeholder={t('header.search')}
+            onFocus={handleSearchFocus}
+          />
+        </div>
         <div className="absolute right-2 flex items-center gap-1">
           {searchQuery && (
             <button

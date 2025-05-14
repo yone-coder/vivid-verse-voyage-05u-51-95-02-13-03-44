@@ -1,21 +1,28 @@
 
 import React from "react";
 import { Search } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface SearchBarProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
   progress: number;
+  isGlowing?: boolean;
 }
 
-const SearchBar = ({ searchQuery, setSearchQuery, progress }: SearchBarProps) => {
+const SearchBar = ({ searchQuery, setSearchQuery, progress, isGlowing = false }: SearchBarProps) => {
   return (
     <div className="relative flex-1 max-w-xs">
-      <div className="relative flex items-center h-7 rounded-full transition-all duration-700"
+      <div 
+        className={cn(
+          "relative flex items-center h-7 rounded-full transition-all duration-700",
+          isGlowing && "search-glow"
+        )}
         style={{
           backgroundColor: `rgba(243, 244, 246, ${0.2 + (progress * 0.8)})`,
           boxShadow: `0 2px 4px rgba(0, 0, 0, ${0.02 + (progress * 0.03)})`
-        }}>
+        }}
+      >
         <div className="absolute left-2 flex items-center justify-center">
           <Search 
             size={14} 

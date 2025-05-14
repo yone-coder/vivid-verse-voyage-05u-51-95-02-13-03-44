@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from 'react';
 import { useScrollProgress } from '@/hooks/useScrollProgress';
 import { Home, ShoppingBag, Users, Image, MessageSquare, Store } from 'lucide-react';
@@ -24,12 +25,18 @@ export default function AliExpressHeader({ activeTabId = 'recommendations' }: Al
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [voiceSearchActive, setVoiceSearchActive] = useState(false);
+  const [isSearchGlowing, setIsSearchGlowing] = useState(false);
   const searchRef = useRef(null);
 
   // Update active tab when prop changes
   useEffect(() => {
     setActiveTab(activeTabId);
   }, [activeTabId]);
+
+  // Enable glowing effect on search focus
+  useEffect(() => {
+    setIsSearchGlowing(isSearchFocused);
+  }, [isSearchFocused]);
 
   const categories = [
     { id: 'recommendations', name: t('home.forYou'), icon: <Home className="h-3 w-3" />, path: '/for-you' },
@@ -81,6 +88,7 @@ export default function AliExpressHeader({ activeTabId = 'recommendations' }: Al
             handleClearSearch={handleClearSearch}
             voiceSearchActive={voiceSearchActive}
             handleVoiceSearch={handleVoiceSearch}
+            isGlowing={isSearchGlowing}
           />
         </div>
 
