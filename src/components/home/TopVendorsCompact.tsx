@@ -82,24 +82,25 @@ const HorizontalVendorCard = ({ vendor }) => {
 
   return (
     <div className="flex-shrink-0 w-64 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-300 group">
-      <div className="flex">
-        {/* Vendor image - now square */}
-        <div className="relative w-1/3 aspect-square">
+      {/* Vendor image and info section */}
+      <div className="flex p-3">
+        {/* Square vendor image */}
+        <div className="relative w-16 h-16 flex-shrink-0">
           <img 
             src={vendor.image} 
             alt={vendor.name} 
-            className="w-full h-full object-cover p-2 rounded-lg"
+            className="w-full h-full object-cover rounded-lg border border-gray-100"
           />
           
           {/* Discount flag if available */}
           {vendor.discount && (
             <div className="absolute top-0 left-0 bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded-br-lg">
-              {vendor.discount} OFF
+              {vendor.discount}
             </div>
           )}
           
           {/* Followers indicator */}
-          <div className="absolute bottom-1 left-1 bg-white rounded-full p-1 shadow-md flex items-center">
+          <div className="absolute -bottom-1 -left-1 bg-white rounded-full p-1 shadow-md flex items-center">
             <div className="relative flex -space-x-1">
               <div className="w-3 h-3 rounded-full bg-blue-500"></div>
               <div className="w-3 h-3 rounded-full bg-green-500"></div>
@@ -110,7 +111,7 @@ const HorizontalVendorCard = ({ vendor }) => {
         </div>
         
         {/* Vendor info - right side */}
-        <div className="w-2/3 p-2 flex flex-col justify-between">
+        <div className="ml-3 flex-1 flex flex-col justify-between">
           {/* Header */}
           <div>
             <div className="flex items-center justify-between">
@@ -124,30 +125,26 @@ const HorizontalVendorCard = ({ vendor }) => {
                 #{vendor.id}
               </div>
             </div>
-            
-            {/* Rating */}
-            <div className="flex items-center mt-1">
-              <div className="flex items-center text-yellow-500">
-                <Star size={12} className="fill-yellow-500" />
-                <span className="text-xs font-medium ml-0.5">{vendor.rating}</span>
-              </div>
-              <span className="mx-1 text-gray-300">•</span>
-              <div className="text-xs text-gray-500">
-                {vendor.sales} sales
-              </div>
-            </div>
-          </div>
-          
-          {/* Category badge - now expanded to replace others */}
-          <div className="flex mt-1">
-            <Badge color={categoryColors[vendor.category] || "gray"} className="flex items-center text-xs w-full justify-center">
+          {/* Category badge */}
+          <div className="mt-1">
+            <Badge color={categoryColors[vendor.category] || "gray"} className="flex items-center text-xs justify-center">
               {getCategoryIcon(vendor.category)}
               {vendor.category}
             </Badge>
           </div>
 
-          {/* Product thumbnails */}
-          <div className="flex gap-1 mt-1">
+          {/* Rating */}
+          <div className="flex items-center mt-1.5">
+            <div className="flex items-center text-yellow-500">
+              <Star size={12} className="fill-yellow-500" />
+              <span className="text-xs font-medium ml-0.5">{vendor.rating}</span>
+            </div>
+            <span className="mx-1 text-gray-300">•</span>
+            <div className="text-xs text-gray-500">
+              {vendor.sales} sales
+            </div>
+          </div>          {/* Product thumbnails */}
+          <div className="flex gap-1 mt-2">
             {vendor.topProducts.slice(0, 3).map(product => (
               <div key={product.id} className="relative w-8 h-8 group/product">
                 <img 
