@@ -216,7 +216,7 @@ const HorizontalVendorCard = ({ vendor }) => {
           <img 
             src={vendor.image} 
             alt={vendor.name} 
-            className="w-full h-full object-cover p-2"
+            className="w-full h-full object-cover p-2 rounded-lg"
           />
           
           {/* Discount flag if available */}
