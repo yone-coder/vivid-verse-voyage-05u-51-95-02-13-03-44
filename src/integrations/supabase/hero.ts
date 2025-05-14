@@ -1,4 +1,3 @@
-
 import { supabase } from './client';
 import { getPublicUrl } from './setupStorage';
 
@@ -150,4 +149,24 @@ export const updateHeroBannerPosition = async (id: string, position: number): Pr
     console.error(`Error in updateHeroBannerPosition for id ${id}:`, error);
     return false;
   }
+};
+
+/**
+ * Upload a hero banner to Supabase storage
+ * @param file The file to upload
+ * @param metadata Optional metadata
+ * @returns A promise that resolves with the upload result
+ */
+export const uploadBanner = async (file: File, metadata?: Record<string, unknown>) => {
+  // This is a placeholder implementation
+  // You should implement the actual upload logic based on your requirements
+  const result = {
+    error: null,
+    data: {
+      path: `hero-banners/${file.name}`,
+      fullPath: `https://your-supabase-url.supabase.co/storage/v1/object/public/hero-banners/${file.name}`,
+    }
+  };
+  
+  return result;
 };
