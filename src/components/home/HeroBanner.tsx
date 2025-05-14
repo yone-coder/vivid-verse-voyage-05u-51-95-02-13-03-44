@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useQuery } from "@tanstack/react-query";
 import { fetchHeroBanners } from "@/integrations/supabase/hero";
@@ -123,9 +122,9 @@ export default function HeroBanner() {
     );
   }
 
+  // Remove any internal margin or padding at the top: the parent page's mt-[80px] should always control header offset!
   return (
     <>
-      {/* Banner container */}
       <div className="relative overflow-hidden w-full">
         <BannerSlides 
           slides={slidesToShow}
@@ -142,7 +141,6 @@ export default function HeroBanner() {
           progress={progress}
         />
       </div>
-
       {/* News Ticker */}
       {showNews && <NewsTicker />}
     </>

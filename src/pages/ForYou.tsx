@@ -1,7 +1,7 @@
 
 import React from "react";
-import { fetchAllProducts } from "@/integrations/supabase/products";
 import { useQuery } from "@tanstack/react-query";
+import { fetchAllProducts } from "@/integrations/supabase/products";
 import PageSkeleton from "@/components/skeletons/PageSkeleton";
 import SuperDealsSection from "@/components/home/SuperDealsSection";
 import SecondaryHeroBanner from "@/components/home/SecondaryHeroBanner";
@@ -19,6 +19,8 @@ import TranslationExample from "@/components/home/TranslationExample";
 import NewArrivals from "@/components/home/NewArrivals";
 import HeroBanner from "@/components/home/HeroBanner";
 
+// NOTE: The AliExpressHeader has a total fixed height of about 80px (top bar + category tabs) on both mobile and desktop.
+// To ensure the hero banner is visible below the fixed header, we add a top margin that matches or exceeds this header height.
 export default function ForYou() {
   const { data: products, isLoading } = useQuery({
     queryKey: ["products"],
@@ -33,8 +35,8 @@ export default function ForYou() {
 
   return (
     <div className="max-w-screen overflow-hidden pb-16 relative">
-      {/* Hero Banner - with proper header spacing */}
-      <div className="mt-[80px] md:mt-[92px]">
+      {/* Hero Banner: Respect header height! */}
+      <div className="mt-[80px]">
         <HeroBanner />
       </div>
       
@@ -42,7 +44,6 @@ export default function ForYou() {
         <SpaceSavingCategories />
         <FlashDeals />
         
-        {/* Pass products array safely */}
         {Array.isArray(products) && products.length > 0 && (
           <SuperDealsSection products={products} />
         )}
@@ -52,7 +53,6 @@ export default function ForYou() {
         <PopularSearches />
         <TopBrands />
         
-        {/* Pass products array safely */}
         {Array.isArray(products) && products.length > 0 && (
           <VendorProductCarousel 
             title="Technology" 
