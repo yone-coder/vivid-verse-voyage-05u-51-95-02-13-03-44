@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
-import { ChevronLeft, ChevronRight, Star, Award, Truck, Tag, Heart, ShoppingCart } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star, Flame, Truck, Tag, Users, ShoppingCart, CheckCircle, Store, Headphones, Shirt, Home, Smartphone, Droplet, Activity } from 'lucide-react';
 
-// Sample data with locations
+// Sample data with locations and categories
 const vendors = [
   {
     id: 1,
     name: "SuperTech Store",
-    image: "/api/placeholder/120/120",
+    image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/windows.svg",
     rating: 4.8,
     sales: "10.5k",
     followers: "23.4k",
@@ -15,16 +15,17 @@ const vendors = [
     verified: true,
     discount: "15%",
     location: "New York",
+    category: "Electronics",
     topProducts: [
-      { id: 101, image: "/api/placeholder/70/70", price: "$19.99", discount: "-10%" },
-      { id: 102, image: "/api/placeholder/70/70", price: "$24.50" },
-      { id: 103, image: "/api/placeholder/70/70", price: "$15.75" }
+      { id: 101, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/headphones.svg", price: "$19.99", discount: "-10%" },
+      { id: 102, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/keyboard.svg", price: "$24.50" },
+      { id: 103, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/mouse.svg", price: "$15.75" }
     ]
   },
   {
     id: 2,
     name: "EcoFriendly Goods",
-    image: "/api/placeholder/120/120",
+    image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/greensock.svg",
     rating: 4.9,
     sales: "8.7k",
     followers: "19.2k",
@@ -33,16 +34,17 @@ const vendors = [
     verified: true,
     discount: "20%",
     location: "New York",
+    category: "Sustainable",
     topProducts: [
-      { id: 201, image: "/api/placeholder/70/70", price: "$12.99" },
-      { id: 202, image: "/api/placeholder/70/70", price: "$31.50", discount: "-25%" },
-      { id: 203, image: "/api/placeholder/70/70", price: "$22.25" }
+      { id: 201, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/leaf.svg", price: "$12.99" },
+      { id: 202, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/bamboo.svg", price: "$31.50", discount: "-25%" },
+      { id: 203, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/seeds.svg", price: "$22.25" }
     ]
   },
   {
     id: 3,
     name: "Fashion Forward",
-    image: "/api/placeholder/120/120",
+    image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/prada.svg",
     rating: 4.7,
     sales: "15.3k",
     followers: "32.1k",
@@ -50,16 +52,17 @@ const vendors = [
     fastShipping: true,
     verified: true,
     location: "Boston",
+    category: "Fashion",
     topProducts: [
-      { id: 301, image: "/api/placeholder/70/70", price: "$35.99" },
-      { id: 302, image: "/api/placeholder/70/70", price: "$18.50", discount: "-15%" },
-      { id: 303, image: "/api/placeholder/70/70", price: "$27.75" }
+      { id: 301, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/nike.svg", price: "$35.99" },
+      { id: 302, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/adidas.svg", price: "$18.50", discount: "-15%" },
+      { id: 303, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/lacoste.svg", price: "$27.75" }
     ]
   },
   {
     id: 4,
     name: "Home Essentials",
-    image: "/api/placeholder/120/120",
+    image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/homeadvisor.svg",
     rating: 4.6,
     sales: "7.2k",
     followers: "12.5k",
@@ -67,16 +70,17 @@ const vendors = [
     fastShipping: true,
     verified: true,
     location: "New York",
+    category: "Home",
     topProducts: [
-      { id: 401, image: "/api/placeholder/70/70", price: "$42.99", discount: "-5%" },
-      { id: 402, image: "/api/placeholder/70/70", price: "$15.75" },
-      { id: 403, image: "/api/placeholder/70/70", price: "$29.50" }
+      { id: 401, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/ikea.svg", price: "$42.99", discount: "-5%" },
+      { id: 402, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/lamp.svg", price: "$15.75" },
+      { id: 403, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/homeassistant.svg", price: "$29.50" }
     ]
   },
   {
     id: 5,
     name: "Gadget World",
-    image: "/api/placeholder/120/120",
+    image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/apple.svg",
     rating: 4.9,
     sales: "20.1k",
     followers: "45.7k",
@@ -85,16 +89,17 @@ const vendors = [
     verified: true,
     discount: "10%",
     location: "Chicago",
+    category: "Electronics",
     topProducts: [
-      { id: 501, image: "/api/placeholder/70/70", price: "$89.99" },
-      { id: 502, image: "/api/placeholder/70/70", price: "$64.50", discount: "-20%" },
-      { id: 503, image: "/api/placeholder/70/70", price: "$112.75" }
+      { id: 501, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/iphone.svg", price: "$89.99" },
+      { id: 502, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/samsung.svg", price: "$64.50", discount: "-20%" },
+      { id: 503, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/xiaomi.svg", price: "$112.75" }
     ]
   },
   {
     id: 6,
     name: "Beauty Express",
-    image: "/api/placeholder/120/120",
+    image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/sephora.svg",
     rating: 4.7,
     sales: "12.3k",
     followers: "28.9k",
@@ -103,16 +108,17 @@ const vendors = [
     verified: true,
     discount: "25%",
     location: "New York",
+    category: "Beauty",
     topProducts: [
-      { id: 601, image: "/api/placeholder/70/70", price: "$21.99" },
-      { id: 602, image: "/api/placeholder/70/70", price: "$18.50", discount: "-30%" },
-      { id: 603, image: "/api/placeholder/70/70", price: "$34.75" }
+      { id: 601, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/nivea.svg", price: "$21.99" },
+      { id: 602, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/loreal.svg", price: "$18.50", discount: "-30%" },
+      { id: 603, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/avon.svg", price: "$34.75" }
     ]
   },
   {
     id: 7,
     name: "Sports Direct",
-    image: "/api/placeholder/120/120",
+    image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/puma.svg",
     rating: 4.5,
     sales: "5.8k",
     followers: "14.2k",
@@ -120,16 +126,17 @@ const vendors = [
     fastShipping: true,
     verified: false,
     location: "Miami",
+    category: "Sports",
     topProducts: [
-      { id: 701, image: "/api/placeholder/70/70", price: "$45.99", discount: "-10%" },
-      { id: 702, image: "/api/placeholder/70/70", price: "$29.50" },
-      { id: 703, image: "/api/placeholder/70/70", price: "$52.75" }
+      { id: 701, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/nike.svg", price: "$45.99", discount: "-10%" },
+      { id: 702, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/underarmour.svg", price: "$29.50" },
+      { id: 703, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/newbalance.svg", price: "$52.75" }
     ]
   },
   {
     id: 8,
     name: "Electronic Hub",
-    image: "/api/placeholder/120/120",
+    image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/bestbuy.svg",
     rating: 4.8,
     sales: "18.7k",
     followers: "37.3k",
@@ -138,10 +145,11 @@ const vendors = [
     verified: true,
     discount: "15%",
     location: "Los Angeles",
+    category: "Electronics",
     topProducts: [
-      { id: 801, image: "/api/placeholder/70/70", price: "$129.99", discount: "-15%" },
-      { id: 802, image: "/api/placeholder/70/70", price: "$75.50" },
-      { id: 803, image: "/api/placeholder/70/70", price: "$210.75" }
+      { id: 801, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/playstation.svg", price: "$129.99", discount: "-15%" },
+      { id: 802, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/xbox.svg", price: "$75.50" },
+      { id: 803, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/nintendo.svg", price: "$210.75" }
     ]
   }
 ];
@@ -155,24 +163,49 @@ const Badge = ({ children, color = "gray", className = "" }) => {
     red: "bg-red-100 text-red-800",
     yellow: "bg-yellow-100 text-yellow-800",
     orange: "bg-orange-100 text-orange-800",
+    purple: "bg-purple-100 text-purple-800",
+    pink: "bg-pink-100 text-pink-800",
     primary: "bg-blue-500 text-white",
   };
 
   return (
-    <span className={`px-1.5 py-0.5 text-xs font-medium rounded-full ${colorClasses[color]} ${className}`}>
+    <span className={`px-2 py-1 text-xs font-medium rounded-full ${colorClasses[color]} ${className}`}>
       {children}
     </span>
   );
 };
 
+// Get category icon
+const getCategoryIcon = (category) => {
+  switch(category) {
+    case "Electronics":
+      return <Smartphone size={14} className="mr-1" />;
+    case "Sustainable":
+      return <Droplet size={14} className="mr-1" />;
+    case "Fashion":
+      return <Shirt size={14} className="mr-1" />;
+    case "Home":
+      return <Home size={14} className="mr-1" />;
+    case "Beauty":
+      return <Droplet size={14} className="mr-1" />;
+    case "Sports":
+      return <Activity size={14} className="mr-1" />;
+    default:
+      return <Store size={14} className="mr-1" />;
+  }
+};
+
 // Horizontal curvy vendor card
 const HorizontalVendorCard = ({ vendor }) => {
-  const [isLiked, setIsLiked] = useState(false);
-
-  // Toggle favorite
-  const toggleLike = (e) => {
-    e.stopPropagation();
-    setIsLiked(!isLiked);
+  // Map categories to colors
+  const categoryColors = {
+    "Electronics": "blue",
+    "Sustainable": "green",
+    "Fashion": "pink",
+    "Home": "yellow",
+    "Beauty": "purple",
+    "Sports": "orange",
+    "Variety": "gray",
   };
 
   return (
@@ -183,7 +216,7 @@ const HorizontalVendorCard = ({ vendor }) => {
           <img 
             src={vendor.image} 
             alt={vendor.name} 
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover p-2"
           />
           
           {/* Discount flag if available */}
@@ -193,24 +226,31 @@ const HorizontalVendorCard = ({ vendor }) => {
             </div>
           )}
           
-          {/* Favorite button */}
-          <button 
-            onClick={toggleLike}
-            className="absolute bottom-1 left-1 bg-white rounded-full p-1 shadow-md transition-all hover:scale-110"
-          >
-            <Heart size={14} className={isLiked ? "fill-red-500 text-red-500" : "text-gray-400"} />
-          </button>
+          {/* Followers indicator (replacing heart icon) */}
+          <div className="absolute bottom-1 left-1 bg-white rounded-full p-1 shadow-md flex items-center">
+            <div className="relative flex -space-x-1">
+              <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+              <div className="w-3 h-3 rounded-full bg-green-500"></div>
+              <div className="w-3 h-3 rounded-full bg-purple-500"></div>
+            </div>
+            <span className="text-xs ml-1 font-medium">{vendor.followers}</span>
+          </div>
         </div>
         
         {/* Vendor info - right side */}
         <div className="w-2/3 p-2 flex flex-col justify-between">
           {/* Header */}
           <div>
-            <div className="flex items-center justify-between">
-              <h3 className="font-medium text-xs truncate mr-1">{vendor.name}</h3>
-              {vendor.verified && (
-                <Tag size={14} className="text-blue-500 fill-blue-50" />
-              )}
+                          <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <h3 className="font-medium text-xs truncate mr-1">{vendor.name}</h3>
+                {vendor.verified && (
+                  <CheckCircle size={14} className="text-blue-500 fill-blue-50" />
+                )}
+              </div>
+              <div className="text-xs font-bold bg-gray-100 text-gray-700 rounded-full h-5 w-5 flex items-center justify-center">
+                #{vendor.id}
+              </div>
             </div>
             
             {/* Rating */}
@@ -226,18 +266,12 @@ const HorizontalVendorCard = ({ vendor }) => {
             </div>
           </div>
           
-          {/* Badges */}
-          <div className="flex gap-1 mt-1">
-            {vendor.topSeller && (
-              <Badge color="orange" className="flex items-center text-xs">
-                <Award size={10} className="mr-0.5" />TOP
-              </Badge>
-            )}
-            {vendor.fastShipping && (
-              <Badge color="green" className="flex items-center text-xs">
-                <Truck size={10} className="mr-0.5" />FAST
-              </Badge>
-            )}
+          {/* Category badge - now expanded to replace others */}
+          <div className="flex mt-1">
+            <Badge color={categoryColors[vendor.category] || "gray"} className="flex items-center text-xs w-full justify-center">
+              {getCategoryIcon(vendor.category)}
+              {vendor.category}
+            </Badge>
           </div>
 
           {/* Product thumbnails */}
@@ -247,7 +281,7 @@ const HorizontalVendorCard = ({ vendor }) => {
                 <img 
                   src={product.image} 
                   alt="" 
-                  className="w-full h-full object-cover rounded-md shadow-sm border border-gray-100" 
+                  className="w-full h-full object-cover rounded-md shadow-sm border border-gray-100 p-1" 
                 />
                 
                 {/* Quick add overlay */}
@@ -259,7 +293,7 @@ const HorizontalVendorCard = ({ vendor }) => {
                 
                 {/* Discount tag */}
                 {product.discount && (
-                  <div className="absolute -top-1 -right-1 bg-red-600 text-white text-2xs px-1 rounded-full">
+                  <div className="absolute -top-1 -right-1 bg-red-600 text-white text-xs px-1 rounded-full">
                     {product.discount}
                   </div>
                 )}
@@ -280,15 +314,11 @@ const HorizontalVendorCard = ({ vendor }) => {
 };
 
 // Main carousel component
-const LocationBasedVendors = () => {
+const VendorCarousel = () => {
   const scrollRef = useRef(null);
   const [showLeft, setShowLeft] = useState(false);
   const [showRight, setShowRight] = useState(true);
-  const [currentLocation, setCurrentLocation] = useState('New York');
   
-  // Filter vendors by current location
-  const locationVendors = vendors.filter(vendor => vendor.location === currentLocation);
-
   // Handle scroll events for navigation arrows
   const handleScroll = () => {
     const node = scrollRef.current;
@@ -312,30 +342,20 @@ const LocationBasedVendors = () => {
   };
 
   return (
-    <div className="w-full bg-gradient-to-r from-blue-50 to-purple-50 rounded-3xl p-4">
-      {/* Header with location */}
+    <div className="w-full">
+      {/* Header with Flame icon and "more" button with Chevron */}
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center">
-          <h2 className="text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            Top Vendors in {currentLocation}
-          </h2>
-          <Badge color="red" className="ml-2">HOT</Badge>
+          <Flame size={18} className="text-orange-500 mr-2" />
+          <h2 className="text-lg font-medium text-gray-800">Top Vendors</h2>
         </div>
         
-        {/* Location selector */}
-        <div className="relative">
-          <select
-            value={currentLocation}
-            onChange={(e) => setCurrentLocation(e.target.value)}
-            className="text-xs bg-white border border-purple-200 rounded-full px-3 py-1 focus:outline-none focus:ring-1 focus:ring-purple-500 appearance-none pr-6"
-          >
-            {[...new Set(vendors.map(v => v.location))].map(location => (
-              <option key={location} value={location}>{location}</option>
-            ))}
-          </select>
-          <div className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none">
-            <ChevronRight size={14} className="rotate-90 text-purple-500" />
-          </div>
+        <div className="flex items-center">
+          {/* More button with Chevron instead of Arrow */}
+          <button className="flex items-center text-xs text-blue-600 font-medium hover:text-blue-800 transition-colors">
+            More
+            <ChevronRight size={14} className="ml-1" />
+          </button>
         </div>
       </div>
 
@@ -345,7 +365,7 @@ const LocationBasedVendors = () => {
         {showLeft && (
           <button 
             onClick={() => scroll("left")} 
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-md rounded-full p-2 -ml-3 text-purple-500 hover:text-purple-700"
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-md rounded-full p-2 -ml-3 text-gray-500 hover:text-blue-700"
             aria-label="Scroll left"
           >
             <ChevronLeft size={16} />
@@ -359,15 +379,9 @@ const LocationBasedVendors = () => {
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           <div className="flex gap-4 pb-2">
-            {locationVendors.length > 0 ? (
-              locationVendors.map(vendor => (
-                <HorizontalVendorCard key={vendor.id} vendor={vendor} />
-              ))
-            ) : (
-              <div className="w-full text-center py-6 text-gray-500">
-                No vendors available in {currentLocation}
-              </div>
-            )}
+            {vendors.map(vendor => (
+              <HorizontalVendorCard key={vendor.id} vendor={vendor} />
+            ))}
             <div className="flex-none w-2" /> {/* Right spacing */}
           </div>
         </div>
@@ -376,7 +390,7 @@ const LocationBasedVendors = () => {
         {showRight && (
           <button 
             onClick={() => scroll("right")} 
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-md rounded-full p-2 -mr-3 text-purple-500 hover:text-purple-700"
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-md rounded-full p-2 -mr-3 text-gray-500 hover:text-blue-700"
             aria-label="Scroll right"
           >
             <ChevronRight size={16} />
@@ -387,4 +401,4 @@ const LocationBasedVendors = () => {
   );
 };
 
-export default LocationBasedVendors;
+export default VendorCarousel;
