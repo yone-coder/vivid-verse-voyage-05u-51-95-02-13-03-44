@@ -35,7 +35,7 @@ export default function BannerControls({
             className="absolute left-6 top-1/2 -translate-y-1/2 rounded-full p-2 bg-white/80 hover:bg-white hidden md:flex items-center justify-center z-20"
             onClick={() => {
               setPreviousIndex(activeIndex);
-              setActiveIndex((current) => (current - 1 + slidesCount) % slidesCount);
+              setActiveIndex((activeIndex - 1 + slidesCount) % slidesCount);
             }}
           >
             <ChevronLeft className="h-4 w-4" />
@@ -44,7 +44,7 @@ export default function BannerControls({
             className="absolute right-6 top-1/2 -translate-y-1/2 rounded-full p-2 bg-white/80 hover:bg-white hidden md:flex items-center justify-center z-20"
             onClick={() => {
               setPreviousIndex(activeIndex);
-              setActiveIndex((current) => (current + 1) % slidesCount);
+              setActiveIndex((activeIndex + 1) % slidesCount);
             }}
           >
             <ChevronRight className="h-4 w-4" />

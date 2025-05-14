@@ -35,11 +35,9 @@ export default function ForYou() {
 
   return (
     <div className="max-w-screen overflow-hidden pb-16 relative">
-      {/* Hero Banner: Respect header height! */}
-      <div className="mt-[80px]">
-        <HeroBanner />
-      </div>
-      
+      {/* Hero Banner: The header height is now handled dynamically in HeroBanner.tsx */}
+      <HeroBanner />
+
       <div className="space-y-1">
         <SpaceSavingCategories />
         <FlashDeals />
