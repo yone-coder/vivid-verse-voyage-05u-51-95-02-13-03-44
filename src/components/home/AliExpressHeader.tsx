@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from 'react';
 import { useScrollProgress } from '@/hooks/useScrollProgress';
 import { Home, ShoppingBag, Users, Image, MessageSquare, Store } from 'lucide-react';
@@ -56,7 +55,7 @@ export default function AliExpressHeader({ activeTabId = 'recommendations' }: Al
   }, []);
 
   return (
-    <header className="fixed top-0 w-full z-30">
+    <header id="ali-header" className="fixed top-0 w-full z-30">
       {/* Top Bar - Always using white background */}
       <div
         className="flex items-center justify-between px-2 bg-white shadow-sm transition-all duration-300"

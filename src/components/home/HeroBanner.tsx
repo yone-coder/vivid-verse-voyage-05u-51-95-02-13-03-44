@@ -13,7 +13,23 @@ export default function HeroBanner() {
   const [previousIndex, setPreviousIndex] = useState<number | null>(null);
   const [showNews, setShowNews] = useState(true);
   const [progress, setProgress] = useState(0);
+  const [offset, setOffset] = useState<number>(0);
   const slideDuration = 5000;
+
+  // Dynamically measure header height
+  useEffect(() => {
+    function updateOffset() {
+      const header = document.getElementById("ali-header");
+      if (header) {
+        setOffset(header.offsetHeight);
+      } else {
+        setOffset(0);
+      }
+    }
+    updateOffset();
+    window.addEventListener('resize', updateOffset);
+    return () => window.removeEventListener('resize', updateOffset);
+  }, []);
 
   // Initialize storage buckets if needed
   useEffect(() => {
@@ -125,13 +141,15 @@ export default function HeroBanner() {
   // Remove any internal margin or padding at the top: the parent page's mt-[80px] should always control header offset!
   return (
     <>
-      <div className="relative overflow-hidden w-full">
+      <div
+        className="relative overflow-hidden w-full"
+        style={{ marginTop: offset }}
+      >
         <BannerSlides 
           slides={slidesToShow}
           activeIndex={activeIndex}
           previousIndex={previousIndex}
         />
-
         <BannerControls
           slidesCount={slidesToShow.length}
           activeIndex={activeIndex}
