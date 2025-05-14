@@ -41,20 +41,19 @@ const CategoryTabs = ({
     >
       {/* Tabs List */}
       <div className="pr-[48px]">
-        <div className="flex overflow-x-auto no-scrollbar space-x-4">
+        <div className="flex overflow-x-auto no-scrollbar">
           {categories.map(({ id, name, icon, path }) => (
             <button
               key={id}
               onClick={() => handleTabClick(id, path)}
               aria-pressed={activeTab === id}
-              className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 ease-in-out transform hover:scale-105 hover:shadow-md 
-                ${
-                  activeTab === id
-                    ? 'border-b-2 border-orange-500 text-orange-500'
-                    : 'border-transparent text-gray-600 hover:text-gray-900'
-                }`}
+              className={`flex items-center gap-1 px-3 py-1 text-xs font-medium whitespace-nowrap border-b-2 transition-all ${
+                activeTab === id
+                  ? 'border-orange-500 text-orange-500'
+                  : 'border-transparent text-gray-600 hover:text-gray-900'
+              }`}
             >
-              <span className="text-xl">{icon}</span>
+              {icon}
               <span>{name}</span>
             </button>
           ))}
@@ -66,10 +65,10 @@ const CategoryTabs = ({
         <div className="h-5 w-px bg-gray-300" />
         <button
           type="button"
-          className="p-2 rounded-lg hover:bg-gray-200 text-gray-600 transition-all duration-200 ease-in-out transform hover:scale-110"
+          className="p-1 rounded hover:bg-gray-100 text-gray-500"
           aria-label="More options"
         >
-          <LayoutGrid className="h-5 w-5" />
+          <LayoutGrid className="h-4 w-4" />
         </button>
       </div>
     </div>
