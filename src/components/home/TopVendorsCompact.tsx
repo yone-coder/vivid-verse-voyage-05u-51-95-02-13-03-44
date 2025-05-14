@@ -82,15 +82,16 @@ const HorizontalVendorCard = ({ vendor }) => {
 
   return (
     <div className="flex-shrink-0 w-64 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-300 group">
-      {/* Vendor image and info section */}
-      <div className="flex p-3">
-        {/* Square vendor image */}
-        <div className="relative w-16 h-16 flex-shrink-0">
-          <img 
-            src={vendor.image} 
-            alt={vendor.name} 
-            className="w-full h-full object-cover rounded-lg border border-gray-100"
-          />
+      <div className="flex items-start p-2">
+        {/* Vendor image - truly square 1:1 ratio */}
+        <div className="relative w-16 h-16">
+          <div className="w-16 h-16 flex items-center justify-center">
+            <img 
+              src={vendor.image} 
+              alt={vendor.name} 
+              className="w-12 h-12 object-contain rounded-md"
+            />
+          </div>
           
           {/* Discount flag if available */}
           {vendor.discount && (
@@ -100,18 +101,18 @@ const HorizontalVendorCard = ({ vendor }) => {
           )}
           
           {/* Followers indicator */}
-          <div className="absolute -bottom-1 -left-1 bg-white rounded-full p-1 shadow-md flex items-center">
+          <div className="absolute bottom-0 left-0 bg-white rounded-full p-1 shadow-md flex items-center">
             <div className="relative flex -space-x-1">
-              <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-              <div className="w-3 h-3 rounded-full bg-green-500"></div>
-              <div className="w-3 h-3 rounded-full bg-purple-500"></div>
+              <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+              <div className="w-2 h-2 rounded-full bg-green-500"></div>
+              <div className="w-2 h-2 rounded-full bg-purple-500"></div>
             </div>
             <span className="text-xs ml-1 font-medium">{vendor.followers}</span>
           </div>
         </div>
         
         {/* Vendor info - right side */}
-        <div className="ml-3 flex-1 flex flex-col justify-between">
+        <div className="flex-1 pl-3 flex flex-col justify-between">
           {/* Header */}
           <div>
             <div className="flex items-center justify-between">
@@ -125,26 +126,30 @@ const HorizontalVendorCard = ({ vendor }) => {
                 #{vendor.id}
               </div>
             </div>
-          {/* Category badge */}
-          <div className="mt-1">
-            <Badge color={categoryColors[vendor.category] || "gray"} className="flex items-center text-xs justify-center">
+            
+            {/* Rating */}
+            <div className="flex items-center mt-1">
+              <div className="flex items-center text-yellow-500">
+                <Star size={12} className="fill-yellow-500" />
+                <span className="text-xs font-medium ml-0.5">{vendor.rating}</span>
+              </div>
+              <span className="mx-1 text-gray-300">•</span>
+              <div className="text-xs text-gray-500">
+                {vendor.sales} sales
+              </div>
+            </div>
+          </div>
+          
+          {/* Category badge - now expanded to replace others */}
+          <div className="flex mt-1">
+            <Badge color={categoryColors[vendor.category] || "gray"} className="flex items-center text-xs w-full justify-center">
               {getCategoryIcon(vendor.category)}
               {vendor.category}
             </Badge>
           </div>
 
-          {/* Rating */}
-          <div className="flex items-center mt-1.5">
-            <div className="flex items-center text-yellow-500">
-              <Star size={12} className="fill-yellow-500" />
-              <span className="text-xs font-medium ml-0.5">{vendor.rating}</span>
-            </div>
-            <span className="mx-1 text-gray-300">•</span>
-            <div className="text-xs text-gray-500">
-              {vendor.sales} sales
-            </div>
-          </div>          {/* Product thumbnails */}
-          <div className="flex gap-1 mt-2">
+          {/* Product thumbnails */}
+          <div className="flex gap-1 mt-1">
             {vendor.topProducts.slice(0, 3).map(product => (
               <div key={product.id} className="relative w-8 h-8 group/product">
                 <img 
