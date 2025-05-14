@@ -3,6 +3,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/context/LanguageContext';
 import { motion } from 'framer-motion';
+import { LayoutGrid } from 'lucide-react';
 
 interface CategoryTabsProps {
   progress: number;
@@ -21,7 +22,7 @@ const CategoryTabs = ({ progress, activeTab, setActiveTab, categories }: Categor
   const [underline, setUnderline] = useState({ left: 0, width: 0 });
   const tabsRef = useRef<(HTMLAnchorElement | null)[]>([]);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  
+
   // Update underline position when active tab changes
   useEffect(() => {
     const activeIndex = categories.findIndex(category => category.id === activeTab);
@@ -32,12 +33,11 @@ const CategoryTabs = ({ progress, activeTab, setActiveTab, categories }: Categor
           left: currentTab.offsetLeft,
           width: currentTab.offsetWidth,
         });
-        
+
         // Scroll active tab into view
         if (scrollContainerRef.current) {
           const container = scrollContainerRef.current;
           const tabElement = currentTab;
-          
           // Calculate position to center the tab
           const scrollLeft = tabElement.offsetLeft - (container.offsetWidth / 2) + (tabElement.offsetWidth / 2);
           container.scrollTo({ left: scrollLeft, behavior: 'smooth' });
@@ -45,12 +45,12 @@ const CategoryTabs = ({ progress, activeTab, setActiveTab, categories }: Categor
       }
     }
   }, [activeTab, categories]);
-  
+
   // Style for the container with fixed width
   const containerStyle = {
     backgroundColor: `rgba(255, 255, 255, ${0.85 + (progress * 0.15)})`,
     backdropFilter: `blur(${progress * 8}px)`,
-    width: '100%'
+    width: '100%',
   };
 
   return (
@@ -59,7 +59,7 @@ const CategoryTabs = ({ progress, activeTab, setActiveTab, categories }: Categor
       style={containerStyle}
       ref={scrollContainerRef}
     >
-      <div className="flex w-full">
+      <div className="flex w-full pr-[48px]">
         {categories.map((category, index) => (
           <Link
             to={category.path}
@@ -79,7 +79,7 @@ const CategoryTabs = ({ progress, activeTab, setActiveTab, categories }: Categor
           </Link>
         ))}
       </div>
-      
+
       {/* Animated underline */}
       <motion.div
         className="absolute bottom-0 left-0 h-0.5 bg-orange-500 rounded-full"
@@ -93,6 +93,14 @@ const CategoryTabs = ({ progress, activeTab, setActiveTab, categories }: Categor
           damping: 30
         }}
       />
+
+      {/* Separator + Icon */}
+      <div className="absolute top-0 right-0 h-full flex items-center pl-2 pr-3 z-10 space-x-2">
+        <div className="h-5 w-px bg-gray-300" />
+        <div className="cursor-pointer p-1 rounded hover:bg-gray-100">
+          <LayoutGrid className="h-4 w-4 text-gray-500" />
+        </div>
+      </div>
     </div>
   );
 };
