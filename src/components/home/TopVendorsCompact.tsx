@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { ChevronLeft, ChevronRight, Star, Flame, Truck, Tag, Users, ShoppingCart, CheckCircle, Store, Headphones, Shirt, Home, Smartphone, Droplet, Activity } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star, Flame, Truck, Tag, Users, ShoppingCart, CheckCircle, Store, Headphones, Shirt, Home, Smartphone, Droplet, Activity, Heart } from 'lucide-react';
 
-// Sample data with locations and categories
+// Sample data with locations and categories (using just one vendor for quick deployment)
 const vendors = [
   {
     id: 1,
@@ -20,136 +20,6 @@ const vendors = [
       { id: 101, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/headphones.svg", price: "$19.99", discount: "-10%" },
       { id: 102, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/keyboard.svg", price: "$24.50" },
       { id: 103, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/mouse.svg", price: "$15.75" }
-    ]
-  },
-  {
-    id: 2,
-    name: "EcoFriendly Goods",
-    image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/greensock.svg",
-    rating: 4.9,
-    sales: "8.7k",
-    followers: "19.2k",
-    topSeller: true,
-    fastShipping: false,
-    verified: true,
-    discount: "20%",
-    location: "New York",
-    category: "Sustainable",
-    topProducts: [
-      { id: 201, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/leaf.svg", price: "$12.99" },
-      { id: 202, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/bamboo.svg", price: "$31.50", discount: "-25%" },
-      { id: 203, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/seeds.svg", price: "$22.25" }
-    ]
-  },
-  {
-    id: 3,
-    name: "Fashion Forward",
-    image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/prada.svg",
-    rating: 4.7,
-    sales: "15.3k",
-    followers: "32.1k",
-    topSeller: true,
-    fastShipping: true,
-    verified: true,
-    location: "Boston",
-    category: "Fashion",
-    topProducts: [
-      { id: 301, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/nike.svg", price: "$35.99" },
-      { id: 302, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/adidas.svg", price: "$18.50", discount: "-15%" },
-      { id: 303, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/lacoste.svg", price: "$27.75" }
-    ]
-  },
-  {
-    id: 4,
-    name: "Home Essentials",
-    image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/homeadvisor.svg",
-    rating: 4.6,
-    sales: "7.2k",
-    followers: "12.5k",
-    topSeller: false,
-    fastShipping: true,
-    verified: true,
-    location: "New York",
-    category: "Home",
-    topProducts: [
-      { id: 401, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/ikea.svg", price: "$42.99", discount: "-5%" },
-      { id: 402, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/lamp.svg", price: "$15.75" },
-      { id: 403, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/homeassistant.svg", price: "$29.50" }
-    ]
-  },
-  {
-    id: 5,
-    name: "Gadget World",
-    image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/apple.svg",
-    rating: 4.9,
-    sales: "20.1k",
-    followers: "45.7k",
-    topSeller: true,
-    fastShipping: true,
-    verified: true,
-    discount: "10%",
-    location: "Chicago",
-    category: "Electronics",
-    topProducts: [
-      { id: 501, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/iphone.svg", price: "$89.99" },
-      { id: 502, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/samsung.svg", price: "$64.50", discount: "-20%" },
-      { id: 503, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/xiaomi.svg", price: "$112.75" }
-    ]
-  },
-  {
-    id: 6,
-    name: "Beauty Express",
-    image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/sephora.svg",
-    rating: 4.7,
-    sales: "12.3k",
-    followers: "28.9k",
-    topSeller: true,
-    fastShipping: false,
-    verified: true,
-    discount: "25%",
-    location: "New York",
-    category: "Beauty",
-    topProducts: [
-      { id: 601, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/nivea.svg", price: "$21.99" },
-      { id: 602, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/loreal.svg", price: "$18.50", discount: "-30%" },
-      { id: 603, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/avon.svg", price: "$34.75" }
-    ]
-  },
-  {
-    id: 7,
-    name: "Sports Direct",
-    image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/puma.svg",
-    rating: 4.5,
-    sales: "5.8k",
-    followers: "14.2k",
-    topSeller: false,
-    fastShipping: true,
-    verified: false,
-    location: "Miami",
-    category: "Sports",
-    topProducts: [
-      { id: 701, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/nike.svg", price: "$45.99", discount: "-10%" },
-      { id: 702, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/underarmour.svg", price: "$29.50" },
-      { id: 703, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/newbalance.svg", price: "$52.75" }
-    ]
-  },
-  {
-    id: 8,
-    name: "Electronic Hub",
-    image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/bestbuy.svg",
-    rating: 4.8,
-    sales: "18.7k",
-    followers: "37.3k",
-    topSeller: true,
-    fastShipping: true,
-    verified: true,
-    discount: "15%",
-    location: "Los Angeles",
-    category: "Electronics",
-    topProducts: [
-      { id: 801, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/playstation.svg", price: "$129.99", discount: "-15%" },
-      { id: 802, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/xbox.svg", price: "$75.50" },
-      { id: 803, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/nintendo.svg", price: "$210.75" }
     ]
   }
 ];
@@ -195,8 +65,10 @@ const getCategoryIcon = (category) => {
   }
 };
 
-// Horizontal curvy vendor card
+// Modified horizontal vendor card with squared image and split buttons
 const HorizontalVendorCard = ({ vendor }) => {
+  const [isFollowing, setIsFollowing] = useState(false);
+  
   // Map categories to colors
   const categoryColors = {
     "Electronics": "blue",
@@ -211,8 +83,8 @@ const HorizontalVendorCard = ({ vendor }) => {
   return (
     <div className="flex-shrink-0 w-64 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-300 group">
       <div className="flex">
-        {/* Vendor image - left side */}
-        <div className="relative w-1/3">
+        {/* Vendor image - now square */}
+        <div className="relative w-1/3 aspect-square">
           <img 
             src={vendor.image} 
             alt={vendor.name} 
@@ -226,7 +98,7 @@ const HorizontalVendorCard = ({ vendor }) => {
             </div>
           )}
           
-          {/* Followers indicator (replacing heart icon) */}
+          {/* Followers indicator */}
           <div className="absolute bottom-1 left-1 bg-white rounded-full p-1 shadow-md flex items-center">
             <div className="relative flex -space-x-1">
               <div className="w-3 h-3 rounded-full bg-blue-500"></div>
@@ -241,7 +113,7 @@ const HorizontalVendorCard = ({ vendor }) => {
         <div className="w-2/3 p-2 flex flex-col justify-between">
           {/* Header */}
           <div>
-                          <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <h3 className="font-medium text-xs truncate mr-1">{vendor.name}</h3>
                 {vendor.verified && (
@@ -303,10 +175,21 @@ const HorizontalVendorCard = ({ vendor }) => {
         </div>
       </div>
 
-      {/* Visit button */}
-      <div className="px-2 pb-2 pt-1">
-        <button className="w-full bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white text-xs font-medium py-1.5 px-2 rounded-full transition-colors">
+      {/* Split buttons: Visit Store and Follow */}
+      <div className="px-2 pb-2 pt-1 grid grid-cols-2 gap-2">
+        <button className="bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white text-xs font-medium py-1.5 px-2 rounded-full transition-colors">
           Visit Store
+        </button>
+        <button 
+          className={`flex items-center justify-center text-xs font-medium py-1.5 px-2 rounded-full transition-colors ${
+            isFollowing 
+              ? "bg-gray-100 text-gray-800 hover:bg-gray-200" 
+              : "bg-blue-100 text-blue-800 hover:bg-blue-200"
+          }`}
+          onClick={() => setIsFollowing(!isFollowing)}
+        >
+          <Heart size={12} className={`mr-1 ${isFollowing ? "fill-gray-800" : ""}`} />
+          {isFollowing ? "Following" : "Follow"}
         </button>
       </div>
     </div>
@@ -315,32 +198,6 @@ const HorizontalVendorCard = ({ vendor }) => {
 
 // Main carousel component
 const VendorCarousel = () => {
-  const scrollRef = useRef(null);
-  const [showLeft, setShowLeft] = useState(false);
-  const [showRight, setShowRight] = useState(true);
-  
-  // Handle scroll events for navigation arrows
-  const handleScroll = () => {
-    const node = scrollRef.current;
-    if (!node) return;
-    const { scrollLeft, scrollWidth, clientWidth } = node;
-    setShowLeft(scrollLeft > 0);
-    setShowRight(scrollLeft + clientWidth < scrollWidth - 10);
-  };
-
-  useEffect(() => {
-    const node = scrollRef.current;
-    if (!node) return;
-    node.addEventListener("scroll", handleScroll);
-    handleScroll();
-    return () => node.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  // Scroll left or right
-  const scroll = (dir) => {
-    scrollRef.current?.scrollBy({ left: dir === "left" ? -200 : 200, behavior: "smooth" });
-  };
-
   return (
     <div className="w-full">
       {/* Header with Flame icon and "more" button with Chevron */}
@@ -351,7 +208,7 @@ const VendorCarousel = () => {
         </div>
         
         <div className="flex items-center">
-          {/* More button with Chevron instead of Arrow */}
+          {/* More button with Chevron */}
           <button className="flex items-center text-xs text-blue-600 font-medium hover:text-blue-800 transition-colors">
             More
             <ChevronRight size={14} className="ml-1" />
@@ -359,43 +216,9 @@ const VendorCarousel = () => {
         </div>
       </div>
 
-      {/* Vendors carousel */}
-      <div className="relative">
-        {/* Left scroll button */}
-        {showLeft && (
-          <button 
-            onClick={() => scroll("left")} 
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-md rounded-full p-2 -ml-3 text-gray-500 hover:text-blue-700"
-            aria-label="Scroll left"
-          >
-            <ChevronLeft size={16} />
-          </button>
-        )}
-        
-        {/* Scrollable container */}
-        <div 
-          ref={scrollRef} 
-          className="overflow-x-auto scroll-smooth px-1"
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-        >
-          <div className="flex gap-4 pb-2">
-            {vendors.map(vendor => (
-              <HorizontalVendorCard key={vendor.id} vendor={vendor} />
-            ))}
-            <div className="flex-none w-2" /> {/* Right spacing */}
-          </div>
-        </div>
-        
-        {/* Right scroll button */}
-        {showRight && (
-          <button 
-            onClick={() => scroll("right")} 
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-md rounded-full p-2 -mr-3 text-gray-500 hover:text-blue-700"
-            aria-label="Scroll right"
-          >
-            <ChevronRight size={16} />
-          </button>
-        )}
+      {/* Single vendor card for quick deployment */}
+      <div className="flex justify-center">
+        <HorizontalVendorCard vendor={vendors[0]} />
       </div>
     </div>
   );
