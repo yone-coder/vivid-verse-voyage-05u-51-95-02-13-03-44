@@ -1,7 +1,7 @@
-
 import { useState } from 'react';
-import { LayoutGrid, ShoppingBag, Home, Image, Users, MessageSquare, Store } from 'lucide-react';
+import { LayoutGrid } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface CategoryTab {
   id: string;
@@ -17,57 +17,68 @@ interface CategoryTabsProps {
   categories: CategoryTab[];
 }
 
-const CategoryTabs = ({ 
-  progress, 
-  activeTab, 
+const CategoryTabs = ({
+  progress,
+  activeTab,
   setActiveTab,
-  categories 
+  categories,
 }: CategoryTabsProps) => {
   const navigate = useNavigate();
 
   const handleTabClick = (categoryId: string, path: string) => {
     setActiveTab(categoryId);
-    navigate(path, { replace: true });  // Use replace to avoid building history stack
+    navigate(path, { replace: true });
   };
 
   return (
-    <div
-      className="relative w-full transition-all duration-700 overflow-hidden"
-      style={{
-        maxHeight: progress > 0.3 ? '40px' : '0px',
-        opacity: progress > 0.3 ? 1 : 0,
-        backgroundColor: `rgba(255, 255, 255, ${progress * 0.98})`,
-        backdropFilter: `blur(${progress * 8}px)`,
-      }}
-    >
-      {/* Scrollable area wrapper with max-width */}
-      <div className="pr-[48px]">
-        <div className="flex overflow-x-auto no-scrollbar">
-          {categories.map((category) => (
-            <button
-              key={category.id}
-              className={`whitespace-nowrap px-3 py-1 text-xs font-medium transition-all border-b-2 flex items-center gap-1 ${
-                activeTab === category.id
-                  ? 'border-orange-500 text-orange-500'
-                  : 'border-transparent text-gray-600 hover:text-gray-900'
-              }`}
-              onClick={() => handleTabClick(category.id, category.path)}
-            >
-              {category.icon}
-              <span>{category.name}</span>
-            </button>
-          ))}
-        </div>
-      </div>
+    <AnimatePresence>
+      {progress > 0.3 && (
+        <motion.div
+          key="tabs"
+          initial={{ maxHeight: 0, opacity: 0 }}
+          animate={{
+            maxHeight: 40,
+            opacity: 1,
+            backdropFilter: `blur(${progress * 8}px)`,
+            backgroundColor: `rgba(255,255,255,${progress * 0.98})`,
+          }}
+          exit={{ maxHeight: 0, opacity: 0 }}
+          transition={{ duration: 0.5, ease: 'easeInOut' }}
+          className="relative w-full overflow-hidden"
+        >
+          <div className="pr-[48px]">
+            <div className="flex overflow-x-auto no-scrollbar">
+              {categories.map((category) => (
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.05 }}
+                  key={category.id}
+                  className={`whitespace-nowrap px-3 py-1 text-xs font-medium transition-all border-b-2 flex items-center gap-1 ${
+                    activeTab === category.id
+                      ? 'border-orange-500 text-orange-500'
+                      : 'border-transparent text-gray-600 hover:text-gray-900'
+                  }`}
+                  onClick={() => handleTabClick(category.id, category.path)}
+                >
+                  {category.icon}
+                  <span>{category.name}</span>
+                </motion.button>
+              ))}
+            </div>
+          </div>
 
-      {/* Separator + Icon */}
-      <div className="absolute top-0 right-0 h-full flex items-center pl-2 pr-3 z-10 space-x-2">
-        <div className="h-5 w-px bg-gray-300" />
-        <div className="cursor-pointer p-1 rounded hover:bg-gray-100">
-          <LayoutGrid className="h-4 w-4 text-gray-500" />
-        </div>
-      </div>
-    </div>
+          <div className="absolute top-0 right-0 h-full flex items-center pl-2 pr-3 z-10 space-x-2">
+            <div className="h-5 w-px bg-gray-300" />
+            <motion.div
+              whileHover={{ backgroundColor: '#f3f4f6' }}
+              className="cursor-pointer p-1 rounded"
+            >
+              <LayoutGrid className="h-4 w-4 text-gray-500" />
+            </motion.div>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
 
