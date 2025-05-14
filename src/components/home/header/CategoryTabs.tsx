@@ -1,7 +1,7 @@
 
 import { LayoutGrid } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { ReactNode, useRef, useEffect } from 'react';
+import { ReactNode, useRef, useEffect, useState } from 'react'; // Added useState
 import { motion } from 'framer-motion';
 
 interface CategoryTab {
@@ -27,6 +27,7 @@ const CategoryTabs = ({
   const navigate = useNavigate();
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [targetScrollLeft, setTargetScrollLeft] = useState(0); // New state for target scroll position
 
   useEffect(() => {
     // Ensure tabRefs array is the same size as categories
@@ -40,14 +41,10 @@ const CategoryTabs = ({
 
     if (activeTabElement && containerElement) {
       // Calculate position to center the tab
-      const scrollLeft = activeTabElement.offsetLeft - (containerElement.offsetWidth / 2) + (activeTabElement.offsetWidth / 2);
-      
-      containerElement.scrollTo({
-        left: scrollLeft,
-        behavior: 'smooth',
-      });
+      const newScrollLeft = activeTabElement.offsetLeft - (containerElement.offsetWidth / 2) + (activeTabElement.offsetWidth / 2);
+      setTargetScrollLeft(newScrollLeft); // Set target for framer-motion
     }
-  }, [activeTab, categories]);
+  }, [activeTab, categories]); // scrollContainerRef.current.offsetWidth can change on resize, consider adding it or a resize listener if jittery on resize. For now, this should be fine for tab clicks.
 
   const handleTabClick = (id: string, path: string) => {
     setActiveTab(id);
@@ -66,7 +63,12 @@ const CategoryTabs = ({
     >
       {/* Tabs List */}
       <div className="pr-[48px] h-full">
-        <div ref={scrollContainerRef} className="flex items-center overflow-x-auto no-scrollbar h-full">
+        <motion.div
+          ref={scrollContainerRef}
+          className="flex items-center overflow-x-auto no-scrollbar h-full"
+          animate={{ scrollLeft: targetScrollLeft }} // Animate scrollLeft
+          transition={{ duration: 0.4, ease: "easeInOut" }} // Adjust timing & easing as needed
+        >
           {categories.map(({ id, name, icon, path }, index) => (
             <button
               key={id}
@@ -90,7 +92,7 @@ const CategoryTabs = ({
               )}
             </button>
           ))}
-        </div>
+        </motion.div>
       </div>
 
       {/* Icon Button on Right */}
