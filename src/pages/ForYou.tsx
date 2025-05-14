@@ -41,6 +41,7 @@ export default function ForYou() {
       <div className="space-y-1">
         <SpaceSavingCategories />
         <FlashDeals />
+        <TopVendorsCompact />
         
         {Array.isArray(products) && products.length > 0 && (
           <SuperDealsSection products={products} />
@@ -60,7 +61,6 @@ export default function ForYou() {
         
         <SecondaryFlashDeals />
         <BenefitsBanner />
-        <TopVendorsCompact />
         
         <div className="bg-white mb-1">
           {Array.isArray(products) && products.length > 0 && (

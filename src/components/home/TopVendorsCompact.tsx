@@ -1,5 +1,7 @@
+
 import { useState, useRef, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Star, Award, Truck, ShieldCheck } from 'lucide-react';
+import { Card } from '@/components/ui/card';
 
 const vendors = [
   {
@@ -133,12 +135,20 @@ const vendors = [
 ];
 
 const CompactVendorCard = ({ vendor }: { vendor: any }) => (
-  <div className="flex-shrink-0 w-44 bg-white rounded-lg overflow-hidden border transition-all duration-300">
+  <Card className="flex-shrink-0 w-44 overflow-hidden transition-all duration-300 hover:shadow-md">
     <div className="relative">
       <img src={vendor.image} alt={vendor.name} className="w-full h-24 object-cover" />
       <div className="absolute top-1 left-1 flex gap-1">
-        {vendor.topSeller && <div className="bg-orange-500 text-white text-xs px-1.5 py-0.5 rounded-sm flex items-center"><Award size={10} className="mr-0.5" />Top</div>}
-        {vendor.fastShipping && <div className="bg-green-500 text-white text-xs px-1.5 py-0.5 rounded-sm flex items-center"><Truck size={10} className="mr-0.5" />Fast</div>}
+        {vendor.topSeller && (
+          <div className="bg-orange-500 text-white text-xs px-1.5 py-0.5 rounded-sm flex items-center">
+            <Award size={10} className="mr-0.5" />Top
+          </div>
+        )}
+        {vendor.fastShipping && (
+          <div className="bg-green-500 text-white text-xs px-1.5 py-0.5 rounded-sm flex items-center">
+            <Truck size={10} className="mr-0.5" />Fast
+          </div>
+        )}
       </div>
       <div className="absolute top-1 right-1">
         <div className="bg-yellow-100 text-yellow-800 text-xs px-1.5 py-0.5 rounded-sm flex items-center">
@@ -146,7 +156,11 @@ const CompactVendorCard = ({ vendor }: { vendor: any }) => (
           {vendor.rating}
         </div>
       </div>
-      {vendor.verified && <div className="absolute bottom-1 right-1 bg-blue-500 text-white rounded-full p-0.5"><ShieldCheck size={10} /></div>}
+      {vendor.verified && (
+        <div className="absolute bottom-1 right-1 bg-blue-500 text-white rounded-full p-0.5">
+          <ShieldCheck size={10} />
+        </div>
+      )}
     </div>
     <div className="p-2">
       <h3 className="font-bold text-xs truncate">{vendor.name}</h3>
@@ -156,7 +170,11 @@ const CompactVendorCard = ({ vendor }: { vendor: any }) => (
       <div className="flex gap-1">
         {vendor.topProducts.map(product => (
           <div key={product.id} className="relative w-1/3 aspect-square group">
-            <img src={product.image} className="w-full h-full object-cover rounded-sm border" />
+            <img 
+              src={product.image} 
+              alt="" 
+              className="w-full h-full object-cover rounded-sm border" 
+            />
             <div className="absolute inset-0 group-hover:bg-black/20 rounded-sm transition-all" />
             <span className="absolute bottom-0 left-0 right-0 text-xs text-white bg-black/50 px-1 opacity-0 group-hover:opacity-100">
               {product.price}
@@ -170,7 +188,7 @@ const CompactVendorCard = ({ vendor }: { vendor: any }) => (
         Visit Store
       </button>
     </div>
-  </div>
+  </Card>
 );
 
 const TopVendorsCompact = () => {
@@ -199,7 +217,7 @@ const TopVendorsCompact = () => {
   };
 
   return (
-    <div className="w-full sm:p-3 rounded-lg">
+    <div className="w-full p-2 sm:p-3 bg-white">
       <div className="flex justify-between items-center mb-2">
         <div className="flex items-center">
           <h2 className="text-sm sm:text-base font-bold text-gray-800">Top Vendors</h2>
@@ -212,18 +230,30 @@ const TopVendorsCompact = () => {
 
       <div className="relative">
         {showLeft && (
-          <button onClick={() => scroll("left")} className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 shadow rounded-full p-1 -ml-1.5">
+          <button 
+            onClick={() => scroll("left")} 
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-md rounded-full p-1.5 -ml-1"
+            aria-label="Scroll left"
+          >
             <ChevronLeft size={16} />
           </button>
         )}
-        <div ref={scrollRef} className="overflow-x-auto scrollbar-hide scroll-smooth" style={{ scrollPaddingLeft: '0.5rem' }}>
-          <div className="flex pl-2 gap-2">
+        <div 
+          ref={scrollRef} 
+          className="overflow-x-auto scrollbar-hide scroll-smooth px-1"
+          style={{ scrollPaddingLeft: '0.5rem' }}
+        >
+          <div className="flex gap-2 pb-1">
             {vendors.map(v => <CompactVendorCard key={v.id} vendor={v} />)}
             <div className="flex-none w-2" /> {/* Fake right padding */}
           </div>
         </div>
         {showRight && (
-          <button onClick={() => scroll("right")} className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 shadow rounded-full p-1 -mr-1.5">
+          <button 
+            onClick={() => scroll("right")} 
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white shadow-md rounded-full p-1.5 -mr-1"
+            aria-label="Scroll right"
+          >
             <ChevronRight size={16} />
           </button>
         )}
