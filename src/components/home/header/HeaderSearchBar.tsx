@@ -45,10 +45,7 @@ const HeaderSearchBar = ({
         )}>
           <Search className="h-3.5 w-3.5 text-gray-400" />
         </div>
-        <div className={cn(
-          "relative w-full",
-          isGlowing && "search-glow"
-        )}>
+        <div className="relative w-full search-glow-mini">
           <input
             type="text"
             value={searchQuery}

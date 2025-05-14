@@ -14,10 +14,7 @@ const SearchBar = ({ searchQuery, setSearchQuery, progress, isGlowing = false }:
   return (
     <div className="relative flex-1 max-w-xs">
       <div 
-        className={cn(
-          "relative flex items-center h-7 rounded-full transition-all duration-700",
-          isGlowing && "search-glow"
-        )}
+        className="relative flex items-center h-7 rounded-full transition-all duration-700 search-glow-mini"
         style={{
           backgroundColor: `rgba(243, 244, 246, ${0.2 + (progress * 0.8)})`,
           boxShadow: `0 2px 4px rgba(0, 0, 0, ${0.02 + (progress * 0.03)})`
