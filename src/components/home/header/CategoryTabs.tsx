@@ -1,6 +1,8 @@
+
 import { LayoutGrid } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { ReactNode } from 'react';
+import { ReactNode, useRef, useEffect } from 'react';
+import { motion } from 'framer-motion';
 
 interface CategoryTab {
   id: string;
@@ -23,6 +25,24 @@ const CategoryTabs = ({
   categories,
 }: CategoryTabsProps) => {
   const navigate = useNavigate();
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Ensure tabRefs array is the same size as categories
+    tabRefs.current = tabRefs.current.slice(0, categories.length);
+  }, [categories]);
+
+  useEffect(() => {
+    const activeTabIndex = categories.findIndex(cat => cat.id === activeTab);
+    if (activeTabIndex !== -1 && tabRefs.current[activeTabIndex]) {
+      tabRefs.current[activeTabIndex]?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'nearest',
+        inline: 'center', // 'center' tries to put it in middle, 'nearest' if already visible.
+      });
+    }
+  }, [activeTab, categories]);
 
   const handleTabClick = (id: string, path: string) => {
     setActiveTab(id);
@@ -40,21 +60,29 @@ const CategoryTabs = ({
       }}
     >
       {/* Tabs List */}
-      <div className="pr-[48px]">
-        <div className="flex overflow-x-auto no-scrollbar">
-          {categories.map(({ id, name, icon, path }) => (
+      <div className="pr-[48px] h-full">
+        <div ref={scrollContainerRef} className="flex overflow-x-auto no-scrollbar h-full">
+          {categories.map(({ id, name, icon, path }, index) => (
             <button
               key={id}
+              ref={el => tabRefs.current[index] = el}
               onClick={() => handleTabClick(id, path)}
               aria-pressed={activeTab === id}
-              className={`flex items-center gap-1 px-3 py-1 text-xs font-medium whitespace-nowrap border-b-2 transition-all ${
+              className={`relative flex items-center gap-1 px-3 py-2.5 text-xs font-medium whitespace-nowrap transition-colors duration-150 ease-in-out focus:outline-none focus-visible:ring-1 focus-visible:ring-orange-500 focus-visible:ring-offset-1 h-full ${
                 activeTab === id
-                  ? 'border-orange-500 text-orange-500'
-                  : 'border-transparent text-gray-600 hover:text-gray-900'
+                  ? 'text-orange-500'
+                  : 'text-gray-600 hover:text-orange-500 hover:bg-orange-50/70 rounded-md'
               }`}
             >
               {icon}
               <span>{name}</span>
+              {activeTab === id && (
+                <motion.div
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-orange-500"
+                  layoutId="activeCategoryUnderline"
+                  transition={{ type: 'spring', stiffness: 350, damping: 30 }}
+                />
+              )}
             </button>
           ))}
         </div>
@@ -65,7 +93,7 @@ const CategoryTabs = ({
         <div className="h-5 w-px bg-gray-300" />
         <button
           type="button"
-          className="p-1 rounded hover:bg-gray-100 text-gray-500"
+          className="p-1 rounded text-gray-500 hover:bg-gray-100 focus:outline-none focus-visible:ring-1 focus-visible:ring-orange-500"
           aria-label="More options"
         >
           <LayoutGrid className="h-4 w-4" />
