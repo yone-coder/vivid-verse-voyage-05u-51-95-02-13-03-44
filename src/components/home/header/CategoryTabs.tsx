@@ -35,11 +35,16 @@ const CategoryTabs = ({
 
   useEffect(() => {
     const activeTabIndex = categories.findIndex(cat => cat.id === activeTab);
-    if (activeTabIndex !== -1 && tabRefs.current[activeTabIndex]) {
-      tabRefs.current[activeTabIndex]?.scrollIntoView({
+    const activeTabElement = tabRefs.current[activeTabIndex];
+    const containerElement = scrollContainerRef.current;
+
+    if (activeTabElement && containerElement) {
+      // Calculate position to center the tab
+      const scrollLeft = activeTabElement.offsetLeft - (containerElement.offsetWidth / 2) + (activeTabElement.offsetWidth / 2);
+      
+      containerElement.scrollTo({
+        left: scrollLeft,
         behavior: 'smooth',
-        block: 'nearest',
-        inline: 'center',
       });
     }
   }, [activeTab, categories]);
@@ -104,3 +109,4 @@ const CategoryTabs = ({
 };
 
 export default CategoryTabs;
+
