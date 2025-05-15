@@ -308,7 +308,7 @@ useEffect(() => {
     style.textContent = `
       @media (max-width: 640px) {
         .vendor-carousel-item {
-          width: 66.666vw !important; /* 100% / 1.5 = 66.666% */
+          width: 50vw !important; /* Exactly 50% of viewport width for 2 cards per view */
           flex-shrink: 0;
         }
         .embla__container {
@@ -357,7 +357,7 @@ return (
         <CarouselItem   
           key={vendor.id}   
           className="vendor-carousel-item pl-2 md:pl-4 md:basis-1/3 lg:basis-1/4"  
-          style={{ width: isMobile ? '65vw' : undefined }} // Set explicit width for mobile  
+          style={{ width: isMobile ? '50vw' : undefined }} // Set explicit width for mobile - 50% of viewport width
         >  
           <HorizontalVendorCard vendor={vendor} />  
         </CarouselItem>  
@@ -372,6 +372,3 @@ return (
 };
 
 export default VendorCarousel;
-
-I want to see 1.5 cards on mobile view
-
