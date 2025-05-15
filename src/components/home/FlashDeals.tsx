@@ -73,14 +73,14 @@ export default function FlashDeals() {
       <Bolt className="w-3.5 h-3.5 mr-1 text-yellow-300" />
       FLASH DEALS
     </div>
-    <div className="flex items-center space-x-1 text-[11px] text-white bg-black/20 px-1.3 py-0.5 rounded-sm font-medium">
+    <div className="flex items-center space-x-1 text-[11px] text-white bg-black/20 px-1.5 py-0.5 rounded-sm font-medium">
       <Timer className="w-3 h-3 mr-0.5 text-yellow-200" />
       <span>02:45:18</span>
     </div>
   </div>
   <Link
     to="/search?category=flash-deals"
-    className="text-xs text-white hover:bg-black/20 flex items-center font-medium px-1.3 py-0.5 rounded-sm transition-colors"
+    className="text-xs text-white hover:bg-black/20 flex items-center font-medium px-1.5 py-0.5 rounded-sm transition-colors"
   >
     View All <ArrowRight className="h-3 w-3 ml-0.5" />
   </Link>
