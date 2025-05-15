@@ -345,4 +345,4 @@
 
 
 
-@media (max-width: 640px) { //   .embla__slide { //     width: 65vw !important; //     flex-shrink: 0; //   } //   .embla__container { //     scroll-snap-type: x mandatory; //     scroll-padding-left: 1rem; //   } //   .embla__slide { //     scroll-snap-align: start; //   } // }
+@media (max-width: 640px) { .embla__slide { width: 65vw !important;    flex-shrink: 0;   }  .embla__container {    scroll-snap-type: x mandatory;     scroll-padding-left: 1rem;   }    .embla__slide {    scroll-snap-align: start;   }  }
