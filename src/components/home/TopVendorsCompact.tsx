@@ -329,12 +329,12 @@ const VendorCarousel = () => {
           .vendor-carousel-item {
             width: 65vw !important; /* 65% of viewport width shows 1.5 cards */
             flex-shrink: 0;
-            padding-right: 8px;
+            padding-right: 4px;
           }
           .embla__container {
             scroll-snap-type: x mandatory;
             scroll-behavior: smooth;
-            scroll-padding-left: 1rem;
+            scroll-padding-left: 0.5rem;
           }
           .embla__slide {
             scroll-snap-align: start;
@@ -373,11 +373,11 @@ const VendorCarousel = () => {
         className="w-full"   
         opts={getCarouselOptions()}
       >  
-        <CarouselContent className="-ml-2 md:-ml-4">  
+        <CarouselContent className="-ml-1 md:-ml-4">  
           {vendors.map((vendor) => (  
             <CarouselItem   
               key={vendor.id}   
-              className="vendor-carousel-item pl-2 md:pl-4 md:basis-1/3 lg:basis-1/4"
+              className="vendor-carousel-item pl-1 md:pl-4 md:basis-1/3 lg:basis-1/4"
               style={{ width: isMobile ? '65vw' : undefined }} // Set explicit width for mobile - 65% of viewport width
             >  
               <HorizontalVendorCard vendor={vendor} />  
