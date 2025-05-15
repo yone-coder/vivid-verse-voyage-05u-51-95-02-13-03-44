@@ -65,24 +65,24 @@ export default function FlashDeals() {
   return (
     <div className="w-full bg-white">
       <div className="px-2 py-2">
-        <div className="flex justify-between items-center mb-1">
-          <div className="flex items-center space-x-2">
-            <div className="flex items-center bg-[#FF4747] text-white text-xs font-semibold px-2 py-0.5 rounded-sm uppercase tracking-wide">
-              <Zap className="w-3.5 h-3.5 mr-1" />
-              Flash Sale
-            </div>
-            <div className="flex items-center space-x-1 text-[11px] text-gray-500 font-medium">
-              <span className="w-1.5 h-1.5 bg-[#FF4747] rounded-full" />
-              <span>{processedProducts.length} deals available</span>
-            </div>
-          </div>
-          <Link
-            to="/search?category=flash-deals"
-            className="text-xs text-[#FF4747] hover:underline flex items-center font-medium"
-          >
-            More <ArrowRight className="h-3 w-3 ml-0.5" />
-          </Link>
-        </div>
+        <div className="flex justify-between items-center mb-1 bg-[#FF4747] px-2 py-1 rounded-sm">
+  <div className="flex items-center space-x-2">
+    <div className="flex items-center text-white text-xs font-semibold uppercase tracking-wide">
+      <Zap className="w-3.5 h-3.5 mr-1" />
+      Flash Sale
+    </div>
+    <div className="flex items-center space-x-1 text-[11px] text-white font-medium">
+      <span className="w-1.5 h-1.5 bg-white rounded-full" />
+      <span>{processedProducts.length} deals available</span>
+    </div>
+  </div>
+  <Link
+    to="/search?category=flash-deals"
+    className="text-xs text-white hover:underline flex items-center font-medium"
+  >
+    More <ArrowRight className="h-3 w-3 ml-0.5" />
+  </Link>
+</div>
       </div>
 
       <div className="relative">
