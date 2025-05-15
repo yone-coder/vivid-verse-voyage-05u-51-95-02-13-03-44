@@ -20,7 +20,7 @@ const HeroBannerUploadDialog = ({ onBannerUploaded }: HeroBannerUploadDialogProp
   const [position, setPosition] = useState<number>(1);
   const [isUploading, setIsUploading] = useState(false);
   const [status, setStatus] = useState<"idle" | "storage-success" | "storage-error">("idle");
-	const [dbStatus, setDbStatus] = useState<"idle" | "db-success" | "db-error">("idle");
+  const [dbStatus, setDbStatus] = useState<"idle" | "db-success" | "db-error">("idle");
   const [altText, setAltText] = useState<string>("");
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,54 +56,54 @@ const HeroBannerUploadDialog = ({ onBannerUploaded }: HeroBannerUploadDialogProp
 
     setIsUploading(true);
     setStatus("idle");
-		setDbStatus("idle");
+    setDbStatus("idle");
 
     try {
       const storageResult = await uploadBanner(imageFile);
 
-      if (storageResult?.path) {
+      if (storageResult?.data?.path) {
         setStatus("storage-success");
         toast({
           title: "Success",
           description: "Image uploaded to storage successfully!",
         });
 
-				try {
-					const dbResult = await fetch('/api/admin/hero', {
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json',
-						},
-						body: JSON.stringify({
-							image: storageResult.path,
-							position: position,
-							alt: altText,
-						}),
-					});
+        try {
+          const dbResult = await fetch('/api/admin/hero', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              image: storageResult.data.path,
+              position: position,
+              alt: altText,
+            }),
+          });
 
-					if (dbResult.ok) {
-						setDbStatus("db-success");
-						toast({
-							title: "Success",
-							description: "Banner details saved to database successfully!",
-						});
+          if (dbResult.ok) {
+            setDbStatus("db-success");
+            toast({
+              title: "Success",
+              description: "Banner details saved to database successfully!",
+            });
             onBannerUploaded?.();
-					} else {
-						setDbStatus("db-error");
-						toast({
-							title: "Database Error",
-							description: "Failed to save banner details to database.",
-							variant: "destructive",
-						});
-					}
-				} catch (error) {
-					setDbStatus("db-error");
-					toast({
-						title: "Database Error",
-						description: "Failed to save banner details to database.",
-						variant: "destructive",
-					});
-				}
+          } else {
+            setDbStatus("db-error");
+            toast({
+              title: "Database Error",
+              description: "Failed to save banner details to database.",
+              variant: "destructive",
+            });
+          }
+        } catch (error) {
+          setDbStatus("db-error");
+          toast({
+            title: "Database Error",
+            description: "Failed to save banner details to database.",
+            variant: "destructive",
+          });
+        }
       } else {
         setStatus("storage-error");
         toast({
