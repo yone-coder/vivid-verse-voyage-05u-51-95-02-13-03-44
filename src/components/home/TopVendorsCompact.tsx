@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight, Star, Flame, Truck, Tag, Users, ShoppingCart, CheckCircle, Store, Headphones, Shirt, Home, Smartphone, Droplet, Activity, Heart } from 'lucide-react';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Card } from "@/components/ui/card";
@@ -169,7 +169,7 @@ const HorizontalVendorCard = ({ vendor }) => {
   const displayProducts = vendor.topProducts.slice(0, 4);
 
   return (
-    <div className="flex-shrink-0 w-64 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-300 group">
+    <div className="flex-shrink-0 w-full bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-300 group">
       <div className="flex items-start p-2">
         {/* Vendor image - truly square 1:1 ratio */}
         <div className="relative w-16 h-16">
@@ -296,57 +296,72 @@ const HorizontalVendorCard = ({ vendor }) => {
   );
 };
 
-// Main carousel component
+// Custom carousel component to ensure 1.5 cards view on mobile
 const VendorCarousel = () => {
   const isMobile = useIsMobile();
+  const scrollContainerRef = useRef(null);
+  const [activeIndex, setActiveIndex] = useState(0);
   
-  // Get the correct carousel options based on device type
-  const getCarouselOptions = () => {
-    if (isMobile) {
-      return {
-        align: "start",
-        loop: false,
-        dragFree: true,
-        containScroll: "trimSnaps",
-        // Using a decimal value for slidesToScroll creates the partial card view effect
-        slidesToScroll: 1
-      };
-    }
-    
-    return {
-      align: "start",
-      loop: false,
-      dragFree: false
-    };
+  // Calculate card widths and container width
+  const cardWidth = isMobile ? "66%" : "33.333%"; // 66% for 1.5 cards on mobile, 33.333% for 3 cards on desktop
+  const containerStyle = {
+    display: "flex",
+    overflow: "auto",
+    scrollSnapType: "x mandatory",
+    WebkitOverflowScrolling: "touch",
+    scrollbarWidth: "none", // Hide scrollbar on Firefox
+    msOverflowStyle: "none", // Hide scrollbar on IE/Edge
   };
-
-  // Enhanced useEffect to inject custom styles for mobile view with better snap behavior
+  
+  // Hide scrollbar for Chrome, Safari and Opera
   useEffect(() => {
-    if (isMobile) {
+    if (scrollContainerRef.current) {
       const style = document.createElement('style');
       style.textContent = `
-        @media (max-width: 640px) {
-          .vendor-carousel-item {
-            width: 65vw !important; /* 65% of viewport width shows 1.5 cards */
-            flex-shrink: 0;
-            padding-right: 4px;
-          }
-          .embla__container {
-            scroll-snap-type: x mandatory;
-            scroll-behavior: smooth;
-            scroll-padding-left: 0.5rem;
-          }
-          .embla__slide {
-            scroll-snap-align: start;
-            scroll-snap-stop: always;
-          }
+        #vendor-scroll-container::-webkit-scrollbar {
+          display: none;
         }
       `;
       document.head.appendChild(style);
-
+      
       return () => {
         document.head.removeChild(style);
       };
+    }
+  }, []);
+  
+  // Handle scroll navigation
+  const scrollToCard = (index) => {
+    if (scrollContainerRef.current) {
+      const container = scrollContainerRef.current;
+      const cards = container.children;
+      if (cards[index]) {
+        cards[index].scrollIntoView({
+          behavior: 'smooth',
+          block: 'nearest',
+          inline: 'start'
+        });
+        setActiveIndex(index);
+      }
+    }
+  };
+  
+  // Update active index on scroll
+  const handleScroll = () => {
+    if (scrollContainerRef.current) {
+      const container = scrollContainerRef.current;
+      const scrollPosition = container.scrollLeft;
+      const cardWidthPx = container.offsetWidth * (isMobile ? 0.66 : 0.33333);
+      const newIndex = Math.round(scrollPosition / cardWidthPx);
+      setActiveIndex(newIndex);
+    }
+  };
+  
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (container) {
+      container.addEventListener('scroll', handleScroll);
+      return () => container.removeEventListener('scroll', handleScroll);
     }
   }, [isMobile]);
 
@@ -368,27 +383,61 @@ const VendorCarousel = () => {
         </div>  
       </div>  
 
-      {/* Vendor cards carousel */}  
-      <Carousel   
-        className="w-full"   
-        opts={getCarouselOptions()}
-      >  
-        <CarouselContent className="-ml-1 md:-ml-4">  
-          {vendors.map((vendor) => (  
-            <CarouselItem   
-              key={vendor.id}   
-              className="vendor-carousel-item pl-1 md:pl-4 md:basis-1/3 lg:basis-1/4"
-              style={{ width: isMobile ? '65vw' : undefined }} // Set explicit width for mobile - 65% of viewport width
-            >  
-              <HorizontalVendorCard vendor={vendor} />  
-            </CarouselItem>  
-          ))}  
-        </CarouselContent>  
-        <div className="flex justify-center mt-4 gap-2">
-          <CarouselPrevious className="static transform-none mx-1 bg-white shadow-sm border border-gray-200 hover:bg-gray-50 hover:border-gray-300" />  
-          <CarouselNext className="static transform-none mx-1 bg-white shadow-sm border border-gray-200 hover:bg-gray-50 hover:border-gray-300" />  
+      {/* Custom scroll container for 1.5 cards per view */}
+      <div 
+        id="vendor-scroll-container"
+        ref={scrollContainerRef}
+        style={containerStyle}
+        className="pb-4"
+      >
+        {vendors.map((vendor, index) => (
+          <div 
+            key={vendor.id}
+            style={{ 
+              flex: `0 0 ${cardWidth}`, 
+              scrollSnapAlign: "start",
+              paddingLeft: "8px",
+              paddingRight: index === vendors.length - 1 ? "8px" : "0"
+            }}
+          >
+            <HorizontalVendorCard vendor={vendor} />
+          </div>
+        ))}
+      </div>
+      
+      {/* Custom navigation buttons */}
+      <div className="flex justify-center mt-2 gap-2">
+        <button
+          onClick={() => scrollToCard(Math.max(0, activeIndex - 1))}
+          disabled={activeIndex === 0}
+          className="flex items-center justify-center w-8 h-8 rounded-full bg-white shadow-sm border border-gray-200 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          <ChevronLeft size={16} />
+        </button>
+        
+        {/* Dots indicator */}
+        <div className="flex items-center gap-1">
+          {vendors.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => scrollToCard(index)}
+              className={`w-2 h-2 rounded-full transition-all ${
+                index === activeIndex 
+                  ? "bg-blue-500 w-4" 
+                  : "bg-gray-300 hover:bg-gray-400"
+              }`}
+            />
+          ))}
         </div>
-      </Carousel>  
+        
+        <button
+          onClick={() => scrollToCard(Math.min(vendors.length - 1, activeIndex + 1))}
+          disabled={activeIndex === vendors.length - 1}
+          className="flex items-center justify-center w-8 h-8 rounded-full bg-white shadow-sm border border-gray-200 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          <ChevronRight size={16} />
+        </button>
+      </div>
     </div>
   );
 };
