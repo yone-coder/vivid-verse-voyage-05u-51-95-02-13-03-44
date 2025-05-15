@@ -67,7 +67,7 @@ export default function FlashDeals() {
       <div className="px-2 py-2">
 
 
-<div className="flex justify-between items-center mb-1 bg-gradient-to-r from-orange-400 via-orange-500 to-red-500 px-2 py-1.5 -mx-2">
+<div className="flex justify-evenly items-center mb-1 bg-gradient-to-r from-orange-400 via-orange-500 to-red-500 px-2 py-1.5 -mx-2">
   <div className="flex items-center space-x-2">
     <div className="flex items-center text-white text-xs font-bold uppercase tracking-wide">
       <Bolt className="w-4 h-4 mr-1" />
