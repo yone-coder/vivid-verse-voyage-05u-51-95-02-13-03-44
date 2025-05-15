@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Star, Flame, Truck, Tag, Users, ShoppingCart, CheckCircle, Store, Headphones, Shirt, Home, Smartphone, Droplet, Activity, Heart } from 'lucide-react';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
@@ -124,7 +125,7 @@ primary: "bg-blue-500 text-white",
 };
 
 return (
-<span className={px-2 py-1 text-xs font-medium rounded-full ${colorClasses[color]} ${className}}>
+<span className={`px-2 py-1 text-xs font-medium rounded-full ${colorClasses[color]} ${className}`}>
 {children}
 </span>
 );
