@@ -1,5 +1,8 @@
+
 import { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight, Star, Flame, Truck, Tag, Users, ShoppingCart, CheckCircle, Store, Headphones, Shirt, Home, Smartphone, Droplet, Activity, Heart } from 'lucide-react';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { Card } from "@/components/ui/card";
 
 // Sample data with locations and categories (expanded top products)
 const vendors = [
@@ -23,6 +26,85 @@ const vendors = [
       { id: 104, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/monitor.svg", price: "$129.99", discount: "-20%" },
       { id: 105, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/apple.svg", price: "$49.99" },
       { id: 106, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/arduino.svg", price: "$35.99" }
+    ]
+  },
+  {
+    id: 2,
+    name: "Fashion Trends",
+    image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/hm.svg",
+    rating: 4.7,
+    sales: "8.3k",
+    followers: "15.7k",
+    topSeller: true,
+    fastShipping: true,
+    verified: true,
+    discount: "20%",
+    location: "Paris",
+    category: "Fashion",
+    topProducts: [
+      { id: 201, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/puma.svg", price: "$49.99", discount: "-15%" },
+      { id: 202, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/nike.svg", price: "$89.50" },
+      { id: 203, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/adidas.svg", price: "$75.25" },
+      { id: 204, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/uniqlo.svg", price: "$29.99", discount: "-10%" }
+    ]
+  },
+  {
+    id: 3,
+    name: "EcoLife Home",
+    image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/ikea.svg",
+    rating: 4.6,
+    sales: "7.2k",
+    followers: "12.3k",
+    topSeller: false,
+    fastShipping: true,
+    verified: true,
+    location: "Stockholm",
+    category: "Home",
+    topProducts: [
+      { id: 301, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/homeassistant.svg", price: "$129.99", discount: "-10%" },
+      { id: 302, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/lighting.svg", price: "$59.50" },
+      { id: 303, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/airbnb.svg", price: "$89.75" },
+      { id: 304, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/instacart.svg", price: "$45.99", discount: "-5%" }
+    ]
+  },
+  {
+    id: 4,
+    name: "Beauty & Care",
+    image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/sephora.svg",
+    rating: 4.9,
+    sales: "12.8k",
+    followers: "27.5k",
+    topSeller: true,
+    fastShipping: true,
+    verified: true,
+    discount: "10%",
+    location: "Seoul",
+    category: "Beauty",
+    topProducts: [
+      { id: 401, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/nivea.svg", price: "$24.99", discount: "-20%" },
+      { id: 402, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/lush.svg", price: "$35.50" },
+      { id: 403, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/loreal.svg", price: "$42.75" },
+      { id: 404, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/avon.svg", price: "$18.99", discount: "-15%" }
+    ]
+  },
+  {
+    id: 5,
+    name: "Sports Outlet",
+    image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/underarmour.svg",
+    rating: 4.5,
+    sales: "9.1k",
+    followers: "14.2k",
+    topSeller: false,
+    fastShipping: true,
+    verified: true,
+    discount: "25%",
+    location: "Berlin",
+    category: "Sports",
+    topProducts: [
+      { id: 501, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/reebok.svg", price: "$59.99", discount: "-30%" },
+      { id: 502, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/newbalance.svg", price: "$89.50" },
+      { id: 503, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/asics.svg", price: "$75.25" },
+      { id: 504, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/columbia.svg", price: "$119.99", discount: "-15%" }
     ]
   }
 ];
@@ -234,10 +316,18 @@ const VendorCarousel = () => {
         </div>
       </div>
 
-      {/* Single vendor card for quick deployment */}
-      <div className="flex justify-center">
-        <HorizontalVendorCard vendor={vendors[0]} />
-      </div>
+      {/* Vendor cards carousel */}
+      <Carousel className="w-full">
+        <CarouselContent className="-ml-2 md:-ml-4">
+          {vendors.map((vendor) => (
+            <CarouselItem key={vendor.id} className="pl-2 md:pl-4 sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
+              <HorizontalVendorCard vendor={vendor} />
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious className="hidden sm:flex" />
+        <CarouselNext className="hidden sm:flex" />
+      </Carousel>
     </div>
   );
 };
