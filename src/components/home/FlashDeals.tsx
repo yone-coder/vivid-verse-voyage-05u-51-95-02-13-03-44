@@ -67,7 +67,7 @@ export default function FlashDeals() {
       <div className="px-2 py-2">
 
 
-       <div className="flex justify-between items-center mb-1 bg-red-500 px-2 py-1 rounded-sm animate-pulse-fast">
+<div className="flex justify-between items-center mb-1 bg-red-500 px-2 py-1 w-full">
   <div className="flex items-center space-x-2">
     <div className="flex items-center text-white text-xs font-bold uppercase tracking-wide">
       <Bolt className="w-3.5 h-3.5 mr-1" />
@@ -75,7 +75,7 @@ export default function FlashDeals() {
     </div>
     <div className="flex items-center space-x-1 text-[11px] text-white font-medium">
       <Timer className="w-3 h-3 mr-0.5" />
-      <span>{processedProducts.length} items remaining</span>
+      <span>Ends in 02:45:18</span>
     </div>
   </div>
   <Link
