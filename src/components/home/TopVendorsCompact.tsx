@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight, Star, Flame, Truck, Tag, Users, ShoppingCart, CheckCircle, Store, Headphones, Shirt, Home, Smartphone, Droplet, Activity, Heart } from 'lucide-react';
 
-// Sample data with locations and categories (using just one vendor for quick deployment)
+// Sample data with locations and categories (expanded top products)
 const vendors = [
   {
     id: 1,
@@ -19,7 +19,10 @@ const vendors = [
     topProducts: [
       { id: 101, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/headphones.svg", price: "$19.99", discount: "-10%" },
       { id: 102, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/keyboard.svg", price: "$24.50" },
-      { id: 103, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/mouse.svg", price: "$15.75" }
+      { id: 103, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/mouse.svg", price: "$15.75" },
+      { id: 104, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/monitor.svg", price: "$129.99", discount: "-20%" },
+      { id: 105, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/apple.svg", price: "$49.99" },
+      { id: 106, image: "https://cdnjs.cloudflare.com/ajax/libs/simple-icons/8.15.0/arduino.svg", price: "$35.99" }
     ]
   }
 ];
@@ -65,7 +68,7 @@ const getCategoryIcon = (category) => {
   }
 };
 
-// Modified horizontal vendor card with squared image and split buttons
+// Enhanced horizontal vendor card with exactly four products
 const HorizontalVendorCard = ({ vendor }) => {
   const [isFollowing, setIsFollowing] = useState(false);
   
@@ -79,6 +82,9 @@ const HorizontalVendorCard = ({ vendor }) => {
     "Sports": "orange",
     "Variety": "gray",
   };
+
+  // Always display exactly the first 4 products
+  const displayProducts = vendor.topProducts.slice(0, 4);
 
   return (
     <div className="flex-shrink-0 w-64 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-300 group">
@@ -100,8 +106,8 @@ const HorizontalVendorCard = ({ vendor }) => {
             </div>
           )}
           
-          {/* Followers indicator */}
-          <div className="absolute bottom-0 left-0 bg-white rounded-full p-1 shadow-md flex items-center">
+          {/* Followers indicator - moved lower */}
+          <div className="absolute -bottom-2 left-0 bg-white rounded-full p-1 shadow-md flex items-center">
             <div className="relative flex -space-x-1">
               <div className="w-2 h-2 rounded-full bg-blue-500"></div>
               <div className="w-2 h-2 rounded-full bg-green-500"></div>
@@ -147,33 +153,43 @@ const HorizontalVendorCard = ({ vendor }) => {
               {vendor.category}
             </Badge>
           </div>
+        </div>
+      </div>
 
-          {/* Product thumbnails */}
-          <div className="flex gap-1 mt-1">
-            {vendor.topProducts.slice(0, 3).map(product => (
-              <div key={product.id} className="relative w-8 h-8 group/product">
+      {/* Products grid section - without heading */}
+      <div className="px-2 pt-1 pb-2">
+        {/* Product grid with exactly 4 products */}
+        <div className="grid grid-cols-4 gap-1">
+          {displayProducts.map(product => (
+            <div key={product.id} className="relative group/product">
+              <div className="aspect-square rounded-md border border-gray-100 bg-gray-50 p-1 flex items-center justify-center">
                 <img 
                   src={product.image} 
                   alt="" 
-                  className="w-full h-full object-cover rounded-md shadow-sm border border-gray-100 p-1" 
+                  className="w-full h-full object-contain" 
                 />
-                
-                {/* Quick add overlay */}
-                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover/product:bg-opacity-30 flex items-center justify-center opacity-0 group-hover/product:opacity-100 transition-all rounded-md">
-                  <button className="bg-white rounded-full p-1 shadow-md hover:bg-blue-500 hover:text-white transition-colors">
-                    <ShoppingCart size={8} />
-                  </button>
-                </div>
-                
-                {/* Discount tag */}
-                {product.discount && (
-                  <div className="absolute -top-1 -right-1 bg-red-600 text-white text-xs px-1 rounded-full">
-                    {product.discount}
-                  </div>
-                )}
               </div>
-            ))}
-          </div>
+              
+              {/* Quick add overlay */}
+              <div className="absolute inset-0 bg-black bg-opacity-0 group-hover/product:bg-opacity-30 flex items-center justify-center opacity-0 group-hover/product:opacity-100 transition-all rounded-md">
+                <button className="bg-white rounded-full p-1 shadow-md hover:bg-blue-500 hover:text-white transition-colors">
+                  <ShoppingCart size={8} />
+                </button>
+              </div>
+              
+              {/* Discount tag */}
+              {product.discount && (
+                <div className="absolute -top-1 -right-1 bg-red-600 text-white text-xs px-1 rounded-full">
+                  {product.discount}
+                </div>
+              )}
+              
+              {/* Price tag - small and subtle */}
+              <div className="absolute -bottom-1 right-0 bg-white text-gray-800 text-xs px-1 rounded shadow-sm border border-gray-100">
+                {product.price}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 
