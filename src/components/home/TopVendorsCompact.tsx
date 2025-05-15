@@ -301,15 +301,25 @@ const HorizontalVendorCard = ({ vendor }) => {
 const VendorCarousel = () => {
   const isMobile = useIsMobile();
   
-  // Add useEffect to inject custom styles for mobile view
+  // Enhanced useEffect to inject custom styles for mobile view with better snap behavior
   useEffect(() => {
     if (isMobile) {
       const style = document.createElement('style');
       style.innerHTML = `
         /* Style for mobile to show one and a half cards */
         .vendor-carousel-item {
-          width: 75vw !important; /* Show one and a half cards */
-          padding-left: 0.5rem;
+          width: 65vw !important; /* Show one and a half cards */
+          flex-shrink: 0;
+        }
+        
+        /* Adjust embla container for proper snapping */
+        .embla__container {
+          scroll-snap-type: x mandatory;
+          scroll-padding-left: 1rem;
+        }
+        
+        .embla__slide {
+          scroll-snap-align: start;
         }
       `;
       document.head.appendChild(style);
@@ -339,13 +349,20 @@ const VendorCarousel = () => {
       </div>
 
       {/* Vendor cards carousel */}
-      <Carousel className="w-full">
+      <Carousel 
+        className="w-full" 
+        opts={{
+          align: "start",
+          loop: false,
+          dragFree: false
+        }}
+      >
         <CarouselContent className="-ml-2 md:-ml-4">
           {vendors.map((vendor) => (
             <CarouselItem 
               key={vendor.id} 
               className="vendor-carousel-item pl-2 md:pl-4 md:basis-1/3 lg:basis-1/4"
-              style={{ width: isMobile ? '75vw' : undefined }} // Set explicit width for mobile
+              style={{ width: isMobile ? '65vw' : undefined }} // Set explicit width for mobile
             >
               <HorizontalVendorCard vendor={vendor} />
             </CarouselItem>

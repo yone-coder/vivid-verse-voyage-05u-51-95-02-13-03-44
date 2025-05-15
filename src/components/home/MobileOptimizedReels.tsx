@@ -52,7 +52,7 @@ const MobileOptimizedReels = () => {
         display: none;
       }
       
-      /* Set the container width to show exactly 2.5 cards */
+      /* Set the container width to show exactly 1.5 cards */
       @media (max-width: 640px) {
         .reel-card {
           width: 40vw; /* Each card takes 40% of viewport width */
@@ -63,6 +63,11 @@ const MobileOptimizedReels = () => {
       /* Custom snap alignment */
       .custom-snap-scroll {
         scroll-padding-left: 8px;
+        scroll-snap-type: x mandatory;
+      }
+      
+      .custom-snap-scroll > div {
+        scroll-snap-align: start;
       }
     `;
     document.head.appendChild(style);
@@ -89,7 +94,7 @@ const MobileOptimizedReels = () => {
       {/* Edge-to-edge container for scrolling, with left padding pl-2 */}
       <div 
         ref={scrollContainerRef}
-        className="reels-container flex overflow-x-auto pl-2 hide-scrollbar snap-x snap-mandatory custom-snap-scroll w-full"
+        className="reels-container flex overflow-x-auto pl-2 hide-scrollbar custom-snap-scroll w-full"
         style={{ 
           scrollbarWidth: 'none', 
           msOverflowStyle: 'none',
@@ -98,7 +103,7 @@ const MobileOptimizedReels = () => {
         {reels.map((reel) => (
           <div 
             key={reel.id} 
-            className="reel-card flex-shrink-0 rounded-lg overflow-hidden shadow-lg bg-black relative snap-start"
+            className="reel-card flex-shrink-0 rounded-lg overflow-hidden shadow-lg bg-black relative"
             style={{ width: '40vw', marginRight: '3vw', maxWidth: '180px' }}
           >
             {/* Thumbnail with adjusted height for mobile */}
@@ -127,7 +132,7 @@ const MobileOptimizedReels = () => {
 
         {/* "See all" card - matching the size of other cards */}
         <div 
-          className="reel-card flex-shrink-0 rounded-lg overflow-hidden shadow-lg bg-gradient-to-b from-gray-800 to-black relative snap-start flex flex-col items-center justify-center"
+          className="reel-card flex-shrink-0 rounded-lg overflow-hidden shadow-lg bg-gradient-to-b from-gray-800 to-black relative flex flex-col items-center justify-center"
           style={{ width: '40vw', maxWidth: '180px', height: '56vw', maxHeight: '250px' }}
         >
           <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center mb-2">

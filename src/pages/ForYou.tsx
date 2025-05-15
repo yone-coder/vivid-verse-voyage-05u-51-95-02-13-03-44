@@ -13,6 +13,7 @@ import VendorProductCarousel from "@/components/home/VendorProductCarousel";
 import SecondaryFlashDeals from "@/components/home/SecondaryFlashDeals";
 import BenefitsBanner from "@/components/home/BenefitsBanner";
 import TopVendorsCompact from "@/components/home/TopVendorsCompact";
+import MobileOptimizedReels from "@/components/home/MobileOptimizedReels";
 import Newsletter from "@/components/home/Newsletter";
 import PopularSearches from "@/components/home/PopularSearches";
 import TranslationExample from "@/components/home/TranslationExample";
@@ -42,6 +43,7 @@ export default function ForYou() {
         <SpaceSavingCategories />
         <FlashDeals />
         <TopVendorsCompact />
+        <MobileOptimizedReels />
         
         {Array.isArray(products) && products.length > 0 && (
           <SuperDealsSection products={products} />
