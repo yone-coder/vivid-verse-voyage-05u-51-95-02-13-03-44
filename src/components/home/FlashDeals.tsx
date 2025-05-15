@@ -65,7 +65,9 @@ export default function FlashDeals() {
   return (
     <div className="w-full bg-white">
       <div className="px-2 py-2">
-        <div className="flex justify-between items-center mb-1 bg-[#FF4747] px-2 py-1 rounded-sm">
+
+
+        <div className="flex justify-between items-center mb-1 bg-gradient-to-r from-[#FF5E5E] to-[#FF2D2D] px-2 py-1 rounded-sm border-b border-[#FF1F1F] animate-pulse-fast">
   <div className="flex items-center space-x-2">
     <div className="flex items-center text-white text-xs font-semibold uppercase tracking-wide">
       <Zap className="w-3.5 h-3.5 mr-1" />
@@ -83,6 +85,9 @@ export default function FlashDeals() {
     More <ArrowRight className="h-3 w-3 ml-0.5" />
   </Link>
 </div>
+
+
+
       </div>
 
       <div className="relative">
