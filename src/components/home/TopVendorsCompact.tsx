@@ -1,8 +1,9 @@
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Star, Flame, Truck, Tag, Users, ShoppingCart, CheckCircle, Store, Headphones, Shirt, Home, Smartphone, Droplet, Activity, Heart } from 'lucide-react';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Card } from "@/components/ui/card";
+import { useIsMobile } from '@/hooks/use-mobile';
 
 // Sample data with locations and categories (expanded top products)
 const vendors = [
@@ -298,6 +299,27 @@ const HorizontalVendorCard = ({ vendor }) => {
 
 // Main carousel component
 const VendorCarousel = () => {
+  const isMobile = useIsMobile();
+  
+  // Add useEffect to inject custom styles for mobile view
+  useEffect(() => {
+    if (isMobile) {
+      const style = document.createElement('style');
+      style.innerHTML = `
+        /* Style for mobile to show one and a half cards */
+        .vendor-carousel-item {
+          width: 75vw !important; /* Show one and a half cards */
+          padding-left: 0.5rem;
+        }
+      `;
+      document.head.appendChild(style);
+      
+      return () => {
+        document.head.removeChild(style);
+      };
+    }
+  }, [isMobile]);
+
   return (
     <div className="w-full">
       {/* Header with Flame icon and "more" button with Chevron */}
@@ -320,7 +342,11 @@ const VendorCarousel = () => {
       <Carousel className="w-full">
         <CarouselContent className="-ml-2 md:-ml-4">
           {vendors.map((vendor) => (
-            <CarouselItem key={vendor.id} className="pl-2 md:pl-4 sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
+            <CarouselItem 
+              key={vendor.id} 
+              className="vendor-carousel-item pl-2 md:pl-4 md:basis-1/3 lg:basis-1/4"
+              style={{ width: isMobile ? '75vw' : undefined }} // Set explicit width for mobile
+            >
               <HorizontalVendorCard vendor={vendor} />
             </CarouselItem>
           ))}
