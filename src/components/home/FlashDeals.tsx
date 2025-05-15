@@ -64,12 +64,11 @@ export default function FlashDeals() {
 
   return (
     <div className="w-full bg-white">
-      <div className="px-2 py-2 bg-[#FF4747]">      {/* <-- added red bg here */}
-  <div className="flex justify-between items-center mb-1">
+    <div className="px-2 py-2">
+  <div className="flex justify-between items-center mb-1 bg-[#FF4747] px-3 py-2 rounded-sm">
     <div className="flex items-center space-x-2">
-      {/* You can de-emphasize the badge since the whole container is red */}
-      <div className="flex items-center bg-white text-[#FF4747] text-xs font-semibold px-2 py-0.5 rounded-sm uppercase tracking-wide">
-        <Zap className="w-3.5 h-3.5 mr-1 text-[#FF4747]" />
+      <div className="flex items-center text-white text-xs font-semibold px-2 py-0.5 uppercase tracking-wide">
+        <Zap className="w-3.5 h-3.5 mr-1" />
         Flash Sale
       </div>
       <div className="flex items-center space-x-1 text-[11px] text-white font-medium">
@@ -81,7 +80,7 @@ export default function FlashDeals() {
       to="/search?category=flash-deals"
       className="text-xs text-white hover:underline flex items-center font-medium"
     >
-      More <ArrowRight className="h-3 w-3 ml-0.5 text-white" />
+      More <ArrowRight className="h-3 w-3 ml-0.5" />
     </Link>
   </div>
 </div>
