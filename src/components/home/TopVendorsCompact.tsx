@@ -1,8 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight, Star, Flame, Truck, Tag, Users, ShoppingCart, CheckCircle, Store, Headphones, Shirt, Home, Smartphone, Droplet, Activity, Heart } from 'lucide-react';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { Card } from "@/components/ui/card";
-import { useIsMobile } from '@/hooks/use-mobile';
 
 // Sample data with locations and categories (expanded top products)
 const vendors = [
@@ -296,24 +293,36 @@ const HorizontalVendorCard = ({ vendor }) => {
   );
 };
 
-// Custom carousel component to ensure 1.5 cards view on mobile
+// Custom hook to detect if mobile
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(false);
+  
+  useEffect(() => {
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkIfMobile();
+    window.addEventListener('resize', checkIfMobile);
+    
+    return () => {
+      window.removeEventListener('resize', checkIfMobile);
+    };
+  }, []);
+  
+  return isMobile;
+};
+
+// Improved edge-to-edge Vendor Carousel component
 const VendorCarousel = () => {
   const isMobile = useIsMobile();
   const scrollContainerRef = useRef(null);
   const [activeIndex, setActiveIndex] = useState(0);
   
-  // Calculate card widths and container width
+  // Calculate card widths
   const cardWidth = isMobile ? "66%" : "33.333%"; // 66% for 1.5 cards on mobile, 33.333% for 3 cards on desktop
-  const containerStyle = {
-    display: "flex",
-    overflow: "auto",
-    scrollSnapType: "x mandatory",
-    WebkitOverflowScrolling: "touch",
-    scrollbarWidth: "none", // Hide scrollbar on Firefox
-    msOverflowStyle: "none", // Hide scrollbar on IE/Edge
-  };
   
-  // Hide scrollbar for Chrome, Safari and Opera
+  // Hide scrollbar for all browsers
   useEffect(() => {
     if (scrollContainerRef.current) {
       const style = document.createElement('style');
@@ -366,9 +375,9 @@ const VendorCarousel = () => {
   }, [isMobile]);
 
   return (
-    <div className="w-full px-2">
-      {/* Header with Flame icon and "more" button with Chevron */}
-      <div className="flex justify-between items-center mb-4">
+    <div className="w-full relative">
+      {/* Header with Flame icon and "more" button with Chevron - using padding for this section */}
+      <div className="flex justify-between items-center mb-4 px-4">
         <div className="flex items-center">
           <Flame size={18} className="text-orange-500 mr-2" />
           <h2 className="text-lg font-medium text-gray-800">Top Vendors</h2>
@@ -383,30 +392,42 @@ const VendorCarousel = () => {
         </div>  
       </div>  
 
-      {/* Custom scroll container for 1.5 cards per view */}
-      <div 
-        id="vendor-scroll-container"
-        ref={scrollContainerRef}
-        style={containerStyle}
-        className="pb-4"
-      >
-        {vendors.map((vendor, index) => (
-          <div 
-            key={vendor.id}
-            style={{ 
-              flex: `0 0 ${cardWidth}`, 
-              scrollSnapAlign: "start",
-              paddingLeft: "8px",
-              paddingRight: index === vendors.length - 1 ? "8px" : "0"
-            }}
-          >
-            <HorizontalVendorCard vendor={vendor} />
-          </div>
-        ))}
+      {/* Custom scroll container with edge-to-edge scrolling */}
+      <div className="relative w-full">
+        <div 
+          id="vendor-scroll-container"
+          ref={scrollContainerRef}
+          className="flex overflow-x-auto scrollbar-hide scroll-smooth pb-4"
+          style={{
+            scrollSnapType: "x mandatory",
+            WebkitOverflowScrolling: "touch",
+            scrollbarWidth: "none", 
+            msOverflowStyle: "none"
+          }}
+        >
+          {/* Left spacer to create padding effect while maintaining edge scrolling */}
+          <div style={{ flex: "0 0 16px" }} className="flex-shrink-0"></div>
+          
+          {vendors.map((vendor, index) => (
+            <div 
+              key={vendor.id}
+              style={{ 
+                flex: `0 0 ${cardWidth}`,
+                scrollSnapAlign: "start"
+              }}
+              className="px-2"
+            >
+              <HorizontalVendorCard vendor={vendor} />
+            </div>
+          ))}
+          
+          {/* Right spacer to create padding effect while maintaining edge scrolling */}
+          <div style={{ flex: "0 0 16px" }} className="flex-shrink-0"></div>
+        </div>
       </div>
       
-      {/* Custom navigation buttons */}
-      <div className="flex justify-center mt-2 gap-2">
+      {/* Custom navigation buttons - with padding to match header */}
+      <div className="flex justify-center mt-2 gap-2 px-4 pb-2">
         <button
           onClick={() => scrollToCard(Math.max(0, activeIndex - 1))}
           disabled={activeIndex === 0}
