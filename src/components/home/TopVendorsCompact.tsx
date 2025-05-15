@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Star, Flame, Truck, Tag, Users, ShoppingCart, CheckCircle, Store, Headphones, Shirt, Home, Smartphone, Droplet, Activity, Heart } from 'lucide-react';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
@@ -294,13 +293,32 @@ const HorizontalVendorCard = ({ vendor }) => {
         </button>  
       </div>  
     </div>
-
   );
 };
 
 // Main carousel component
 const VendorCarousel = () => {
   const isMobile = useIsMobile();
+  
+  // Get the correct carousel options based on device type
+  const getCarouselOptions = () => {
+    if (isMobile) {
+      return {
+        align: "start",
+        loop: false,
+        dragFree: true,
+        containScroll: "trimSnaps",
+        // Using a decimal value for slidesToScroll creates the partial card view effect
+        slidesToScroll: 1
+      };
+    }
+    
+    return {
+      align: "start",
+      loop: false,
+      dragFree: false
+    };
+  };
 
   // Enhanced useEffect to inject custom styles for mobile view with better snap behavior
   useEffect(() => {
@@ -309,20 +327,23 @@ const VendorCarousel = () => {
       style.textContent = `
         @media (max-width: 640px) {
           .vendor-carousel-item {
-            width: 40vw !important; /* 40% of viewport width for 2.5 cards per view */
+            width: 65vw !important; /* 65% of viewport width shows 1.5 cards */
             flex-shrink: 0;
+            padding-right: 8px;
           }
           .embla__container {
             scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
             scroll-padding-left: 1rem;
           }
           .embla__slide {
             scroll-snap-align: start;
+            scroll-snap-stop: always;
           }
         }
       `;
       document.head.appendChild(style);
-      
+
       return () => {
         document.head.removeChild(style);
       };
@@ -330,7 +351,7 @@ const VendorCarousel = () => {
   }, [isMobile]);
 
   return (
-    <div className="w-full">
+    <div className="w-full px-2">
       {/* Header with Flame icon and "more" button with Chevron */}
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center">
@@ -350,25 +371,23 @@ const VendorCarousel = () => {
       {/* Vendor cards carousel */}  
       <Carousel   
         className="w-full"   
-        opts={{  
-          align: "start",  
-          loop: false,  
-          dragFree: false  
-        }}  
+        opts={getCarouselOptions()}
       >  
         <CarouselContent className="-ml-2 md:-ml-4">  
           {vendors.map((vendor) => (  
             <CarouselItem   
               key={vendor.id}   
-              className="vendor-carousel-item pl-2 md:pl-4 md:basis-1/3 lg:basis-1/4"  
-              style={{ width: isMobile ? '40vw' : undefined }} // Set explicit width for mobile - 40% of viewport width
+              className="vendor-carousel-item pl-2 md:pl-4 md:basis-1/3 lg:basis-1/4"
+              style={{ width: isMobile ? '65vw' : undefined }} // Set explicit width for mobile - 65% of viewport width
             >  
               <HorizontalVendorCard vendor={vendor} />  
             </CarouselItem>  
           ))}  
         </CarouselContent>  
-        <CarouselPrevious className="hidden sm:flex" />  
-        <CarouselNext className="hidden sm:flex" />  
+        <div className="flex justify-center mt-4 gap-2">
+          <CarouselPrevious className="static transform-none mx-1 bg-white shadow-sm border border-gray-200 hover:bg-gray-50 hover:border-gray-300" />  
+          <CarouselNext className="static transform-none mx-1 bg-white shadow-sm border border-gray-200 hover:bg-gray-50 hover:border-gray-300" />  
+        </div>
       </Carousel>  
     </div>
   );
