@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Star, Flame, Truck, Tag, Users, ShoppingCart, CheckCircle, Store, Headphones, Shirt, Home, Smartphone, Droplet, Activity, Heart } from 'lucide-react';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
@@ -308,7 +309,7 @@ const VendorCarousel = () => {
       style.textContent = `
         @media (max-width: 640px) {
           .vendor-carousel-item {
-            width: 50vw !important; /* Exactly 50% of viewport width for 2 cards per view */
+            width: 40vw !important; /* 40% of viewport width for 2.5 cards per view */
             flex-shrink: 0;
           }
           .embla__container {
@@ -322,7 +323,6 @@ const VendorCarousel = () => {
       `;
       document.head.appendChild(style);
       
-      // Fixed return type by making it a void function
       return () => {
         document.head.removeChild(style);
       };
@@ -361,7 +361,7 @@ const VendorCarousel = () => {
             <CarouselItem   
               key={vendor.id}   
               className="vendor-carousel-item pl-2 md:pl-4 md:basis-1/3 lg:basis-1/4"  
-              style={{ width: isMobile ? '50vw' : undefined }} // Set explicit width for mobile - 50% of viewport width
+              style={{ width: isMobile ? '40vw' : undefined }} // Set explicit width for mobile - 40% of viewport width
             >  
               <HorizontalVendorCard vendor={vendor} />  
             </CarouselItem>  
