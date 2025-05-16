@@ -76,7 +76,7 @@ export default function FlashDeals() {
     </div>
     <div className="flex items-center gap-1.5 bg-white/20 text-white text-xs font-medium px-3 py-1 rounded-full backdrop-blur-sm">
   <Timer className="w-4 h-4 shrink-0" />
-  <span className="whitespace-nowrap">Ends in 02:45:18</span>
+  <span className="whitespace-nowrap">02:45:18</span>
 </div>
   </div>
 
