@@ -74,10 +74,10 @@ export default function FlashDeals() {
       <Bolt className="w-4 h-4" />
       FLASH DEALS
     </div>
-    <div className="flex bg-white/20 items-center space-x-1 text-[11px] text-white font-medium rounded-full">
-      <Timer className="w-3.5 h-3.5" />
-      <span>Ends in 02:45:18</span>
-    </div>
+    <div className="flex items-center gap-1.5 bg-white/20 text-white text-xs font-medium px-3 py-1 rounded-full backdrop-blur-sm">
+  <Timer className="w-4 h-4 shrink-0" />
+  <span className="whitespace-nowrap">Ends in 02:45:18</span>
+</div>
   </div>
 
   {/* RIGHT SIDE: View All, same gap to the timer via pl-6 */}
