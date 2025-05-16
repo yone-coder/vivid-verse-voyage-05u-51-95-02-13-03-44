@@ -66,30 +66,34 @@ export default function FlashDeals() {
   return (
     <div className="w-full bg-white">
       <div className="px-2 py-2">
-        <div className="flex items-center justify-between mb-1 bg-gradient-to-r from-orange-400 via-orange-500 to-red-500 px-2 py-1.5 -mx-2">
-          {/* Container for equal spacing */}
-          <div className="w-full flex justify-evenly items-center">
-            {/* First element (Flash Deals) */}
-            <div className="flex items-center gap-1 text-white text-xs font-bold uppercase tracking-wide">
-              <Zap className="w-4 h-4" />
-              FLASH DEALS
-            </div>
-            
-            {/* Middle element (Timer) */}
-            <div className="flex items-center gap-1.5 bg-white/20 text-white text-xs font-medium px-3 py-1 rounded-full backdrop-blur-sm">
-              <Timer className="w-4 h-4 shrink-0" />
-              <span className="whitespace-nowrap">02:45:18</span>
-            </div>
-            
-            {/* Last element (View All) */}
-            <a
-              href="/search?category=flash-deals"
-              className="text-xs text-white hover:underline flex items-center font-medium"
-            >
-              View All
-              <ArrowRight className="h-3.5 w-3.5 ml-0.5" />
-            </a>
+        <div className="flex items-center justify-between mb-1 bg-gradient-to-r from-orange-400 via-orange-500 to-red-500 px-4 py-1.5 -mx-2">
+          {/* First element (Flash Deals) - now on the far left */}
+          <div className="flex items-center gap-1 text-white text-xs font-bold uppercase tracking-wide">
+            <Zap className="w-4 h-4" />
+            FLASH DEALS
           </div>
+          
+          {/* Middle element (Timer) - will remain centered */}
+          <div className="flex items-center gap-1.5 bg-white/20 text-white text-xs font-medium px-3 py-1 rounded-full backdrop-blur-sm">
+            <Timer className="w-4 h-4 shrink-0" />
+            <span className="whitespace-nowrap">
+              {[timeLeft.hours, timeLeft.minutes, timeLeft.seconds].map((unit, i) => (
+                <span key={i}>
+                  {unit.toString().padStart(2, "0")}
+                  {i < 2 && <span className="mx-0.5">:</span>}
+                </span>
+              ))}
+            </span>
+          </div>
+          
+          {/* Last element (View All) - now on the far right */}
+          <a
+            href="/search?category=flash-deals"
+            className="text-xs text-white hover:underline flex items-center font-medium"
+          >
+            View All
+            <ArrowRight className="h-3.5 w-3.5 ml-0.5" />
+          </a>
         </div>
 
         <div className="relative">
