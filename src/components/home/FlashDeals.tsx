@@ -69,12 +69,12 @@ export default function FlashDeals() {
 
 
 
-<div className="flex items-center justify-between mb-1 bg-gradient-to-r from-orange-400 via-orange-500 to-red-500 px-2 py-1.5 -mx-2">
+ <div className="flex items-center justify-between mb-1 bg-gradient-to-r from-orange-400 via-orange-500 to-red-500 px-2 py-1.5 -mx-2">
       {/* Container for equal spacing */}
       <div className="w-full flex justify-evenly items-center">
         {/* First element (Flash Deals) */}
-        <div className="flex items-center space-x-2 text-white text-xs font-bold uppercase tracking-wide">
-          <Bolt className="w-4 h-4" />
+        <div className="flex items-center gap-1 text-white text-xs font-bold uppercase tracking-wide">
+          <Zap className="w-4 h-4" />
           FLASH DEALS
         </div>
         
