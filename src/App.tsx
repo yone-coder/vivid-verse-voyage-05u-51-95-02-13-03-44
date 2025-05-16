@@ -8,7 +8,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
 import ForYou from "./pages/ForYou";
 import Posts from "./pages/Posts";
-import Messages from "./pages/Messages";
+import Shops from "./pages/Shops";
 import Trending from "./pages/Trending";
 import Videos from "./pages/Videos";
 import Reels from "./pages/Reels";
@@ -49,7 +49,7 @@ const App = () => {
                       <Route path="/" element={<Navigate to="/for-you" replace />} />
                       <Route path="/for-you" element={<ForYou />} />
                       <Route path="/posts" element={<Posts />} />
-                      <Route path="/messages" element={<Messages />} />
+                      <Route path="/shops" element={<Shops />} />
                       <Route path="/trending" element={<Trending />} />
                       <Route path="/videos" element={<Videos />} />
                       <Route path="/reels" element={<Reels />} />
