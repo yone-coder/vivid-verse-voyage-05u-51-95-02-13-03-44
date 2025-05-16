@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
-  Home, Zap, Rss, MessageCircle, Video, User, X
+  Home, Zap, Rss, MessageCircle, TvMinimalPlay, User, X
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
@@ -17,7 +17,7 @@ const navItems = [
   { id: 'shorts', name: 'Shorts', icon: Zap, path: '/reels' },
   { id: 'feeds', name: 'Feeds', icon: Rss, path: '/posts' },
   { id: 'messages', name: 'Messages', icon: MessageCircle, path: '/messages' },
-  { id: 'videos', name: 'Videos', icon: Video, path: '/videos' },
+  { id: 'videos', name: 'Videos', icon: TvMinimalPlay, path: '/videos' },
   { id: 'account', name: 'Account', icon: User, path: '/account', isAvatar: true },
 ];
 
