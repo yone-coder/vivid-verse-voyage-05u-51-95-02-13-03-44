@@ -1,4 +1,3 @@
-
 import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect, useRef } from "react";
 import { fetchAllProducts } from "@/integrations/supabase/products";
@@ -53,7 +52,7 @@ export default function Messages() {
   });
 
   const isMobile = useIsMobile();
-  const messagesEndRef = useRef(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const [isReady, setIsReady] = useState(false);
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
   const [message, setMessage] = useState("");
@@ -231,6 +230,29 @@ export default function Messages() {
     scrollToBottom();
   }, [messages]);
 
+  // Hide bottom nav when conversation is selected
+  useEffect(() => {
+    // Get the navigation element
+    const bottomNav = document.querySelector('[class*="fixed bottom-0 left-0 right-0 bg-white"]');
+    
+    if (bottomNav) {
+      if (selectedConversation && isMobile) {
+        // Hide the navigation when conversation is selected on mobile
+        bottomNav.classList.add('hidden');
+      } else {
+        // Show the navigation otherwise
+        bottomNav.classList.remove('hidden');
+      }
+    }
+
+    // Clean up when component unmounts
+    return () => {
+      if (bottomNav) {
+        bottomNav.classList.remove('hidden');
+      }
+    };
+  }, [selectedConversation, isMobile]);
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -266,7 +288,7 @@ export default function Messages() {
     }, 2000);
   };
 
-  const handleMessageKeyDown = (e) => {
+  const handleMessageKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
@@ -398,7 +420,7 @@ export default function Messages() {
                     )}
                     <Avatar className="h-10 w-10">
                       <AvatarImage src={selectedConversation?.avatar} alt={selectedConversation?.name} />
-                      <AvatarFallback>{selectedConversation?.name.substring(0, 2).toUpperCase()}</AvatarFallback>
+                      <AvatarFallback>{selectedConversation?.name?.substring(0, 2).toUpperCase()}</AvatarFallback>
                     </Avatar>
                     <div className="ml-3 flex-1">
                       <div className="flex items-center">
@@ -522,7 +544,7 @@ export default function Messages() {
 }
 
 // A simple message icon for the empty state
-function MessageIcon(props) {
+function MessageIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}
