@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
-  Home, Zap, Rss, MessageCircle, TvMinimalPlay, User, X
+  Home, Zap, Rss, MessageCircle, TvMinimalPlay, LayoutGrid, X
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
@@ -29,7 +29,7 @@ const navItems: BottomNavTab[] = [
   { id: 'feeds', name: 'Feeds', icon: Rss, path: '/posts' },
   { id: 'messages', name: 'Messages', icon: MessageCircle, path: '/messages' },
   { id: 'videos', name: 'Videos', icon: TvMinimalPlay, path: '/videos' },
-  { id: 'account', name: 'Account', icon: User, path: '/account', isAvatar: true },
+  { id: 'more', name: 'More', icon: LayoutGrid, path: '/account' }, // Changed from 'account' to 'more' with LayoutGrid icon
 ];
 
 export default function BottomNav() {
@@ -51,7 +51,7 @@ export default function BottomNav() {
     else if (path.startsWith('/feeds')) setActiveTab('feeds');
     else if (path.startsWith('/messages')) setActiveTab('messages');
     else if (path.startsWith('/videos')) setActiveTab('videos');
-    else if (path.startsWith('/account')) setActiveTab('account');
+    else if (path.startsWith('/account')) setActiveTab('more'); // Changed from 'account' to 'more'
   }, [location.pathname]);
 
   const handleTabClick = (item) => {
