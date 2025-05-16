@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from "react";
 import AliExpressHeader from "@/components/home/AliExpressHeader";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -437,7 +438,7 @@ export default function Messages() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
-      {/* AliExpressHeader component - only show when no conversation is selected */}
+      {/* AliExpressHeader component - hide completely when a conversation is selected */}
       {!selectedConversation && <AliExpressHeader activeTabId="messages" />}
 
       {/* Main content */}
