@@ -15,6 +15,7 @@ export default function MainLayout() {
   const pathname = location.pathname;
   const isProductPage = pathname.includes('/product/');
   const isRootHomePage = pathname === "/" || pathname === "/for-you";
+  const isForYouPage = pathname === "/" || pathname === "/for-you";
   const { toast } = useToast();
   const [isFavorite, setIsFavorite] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -78,8 +79,10 @@ export default function MainLayout() {
       <div className="min-h-screen flex flex-col bg-white">
         <style dangerouslySetInnerHTML={{ __html: headerHeightStyle }} />
 
-        {/* Show AliExpressHeader on all pages */}
-        <AliExpressHeader activeTabId={isRootHomePage ? "recommendations" : ""} />
+        {/* Show AliExpressHeader only on the For You page */}
+        {isForYouPage && (
+          <AliExpressHeader activeTabId={isRootHomePage ? "recommendations" : ""} />
+        )}
 
         <main className="flex-grow relative">
           <Outlet />
