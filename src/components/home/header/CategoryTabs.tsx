@@ -2,9 +2,7 @@
 import { LayoutGrid } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ReactNode, useRef, useEffect } from 'react';
-import { motion, useMotionValue, animate as fmAnimate } from 'framer-motion';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSquareRss, faHome, faMessage, faImage } from '@fortawesome/free-solid-svg-icons';
+import { motion } from 'framer-motion';
 
 interface CategoryTab {
   id: string;
@@ -32,40 +30,11 @@ const CategoryTabs = ({
   const location = useLocation();
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const scrollX = useMotionValue(0); // Motion value for scrollLeft
 
   useEffect(() => {
     // Ensure tabRefs array is the same size as categories
     tabRefs.current = tabRefs.current.slice(0, categories.length);
   }, [categories]);
-
-  // Effect to animate scroll position when activeTab changes
-  useEffect(() => {
-    const activeTabIndex = categories.findIndex(cat => cat.id === activeTab);
-    const activeTabElement = tabRefs.current[activeTabIndex];
-    const containerElement = scrollContainerRef.current;
-
-    if (activeTabElement && containerElement) {
-      // Calculate position to center the tab
-      const newScrollLeft = activeTabElement.offsetLeft - (containerElement.offsetWidth / 2) + (activeTabElement.offsetWidth / 2);
-      
-      // Animate the scrollX motion value
-      fmAnimate(scrollX, newScrollLeft, {
-        duration: 0.4,
-        ease: "easeInOut",
-      });
-    }
-  }, [activeTab, categories, scrollX]);
-
-  // Effect to apply the scrollX motion value to the DOM element
-  useEffect(() => {
-    const unsubscribe = scrollX.on("change", (latestValue) => {
-      if (scrollContainerRef.current) {
-        scrollContainerRef.current.scrollLeft = latestValue;
-      }
-    });
-    return () => unsubscribe();
-  }, [scrollX]);
 
   const handleTabClick = (id: string, path: string) => {
     setActiveTab(id);
@@ -84,11 +53,9 @@ const CategoryTabs = ({
     >
       {/* Tabs List */}
       <div className="pr-[48px] h-full">
-        {/* Removed animate prop from motion.div, scroll is now handled by useMotionValue */}
-        <motion.div
+        <div
           ref={scrollContainerRef}
           className="flex items-center overflow-x-auto no-scrollbar h-full"
-          // transition prop is not needed here as animation is imperative
         >
           {categories.map(({ id, name, icon, path }, index) => {
             const isActive = id === activeTab;
@@ -115,17 +82,17 @@ const CategoryTabs = ({
                 )}
                 {isActive && (
                   <motion.div
-                    className={`absolute bottom-0 left-0 right-0 h-0.5 bg-orange-500 ${iconsOnly ? 'w-6 mx-auto' : ''}`}
-                    initial={{ scaleX: 0 }}
-                    animate={{ scaleX: 1 }}
-                    transition={{ duration: 0.3, ease: "easeInOut" }}
-                    style={{ transformOrigin: 'center' }}
+                    className="absolute inset-0 bg-orange-50/70 -z-10 rounded-md"
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 0.3 }}
+                    style={{ originX: 0.5, originY: 0.5 }}
                   />
                 )}
               </button>
             );
           })}
-        </motion.div>
+        </div>
       </div>
 
       {/* Icon Button on Right */}
