@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from 'react';
 import { useScrollProgress } from '@/hooks/useScrollProgress';
 import { Home, ShoppingBag, Users, Image, MessageSquare, Store } from 'lucide-react';
@@ -70,54 +71,53 @@ export default function AliExpressHeader({ activeTabId = 'recommendations' }: Al
 
   return (
     <header id="ali-header" className="fixed top-0 w-full z-30">
-      {/* Top Bar - Only show on "for-you" page */}
-      {isForYouPage && (
-        <div
-          className="flex items-center justify-between px-2 bg-white shadow-sm transition-all duration-300"
-          style={{
-            height: '36px', // Reduced from 44px
-          }}
-        >
-          {/* Left: Always show Logo */}
-          <HeaderLogoToggle 
-            progress={1} // Always use the scrolled state
-            togglePanel={togglePanel}
-            isOpen={isOpen}
-            activeTab={activeTab}
+      {/* Top Bar - Always show */}
+      <div
+        className="flex items-center justify-between px-2 bg-white shadow-sm transition-all duration-300"
+        style={{
+          height: '36px', // Reduced from 44px
+        }}
+      >
+        {/* Left: Always show Logo */}
+        <HeaderLogoToggle 
+          progress={1} // Always use the scrolled state
+          togglePanel={togglePanel}
+          isOpen={isOpen}
+          activeTab={activeTab}
+        />
+
+        {/* Center: Search Bar */}
+        <div className="flex flex-1 mx-2" ref={searchRef}>
+          <HeaderSearchBar 
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            isSearchFocused={isSearchFocused}
+            handleSearchFocus={handleSearchFocus}
+            handleClearSearch={handleClearSearch}
+            voiceSearchActive={voiceSearchActive}
+            handleVoiceSearch={handleVoiceSearch}
+            isGlowing={isSearchGlowing}
           />
-
-          {/* Center: Search Bar */}
-          <div className="flex flex-1 mx-2" ref={searchRef}>
-            <HeaderSearchBar 
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
-              isSearchFocused={isSearchFocused}
-              handleSearchFocus={handleSearchFocus}
-              handleClearSearch={handleClearSearch}
-              voiceSearchActive={voiceSearchActive}
-              handleVoiceSearch={handleVoiceSearch}
-              isGlowing={isSearchGlowing}
-            />
-          </div>
-
-          {/* Right: Language, Location, and Notifications */}
-          <div className="flex items-center space-x-2 flex-shrink-0">
-            <HeaderLanguage />
-            <NotificationBadge />
-          </div>
         </div>
+
+        {/* Right: Language, Location, and Notifications */}
+        <div className="flex items-center space-x-2 flex-shrink-0">
+          <HeaderLanguage />
+          <NotificationBadge />
+        </div>
+      </div>
+
+      {/* Category Tabs - Only show on ForYou page */}
+      {isForYouPage && (
+        <CategoryTabs 
+          progress={1} // Always use the scrolled state
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          categories={categories}
+        />
       )}
 
-      {/* Category Tabs - Always with white background */}
-      <CategoryTabs 
-        progress={1} // Always use the scrolled state
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        categories={categories}
-        iconsOnly={showIconsOnly}
-      />
-
-      {/* Dropdown Panel */}
+      {/* Dropdown Panel - Show on all pages */}
       <CategoryPanel 
         progress={1} // Always use the scrolled state
         isOpen={isOpen}
