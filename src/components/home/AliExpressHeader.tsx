@@ -1,7 +1,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useScrollProgress } from '@/hooks/useScrollProgress';
-import { Home, MessageSquare, Image } from 'lucide-react';
+import { Home, MessageSquare, Image, Video } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSquareRss } from '@fortawesome/free-solid-svg-icons';
 import HeaderSearchBar from './header/HeaderSearchBar';
@@ -52,8 +52,8 @@ export default function AliExpressHeader({ activeTabId = 'recommendations' }: Al
     { id: 'recommendations', name: t('home.forYou'), icon: <Home className="h-3 w-3" />, path: '/for-you' },
     { id: 'posts', name: t('home.posts'), icon: <FontAwesomeIcon icon={faSquareRss} className="h-3 w-3" />, path: '/posts' },
     { id: 'messages', name: t('home.messages'), icon: <MessageSquare className="h-3 w-3" />, path: '/messages' },
+    { id: 'videos', name: t('home.videos'), icon: <Video className="h-3 w-3" />, path: '/videos' },
     { id: 'trending', name: t('home.trending'), icon: <Image className="h-3 w-3" />, path: '/trending' },
-    { id: 'videos', name: t('home.videos'), icon: <Image className="h-3 w-3" />, path: '/videos' },
   ];
   
   const togglePanel = () => setIsOpen(!isOpen);

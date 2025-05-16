@@ -1,8 +1,10 @@
 
-import { LayoutGrid } from 'lucide-react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { ReactNode, useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { Home, MessageCircle, Video, LayoutGrid } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSquareRss } from '@fortawesome/free-solid-svg-icons';
+import { useNavigate } from 'react-router-dom';
+import { ReactNode } from 'react';
 
 interface CategoryTab {
   id: string;
@@ -27,68 +29,77 @@ const CategoryTabs = ({
   iconsOnly = false,
 }: CategoryTabsProps) => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    // Ensure tabRefs array is the same size as categories
-    tabRefs.current = tabRefs.current.slice(0, categories.length);
-  }, [categories]);
+  const [previousTab, setPreviousTab] = useState<string | null>(null);
+  const [animating, setAnimating] = useState(false);
 
   const handleTabClick = (id: string, path: string) => {
-    setActiveTab(id);
-    navigate(path, { replace: true });
+    if (id !== activeTab && !animating) {
+      setAnimating(true);
+      setPreviousTab(activeTab);
+      setActiveTab(id);
+      navigate(path, { replace: true });
+      
+      // Reset animation state after animation completes
+      setTimeout(() => {
+        setAnimating(false);
+        setPreviousTab(null);
+      }, 400);
+    }
   };
 
   return (
     <div
       className="relative w-full transition-all duration-700 overflow-hidden"
       style={{
-        maxHeight: progress > 0.3 ? (iconsOnly ? '56px' : '40px') : '0px', // Increased height for icon-only mode
+        maxHeight: progress > 0.3 ? (iconsOnly ? '56px' : '48px') : '0px',
         opacity: progress > 0.3 ? 1 : 0,
         backgroundColor: `rgba(255, 255, 255, ${progress * 0.98})`,
         backdropFilter: `blur(${progress * 8}px)`,
       }}
     >
-      {/* Tabs List */}
-      <div className="pr-[48px] h-full">
-        <div
-          ref={scrollContainerRef}
-          className="flex items-center overflow-x-auto no-scrollbar h-full"
-        >
-          {categories.map(({ id, name, icon, path }, index) => {
-            const isActive = id === activeTab;
-
+      <div className="relative w-full py-1 px-2">
+        <div className="flex items-center justify-between w-full">
+          {categories.map((category) => {
+            const isActive = category.id === activeTab;
+            const wasActive = previousTab === category.id;
+            
             return (
-              <button
-                key={id}
-                ref={el => tabRefs.current[index] = el}
-                onClick={() => handleTabClick(id, path)}
-                aria-pressed={isActive}
-                className={`relative flex items-center ${iconsOnly ? 'justify-center px-6 py-3' : 'gap-1 px-3 py-1'} text-xs font-medium whitespace-nowrap transition-colors duration-150 ease-in-out focus:outline-none focus-visible:ring-1 focus-visible:ring-orange-500 focus-visible:ring-offset-1 ${
-                  isActive
-                    ? 'text-orange-500'
-                    : 'text-gray-600 hover:text-orange-500 hover:bg-orange-50/70 rounded-md'
+              <button 
+                key={category.id}
+                onClick={() => handleTabClick(category.id, category.path)}
+                className={`relative flex items-center justify-center ${
+                  isActive 
+                    ? 'bg-white text-orange-500 shadow-md rounded-full py-1 px-3' 
+                    : 'text-gray-500 py-1 px-3'
+                } transition-all duration-300 ease-out transform ${
+                  isActive ? 'scale-105' : wasActive ? 'scale-95' : 'scale-100'
                 }`}
+                style={{
+                  zIndex: isActive ? 10 : 1,
+                  transitionProperty: 'transform, background, box-shadow, border-radius, color, padding',
+                }}
               >
-                {iconsOnly ? (
-                  <div className="transform scale-[2.0]">{icon}</div>
-                ) : (
-                  <>
-                    <div className="transform scale-[1.75]">{icon}</div>
-                    <span>{name}</span>
-                  </>
-                )}
-                {isActive && (
-                  <motion.div
-                    className="absolute inset-0 bg-orange-50/70 -z-10 rounded-md"
-                    initial={{ scale: 0, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ duration: 0.3 }}
-                    style={{ originX: 0.5, originY: 0.5 }}
-                  />
-                )}
+                <div className="flex items-center justify-center">
+                  {isActive ? (
+                    <div className="transform scale-[2.2]">{category.icon}</div>
+                  ) : (
+                    <div className="transform scale-[1.8]">{category.icon}</div>
+                  )}
+                  
+                  {isActive && !iconsOnly && (
+                    <span 
+                      className="ml-2 text-xs font-medium origin-left transition-all duration-300"
+                      style={{
+                        opacity: 1,
+                        maxWidth: '100px',
+                        overflow: 'hidden',
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
+                      {category.name}
+                    </span>
+                  )}
+                </div>
               </button>
             );
           })}
