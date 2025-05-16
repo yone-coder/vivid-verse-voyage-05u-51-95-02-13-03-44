@@ -83,11 +83,14 @@ const VendorProductCarousel = ({ title, description, products }: VendorProductCa
     });
   };
 
+  // Sample expanded post description if none provided
+  const postDescription = description || "Check out our latest collection of trendy products! Perfect for the upcoming season. Tag a friend who would love these items! 👗✨ #NewArrivals #TrendingNow";
+
   return (
-    <div className="max-w-6xl mx-auto overflow-hidden">
+    <div className="max-w-6xl mx-auto overflow-hidden bg-white rounded-lg shadow-sm mb-4">
       {/* Vendor Info Header */}
-      <div className="flex items-center mb-2 px-3 md:px-4">
-        <div className="flex-shrink-0 mr-3 rounded-full overflow-hidden w-12 h-12">
+      <div className="flex items-center p-3 md:p-4 border-b border-gray-100">
+        <div className="flex-shrink-0 mr-3 rounded-full overflow-hidden w-10 h-10 md:w-12 md:h-12">
           <img  
             src={vendorData.profilePic}  
             alt={vendorData.vendorName}  
@@ -110,68 +113,23 @@ const VendorProductCarousel = ({ title, description, products }: VendorProductCa
             {vendorData.followers} followers • {timeAgo(vendorData.publishedAt)}
           </p>
         </div>
-        <button className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 md:px-4 md:py-2 rounded-full text-xs md:text-sm font-medium">
+        <button className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 md:px-4 md:py-1.5 rounded-full text-xs md:text-sm font-medium">
           Follow
         </button>
-      </div>
-
-      {/* Post Description */}  
-      {description && (  
-        <div className="px-3 md:px-4 mb-3 text-gray-800 text-sm md:text-base">  
-          {description}  
-        </div>  
-      )}  
-
-      {/* Enhanced Social Buttons */}  
-      <div className="flex items-center justify-between px-3 md:px-4 mb-4">
-        <div className="flex items-center gap-5">
-          <button 
-            onClick={handleLike} 
-            className="flex items-center gap-1.5 group transition-colors"
-          >  
-            <div className={`flex items-center justify-center w-8 h-8 rounded-full ${liked ? 'bg-red-50' : 'hover:bg-gray-100'} transition-colors`}>
-              <ThumbsUp className={`w-5 h-5 ${liked ? 'text-red-500' : 'text-gray-600 group-hover:text-gray-800'}`} />  
-            </div>
-            <span className={`text-xs md:text-sm ${liked ? 'font-medium text-red-500' : 'text-gray-600 group-hover:text-gray-800'}`}>
-              {likeCount}
-            </span>  
-          </button>  
-          
-          <button 
-            onClick={handleComment}
-            className="flex items-center gap-1.5 group transition-colors"
-          >  
-            <div className="flex items-center justify-center w-8 h-8 rounded-full hover:bg-gray-100 transition-colors">
-              <MessageSquare className="w-5 h-5 text-gray-600 group-hover:text-gray-800" />  
-            </div>
-            <span className="text-xs md:text-sm text-gray-600 group-hover:text-gray-800">
-              {commentCount}
-            </span>  
-          </button>  
-          
-          <button 
-            onClick={handleShare}
-            className="flex items-center gap-1.5 group transition-colors"
-          >  
-            <div className="flex items-center justify-center w-8 h-8 rounded-full hover:bg-gray-100 transition-colors">
-              <Share className="w-5 h-5 text-gray-600 group-hover:text-gray-800" />  
-            </div>
-            <span className="text-xs md:text-sm text-gray-600 group-hover:text-gray-800">
-              {shareCount}
-            </span>  
-          </button>  
-        </div>
-        
-        {/* More options button */}
-        <Button variant="ghost" size="icon" className="rounded-full h-8 w-8">
-          <MoreHorizontal className="text-gray-600 h-5 w-5" />
+        <Button variant="ghost" size="icon" className="ml-1 rounded-full h-8 w-8">
+          <MoreHorizontal className="text-gray-600 h-4 w-4" />
         </Button>
       </div>
 
+      {/* Post Description */}  
+      <div className="px-4 py-3 text-gray-800 text-sm md:text-base">  
+        <p className="whitespace-pre-line">{postDescription}</p>  
+      </div>  
+
       {/* Products Carousel */}  
-      <div className="relative w-full">  
+      <div className="relative w-full px-1 py-2 bg-gray-50">  
         <div   
-          className="flex overflow-x-auto gap-2 md:gap-3 pb-4 snap-x snap-mandatory"  
+          className="flex overflow-x-auto gap-2 md:gap-3 pb-3 pt-1 snap-x snap-mandatory"  
           ref={carouselRef}  
           style={{    
             scrollbarWidth: 'none',    
@@ -217,6 +175,59 @@ const VendorProductCarousel = ({ title, description, products }: VendorProductCa
           ))}  
         </div>  
       </div>  
+
+      {/* Facebook style engagement stats */}
+      <div className="px-4 py-2 flex items-center justify-between border-b border-gray-100">
+        <div className="flex items-center gap-1">
+          <div className="bg-blue-500 rounded-full p-1">
+            <ThumbsUp className="h-3 w-3 text-white" />
+          </div>
+          <span className="text-xs text-gray-500">{likeCount}</span>
+        </div>
+        <div className="flex items-center gap-3 text-xs text-gray-500">
+          <span>{commentCount} comments</span>
+          <span>{shareCount} shares</span>
+        </div>
+      </div>
+
+      {/* Enhanced Social Buttons - Moved to Bottom */}  
+      <div className="flex items-center justify-between px-2 py-1">
+        <div className="flex-1">
+          <button 
+            onClick={handleLike} 
+            className="flex items-center justify-center gap-1.5 group transition-colors w-full py-2 hover:bg-gray-100 rounded-md"
+          >  
+            <ThumbsUp className={`w-5 h-5 ${liked ? 'text-blue-500' : 'text-gray-600 group-hover:text-gray-800'}`} />
+            <span className={`text-xs md:text-sm ${liked ? 'font-medium text-blue-500' : 'text-gray-600 group-hover:text-gray-800'}`}>
+              Like
+            </span>  
+          </button>
+        </div>
+          
+        <div className="flex-1">
+          <button 
+            onClick={handleComment}
+            className="flex items-center justify-center gap-1.5 group transition-colors w-full py-2 hover:bg-gray-100 rounded-md"
+          >  
+            <MessageSquare className="w-5 h-5 text-gray-600 group-hover:text-gray-800" />
+            <span className="text-xs md:text-sm text-gray-600 group-hover:text-gray-800">
+              Comment
+            </span>  
+          </button>
+        </div>
+          
+        <div className="flex-1">
+          <button 
+            onClick={handleShare}
+            className="flex items-center justify-center gap-1.5 group transition-colors w-full py-2 hover:bg-gray-100 rounded-md"
+          >  
+            <Share className="w-5 h-5 text-gray-600 group-hover:text-gray-800" />
+            <span className="text-xs md:text-sm text-gray-600 group-hover:text-gray-800">
+              Share
+            </span>  
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
