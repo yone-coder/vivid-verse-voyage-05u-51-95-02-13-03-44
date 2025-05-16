@@ -2,12 +2,28 @@
 import { useState, useRef, useEffect } from "react";
 import AliExpressHeader from "@/components/home/AliExpressHeader";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { MessageSquare, Search, Phone, Video, Info, Image, Smile, ThumbsUp, Paperclip, Send } from "lucide-react";
+import { 
+  MessageSquare, Search, Phone, Video, Info, Image, Smile, ThumbsUp, 
+  Paperclip, Send, Mic, MoreHorizontal, ChevronLeft,
+  Heart, Star, X, Plus
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { 
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Card } from "@/components/ui/card";
 
 interface Message {
   id: number;
@@ -17,6 +33,10 @@ interface Message {
   isOwn: boolean;
   read: boolean;
   avatar: string;
+  reactions?: {
+    type: string;
+    count: number;
+  }[];
 }
 
 interface Conversation {
@@ -27,13 +47,23 @@ interface Conversation {
   timestamp: string;
   unread: number;
   online: boolean;
+  isGroup?: boolean;
+  members?: {
+    name: string;
+    avatar: string;
+  }[];
 }
 
 export default function Messages() {
   const isMobile = useIsMobile();
   const [isReady, setIsReady] = useState(false);
-  const [selectedConversation, setSelectedConversation] = useState<number | null>(null); // Initially no conversation selected
+  const [selectedConversation, setSelectedConversation] = useState<number | null>(null);
   const [newMessage, setNewMessage] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [showReactions, setShowReactions] = useState<number | null>(null);
+  const [isRecording, setIsRecording] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -47,6 +77,135 @@ export default function Messages() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [selectedConversation]);
+
+  // Simulate typing indicator
+  useEffect(() => {
+    if (selectedConversation) {
+      const typingInterval = setInterval(() => {
+        setIsTyping(prev => !prev);
+      }, 5000);
+      
+      return () => clearInterval(typingInterval);
+    }
+  }, [selectedConversation]);
+
+  // Filter conversations based on search
+  const filteredConversations = conversations.filter(
+    conversation => conversation.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleSendMessage = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newMessage.trim() || !selectedConversation) return;
+
+    // Add message to current conversation
+    const messageObj: Message = {
+      id: Date.now(),
+      sender: "You",
+      content: newMessage,
+      timestamp: "Just now",
+      isOwn: true,
+      read: false,
+      avatar: "https://picsum.photos/id/100/100"
+    };
+
+    messages[selectedConversation] = [...(messages[selectedConversation] || []), messageObj];
+    
+    // Display toast for demo purposes
+    toast({
+      title: "Message sent",
+      description: "Your message has been sent successfully",
+      duration: 2000,
+    });
+
+    // Clear input
+    setNewMessage("");
+    
+    // Scroll to bottom
+    setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+    
+    // Simulate reply after 2 seconds
+    if (selectedConversation === 1) {
+      setTimeout(() => {
+        const replyObj: Message = {
+          id: Date.now() + 1,
+          sender: "Sarah Johnson",
+          content: "I'm typing a response...",
+          timestamp: "Just now",
+          isOwn: false,
+          read: false,
+          avatar: "https://picsum.photos/id/64/100"
+        };
+        
+        messages[selectedConversation] = [...(messages[selectedConversation] || []), replyObj];
+        
+        // Force update and scroll
+        setNewMessage(" ");
+        setNewMessage("");
+        
+        setTimeout(() => {
+          messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        }, 100);
+      }, 2000);
+    }
+  };
+
+  const addReaction = (messageId: number, reactionType: string) => {
+    if (!selectedConversation) return;
+    
+    const updatedMessages = messages[selectedConversation].map(message => {
+      if (message.id === messageId) {
+        const existingReactions = message.reactions || [];
+        const existingReaction = existingReactions.find(r => r.type === reactionType);
+        
+        let newReactions;
+        if (existingReaction) {
+          newReactions = existingReactions.map(r => 
+            r.type === reactionType ? { ...r, count: r.count + 1 } : r
+          );
+        } else {
+          newReactions = [...existingReactions, { type: reactionType, count: 1 }];
+        }
+        
+        return { ...message, reactions: newReactions };
+      }
+      return message;
+    });
+    
+    messages[selectedConversation] = updatedMessages;
+    setShowReactions(null);
+    
+    // Force update
+    setNewMessage(" ");
+    setNewMessage("");
+  };
+
+  const handleRecordToggle = () => {
+    setIsRecording(!isRecording);
+    
+    if (!isRecording) {
+      toast({
+        title: "Recording started",
+        description: "Tap again to send your voice message",
+        duration: 2000,
+      });
+    } else {
+      toast({
+        title: "Voice message sent",
+        description: "Your voice message has been sent",
+        duration: 2000,
+      });
+    }
+  };
+
+  if (!isReady) {
+    return <div className="h-screen bg-gray-50 flex items-center justify-center">Loading...</div>;
+  }
+
+  const selectedConversationData = conversations.find(c => c.id === selectedConversation);
+  const currentMessages = selectedConversation ? (messages[selectedConversation] || []) : [];
 
   // Mock conversation data
   const conversations: Conversation[] = [
@@ -94,6 +253,30 @@ export default function Messages() {
       timestamp: "Mon",
       unread: 0,
       online: true
+    },
+    {
+      id: 6,
+      name: "AliExpress Team",
+      avatar: "https://picsum.photos/id/60/100",
+      lastMessage: "Welcome to our platform!",
+      timestamp: "Mon",
+      unread: 0,
+      online: true
+    },
+    {
+      id: 7,
+      name: "Gadget Enthusiasts",
+      avatar: "https://picsum.photos/id/26/100",
+      lastMessage: "John: Has anyone tried the new model?",
+      timestamp: "Sun",
+      unread: 3,
+      online: true,
+      isGroup: true,
+      members: [
+        { name: "John Smith", avatar: "https://picsum.photos/id/22/100" },
+        { name: "Lisa Wang", avatar: "https://picsum.photos/id/29/100" },
+        { name: "Robert Green", avatar: "https://picsum.photos/id/33/100" },
+      ]
     }
   ];
 
@@ -107,7 +290,8 @@ export default function Messages() {
         timestamp: "12:30 PM",
         isOwn: false,
         read: true,
-        avatar: "https://picsum.photos/id/64/100"
+        avatar: "https://picsum.photos/id/64/100",
+        reactions: [{ type: "👍", count: 1 }]
       },
       {
         id: 2,
@@ -134,7 +318,8 @@ export default function Messages() {
         timestamp: "12:40 PM",
         isOwn: true,
         read: true,
-        avatar: "https://picsum.photos/id/100/100"
+        avatar: "https://picsum.photos/id/100/100",
+        reactions: [{ type: "❤️", count: 1 }]
       },
       {
         id: 5,
@@ -201,48 +386,55 @@ export default function Messages() {
         read: false,
         avatar: "https://picsum.photos/id/20/100"
       },
+    ],
+    7: [
+      {
+        id: 1,
+        sender: "John Smith",
+        content: "Has anyone tried the new model of the smart watch that was released this month?",
+        timestamp: "Sunday",
+        isOwn: false,
+        read: true,
+        avatar: "https://picsum.photos/id/22/100"
+      },
+      {
+        id: 2,
+        sender: "Lisa Wang",
+        content: "I ordered it last week but it hasn't arrived yet. I'll let you know my thoughts when it does!",
+        timestamp: "Sunday",
+        isOwn: false,
+        read: true,
+        avatar: "https://picsum.photos/id/29/100"
+      },
+      {
+        id: 3,
+        sender: "Robert Green",
+        content: "I saw it in store and the build quality looks great. The battery life is supposed to be much better too.",
+        timestamp: "Yesterday",
+        isOwn: false,
+        read: false,
+        avatar: "https://picsum.photos/id/33/100"
+      },
+      {
+        id: 4,
+        sender: "John Smith",
+        content: "That's good to hear! I'm especially interested in the new fitness tracking features.",
+        timestamp: "Today",
+        isOwn: false,
+        read: false,
+        avatar: "https://picsum.photos/id/22/100"
+      },
+      {
+        id: 5,
+        sender: "Lisa Wang",
+        content: "Same here! I heard they've improved the heart rate monitoring significantly.",
+        timestamp: "Just now",
+        isOwn: false,
+        read: false,
+        avatar: "https://picsum.photos/id/29/100"
+      }
     ]
   };
-
-  const handleSendMessage = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newMessage.trim() || !selectedConversation) return;
-
-    // Add message to current conversation
-    const messageObj: Message = {
-      id: Date.now(),
-      sender: "You",
-      content: newMessage,
-      timestamp: "Just now",
-      isOwn: true,
-      read: false,
-      avatar: "https://picsum.photos/id/100/100"
-    };
-
-    messages[selectedConversation] = [...(messages[selectedConversation] || []), messageObj];
-    
-    // Display toast for demo purposes
-    toast({
-      title: "Message sent",
-      description: "Your message has been sent successfully",
-      duration: 2000,
-    });
-
-    // Clear input
-    setNewMessage("");
-    
-    // Scroll to bottom
-    setTimeout(() => {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, 100);
-  };
-
-  if (!isReady) {
-    return <div className="h-screen bg-gray-50 flex items-center justify-center">Loading...</div>;
-  }
-
-  const selectedConversationData = conversations.find(c => c.id === selectedConversation);
-  const currentMessages = selectedConversation ? (messages[selectedConversation] || []) : [];
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
@@ -260,18 +452,46 @@ export default function Messages() {
             {/* Conversations header */}
             <div className="p-3 border-b border-gray-200 flex justify-between items-center sticky top-0 bg-white z-10">
               <h2 className="text-lg font-semibold">Messages</h2>
-              <Button size="icon" variant="ghost" className="rounded-full">
-                <Search className="h-5 w-5" />
-              </Button>
+              <div className="flex items-center gap-1">
+                <Button size="icon" variant="ghost" className="rounded-full">
+                  <MoreHorizontal className="h-5 w-5" />
+                </Button>
+                <Button size="icon" variant="ghost" className="rounded-full">
+                  <Search className="h-5 w-5" />
+                </Button>
+                <Button size="icon" variant="ghost" className="rounded-full">
+                  <Plus className="h-5 w-5" />
+                </Button>
+              </div>
+            </div>
+            
+            {/* Search conversations */}
+            <div className="p-3 border-b border-gray-200">
+              <div className="relative">
+                <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+                <Input
+                  placeholder="Search messages"
+                  className="pl-9 py-2 bg-gray-100 border-0"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onFocus={() => setIsSearchFocused(true)}
+                  onBlur={() => setIsSearchFocused(false)}
+                />
+              </div>
+              {isSearchFocused && searchQuery && (
+                <div className="mt-2 p-1">
+                  <p className="text-xs text-gray-500 px-2">Search results for "{searchQuery}"</p>
+                </div>
+              )}
             </div>
             
             {/* Conversations list */}
             <div className="flex-1 overflow-y-auto">
-              {conversations.map(conversation => (
+              {filteredConversations.map(conversation => (
                 <div 
                   key={conversation.id}
                   className={`flex items-center p-3 cursor-pointer hover:bg-gray-50 transition-colors
-                    ${selectedConversation === conversation.id ? "bg-gray-100" : ""}`}
+                    ${selectedConversation === conversation.id ? "bg-blue-50" : ""}`}
                   onClick={() => setSelectedConversation(conversation.id)}
                 >
                   <div className="relative">
@@ -281,16 +501,32 @@ export default function Messages() {
                     {conversation.online && (
                       <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
                     )}
+                    {conversation.isGroup && (
+                      <span className="absolute -bottom-1 -right-1 bg-gray-200 rounded-full p-0.5 border border-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" />
+                          <path d="M22 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                        </svg>
+                      </span>
+                    )}
                   </div>
                   <div className="ml-3 flex-1 overflow-hidden">
                     <div className="flex justify-between items-baseline">
-                      <span className="font-medium truncate">{conversation.name}</span>
-                      <span className="text-xs text-gray-500">{conversation.timestamp}</span>
+                      <span className={`font-medium truncate ${conversation.unread > 0 ? "font-semibold" : ""}`}>
+                        {conversation.name}
+                      </span>
+                      <span className={`text-xs ${conversation.unread > 0 ? "text-blue-600 font-bold" : "text-gray-500"}`}>
+                        {conversation.timestamp}
+                      </span>
                     </div>
-                    <p className="text-sm text-gray-600 truncate">{conversation.lastMessage}</p>
+                    <p className={`text-sm truncate ${conversation.unread > 0 ? "text-gray-900 font-medium" : "text-gray-600"}`}>
+                      {conversation.isGroup && conversation.lastMessage.includes(":") 
+                        ? conversation.lastMessage 
+                        : conversation.lastMessage}
+                    </p>
                   </div>
                   {conversation.unread > 0 && (
-                    <Badge className="ml-2 bg-red-500 text-white">{conversation.unread}</Badge>
+                    <Badge className="ml-2 bg-blue-600 text-white">{conversation.unread}</Badge>
                   )}
                 </div>
               ))}
@@ -310,7 +546,7 @@ export default function Messages() {
                       className="mr-2"
                       onClick={() => setSelectedConversation(null)}
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-left"><path d="m15 18-6-6 6-6"/></svg>
+                      <ChevronLeft className="h-5 w-5" />
                     </Button>
                   )}
                   <div className="flex items-center flex-1">
@@ -318,10 +554,27 @@ export default function Messages() {
                       <img src={selectedConversationData.avatar} alt={selectedConversationData.name} className="object-cover" />
                     </Avatar>
                     <div className="ml-2">
-                      <div className="font-medium">{selectedConversationData.name}</div>
-                      <div className="text-xs text-gray-500">
-                        {selectedConversationData.online ? "Active now" : "Offline"}
+                      <div className="font-medium flex items-center">
+                        {selectedConversationData.name}
+                        {selectedConversationData.online && (
+                          <span className="ml-2 text-xs text-green-600 flex items-center">
+                            <span className="h-2 w-2 bg-green-500 rounded-full mr-1"></span>
+                            Active now
+                          </span>
+                        )}
                       </div>
+                      {selectedConversationData.isGroup && (
+                        <div className="text-xs text-gray-500 flex items-center">
+                          <span className="flex -space-x-1 mr-1">
+                            {selectedConversationData.members?.slice(0, 3).map((member, idx) => (
+                              <span key={idx} className="h-4 w-4 rounded-full overflow-hidden border border-white">
+                                <img src={member.avatar} alt={member.name} className="h-full w-full object-cover" />
+                              </span>
+                            ))}
+                          </span>
+                          {selectedConversationData.members?.length} members
+                        </div>
+                      )}
                     </div>
                   </div>
                   
@@ -333,34 +586,98 @@ export default function Messages() {
                     <Button size="icon" variant="ghost">
                       <Video className="h-5 w-5" />
                     </Button>
-                    <Button size="icon" variant="ghost">
-                      <Info className="h-5 w-5" />
-                    </Button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button size="icon" variant="ghost">
+                          <Info className="h-5 w-5" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-48">
+                        <DropdownMenuItem className="cursor-pointer">View profile</DropdownMenuItem>
+                        <DropdownMenuItem className="cursor-pointer">Mute notifications</DropdownMenuItem>
+                        <DropdownMenuItem className="cursor-pointer">Search in conversation</DropdownMenuItem>
+                        <DropdownMenuItem className="cursor-pointer text-red-500">Block</DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                 </div>
               )}
               
               {/* Messages area */}
               <div className="flex-1 p-4 overflow-y-auto bg-gray-50">
+                {/* Date separator */}
+                <div className="flex justify-center mb-4">
+                  <span className="text-xs text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+                    Today
+                  </span>
+                </div>
+                
                 {currentMessages.map((message) => (
                   <div
                     key={message.id}
-                    className={`flex mb-4 ${message.isOwn ? 'justify-end' : 'justify-start'}`}
+                    className={`flex mb-4 group ${message.isOwn ? 'justify-end' : 'justify-start'}`}
                   >
                     {!message.isOwn && (
                       <Avatar className="h-8 w-8 mt-1 mr-2">
                         <img src={message.avatar} alt={message.sender} className="object-cover" />
                       </Avatar>
                     )}
-                    <div 
-                      className={`px-3 py-2 rounded-lg max-w-[75%] ${
-                        message.isOwn 
-                          ? 'bg-blue-500 text-white rounded-br-none' 
-                          : 'bg-gray-200 text-gray-800 rounded-bl-none'
-                      }`}
-                    >
-                      <p className="text-sm">{message.content}</p>
+                    <div className="relative">
+                      <div 
+                        className={`px-3 py-2 rounded-lg max-w-[75%] ${
+                          message.isOwn 
+                            ? 'bg-blue-500 text-white rounded-br-none' 
+                            : 'bg-gray-200 text-gray-800 rounded-bl-none'
+                        }`}
+                        onDoubleClick={() => setShowReactions(message.id)}
+                      >
+                        {selectedConversationData?.isGroup && !message.isOwn && (
+                          <div className="text-xs font-medium mb-1">{message.sender}</div>
+                        )}
+                        <p className="text-sm">{message.content}</p>
+                      </div>
+                      
+                      {/* Reactions */}
+                      {message.reactions && message.reactions.length > 0 && (
+                        <div className={`absolute ${message.isOwn ? 'left-0' : 'right-0'} -bottom-3 bg-white rounded-full px-1 py-0.5 shadow-sm border border-gray-100 flex items-center`}>
+                          {message.reactions.map((reaction, idx) => (
+                            <div key={idx} className="flex items-center">
+                              <span className="text-xs">{reaction.type}</span>
+                              <span className="text-xs text-gray-600 ml-0.5">{reaction.count}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      
+                      {/* Message options */}
+                      <div className={`absolute top-0 ${message.isOwn ? 'left-0 -translate-x-full -translate-y-1/4' : 'right-0 translate-x-full -translate-y-1/4'} opacity-0 group-hover:opacity-100 transition-opacity`}>
+                        <Popover open={showReactions === message.id} onOpenChange={() => setShowReactions(null)}>
+                          <PopoverTrigger asChild>
+                            <Button variant="outline" size="icon" className="h-6 w-6 rounded-full bg-white shadow-sm border border-gray-200">
+                              <MoreHorizontal className="h-3 w-3" />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0 flex gap-1" side="top">
+                            <Button size="icon" variant="ghost" className="h-8 w-8 rounded-full" onClick={() => addReaction(message.id, "👍")}>
+                              <span className="text-lg">👍</span>
+                            </Button>
+                            <Button size="icon" variant="ghost" className="h-8 w-8 rounded-full" onClick={() => addReaction(message.id, "❤️")}>
+                              <span className="text-lg">❤️</span>
+                            </Button>
+                            <Button size="icon" variant="ghost" className="h-8 w-8 rounded-full" onClick={() => addReaction(message.id, "😂")}>
+                              <span className="text-lg">😂</span>
+                            </Button>
+                            <Button size="icon" variant="ghost" className="h-8 w-8 rounded-full" onClick={() => addReaction(message.id, "😮")}>
+                              <span className="text-lg">😮</span>
+                            </Button>
+                            <Button size="icon" variant="ghost" className="h-8 w-8 rounded-full" onClick={() => addReaction(message.id, "😢")}>
+                              <span className="text-lg">😢</span>
+                            </Button>
+                          </PopoverContent>
+                        </Popover>
+                      </div>
                     </div>
+                    
                     {message.isOwn && (
                       <div className="flex flex-col ml-2 items-end">
                         <span className="text-xs text-gray-500">{message.timestamp}</span>
@@ -373,6 +690,23 @@ export default function Messages() {
                     )}
                   </div>
                 ))}
+                
+                {/* Typing indicator */}
+                {isTyping && selectedConversation === 1 && (
+                  <div className="flex mb-4">
+                    <Avatar className="h-8 w-8 mt-1 mr-2">
+                      <img src="https://picsum.photos/id/64/100" alt="Sarah" className="object-cover" />
+                    </Avatar>
+                    <div className="bg-gray-200 px-3 py-2 rounded-lg rounded-bl-none">
+                      <div className="flex items-center space-x-1">
+                        <div className="h-2 w-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></div>
+                        <div className="h-2 w-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "200ms" }}></div>
+                        <div className="h-2 w-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "400ms" }}></div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                
                 <div ref={messagesEndRef} />
               </div>
               
@@ -392,15 +726,45 @@ export default function Messages() {
                       placeholder="Type a message..."
                       className="pr-10 py-2 rounded-full"
                     />
-                    <Button type="button" size="icon" className="absolute right-1 top-1/2 transform -translate-y-1/2" variant="ghost">
-                      <Smile className="h-5 w-5 text-gray-500" />
-                    </Button>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button type="button" size="icon" className="absolute right-1 top-1/2 transform -translate-y-1/2" variant="ghost">
+                          <Smile className="h-5 w-5 text-gray-500" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-64 p-2">
+                        <div className="grid grid-cols-8 gap-1">
+                          {["😀", "😂", "❤️", "👍", "😊", "🎉", "😎", "👋", 
+                            "🔥", "🙌", "👏", "🤔", "😢", "😍", "🤣", "😮"].map(emoji => (
+                            <Button 
+                              key={emoji} 
+                              variant="ghost" 
+                              className="h-8 w-8 p-0"
+                              onClick={() => {
+                                setNewMessage(prev => prev + emoji);
+                              }}
+                            >
+                              <span className="text-lg">{emoji}</span>
+                            </Button>
+                          ))}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
                   </div>
+                  <Button 
+                    type="button" 
+                    onClick={handleRecordToggle} 
+                    size="icon" 
+                    variant="ghost"
+                    className={`rounded-full ${isRecording ? "bg-red-500 text-white" : ""}`}
+                  >
+                    <Mic className="h-5 w-5" />
+                  </Button>
                   <Button 
                     type="submit" 
                     size="icon" 
-                    disabled={!newMessage.trim()} 
-                    variant={newMessage.trim() ? "default" : "ghost"}
+                    disabled={!newMessage.trim() && !isRecording} 
+                    variant={newMessage.trim() || isRecording ? "default" : "ghost"}
                     className="rounded-full bg-blue-500 hover:bg-blue-600"
                   >
                     {newMessage.trim() ? <Send className="h-5 w-5" /> : <ThumbsUp className="h-5 w-5" />}
