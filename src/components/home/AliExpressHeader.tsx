@@ -46,7 +46,7 @@ export default function AliExpressHeader({ activeTabId = 'recommendations' }: Al
   const categories = [
     { id: 'recommendations', name: t('home.forYou'), icon: <Home className="h-3 w-3" />, path: '/for-you' },
     { id: 'posts', name: t('home.posts'), icon: <MessageSquare className="h-3 w-3" />, path: '/posts' },
-    { id: 'shops', name: t('home.shops'), icon: <Store className="h-3 w-3" />, path: '/shops' },
+    { id: 'messages', name: t('home.messages'), icon: <MessageSquare className="h-3 w-3" />, path: '/messages' },
     { id: 'trending', name: t('home.trending'), icon: <Image className="h-3 w-3" />, path: '/trending' },
     { id: 'videos', name: t('home.videos'), icon: <Image className="h-3 w-3" />, path: '/videos' },
   ];

@@ -14,7 +14,7 @@ export default function MainLayout() {
   const location = useLocation();
   const isProductPage = location.pathname.includes('/product/');
   const isHomePage = location.pathname === "/" || location.pathname === "/for-you" || 
-                     location.pathname === "/posts" || location.pathname === "/shops" ||
+                     location.pathname === "/posts" || location.pathname === "/messages" ||
                      location.pathname === "/trending" || location.pathname === "/videos";
   const isReelsPage = location.pathname === "/reels";
   const isProfilePage = location.pathname === "/account";
@@ -29,7 +29,7 @@ export default function MainLayout() {
   const getActiveTabFromRoute = () => {
     if (location.pathname === "/" || location.pathname === "/for-you") return "recommendations";
     if (location.pathname === "/posts") return "posts";
-    if (location.pathname === "/shops") return "shops";
+    if (location.pathname === "/messages") return "messages";
     if (location.pathname === "/trending") return "trending";
     if (location.pathname === "/videos") return "videos";
     return "recommendations";
