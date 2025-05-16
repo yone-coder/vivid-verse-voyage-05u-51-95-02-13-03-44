@@ -13,11 +13,9 @@ export default function MainLayout() {
   const isMobile = useIsMobile();
   const location = useLocation();
   const isProductPage = location.pathname.includes('/product/');
-  const isHomePage = location.pathname === "/" || location.pathname === "/for-you";
-  const isPostsPage = location.pathname === "/posts";
-  const isMessagesPage = location.pathname === "/messages";
-  const isTrendingPage = location.pathname === "/trending";
-  const isVideosPage = location.pathname === "/videos";
+  const isHomePage = location.pathname === "/" || location.pathname === "/for-you" || 
+                     location.pathname === "/posts" || location.pathname === "/messages" ||
+                     location.pathname === "/trending" || location.pathname === "/videos";
   const isReelsPage = location.pathname === "/reels";
   const isProfilePage = location.pathname === "/account";
   const { toast } = useToast();
@@ -36,9 +34,6 @@ export default function MainLayout() {
     if (location.pathname === "/videos") return "videos";
     return "recommendations";
   };
-
-  // Show header on all main navigation pages
-  const shouldShowHeader = isHomePage || isPostsPage || isMessagesPage || isTrendingPage || isVideosPage;
 
   const toggleFavorite = () => {
     setIsFavorite(!isFavorite);
@@ -99,8 +94,8 @@ export default function MainLayout() {
       <div className="min-h-screen flex flex-col bg-white">
         <style dangerouslySetInnerHTML={{ __html: headerHeightStyle }} />
 
-        {/* AliExpress Header for main navigation pages */}
-        {shouldShowHeader && (
+        {/* AliExpress Header for home pages */}
+        {isHomePage && (
           <AliExpressHeader activeTabId={getActiveTabFromRoute()} />
         )}
 
@@ -108,10 +103,10 @@ export default function MainLayout() {
           <Outlet />
         </main>
         
-        {!isMobile && !shouldShowHeader && !isReelsPage && !isProfilePage && <Footer />}
+        {!isMobile && !isHomePage && !isReelsPage && !isProfilePage && <Footer />}
 
         {/* Show bottom nav on mobile for home, reels, product pages, and profile pages */}
-        {isMobile && (shouldShowHeader || isProductPage || isReelsPage || isProfilePage) && <IndexBottomNav />}
+        {isMobile && (isHomePage || isProductPage || isReelsPage || isProfilePage) && <IndexBottomNav />}
       </div>
     </LanguageProvider>
   );
