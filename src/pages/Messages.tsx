@@ -32,7 +32,7 @@ interface Conversation {
 export default function Messages() {
   const isMobile = useIsMobile();
   const [isReady, setIsReady] = useState(false);
-  const [selectedConversation, setSelectedConversation] = useState<number | null>(1); // First conversation selected by default
+  const [selectedConversation, setSelectedConversation] = useState<number | null>(null); // Initially no conversation selected
   const [newMessage, setNewMessage] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
@@ -252,7 +252,7 @@ export default function Messages() {
       {/* Main content */}
       <div className="pt-[40px] pb-16 flex flex-1 overflow-hidden">
         <div className="flex h-[calc(100vh-56px)] w-full">
-          {/* Conversations list - hidden on mobile when a conversation is selected */}
+          {/* Conversations list - always visible on desktop, or visible on mobile when no conversation is selected */}
           <div 
             className={`border-r border-gray-200 bg-white w-full md:w-80 flex-shrink-0 
               ${isMobile && selectedConversation ? "hidden" : "flex flex-col"}`}
@@ -297,8 +297,8 @@ export default function Messages() {
             </div>
           </div>
           
-          {/* Message content area - full width on mobile or when conversation selected */}
-          {(selectedConversation || !isMobile) ? (
+          {/* Message content area - hidden on mobile when no conversation is selected */}
+          {selectedConversation ? (
             <div className={`bg-white flex-1 flex flex-col ${isMobile && !selectedConversation ? "hidden" : "flex"}`}>
               {/* Conversation header */}
               {selectedConversationData && (
@@ -409,7 +409,8 @@ export default function Messages() {
               </div>
             </div>
           ) : (
-            <div className="flex-1 flex items-center justify-center bg-gray-50 text-center p-4">
+            // Display this when no conversation is selected on desktop or mobile
+            <div className="hidden md:flex flex-1 items-center justify-center bg-gray-50 text-center p-4">
               <div>
                 <MessageSquare className="h-16 w-16 mx-auto text-gray-300 mb-4" />
                 <h3 className="text-xl font-medium text-gray-700 mb-2">Your Messages</h3>

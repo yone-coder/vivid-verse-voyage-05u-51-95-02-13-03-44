@@ -21,7 +21,7 @@ export default function TranslationExample() {
               <ul className="text-sm">
                 <li>{t('home.forYou')}</li>
                 <li>{t('home.posts')}</li>
-                <li>{t('home.shops')}</li>
+                <li>{t('home.messages')}</li>
                 <li>{t('home.trending')}</li>
                 <li>{t('home.videos')}</li>
               </ul>
