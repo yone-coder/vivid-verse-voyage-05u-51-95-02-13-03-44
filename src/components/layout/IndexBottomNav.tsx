@@ -24,12 +24,12 @@ interface BottomNavTab {
 }
 
 const navItems: BottomNavTab[] = [
-  { id: 'home', name: 'Home', icon: Logo, path: '/for-you' }, // replaced Home with Logo
+  { id: 'home', name: 'Home', icon: Logo, path: '/for-you' }, 
   { id: 'shorts', name: 'Shorts', icon: Zap, path: '/reels' },
   { id: 'feeds', name: 'Feeds', icon: Rss, path: '/posts' },
   { id: 'messages', name: 'Messages', icon: MessageCircle, path: '/messages' },
   { id: 'videos', name: 'Videos', icon: TvMinimalPlay, path: '/videos' },
-  { id: 'more', name: 'More', icon: LayoutGrid, path: '/account' }, // Changed from 'account' to 'more' with LayoutGrid icon
+  { id: 'more', name: 'More', icon: LayoutGrid, path: '/more' }, // Changed path to /more to point to new MoreMenu page
 ];
 
 export default function BottomNav() {
@@ -51,7 +51,7 @@ export default function BottomNav() {
     else if (path.startsWith('/feeds')) setActiveTab('feeds');
     else if (path.startsWith('/messages')) setActiveTab('messages');
     else if (path.startsWith('/videos')) setActiveTab('videos');
-    else if (path.startsWith('/account')) setActiveTab('more'); // Changed from 'account' to 'more'
+    else if (path.startsWith('/more') || path.startsWith('/account')) setActiveTab('more');
   }, [location.pathname]);
 
   const handleTabClick = (item) => {
