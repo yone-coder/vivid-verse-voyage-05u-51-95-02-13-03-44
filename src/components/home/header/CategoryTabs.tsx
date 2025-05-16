@@ -73,10 +73,10 @@ const CategoryTabs = ({
                 }`}
               >
                 {iconsOnly ? (
-                  <div className="transform scale-150">{icon}</div>
+                  <div className="transform scale-[2.0]">{icon}</div> {/* Increased from scale-150 to scale-[2.0] */}
                 ) : (
                   <>
-                    <div className="transform scale-125">{icon}</div>
+                    <div className="transform scale-[1.75]">{icon}</div> {/* Increased from scale-125 to scale-[1.75] */}
                     <span>{name}</span>
                   </>
                 )}
