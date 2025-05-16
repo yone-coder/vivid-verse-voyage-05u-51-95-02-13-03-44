@@ -67,147 +67,7 @@ export default function Messages() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
-  useEffect(() => {
-    if (isMobile !== undefined) {
-      setIsReady(true);
-    }
-  }, [isMobile]);
-
-  // Scroll to bottom of messages
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [selectedConversation]);
-
-  // Simulate typing indicator
-  useEffect(() => {
-    if (selectedConversation) {
-      const typingInterval = setInterval(() => {
-        setIsTyping(prev => !prev);
-      }, 5000);
-      
-      return () => clearInterval(typingInterval);
-    }
-  }, [selectedConversation]);
-
-  // Filter conversations based on search
-  const filteredConversations = conversations.filter(
-    conversation => conversation.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const handleSendMessage = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newMessage.trim() || !selectedConversation) return;
-
-    // Add message to current conversation
-    const messageObj: Message = {
-      id: Date.now(),
-      sender: "You",
-      content: newMessage,
-      timestamp: "Just now",
-      isOwn: true,
-      read: false,
-      avatar: "https://picsum.photos/id/100/100"
-    };
-
-    messages[selectedConversation] = [...(messages[selectedConversation] || []), messageObj];
-    
-    // Display toast for demo purposes
-    toast({
-      title: "Message sent",
-      description: "Your message has been sent successfully",
-      duration: 2000,
-    });
-
-    // Clear input
-    setNewMessage("");
-    
-    // Scroll to bottom
-    setTimeout(() => {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, 100);
-    
-    // Simulate reply after 2 seconds
-    if (selectedConversation === 1) {
-      setTimeout(() => {
-        const replyObj: Message = {
-          id: Date.now() + 1,
-          sender: "Sarah Johnson",
-          content: "I'm typing a response...",
-          timestamp: "Just now",
-          isOwn: false,
-          read: false,
-          avatar: "https://picsum.photos/id/64/100"
-        };
-        
-        messages[selectedConversation] = [...(messages[selectedConversation] || []), replyObj];
-        
-        // Force update and scroll
-        setNewMessage(" ");
-        setNewMessage("");
-        
-        setTimeout(() => {
-          messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-        }, 100);
-      }, 2000);
-    }
-  };
-
-  const addReaction = (messageId: number, reactionType: string) => {
-    if (!selectedConversation) return;
-    
-    const updatedMessages = messages[selectedConversation].map(message => {
-      if (message.id === messageId) {
-        const existingReactions = message.reactions || [];
-        const existingReaction = existingReactions.find(r => r.type === reactionType);
-        
-        let newReactions;
-        if (existingReaction) {
-          newReactions = existingReactions.map(r => 
-            r.type === reactionType ? { ...r, count: r.count + 1 } : r
-          );
-        } else {
-          newReactions = [...existingReactions, { type: reactionType, count: 1 }];
-        }
-        
-        return { ...message, reactions: newReactions };
-      }
-      return message;
-    });
-    
-    messages[selectedConversation] = updatedMessages;
-    setShowReactions(null);
-    
-    // Force update
-    setNewMessage(" ");
-    setNewMessage("");
-  };
-
-  const handleRecordToggle = () => {
-    setIsRecording(!isRecording);
-    
-    if (!isRecording) {
-      toast({
-        title: "Recording started",
-        description: "Tap again to send your voice message",
-        duration: 2000,
-      });
-    } else {
-      toast({
-        title: "Voice message sent",
-        description: "Your voice message has been sent",
-        duration: 2000,
-      });
-    }
-  };
-
-  if (!isReady) {
-    return <div className="h-screen bg-gray-50 flex items-center justify-center">Loading...</div>;
-  }
-
-  const selectedConversationData = conversations.find(c => c.id === selectedConversation);
-  const currentMessages = selectedConversation ? (messages[selectedConversation] || []) : [];
-
-  // Mock conversation data
+  // Mock conversation data - moved to the top before it's used
   const conversations: Conversation[] = [
     {
       id: 1,
@@ -280,7 +140,7 @@ export default function Messages() {
     }
   ];
 
-  // Mock messages for the selected conversation
+  // Mock messages for the selected conversation - moved up before it's used
   const messages: Record<number, Message[]> = {
     1: [
       {
@@ -435,6 +295,146 @@ export default function Messages() {
       }
     ]
   };
+
+  useEffect(() => {
+    if (isMobile !== undefined) {
+      setIsReady(true);
+    }
+  }, [isMobile]);
+
+  // Scroll to bottom of messages
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [selectedConversation]);
+
+  // Simulate typing indicator
+  useEffect(() => {
+    if (selectedConversation) {
+      const typingInterval = setInterval(() => {
+        setIsTyping(prev => !prev);
+      }, 5000);
+      
+      return () => clearInterval(typingInterval);
+    }
+  }, [selectedConversation]);
+
+  // Filter conversations based on search
+  const filteredConversations = conversations.filter(
+    conversation => conversation.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const handleSendMessage = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newMessage.trim() || !selectedConversation) return;
+
+    // Add message to current conversation
+    const messageObj: Message = {
+      id: Date.now(),
+      sender: "You",
+      content: newMessage,
+      timestamp: "Just now",
+      isOwn: true,
+      read: false,
+      avatar: "https://picsum.photos/id/100/100"
+    };
+
+    messages[selectedConversation] = [...(messages[selectedConversation] || []), messageObj];
+    
+    // Display toast for demo purposes
+    toast({
+      title: "Message sent",
+      description: "Your message has been sent successfully",
+      duration: 2000,
+    });
+
+    // Clear input
+    setNewMessage("");
+    
+    // Scroll to bottom
+    setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+    
+    // Simulate reply after 2 seconds
+    if (selectedConversation === 1) {
+      setTimeout(() => {
+        const replyObj: Message = {
+          id: Date.now() + 1,
+          sender: "Sarah Johnson",
+          content: "I'm typing a response...",
+          timestamp: "Just now",
+          isOwn: false,
+          read: false,
+          avatar: "https://picsum.photos/id/64/100"
+        };
+        
+        messages[selectedConversation] = [...(messages[selectedConversation] || []), replyObj];
+        
+        // Force update and scroll
+        setNewMessage(" ");
+        setNewMessage("");
+        
+        setTimeout(() => {
+          messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        }, 100);
+      }, 2000);
+    }
+  };
+
+  const addReaction = (messageId: number, reactionType: string) => {
+    if (!selectedConversation) return;
+    
+    const updatedMessages = messages[selectedConversation].map(message => {
+      if (message.id === messageId) {
+        const existingReactions = message.reactions || [];
+        const existingReaction = existingReactions.find(r => r.type === reactionType);
+        
+        let newReactions;
+        if (existingReaction) {
+          newReactions = existingReactions.map(r => 
+            r.type === reactionType ? { ...r, count: r.count + 1 } : r
+          );
+        } else {
+          newReactions = [...existingReactions, { type: reactionType, count: 1 }];
+        }
+        
+        return { ...message, reactions: newReactions };
+      }
+      return message;
+    });
+    
+    messages[selectedConversation] = updatedMessages;
+    setShowReactions(null);
+    
+    // Force update
+    setNewMessage(" ");
+    setNewMessage("");
+  };
+
+  const handleRecordToggle = () => {
+    setIsRecording(!isRecording);
+    
+    if (!isRecording) {
+      toast({
+        title: "Recording started",
+        description: "Tap again to send your voice message",
+        duration: 2000,
+      });
+    } else {
+      toast({
+        title: "Voice message sent",
+        description: "Your voice message has been sent",
+        duration: 2000,
+      });
+    }
+  };
+
+  if (!isReady) {
+    return <div className="h-screen bg-gray-50 flex items-center justify-center">Loading...</div>;
+  }
+
+  const selectedConversationData = conversations.find(c => c.id === selectedConversation);
+  const currentMessages = selectedConversation ? (messages[selectedConversation] || []) : [];
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
