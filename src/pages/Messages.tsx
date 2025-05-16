@@ -419,10 +419,7 @@ export default function Messages() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50 overscroll-none overflow-x-hidden">
-      {/* AliExpressHeader component - hide completely when a conversation is selected */}
-      {!selectedConversation && <AliExpressHeader activeTabId="messages" />}
-
-      {/* Main content */}
+      {/* Main content - removed AliExpressHeader reference */}
       <div className={`${selectedConversation ? 'pt-0' : 'pt-[44px]'} pb-16 flex flex-1 overflow-hidden`}>
         <div className="flex h-[calc(100vh-56px)] w-full">
           {/* Conversations list - always visible on desktop, or visible on mobile when no conversation is selected */}

@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -16,7 +17,7 @@ import Logo from '@/components/home/Logo'; // fixed import path (lowercase 'home
 interface BottomNavTab {
   id: string;
   name: string;
-  icon: React.FC | React.ForwardRefExoticComponent<any>;
+  icon: React.FC<any> | React.ForwardRefExoticComponent<any>;
   path: string;
   isAvatar?: boolean;
   badge?: number;
