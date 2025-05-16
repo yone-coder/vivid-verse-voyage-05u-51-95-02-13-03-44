@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Flame, Sparkles, Clock } from 'lucide-react';
 
@@ -62,7 +63,7 @@ const AliExpressCategories = () => {
 
   const CategoryItem = ({ category }) => (
     <div className="flex flex-col items-center w-16 flex-shrink-0 active:opacity-80 transition-opacity touch-manipulation">
-      <div className="relative w-14 h-14 rounded-lg overflow-hidden bg-gray-50 shadow-sm">
+      <div className="relative w-14 h-14 rounded-full overflow-hidden bg-gray-50 shadow-sm">
         <img
           src={getCategoryImageUrl(category)}
           alt={category.name}
