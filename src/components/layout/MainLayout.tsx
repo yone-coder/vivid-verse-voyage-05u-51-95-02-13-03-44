@@ -1,5 +1,4 @@
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Footer from "@/components/layout/Footer";
 import IndexBottomNav from "@/components/layout/IndexBottomNav";
@@ -12,28 +11,17 @@ import { LanguageProvider } from "@/context/LanguageContext";
 export default function MainLayout() {
   const isMobile = useIsMobile();
   const location = useLocation();
-  const isProductPage = location.pathname.includes('/product/');
-  const isHomePage = location.pathname === "/" || location.pathname === "/for-you" || 
-                     location.pathname === "/posts" || location.pathname === "/messages" ||
-                     location.pathname === "/trending" || location.pathname === "/videos";
-  const isReelsPage = location.pathname === "/reels";
-  const isProfilePage = location.pathname === "/account";
+  const pathname = location.pathname;
+  const isProductPage = pathname.includes('/product/');
+  const isRootHomePage = pathname === "/";
+  const isReelsPage = pathname === "/reels";
+  const isProfilePage = pathname === "/account";
   const { toast } = useToast();
   const [isFavorite, setIsFavorite] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  
-  // Get auth overlay context
-  const { openAuthOverlay } = useAuthOverlay();
 
-  const getActiveTabFromRoute = () => {
-    if (location.pathname === "/" || location.pathname === "/for-you") return "recommendations";
-    if (location.pathname === "/posts") return "posts";
-    if (location.pathname === "/messages") return "messages";
-    if (location.pathname === "/trending") return "trending";
-    if (location.pathname === "/videos") return "videos";
-    return "recommendations";
-  };
+  const { openAuthOverlay } = useAuthOverlay();
 
   const toggleFavorite = () => {
     setIsFavorite(!isFavorite);
@@ -72,8 +60,6 @@ export default function MainLayout() {
     });
   };
 
-  // Updated header height styles to account for both mobile and desktop header heights
-  // These variables will be used by other components to properly position themselves
   const headerHeightStyle = `
     :root {
       --header-height: ${isMobile ? '80px' : '120px'};
@@ -81,32 +67,30 @@ export default function MainLayout() {
     }
   `;
 
-  // Redirect auth-related URLs to use the overlay instead
-  React.useEffect(() => {
-    if (location.pathname === "/auth") {
+  useEffect(() => {
+    if (pathname === "/auth") {
       openAuthOverlay();
-      window.history.replaceState({}, "", "/for-you");
+      window.history.replaceState({}, "", "/");
     }
-  }, [location.pathname, openAuthOverlay]);
+  }, [pathname, openAuthOverlay]);
 
   return (
     <LanguageProvider>
       <div className="min-h-screen flex flex-col bg-white">
         <style dangerouslySetInnerHTML={{ __html: headerHeightStyle }} />
 
-        {/* AliExpress Header for home pages */}
-        {isHomePage && (
-          <AliExpressHeader activeTabId={getActiveTabFromRoute()} />
+        {/* Show AliExpressHeader and category tabs only on the root homepage */}
+        {isRootHomePage && (
+          <AliExpressHeader activeTabId="recommendations" />
         )}
 
         <main className="flex-grow relative">
           <Outlet />
         </main>
-        
-        {!isMobile && !isHomePage && !isReelsPage && !isProfilePage && <Footer />}
 
-        {/* Show bottom nav on mobile for home, reels, product pages, and profile pages */}
-        {isMobile && (isHomePage || isProductPage || isReelsPage || isProfilePage) && <IndexBottomNav />}
+        {!isMobile && !isRootHomePage && !isReelsPage && !isProfilePage && <Footer />}
+
+        {isMobile && (isRootHomePage || isProductPage || isReelsPage || isProfilePage) && <IndexBottomNav />}
       </div>
     </LanguageProvider>
   );
