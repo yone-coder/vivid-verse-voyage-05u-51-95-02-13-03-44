@@ -1,6 +1,7 @@
 
 import { Link } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Grid, ArrowRight } from "lucide-react";
 
 const categories = [
   {
@@ -72,9 +73,29 @@ export default function FeaturedCategories() {
   return (
     <div className="py-3">
       <div className="container mx-auto px-3">
-        <div className="flex justify-between items-center mb-2">
-          <h2 className="text-sm font-bold">Categories</h2>
-          <Link to="#" className="text-xs text-orange-500 hover:underline">View All</Link>
+        {/* Updated header with consistent styling */}
+        <div className="px-2 py-2 -mx-3">
+          <div className="flex items-center justify-between mb-1 bg-gradient-to-r from-gray-500 via-gray-600 to-gray-700 px-2 py-1 -mx-2">
+            {/* First element (Categories) */}
+            <div className="flex items-center gap-1 text-white text-xs font-bold uppercase tracking-wide">
+              <Grid className="w-4 h-4" />
+              CATEGORIES
+            </div>
+            
+            {/* Middle element (Count) */}
+            <div className="flex items-center gap-1.5 bg-white/20 text-white text-xs font-medium px-3 py-0.5 rounded-full backdrop-blur-sm">
+              <span className="whitespace-nowrap">{categories.length} Categories</span>
+            </div>
+            
+            {/* Last element (View All) */}
+            <Link
+              to="/categories"
+              className="text-xs text-white hover:underline flex items-center font-medium"
+            >
+              View All
+              <ArrowRight className="h-3.5 w-3.5 ml-0.5" />
+            </Link>
+          </div>
         </div>
         
         <div className={`grid ${isMobile ? 'grid-cols-5' : 'grid-cols-10'} gap-1.5`}>

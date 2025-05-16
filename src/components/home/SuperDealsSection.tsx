@@ -1,6 +1,5 @@
-
 import React, { useRef } from 'react';
-import { ChevronRight, Tv, Smartphone, Coffee, Headphones, Watch, Speaker, Star } from 'lucide-react';
+import { ChevronRight, Tv, Smartphone, Coffee, Headphones, Watch, Speaker, Star, ArrowRight } from 'lucide-react';
 import { Product } from '@/integrations/supabase/products';
 
 interface SuperDealsProps {
@@ -151,16 +150,28 @@ const SuperDeals = ({ products = [] }: SuperDealsProps) => {
 
   return (
     <div className="w-full bg-white">
-      {/* Header with enhanced styling and reduced bottom padding */}
-      <div className="px-4 py-1.5">
-        <div className="flex justify-between items-center mb-0.5">
-          <div className="flex items-center gap-1">
-            <Star className="h-3.5 w-3.5 text-orange-500" strokeWidth={2.5} fill="#FEF7CD" />
-            <h2 className="text-sm font-medium">Super Deals</h2>
+      {/* Updated header with consistent styling */}
+      <div className="px-2 py-2">
+        <div className="flex items-center justify-between mb-1 bg-gradient-to-r from-orange-400 via-orange-500 to-red-500 px-2 py-1 -mx-2">
+          {/* First element (Super Deals) */}
+          <div className="flex items-center gap-1 text-white text-xs font-bold uppercase tracking-wide">
+            <Star className="w-4 h-4" fill="#FEF7CD" />
+            SUPER DEALS
           </div>
-          <button className="flex items-center text-orange-500 hover:text-orange-600 transition-colors text-xs">
-            More <ChevronRight size={16} />
-          </button>
+          
+          {/* Middle element (Deal count) */}
+          <div className="flex items-center gap-1.5 bg-white/20 text-white text-xs font-medium px-3 py-0.5 rounded-full backdrop-blur-sm">
+            <span className="whitespace-nowrap">{deals.length} Items</span>
+          </div>
+          
+          {/* Last element (View All) */}
+          <a
+            href="/super-deals"
+            className="text-xs text-white hover:underline flex items-center font-medium"
+          >
+            View All
+            <ArrowRight className="h-3.5 w-3.5 ml-0.5" />
+          </a>
         </div>
       </div>
 

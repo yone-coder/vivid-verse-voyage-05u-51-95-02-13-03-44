@@ -2,7 +2,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { ProductCard } from "./ProductGrid";
-import { ChevronRight, CirclePlus } from "lucide-react";
+import { ChevronRight, CirclePlus, ArrowRight, Tag } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useLanguage } from "@/context/LanguageContext";
@@ -21,14 +21,29 @@ export default function NewArrivals({ products = [] }: NewArrivalsProps) {
   return (
     <div className="py-3 w-full">
       <div className="container mx-auto px-3">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2">
-            <h2 className="text-sm font-bold">{t('product.newArrivals')}</h2>
-            <Badge variant="aliNew" className="text-[10px] py-0 h-4">NEW</Badge>
+        {/* Updated header with consistent styling */}
+        <div className="px-2 py-2 -mx-3">
+          <div className="flex items-center justify-between mb-1 bg-gradient-to-r from-green-500 via-green-600 to-teal-600 px-2 py-1 -mx-2">
+            {/* First element (New Arrivals) */}
+            <div className="flex items-center gap-1 text-white text-xs font-bold uppercase tracking-wide">
+              <Tag className="w-4 h-4" />
+              NEW ARRIVALS
+            </div>
+            
+            {/* Middle element (Badge) */}
+            <div className="flex items-center gap-1.5 bg-white/20 text-white text-xs font-medium px-3 py-0.5 rounded-full backdrop-blur-sm">
+              <span className="whitespace-nowrap">Just In</span>
+            </div>
+            
+            {/* Last element (View All) */}
+            <Link
+              to="/new-arrivals"
+              className="text-xs text-white hover:underline flex items-center font-medium"
+            >
+              {t('product.viewAll')}
+              <ArrowRight className="h-3.5 w-3.5 ml-0.5" />
+            </Link>
           </div>
-          <Link to="/new-arrivals" className="text-xs text-orange-500 hover:underline flex items-center">
-            {t('product.viewAll')} <ChevronRight className="h-3 w-3" />
-          </Link>
         </div>
         
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2">

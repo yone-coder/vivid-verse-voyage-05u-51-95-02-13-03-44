@@ -1,7 +1,7 @@
 
 import React, { useRef } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Search, TrendingUp, ArrowUp, Tags, Bookmark, Tag } from "lucide-react";
+import { Search, TrendingUp, ArrowUp, Tags, Bookmark, Tag, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
@@ -46,15 +46,30 @@ export default function PopularSearches() {
   return (
     <div className="py-3">
       <div className="container mx-auto px-3">
-        <div className="flex justify-between items-center mb-2">
-          <div className="flex items-center gap-1.5">
-            <Search className="h-3.5 w-3.5 text-gray-500" />
-            <h2 className="text-sm font-medium">{t('product.popularSearches')}</h2>
+        {/* Updated header with consistent styling */}
+        <div className="px-2 py-2 -mx-3">
+          <div className="flex items-center justify-between mb-1 bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-500 px-2 py-1 -mx-2">
+            {/* First element (Popular Searches) */}
+            <div className="flex items-center gap-1 text-white text-xs font-bold uppercase tracking-wide">
+              <Search className="w-4 h-4" />
+              {t('product.popularSearches').toUpperCase()}
+            </div>
+            
+            {/* Middle element (Count) */}
+            <div className="flex items-center gap-1.5 bg-white/20 text-white text-xs font-medium px-3 py-0.5 rounded-full backdrop-blur-sm">
+              <TrendingUp className="w-3 h-3 shrink-0" />
+              <span className="whitespace-nowrap">{popularSearches.length} Terms</span>
+            </div>
+            
+            {/* Last element (View All) */}
+            <Link
+              to="/search/trending"
+              className="text-xs text-white hover:underline flex items-center font-medium"
+            >
+              {t('product.viewAll')}
+              <ArrowRight className="h-3.5 w-3.5 ml-0.5" />
+            </Link>
           </div>
-          <Link to="/search/trending" className="text-xs text-orange-500 hover:underline flex items-center">
-            <TrendingUp className="h-3 w-3 mr-0.5" />
-            {t('product.viewAll')}
-          </Link>
         </div>
         
         <ScrollArea className="w-full">
