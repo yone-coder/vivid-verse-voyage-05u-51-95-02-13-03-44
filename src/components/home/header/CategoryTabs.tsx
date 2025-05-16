@@ -1,124 +1,34 @@
+import { useState } from 'react'; import { LayoutGrid } from 'lucide-react'; import { useNavigate } from 'react-router-dom'; import { ReactNode } from 'react';
 
-import { useState, useEffect } from 'react';
-import { Home, MessageCircle, Video, LayoutGrid } from 'lucide-react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSquareRss } from '@fortawesome/free-solid-svg-icons';
-import { useNavigate } from 'react-router-dom';
-import { ReactNode } from 'react';
+interface CategoryTab { id: string; name: string; icon: ReactNode; path: string; }
 
-interface CategoryTab {
-  id: string;
-  name: string;
-  icon: ReactNode;
-  path: string;
+interface CategoryTabsProps { progress: number; activeTab: string; setActiveTab: (tab: string) => void; categories: CategoryTab[]; iconsOnly?: boolean; }
+
+const CategoryTabs = ({ progress, activeTab, setActiveTab, categories, iconsOnly = false, }: CategoryTabsProps) => { const navigate = useNavigate(); const [animating, setAnimating] = useState(false);
+
+const handleTabClick = (id: string, path: string) => { if (id !== activeTab && !animating) { setAnimating(true); setActiveTab(id); navigate(path, { replace: true });
+
+// Reset animation state after animation completes
+  setTimeout(() => setAnimating(false), 300);
 }
 
-interface CategoryTabsProps {
-  progress: number;
-  activeTab: string;
-  setActiveTab: (tab: string) => void;
-  categories: CategoryTab[];
-  iconsOnly?: boolean;
-}
-
-const CategoryTabs = ({
-  progress,
-  activeTab,
-  setActiveTab,
-  categories,
-  iconsOnly = false,
-}: CategoryTabsProps) => {
-  const navigate = useNavigate();
-  const [previousTab, setPreviousTab] = useState<string | null>(null);
-  const [animating, setAnimating] = useState(false);
-
-  const handleTabClick = (id: string, path: string) => {
-    if (id !== activeTab && !animating) {
-      setAnimating(true);
-      setPreviousTab(activeTab);
-      setActiveTab(id);
-      navigate(path, { replace: true });
-      
-      // Reset animation state after animation completes
-      setTimeout(() => {
-        setAnimating(false);
-        setPreviousTab(null);
-      }, 400);
-    }
-  };
-
-  return (
-    <div
-      className="relative w-full transition-all duration-700 overflow-hidden"
-      style={{
-        maxHeight: progress > 0.3 ? (iconsOnly ? '56px' : '48px') : '0px',
-        opacity: progress > 0.3 ? 1 : 0,
-        backgroundColor: `rgba(255, 255, 255, ${progress * 0.98})`,
-        backdropFilter: `blur(${progress * 8}px)`,
-      }}
-    >
-      <div className="relative w-full py-1 px-2">
-        <div className="flex items-center justify-between w-full">
-          {categories.map((category) => {
-            const isActive = category.id === activeTab;
-            const wasActive = previousTab === category.id;
-            
-            return (
-              <button 
-                key={category.id}
-                onClick={() => handleTabClick(category.id, category.path)}
-                className={`relative flex items-center justify-center ${
-                  isActive 
-                    ? 'bg-white text-orange-500 shadow-md rounded-full py-1 px-3' 
-                    : 'text-gray-500 py-1 px-3'
-                } transition-all duration-300 ease-out transform ${
-                  isActive ? 'scale-105' : wasActive ? 'scale-95' : 'scale-100'
-                }`}
-                style={{
-                  zIndex: isActive ? 10 : 1,
-                  transitionProperty: 'transform, background, box-shadow, border-radius, color, padding',
-                }}
-              >
-                <div className="flex items-center justify-center">
-                  {isActive ? (
-                    <div className="transform scale-[2.2]">{category.icon}</div>
-                  ) : (
-                    <div className="transform scale-[1.8]">{category.icon}</div>
-                  )}
-                  
-                  {isActive && !iconsOnly && (
-                    <span 
-                      className="ml-2 text-xs font-medium origin-left transition-all duration-300"
-                      style={{
-                        opacity: 1,
-                        maxWidth: '100px',
-                        overflow: 'hidden',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      {category.name}
-                    </span>
-                  )}
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Icon Button on Right */}
-      <div className="absolute top-0 right-0 h-full flex items-center pl-2 pr-3 z-10 space-x-2">
-        <div className="h-5 w-px bg-gray-300" />
-        <button
-          type="button"
-          className="p-1 rounded text-gray-500 hover:bg-gray-100 focus:outline-none focus-visible:ring-1 focus-visible:ring-orange-500"
-          aria-label="More options"
-        >
-          <LayoutGrid className="h-4 w-4" />
-        </button>
-      </div>
-    </div>
-  );
 };
 
+const visible = progress > 0.3; const containerHeight = iconsOnly ? 14 : 12; // h-14 (56px) or h-12 (48px) const bgOpacity = Math.min(progress, 0.98); const blurAmount = Math.round(progress * 8);
+
+return ( <div className={fixed bottom-0 left-0 right-0 z-50 transform transition-all duration-500 ease-out overflow-hidden ${ visible ? h-${containerHeight} opacity-100 : 'h-0 opacity-0' }} style={{ backgroundColor: rgba(255,255,255,${bgOpacity}), backdropFilter: blur(${blurAmount}px), }} > <div className="relative flex items-center justify-between h-full px-4"> <div className="flex space-x-4"> {categories.map((category) => { const isActive = category.id === activeTab; return ( <button key={category.id} onClick={() => handleTabClick(category.id, category.path)} className={flex items-center transition-transform duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-orange-500 rounded-full p-2 ${ isActive ? 'bg-white text-orange-500 scale-110 shadow-lg' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100 scale-100' }} aria-label={category.name} > {React.cloneElement( category.icon as React.ReactElement, { size: isActive ? 24 : 20 } )} {!iconsOnly && isActive && ( <span className="ml-2 text-sm font-medium transition-opacity duration-300"> {category.name} </span> )} </button> ); })} </div>
+
+<button
+      type="button"
+      className="p-2 rounded-full text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-500"
+      aria-label="More options"
+    >
+      <LayoutGrid size={20} />
+    </button>
+  </div>
+</div>
+
+); };
+
 export default CategoryTabs;
+
