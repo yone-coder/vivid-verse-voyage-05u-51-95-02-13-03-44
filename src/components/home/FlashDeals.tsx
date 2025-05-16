@@ -67,34 +67,32 @@ export default function FlashDeals() {
       <div className="px-2 py-2">
 
 
-<div className="flex items-center mb-1 bg-gradient-to-r from-orange-400 via-orange-500 to-red-500 px-2 py-1.5 -mx-2">
-  {/* LEFT: Flash */}
-  <div className="flex items-center space-x-2 text-white text-xs font-bold uppercase tracking-wide">
-    <Bolt className="w-4 h-4" />
-    FLASH DEALS
-  </div>
 
-  {/* Spacer */}
-  <div className="flex-1" />
 
-  {/* CENTER: Timer */}
-  <div className="flex items-center gap-1.5 bg-white/20 text-white text-xs font-medium px-3 py-1 rounded-full backdrop-blur-sm">
-    <Timer className="w-4 h-4 shrink-0" />
-    <span className="whitespace-nowrap">02:45:18</span>
-  </div>
+<div className="flex justify-between items-center mb-1 bg-gradient-to-r from-orange-400 via-orange-500 to-red-500 px-2 py-1.5 -mx-2">
+      {/* First element (Flash Deals) */}
+      <div className="flex items-center space-x-2 text-white text-xs font-bold uppercase tracking-wide">
+        <Bolt className="w-4 h-4" />
+        FLASH DEALS
+      </div>
+      
+      {/* Middle element (Timer) */}
+      <div className="flex items-center gap-1.5 bg-white/20 text-white text-xs font-medium px-3 py-1 rounded-full backdrop-blur-sm">
+        <Timer className="w-4 h-4 shrink-0" />
+        <span className="whitespace-nowrap">02:45:18</span>
+      </div>
+      
+      {/* Last element (View All) */}
+      <a
+        href="/search?category=flash-deals"
+        className="text-xs text-white hover:underline flex items-center font-medium"
+      >
+        View All
+        <ArrowRight className="h-3.5 w-3.5 ml-0.5" />
+      </a>
+    </div>
 
-  {/* Spacer */}
-  <div className="flex-1" />
 
-  {/* RIGHT: View All */}
-  <Link
-    to="/search?category=flash-deals"
-    className="text-xs text-white hover:underline flex items-center font-medium"
-  >
-    View All
-    <ArrowRight className="h-3.5 w-3.5 ml-0.5" />
-  </Link>
-</div>
 
       <div className="relative">
         {isLoading ? (
