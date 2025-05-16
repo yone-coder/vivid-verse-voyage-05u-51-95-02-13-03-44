@@ -78,17 +78,17 @@ const AuthOverlay: React.FC<AuthOverlayProps> = ({ isOpen, onClose }) => {
           <X className="h-5 w-5" />
         </button>
         
-        {/* Drag handle */}
-        <div className="absolute left-0 right-0 top-0 flex justify-center z-40">
+        {/* Enhanced drag handle */}
+        <div className="absolute left-0 right-0 top-0 flex justify-center z-40 pt-2">
           <div 
-            className="w-12 h-1.5 bg-gray-300 rounded-full my-2 cursor-grab active:cursor-grabbing"
+            className="w-16 h-1.5 bg-gray-300 rounded-full mb-3 cursor-grab active:cursor-grabbing shadow-sm hover:bg-gray-400 transition-colors"
             onPointerDown={handleDragStart}
             onPointerMove={handleDrag}
             onPointerUp={handleDragEnd}
           />
         </div>
         
-        <ScrollArea className="h-full max-h-screen pt-6">
+        <ScrollArea className="h-full max-h-screen pt-8">
           <AuthPage isOverlay={true} onClose={onClose} />
         </ScrollArea>
       </SheetContent>
