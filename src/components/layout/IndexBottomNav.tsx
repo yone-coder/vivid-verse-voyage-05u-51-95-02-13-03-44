@@ -109,11 +109,15 @@ export default function BottomNav() {
                       <AvatarFallback className="text-xs">{user.email?.slice(0, 2).toUpperCase()}</AvatarFallback>
                     </Avatar>
                   ) : (
-                    <Icon className={cn(
-                      'transition-transform duration-300',
-                      'w-5 h-5',
-                      isActive ? 'scale-110' : 'scale-100'
-                    )} />
+                   <Icon
+  className={cn(
+    'transition-transform duration-300',
+    'w-5 h-5',
+    isActive ? 'scale-110' : 'scale-100'
+  )}
+  width={20}
+  height={20}
+/>
                   )}
                   {item.badge && (
                     <motion.div
