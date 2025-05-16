@@ -1,6 +1,4 @@
-
 import { useState, useRef, useEffect } from "react";
-import AliExpressHeader from "@/components/home/AliExpressHeader";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { 
   MessageSquare, Search, Phone, Video, Info, Image, Smile, ThumbsUp, 

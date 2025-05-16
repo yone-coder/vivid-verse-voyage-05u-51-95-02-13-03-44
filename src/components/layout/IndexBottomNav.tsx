@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -14,7 +13,16 @@ import SignInBanner from './SignInBanner';
 import { useAuth } from '@/context/AuthContext';
 import Logo from '@/components/home/Logo'; // fixed import path (lowercase 'home')
 
-const navItems = [
+interface BottomNavTab {
+  id: string;
+  name: string;
+  icon: React.FC | React.ForwardRefExoticComponent<any>;
+  path: string;
+  isAvatar?: boolean;
+  badge?: number;
+}
+
+const navItems: BottomNavTab[] = [
   { id: 'home', name: 'Home', icon: Logo, path: '/for-you' }, // replaced Home with Logo
   { id: 'shorts', name: 'Shorts', icon: Zap, path: '/reels' },
   { id: 'feeds', name: 'Feeds', icon: Rss, path: '/posts' },
