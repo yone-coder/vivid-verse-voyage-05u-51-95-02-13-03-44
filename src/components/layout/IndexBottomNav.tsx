@@ -11,7 +11,7 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import AuthPage from '@/pages/AuthPage';
 import SignInBanner from './SignInBanner';
 import { useAuth } from '@/context/AuthContext';
-import Logo from '@/components/Logo'; // adjust the path if needed
+import Logo from '@/components/Home/Logo'; // adjust the path if needed
 
 const navItems = [
   { id: 'home', name: 'Home', icon: Logo, path: '/for-you' }, // replaced Home with Logo
