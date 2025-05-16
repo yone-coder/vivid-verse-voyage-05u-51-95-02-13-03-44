@@ -3,6 +3,8 @@ import { LayoutGrid } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ReactNode, useRef, useEffect } from 'react';
 import { motion, useMotionValue, animate as fmAnimate } from 'framer-motion';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSquareRss, faHome, faMessage, faImage } from '@fortawesome/free-solid-svg-icons';
 
 interface CategoryTab {
   id: string;
@@ -88,35 +90,41 @@ const CategoryTabs = ({
           className="flex items-center overflow-x-auto no-scrollbar h-full"
           // transition prop is not needed here as animation is imperative
         >
-          {categories.map(({ id, name, icon, path }, index) => (
-            <button
-              key={id}
-              ref={el => tabRefs.current[index] = el}
-              onClick={() => handleTabClick(id, path)}
-              aria-pressed={activeTab === id}
-              className={`relative flex items-center ${iconsOnly ? 'justify-center px-6 py-3' : 'gap-1 px-3 py-1'} text-xs font-medium whitespace-nowrap transition-colors duration-150 ease-in-out focus:outline-none focus-visible:ring-1 focus-visible:ring-orange-500 focus-visible:ring-offset-1 ${
-                activeTab === id
-                  ? 'text-orange-500'
-                  : 'text-gray-600 hover:text-orange-500 hover:bg-orange-50/70 rounded-md'
-              }`}
-            >
-              {iconsOnly ? (
-                <div className="transform scale-125">{icon}</div>
-              ) : (
-                <>
-                  {icon}
-                  <span>{name}</span>
-                </>
-              )}
-              {activeTab === id && (
-                <motion.div
-                  className={`absolute bottom-0 left-0 right-0 h-0.5 bg-orange-500 ${iconsOnly ? 'w-6 mx-auto' : ''}`}
-                  layoutId="activeCategoryUnderline"
-                  transition={{ type: 'spring', stiffness: 350, damping: 30 }}
-                />
-              )}
-            </button>
-          ))}
+          {categories.map(({ id, name, icon, path }, index) => {
+            const isActive = id === activeTab;
+
+            return (
+              <button
+                key={id}
+                ref={el => tabRefs.current[index] = el}
+                onClick={() => handleTabClick(id, path)}
+                aria-pressed={isActive}
+                className={`relative flex items-center ${iconsOnly ? 'justify-center px-6 py-3' : 'gap-1 px-3 py-1'} text-xs font-medium whitespace-nowrap transition-colors duration-150 ease-in-out focus:outline-none focus-visible:ring-1 focus-visible:ring-orange-500 focus-visible:ring-offset-1 ${
+                  isActive
+                    ? 'text-orange-500'
+                    : 'text-gray-600 hover:text-orange-500 hover:bg-orange-50/70 rounded-md'
+                }`}
+              >
+                {iconsOnly ? (
+                  <div className="transform scale-150">{icon}</div>
+                ) : (
+                  <>
+                    <div className="transform scale-125">{icon}</div>
+                    <span>{name}</span>
+                  </>
+                )}
+                {isActive && (
+                  <motion.div
+                    className={`absolute bottom-0 left-0 right-0 h-0.5 bg-orange-500 ${iconsOnly ? 'w-6 mx-auto' : ''}`}
+                    initial={{ scaleX: 0 }}
+                    animate={{ scaleX: 1 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    style={{ transformOrigin: 'center' }}
+                  />
+                )}
+              </button>
+            );
+          })}
         </motion.div>
       </div>
 
