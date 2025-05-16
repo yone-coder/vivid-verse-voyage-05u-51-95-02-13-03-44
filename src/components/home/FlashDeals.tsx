@@ -67,22 +67,21 @@ export default function FlashDeals() {
       <div className="px-2 py-2">
 
 
-<div className="flex justify-between items-center mb-1 bg-gradient-to-r from-orange-400 via-orange-500 to-red-500 px-2 py-1.5 -mx-2">
-  <div className="flex items-center space-x-2">
-    <div className="flex items-center text-white text-xs font-bold uppercase tracking-wide">
-      <Bolt className="w-4 h-4 mr-1" />
-      FLASH DEALS
-    </div>
-    <div className="flex items-center space-x-1 text-[11px] text-white font-medium">
-      <Timer className="w-3.5 h-3.5 mr-0.5" />
-      <span>Ends in 02:45:18</span>
-    </div>
+<div className="flex items-center space-x-6 mb-1 bg-gradient-to-r from-orange-400 via-orange-500 to-red-500 px-2 py-2 -mx-2">
+  <div className="flex items-center space-x-2 text-white text-xs font-bold uppercase tracking-wide">
+    <Bolt className="w-4 h-4" />
+    FLASH DEALS
+  </div>
+  <div className="flex items-center space-x-1 text-[11px] text-white font-medium">
+    <Timer className="w-3.5 h-3.5" />
+    <span>Ends in 02:45:18</span>
   </div>
   <Link
     to="/search?category=flash-deals"
     className="text-xs text-white hover:underline flex items-center font-medium"
   >
-    View All <ArrowRight className="h-3.5 w-3.5 ml-0.5" />
+    View All
+    <ArrowRight className="h-3.5 w-3.5 ml-0.5" />
   </Link>
 </div>
 
