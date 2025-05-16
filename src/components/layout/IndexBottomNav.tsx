@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
-  Home, Zap, Plus, Heart, User, X
+  Home, Zap, Rss, MessageSquare, Video, User, X
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
@@ -14,9 +14,10 @@ import { useAuth } from '@/context/AuthContext';
 
 const navItems = [
   { id: 'home', name: 'Home', icon: Home, path: '/for-you' },
-  { id: 'shorts', name: 'Shorts', icon: Zap, path: '/reels' },
-  { id: 'add', name: '', icon: Plus, path: '#', isSpecial: true },
-  { id: 'wishlist', name: 'Wishlist', icon: Heart, path: '/wishlist', badge: 3 },
+  { id: 'shorts', name: 'Shorts', icon: Zap, path: '/shorts' },
+  { id: 'feeds', name: 'Feeds', icon: Rss, path: '/feeds' },
+  { id: 'messages', name: 'Messages', icon: MessageSquare, path: '/messages' },
+  { id: 'videos', name: 'Videos', icon: Video, path: '/videos' },
   { id: 'account', name: 'Account', icon: User, path: '/account', isAvatar: true },
 ];
 
@@ -35,26 +36,24 @@ export default function BottomNav() {
   useEffect(() => {
     const path = location.pathname;
     if (path.startsWith('/for-you')) setActiveTab('home');
-    else if (path.startsWith('/reels')) setActiveTab('shorts');
-    else if (path.startsWith('/wishlist')) setActiveTab('wishlist');
+    else if (path.startsWith('/shorts')) setActiveTab('shorts');
+    else if (path.startsWith('/feeds')) setActiveTab('feeds');
+    else if (path.startsWith('/messages')) setActiveTab('messages');
+    else if (path.startsWith('/videos')) setActiveTab('videos');
     else if (path.startsWith('/account')) setActiveTab('account');
   }, [location.pathname]);
 
   const handleTabClick = (item) => {
     if (animating || item.id === activeTab) return;
 
-    if (item.id === 'add') {
-      setShowProductUpload(true);
-    } else {
-      setAnimating(true);
-      setPreviousTab(activeTab);
-      setActiveTab(item.id);
-      navigate(item.path);
-      setTimeout(() => {
-        setAnimating(false);
-        setPreviousTab(null);
-      }, 300);
-    }
+    setAnimating(true);
+    setPreviousTab(activeTab);
+    setActiveTab(item.id);
+    navigate(item.path);
+    setTimeout(() => {
+      setAnimating(false);
+      setPreviousTab(null);
+    }, 300);
   };
 
   return (
@@ -111,7 +110,7 @@ export default function BottomNav() {
                   ) : (
                     <Icon className={cn(
                       'transition-transform duration-300',
-                      item.isSpecial ? 'w-4 h-4 text-white' : 'w-5 h-5',
+                      'w-5 h-5',
                       isActive ? 'scale-110' : 'scale-100'
                     )} />
                   )}
