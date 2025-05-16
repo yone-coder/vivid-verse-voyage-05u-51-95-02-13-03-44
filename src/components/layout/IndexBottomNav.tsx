@@ -16,7 +16,7 @@ const navItems = [
   { id: 'home', name: 'Home', icon: Home, path: '/for-you' },
   { id: 'shorts', name: 'Shorts', icon: Zap, path: '/reels' },
   { id: 'feeds', name: 'Feeds', icon: Rss, path: '/posts' },
-  { id: 'messages', name: 'Messages', icon: MessageSquare, path: '/messages' },
+  { id: 'messages', name: 'Messages', icon: MessageCircle, path: '/messages' },
   { id: 'videos', name: 'Videos', icon: Video, path: '/videos' },
   { id: 'account', name: 'Account', icon: User, path: '/account', isAvatar: true },
 ];
