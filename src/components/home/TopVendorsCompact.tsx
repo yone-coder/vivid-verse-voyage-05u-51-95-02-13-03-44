@@ -1,5 +1,6 @@
+
 import { useState, useEffect, useRef } from 'react';
-import { ChevronLeft, ChevronRight, Star, Flame, Truck, Tag, Users, ShoppingCart, CheckCircle, Store, Headphones, Shirt, Home, Smartphone, Droplet, Activity, Heart } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star, Flame, Truck, Tag, Users, ShoppingCart, CheckCircle, Store, Headphones, Shirt, Home, Smartphone, Droplet, Activity, Heart, ArrowRight } from 'lucide-react';
 
 // Sample data with locations and categories (expanded top products)
 const vendors = [
@@ -376,88 +377,98 @@ const VendorCarousel = () => {
 
   return (
     <div className="w-full relative">
-      {/* Header with Flame icon and "more" button with Chevron - using padding for this section */}
-      <div className="flex justify-between items-center mb-4 px-4">
-        <div className="flex items-center">
-          <Flame size={18} className="text-orange-500 mr-2" />
-          <h2 className="text-lg font-medium text-gray-800">Top Vendors</h2>
+      {/* Updated header to match FlashDeals style */}
+      <div className="px-2 py-2">
+        <div className="flex items-center justify-between mb-1 bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-600 px-2 py-1 -mx-2">
+          {/* First element (Top Vendors) - now on the far left */}
+          <div className="flex items-center gap-1 text-white text-xs font-bold uppercase tracking-wide">
+            <Store className="w-4 h-4" />
+            TOP VENDORS
+          </div>
+          
+          {/* Middle element (Verified count) */}
+          <div className="flex items-center gap-1.5 bg-white/20 text-white text-xs font-medium px-3 py-0.5 rounded-full backdrop-blur-sm">
+            <Users className="w-4 h-4 shrink-0" />
+            <span className="whitespace-nowrap">5K+ Vendors</span>
+          </div>
+          
+          {/* Last element (View All) - now on the far right */}
+          <a
+            href="/vendors"
+            className="text-xs text-white hover:underline flex items-center font-medium"
+          >
+            View All
+            <ArrowRight className="h-3.5 w-3.5 ml-0.5" />
+          </a>
         </div>
 
-        <div className="flex items-center">  
-          {/* More button with Chevron */}  
-          <button className="flex items-center text-xs text-blue-600 font-medium hover:text-blue-800 transition-colors">  
-            More  
-            <ChevronRight size={14} className="ml-1" />  
-          </button>  
-        </div>  
-      </div>  
-
-      {/* Custom scroll container with edge-to-edge scrolling */}
-      <div className="relative w-full">
-        <div 
-          id="vendor-scroll-container"
-          ref={scrollContainerRef}
-          className="flex overflow-x-auto scrollbar-hide scroll-smooth pb-4"
-          style={{
-            scrollSnapType: "x mandatory",
-            WebkitOverflowScrolling: "touch",
-            scrollbarWidth: "none", 
-            msOverflowStyle: "none"
-          }}
-        >
-          {/* Left spacer to create padding effect while maintaining edge scrolling */}
-          <div style={{ flex: "0 0 16px" }} className="flex-shrink-0"></div>
-          
-          {vendors.map((vendor, index) => (
-            <div 
-              key={vendor.id}
-              style={{ 
-                flex: `0 0 ${cardWidth}`,
-                scrollSnapAlign: "start"
-              }}
-              className="px-2"
-            >
-              <HorizontalVendorCard vendor={vendor} />
-            </div>
-          ))}
-          
-          {/* Right spacer to create padding effect while maintaining edge scrolling */}
-          <div style={{ flex: "0 0 16px" }} className="flex-shrink-0"></div>
-        </div>
-      </div>
-      
-      {/* Custom navigation buttons - with padding to match header */}
-      <div className="flex justify-center mt-2 gap-2 px-4 pb-2">
-        <button
-          onClick={() => scrollToCard(Math.max(0, activeIndex - 1))}
-          disabled={activeIndex === 0}
-          className="flex items-center justify-center w-8 h-8 rounded-full bg-white shadow-sm border border-gray-200 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-40 disabled:cursor-not-allowed"
-        >
-          <ChevronLeft size={16} />
-        </button>
-        
-        {/* Dots indicator */}
-        <div className="flex items-center gap-1">
-          {vendors.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => scrollToCard(index)}
-              className={`w-2 h-2 rounded-full transition-all ${
-                index === activeIndex 
-                  ? "bg-blue-500 w-4" 
-                  : "bg-gray-300 hover:bg-gray-400"
-              }`}
-            />
-          ))}
+        {/* Custom scroll container with edge-to-edge scrolling */}
+        <div className="relative w-full">
+          <div 
+            id="vendor-scroll-container"
+            ref={scrollContainerRef}
+            className="flex overflow-x-auto scrollbar-hide scroll-smooth pb-4"
+            style={{
+              scrollSnapType: "x mandatory",
+              WebkitOverflowScrolling: "touch",
+              scrollbarWidth: "none", 
+              msOverflowStyle: "none"
+            }}
+          >
+            {/* Left spacer to create padding effect while maintaining edge scrolling */}
+            <div style={{ flex: "0 0 16px" }} className="flex-shrink-0"></div>
+            
+            {vendors.map((vendor, index) => (
+              <div 
+                key={vendor.id}
+                style={{ 
+                  flex: `0 0 ${cardWidth}`,
+                  scrollSnapAlign: "start"
+                }}
+                className="px-2"
+              >
+                <HorizontalVendorCard vendor={vendor} />
+              </div>
+            ))}
+            
+            {/* Right spacer to create padding effect while maintaining edge scrolling */}
+            <div style={{ flex: "0 0 16px" }} className="flex-shrink-0"></div>
+          </div>
         </div>
         
-        <button
-          onClick={() => scrollToCard(Math.min(vendors.length - 1, activeIndex + 1))}
-          disabled={activeIndex === vendors.length - 1}
-          className="flex items-center justify-center w-8 h-8 rounded-full bg-white shadow-sm border border-gray-200 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-40 disabled:cursor-not-allowed"
-        >
-          <ChevronRight size={16} />
-        </button>
+        {/* Custom navigation buttons */}
+        <div className="flex justify-center mt-2 gap-2 px-4 pb-2">
+          <button
+            onClick={() => scrollToCard(Math.max(0, activeIndex - 1))}
+            disabled={activeIndex === 0}
+            className="flex items-center justify-center w-8 h-8 rounded-full bg-white shadow-sm border border-gray-200 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            <ChevronLeft size={16} />
+          </button>
+          
+          {/* Dots indicator */}
+          <div className="flex items-center gap-1">
+            {vendors.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => scrollToCard(index)}
+                className={`w-2 h-2 rounded-full transition-all ${
+                  index === activeIndex 
+                    ? "bg-blue-500 w-4" 
+                    : "bg-gray-300 hover:bg-gray-400"
+                }`}
+              />
+            ))}
+          </div>
+          
+          <button
+            onClick={() => scrollToCard(Math.min(vendors.length - 1, activeIndex + 1))}
+            disabled={activeIndex === vendors.length - 1}
+            className="flex items-center justify-center w-8 h-8 rounded-full bg-white shadow-sm border border-gray-200 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            <ChevronRight size={16} />
+          </button>
+        </div>
       </div>
     </div>
   );
