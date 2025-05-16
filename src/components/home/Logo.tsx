@@ -1,24 +1,17 @@
 
 import React from 'react';
 
-interface LogoProps {
-  width?: number;
-  height?: number;
-  className?: string;
-}
-
-const Logo = ({ width = 24, height = 24, className = '' }: LogoProps) => {
+const Logo = () => {
   return (
     <svg 
       xmlns="http://www.w3.org/2000/svg" 
-      width={width} 
-      height={height} 
+      width="24" 
+      height="24" 
       viewBox="0 0 3264 3264" 
-      className={className}
       style={{ 
         shapeRendering: "geometricPrecision", 
         textRendering: "geometricPrecision", 
-        imageRendering: "optimizeQuality" as any, 
+        imageRendering: "optimizeQuality", 
         fillRule: "evenodd", 
         clipRule: "evenodd" 
       }}
