@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -11,7 +12,7 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import AuthPage from '@/pages/AuthPage';
 import SignInBanner from './SignInBanner';
 import { useAuth } from '@/context/AuthContext';
-import Logo from '@/components/Home/Logo'; // adjust the path if needed
+import Logo from '@/components/home/Logo'; // fixed import path (lowercase 'home')
 
 const navItems = [
   { id: 'home', name: 'Home', icon: Logo, path: '/for-you' }, // replaced Home with Logo
@@ -110,14 +111,14 @@ export default function BottomNav() {
                     </Avatar>
                   ) : (
                    <Icon
-  className={cn(
-    'transition-transform duration-300',
-    'w-5 h-5',
-    isActive ? 'scale-110' : 'scale-100'
-  )}
-  width={20}
-  height={20}
-/>
+                      className={cn(
+                        'transition-transform duration-300',
+                        'w-5 h-5',
+                        isActive ? 'scale-110' : 'scale-100'
+                      )}
+                      width={20}
+                      height={20}
+                    />
                   )}
                   {item.badge && (
                     <motion.div
