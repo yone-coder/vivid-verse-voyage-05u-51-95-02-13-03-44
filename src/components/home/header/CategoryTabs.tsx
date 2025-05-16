@@ -1,3 +1,4 @@
+
 import { LayoutGrid } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ReactNode, useRef, useEffect, useState } from 'react';
@@ -15,6 +16,7 @@ interface CategoryTabsProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   categories: CategoryTab[];
+  iconsOnly?: boolean;
 }
 
 const CategoryTabs = ({
@@ -22,6 +24,7 @@ const CategoryTabs = ({
   activeTab,
   setActiveTab,
   categories,
+  iconsOnly = false
 }: CategoryTabsProps) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -95,7 +98,7 @@ const CategoryTabs = ({
               }`}
             >
               {icon}
-              <span>{name}</span>
+              {!iconsOnly && <span>{name}</span>}
               {activeTab === id && (
                 <motion.div
                   className="absolute bottom-0 left-0 right-0 h-0.5 bg-orange-500"
