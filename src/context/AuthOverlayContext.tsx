@@ -5,26 +5,34 @@ interface AuthOverlayContextType {
   isAuthOverlayOpen: boolean;
   openAuthOverlay: (authMode?: 'signin' | 'signup') => void;
   closeAuthOverlay: () => void;
+  authMode?: 'signin' | 'signup';
 }
 
 const AuthOverlayContext = createContext<AuthOverlayContextType | undefined>(undefined);
 
 export const AuthOverlayProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthOverlayOpen, setIsAuthOverlayOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<'signin' | 'signup' | undefined>(undefined);
 
-  const openAuthOverlay = (authMode?: 'signin' | 'signup') => {
+  const openAuthOverlay = (mode?: 'signin' | 'signup') => {
+    setAuthMode(mode);
     setIsAuthOverlayOpen(true);
   };
 
   const closeAuthOverlay = () => {
     setIsAuthOverlayOpen(false);
+    // Reset authMode when closing
+    setTimeout(() => {
+      setAuthMode(undefined);
+    }, 300); // Wait for the close animation to finish
   };
 
   return (
     <AuthOverlayContext.Provider value={{
       isAuthOverlayOpen,
       openAuthOverlay,
-      closeAuthOverlay
+      closeAuthOverlay,
+      authMode
     }}>
       {children}
     </AuthOverlayContext.Provider>
