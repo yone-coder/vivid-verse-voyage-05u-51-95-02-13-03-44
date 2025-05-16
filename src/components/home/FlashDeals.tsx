@@ -67,7 +67,7 @@ export default function FlashDeals() {
       <div className="px-2 py-2">
 
 
-<div className="flex justify-between items-center mb-1 bg-gradient-to-r from-orange-400 via-orange-500 to-red-500 px-2 py-2 -mx-2">
+<div className="flex justify-between items-center mb-1 bg-gradient-to-r from-orange-400 via-orange-500 to-red-500 px-2 py-1.5 -mx-2">
   {/* LEFT SIDE: Flash + Timer, gap = 1.5rem */}
   <div className="flex items-center space-x-6">
     <div className="flex items-center space-x-2 text-white text-xs font-bold uppercase tracking-wide">
