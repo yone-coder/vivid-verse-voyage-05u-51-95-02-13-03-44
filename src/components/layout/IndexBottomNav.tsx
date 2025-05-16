@@ -14,7 +14,16 @@ import SignInBanner from './SignInBanner';
 import { useAuth } from '@/context/AuthContext';
 import Logo from '@/components/home/Logo'; // fixed import path (lowercase 'home')
 
-const navItems = [
+interface NavItem {
+  id: string;
+  name: string;
+  icon: React.ComponentType<any>;
+  path: string;
+  isAvatar?: boolean;
+  badge?: string | number;
+}
+
+const navItems: NavItem[] = [
   { id: 'home', name: 'Home', icon: Logo, path: '/for-you' }, // replaced Home with Logo
   { id: 'shorts', name: 'Shorts', icon: Zap, path: '/reels' },
   { id: 'feeds', name: 'Feeds', icon: Rss, path: '/posts' },
