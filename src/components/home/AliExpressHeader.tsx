@@ -1,7 +1,9 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useScrollProgress } from '@/hooks/useScrollProgress';
-import { Home, ShoppingBag, Users, Image, MessageSquare, Store } from 'lucide-react';
+import { Home, MessageSquare, Image, Video } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSquareRss } from '@fortawesome/free-solid-svg-icons';
 import HeaderSearchBar from './header/HeaderSearchBar';
 import CategoryTabs from './header/CategoryTabs';
 import CategoryPanel from './header/CategoryPanel';
@@ -32,6 +34,9 @@ export default function AliExpressHeader({ activeTabId = 'recommendations' }: Al
 
   // Determine if we should show the top bar based on current route
   const isForYouPage = location.pathname === '/for-you' || location.pathname === '/';
+  
+  // Determine if we should show icons only in the tabs
+  const showIconsOnly = !isForYouPage;
 
   // Update active tab when prop changes
   useEffect(() => {
@@ -45,10 +50,10 @@ export default function AliExpressHeader({ activeTabId = 'recommendations' }: Al
 
   const categories = [
     { id: 'recommendations', name: t('home.forYou'), icon: <Home className="h-3 w-3" />, path: '/for-you' },
-    { id: 'posts', name: t('home.posts'), icon: <MessageSquare className="h-3 w-3" />, path: '/posts' },
-    { id: 'shops', name: t('home.shops'), icon: <Store className="h-3 w-3" />, path: '/shops' },
+    { id: 'posts', name: t('home.posts'), icon: <FontAwesomeIcon icon={faSquareRss} className="h-3 w-3" />, path: '/posts' },
+    { id: 'messages', name: t('home.messages'), icon: <MessageSquare className="h-3 w-3" />, path: '/messages' },
+    { id: 'videos', name: t('home.videos'), icon: <Video className="h-3 w-3" />, path: '/videos' },
     { id: 'trending', name: t('home.trending'), icon: <Image className="h-3 w-3" />, path: '/trending' },
-    { id: 'videos', name: t('home.videos'), icon: <Image className="h-3 w-3" />, path: '/videos' },
   ];
   
   const togglePanel = () => setIsOpen(!isOpen);
@@ -112,6 +117,7 @@ export default function AliExpressHeader({ activeTabId = 'recommendations' }: Al
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         categories={categories}
+        iconsOnly={showIconsOnly}
       />
 
       {/* Dropdown Panel */}
