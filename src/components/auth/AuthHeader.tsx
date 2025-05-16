@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Logo from "@/components/home/Logo";
 
@@ -11,9 +10,7 @@ const AuthHeader = ({ title, subtitle }: AuthHeaderProps) => {
   return (
     <div className="w-full max-w-md pt-2 pb-4 flex flex-col items-center">
       <div className="flex justify-center items-center mb-3">
-        <div className="text-[#ff4747] filter drop-shadow-md" style={{ width: '70px', height: '70px' }}>
-          <Logo />
-        </div>
+        <Logo width={70} height={70} className="text-[#ff4747] filter drop-shadow-md" />
       </div>
       <h1 className="text-2xl font-bold text-center bg-gradient-to-r from-[#ff3030] to-[#ff6060] bg-clip-text text-transparent">
         {title}

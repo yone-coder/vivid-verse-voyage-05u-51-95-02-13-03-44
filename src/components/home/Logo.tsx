@@ -11,7 +11,7 @@ const Logo = () => {
       style={{ 
         shapeRendering: "geometricPrecision", 
         textRendering: "geometricPrecision", 
-        imageRendering: "optimizequality", 
+        imageRendering: "optimizeQuality", 
         fillRule: "evenodd", 
         clipRule: "evenodd" 
       }}
