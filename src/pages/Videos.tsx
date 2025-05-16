@@ -1,6 +1,6 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { fetchAllProducts } from "@/integrations/supabase/products";
-import AliExpressHeader from "@/components/home/AliExpressHeader";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useState, useEffect } from "react";
 import { Heart, MessageSquare, Share, Play, Pause, Eye } from "lucide-react";
@@ -114,12 +114,9 @@ export default function Videos() {
 
   return (
     <div className="flex flex-col min-h-screen bg-black overscroll-none overflow-x-hidden">
-      {/* AliExpressHeader component with active tab set to videos */}
-      <AliExpressHeader activeTabId="videos" />
-
-      <div className="pt-[44px] pb-16">
+      <div className="pb-16">
         {/* Categories Scroller */}
-        <div className="bg-black sticky top-[44px] z-10 border-b border-gray-800">
+        <div className="bg-black sticky top-0 z-10 border-b border-gray-800">
           <div className="flex gap-2 overflow-x-auto no-scrollbar py-2 px-3">
             <Badge variant="outline" className="whitespace-nowrap px-3 py-1 bg-gray-800 text-white border-gray-700">
               For You
