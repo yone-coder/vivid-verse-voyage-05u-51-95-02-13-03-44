@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import AliExpressHeader from "@/components/home/AliExpressHeader";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -54,6 +53,235 @@ interface Conversation {
   }[];
 }
 
+// Mock conversation data
+const conversations: Conversation[] = [
+  {
+    id: 1,
+    name: "Sarah Johnson",
+    avatar: "https://picsum.photos/id/64/100",
+    lastMessage: "Great! Talk to you tomorrow",
+    timestamp: "12:45 PM",
+    unread: 2,
+    online: true
+  },
+  {
+    id: 2,
+    name: "Tech Gadget Store",
+    avatar: "https://picsum.photos/id/20/100",
+    lastMessage: "Your order has been shipped!",
+    timestamp: "10:32 AM",
+    unread: 1,
+    online: true
+  },
+  {
+    id: 3,
+    name: "Michael Chen",
+    avatar: "https://picsum.photos/id/91/100",
+    lastMessage: "Did you see the latest product?",
+    timestamp: "Yesterday",
+    unread: 0,
+    online: false
+  },
+  {
+    id: 4,
+    name: "Olivia Smith",
+    avatar: "https://picsum.photos/id/45/100",
+    lastMessage: "Thanks for your help!",
+    timestamp: "Yesterday",
+    unread: 0,
+    online: true
+  },
+  {
+    id: 5,
+    name: "Fashion Boutique",
+    avatar: "https://picsum.photos/id/81/100",
+    lastMessage: "Your order #12345 has been confirmed",
+    timestamp: "Mon",
+    unread: 0,
+    online: true
+  },
+  {
+    id: 6,
+    name: "AliExpress Team",
+    avatar: "https://picsum.photos/id/60/100",
+    lastMessage: "Welcome to our platform!",
+    timestamp: "Mon",
+    unread: 0,
+    online: true
+  },
+  {
+    id: 7,
+    name: "Gadget Enthusiasts",
+    avatar: "https://picsum.photos/id/26/100",
+    lastMessage: "John: Has anyone tried the new model?",
+    timestamp: "Sun",
+    unread: 3,
+    online: true,
+    isGroup: true,
+    members: [
+      { name: "John Smith", avatar: "https://picsum.photos/id/22/100" },
+      { name: "Lisa Wang", avatar: "https://picsum.photos/id/29/100" },
+      { name: "Robert Green", avatar: "https://picsum.photos/id/33/100" },
+    ]
+  }
+];
+
+// Mock messages for the selected conversation
+const messages: Record<number, Message[]> = {
+  1: [
+    {
+      id: 1,
+      sender: "Sarah Johnson",
+      content: "Hey! How's it going with the new purchase?",
+      timestamp: "12:30 PM",
+      isOwn: false,
+      read: true,
+      avatar: "https://picsum.photos/id/64/100",
+      reactions: [{ type: "👍", count: 1 }]
+    },
+    {
+      id: 2,
+      sender: "You",
+      content: "It's great! The quality is much better than I expected.",
+      timestamp: "12:35 PM",
+      isOwn: true,
+      read: true,
+      avatar: "https://picsum.photos/id/100/100"
+    },
+    {
+      id: 3,
+      sender: "Sarah Johnson",
+      content: "That's awesome! Did you use the discount code I sent you?",
+      timestamp: "12:37 PM",
+      isOwn: false,
+      read: true,
+      avatar: "https://picsum.photos/id/64/100"
+    },
+    {
+      id: 4,
+      sender: "You",
+      content: "Yes, I saved 15%! Thanks for sharing that.",
+      timestamp: "12:40 PM",
+      isOwn: true,
+      read: true,
+      avatar: "https://picsum.photos/id/100/100",
+      reactions: [{ type: "❤️", count: 1 }]
+    },
+    {
+      id: 5,
+      sender: "Sarah Johnson",
+      content: "No problem! Let me know if you need anything else. I'm planning to order the same thing next week.",
+      timestamp: "12:42 PM",
+      isOwn: false,
+      read: true,
+      avatar: "https://picsum.photos/id/64/100"
+    },
+    {
+      id: 6,
+      sender: "You",
+      content: "I'll definitely let you know. We should meet up soon!",
+      timestamp: "12:43 PM",
+      isOwn: true,
+      read: true,
+      avatar: "https://picsum.photos/id/100/100"
+    },
+    {
+      id: 7,
+      sender: "Sarah Johnson",
+      content: "Great! Talk to you tomorrow",
+      timestamp: "12:45 PM",
+      isOwn: false,
+      read: false,
+      avatar: "https://picsum.photos/id/64/100"
+    },
+  ],
+  2: [
+    {
+      id: 1,
+      sender: "Tech Gadget Store",
+      content: "Thank you for your purchase!",
+      timestamp: "10:15 AM",
+      isOwn: false,
+      read: true,
+      avatar: "https://picsum.photos/id/20/100"
+    },
+    {
+      id: 2,
+      sender: "Tech Gadget Store",
+      content: "Your order #54321 has been processed and will be shipped soon.",
+      timestamp: "10:16 AM",
+      isOwn: false,
+      read: true,
+      avatar: "https://picsum.photos/id/20/100"
+    },
+    {
+      id: 3,
+      sender: "You",
+      content: "Great! When can I expect delivery?",
+      timestamp: "10:20 AM",
+      isOwn: true,
+      read: true,
+      avatar: "https://picsum.photos/id/100/100"
+    },
+    {
+      id: 4,
+      sender: "Tech Gadget Store",
+      content: "Your order has been shipped! Estimated delivery is in 3-5 business days.",
+      timestamp: "10:32 AM",
+      isOwn: false,
+      read: false,
+      avatar: "https://picsum.photos/id/20/100"
+    },
+  ],
+  7: [
+    {
+      id: 1,
+      sender: "John Smith",
+      content: "Has anyone tried the new model of the smart watch that was released this month?",
+      timestamp: "Sunday",
+      isOwn: false,
+      read: true,
+      avatar: "https://picsum.photos/id/22/100"
+    },
+    {
+      id: 2,
+      sender: "Lisa Wang",
+      content: "I ordered it last week but it hasn't arrived yet. I'll let you know my thoughts when it does!",
+      timestamp: "Sunday",
+      isOwn: false,
+      read: true,
+      avatar: "https://picsum.photos/id/29/100"
+    },
+    {
+      id: 3,
+      sender: "Robert Green",
+      content: "I saw it in store and the build quality looks great. The battery life is supposed to be much better too.",
+      timestamp: "Yesterday",
+      isOwn: false,
+      read: false,
+      avatar: "https://picsum.photos/id/33/100"
+    },
+    {
+      id: 4,
+      sender: "John Smith",
+      content: "That's good to hear! I'm especially interested in the new fitness tracking features.",
+      timestamp: "Today",
+      isOwn: false,
+      read: false,
+      avatar: "https://picsum.photos/id/22/100"
+    },
+    {
+      id: 5,
+      sender: "Lisa Wang",
+      content: "Same here! I heard they've improved the heart rate monitoring significantly.",
+      timestamp: "Just now",
+      isOwn: false,
+      read: false,
+      avatar: "https://picsum.photos/id/29/100"
+    }
+  ]
+};
+
 export default function Messages() {
   const isMobile = useIsMobile();
   const [isReady, setIsReady] = useState(false);
@@ -66,235 +294,6 @@ export default function Messages() {
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
-
-  // Mock conversation data - moved to the top before it's used
-  const conversations: Conversation[] = [
-    {
-      id: 1,
-      name: "Sarah Johnson",
-      avatar: "https://picsum.photos/id/64/100",
-      lastMessage: "Great! Talk to you tomorrow",
-      timestamp: "12:45 PM",
-      unread: 2,
-      online: true
-    },
-    {
-      id: 2,
-      name: "Tech Gadget Store",
-      avatar: "https://picsum.photos/id/20/100",
-      lastMessage: "Your order has been shipped!",
-      timestamp: "10:32 AM",
-      unread: 1,
-      online: true
-    },
-    {
-      id: 3,
-      name: "Michael Chen",
-      avatar: "https://picsum.photos/id/91/100",
-      lastMessage: "Did you see the latest product?",
-      timestamp: "Yesterday",
-      unread: 0,
-      online: false
-    },
-    {
-      id: 4,
-      name: "Olivia Smith",
-      avatar: "https://picsum.photos/id/45/100",
-      lastMessage: "Thanks for your help!",
-      timestamp: "Yesterday",
-      unread: 0,
-      online: true
-    },
-    {
-      id: 5,
-      name: "Fashion Boutique",
-      avatar: "https://picsum.photos/id/81/100",
-      lastMessage: "Your order #12345 has been confirmed",
-      timestamp: "Mon",
-      unread: 0,
-      online: true
-    },
-    {
-      id: 6,
-      name: "AliExpress Team",
-      avatar: "https://picsum.photos/id/60/100",
-      lastMessage: "Welcome to our platform!",
-      timestamp: "Mon",
-      unread: 0,
-      online: true
-    },
-    {
-      id: 7,
-      name: "Gadget Enthusiasts",
-      avatar: "https://picsum.photos/id/26/100",
-      lastMessage: "John: Has anyone tried the new model?",
-      timestamp: "Sun",
-      unread: 3,
-      online: true,
-      isGroup: true,
-      members: [
-        { name: "John Smith", avatar: "https://picsum.photos/id/22/100" },
-        { name: "Lisa Wang", avatar: "https://picsum.photos/id/29/100" },
-        { name: "Robert Green", avatar: "https://picsum.photos/id/33/100" },
-      ]
-    }
-  ];
-
-  // Mock messages for the selected conversation - moved up before it's used
-  const messages: Record<number, Message[]> = {
-    1: [
-      {
-        id: 1,
-        sender: "Sarah Johnson",
-        content: "Hey! How's it going with the new purchase?",
-        timestamp: "12:30 PM",
-        isOwn: false,
-        read: true,
-        avatar: "https://picsum.photos/id/64/100",
-        reactions: [{ type: "👍", count: 1 }]
-      },
-      {
-        id: 2,
-        sender: "You",
-        content: "It's great! The quality is much better than I expected.",
-        timestamp: "12:35 PM",
-        isOwn: true,
-        read: true,
-        avatar: "https://picsum.photos/id/100/100"
-      },
-      {
-        id: 3,
-        sender: "Sarah Johnson",
-        content: "That's awesome! Did you use the discount code I sent you?",
-        timestamp: "12:37 PM",
-        isOwn: false,
-        read: true,
-        avatar: "https://picsum.photos/id/64/100"
-      },
-      {
-        id: 4,
-        sender: "You",
-        content: "Yes, I saved 15%! Thanks for sharing that.",
-        timestamp: "12:40 PM",
-        isOwn: true,
-        read: true,
-        avatar: "https://picsum.photos/id/100/100",
-        reactions: [{ type: "❤️", count: 1 }]
-      },
-      {
-        id: 5,
-        sender: "Sarah Johnson",
-        content: "No problem! Let me know if you need anything else. I'm planning to order the same thing next week.",
-        timestamp: "12:42 PM",
-        isOwn: false,
-        read: true,
-        avatar: "https://picsum.photos/id/64/100"
-      },
-      {
-        id: 6,
-        sender: "You",
-        content: "I'll definitely let you know. We should meet up soon!",
-        timestamp: "12:43 PM",
-        isOwn: true,
-        read: true,
-        avatar: "https://picsum.photos/id/100/100"
-      },
-      {
-        id: 7,
-        sender: "Sarah Johnson",
-        content: "Great! Talk to you tomorrow",
-        timestamp: "12:45 PM",
-        isOwn: false,
-        read: false,
-        avatar: "https://picsum.photos/id/64/100"
-      },
-    ],
-    2: [
-      {
-        id: 1,
-        sender: "Tech Gadget Store",
-        content: "Thank you for your purchase!",
-        timestamp: "10:15 AM",
-        isOwn: false,
-        read: true,
-        avatar: "https://picsum.photos/id/20/100"
-      },
-      {
-        id: 2,
-        sender: "Tech Gadget Store",
-        content: "Your order #54321 has been processed and will be shipped soon.",
-        timestamp: "10:16 AM",
-        isOwn: false,
-        read: true,
-        avatar: "https://picsum.photos/id/20/100"
-      },
-      {
-        id: 3,
-        sender: "You",
-        content: "Great! When can I expect delivery?",
-        timestamp: "10:20 AM",
-        isOwn: true,
-        read: true,
-        avatar: "https://picsum.photos/id/100/100"
-      },
-      {
-        id: 4,
-        sender: "Tech Gadget Store",
-        content: "Your order has been shipped! Estimated delivery is in 3-5 business days.",
-        timestamp: "10:32 AM",
-        isOwn: false,
-        read: false,
-        avatar: "https://picsum.photos/id/20/100"
-      },
-    ],
-    7: [
-      {
-        id: 1,
-        sender: "John Smith",
-        content: "Has anyone tried the new model of the smart watch that was released this month?",
-        timestamp: "Sunday",
-        isOwn: false,
-        read: true,
-        avatar: "https://picsum.photos/id/22/100"
-      },
-      {
-        id: 2,
-        sender: "Lisa Wang",
-        content: "I ordered it last week but it hasn't arrived yet. I'll let you know my thoughts when it does!",
-        timestamp: "Sunday",
-        isOwn: false,
-        read: true,
-        avatar: "https://picsum.photos/id/29/100"
-      },
-      {
-        id: 3,
-        sender: "Robert Green",
-        content: "I saw it in store and the build quality looks great. The battery life is supposed to be much better too.",
-        timestamp: "Yesterday",
-        isOwn: false,
-        read: false,
-        avatar: "https://picsum.photos/id/33/100"
-      },
-      {
-        id: 4,
-        sender: "John Smith",
-        content: "That's good to hear! I'm especially interested in the new fitness tracking features.",
-        timestamp: "Today",
-        isOwn: false,
-        read: false,
-        avatar: "https://picsum.photos/id/22/100"
-      },
-      {
-        id: 5,
-        sender: "Lisa Wang",
-        content: "Same here! I heard they've improved the heart rate monitoring significantly.",
-        timestamp: "Just now",
-        isOwn: false,
-        read: false,
-        avatar: "https://picsum.photos/id/29/100"
-      }
-    ]
-  };
 
   useEffect(() => {
     if (isMobile !== undefined) {
@@ -438,20 +437,23 @@ export default function Messages() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
-      {/* AliExpressHeader component with active tab set to messages */}
-      <AliExpressHeader activeTabId="messages" />
+      {/* AliExpressHeader component - only show when no conversation is selected */}
+      {!selectedConversation && <AliExpressHeader activeTabId="messages" />}
 
       {/* Main content */}
-      <div className="pt-[40px] pb-16 flex flex-1 overflow-hidden">
+      <div className={`${selectedConversation ? 'pt-0' : 'pt-[40px]'} pb-16 flex flex-1 overflow-hidden`}>
         <div className="flex h-[calc(100vh-56px)] w-full">
           {/* Conversations list - always visible on desktop, or visible on mobile when no conversation is selected */}
           <div 
             className={`border-r border-gray-200 bg-white w-full md:w-80 flex-shrink-0 
               ${isMobile && selectedConversation ? "hidden" : "flex flex-col"}`}
           >
-            {/* Conversations header */}
+            {/* Conversations header with back chevron */}
             <div className="p-3 border-b border-gray-200 flex justify-between items-center sticky top-0 bg-white z-10">
-              <h2 className="text-lg font-semibold">Messages</h2>
+              <div className="flex items-center">
+                <ChevronLeft className="h-5 w-5 mr-1" />
+                <h2 className="text-lg font-semibold">Messages</h2>
+              </div>
               <div className="flex items-center gap-1">
                 <Button size="icon" variant="ghost" className="rounded-full">
                   <MoreHorizontal className="h-5 w-5" />
@@ -463,26 +465,6 @@ export default function Messages() {
                   <Plus className="h-5 w-5" />
                 </Button>
               </div>
-            </div>
-            
-            {/* Search conversations */}
-            <div className="p-3 border-b border-gray-200">
-              <div className="relative">
-                <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
-                <Input
-                  placeholder="Search messages"
-                  className="pl-9 py-2 bg-gray-100 border-0"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onFocus={() => setIsSearchFocused(true)}
-                  onBlur={() => setIsSearchFocused(false)}
-                />
-              </div>
-              {isSearchFocused && searchQuery && (
-                <div className="mt-2 p-1">
-                  <p className="text-xs text-gray-500 px-2">Search results for "{searchQuery}"</p>
-                </div>
-              )}
             </div>
             
             {/* Conversations list */}
