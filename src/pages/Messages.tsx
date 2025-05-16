@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import AliExpressHeader from "@/components/home/AliExpressHeader";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -25,37 +24,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Card } from "@/components/ui/card";
 
-interface Message {
-  id: number;
-  sender: string;
-  content: string;
-  timestamp: string;
-  isOwn: boolean;
-  read: boolean;
-  avatar: string;
-  reactions?: {
-    type: string;
-    count: number;
-  }[];
-}
-
-interface Conversation {
-  id: number;
-  name: string;
-  avatar: string;
-  lastMessage: string;
-  timestamp: string;
-  unread: number;
-  online: boolean;
-  isGroup?: boolean;
-  members?: {
-    name: string;
-    avatar: string;
-  }[];
-}
-
 // Mock conversation data
-const conversations: Conversation[] = [
+const conversations = [
   {
     id: 1,
     name: "Sarah Johnson",
@@ -128,7 +98,7 @@ const conversations: Conversation[] = [
 ];
 
 // Mock messages for the selected conversation
-const messages: Record<number, Message[]> = {
+const messages = {
   1: [
     {
       id: 1,
@@ -437,12 +407,12 @@ export default function Messages() {
   const currentMessages = selectedConversation ? (messages[selectedConversation] || []) : [];
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50">
+    <div className="flex flex-col min-h-screen bg-gray-50 overscroll-none overflow-x-hidden">
       {/* AliExpressHeader component - hide completely when a conversation is selected */}
       {!selectedConversation && <AliExpressHeader activeTabId="messages" />}
 
       {/* Main content */}
-      <div className={`${selectedConversation ? 'pt-0' : 'pt-[40px]'} pb-16 flex flex-1 overflow-hidden`}>
+      <div className={`${selectedConversation ? 'pt-0' : 'pt-[44px]'} pb-16 flex flex-1 overflow-hidden`}>
         <div className="flex h-[calc(100vh-56px)] w-full">
           {/* Conversations list - always visible on desktop, or visible on mobile when no conversation is selected */}
           <div 

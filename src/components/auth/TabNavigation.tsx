@@ -10,6 +10,7 @@ interface TabNavigationProps {
   showTooltips?: boolean;
   animationStyle?: 'slide' | 'grow';
   hiddenTabs?: string[]; // Add this prop to hide specific tabs
+  iconsOnly?: boolean; // New prop to display only icons
 }
 
 const TabNavigation = ({ 
@@ -17,7 +18,8 @@ const TabNavigation = ({
   handleTabChange, 
   showTooltips = false,
   animationStyle = 'slide',
-  hiddenTabs = [] // Default to empty array (show all tabs)
+  hiddenTabs = [], // Default to empty array (show all tabs)
+  iconsOnly = false // Default to showing text
 }: TabNavigationProps) => {
   const tabsRef = useRef<(HTMLButtonElement | null)[]>([]);
   const [underline, setUnderline] = useState({ left: 0, width: 0 });
@@ -67,9 +69,11 @@ const TabNavigation = ({
                   className="h-4 w-4 text-current transition-transform duration-300 ease-in-out group-data-[state=active]:scale-110 group-data-[state=active]:drop-shadow-[0_0_6px_#ff4747]"
                 />
               </div>
-              <span className="ml-1.5 transition-all duration-300 ease-in-out group-data-[state=active]:font-medium group-hover:tracking-wide">
-                {label}
-              </span>
+              {!iconsOnly && (
+                <span className="ml-1.5 transition-all duration-300 ease-in-out group-data-[state=active]:font-medium group-hover:tracking-wide">
+                  {label}
+                </span>
+              )}
             </TabsTrigger>
           );
         })}

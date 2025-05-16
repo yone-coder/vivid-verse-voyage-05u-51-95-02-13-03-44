@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from 'react';
 import { useScrollProgress } from '@/hooks/useScrollProgress';
 import { Home, ShoppingBag, Users, Image, MessageSquare, Store } from 'lucide-react';
@@ -32,6 +31,9 @@ export default function AliExpressHeader({ activeTabId = 'recommendations' }: Al
 
   // Determine if we should show the top bar based on current route
   const isForYouPage = location.pathname === '/for-you' || location.pathname === '/';
+  
+  // Determine if we should show icons only in the tabs
+  const showIconsOnly = !isForYouPage;
 
   // Update active tab when prop changes
   useEffect(() => {
@@ -112,6 +114,7 @@ export default function AliExpressHeader({ activeTabId = 'recommendations' }: Al
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         categories={categories}
+        iconsOnly={showIconsOnly}
       />
 
       {/* Dropdown Panel */}

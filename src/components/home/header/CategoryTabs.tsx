@@ -1,8 +1,8 @@
 
 import { LayoutGrid } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { ReactNode, useRef, useEffect } from 'react';
-import { motion, useMotionValue, animate as fmAnimate } from 'framer-motion'; // Updated imports
+import { motion, useMotionValue, animate as fmAnimate } from 'framer-motion';
 
 interface CategoryTab {
   id: string;
@@ -16,6 +16,7 @@ interface CategoryTabsProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
   categories: CategoryTab[];
+  iconsOnly?: boolean;
 }
 
 const CategoryTabs = ({
@@ -23,8 +24,10 @@ const CategoryTabs = ({
   activeTab,
   setActiveTab,
   categories,
+  iconsOnly = false,
 }: CategoryTabsProps) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const scrollX = useMotionValue(0); // Motion value for scrollLeft
@@ -71,7 +74,7 @@ const CategoryTabs = ({
     <div
       className="relative w-full transition-all duration-700 overflow-hidden"
       style={{
-        maxHeight: progress > 0.3 ? '40px' : '0px',
+        maxHeight: progress > 0.3 ? (iconsOnly ? '50px' : '40px') : '0px',
         opacity: progress > 0.3 ? 1 : 0,
         backgroundColor: `rgba(255, 255, 255, ${progress * 0.98})`,
         backdropFilter: `blur(${progress * 8}px)`,
@@ -91,14 +94,14 @@ const CategoryTabs = ({
               ref={el => tabRefs.current[index] = el}
               onClick={() => handleTabClick(id, path)}
               aria-pressed={activeTab === id}
-              className={`relative flex items-center gap-1 px-3 py-1 text-xs font-medium whitespace-nowrap transition-colors duration-150 ease-in-out focus:outline-none focus-visible:ring-1 focus-visible:ring-orange-500 focus-visible:ring-offset-1 ${
+              className={`relative flex items-center ${iconsOnly ? 'justify-center' : 'gap-1'} px-3 py-1 text-xs font-medium whitespace-nowrap transition-colors duration-150 ease-in-out focus:outline-none focus-visible:ring-1 focus-visible:ring-orange-500 focus-visible:ring-offset-1 ${
                 activeTab === id
                   ? 'text-orange-500'
                   : 'text-gray-600 hover:text-orange-500 hover:bg-orange-50/70 rounded-md'
               }`}
             >
               {icon}
-              <span>{name}</span>
+              {!iconsOnly && <span>{name}</span>}
               {activeTab === id && (
                 <motion.div
                   className="absolute bottom-0 left-0 right-0 h-0.5 bg-orange-500"
