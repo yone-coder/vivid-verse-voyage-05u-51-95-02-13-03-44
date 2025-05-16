@@ -14,8 +14,8 @@ import { useAuth } from '@/context/AuthContext';
 
 const navItems = [
   { id: 'home', name: 'Home', icon: Home, path: '/for-you' },
-  { id: 'shorts', name: 'Shorts', icon: Zap, path: '/shorts' },
-  { id: 'feeds', name: 'Feeds', icon: Rss, path: '/feeds' },
+  { id: 'shorts', name: 'Shorts', icon: Zap, path: '/reels' },
+  { id: 'feeds', name: 'Feeds', icon: Rss, path: '/posts' },
   { id: 'messages', name: 'Messages', icon: MessageSquare, path: '/messages' },
   { id: 'videos', name: 'Videos', icon: Video, path: '/videos' },
   { id: 'account', name: 'Account', icon: User, path: '/account', isAvatar: true },
