@@ -67,24 +67,28 @@ export default function FlashDeals() {
       <div className="px-2 py-2">
 
 
-<div className="flex items-center space-x-6 mb-1 bg-gradient-to-r from-orange-400 via-orange-500 to-red-500 px-2 py-2 -mx-2">
-  <div className="flex items-center space-x-2 text-white text-xs font-bold uppercase tracking-wide">
-    <Bolt className="w-4 h-4" />
-    FLASH DEALS
+<div className="flex justify-between items-center mb-1 bg-gradient-to-r from-orange-400 via-orange-500 to-red-500 px-2 py-2">
+  {/* LEFT SIDE: Flash + Timer, gap = 1.5rem */}
+  <div className="flex items-center space-x-6">
+    <div className="flex items-center space-x-2 text-white text-xs font-bold uppercase tracking-wide">
+      <Bolt className="w-4 h-4" />
+      FLASH DEALS
+    </div>
+    <div className="flex items-center space-x-1 text-[11px] text-white font-medium">
+      <Timer className="w-3.5 h-3.5" />
+      <span>Ends in 02:45:18</span>
+    </div>
   </div>
-  <div className="flex items-center space-x-1 text-[11px] text-white font-medium">
-    <Timer className="w-3.5 h-3.5" />
-    <span>Ends in 02:45:18</span>
-  </div>
+
+  {/* RIGHT SIDE: View All, same gap to the timer via pl-6 */}
   <Link
     to="/search?category=flash-deals"
-    className="text-xs text-white hover:underline flex items-center font-medium"
+    className="pl-6 text-xs text-white hover:underline flex items-center font-medium"
   >
     View All
     <ArrowRight className="h-3.5 w-3.5 ml-0.5" />
   </Link>
 </div>
-
       </div>
 
       <div className="relative">
