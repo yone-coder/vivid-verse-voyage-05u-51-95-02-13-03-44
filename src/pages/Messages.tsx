@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from "react";
 import AliExpressHeader from "@/components/home/AliExpressHeader";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -23,6 +24,18 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Card } from "@/components/ui/card";
+
+// Define the Message interface to fix TypeScript errors
+interface Message {
+  id: number;
+  sender: string;
+  content: string;
+  timestamp: string;
+  isOwn: boolean;
+  read: boolean;
+  avatar: string;
+  reactions?: Array<{ type: string; count: number }>;
+}
 
 // Mock conversation data
 const conversations = [

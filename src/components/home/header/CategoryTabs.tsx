@@ -74,7 +74,7 @@ const CategoryTabs = ({
     <div
       className="relative w-full transition-all duration-700 overflow-hidden"
       style={{
-        maxHeight: progress > 0.3 ? (iconsOnly ? '50px' : '40px') : '0px',
+        maxHeight: progress > 0.3 ? (iconsOnly ? '56px' : '40px') : '0px', // Increased height for icon-only mode
         opacity: progress > 0.3 ? 1 : 0,
         backgroundColor: `rgba(255, 255, 255, ${progress * 0.98})`,
         backdropFilter: `blur(${progress * 8}px)`,
@@ -94,17 +94,23 @@ const CategoryTabs = ({
               ref={el => tabRefs.current[index] = el}
               onClick={() => handleTabClick(id, path)}
               aria-pressed={activeTab === id}
-              className={`relative flex items-center ${iconsOnly ? 'justify-center' : 'gap-1'} px-3 py-1 text-xs font-medium whitespace-nowrap transition-colors duration-150 ease-in-out focus:outline-none focus-visible:ring-1 focus-visible:ring-orange-500 focus-visible:ring-offset-1 ${
+              className={`relative flex items-center ${iconsOnly ? 'justify-center px-6 py-3' : 'gap-1 px-3 py-1'} text-xs font-medium whitespace-nowrap transition-colors duration-150 ease-in-out focus:outline-none focus-visible:ring-1 focus-visible:ring-orange-500 focus-visible:ring-offset-1 ${
                 activeTab === id
                   ? 'text-orange-500'
                   : 'text-gray-600 hover:text-orange-500 hover:bg-orange-50/70 rounded-md'
               }`}
             >
-              {icon}
-              {!iconsOnly && <span>{name}</span>}
+              {iconsOnly ? (
+                <div className="transform scale-125">{icon}</div>
+              ) : (
+                <>
+                  {icon}
+                  <span>{name}</span>
+                </>
+              )}
               {activeTab === id && (
                 <motion.div
-                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-orange-500"
+                  className={`absolute bottom-0 left-0 right-0 h-0.5 bg-orange-500 ${iconsOnly ? 'w-6 mx-auto' : ''}`}
                   layoutId="activeCategoryUnderline"
                   transition={{ type: 'spring', stiffness: 350, damping: 30 }}
                 />

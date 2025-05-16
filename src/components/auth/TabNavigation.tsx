@@ -51,7 +51,7 @@ const TabNavigation = ({
 
   return (
     <div className="relative">
-      <TabsList className="flex w-full bg-transparent p-0 h-auto border-b border-[#eaeaea] rounded-none relative">
+      <TabsList className={`flex w-full bg-transparent p-0 border-b border-[#eaeaea] rounded-none relative ${iconsOnly ? 'h-14' : 'h-auto'}`}>
         {tabs.map(({ key, icon: Icon, label }, i) => {
           const isActive = key === activeTab;
 
@@ -61,9 +61,9 @@ const TabNavigation = ({
               value={key}
               onClick={() => handleTabChange(key)}
               ref={(el) => (tabsRef.current[i] = el)}
-              className="group relative flex-1 flex items-center justify-center text-xs font-medium py-2 border-b-2 border-transparent data-[state=inactive]:text-gray-500 transition-all duration-300 ease-in-out hover:bg-gray-50 rounded-none"
+              className={`group relative flex-1 flex items-center justify-center text-xs font-medium py-2 border-b-2 border-transparent data-[state=inactive]:text-gray-500 transition-all duration-300 ease-in-out hover:bg-gray-50 rounded-none ${iconsOnly ? 'flex-col py-3' : ''}`}
             >
-              <div className="relative w-6 h-6 flex items-center justify-center">
+              <div className={`relative w-6 h-6 flex items-center justify-center ${iconsOnly ? 'scale-125' : ''}`}>
                 <div className="absolute inset-0 rounded-full bg-[#ff4747]/10 scale-0 group-data-[state=active]:scale-100 transition-transform duration-300 ease-out" />
                 <Icon
                   className="h-4 w-4 text-current transition-transform duration-300 ease-in-out group-data-[state=active]:scale-110 group-data-[state=active]:drop-shadow-[0_0_6px_#ff4747]"
