@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import AliExpressHeader from "@/components/home/AliExpressHeader";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -25,7 +24,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Card } from "@/components/ui/card";
 
-// Define the Message interface to fix TypeScript errors
+// Define the Message interface with reactions as optional
 interface Message {
   id: number;
   sender: string;
@@ -110,8 +109,9 @@ const conversations = [
   }
 ];
 
-// Mock messages for the selected conversation
-const messages = {
+// Define the messages object with the proper typing
+// The key is the conversation ID, and the value is an array of messages
+const messages: Record<number, Message[]> = {
   1: [
     {
       id: 1,
@@ -310,7 +310,7 @@ export default function Messages() {
     e.preventDefault();
     if (!newMessage.trim() || !selectedConversation) return;
 
-    // Add message to current conversation
+    // Add message to current conversation with updated type
     const messageObj: Message = {
       id: Date.now(),
       sender: "You",
