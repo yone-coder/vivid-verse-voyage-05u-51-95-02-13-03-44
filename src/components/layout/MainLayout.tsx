@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Footer from "@/components/layout/Footer";
@@ -13,7 +14,7 @@ export default function MainLayout() {
   const location = useLocation();
   const pathname = location.pathname;
   const isProductPage = pathname.includes('/product/');
-  const isRootHomePage = pathname === "/";
+  const isRootHomePage = pathname === "/" || pathname === "/for-you";
   const isReelsPage = pathname === "/reels";
   const isProfilePage = pathname === "/account";
   const { toast } = useToast();
@@ -79,7 +80,7 @@ export default function MainLayout() {
       <div className="min-h-screen flex flex-col bg-white">
         <style dangerouslySetInnerHTML={{ __html: headerHeightStyle }} />
 
-        {/* Show AliExpressHeader and category tabs only on the root homepage */}
+        {/* Show AliExpressHeader only on the ForYou page */}
         {isRootHomePage && (
           <AliExpressHeader activeTabId="recommendations" />
         )}

@@ -1,7 +1,6 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { fetchAllProducts } from "@/integrations/supabase/products";
-import AliExpressHeader from "@/components/home/AliExpressHeader";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useState, useEffect } from "react";
 import VendorProductCarousel from "@/components/home/VendorProductCarousel";
@@ -78,11 +77,8 @@ export default function Posts() {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100 overscroll-none overflow-x-hidden">
-      {/* AliExpressHeader component with active tab set to posts */}
-      <AliExpressHeader activeTabId="posts" />
-
-      {/* Adjusted top padding since we only have tabs (not full header) */}
-      <div className="pt-[40px] pb-16">
+      {/* Content now starts at the top since header is in the layout */}
+      <div className="pb-16">
         {/* Infinite list of VendorProductCarousel components */}
         <div className="space-y-4 mt-2 pb-8">
           {vendors.map(vendor => (
