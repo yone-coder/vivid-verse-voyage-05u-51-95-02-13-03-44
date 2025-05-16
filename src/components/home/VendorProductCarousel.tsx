@@ -1,6 +1,6 @@
 
 import React, { useRef, useState } from 'react';
-import { FaThumbsUp, FaCommentAlt, FaShare, FaEllipsisH } from 'react-icons/fa'; 
+import { ThumbsUp, MessageSquare, Share, MoreHorizontal } from 'lucide-react'; 
 import { Product } from '@/integrations/supabase/products';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -130,7 +130,7 @@ const VendorProductCarousel = ({ title, description, products }: VendorProductCa
             className="flex items-center gap-1.5 group transition-colors"
           >  
             <div className={`flex items-center justify-center w-8 h-8 rounded-full ${liked ? 'bg-red-50' : 'hover:bg-gray-100'} transition-colors`}>
-              <FaThumbsUp className={`text-lg ${liked ? 'text-red-500' : 'text-gray-600 group-hover:text-gray-800'}`} />  
+              <ThumbsUp className={`w-5 h-5 ${liked ? 'text-red-500' : 'text-gray-600 group-hover:text-gray-800'}`} />  
             </div>
             <span className={`text-xs md:text-sm ${liked ? 'font-medium text-red-500' : 'text-gray-600 group-hover:text-gray-800'}`}>
               {likeCount}
@@ -142,7 +142,7 @@ const VendorProductCarousel = ({ title, description, products }: VendorProductCa
             className="flex items-center gap-1.5 group transition-colors"
           >  
             <div className="flex items-center justify-center w-8 h-8 rounded-full hover:bg-gray-100 transition-colors">
-              <FaCommentAlt className="text-lg text-gray-600 group-hover:text-gray-800" />  
+              <MessageSquare className="w-5 h-5 text-gray-600 group-hover:text-gray-800" />  
             </div>
             <span className="text-xs md:text-sm text-gray-600 group-hover:text-gray-800">
               {commentCount}
@@ -154,7 +154,7 @@ const VendorProductCarousel = ({ title, description, products }: VendorProductCa
             className="flex items-center gap-1.5 group transition-colors"
           >  
             <div className="flex items-center justify-center w-8 h-8 rounded-full hover:bg-gray-100 transition-colors">
-              <FaShare className="text-lg text-gray-600 group-hover:text-gray-800" />  
+              <Share className="w-5 h-5 text-gray-600 group-hover:text-gray-800" />  
             </div>
             <span className="text-xs md:text-sm text-gray-600 group-hover:text-gray-800">
               {shareCount}
@@ -164,7 +164,7 @@ const VendorProductCarousel = ({ title, description, products }: VendorProductCa
         
         {/* More options button */}
         <Button variant="ghost" size="icon" className="rounded-full h-8 w-8">
-          <FaEllipsisH className="text-gray-600" />
+          <MoreHorizontal className="text-gray-600 h-5 w-5" />
         </Button>
       </div>
 
