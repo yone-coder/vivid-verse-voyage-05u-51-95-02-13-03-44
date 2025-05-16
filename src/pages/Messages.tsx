@@ -1,3 +1,4 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect, useRef } from "react";
 import { fetchAllProducts } from "@/integrations/supabase/products";
@@ -59,6 +60,7 @@ export default function Messages() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [conversationsFilter, setConversationsFilter] = useState("");
+  const [navbarHidden, setNavbarHidden] = useState(false);
 
   // Initialize sample data
   useEffect(() => {
@@ -239,9 +241,11 @@ export default function Messages() {
       if (selectedConversation && isMobile) {
         // Hide the navigation when conversation is selected on mobile
         bottomNav.classList.add('hidden');
+        setNavbarHidden(true);
       } else {
         // Show the navigation otherwise
         bottomNav.classList.remove('hidden');
+        setNavbarHidden(false);
       }
     }
 
@@ -313,8 +317,8 @@ export default function Messages() {
   return (
     <div className="flex flex-col min-h-screen bg-gray-50 overscroll-none overflow-x-hidden">
       {/* Main content */}
-      <div className={`${selectedConversation ? 'pt-0' : 'pt-0'} pb-16 flex flex-1 overflow-hidden`}>
-        <div className="flex h-[calc(100vh-56px)] w-full">
+      <div className={`${selectedConversation ? 'pt-0' : 'pt-0'} ${navbarHidden ? 'pb-0' : 'pb-16'} flex flex-1 overflow-hidden`}>
+        <div className={`flex ${navbarHidden ? 'h-screen' : 'h-[calc(100vh-56px)]'} w-full`}>
           {/* Conversations list - always visible on desktop, or visible on mobile when no conversation is selected */}
           {(!isMobile || !selectedConversation) && (
             <div className="w-full md:w-80 bg-white border-r border-gray-200 flex flex-col">
