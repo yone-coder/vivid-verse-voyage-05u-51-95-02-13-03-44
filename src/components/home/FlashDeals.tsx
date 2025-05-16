@@ -74,7 +74,7 @@ export default function FlashDeals() {
       <Bolt className="w-4 h-4" />
       FLASH DEALS
     </div>
-    <div className="flex items-center space-x-1 text-[11px] text-white font-medium">
+    <div className="flex bg-white/20 items-center space-x-1 text-[11px] text-white font-medium rounded-full">
       <Timer className="w-3.5 h-3.5" />
       <span>Ends in 02:45:18</span>
     </div>
