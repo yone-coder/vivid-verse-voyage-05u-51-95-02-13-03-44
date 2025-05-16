@@ -11,6 +11,7 @@ import NotificationBadge from './header/NotificationBadge';
 import HeaderLogoToggle from './header/HeaderLogoToggle';
 import { useAuthOverlay } from '@/context/AuthOverlayContext';
 import { useLanguage } from '@/context/LanguageContext';
+import { useLocation } from 'react-router-dom';
 
 interface AliExpressHeaderProps {
   activeTabId?: string;
@@ -19,6 +20,7 @@ interface AliExpressHeaderProps {
 export default function AliExpressHeader({ activeTabId = 'recommendations' }: AliExpressHeaderProps) {
   const { progress } = useScrollProgress();
   const { t } = useLanguage();
+  const location = useLocation();
 
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(activeTabId);
@@ -27,6 +29,9 @@ export default function AliExpressHeader({ activeTabId = 'recommendations' }: Al
   const [voiceSearchActive, setVoiceSearchActive] = useState(false);
   const [isSearchGlowing, setIsSearchGlowing] = useState(false);
   const searchRef = useRef(null);
+
+  // Determine if we should show the top bar based on current route
+  const isForYouPage = location.pathname === '/for-you' || location.pathname === '/';
 
   // Update active tab when prop changes
   useEffect(() => {
@@ -63,41 +68,43 @@ export default function AliExpressHeader({ activeTabId = 'recommendations' }: Al
 
   return (
     <header id="ali-header" className="fixed top-0 w-full z-30">
-      {/* Top Bar - Always using white background */}
-      <div
-        className="flex items-center justify-between px-2 bg-white shadow-sm transition-all duration-300"
-        style={{
-          height: '36px', // Reduced from 44px
-        }}
-      >
-        {/* Left: Always show Logo */}
-        <HeaderLogoToggle 
-          progress={1} // Always use the scrolled state
-          togglePanel={togglePanel}
-          isOpen={isOpen}
-          activeTab={activeTab}
-        />
-
-        {/* Center: Search Bar */}
-        <div className="flex flex-1 mx-2" ref={searchRef}>
-          <HeaderSearchBar 
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            isSearchFocused={isSearchFocused}
-            handleSearchFocus={handleSearchFocus}
-            handleClearSearch={handleClearSearch}
-            voiceSearchActive={voiceSearchActive}
-            handleVoiceSearch={handleVoiceSearch}
-            isGlowing={isSearchGlowing}
+      {/* Top Bar - Only show on "for-you" page */}
+      {isForYouPage && (
+        <div
+          className="flex items-center justify-between px-2 bg-white shadow-sm transition-all duration-300"
+          style={{
+            height: '36px', // Reduced from 44px
+          }}
+        >
+          {/* Left: Always show Logo */}
+          <HeaderLogoToggle 
+            progress={1} // Always use the scrolled state
+            togglePanel={togglePanel}
+            isOpen={isOpen}
+            activeTab={activeTab}
           />
-        </div>
 
-        {/* Right: Language, Location, and Notifications */}
-        <div className="flex items-center space-x-2 flex-shrink-0">
-          <HeaderLanguage />
-          <NotificationBadge />
+          {/* Center: Search Bar */}
+          <div className="flex flex-1 mx-2" ref={searchRef}>
+            <HeaderSearchBar 
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              isSearchFocused={isSearchFocused}
+              handleSearchFocus={handleSearchFocus}
+              handleClearSearch={handleClearSearch}
+              voiceSearchActive={voiceSearchActive}
+              handleVoiceSearch={handleVoiceSearch}
+              isGlowing={isSearchGlowing}
+            />
+          </div>
+
+          {/* Right: Language, Location, and Notifications */}
+          <div className="flex items-center space-x-2 flex-shrink-0">
+            <HeaderLanguage />
+            <NotificationBadge />
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Category Tabs - Always with white background */}
       <CategoryTabs 

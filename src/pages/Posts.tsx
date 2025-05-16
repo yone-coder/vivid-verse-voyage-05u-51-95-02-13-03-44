@@ -81,7 +81,8 @@ export default function Posts() {
       {/* AliExpressHeader component with active tab set to posts */}
       <AliExpressHeader activeTabId="posts" />
 
-      <div className="pt-[44px] pb-16">
+      {/* Adjusted top padding since we only have tabs (not full header) */}
+      <div className="pt-[40px] pb-16">
         {/* Infinite list of VendorProductCarousel components */}
         <div className="space-y-4 mt-2 pb-8">
           {vendors.map(vendor => (
