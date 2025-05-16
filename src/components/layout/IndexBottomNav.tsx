@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
-  Home, Zap, Plus, Heart, User, ShoppingCart, X
+  Home, Zap, Plus, Heart, User, X
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
@@ -83,7 +83,7 @@ export default function BottomNav() {
         animate={{ y: 0 }}
         className="fixed bottom-0 left-0 right-0 bg-white dark:bg-zinc-900 border-t border-gray-200 dark:border-zinc-800 z-50 shadow-lg"
       >
-        <div className="flex justify-between items-center h-14 px-2 max-w-md mx-auto">
+        <div className="flex justify-between items-center h-12 px-2 max-w-md mx-auto">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
@@ -98,7 +98,7 @@ export default function BottomNav() {
                   isActive
                     ? 'bg-red-600 text-white shadow-md scale-105'
                     : wasActive
-                      ? 'scale-95'
+                      ? 'scale-95 text-gray-500'
                       : 'scale-100 text-gray-500'
                 )}
               >
