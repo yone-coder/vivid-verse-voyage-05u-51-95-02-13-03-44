@@ -1,4 +1,4 @@
-export default function Logo({ width = 40, height = 40, className = '' }) {
+export default function Logo({ width = 24, height = 24, className = '' }) {
   return (
         
           
