@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Footer from "@/components/layout/Footer";
@@ -94,10 +93,8 @@ export default function MainLayout() {
         {/* Show Footer only on non-mobile and on specific pages */}
         {!isMobile && !isRootHomePage && <Footer />}
 
-        {/* Floating action button */}
-        {isMobile && (
-          <FloatingActionButton onClick={() => setShowProductUpload(true)} />
-        )}
+        {/* Floating action button - now always visible */}
+        <FloatingActionButton onClick={() => setShowProductUpload(true)} />
 
         {/* Show IndexBottomNav on all mobile views */}
         {isMobile && <IndexBottomNav />}
