@@ -18,14 +18,25 @@ interface Category {
   imageId: number;
 }
 
-// For demo purposes - this would be replaced with actual API calls
+// Complete list of demo categories - matching what's shown in SpaceSavingCategories.tsx
 const demoCategories: Category[] = [
   { id: 1, name: 'Electronics', shortName: 'Electronics', tags: ['Hot'], isPopular: true, imageId: 1060 },
   { id: 2, name: 'Home & Kitchen', shortName: 'Home', tags: ['New'], isPopular: false, imageId: 1084 },
   { id: 3, name: 'Fashion', shortName: 'Fashion', tags: [], isPopular: true, imageId: 1027 },
   { id: 4, name: 'Beauty', shortName: 'Beauty', tags: ['Trending'], isPopular: true, imageId: 1062 },
   { id: 5, name: 'Sports', shortName: 'Sports', tags: [], isPopular: false, imageId: 1044 },
-  // More would be here in a real application
+  { id: 6, name: 'Toys & Games', shortName: 'Toys', tags: [], isPopular: false, imageId: 1069 },
+  { id: 7, name: 'Jewelry', shortName: 'Jewelry', tags: ['Premium'], isPopular: false, imageId: 1081 },
+  { id: 8, name: 'Automotive', shortName: 'Auto', tags: [], isPopular: false, imageId: 1076 },
+  { id: 9, name: 'Books', shortName: 'Books', tags: [], isPopular: false, imageId: 1050 },
+  { id: 10, name: 'Pets', shortName: 'Pets', tags: ['New'], isPopular: false, imageId: 1025 },
+  { id: 11, name: 'Food', shortName: 'Food', tags: [], isPopular: false, imageId: 1080 },
+  { id: 12, name: 'Audio', shortName: 'Audio', tags: ['Premium'], isPopular: false, imageId: 1083 },
+  { id: 13, name: 'Computers', shortName: 'Tech', tags: ['Hot'], isPopular: true, imageId: 1051 },
+  { id: 14, name: 'Photography', shortName: 'Photo', tags: [], isPopular: false, imageId: 1061 },
+  { id: 15, name: 'Watches', shortName: 'Watches', tags: [], isPopular: false, imageId: 1079 },
+  { id: 16, name: 'Coffee', shortName: 'Coffee', tags: [], isPopular: false, imageId: 1060 },
+  { id: 17, name: 'Movies', shortName: 'Movies', tags: ['Hot'], isPopular: false, imageId: 1032 }
 ];
 
 const fetchCategories = async (): Promise<Category[]> => {
