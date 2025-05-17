@@ -8,6 +8,8 @@ import { useToast } from "@/hooks/use-toast";
 import AliExpressHeader from "@/components/home/AliExpressHeader";
 import { useAuthOverlay } from "@/context/AuthOverlayContext";
 import { LanguageProvider } from "@/context/LanguageContext";
+import FloatingActionButton from "./FloatingActionButton";
+import ProductUploadOverlay from "@/components/product/ProductUploadOverlay";
 
 export default function MainLayout() {
   const isMobile = useIsMobile();
@@ -20,6 +22,7 @@ export default function MainLayout() {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showProductUpload, setShowProductUpload] = useState(false);
 
   const { openAuthOverlay } = useAuthOverlay();
 
@@ -91,8 +94,19 @@ export default function MainLayout() {
         {/* Show Footer only on non-mobile and on specific pages */}
         {!isMobile && !isRootHomePage && <Footer />}
 
+        {/* Floating action button */}
+        {isMobile && (
+          <FloatingActionButton onClick={() => setShowProductUpload(true)} />
+        )}
+
         {/* Show IndexBottomNav on all mobile views */}
         {isMobile && <IndexBottomNav />}
+
+        {/* Product Upload Overlay */}
+        <ProductUploadOverlay
+          isOpen={showProductUpload}
+          onClose={() => setShowProductUpload(false)}
+        />
       </div>
     </LanguageProvider>
   );
