@@ -8,7 +8,8 @@ import {
   Settings, 
   Users,
   BarChart3, 
-  ShoppingCart
+  ShoppingCart,
+  Grid
 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
@@ -22,6 +23,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ isOpen, activeTab, onTabCha
   const menuItems = [
     { id: "products", label: "Products", icon: Package },
     { id: "product-images", label: "Product Images", icon: ImageIcon },
+    { id: "categories", label: "Categories", icon: Grid },
     { id: "hero-banners", label: "Hero Banners", icon: Layout },
     // Additional tabs that could be implemented in the future
     { id: "orders", label: "Orders", icon: ShoppingCart, disabled: true },

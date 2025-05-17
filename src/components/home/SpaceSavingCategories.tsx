@@ -1,53 +1,61 @@
+
 import React from 'react';
 import { Flame, Sparkles, Clock } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 
-const AliExpressCategories = () => {
-  const imageSeeds = {
-    'Electronics': 1060, 'Home & Kitchen': 1084, 'Fashion': 1027, 'Beauty': 1062,
-    'Sports': 1044, 'Toys & Games': 1069, 'Jewelry': 1081, 'Automotive': 1076,
-    'Books': 1050, 'Pets': 1025, 'Food': 1080, 'Audio': 1083, 'Computers': 1051,
-    'Photography': 1061, 'Watches': 1079, 'Coffee': 1060, 'Movies': 1032,
-    'Travel': 1035, 'Music': 1085, 'Health': 1039, 'Finance': 1082,
-    'Apparel': 1033, 'Business': 1043, 'Outdoor': 1011, 'Adventure': 1036,
-    'Seasonal': 1018, 'Crafts': 1068
+// This is the same category structure used in the admin panel
+interface Category {
+  id: number;
+  name: string;
+  shortName: string;
+  isPopular: boolean;
+  tags: string[];
+  imageId: number;
+}
+
+// Demo categories - in a real app this would come from an API
+const demoCategories: Category[] = [
+  { id: 1, name: 'Electronics', shortName: 'Electronics', tags: ['Hot'], isPopular: true, imageId: 1060 },
+  { id: 2, name: 'Home & Kitchen', shortName: 'Home', tags: ['New'], isPopular: false, imageId: 1084 },
+  { id: 3, name: 'Fashion', shortName: 'Fashion', tags: [], isPopular: true, imageId: 1027 },
+  { id: 4, name: 'Beauty', shortName: 'Beauty', tags: ['Trending'], isPopular: true, imageId: 1062 },
+  { id: 5, name: 'Sports', shortName: 'Sports', tags: [], isPopular: false, imageId: 1044 },
+  { id: 6, name: 'Toys & Games', shortName: 'Toys', tags: [], isPopular: false, imageId: 1069 },
+  { id: 7, name: 'Jewelry', shortName: 'Jewelry', tags: ['Premium'], isPopular: false, imageId: 1081 },
+  { id: 8, name: 'Automotive', shortName: 'Auto', tags: [], isPopular: false, imageId: 1076 },
+  { id: 9, name: 'Books', shortName: 'Books', tags: [], isPopular: false, imageId: 1050 },
+  { id: 10, name: 'Pets', shortName: 'Pets', tags: ['New'], isPopular: false, imageId: 1025 },
+  { id: 11, name: 'Food', shortName: 'Food', tags: [], isPopular: false, imageId: 1080 },
+  { id: 12, name: 'Audio', shortName: 'Audio', tags: ['Premium'], isPopular: false, imageId: 1083 },
+  { id: 13, name: 'Computers', shortName: 'Tech', tags: ['Hot'], isPopular: true, imageId: 1051 },
+  { id: 14, name: 'Photography', shortName: 'Photo', tags: [], isPopular: false, imageId: 1061 },
+  { id: 15, name: 'Watches', shortName: 'Watches', tags: [], isPopular: false, imageId: 1079 },
+  { id: 16, name: 'Coffee', shortName: 'Coffee', tags: [], isPopular: false, imageId: 1060 },
+  { id: 17, name: 'Movies', shortName: 'Movies', tags: ['Hot'], isPopular: false, imageId: 1032 }
+];
+
+// Fetch categories function
+const fetchCategories = async (): Promise<Category[]> => {
+  // This would be an API call in a real app
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(demoCategories), 300);
+  });
+};
+
+const SpaceSavingCategories = () => {
+  const { data: categories = [], isLoading } = useQuery({
+    queryKey: ['home-categories'],
+    queryFn: fetchCategories,
+    // In a real app, these would be appropriate caching settings
+    staleTime: 60 * 1000, // 1 minute
+    cacheTime: 5 * 60 * 1000, // 5 minutes
+  });
+
+  const getCategoryImageUrl = (category: Category) => {
+    return `https://picsum.photos/id/${category.imageId}/80/80`;
   };
 
-  const getCategoryImageUrl = (category) => {
-    const seed = imageSeeds[category.name];
-    return `https://picsum.photos/id/${seed}/80/80`;
-  };
-
-  const categories = [
-    { name: 'Electronics', shortName: 'Electronics', tags: ['Hot'], isPopular: true },
-    { name: 'Home & Kitchen', shortName: 'Home', tags: ['New'], isPopular: false },
-    { name: 'Fashion', shortName: 'Fashion', tags: [], isPopular: true },
-    { name: 'Beauty', shortName: 'Beauty', tags: ['Trending'], isPopular: true },
-    { name: 'Sports', shortName: 'Sports', tags: [], isPopular: false },
-    { name: 'Toys & Games', shortName: 'Toys', tags: [], isPopular: false },
-    { name: 'Jewelry', shortName: 'Jewelry', tags: ['Premium'], isPopular: false },
-    { name: 'Automotive', shortName: 'Auto', tags: [], isPopular: false },
-    { name: 'Books', shortName: 'Books', tags: [], isPopular: false },
-    { name: 'Pets', shortName: 'Pets', tags: ['New'], isPopular: false },
-    { name: 'Food', shortName: 'Food', tags: [], isPopular: false },
-    { name: 'Audio', shortName: 'Audio', tags: ['Premium'], isPopular: false },
-    { name: 'Computers', shortName: 'Tech', tags: ['Hot'], isPopular: true },
-    { name: 'Photography', shortName: 'Photo', tags: [], isPopular: false },
-    { name: 'Watches', shortName: 'Watches', tags: [], isPopular: false },
-    { name: 'Coffee', shortName: 'Coffee', tags: [], isPopular: false },
-    { name: 'Movies', shortName: 'Movies', tags: ['Hot'], isPopular: false },
-    { name: 'Travel', shortName: 'Travel', tags: [], isPopular: false },
-    { name: 'Music', shortName: 'Music', tags: ['Limited'], isPopular: false },
-    { name: 'Health', shortName: 'Health', tags: [], isPopular: false },
-    { name: 'Finance', shortName: 'Finance', tags: [], isPopular: false },
-    { name: 'Apparel', shortName: 'Apparel', tags: ['Hot'], isPopular: true },
-    { name: 'Business', shortName: 'Business', tags: [], isPopular: false },
-    { name: 'Outdoor', shortName: 'Outdoor', tags: [], isPopular: false },
-    { name: 'Adventure', shortName: 'Adventure', tags: ['Limited'], isPopular: false },
-    { name: 'Seasonal', shortName: 'Seasonal', tags: [], isPopular: false },
-    { name: 'Crafts', shortName: 'Crafts', tags: ['Special'], isPopular: false }
-  ];
-
-  const getTagIcon = (tag) => {
+  const getTagIcon = (tag: string) => {
     switch (tag.toLowerCase()) {
       case 'hot':
         return <Flame size={10} className="mr-0.5" />;
@@ -60,7 +68,7 @@ const AliExpressCategories = () => {
     }
   };
 
-  const CategoryItem = ({ category }) => (
+  const CategoryItem = ({ category }: { category: Category }) => (
     <div className="flex flex-col items-center w-16 flex-shrink-0 active:opacity-80 transition-opacity touch-manipulation">
       <div className="relative w-14 h-14 rounded-lg overflow-hidden bg-gray-50 shadow-sm">
         <img
@@ -97,13 +105,28 @@ const AliExpressCategories = () => {
     </div>
   );
 
+  if (isLoading) {
+    return (
+      <div className="w-full bg-white py-2">
+        <div className="flex space-x-2 px-2 overflow-x-auto no-scrollbar">
+          {[...Array(8)].map((_, index) => (
+            <div key={index} className="flex flex-col items-center w-16">
+              <div className="w-14 h-14 rounded-lg bg-gray-200 animate-pulse" />
+              <div className="w-12 h-2 mt-1 bg-gray-200 animate-pulse rounded" />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full bg-white">
       <div className="py-1 bg-white">
         <div className="overflow-x-auto overscroll-x-contain no-scrollbar pl-1 scroll-smooth -webkit-overflow-scrolling-touch">
           <div className="grid grid-flow-col auto-cols-max gap-1 pr-1" style={{ gridTemplateRows: 'repeat(2, auto)' }}>
             {categories.map((category, index) => (
-              <div key={index} style={{ gridRow: index % 2 === 0 ? '1' : '2' }}>
+              <div key={category.id} style={{ gridRow: index % 2 === 0 ? '1' : '2' }}>
                 <CategoryItem category={category} />
               </div>
             ))}
@@ -114,4 +137,4 @@ const AliExpressCategories = () => {
   );
 };
 
-export default AliExpressCategories;
+export default SpaceSavingCategories;

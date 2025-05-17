@@ -8,6 +8,7 @@ import AdminSidebar from "@/components/admin/AdminSidebar";
 import ProductsTab from "@/components/admin/tabs/ProductsTab";
 import ProductImagesTab from "@/components/admin/tabs/ProductImagesTab";
 import HeroBannersTab from "@/components/admin/tabs/HeroBannersTab";
+import CategoriesTab from "@/components/admin/tabs/CategoriesTab";
 import CreateProductDialog from "@/components/admin/dialogs/CreateProductDialog";
 
 const AdminPanel: React.FC = () => {
@@ -67,6 +68,10 @@ const AdminPanel: React.FC = () => {
             
             <TabsContent value="product-images" className={activeTab === "product-images" ? "block" : "hidden"}>
               <ProductImagesTab />
+            </TabsContent>
+            
+            <TabsContent value="categories" className={activeTab === "categories" ? "block" : "hidden"}>
+              <CategoriesTab />
             </TabsContent>
             
             <TabsContent value="hero-banners" className={activeTab === "hero-banners" ? "block" : "hidden"}>
