@@ -48,7 +48,7 @@ const SpaceSavingCategories = () => {
     queryFn: fetchCategories,
     // In a real app, these would be appropriate caching settings
     staleTime: 60 * 1000, // 1 minute
-    cacheTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 5 * 60 * 1000, // 5 minutes - renamed from cacheTime to gcTime
   });
 
   const getCategoryImageUrl = (category: Category) => {
