@@ -21,12 +21,12 @@ const AmountInput: React.FC<AmountInputProps> = ({
       <Label htmlFor="amount">Amount to send ({currencyName})</Label>
       <div className="mt-1 relative">
         <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-          <span className="text-gray-500">{currencySymbol}</span>
+          <span className="text-gray-500">{currencySymbol.trim()}</span>
         </div>
         <Input
           id="amount"
           type="number"
-          className="pl-7"
+          className={`pl-${currencySymbol.length > 2 ? '12' : '7'}`}
           placeholder="0.00"
           value={amount}
           onChange={(e) => onAmountChange(e.target.value)}

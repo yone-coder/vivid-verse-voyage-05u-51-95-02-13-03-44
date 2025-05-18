@@ -28,7 +28,7 @@ const TransferPage: React.FC = () => {
     ? internationalPaymentMethods 
     : nationalPaymentMethods;
   
-  // Currency symbol based on transfer type
+  // Currency symbol based on transfer type - Fix for HTG display
   const currencySymbol = transferType === 'international' ? '$' : 'HTG ';
   
   // Currency name for display
