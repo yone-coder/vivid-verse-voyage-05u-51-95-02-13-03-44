@@ -7,7 +7,9 @@ import {
   Banknote, 
   ArrowRight,
   Send, // Using Send instead of PayPal
-  DollarSign // Using DollarSign instead of CashApp
+  DollarSign, // Using DollarSign instead of CashApp
+  Smartphone,
+  Globe
 } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -22,8 +24,10 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-const paymentMethods = [
+// International payment methods (USD)
+const internationalPaymentMethods = [
   { 
     id: 'credit-card', 
     name: 'Credit or Debit Card', 
@@ -61,8 +65,34 @@ const paymentMethods = [
   }
 ];
 
+// National payment methods (HTG - Haitian Gourdes)
+const nationalPaymentMethods = [
+  { 
+    id: 'moncash', 
+    name: 'MonCash', 
+    icon: Smartphone, 
+    description: 'Mobile money service by Digicel',
+    fee: '1% (min 5 HTG)' 
+  },
+  { 
+    id: 'natcash', 
+    name: 'Natcash', 
+    icon: Smartphone, 
+    description: 'National digital wallet service',
+    fee: '0.5% (min 3 HTG)' 
+  },
+  { 
+    id: 'bank-transfer-local', 
+    name: 'Local Bank Transfer', 
+    icon: Banknote, 
+    description: 'Transfer to Haitian banks',
+    fee: '10 HTG' 
+  }
+];
+
 const TransferPage: React.FC = () => {
   const navigate = useNavigate();
+  const [transferType, setTransferType] = useState<'international' | 'national'>('international');
   const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
   const [amount, setAmount] = useState('');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -76,6 +106,23 @@ const TransferPage: React.FC = () => {
       return;
     }
     setIsDrawerOpen(true);
+  };
+
+  // Get the current payment methods based on selected transfer type
+  const currentPaymentMethods = transferType === 'international' 
+    ? internationalPaymentMethods 
+    : nationalPaymentMethods;
+  
+  // Currency symbol based on transfer type
+  const currencySymbol = transferType === 'international' ? '$' : 'HTG ';
+  
+  // Currency name for display
+  const currencyName = transferType === 'international' ? 'USD' : 'Haitian Gourdes';
+
+  // Reset selected method when changing transfer type
+  const handleTransferTypeChange = (value: string) => {
+    setTransferType(value as 'international' | 'national');
+    setSelectedMethod(null);
   };
   
   return (
@@ -92,12 +139,43 @@ const TransferPage: React.FC = () => {
       </div>
       
       <div className="max-w-md mx-auto p-4">
+        {/* Transfer Type Tabs */}
+        <Tabs 
+          defaultValue="international" 
+          value={transferType}
+          onValueChange={handleTransferTypeChange}
+          className="mb-4"
+        >
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="international" className="flex items-center gap-2">
+              <Globe size={16} />
+              <span>International (USD)</span>
+            </TabsTrigger>
+            <TabsTrigger value="national" className="flex items-center gap-2">
+              <Banknote size={16} />
+              <span>National (HTG)</span>
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="international">
+            <p className="text-sm text-gray-600 mb-4">
+              Send money internationally to Haiti in US Dollars from anywhere in the world.
+            </p>
+          </TabsContent>
+          
+          <TabsContent value="national">
+            <p className="text-sm text-gray-600 mb-4">
+              Transfer money locally within Haiti using Haitian Gourdes.
+            </p>
+          </TabsContent>
+        </Tabs>
+        
         {/* Amount Input */}
         <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
-          <Label htmlFor="amount">Amount to send (USD)</Label>
+          <Label htmlFor="amount">Amount to send ({currencyName})</Label>
           <div className="mt-1 relative">
             <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-              <span className="text-gray-500">$</span>
+              <span className="text-gray-500">{currencySymbol}</span>
             </div>
             <Input
               id="amount"
@@ -125,7 +203,7 @@ const TransferPage: React.FC = () => {
             onValueChange={setSelectedMethod}
             className="space-y-2"
           >
-            {paymentMethods.map((method) => {
+            {currentPaymentMethods.map((method) => {
               const Icon = method.icon;
               
               return (
@@ -145,9 +223,16 @@ const TransferPage: React.FC = () => {
                   <div className="flex-1 flex items-center">
                     <div className={`
                       w-8 h-8 rounded-full flex items-center justify-center mr-3
-                      ${method.id === 'paypal' ? 'bg-blue-500' : method.id === 'cashapp' ? 'bg-green-500' : 'bg-gray-100'}
+                      ${method.id === 'paypal' ? 'bg-blue-500' : 
+                        method.id === 'cashapp' ? 'bg-green-500' : 
+                        method.id === 'moncash' ? 'bg-red-500' :
+                        method.id === 'natcash' ? 'bg-purple-500' : 'bg-gray-100'}
                     `}>
-                      <Icon size={18} className={method.id === 'paypal' || method.id === 'cashapp' ? 'text-white' : ''} />
+                      <Icon size={18} className={
+                        ['paypal', 'cashapp', 'moncash', 'natcash'].includes(method.id) 
+                          ? 'text-white' 
+                          : ''
+                      } />
                     </div>
                     <div>
                       <Label htmlFor={method.id} className="font-medium mb-0">{method.name}</Label>
@@ -189,8 +274,8 @@ const TransferPage: React.FC = () => {
           <DrawerHeader>
             <DrawerTitle>Confirm Money Transfer</DrawerTitle>
             <DrawerDescription>
-              You're about to send ${amount} to Haiti using {
-                paymentMethods.find(m => m.id === selectedMethod)?.name
+              You're about to send {currencySymbol}{amount} to Haiti using {
+                currentPaymentMethods.find(m => m.id === selectedMethod)?.name
               }
             </DrawerDescription>
           </DrawerHeader>
@@ -198,28 +283,40 @@ const TransferPage: React.FC = () => {
             <div className="rounded-lg border p-4 mb-4">
               <div className="flex justify-between mb-2">
                 <span className="text-gray-500">Amount:</span>
-                <span className="font-medium">${amount}</span>
+                <span className="font-medium">{currencySymbol}{amount}</span>
               </div>
               <div className="flex justify-between mb-2">
                 <span className="text-gray-500">Fee:</span>
-                <span className="font-medium">{
-                  selectedMethod === 'zelle' ? '$0.00' : 
-                  selectedMethod === 'bank-transfer' ? '$0.25' : 
-                  selectedMethod === 'cashapp' ? `$${(parseFloat(amount) * 0.015).toFixed(2)}` :
-                  selectedMethod === 'paypal' ? `$${((parseFloat(amount) * 0.029) + 0.3).toFixed(2)}` :
-                  `$${((parseFloat(amount) * 0.035) + 0.3).toFixed(2)}`
-                }</span>
+                <span className="font-medium">
+                {transferType === 'international' ? (
+                  selectedMethod === 'zelle' ? `${currencySymbol}0.00` : 
+                  selectedMethod === 'bank-transfer' ? `${currencySymbol}0.25` : 
+                  selectedMethod === 'cashapp' ? `${currencySymbol}${(parseFloat(amount) * 0.015).toFixed(2)}` :
+                  selectedMethod === 'paypal' ? `${currencySymbol}${((parseFloat(amount) * 0.029) + 0.3).toFixed(2)}` :
+                  `${currencySymbol}${((parseFloat(amount) * 0.035) + 0.3).toFixed(2)}`
+                ) : (
+                  selectedMethod === 'moncash' ? `${Math.max(5, parseFloat(amount) * 0.01).toFixed(2)} HTG` :
+                  selectedMethod === 'natcash' ? `${Math.max(3, parseFloat(amount) * 0.005).toFixed(2)} HTG` :
+                  '10 HTG'
+                )}
+                </span>
               </div>
               <div className="border-t my-2"></div>
               <div className="flex justify-between font-bold">
                 <span>Total:</span>
-                <span>{
-                  selectedMethod === 'zelle' ? `$${amount}` : 
-                  selectedMethod === 'bank-transfer' ? `$${(parseFloat(amount) + 0.25).toFixed(2)}` : 
-                  selectedMethod === 'cashapp' ? `$${(parseFloat(amount) * 1.015).toFixed(2)}` :
-                  selectedMethod === 'paypal' ? `$${(parseFloat(amount) + ((parseFloat(amount) * 0.029) + 0.3)).toFixed(2)}` :
-                  `$${(parseFloat(amount) + ((parseFloat(amount) * 0.035) + 0.3)).toFixed(2)}`
-                }</span>
+                <span>
+                {transferType === 'international' ? (
+                  selectedMethod === 'zelle' ? `${currencySymbol}${amount}` : 
+                  selectedMethod === 'bank-transfer' ? `${currencySymbol}${(parseFloat(amount) + 0.25).toFixed(2)}` : 
+                  selectedMethod === 'cashapp' ? `${currencySymbol}${(parseFloat(amount) * 1.015).toFixed(2)}` :
+                  selectedMethod === 'paypal' ? `${currencySymbol}${(parseFloat(amount) + ((parseFloat(amount) * 0.029) + 0.3)).toFixed(2)}` :
+                  `${currencySymbol}${(parseFloat(amount) + ((parseFloat(amount) * 0.035) + 0.3)).toFixed(2)}`
+                ) : (
+                  selectedMethod === 'moncash' ? `${(parseFloat(amount) + Math.max(5, parseFloat(amount) * 0.01)).toFixed(2)} HTG` :
+                  selectedMethod === 'natcash' ? `${(parseFloat(amount) + Math.max(3, parseFloat(amount) * 0.005)).toFixed(2)} HTG` :
+                  `${(parseFloat(amount) + 10).toFixed(2)} HTG`
+                )}
+                </span>
               </div>
             </div>
           </div>
