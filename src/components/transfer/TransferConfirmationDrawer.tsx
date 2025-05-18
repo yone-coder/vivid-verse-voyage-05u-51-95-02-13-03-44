@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import {
@@ -41,15 +40,29 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
         default: return `${currencySymbol}${((parseFloat(amount) * 0.035) + 0.3).toFixed(2)}`;
       }
     } else {
-      switch (selectedMethod.id) {
-        case 'moncash': return `${Math.max(5, parseFloat(amount) * 0.01).toFixed(2)} HTG`;
-        case 'natcash': return `${Math.max(3, parseFloat(amount) * 0.005).toFixed(2)} HTG`;
-        default: return `10 HTG`;
+      // New fee structure for national transfers based on amount ranges
+      const amountNum = parseFloat(amount);
+      
+      if (amountNum >= 1000 && amountNum <= 1999) {
+        return '65 HTG';
+      } else if (amountNum >= 2000 && amountNum <= 3999) {
+        return '115 HTG';
+      } else if (amountNum >= 4000 && amountNum <= 7999) {
+        return '185 HTG';
+      } else if (amountNum >= 8000 && amountNum <= 11999) {
+        return '275 HTG';
+      } else {
+        // For amounts outside the specified ranges, keep the original logic
+        switch (selectedMethod.id) {
+          case 'moncash': return `${Math.max(5, parseFloat(amount) * 0.01).toFixed(2)} HTG`;
+          case 'natcash': return `${Math.max(3, parseFloat(amount) * 0.005).toFixed(2)} HTG`;
+          default: return '10 HTG';
+        }
       }
     }
   };
 
-  // Calculate total
+  // Calculate total with the updated fee structure
   const calculateTotal = () => {
     if (transferType === 'international') {
       switch (selectedMethod.id) {
@@ -60,11 +73,28 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
         default: return `${currencySymbol}${(parseFloat(amount) + ((parseFloat(amount) * 0.035) + 0.3)).toFixed(2)}`;
       }
     } else {
-      switch (selectedMethod.id) {
-        case 'moncash': return `${(parseFloat(amount) + Math.max(5, parseFloat(amount) * 0.01)).toFixed(2)} HTG`;
-        case 'natcash': return `${(parseFloat(amount) + Math.max(3, parseFloat(amount) * 0.005)).toFixed(2)} HTG`;
-        default: return `${(parseFloat(amount) + 10).toFixed(2)} HTG`;
+      const amountNum = parseFloat(amount);
+      let fee = 0;
+      
+      // Calculate fee based on the new structure
+      if (amountNum >= 1000 && amountNum <= 1999) {
+        fee = 65;
+      } else if (amountNum >= 2000 && amountNum <= 3999) {
+        fee = 115;
+      } else if (amountNum >= 4000 && amountNum <= 7999) {
+        fee = 185;
+      } else if (amountNum >= 8000 && amountNum <= 11999) {
+        fee = 275;
+      } else {
+        // For amounts outside the specified ranges, keep the original logic
+        switch (selectedMethod.id) {
+          case 'moncash': fee = Math.max(5, amountNum * 0.01); break;
+          case 'natcash': fee = Math.max(3, amountNum * 0.005); break;
+          default: fee = 10; break;
+        }
       }
+      
+      return `${(amountNum + fee).toFixed(2)} HTG`;
     }
   };
 
