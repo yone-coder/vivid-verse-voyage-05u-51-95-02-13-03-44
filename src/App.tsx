@@ -26,6 +26,7 @@ import { setupStorageBuckets } from "./integrations/supabase/setupStorage";
 import ProfilePage from "./pages/ProfilePage";
 import MoreMenu from "./pages/MoreMenu";
 import TransferPage from "./pages/TransferPage";
+import TopUpPage from "./pages/TopUpPage";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -66,6 +67,7 @@ const App = () => {
                       <Route path="/more" element={<MoreMenu />} />
                       <Route path="/account" element={<ProfilePage />} />
                       <Route path="/transfer" element={<TransferPage />} />
+                      <Route path="/topup" element={<TopUpPage />} />
                       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                       <Route path="*" element={<NotFound />} />
                     </Route>
