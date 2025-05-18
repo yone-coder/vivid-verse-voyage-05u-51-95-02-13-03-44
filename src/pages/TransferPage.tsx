@@ -82,10 +82,31 @@ const nationalPaymentMethods = [
     fee: '0.5% (min 3 HTG)' 
   },
   { 
-    id: 'bank-transfer-local', 
-    name: 'Local Bank Transfer', 
+    id: 'bnc', 
+    name: 'BNC Bank', 
     icon: Banknote, 
-    description: 'Transfer to Haitian banks',
+    description: 'Banque Nationale de Crédit',
+    fee: '10 HTG' 
+  },
+  { 
+    id: 'unibank', 
+    name: 'Unibank', 
+    icon: Banknote, 
+    description: 'Unibank S.A.',
+    fee: '12 HTG' 
+  },
+  { 
+    id: 'sogebank', 
+    name: 'SogeBank', 
+    icon: Banknote, 
+    description: 'Société Générale Haïtienne de Banque',
+    fee: '15 HTG' 
+  },
+  { 
+    id: 'buh', 
+    name: 'BUH', 
+    icon: Banknote, 
+    description: 'Banque de l\'Union Haïtienne',
     fee: '10 HTG' 
   }
 ];
@@ -333,3 +354,4 @@ const TransferPage: React.FC = () => {
 };
 
 export default TransferPage;
+
