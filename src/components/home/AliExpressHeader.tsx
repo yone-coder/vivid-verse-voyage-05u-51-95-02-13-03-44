@@ -1,7 +1,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useScrollProgress } from '@/hooks/useScrollProgress';
-import { Home, ShoppingBag, Users, Image, MessageSquare, Store } from 'lucide-react';
+import { Home, ShoppingBag, Tv, Sofa, ShoppingCart, Car, Gamepad2 } from 'lucide-react';
 import HeaderSearchBar from './header/HeaderSearchBar';
 import CategoryTabs from './header/CategoryTabs';
 import CategoryPanel from './header/CategoryPanel';
@@ -48,10 +48,13 @@ export default function AliExpressHeader({ activeTabId = 'recommendations' }: Al
 
   const categories = [
     { id: 'recommendations', name: t('home.forYou'), icon: <Home className="h-3 w-3" />, path: '/for-you' },
-    { id: 'posts', name: t('home.posts'), icon: <MessageSquare className="h-3 w-3" />, path: '/posts' },
-    { id: 'messages', name: t('home.messages'), icon: <MessageSquare className="h-3 w-3" />, path: '/messages' },
-    { id: 'trending', name: t('home.trending'), icon: <Image className="h-3 w-3" />, path: '/trending' },
-    { id: 'videos', name: t('home.videos'), icon: <Image className="h-3 w-3" />, path: '/videos' },
+    { id: 'electronics', name: 'Electronics & Tech', icon: <Tv className="h-3 w-3" />, path: '/trending' },
+    { id: 'home', name: 'Home & Living', icon: <Sofa className="h-3 w-3" />, path: '/posts' },
+    { id: 'fashion', name: 'Fashion & Accessories', icon: <ShoppingBag className="h-3 w-3" />, path: '/messages' },
+    { id: 'entertainment', name: 'Entertainment', icon: <Gamepad2 className="h-3 w-3" />, path: '/videos' },
+    { id: 'kids', name: 'Kids & Hobbies', icon: <ShoppingCart className="h-3 w-3" />, path: '/trending' },
+    { id: 'sports', name: 'Sports & Outdoors', icon: <ShoppingBag className="h-3 w-3" />, path: '/videos' },
+    { id: 'automotive', name: 'Automotive', icon: <Car className="h-3 w-3" />, path: '/videos' },
   ];
   
   const togglePanel = () => setIsOpen(!isOpen);
