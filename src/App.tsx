@@ -28,6 +28,13 @@ import MoreMenu from "./pages/MoreMenu";
 import TransferPage from "./pages/TransferPage";
 import TopUpPage from "./pages/TopUpPage";
 import NetflixPage from "./pages/NetflixPage";
+import ElectronicsPage from "./pages/ElectronicsPage";
+import HomeLivingPage from "./pages/HomeLivingPage";
+import FashionPage from "./pages/FashionPage";
+import EntertainmentPage from "./pages/EntertainmentPage";
+import KidsHobbiesPage from "./pages/KidsHobbiesPage";
+import SportsOutdoorsPage from "./pages/SportsOutdoorsPage";
+import AutomotivePage from "./pages/AutomotivePage";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -70,6 +77,16 @@ const App = () => {
                       <Route path="/transfer" element={<TransferPage />} />
                       <Route path="/topup" element={<TopUpPage />} />
                       <Route path="/netflix" element={<NetflixPage />} />
+                      
+                      {/* New category pages */}
+                      <Route path="/electronics" element={<ElectronicsPage />} />
+                      <Route path="/home-living" element={<HomeLivingPage />} />
+                      <Route path="/fashion" element={<FashionPage />} />
+                      <Route path="/entertainment" element={<EntertainmentPage />} />
+                      <Route path="/kids-hobbies" element={<KidsHobbiesPage />} />
+                      <Route path="/sports-outdoors" element={<SportsOutdoorsPage />} />
+                      <Route path="/automotive" element={<AutomotivePage />} />
+                      
                       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                       <Route path="*" element={<NotFound />} />
                     </Route>

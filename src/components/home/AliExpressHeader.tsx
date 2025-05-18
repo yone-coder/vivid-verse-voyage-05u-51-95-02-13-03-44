@@ -48,13 +48,13 @@ export default function AliExpressHeader({ activeTabId = 'recommendations' }: Al
 
   const categories = [
     { id: 'recommendations', name: t('home.forYou'), icon: <Home className="h-3 w-3" />, path: '/for-you' },
-    { id: 'electronics', name: 'Electronics & Tech', icon: <Tv className="h-3 w-3" />, path: '/trending' },
-    { id: 'home', name: 'Home & Living', icon: <Sofa className="h-3 w-3" />, path: '/posts' },
-    { id: 'fashion', name: 'Fashion & Accessories', icon: <ShoppingBag className="h-3 w-3" />, path: '/messages' },
-    { id: 'entertainment', name: 'Entertainment', icon: <Gamepad2 className="h-3 w-3" />, path: '/videos' },
-    { id: 'kids', name: 'Kids & Hobbies', icon: <ShoppingCart className="h-3 w-3" />, path: '/trending' },
-    { id: 'sports', name: 'Sports & Outdoors', icon: <ShoppingBag className="h-3 w-3" />, path: '/videos' },
-    { id: 'automotive', name: 'Automotive', icon: <Car className="h-3 w-3" />, path: '/videos' },
+    { id: 'electronics', name: 'Electronics & Tech', icon: <Tv className="h-3 w-3" />, path: '/electronics' },
+    { id: 'home', name: 'Home & Living', icon: <Sofa className="h-3 w-3" />, path: '/home-living' },
+    { id: 'fashion', name: 'Fashion & Accessories', icon: <ShoppingBag className="h-3 w-3" />, path: '/fashion' },
+    { id: 'entertainment', name: 'Entertainment', icon: <Gamepad2 className="h-3 w-3" />, path: '/entertainment' },
+    { id: 'kids', name: 'Kids & Hobbies', icon: <ShoppingCart className="h-3 w-3" />, path: '/kids-hobbies' },
+    { id: 'sports', name: 'Sports & Outdoors', icon: <ShoppingBag className="h-3 w-3" />, path: '/sports-outdoors' },
+    { id: 'automotive', name: 'Automotive', icon: <Car className="h-3 w-3" />, path: '/automotive' },
   ];
   
   const togglePanel = () => setIsOpen(!isOpen);
@@ -110,15 +110,13 @@ export default function AliExpressHeader({ activeTabId = 'recommendations' }: Al
         </div>
       </div>
 
-      {/* Category Tabs - Only show on ForYou page */}
-      {isForYouPage && (
-        <CategoryTabs 
-          progress={1} // Always use the scrolled state
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          categories={categories}
-        />
-      )}
+      {/* Category Tabs - Show on all pages now since we have dedicated pages */}
+      <CategoryTabs 
+        progress={1} // Always use the scrolled state
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        categories={categories}
+      />
 
       {/* Dropdown Panel - Show on all pages */}
       <CategoryPanel 
