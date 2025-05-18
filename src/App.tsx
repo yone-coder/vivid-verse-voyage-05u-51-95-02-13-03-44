@@ -25,6 +25,7 @@ import AuthOverlay from "./components/auth/AuthOverlay";
 import { setupStorageBuckets } from "./integrations/supabase/setupStorage";
 import ProfilePage from "./pages/ProfilePage";
 import MoreMenu from "./pages/MoreMenu";
+import TransferPage from "./pages/TransferPage";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -64,6 +65,7 @@ const App = () => {
                       <Route path="/wishlist" element={<NotFound />} />
                       <Route path="/more" element={<MoreMenu />} />
                       <Route path="/account" element={<ProfilePage />} />
+                      <Route path="/transfer" element={<TransferPage />} />
                       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                       <Route path="*" element={<NotFound />} />
                     </Route>

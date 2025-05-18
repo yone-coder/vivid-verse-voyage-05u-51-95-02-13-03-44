@@ -1,7 +1,7 @@
-
 import React from 'react';
 import { Flame, Sparkles, Clock, ArrowRight } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 
 // This is the same category structure used in the admin panel
 interface Category {
@@ -43,6 +43,7 @@ const fetchCategories = async (): Promise<Category[]> => {
 };
 
 const SpaceSavingCategories = () => {
+  const navigate = useNavigate();
   const { data: categories = [], isLoading } = useQuery({
     queryKey: ['home-categories'],
     queryFn: fetchCategories,
@@ -105,9 +106,12 @@ const SpaceSavingCategories = () => {
     </div>
   );
 
-  // New Transfer Money shortcut component
+  // Transfer Money shortcut component with navigation
   const TransferShortcut = () => (
-    <div className="flex flex-col items-center w-16 flex-shrink-0 active:opacity-80 transition-opacity touch-manipulation">
+    <div 
+      className="flex flex-col items-center w-16 flex-shrink-0 active:opacity-80 transition-opacity touch-manipulation"
+      onClick={() => navigate('/transfer')}
+    >
       <div className="relative w-14 h-14 rounded-lg overflow-hidden bg-green-100 shadow-sm flex items-center justify-center">
         <div className="bg-green-500 w-10 h-10 rounded-full flex items-center justify-center">
           <ArrowRight className="h-6 w-6 text-white" />
