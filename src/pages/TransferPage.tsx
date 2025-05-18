@@ -5,9 +5,9 @@ import {
   CreditCard, 
   ArrowLeft, 
   Banknote, 
-  ArrowRight, 
-  PayPal,
-  CashApp
+  ArrowRight,
+  Send, // Using Send instead of PayPal
+  DollarSign // Using DollarSign instead of CashApp
 } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -41,21 +41,21 @@ const paymentMethods = [
   { 
     id: 'zelle', 
     name: 'Zelle', 
-    icon: Transfer, 
+    icon: Send, // Fixed: using Send instead of Transfer
     description: 'Fast transfers between US banks',
     fee: 'Free' 
   },
   { 
     id: 'paypal', 
     name: 'PayPal', 
-    icon: PayPal, 
+    icon: Send, // Using Send icon for PayPal
     description: 'Send using your PayPal balance',
     fee: '2.9% + $0.30' 
   },
   { 
     id: 'cashapp', 
     name: 'Cash App', 
-    icon: CashApp, 
+    icon: DollarSign, // Using DollarSign icon for CashApp
     description: 'Send using Cash App',
     fee: '1.5%' 
   }
