@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Flame, Sparkles, Clock } from 'lucide-react';
+import { Flame, Sparkles, Clock, ArrowRight } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 
 // This is the same category structure used in the admin panel
@@ -105,6 +105,25 @@ const SpaceSavingCategories = () => {
     </div>
   );
 
+  // New Transfer Money shortcut component
+  const TransferShortcut = () => (
+    <div className="flex flex-col items-center w-16 flex-shrink-0 active:opacity-80 transition-opacity touch-manipulation">
+      <div className="relative w-14 h-14 rounded-lg overflow-hidden bg-green-100 shadow-sm flex items-center justify-center">
+        <div className="bg-green-500 w-10 h-10 rounded-full flex items-center justify-center">
+          <ArrowRight className="h-6 w-6 text-white" />
+        </div>
+        <div className="absolute bottom-0 left-0 right-0 flex justify-center w-full">
+          <div className="flex items-center justify-center w-full px-1 py-0.5 text-[7px] font-bold bg-green-600/90 text-white">
+            TRANSFER
+          </div>
+        </div>
+      </div>
+      <span className="text-[10px] font-medium text-gray-700 text-center truncate w-full leading-snug mt-0.5">
+        Transfer Money
+      </span>
+    </div>
+  );
+
   if (isLoading) {
     return (
       <div className="w-full bg-white py-2">
@@ -125,6 +144,12 @@ const SpaceSavingCategories = () => {
       <div className="py-1 bg-white">
         <div className="overflow-x-auto overscroll-x-contain no-scrollbar pl-1 scroll-smooth -webkit-overflow-scrolling-touch">
           <div className="grid grid-flow-col auto-cols-max gap-1 pr-1" style={{ gridTemplateRows: 'repeat(2, auto)' }}>
+            {/* Add Transfer Money shortcut as the first element in the first row */}
+            <div style={{ gridRow: '1' }}>
+              <TransferShortcut />
+            </div>
+            
+            {/* Render all the categories */}
             {categories.map((category, index) => (
               <div key={category.id} style={{ gridRow: index % 2 === 0 ? '1' : '2' }}>
                 <CategoryItem category={category} />
