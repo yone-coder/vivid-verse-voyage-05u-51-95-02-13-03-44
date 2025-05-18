@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { Flame, Sparkles, Clock, ArrowRight, PhoneCall, Wifi } from 'lucide-react';
+import { Flame, Sparkles, Clock, ArrowRight, PhoneCall, Wifi, Tv } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 
@@ -151,6 +150,28 @@ const SpaceSavingCategories = () => {
     </div>
   );
 
+  // Netflix shortcut component with navigation
+  const NetflixShortcut = () => (
+    <div 
+      className="flex flex-col items-center w-16 flex-shrink-0 active:opacity-80 transition-opacity touch-manipulation"
+      onClick={() => navigate('/netflix')}
+    >
+      <div className="relative w-14 h-14 rounded-lg overflow-hidden bg-red-100 shadow-sm flex items-center justify-center">
+        <div className="bg-red-600 w-10 h-10 rounded-full flex items-center justify-center">
+          <Tv className="h-6 w-6 text-white" />
+        </div>
+        <div className="absolute bottom-0 left-0 right-0 flex justify-center w-full">
+          <div className="flex items-center justify-center w-full px-1 py-0.5 text-[7px] font-bold bg-red-700/90 text-white">
+            NETFLIX
+          </div>
+        </div>
+      </div>
+      <span className="text-[10px] font-medium text-gray-700 text-center truncate w-full leading-snug mt-0.5">
+        Netflix
+      </span>
+    </div>
+  );
+
   if (isLoading) {
     return (
       <div className="w-full bg-white py-2">
@@ -179,6 +200,11 @@ const SpaceSavingCategories = () => {
             {/* Add Top Up shortcut as the second element in the first row */}
             <div style={{ gridRow: '1' }}>
               <TopUpShortcut />
+            </div>
+            
+            {/* Add Netflix shortcut as the third element in the first row */}
+            <div style={{ gridRow: '1' }}>
+              <NetflixShortcut />
             </div>
             
             {/* Render all the categories */}

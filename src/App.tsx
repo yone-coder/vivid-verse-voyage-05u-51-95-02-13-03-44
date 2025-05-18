@@ -27,6 +27,7 @@ import ProfilePage from "./pages/ProfilePage";
 import MoreMenu from "./pages/MoreMenu";
 import TransferPage from "./pages/TransferPage";
 import TopUpPage from "./pages/TopUpPage";
+import NetflixPage from "./pages/NetflixPage";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -68,6 +69,7 @@ const App = () => {
                       <Route path="/account" element={<ProfilePage />} />
                       <Route path="/transfer" element={<TransferPage />} />
                       <Route path="/topup" element={<TopUpPage />} />
+                      <Route path="/netflix" element={<NetflixPage />} />
                       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                       <Route path="*" element={<NotFound />} />
                     </Route>
