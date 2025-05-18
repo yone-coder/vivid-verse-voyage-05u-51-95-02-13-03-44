@@ -1,4 +1,3 @@
-
 import React, { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -35,6 +34,7 @@ import EntertainmentPage from "./pages/EntertainmentPage";
 import KidsHobbiesPage from "./pages/KidsHobbiesPage";
 import SportsOutdoorsPage from "./pages/SportsOutdoorsPage";
 import AutomotivePage from "./pages/AutomotivePage";
+import CategoriesPage from "./pages/CategoriesPage";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -86,6 +86,7 @@ const App = () => {
                       <Route path="/kids-hobbies" element={<KidsHobbiesPage />} />
                       <Route path="/sports-outdoors" element={<SportsOutdoorsPage />} />
                       <Route path="/automotive" element={<AutomotivePage />} />
+                      <Route path="/all-categories" element={<CategoriesPage />} />
                       
                       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                       <Route path="*" element={<NotFound />} />

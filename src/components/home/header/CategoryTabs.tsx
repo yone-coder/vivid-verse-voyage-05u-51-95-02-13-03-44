@@ -66,6 +66,10 @@ const CategoryTabs = ({
     }
   };
 
+  const handleCategoriesClick = () => {
+    navigate('/all-categories');
+  };
+
   // Always render the default tabs state
   return (
     <div
@@ -114,8 +118,9 @@ const CategoryTabs = ({
         <div className="h-5 w-px bg-gray-300" />
         <button
           type="button"
+          onClick={handleCategoriesClick}
           className="p-1 rounded text-gray-500 hover:bg-gray-100 focus:outline-none focus-visible:ring-1 focus-visible:ring-orange-500"
-          aria-label="More options"
+          aria-label="All Categories"
         >
           <LayoutGrid className="h-4 w-4" />
         </button>
