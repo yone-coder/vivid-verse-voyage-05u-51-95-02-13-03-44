@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
@@ -99,15 +98,6 @@ export default function CategoriesPage() {
       <AliExpressHeader />
       
       <div className="pt-[70px]">
-        {/* Green banner message */}
-        <div className="bg-green-50 text-green-700 py-3 px-4 flex items-center justify-between border-b border-green-100">
-          <div className="flex items-center">
-            <span className="text-green-600 font-medium text-sm border border-green-600 rounded-full px-2 mr-2">FREE</span>
-            <span className="text-green-700 text-sm font-medium">No import charges for all local warehouse items</span>
-          </div>
-          <span className="text-green-700">›</span>
-        </div>
-
         <div className="max-w-7xl mx-auto px-3 mt-4">
           {/* Shop by category heading */}
           <div className="flex items-center justify-between mb-4">
@@ -151,7 +141,7 @@ export default function CategoriesPage() {
             {/* Right content - Grid of subcategories with circular images */}
             <div className="w-2/3 md:w-3/4 lg:w-4/5 pl-2 md:pl-4">
               <div className="bg-white rounded-md p-4">
-                <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 lg:gap-4">
+                <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 lg:gap-6">
                   {subCategories.map((subCategory) => (
                     <a 
                       key={subCategory.id}
@@ -159,7 +149,7 @@ export default function CategoriesPage() {
                       className="flex flex-col items-center"
                     >
                       <div className="relative mb-2">
-                        <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden border border-gray-200">
+                        <div className="w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden border border-gray-200">
                           <img 
                             src={subCategory.imageUrl} 
                             alt={subCategory.name} 
