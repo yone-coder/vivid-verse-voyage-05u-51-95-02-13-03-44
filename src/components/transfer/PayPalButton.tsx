@@ -43,7 +43,7 @@ declare global {
 // Default sandbox client ID in case one isn't provided
 const DEFAULT_CLIENT_ID = 'ASipB9r2XrYB0XD5cfzEItB8jtUq79EcN5uOYATHHJAEbWlQS3odGAH-RJb19wLH1QzHuk9zjUp1wUKc';
 
-// Type-safe API URL as a constant
+// Type-safe API URL as a constant string
 const PAYPAL_API_URL = 'https://wkfzhcszhgewkvwukzes.supabase.co/functions/v1/paypal-payment';
 
 const PayPalButton: React.FC<PayPalButtonProps> = ({ 
@@ -174,6 +174,14 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
                   user_action: "PAY_NOW",
                   return_url: window.location.href,
                   cancel_url: window.location.href,
+                  // Add required fields for OrderApplicationContext
+                  payment_method: {
+                    payee_preferred: "IMMEDIATE_PAYMENT_REQUIRED"
+                  },
+                  stored_payment_source: {
+                    payment_initiator: "CUSTOMER",
+                    payment_type: "ONEOFF"
+                  }
                 }
               });
             }}
@@ -194,8 +202,8 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
                   const session = await supabase.auth.getSession();
                   const accessToken = session.data.session?.access_token || '';
                   
-                  // Use the constant string URL to fix TypeScript error
-                  const response = await fetch(PAYPAL_API_URL as string, {
+                  // Use explicit string type for the URL
+                  const response = await fetch(PAYPAL_API_URL, {
                     method: 'POST',
                     headers: {
                       'Content-Type': 'application/json',
