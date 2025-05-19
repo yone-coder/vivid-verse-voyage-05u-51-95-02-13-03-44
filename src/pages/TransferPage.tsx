@@ -11,14 +11,11 @@ import TransferConfirmationDrawer from '@/components/transfer/TransferConfirmati
 import PayPalButton from '@/components/transfer/PayPalButton';
 import { internationalPaymentMethods, nationalPaymentMethods } from '@/components/transfer/PaymentMethods';
 import { toast } from "@/hooks/use-toast";
-import { useLanguage } from '@/context/LanguageContext';
-import { supabase } from "@/integrations/supabase/client";
 
 // Default PayPal client ID - Using a sandbox client ID that works with PayPal's test environment
 const DEFAULT_PAYPAL_CLIENT_ID = 'ASipB9r2XrYB0XD5cfzEItB8jtUq79EcN5uOYATHHJAEbWlQS3odGAH-RJb19wLH1QzHuk9zjUp1wUKc';
 
 const TransferPage: React.FC = () => {
-  const { t } = useLanguage();
   const [transferType, setTransferType] = useState<'international' | 'national'>('international');
   const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
   const [amount, setAmount] = useState('');
@@ -26,8 +23,8 @@ const TransferPage: React.FC = () => {
   const [paypalSuccess, setPaypalSuccess] = useState(false);
   const [paypalLoading, setPaypalLoading] = useState(false);
   
-  // Modified to use default client ID if not available in localStorage
-  const [paypalClientId, setPaypalClientId] = useState<string | null>(DEFAULT_PAYPAL_CLIENT_ID);
+  // Use default client ID directly
+  const [paypalClientId, setPaypalClientId] = useState<string>(DEFAULT_PAYPAL_CLIENT_ID);
   const [isProduction, setIsProduction] = useState(false);
   
   // Check for stored PayPal client ID on component mount
@@ -158,7 +155,7 @@ const TransferPage: React.FC = () => {
               isDisabled={!amount || parseFloat(amount) <= 0 || paypalSuccess}
               onSuccess={handlePaypalSuccess}
               onError={handlePaypalError}
-              clientId={paypalClientId || DEFAULT_PAYPAL_CLIENT_ID}
+              clientId={paypalClientId}
               currency={currencyCode}
               setLoading={setPaypalLoading}
               isProduction={isProduction}

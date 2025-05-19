@@ -36,9 +36,9 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
   const paypalButtonRef = useRef<HTMLDivElement>(null);
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
   const [isScriptError, setIsScriptError] = useState(false);
-  const [scriptLoadCount, setScriptLoadCount] = useState(0);
+  const [scriptAttempts, setScriptAttempts] = useState(0);
   
-  // Always use the provided client ID or default - don't try to get from localStorage
+  // Always use the provided client ID or default
   const clientId = propClientId || DEFAULT_CLIENT_ID;
   
   // Environment based on props
@@ -49,7 +49,9 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
   
   // Function to load PayPal SDK
   const loadPayPalScript = () => {
-    if (isDisabled || !validAmount || isScriptLoaded || scriptLoadCount > 2) return;
+    if (isDisabled || !validAmount || isScriptLoaded || scriptAttempts >= 3) return;
+    
+    setScriptAttempts(prev => prev + 1);
     
     if (setLoading) setLoading(true);
     
@@ -66,14 +68,13 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
     
     // Create and add the script with proper parameters
     const script = document.createElement('script');
-    // Include 'buttons,hosted-fields' components to ensure we have all necessary components
-    script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=${currency}&components=buttons&intent=capture`;
+    script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=${currency}&components=buttons`;
     script.async = true;
-    script.defer = true;
     
     script.onload = () => {
       console.log(`PayPal SDK script loaded successfully in ${environment} mode`);
       setIsScriptLoaded(true);
+      setIsScriptError(false);
       if (setLoading) setLoading(false);
       
       // Verify PayPal object is properly loaded before rendering
@@ -86,7 +87,14 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
       } else {
         console.error('PayPal object is loaded but Buttons API is not available');
         setIsScriptError(true);
-        if (onError) onError('PayPal Buttons API not available after script load');
+        if (onError) onError(new Error('PayPal Buttons API not available after script load'));
+        
+        // Show toast error
+        toast({
+          title: "PayPal Error",
+          description: "There was an issue initializing PayPal. Please refresh and try again.",
+          variant: "destructive",
+        });
       }
     };
     
@@ -94,13 +102,20 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
       console.error('Error loading PayPal SDK script:', error);
       setIsScriptError(true);
       if (setLoading) setLoading(false);
-      setScriptLoadCount(prev => prev + 1);
       
-      toast({
-        title: "PayPal Error",
-        description: "Could not load PayPal. Please try again later.",
-        variant: "destructive",
-      });
+      // Show toast error
+      if (scriptAttempts >= 3) {
+        toast({
+          title: "PayPal Error",
+          description: "Could not load PayPal. Please try again later.",
+          variant: "destructive",
+        });
+      } else {
+        // Try again after a delay
+        setTimeout(() => {
+          loadPayPalScript();
+        }, 1500);
+      }
       
       if (onError) {
         onError(error);
@@ -108,19 +123,13 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
     };
     
     document.body.appendChild(script);
-    
-    return () => {
-      if (document.body.contains(script)) {
-        document.body.removeChild(script);
-      }
-    };
   };
   
   // Function to render the PayPal button
   const renderPayPalButton = () => {
     if (!window.paypal || !window.paypal.Buttons) {
       console.error('PayPal SDK loaded but Buttons API not available');
-      if (onError) onError('PayPal Buttons API not available');
+      if (onError) onError(new Error('PayPal Buttons API not available'));
       setIsScriptError(true);
       return;
     }
@@ -241,18 +250,32 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
       } else {
         console.warn('PayPal button is not eligible for this browser or device');
         setIsScriptError(true);
-        if (onError) onError('PayPal button is not eligible for this browser or device');
+        if (onError) onError(new Error('PayPal button is not eligible for this browser or device'));
+        
+        toast({
+          title: "PayPal Error",
+          description: "PayPal is not available on this device or browser. Please try another payment method.",
+          variant: "destructive",
+        });
       }
     } catch (error) {
       console.error('Error creating PayPal button:', error);
       setIsScriptError(true);
       if (onError) onError(error);
+      
+      toast({
+        title: "PayPal Error",
+        description: "Could not initialize PayPal. Please try again later.",
+        variant: "destructive",
+      });
     }
   };
   
   // Load the PayPal SDK when component mounts or amount/currency changes
   useEffect(() => {
-    loadPayPalScript();
+    if (validAmount && !isDisabled && !isScriptLoaded && scriptAttempts < 3) {
+      loadPayPalScript();
+    }
     
     // Clean up function
     return () => {
@@ -263,14 +286,7 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
         }
       });
     };
-  }, [clientId, currency, validAmount, isDisabled]);
-  
-  // Render the PayPal button when script is loaded and when amount changes
-  useEffect(() => {
-    if (isScriptLoaded && !isScriptError && validAmount && !isDisabled) {
-      renderPayPalButton();
-    }
-  }, [isScriptLoaded, amount, isDisabled, validAmount]);
+  }, [clientId, currency, validAmount, isDisabled, scriptAttempts]);
   
   // Return a container for the PayPal button to render in
   return (
@@ -289,7 +305,7 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
         className="paypal-button-container"
         style={{ minHeight: '45px' }}
       />
-      {environment === 'production' && isScriptLoaded && (
+      {isScriptLoaded && !isScriptError && environment === 'production' && (
         <div className="mt-1 text-center">
           <span className="text-xs text-green-600 font-medium bg-green-50 px-2 py-1 rounded-full">
             Live Production Mode
