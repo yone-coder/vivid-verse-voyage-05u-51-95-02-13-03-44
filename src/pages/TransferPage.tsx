@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { ArrowRight, CreditCard } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -91,42 +90,33 @@ const TransferPage: React.FC = () => {
       
       console.log("Payment created successfully:", data);
       
+      // Close the drawer after successful API call
+      setIsDrawerOpen(false);
+      
       toast({
         title: "Payment Initiated",
         description: "Your payment has been initiated successfully.",
       });
       
-      setIsDrawerOpen(false);
-      
-      // If we have next steps to follow
+      // If we have next steps to follow with redirectUrl
       if (data.nextSteps?.redirectUrl) {
-        // For demo purposes, we'll simulate a successful payment
-        // In a real app, we would redirect to data.nextSteps.redirectUrl
+        console.log("Redirecting to:", data.nextSteps.redirectUrl);
         
-        if (data.nextSteps.redirectUrl.includes('paypal.com')) {
+        // For PayPal or credit card payments, redirect to PayPal
+        if (selectedMethod === 'credit-card' || selectedMethod === 'paypal') {
           toast({
-            title: "Demo Mode",
-            description: "In a real app, you would be redirected to PayPal now. Payment simulated as successful.",
+            title: "Redirecting to PayPal",
+            description: "You'll be redirected to complete your payment.",
           });
           
-          // Simulate successful payment after a delay
+          // Use a small timeout to allow the toast to show before redirecting
           setTimeout(() => {
-            toast({
-              title: "Payment Successful",
-              description: "Your transfer has been completed successfully.",
-              variant: "success",
-            });
-          }, 1500);
+            // Actually redirect to PayPal in a new tab/window
+            window.open(data.nextSteps.redirectUrl, '_blank');
+          }, 1000);
         } else {
-          // For other payment methods, we'd redirect to our own confirmation page
-          // window.location.href = data.nextSteps.redirectUrl;
-          
-          // For demo, just show toast
-          toast({
-            title: "Payment Processing",
-            description: "Your payment is being processed. You'll receive confirmation shortly.",
-            variant: "success",
-          });
+          // For other payment methods, use internal redirect
+          window.location.href = data.nextSteps.redirectUrl;
         }
       }
     } catch (error) {

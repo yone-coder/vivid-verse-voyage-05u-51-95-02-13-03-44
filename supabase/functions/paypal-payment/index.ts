@@ -118,7 +118,7 @@ serve(async (req: Request) => {
 
   try {
     // Get the request data
-    const { amount, currency, paymentMethod, orderDetails }: PaymentRequest = await req.json();
+    const { amount, currency, paymentMethod, developmentMode = true }: PaymentRequest = await req.json();
 
     // Validate the input
     if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
@@ -136,7 +136,9 @@ serve(async (req: Request) => {
     }
     
     // Create dummy transaction in development mode without requiring database access
-    if (DEVELOPMENT_MODE) {
+    if (developmentMode || DEVELOPMENT_MODE) {
+      console.log("Running in development mode");
+      
       const orderId = `TEST-${Date.now()}`;
       let redirectUrl = "";
       let mockTransaction = {
@@ -153,7 +155,8 @@ serve(async (req: Request) => {
       
       // Handle PayPal/Credit Card payment
       if (paymentMethod === 'credit-card' || paymentMethod === 'paypal') {
-        const approvalUrl = `https://sandbox.paypal.com/checkoutnow?token=${orderId}`;
+        // In development mode, use a direct sandbox URL that would actually work
+        const approvalUrl = `https://www.sandbox.paypal.com/checkoutnow?token=${orderId}`;
         redirectUrl = approvalUrl;
         
         // Add PayPal specific mock data
@@ -168,6 +171,7 @@ serve(async (req: Request) => {
       }
       
       console.log(`[DEV MODE] Created mock transaction: ${JSON.stringify(mockTransaction)}`);
+      console.log(`[DEV MODE] Redirect URL: ${redirectUrl}`);
       
       return new Response(
         JSON.stringify({
