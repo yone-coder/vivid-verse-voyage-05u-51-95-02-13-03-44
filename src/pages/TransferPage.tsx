@@ -17,11 +17,12 @@ const DEFAULT_PAYPAL_CLIENT_ID = 'ASipB9r2XrYB0XD5cfzEItB8jtUq79EcN5uOYATHHJAEbW
 
 const TransferPage: React.FC = () => {
   const [transferType, setTransferType] = useState<'international' | 'national'>('international');
-  const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
+  const [selectedMethod, setSelectedMethod] = useState<string | null>('credit-card'); // Default to credit card
   const [amount, setAmount] = useState('');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [paypalSuccess, setPaypalSuccess] = useState(false);
   const [paypalLoading, setPaypalLoading] = useState(false);
+  const [paypalScriptLoaded, setPaypalScriptLoaded] = useState(false);
   
   // Use default client ID directly
   const [paypalClientId] = useState<string>(DEFAULT_PAYPAL_CLIENT_ID);
@@ -34,6 +35,20 @@ const TransferPage: React.FC = () => {
       setSelectedMethod('credit-card');
     }
   }, [transferType]);
+
+  // Listen for PayPal script loaded event
+  useEffect(() => {
+    const handlePayPalScriptLoaded = () => {
+      console.log("PayPal script loaded (from event listener)");
+      setPaypalScriptLoaded(true);
+    };
+    
+    document.addEventListener('paypal-script-loaded', handlePayPalScriptLoaded);
+    
+    return () => {
+      document.removeEventListener('paypal-script-loaded', handlePayPalScriptLoaded);
+    };
+  }, []);
   
   const handlePaypalSuccess = (details: any) => {
     setPaypalSuccess(true);
