@@ -21,12 +21,25 @@ const TransferPage: React.FC = () => {
   
   const handleContinue = () => {
     if (!selectedMethod || !amount || parseFloat(amount) <= 0) {
+      toast({
+        title: "Missing Information",
+        description: "Please select a payment method and enter a valid amount.",
+        variant: "destructive",
+      });
       return;
     }
     
     // For methods other than credit card (with PayPal integration), open drawer
     if (!(transferType === 'international' && selectedMethod === 'credit-card')) {
       setIsDrawerOpen(true);
+    } else {
+      // When using international credit card, we rely on PayPal button
+      // This is handled by the PayPal button component itself
+      toast({
+        title: "Payment Method",
+        description: "Please use the PayPal button above to complete your payment.",
+        variant: "default",
+      });
     }
   };
 
@@ -36,7 +49,7 @@ const TransferPage: React.FC = () => {
     toast({
       title: "Payment Successful",
       description: `Your payment of $${amount} was completed successfully with PayPal. Transaction ID: ${details.id}`,
-      variant: "success", // Using success variant for a green toast
+      variant: "success",
     });
   };
 
@@ -94,7 +107,10 @@ const TransferPage: React.FC = () => {
         <PaymentMethodList
           methods={currentPaymentMethods}
           selectedMethod={selectedMethod}
-          onMethodChange={setSelectedMethod}
+          onMethodChange={(value) => {
+            setSelectedMethod(value);
+            setPaypalSuccess(false);
+          }}
         />
         
         {/* PayPal Button for international credit card payments */}

@@ -55,7 +55,9 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
     
     // Clean up
     return () => {
-      document.body.removeChild(script);
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
     };
   }, []);
   
@@ -78,7 +80,7 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
           purchase_units: [{
             amount: {
               currency_code: 'USD',
-              value: amount
+              value: amount || '0'
             }
           }]
         });
