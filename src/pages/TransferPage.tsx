@@ -1,6 +1,6 @@
 
-import React, { useState } from 'react';
-import { ArrowRight } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ArrowRight, CreditCard } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Drawer } from "@/components/ui/drawer";
 import TransferHeader from '@/components/transfer/TransferHeader';
@@ -26,6 +26,14 @@ const TransferPage: React.FC = () => {
   // Use default client ID directly
   const [paypalClientId] = useState<string>(DEFAULT_PAYPAL_CLIENT_ID);
   const [isProduction] = useState(false); // Always use sandbox mode for testing
+  
+  // Auto-select credit card option when international is chosen
+  useEffect(() => {
+    if (transferType === 'international') {
+      // Pre-select credit card option for easier testing
+      setSelectedMethod('credit-card');
+    }
+  }, [transferType]);
   
   const handlePaypalSuccess = (details: any) => {
     setPaypalSuccess(true);
@@ -68,7 +76,7 @@ const TransferPage: React.FC = () => {
   // Reset selected method when changing transfer type
   const handleTransferTypeChange = (value: 'international' | 'national') => {
     setTransferType(value);
-    setSelectedMethod(null);
+    setSelectedMethod(value === 'international' ? 'credit-card' : null); // Auto-select credit card for international
     setPaypalSuccess(false);
     setPaypalLoading(false);
   };
@@ -107,6 +115,23 @@ const TransferPage: React.FC = () => {
           transferType={transferType} 
           onTransferTypeChange={handleTransferTypeChange}
         />
+        
+        {/* Credit Card Recommendation */}
+        {transferType === 'international' && (
+          <div className="bg-blue-50 border border-blue-200 rounded-md p-3 mb-4">
+            <div className="flex items-start">
+              <CreditCard className="h-5 w-5 text-blue-600 mt-0.5 mr-2 flex-shrink-0" />
+              <div>
+                <h3 className="text-sm font-medium text-blue-800">
+                  Credit/Debit Card Recommended
+                </h3>
+                <p className="text-xs text-blue-600 mt-1">
+                  For international transfers, credit cards offer the fastest and most secure way to send money to Haiti.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
         
         {/* Amount Input */}
         <AmountInput

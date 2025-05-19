@@ -3,6 +3,13 @@ import React, { useState } from 'react';
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { 
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Info } from 'lucide-react';
 
 interface PayPalButtonProps {
   amount: string;
@@ -58,6 +65,29 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
 
   return (
     <div className="paypal-button-container">
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-sm font-medium text-gray-700">Secure payment via PayPal</span>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button className="inline-flex items-center text-blue-500 hover:text-blue-700">
+                <Info size={16} />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent className="max-w-xs">
+              <p>Credit card payments are securely processed through PayPal. You don't need a PayPal account to pay with your card.</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </div>
+      
+      <div className="border border-blue-200 rounded-md p-3 bg-blue-50 mb-3">
+        <div className="text-sm text-blue-800 font-medium mb-1">Test Mode Instructions:</div>
+        <p className="text-xs text-blue-700">
+          To test the payment, click the PayPal button below. When prompted, use the email <strong>sb-43toiq22868428@personal.example.com</strong> and password <strong>12345678</strong>.
+        </p>
+      </div>
+      
       <PayPalScriptProvider options={paypalOptions} 
         onReady={() => {
           console.log("PayPal SDK loaded successfully");
