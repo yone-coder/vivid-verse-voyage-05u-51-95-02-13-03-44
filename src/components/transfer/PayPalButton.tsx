@@ -22,6 +22,17 @@ interface PayPalButtonProps {
   isProduction?: boolean;
 }
 
+// Define a type for the PayPal transaction details
+interface PayPalTransactionDetails {
+  purchase_units: Array<{
+    payments?: {
+      captures?: Array<{
+        id: string;
+      }>;
+    };
+  }>;
+}
+
 // Default sandbox client ID in case one isn't provided
 const DEFAULT_CLIENT_ID = 'ASipB9r2XrYB0XD5cfzEItB8jtUq79EcN5uOYATHHJAEbWlQS3odGAH-RJb19wLH1QzHuk9zjUp1wUKc';
 
@@ -114,7 +125,7 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
                     description: `Money transfer of ${currency} ${formattedAmount}`
                   }
                 ],
-                // Fix 1: Provide all required properties for OrderApplicationContext
+                // Fix 1: Add all required properties for OrderApplicationContext
                 application_context: {
                   brand_name: "Money Transfer Service",
                   locale: "en-US",
@@ -122,7 +133,14 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
                   shipping_preference: "NO_SHIPPING",
                   user_action: "PAY_NOW",
                   return_url: window.location.href,
-                  cancel_url: window.location.href
+                  cancel_url: window.location.href,
+                  payment_method: {
+                    payee_preferred: "IMMEDIATE_PAYMENT_REQUIRED"
+                  },
+                  stored_payment_source: {
+                    payment_initiator: "CUSTOMER",
+                    payment_type: "ONEOFF"
+                  }
                 }
               });
             }}
@@ -136,13 +154,15 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
                 // Send transaction details to our backend
                 try {
                   const orderId = data.orderID;
-                  // Fix 2: Safe access to the captures property with optional chaining and type casting
-                  const transactionId = details.purchase_units?.[0]?.payments?.captures?.[0]?.id || '';
+                  // Fix 2: Cast details to our interface type and safely access properties
+                  const transactionDetails = details as unknown as PayPalTransactionDetails;
+                  const transactionId = transactionDetails.purchase_units?.[0]?.payments?.captures?.[0]?.id || '';
                   
                   // Fix 3: Ensure the URL is a string type
-                  const apiUrl = 'https://wkfzhcszhgewkvwukzes.supabase.co/functions/v1/paypal-payment';
+                  const apiUrl: string = 'https://wkfzhcszhgewkvwukzes.supabase.co/functions/v1/paypal-payment';
                   
-                  const accessToken = (await supabase.auth.getSession()).data.session?.access_token || '';
+                  const session = await supabase.auth.getSession();
+                  const accessToken = session.data.session?.access_token || '';
                   
                   const response = await fetch(apiUrl, {
                     method: 'POST',
