@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { PayPal } from 'lucide-react';
+import { CreditCard } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 
 interface PayPalButtonProps {
@@ -39,7 +39,7 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
       disabled={isDisabled}
       className="w-full bg-[#0070BA] hover:bg-[#005ea6] mb-2 flex items-center justify-center gap-2"
     >
-      <PayPal className="h-4 w-4" />
+      <CreditCard className="h-4 w-4" />
       <span>Pay with PayPal</span>
     </Button>
   );
