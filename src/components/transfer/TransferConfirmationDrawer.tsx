@@ -43,6 +43,7 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
         case 'bank-transfer': return `${currencySymbol}0.25`;
         case 'cashapp': return `${currencySymbol}${(parseFloat(amount) * 0.015).toFixed(2)}`;
         case 'paypal': return `${currencySymbol}${((parseFloat(amount) * 0.029) + 0.3).toFixed(2)}`;
+        case 'credit-card': return `${currencySymbol}${((parseFloat(amount) * 0.035) + 0.3).toFixed(2)}`;
         default: return `${currencySymbol}${((parseFloat(amount) * 0.035) + 0.3).toFixed(2)}`;
       }
     } else {
@@ -76,6 +77,7 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
         case 'bank-transfer': return `${currencySymbol}${(parseFloat(amount) + 0.25).toFixed(2)}`;
         case 'cashapp': return `${currencySymbol}${(parseFloat(amount) * 1.015).toFixed(2)}`;
         case 'paypal': return `${currencySymbol}${(parseFloat(amount) + ((parseFloat(amount) * 0.029) + 0.3)).toFixed(2)}`;
+        case 'credit-card': return `${currencySymbol}${(parseFloat(amount) + ((parseFloat(amount) * 0.035) + 0.3)).toFixed(2)}`;
         default: return `${currencySymbol}${(parseFloat(amount) + ((parseFloat(amount) * 0.035) + 0.3)).toFixed(2)}`;
       }
     } else {

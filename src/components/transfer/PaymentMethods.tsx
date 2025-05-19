@@ -15,8 +15,15 @@ export const internationalPaymentMethods: PaymentMethod[] = [
     id: 'credit-card', 
     name: 'Credit or Debit Card', 
     icon: CreditCard, 
-    description: 'Safe and secure card payment',
+    description: 'Safe and secure card payment via PayPal',
     fee: '3.5% + $0.30' 
+  },
+  { 
+    id: 'paypal', 
+    name: 'PayPal', 
+    icon: Send,
+    description: 'Send using your PayPal balance',
+    fee: '2.9% + $0.30' 
   },
   { 
     id: 'bank-transfer', 
@@ -31,13 +38,6 @@ export const internationalPaymentMethods: PaymentMethod[] = [
     icon: Send,
     description: 'Fast transfers between US banks',
     fee: 'Free' 
-  },
-  { 
-    id: 'paypal', 
-    name: 'PayPal', 
-    icon: Send,
-    description: 'Send using your PayPal balance',
-    fee: '2.9% + $0.30' 
   },
   { 
     id: 'cashapp', 
