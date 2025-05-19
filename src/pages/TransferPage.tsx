@@ -18,6 +18,7 @@ const TransferPage: React.FC = () => {
   const [amount, setAmount] = useState('');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [paypalSuccess, setPaypalSuccess] = useState(false);
+  const [paypalLoading, setPaypalLoading] = useState(false);
   
   const handleContinue = () => {
     if (!selectedMethod || !amount || parseFloat(amount) <= 0) {
@@ -34,7 +35,6 @@ const TransferPage: React.FC = () => {
       setIsDrawerOpen(true);
     } else {
       // When using international credit card, we rely on PayPal button
-      // This is handled by the PayPal button component itself
       toast({
         title: "Payment Method",
         description: "Please use the PayPal button above to complete your payment.",
@@ -45,6 +45,7 @@ const TransferPage: React.FC = () => {
 
   const handlePaypalSuccess = (details: any) => {
     setPaypalSuccess(true);
+    setPaypalLoading(false);
     setIsDrawerOpen(false);
     toast({
       title: "Payment Successful",
@@ -54,6 +55,7 @@ const TransferPage: React.FC = () => {
   };
 
   const handlePaypalError = (err: any) => {
+    setPaypalLoading(false);
     toast({
       title: "Payment Failed",
       description: "There was an issue processing your PayPal payment. Please try again.",
@@ -78,6 +80,7 @@ const TransferPage: React.FC = () => {
     setTransferType(value);
     setSelectedMethod(null);
     setPaypalSuccess(false);
+    setPaypalLoading(false);
   };
   
   // Show PayPal button when international and credit card are selected
@@ -110,6 +113,7 @@ const TransferPage: React.FC = () => {
           onMethodChange={(value) => {
             setSelectedMethod(value);
             setPaypalSuccess(false);
+            setPaypalLoading(false);
           }}
         />
         
@@ -118,7 +122,7 @@ const TransferPage: React.FC = () => {
           <div className="mt-4 mb-2">
             <PayPalButton 
               amount={amount} 
-              isDisabled={!amount || parseFloat(amount) <= 0 || paypalSuccess}
+              isDisabled={!amount || parseFloat(amount) <= 0 || paypalSuccess || paypalLoading}
               onSuccess={handlePaypalSuccess}
               onError={handlePaypalError}
             />
