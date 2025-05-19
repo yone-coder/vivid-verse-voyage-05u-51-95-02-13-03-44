@@ -24,29 +24,9 @@ const TransferPage: React.FC = () => {
   const [paypalLoading, setPaypalLoading] = useState(false);
   
   // Use default client ID directly
-  const [paypalClientId, setPaypalClientId] = useState<string>(DEFAULT_PAYPAL_CLIENT_ID);
-  const [isProduction, setIsProduction] = useState(false);
+  const [paypalClientId] = useState<string>(DEFAULT_PAYPAL_CLIENT_ID);
+  const [isProduction] = useState(false); // Always use sandbox mode for testing
   
-  // Check for stored PayPal client ID on component mount
-  useEffect(() => {
-    const storedClientId = localStorage.getItem('paypal_client_id');
-    const storedEnvironment = localStorage.getItem('paypal_environment');
-    
-    if (storedClientId) {
-      setPaypalClientId(storedClientId);
-    } else {
-      // Set default client ID if none exists
-      localStorage.setItem('paypal_client_id', DEFAULT_PAYPAL_CLIENT_ID);
-    }
-    
-    if (storedEnvironment) {
-      setIsProduction(storedEnvironment === 'production');
-    } else {
-      // Default to sandbox environment
-      localStorage.setItem('paypal_environment', 'sandbox');
-    }
-  }, []);
-
   const handlePaypalSuccess = (details: any) => {
     setPaypalSuccess(true);
     setPaypalLoading(false);
@@ -55,7 +35,7 @@ const TransferPage: React.FC = () => {
     // Show success message with transaction details
     toast({
       title: "Payment Successful",
-      description: `Your transfer of $${amount} was completed successfully with PayPal. Transaction ID: ${details.id}`,
+      description: `Your transfer of $${amount} was completed successfully with PayPal. Transaction ID: ${details.id || 'N/A'}`,
       variant: "success",
     });
     
@@ -150,6 +130,9 @@ const TransferPage: React.FC = () => {
         {/* PayPal Button for international credit card payments */}
         {showPaypalButton && (
           <div className="mt-4 mb-2">
+            <h3 className="text-sm font-medium text-gray-700 mb-2">
+              Complete Payment with PayPal
+            </h3>
             <PayPalButton 
               amount={amount} 
               isDisabled={!amount || parseFloat(amount) <= 0 || paypalSuccess}
@@ -160,7 +143,7 @@ const TransferPage: React.FC = () => {
               setLoading={setPaypalLoading}
               isProduction={isProduction}
             />
-            {!paypalSuccess && (
+            {!paypalSuccess && !paypalLoading && (
               <p className="text-xs text-gray-500 text-center mt-2">
                 Secure payment processing via PayPal {isProduction ? "(Live Mode)" : "(Test Mode)"}
               </p>
@@ -173,7 +156,7 @@ const TransferPage: React.FC = () => {
           <Button 
             onClick={() => setIsDrawerOpen(true)}
             disabled={!selectedMethod || !amount || parseFloat(amount) <= 0}
-            className="w-full"
+            className="w-full mt-4"
             size="lg"
           >
             Continue to Send Money

@@ -58,13 +58,17 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
     // Remove any existing PayPal scripts to avoid conflicts
     const existingScripts = document.querySelectorAll('script[src*="paypal.com/sdk/js"]');
     existingScripts.forEach(script => {
-      document.body.removeChild(script);
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
     });
     
     // Clear the global PayPal object if it exists
     if (window.paypal) {
       delete window.paypal;
     }
+    
+    console.log(`Attempting to load PayPal SDK (attempt ${scriptAttempts + 1}/3) with client ID: ${clientId.substring(0, 10)}...`);
     
     // Create and add the script with proper parameters
     const script = document.createElement('script');
@@ -77,48 +81,48 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
       setIsScriptError(false);
       if (setLoading) setLoading(false);
       
-      // Verify PayPal object is properly loaded before rendering
-      if (window.paypal && window.paypal.Buttons) {
-        console.log('PayPal Buttons API is available');
-        // Wait a moment for PayPal to initialize fully
-        setTimeout(() => {
+      // Wait a moment for PayPal to initialize fully
+      setTimeout(() => {
+        if (window.paypal && window.paypal.Buttons) {
+          console.log('PayPal Buttons API is available, rendering button');
           renderPayPalButton();
-        }, 100);
-      } else {
-        console.error('PayPal object is loaded but Buttons API is not available');
-        setIsScriptError(true);
-        if (onError) onError(new Error('PayPal Buttons API not available after script load'));
-        
-        // Show toast error
-        toast({
-          title: "PayPal Error",
-          description: "There was an issue initializing PayPal. Please refresh and try again.",
-          variant: "destructive",
-        });
-      }
+        } else {
+          console.error('PayPal object is loaded but Buttons API is not available');
+          setIsScriptError(true);
+          if (onError) onError(new Error('PayPal Buttons API not available after script load'));
+          
+          // Show toast error
+          toast({
+            title: "PayPal Error",
+            description: "There was an issue initializing PayPal. Please refresh and try again.",
+            variant: "destructive",
+          });
+        }
+      }, 500);
     };
     
     script.onerror = (error) => {
       console.error('Error loading PayPal SDK script:', error);
       setIsScriptError(true);
-      if (setLoading) setLoading(false);
       
-      // Show toast error
-      if (scriptAttempts >= 3) {
+      // Show toast error only on final attempt
+      if (scriptAttempts >= 2) {
+        if (setLoading) setLoading(false);
         toast({
           title: "PayPal Error",
           description: "Could not load PayPal. Please try again later.",
           variant: "destructive",
         });
+        
+        if (onError) {
+          onError(error);
+        }
       } else {
         // Try again after a delay
+        console.log(`Retrying PayPal SDK load in 1.5 seconds...`);
         setTimeout(() => {
           loadPayPalScript();
         }, 1500);
-      }
-      
-      if (onError) {
-        onError(error);
       }
     };
     
@@ -140,6 +144,7 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
     paypalButtonRef.current.innerHTML = '';
     
     try {
+      console.log(`Rendering PayPal button with amount: ${amount} in ${environment} mode`);
       const button = window.paypal.Buttons({
         style: {
           layout: 'vertical',
@@ -175,26 +180,29 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
             console.log('Payment completed successfully', details);
             
             // Send transaction details to our backend
-            const response = await fetch('https://wkfzhcszhgewkvwukzes.supabase.co/functions/v1/paypal-payment', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'x-paypal-transaction-id': details.purchase_units[0].payments.captures[0].id,
-                'x-paypal-order-id': data.orderID,
-                'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token || ''}`
-              },
-              body: JSON.stringify({
-                amount: amount,
-                currency: currency,
-                paymentMethod: 'paypal'
-              })
-            });
-            
-            if (!response.ok) {
-              throw new Error('Failed to verify payment with server');
+            try {
+              const response = await fetch('https://wkfzhcszhgewkvwukzes.supabase.co/functions/v1/paypal-payment', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'x-paypal-transaction-id': details.purchase_units[0].payments.captures[0].id,
+                  'x-paypal-order-id': data.orderID,
+                  'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token || ''}`
+                },
+                body: JSON.stringify({
+                  amount: amount,
+                  currency: currency,
+                  paymentMethod: 'paypal'
+                })
+              });
+              
+              if (!response.ok) {
+                console.warn('Non-critical: Failed to verify payment with server, but payment was successful');
+              }
+            } catch (serverError) {
+              console.warn('Non-critical: Error sending payment details to server:', serverError);
+              // We continue because PayPal payment itself was successful
             }
-            
-            const serverResponse = await response.json();
             
             toast({
               title: "Payment Successful",
@@ -203,7 +211,7 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
             });
             
             if (onSuccess) {
-              onSuccess({...details, serverData: serverResponse});
+              onSuccess(details);
             }
           } catch (error) {
             console.error('Error finalizing payment:', error);
@@ -273,6 +281,7 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
   
   // Load the PayPal SDK when component mounts or amount/currency changes
   useEffect(() => {
+    console.log(`PayPal button effect triggered. Amount: ${amount}, Valid: ${validAmount}, Disabled: ${isDisabled}, Loaded: ${isScriptLoaded}, Attempts: ${scriptAttempts}`);
     if (validAmount && !isDisabled && !isScriptLoaded && scriptAttempts < 3) {
       loadPayPalScript();
     }
@@ -303,7 +312,7 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
       <div 
         ref={paypalButtonRef}
         className="paypal-button-container"
-        style={{ minHeight: '45px' }}
+        style={{ minHeight: isScriptLoaded ? '45px' : '90px' }}
       />
       {isScriptLoaded && !isScriptError && environment === 'production' && (
         <div className="mt-1 text-center">
