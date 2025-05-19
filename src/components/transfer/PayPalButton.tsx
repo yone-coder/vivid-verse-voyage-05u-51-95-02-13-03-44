@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { CreditCard } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 declare global {
   interface Window {
@@ -159,11 +160,37 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
             }
           });
         },
-        onApprove: (data: any, actions: any) => {
+        onApprove: async (data: any, actions: any) => {
           console.log('Payment approved:', data);
           if (setLoading) setLoading(true);
-          return actions.order.capture().then((details: any) => {
+          
+          try {
+            // Capture the funds from the transaction
+            const details = await actions.order.capture();
             console.log('Payment completed successfully', details);
+            
+            // Send transaction details to our backend
+            const response = await fetch('https://wkfzhcszhgewkvwukzes.supabase.co/functions/v1/paypal-payment', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'x-paypal-transaction-id': details.purchase_units[0].payments.captures[0].id,
+                'x-paypal-order-id': data.orderID,
+                'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token || ''}`
+              },
+              body: JSON.stringify({
+                amount: amount,
+                currency: currency,
+                paymentMethod: 'paypal'
+              })
+            });
+            
+            if (!response.ok) {
+              throw new Error('Failed to verify payment with server');
+            }
+            
+            const serverResponse = await response.json();
+            
             toast({
               title: "Payment Successful",
               description: `Your payment of ${currency} ${amount} was completed successfully.`,
@@ -171,11 +198,20 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
             });
             
             if (onSuccess) {
-              onSuccess(details);
+              onSuccess({...details, serverData: serverResponse});
             }
+          } catch (error) {
+            console.error('Error finalizing payment:', error);
+            if (onError) onError(error);
             
+            toast({
+              title: "Payment Verification Failed",
+              description: "There was an issue verifying your payment with our server.",
+              variant: "destructive",
+            });
+          } finally {
             if (setLoading) setLoading(false);
-          });
+          }
         },
         onCancel: (data: any) => {
           console.log('Payment cancelled:', data);
