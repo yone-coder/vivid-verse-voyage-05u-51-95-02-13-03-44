@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -36,6 +36,9 @@ interface PayPalTransactionDetails {
 // Default sandbox client ID in case one isn't provided
 const DEFAULT_CLIENT_ID = 'ASipB9r2XrYB0XD5cfzEItB8jtUq79EcN5uOYATHHJAEbWlQS3odGAH-RJb19wLH1QzHuk9zjUp1wUKc';
 
+// Type-safe API URL as a constant
+const PAYPAL_API_URL = 'https://wkfzhcszhgewkvwukzes.supabase.co/functions/v1/paypal-payment';
+
 const PayPalButton: React.FC<PayPalButtonProps> = ({ 
   amount, 
   isDisabled = false, 
@@ -65,6 +68,37 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
     "disable-funding": "paylater,venmo,card",
     intent: "capture",
   };
+
+  // Listen for when PayPal script is loaded
+  useEffect(() => {
+    const checkPayPalLoaded = () => {
+      if (window.paypal && window.paypal.Buttons) {
+        console.log("PayPal script detected as loaded");
+        setScriptLoaded(true);
+      }
+    };
+
+    // Check if already loaded
+    checkPayPalLoaded();
+
+    // Also listen for the custom event
+    const handlePayPalScriptLoaded = () => {
+      console.log("PayPal script loaded event received");
+      setScriptLoaded(true);
+    };
+    
+    document.addEventListener('paypal-script-loaded', handlePayPalScriptLoaded);
+    
+    // Fallback timer to check again in case events don't fire
+    const timer = setTimeout(() => {
+      checkPayPalLoaded();
+    }, 2000);
+    
+    return () => {
+      document.removeEventListener('paypal-script-loaded', handlePayPalScriptLoaded);
+      clearTimeout(timer);
+    };
+  }, []);
 
   if (!validAmount || isDisabled) {
     return (
@@ -125,7 +159,6 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
                     description: `Money transfer of ${currency} ${formattedAmount}`
                   }
                 ],
-                // Fix 1: Add all required properties for OrderApplicationContext
                 application_context: {
                   brand_name: "Money Transfer Service",
                   locale: "en-US",
@@ -154,18 +187,15 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
                 // Send transaction details to our backend
                 try {
                   const orderId = data.orderID;
-                  // Fix 2: Cast details to our interface type and safely access properties
+                  // Cast details to our interface type and safely access properties
                   const transactionDetails = details as unknown as PayPalTransactionDetails;
                   const transactionId = transactionDetails.purchase_units?.[0]?.payments?.captures?.[0]?.id || '';
-                  
-                  // Fix 3: Define API URL as a constant string
-                  const apiUrl = 'https://wkfzhcszhgewkvwukzes.supabase.co/functions/v1/paypal-payment';
                   
                   const session = await supabase.auth.getSession();
                   const accessToken = session.data.session?.access_token || '';
                   
-                  // Fix 4: Use the string apiUrl in fetch call
-                  const response = await fetch(apiUrl, {
+                  // Use the constant string URL to fix TypeScript error
+                  const response = await fetch(PAYPAL_API_URL, {
                     method: 'POST',
                     headers: {
                       'Content-Type': 'application/json',
@@ -243,19 +273,6 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
             <p className="text-sm text-gray-600">Loading payment options...</p>
           </div>
         )}
-        
-        {/* This is a hidden script event listener to properly set the scriptLoaded state */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.addEventListener('load', function() {
-                if (window.paypal && window.paypal.Buttons) {
-                  document.dispatchEvent(new Event('paypal-script-loaded'));
-                }
-              });
-            `,
-          }}
-        />
       </PayPalScriptProvider>
       
       <div className="mt-2 text-center">
