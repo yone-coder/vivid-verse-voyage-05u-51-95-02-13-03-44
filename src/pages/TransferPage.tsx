@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Drawer } from "@/components/ui/drawer";
@@ -12,7 +12,7 @@ import PayPalButton from '@/components/transfer/PayPalButton';
 import { internationalPaymentMethods, nationalPaymentMethods } from '@/components/transfer/PaymentMethods';
 import { toast } from "@/hooks/use-toast";
 
-// Default PayPal client ID - Using a sandbox client ID that works with PayPal's test environment
+// Default PayPal client ID - Using a sandbox client ID
 const DEFAULT_PAYPAL_CLIENT_ID = 'ASipB9r2XrYB0XD5cfzEItB8jtUq79EcN5uOYATHHJAEbWlQS3odGAH-RJb19wLH1QzHuk9zjUp1wUKc';
 
 const TransferPage: React.FC = () => {
@@ -143,11 +143,6 @@ const TransferPage: React.FC = () => {
               setLoading={setPaypalLoading}
               isProduction={isProduction}
             />
-            {!paypalSuccess && !paypalLoading && (
-              <p className="text-xs text-gray-500 text-center mt-2">
-                Secure payment processing via PayPal {isProduction ? "(Live Mode)" : "(Test Mode)"}
-              </p>
-            )}
           </div>
         )}
         
