@@ -24,12 +24,19 @@ const TransferPage: React.FC = () => {
   const [paypalLoading, setPaypalLoading] = useState(false);
   const [showPayPalConfig, setShowPayPalConfig] = useState(false);
   const [paypalClientId, setPaypalClientId] = useState<string | null>(null);
+  const [isProduction, setIsProduction] = useState(false);
   
   // Check for stored PayPal client ID on component mount
   useEffect(() => {
     const storedClientId = localStorage.getItem('paypal_client_id');
+    const storedEnvironment = localStorage.getItem('paypal_environment');
+    
     if (storedClientId) {
       setPaypalClientId(storedClientId);
+    }
+    
+    if (storedEnvironment) {
+      setIsProduction(storedEnvironment === 'production');
     }
   }, []);
   
@@ -62,7 +69,9 @@ const TransferPage: React.FC = () => {
         if (paypalButton) {
           toast({
             title: "Payment Method",
-            description: "Please use the PayPal button to complete your payment.",
+            description: isProduction 
+              ? "Please use PayPal to complete your LIVE payment."
+              : "Please use PayPal to complete your payment (TEST MODE).",
             variant: "default",
           });
         } else {
@@ -80,8 +89,9 @@ const TransferPage: React.FC = () => {
     }
   };
 
-  const handlePayPalConfigSave = (clientId: string) => {
+  const handlePayPalConfigSave = (clientId: string, production: boolean) => {
     setPaypalClientId(clientId);
+    setIsProduction(production);
     setShowPayPalConfig(false);
     
     // After saving, trigger a PayPal button render attempt
@@ -161,6 +171,26 @@ const TransferPage: React.FC = () => {
       )}
       
       <div className="max-w-md mx-auto p-4">
+        {isProduction && (
+          <div className="bg-green-50 border border-green-200 rounded-md p-3 mb-4">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-green-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-green-800">
+                  Live Production Mode
+                </h3>
+                <p className="text-xs text-green-600 mt-1">
+                  You are in production mode. All transactions will process real money.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+        
         {/* Transfer Type Tabs */}
         <TransferTypeSelector 
           transferType={transferType} 
@@ -197,10 +227,11 @@ const TransferPage: React.FC = () => {
               clientId={paypalClientId || undefined}
               currency={currencyCode}
               setLoading={setPaypalLoading}
+              isProduction={isProduction}
             />
             {!paypalSuccess && (
               <p className="text-xs text-gray-500 text-center mt-2">
-                Secure payment processing via PayPal
+                Secure payment processing via PayPal {isProduction ? "(Live Mode)" : "(Test Mode)"}
               </p>
             )}
           </div>
