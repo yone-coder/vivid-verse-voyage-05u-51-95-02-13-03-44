@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import {
@@ -9,6 +10,7 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer";
 import { PaymentMethod } from './PaymentMethodItem';
+import { Loader2 } from 'lucide-react';
 
 interface TransferConfirmationDrawerProps {
   isOpen: boolean;
@@ -17,6 +19,8 @@ interface TransferConfirmationDrawerProps {
   selectedMethod: PaymentMethod | undefined;
   transferType: 'international' | 'national';
   currencySymbol: string;
+  onContinue: () => void;
+  isLoading?: boolean;
 }
 
 const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
@@ -25,7 +29,9 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
   amount,
   selectedMethod,
   transferType,
-  currencySymbol
+  currencySymbol,
+  onContinue,
+  isLoading = false
 }) => {
   if (!selectedMethod) return null;
 
@@ -124,9 +130,18 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
         </div>
       </div>
       <DrawerFooter>
-        <Button>Continue to Payment</Button>
+        <Button onClick={onContinue} disabled={isLoading}>
+          {isLoading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Processing...
+            </>
+          ) : (
+            'Continue to Payment'
+          )}
+        </Button>
         <DrawerClose asChild>
-          <Button variant="outline">Cancel</Button>
+          <Button variant="outline" disabled={isLoading}>Cancel</Button>
         </DrawerClose>
       </DrawerFooter>
     </DrawerContent>

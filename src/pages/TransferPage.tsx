@@ -14,6 +14,9 @@ import { toast } from "@/hooks/use-toast";
 // Default PayPal client ID - Using a sandbox client ID
 const DEFAULT_PAYPAL_CLIENT_ID = 'ASipB9r2XrYB0XD5cfzEItB8jtUq79EcN5uOYATHHJAEbWlQS3odGAH-RJb19wLH1QzHuk9zjUp1wUKc';
 
+// API URL as a constant
+const PAYMENT_API_URL = 'https://wkfzhcszhgewkvwukzes.supabase.co/functions/v1/paypal-payment';
+
 const TransferPage: React.FC = () => {
   const [transferType, setTransferType] = useState<'international' | 'national'>('international');
   const [selectedMethod, setSelectedMethod] = useState<string | null>('credit-card'); // Default to credit card
@@ -22,6 +25,7 @@ const TransferPage: React.FC = () => {
   const [paypalSuccess, setPaypalSuccess] = useState(false);
   const [paypalLoading, setPaypalLoading] = useState(false);
   const [paypalScriptLoaded, setPaypalScriptLoaded] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   
   // Use default client ID directly
   const [paypalClientId] = useState<string>(DEFAULT_PAYPAL_CLIENT_ID);
@@ -97,6 +101,107 @@ const TransferPage: React.FC = () => {
   
   // Show PayPal button when international and credit card are selected
   const showPaypalButton = transferType === 'international' && selectedMethod === 'credit-card';
+  
+  // Handle the continue button click to create a payment
+  const handleContinuePayment = async () => {
+    // Validate inputs
+    if (!amount || parseFloat(amount) <= 0 || !selectedMethod) {
+      toast({
+        title: "Invalid Input",
+        description: "Please enter a valid amount and select a payment method.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setIsLoading(true);
+    
+    try {
+      console.log(`Creating payment for ${currencySymbol}${amount} using ${selectedMethod}`);
+      
+      // For credit card payments, create PayPal order via our API
+      if (selectedMethod === 'credit-card') {
+        const response = await fetch(PAYMENT_API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            amount,
+            currency: currencyCode,
+            paymentMethod: selectedMethod,
+            createOrder: true
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to create payment');
+        }
+        
+        console.log("Payment created successfully:", data);
+        
+        // If we have an approval URL, redirect to PayPal
+        if (data.approvalUrl) {
+          window.location.href = data.approvalUrl;
+          return;
+        }
+        
+        // Otherwise show success and close drawer
+        toast({
+          title: "Payment Initiated",
+          description: "Your payment has been initiated successfully.",
+          variant: "success",
+        });
+        
+        setIsDrawerOpen(false);
+      } else {
+        // Handle other payment methods
+        const response = await fetch(PAYMENT_API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            amount,
+            currency: currencyCode,
+            paymentMethod: selectedMethod
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to create payment');
+        }
+        
+        console.log("Payment created successfully:", data);
+        
+        toast({
+          title: "Payment Initiated",
+          description: "Your payment has been initiated successfully.",
+          variant: "success",
+        });
+        
+        setIsDrawerOpen(false);
+        
+        // If we have next steps to follow
+        if (data.nextSteps?.redirectUrl) {
+          window.location.href = data.nextSteps.redirectUrl;
+        }
+      }
+    } catch (error) {
+      console.error("Payment error:", error);
+      toast({
+        title: "Payment Failed",
+        description: error instanceof Error ? error.message : "Failed to process payment. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
   
   return (
     <div className="min-h-screen bg-gray-50 pb-16">
@@ -216,6 +321,8 @@ const TransferPage: React.FC = () => {
           selectedMethod={currentPaymentMethods.find(m => m.id === selectedMethod)}
           transferType={transferType}
           currencySymbol={currencySymbol}
+          onContinue={handleContinuePayment}
+          isLoading={isLoading}
         />
       </Drawer>
     </div>
