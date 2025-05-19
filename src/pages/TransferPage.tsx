@@ -12,9 +12,8 @@ import PayPalButton from '@/components/transfer/PayPalButton';
 import { internationalPaymentMethods, nationalPaymentMethods } from '@/components/transfer/PaymentMethods';
 import { toast } from "@/hooks/use-toast";
 
-// You would normally store this in an environment variable
-// Using a sandbox client ID as fallback - in production, use your live client ID
-const PAYPAL_CLIENT_ID = 'sb'; // Replace with your actual PayPal client ID or use environment variable
+// Using a sandbox client ID for development - you should replace this with your actual PayPal client ID in production
+const PAYPAL_CLIENT_ID = 'AZDxjDScFpQtjWTOUtWKbyN_bDt4OgqaF4eYXlewfBP4-8aqX3PiV8e1GWU6liB2CUXlkA59kJXE7M6R'; // PayPal sandbox client ID
 
 const TransferPage: React.FC = () => {
   const [transferType, setTransferType] = useState<'international' | 'national'>('international');
@@ -24,6 +23,7 @@ const TransferPage: React.FC = () => {
   const [paypalSuccess, setPaypalSuccess] = useState(false);
   const [paypalLoading, setPaypalLoading] = useState(false);
   
+  // Handle the continue button click
   const handleContinue = () => {
     if (!selectedMethod || !amount || parseFloat(amount) <= 0) {
       toast({
@@ -34,16 +34,28 @@ const TransferPage: React.FC = () => {
       return;
     }
     
-    // For methods other than credit card (with PayPal integration), open drawer
+    // For methods other than credit card, open drawer for confirmation
     if (!(transferType === 'international' && selectedMethod === 'credit-card')) {
       setIsDrawerOpen(true);
     } else {
-      // When using international credit card, we rely on PayPal button
-      toast({
-        title: "Payment Method",
-        description: "Please use the PayPal button above to complete your payment.",
-        variant: "default",
-      });
+      // When using international credit card with PayPal, focus on the PayPal button
+      const paypalButtonElement = document.querySelector('.paypal-button-container button');
+      if (paypalButtonElement) {
+        // If PayPal button is rendered, we'll scroll to it to make it visible
+        paypalButtonElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        toast({
+          title: "Payment Method",
+          description: "Please use the PayPal button to complete your payment.",
+          variant: "default",
+        });
+      } else {
+        // Fallback if PayPal button isn't rendered yet
+        toast({
+          title: "PayPal Loading",
+          description: "The PayPal payment option is being prepared. Please wait a moment.",
+          variant: "default",
+        });
+      }
     }
   };
 
@@ -51,11 +63,19 @@ const TransferPage: React.FC = () => {
     setPaypalSuccess(true);
     setPaypalLoading(false);
     setIsDrawerOpen(false);
+    
+    // Show success message with transaction details
     toast({
       title: "Payment Successful",
       description: `Your transfer of $${amount} was completed successfully with PayPal. Transaction ID: ${details.id}`,
       variant: "success",
     });
+    
+    // Here you would typically redirect to a success page
+    // window.location.href = '/transfer-success';
+    
+    // For now, we'll just display the success message
+    console.log("Payment completed successfully:", details);
   };
 
   const handlePaypalError = (err: any) => {
@@ -133,6 +153,7 @@ const TransferPage: React.FC = () => {
               onError={handlePaypalError}
               clientId={PAYPAL_CLIENT_ID}
               currency={currencyCode}
+              setLoading={setPaypalLoading}
             />
             {!paypalSuccess && (
               <p className="text-xs text-gray-500 text-center mt-2">

@@ -17,6 +17,7 @@ interface PayPalButtonProps {
   onError?: (err: any) => void;
   clientId?: string;
   currency?: string;
+  setLoading?: (isLoading: boolean) => void;
 }
 
 const PayPalButton: React.FC<PayPalButtonProps> = ({ 
@@ -25,49 +26,58 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
   onSuccess, 
   onError,
   clientId = process.env.REACT_APP_PAYPAL_CLIENT_ID || 'sb', // 'sb' is PayPal's sandbox default
-  currency = 'USD'
+  currency = 'USD',
+  setLoading
 }) => {
   const paypalButtonRef = useRef<HTMLDivElement>(null);
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
   const [isScriptError, setIsScriptError] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [scriptLoadCount, setScriptLoadCount] = useState(0);
   
   // Check for valid amount and client ID
   const validAmount = amount && parseFloat(amount) > 0;
-  const validClientId = clientId && clientId !== 'test';
+  const validClientId = clientId && clientId !== 'test' && clientId !== 'sb';
   
-  useEffect(() => {
-    // Only try to load if we're not disabled, have valid amount, valid client ID, and haven't already loaded or errored
-    if (isDisabled || !validAmount || !validClientId || isScriptLoaded || isScriptError) return;
-
-    setIsLoading(true);
-
-    // Remove any existing PayPal scripts first to avoid conflicts
+  // Function to load PayPal SDK
+  const loadPayPalScript = () => {
+    if (isDisabled || !validAmount || !validClientId || isScriptLoaded || scriptLoadCount > 2) return;
+    
+    if (setLoading) setLoading(true);
+    
+    // Remove any existing PayPal scripts to avoid conflicts
     const existingScripts = document.querySelectorAll('script[src*="paypal.com/sdk/js"]');
     existingScripts.forEach(script => {
       document.body.removeChild(script);
     });
-
+    
     // Clear the global PayPal object if it exists
     if (window.paypal) {
       delete window.paypal;
     }
-
+    
     // Create and add the script with proper parameters
     const script = document.createElement('script');
     script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=${currency}&components=buttons`;
     script.async = true;
+    script.defer = true;
     
     script.onload = () => {
       console.log('PayPal SDK script loaded successfully');
       setIsScriptLoaded(true);
-      setIsLoading(false);
+      if (setLoading) setLoading(false);
+      
+      // Wait a moment for PayPal to initialize fully
+      setTimeout(() => {
+        renderPayPalButton();
+      }, 100);
     };
     
     script.onerror = (error) => {
       console.error('Error loading PayPal SDK script:', error);
       setIsScriptError(true);
-      setIsLoading(false);
+      if (setLoading) setLoading(false);
+      setScriptLoadCount(prev => prev + 1);
+      
       toast({
         title: "PayPal Error",
         description: "Could not load PayPal. Please check your internet connection or try again later.",
@@ -81,31 +91,28 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
     
     document.body.appendChild(script);
     
-    // Clean up function
     return () => {
       if (document.body.contains(script)) {
         document.body.removeChild(script);
       }
     };
-  }, [isDisabled, validAmount, validClientId, clientId, currency, onError, isScriptLoaded, isScriptError]);
+  };
   
-  // Render PayPal button when script is loaded and when amount or currency changes
-  useEffect(() => {
-    if (!isScriptLoaded || isDisabled || !paypalButtonRef.current || !validAmount) return;
+  // Function to render the PayPal button
+  const renderPayPalButton = () => {
+    if (!window.paypal || !window.paypal.Buttons) {
+      console.error('PayPal SDK loaded but Buttons API not available');
+      if (onError) onError('PayPal Buttons API not available');
+      setIsScriptError(true);
+      return;
+    }
+    
+    if (!paypalButtonRef.current || !validAmount || isDisabled) return;
     
     // Clear the container
     paypalButtonRef.current.innerHTML = '';
     
     try {
-      if (!window.paypal || !window.paypal.Buttons) {
-        console.error('PayPal SDK loaded but Buttons API not available');
-        setIsScriptError(true);
-        if (onError) {
-          onError('PayPal Buttons API not available');
-        }
-        return;
-      }
-      
       const button = window.paypal.Buttons({
         style: {
           layout: 'vertical',
@@ -126,17 +133,20 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
           });
         },
         onApprove: (data: any, actions: any) => {
+          if (setLoading) setLoading(true);
           return actions.order.capture().then((details: any) => {
             console.log('Payment completed successfully', details);
             toast({
               title: "Payment Successful",
-              description: `Your payment of ${currency} ${amount} was completed successfully. Transaction ID: ${details.id}`,
+              description: `Your payment of ${currency} ${amount} was completed successfully.`,
               variant: "success",
             });
             
             if (onSuccess) {
               onSuccess(details);
             }
+            
+            if (setLoading) setLoading(false);
           });
         },
         onCancel: () => {
@@ -145,6 +155,7 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
             description: "You cancelled the PayPal payment process.",
             variant: "default",
           });
+          if (setLoading) setLoading(false);
         },
         onError: (err: any) => {
           console.error('PayPal error:', err);
@@ -157,16 +168,14 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
           if (onError) {
             onError(err);
           }
+          
+          if (setLoading) setLoading(false);
         }
       });
       
-      // Check if button can be rendered before attempting to render
-      if (!button.isEligible || button.isEligible()) {
-        button.render(paypalButtonRef.current).catch((renderError: any) => {
-          console.error('Error rendering PayPal button:', renderError);
-          setIsScriptError(true);
-          if (onError) onError(renderError);
-        });
+      // Check if button can be rendered
+      if (button.isEligible && button.isEligible()) {
+        button.render(paypalButtonRef.current);
       } else {
         console.warn('PayPal button is not eligible for this browser or device');
         setIsScriptError(true);
@@ -177,7 +186,29 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
       setIsScriptError(true);
       if (onError) onError(error);
     }
-  }, [isScriptLoaded, amount, currency, isDisabled, validAmount, onSuccess, onError]);
+  };
+  
+  // Load the PayPal SDK when component mounts or amount/currency changes
+  useEffect(() => {
+    loadPayPalScript();
+    
+    // Clean up function
+    return () => {
+      const scripts = document.querySelectorAll('script[src*="paypal.com/sdk/js"]');
+      scripts.forEach(script => {
+        if (document.body.contains(script)) {
+          document.body.removeChild(script);
+        }
+      });
+    };
+  }, [clientId, currency, validAmount, isDisabled]);
+  
+  // Render the PayPal button when script is loaded and when amount changes
+  useEffect(() => {
+    if (isScriptLoaded && !isScriptError && validAmount && !isDisabled) {
+      renderPayPalButton();
+    }
+  }, [isScriptLoaded, amount, isDisabled, validAmount]);
   
   // If the button is disabled or amount is invalid, show our custom button
   if (isDisabled || !validAmount) {
@@ -197,7 +228,7 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
     return (
       <div className="w-full mb-2 text-center p-3 border border-yellow-300 bg-yellow-50 rounded-md">
         <p className="text-sm text-yellow-800">
-          PayPal client ID not configured. Please set up your PayPal credentials.
+          PayPal client ID not configured correctly. Please set up your PayPal credentials.
         </p>
       </div>
     );
@@ -211,7 +242,7 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
         className="w-full bg-[#0070BA] hover:bg-[#005ea6] mb-2 flex items-center justify-center gap-2"
       >
         <CreditCard className="h-4 w-4" />
-        <span>Pay with PayPal</span>
+        <span>Continue with PayPal</span>
       </Button>
     );
   }
@@ -219,7 +250,7 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
   // Return a container for the PayPal button to render in
   return (
     <div className="w-full mb-2">
-      {(isLoading || !isScriptLoaded) && (
+      {(!isScriptLoaded || (setLoading && isScriptLoaded && !window.paypal?.Buttons)) && (
         <div className="flex items-center justify-center p-4 text-gray-500 text-sm">
           <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
