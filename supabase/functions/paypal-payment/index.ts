@@ -22,6 +22,7 @@ interface PaymentRequest {
   amount: string
   currency: string
   paymentMethod: string
+  developmentMode?: boolean
   orderDetails?: {
     recipientName?: string
     recipientPhone?: string

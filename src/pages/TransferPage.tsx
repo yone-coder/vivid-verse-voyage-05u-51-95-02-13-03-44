@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { ArrowRight, CreditCard } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -76,15 +77,17 @@ const TransferPage: React.FC = () => {
         body: JSON.stringify({
           amount,
           currency: currencyCode,
-          paymentMethod: selectedMethod
+          paymentMethod: selectedMethod,
+          developmentMode: true // Explicitly tell the API to use development mode
         })
       });
       
-      const data = await response.json();
-      
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to create payment');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create payment');
       }
+      
+      const data = await response.json();
       
       console.log("Payment created successfully:", data);
       
