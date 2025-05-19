@@ -155,9 +155,10 @@ serve(async (req: Request) => {
       
       // Handle PayPal/Credit Card payment
       if (paymentMethod === 'credit-card' || paymentMethod === 'paypal') {
-        // In development mode, use a direct sandbox URL that would actually work
-        const approvalUrl = `https://www.sandbox.paypal.com/checkoutnow?token=${orderId}`;
-        redirectUrl = approvalUrl;
+        // For development, use a reliable demo PayPal URL
+        // Since sandbox.paypal.com URLs may not work without valid tokens,
+        // this demo URL will simulate the process without requiring real PayPal credentials
+        redirectUrl = "https://www.paypal.com/demo/checkout";
         
         // Add PayPal specific mock data
         mockTransaction = {

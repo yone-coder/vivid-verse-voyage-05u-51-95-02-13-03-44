@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { ArrowRight, CreditCard } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -20,6 +21,7 @@ const TransferPage: React.FC = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [redirectUrl, setRedirectUrl] = useState<string | null>(null);
   
   // Auto-select credit card option when international is chosen
   useEffect(() => {
@@ -28,6 +30,26 @@ const TransferPage: React.FC = () => {
       setSelectedMethod('credit-card');
     }
   }, [transferType]);
+
+  // Effect to handle redirect if URL is available
+  useEffect(() => {
+    if (redirectUrl) {
+      const redirectWindow = window.open(redirectUrl, '_blank');
+      
+      // Check if the popup was blocked
+      if (!redirectWindow || redirectWindow.closed || typeof redirectWindow.closed === 'undefined') {
+        console.error("Popup was blocked by the browser");
+        toast({
+          title: "Popup Blocked",
+          description: "Please allow popups for this site to complete your payment.",
+          variant: "destructive",
+        });
+      }
+      
+      // Reset the redirect URL after attempt
+      setRedirectUrl(null);
+    }
+  }, [redirectUrl]);
 
   // Get the current payment methods based on selected transfer type
   const currentPaymentMethods = transferType === 'international' 
@@ -100,20 +122,17 @@ const TransferPage: React.FC = () => {
       
       // If we have next steps to follow with redirectUrl
       if (data.nextSteps?.redirectUrl) {
-        console.log("Redirecting to:", data.nextSteps.redirectUrl);
+        console.log("Redirect URL received:", data.nextSteps.redirectUrl);
         
-        // For PayPal or credit card payments, redirect to PayPal
+        // For PayPal or credit card payments, set the redirect URL
         if (selectedMethod === 'credit-card' || selectedMethod === 'paypal') {
           toast({
             title: "Redirecting to PayPal",
-            description: "You'll be redirected to complete your payment.",
+            description: "You'll be redirected to complete your payment in a new tab.",
           });
           
-          // Use a small timeout to allow the toast to show before redirecting
-          setTimeout(() => {
-            // Actually redirect to PayPal in a new tab/window
-            window.open(data.nextSteps.redirectUrl, '_blank');
-          }, 1000);
+          // Set the redirect URL to trigger the useEffect
+          setRedirectUrl(data.nextSteps.redirectUrl);
         } else {
           // For other payment methods, use internal redirect
           window.location.href = data.nextSteps.redirectUrl;
