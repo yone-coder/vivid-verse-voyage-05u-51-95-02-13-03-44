@@ -158,12 +158,13 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
                   const transactionDetails = details as unknown as PayPalTransactionDetails;
                   const transactionId = transactionDetails.purchase_units?.[0]?.payments?.captures?.[0]?.id || '';
                   
-                  // Fix 3: Ensure the URL is a string type
-                  const apiUrl: string = 'https://wkfzhcszhgewkvwukzes.supabase.co/functions/v1/paypal-payment';
+                  // Fix 3: Define API URL as a constant string
+                  const apiUrl = 'https://wkfzhcszhgewkvwukzes.supabase.co/functions/v1/paypal-payment';
                   
                   const session = await supabase.auth.getSession();
                   const accessToken = session.data.session?.access_token || '';
                   
+                  // Fix 4: Use the string apiUrl in fetch call
                   const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: {
