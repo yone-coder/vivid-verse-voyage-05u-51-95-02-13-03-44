@@ -53,9 +53,6 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
     components: "buttons",
     "disable-funding": "paylater,venmo,card",
     intent: "capture",
-    // Adding these options to ensure the script loads properly
-    "data-sdk-integration-source": "button-factory",
-    "data-namespace": "paypal",
   };
 
   if (!validAmount || isDisabled) {
@@ -117,9 +114,15 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
                     description: `Money transfer of ${currency} ${formattedAmount}`
                   }
                 ],
+                // Fix 1: Provide all required properties for OrderApplicationContext
                 application_context: {
+                  brand_name: "Money Transfer Service",
+                  locale: "en-US",
+                  landing_page: "BILLING",
                   shipping_preference: "NO_SHIPPING",
-                  user_action: "PAY_NOW"
+                  user_action: "PAY_NOW",
+                  return_url: window.location.href,
+                  cancel_url: window.location.href
                 }
               });
             }}
@@ -133,15 +136,21 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
                 // Send transaction details to our backend
                 try {
                   const orderId = data.orderID;
+                  // Fix 2: Safe access to the captures property with optional chaining and type casting
                   const transactionId = details.purchase_units?.[0]?.payments?.captures?.[0]?.id || '';
                   
-                  const response = await fetch('https://wkfzhcszhgewkvwukzes.supabase.co/functions/v1/paypal-payment', {
+                  // Fix 3: Ensure the URL is a string type
+                  const apiUrl = 'https://wkfzhcszhgewkvwukzes.supabase.co/functions/v1/paypal-payment';
+                  
+                  const accessToken = (await supabase.auth.getSession()).data.session?.access_token || '';
+                  
+                  const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: {
                       'Content-Type': 'application/json',
                       'x-paypal-transaction-id': transactionId,
                       'x-paypal-order-id': orderId,
-                      'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token || ''}`
+                      'Authorization': `Bearer ${accessToken}`
                     },
                     body: JSON.stringify({
                       amount: formattedAmount,
