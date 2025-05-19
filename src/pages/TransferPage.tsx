@@ -23,7 +23,11 @@ const TransferPage: React.FC = () => {
     if (!selectedMethod || !amount || parseFloat(amount) <= 0) {
       return;
     }
-    setIsDrawerOpen(true);
+    
+    // For methods other than credit card (with PayPal integration), open drawer
+    if (!(transferType === 'international' && selectedMethod === 'credit-card')) {
+      setIsDrawerOpen(true);
+    }
   };
 
   const handlePaypalSuccess = (details: any) => {
@@ -32,15 +36,17 @@ const TransferPage: React.FC = () => {
     toast({
       title: "Payment Successful",
       description: `Your payment of $${amount} was completed successfully with PayPal. Transaction ID: ${details.id}`,
+      variant: "success", // Using success variant for a green toast
     });
   };
 
-  const handlePaypalError = () => {
+  const handlePaypalError = (err: any) => {
     toast({
       title: "Payment Failed",
       description: "There was an issue processing your PayPal payment. Please try again.",
       variant: "destructive",
     });
+    console.error("PayPal error:", err);
   };
 
   // Get the current payment methods based on selected transfer type
