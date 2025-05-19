@@ -5,7 +5,8 @@ import {
   Banknote, 
   Send,
   DollarSign,
-  Smartphone
+  Smartphone,
+  Wallet
 } from 'lucide-react';
 import { PaymentMethod } from './PaymentMethodItem';
 
@@ -21,7 +22,7 @@ export const internationalPaymentMethods: PaymentMethod[] = [
   { 
     id: 'paypal', 
     name: 'PayPal', 
-    icon: Send,
+    icon: Wallet,
     description: 'Send using your PayPal balance',
     fee: '2.9% + $0.30' 
   },

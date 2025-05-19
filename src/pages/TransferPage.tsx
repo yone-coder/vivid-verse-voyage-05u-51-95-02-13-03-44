@@ -20,6 +20,7 @@ const TransferPage: React.FC = () => {
   const [amount, setAmount] = useState('');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   
   // Auto-select credit card option when international is chosen
   useEffect(() => {
@@ -46,6 +47,7 @@ const TransferPage: React.FC = () => {
   const handleTransferTypeChange = (value: 'international' | 'national') => {
     setTransferType(value);
     setSelectedMethod(value === 'international' ? 'credit-card' : null); // Auto-select credit card for international
+    setError(null); // Clear any previous errors
   };
   
   // Handle the continue button click to create a payment
@@ -61,6 +63,7 @@ const TransferPage: React.FC = () => {
     }
     
     setIsLoading(true);
+    setError(null);
     
     try {
       console.log(`Creating payment for ${currencySymbol}${amount} using ${selectedMethod}`);
@@ -89,7 +92,6 @@ const TransferPage: React.FC = () => {
       toast({
         title: "Payment Initiated",
         description: "Your payment has been initiated successfully.",
-        variant: "success",
       });
       
       setIsDrawerOpen(false);
@@ -100,9 +102,13 @@ const TransferPage: React.FC = () => {
       }
     } catch (error) {
       console.error("Payment error:", error);
+      const errorMessage = error instanceof Error ? error.message : "Failed to process payment. Please try again.";
+      
+      setError(errorMessage);
+      
       toast({
         title: "Payment Failed",
-        description: error instanceof Error ? error.message : "Failed to process payment. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
@@ -139,6 +145,13 @@ const TransferPage: React.FC = () => {
           </div>
         )}
         
+        {/* Error Message */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 rounded-md p-3 mb-4">
+            <p className="text-sm">{error}</p>
+          </div>
+        )}
+        
         {/* Amount Input */}
         <AmountInput
           amount={amount}
@@ -153,6 +166,7 @@ const TransferPage: React.FC = () => {
           selectedMethod={selectedMethod}
           onMethodChange={(value) => {
             setSelectedMethod(value);
+            setError(null); // Clear errors when method changes
           }}
         />
         

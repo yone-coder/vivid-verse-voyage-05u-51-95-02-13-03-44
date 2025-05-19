@@ -130,6 +130,15 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
             <span>{calculateTotal()}</span>
           </div>
         </div>
+        
+        {selectedMethod && (selectedMethod.id === 'credit-card' || selectedMethod.id === 'paypal') && (
+          <div className="rounded-lg bg-blue-50 p-3 mb-4 text-sm">
+            <p className="text-blue-700">
+              You'll be redirected to PayPal to securely complete this payment.
+              {selectedMethod.id === 'credit-card' && " You can use your credit card without a PayPal account."}
+            </p>
+          </div>
+        )}
       </div>
       <DrawerFooter>
         <Button onClick={onContinue} disabled={isLoading}>
