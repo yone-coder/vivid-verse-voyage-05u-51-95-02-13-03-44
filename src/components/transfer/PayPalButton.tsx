@@ -25,7 +25,7 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
   isDisabled = false, 
   onSuccess, 
   onError,
-  clientId = 'AZDxjDScFpQtjWTOUtWKbyN_bDt4OgqaF4eYXlewfBP4-8aqX3PiV8e1GWU6liB2CUXlkA59kJXE7M6R', // PayPal sandbox client ID
+  clientId: propClientId,
   currency = 'USD',
   setLoading
 }) => {
@@ -33,6 +33,9 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
   const [isScriptError, setIsScriptError] = useState(false);
   const [scriptLoadCount, setScriptLoadCount] = useState(0);
+  
+  // Get client ID from props or localStorage
+  const clientId = propClientId || localStorage.getItem('paypal_client_id') || 'AZDxjDScFpQtjWTOUtWKbyN_bDt4OgqaF4eYXlewfBP4-8aqX3PiV8e1GWU6liB2CUXlkA59kJXE7M6R';
   
   // Check for valid amount and client ID
   const validAmount = amount && parseFloat(amount) > 0;
@@ -88,7 +91,7 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
       
       toast({
         title: "PayPal Error",
-        description: "Could not load PayPal. Please check your internet connection or try again later.",
+        description: "Could not load PayPal. Please check your API key or try again later.",
         variant: "destructive",
       });
       

@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Drawer } from "@/components/ui/drawer";
@@ -9,6 +9,7 @@ import AmountInput from '@/components/transfer/AmountInput';
 import PaymentMethodList from '@/components/transfer/PaymentMethodList';
 import TransferConfirmationDrawer from '@/components/transfer/TransferConfirmationDrawer';
 import PayPalButton from '@/components/transfer/PayPalButton';
+import PayPalConfig from '@/components/transfer/PayPalConfig';
 import { internationalPaymentMethods, nationalPaymentMethods } from '@/components/transfer/PaymentMethods';
 import { toast } from "@/hooks/use-toast";
 import { useLanguage } from '@/context/LanguageContext';
@@ -21,6 +22,16 @@ const TransferPage: React.FC = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [paypalSuccess, setPaypalSuccess] = useState(false);
   const [paypalLoading, setPaypalLoading] = useState(false);
+  const [showPayPalConfig, setShowPayPalConfig] = useState(false);
+  const [paypalClientId, setPaypalClientId] = useState<string | null>(null);
+  
+  // Check for stored PayPal client ID on component mount
+  useEffect(() => {
+    const storedClientId = localStorage.getItem('paypal_client_id');
+    if (storedClientId) {
+      setPaypalClientId(storedClientId);
+    }
+  }, []);
   
   // Handle the continue button click
   const handleContinue = () => {
@@ -33,10 +44,13 @@ const TransferPage: React.FC = () => {
       return;
     }
     
-    // For methods other than credit card, open drawer for confirmation
-    if (!(transferType === 'international' && selectedMethod === 'credit-card')) {
-      setIsDrawerOpen(true);
-    } else {
+    // For credit card payments using PayPal, show config if no client ID is set
+    if (transferType === 'international' && selectedMethod === 'credit-card') {
+      if (!paypalClientId) {
+        setShowPayPalConfig(true);
+        return;
+      }
+      
       // When using international credit card with PayPal, focus on the PayPal button
       const paypalButtonContainer = document.querySelector('.paypal-button-container');
       if (paypalButtonContainer) {
@@ -60,7 +74,20 @@ const TransferPage: React.FC = () => {
           });
         }
       }
+    } else {
+      // For other payment methods, open drawer for confirmation
+      setIsDrawerOpen(true);
     }
+  };
+
+  const handlePayPalConfigSave = (clientId: string) => {
+    setPaypalClientId(clientId);
+    setShowPayPalConfig(false);
+    
+    // After saving, trigger a PayPal button render attempt
+    setTimeout(() => {
+      handleContinue();
+    }, 500);
   };
 
   const handlePaypalSuccess = (details: any) => {
@@ -121,6 +148,18 @@ const TransferPage: React.FC = () => {
       {/* Header */}
       <TransferHeader />
       
+      {/* PayPal Config Modal */}
+      {showPayPalConfig && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+          <div className="w-full max-w-md">
+            <PayPalConfig 
+              onSave={handlePayPalConfigSave}
+              onCancel={() => setShowPayPalConfig(false)}
+            />
+          </div>
+        </div>
+      )}
+      
       <div className="max-w-md mx-auto p-4">
         {/* Transfer Type Tabs */}
         <TransferTypeSelector 
@@ -155,7 +194,7 @@ const TransferPage: React.FC = () => {
               isDisabled={!amount || parseFloat(amount) <= 0 || paypalSuccess || paypalLoading}
               onSuccess={handlePaypalSuccess}
               onError={handlePaypalError}
-              clientId="AZDxjDScFpQtjWTOUtWKbyN_bDt4OgqaF4eYXlewfBP4-8aqX3PiV8e1GWU6liB2CUXlkA59kJXE7M6R"
+              clientId={paypalClientId || undefined}
               currency={currencyCode}
               setLoading={setPaypalLoading}
             />
