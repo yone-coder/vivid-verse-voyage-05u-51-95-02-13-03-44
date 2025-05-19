@@ -33,6 +33,13 @@ interface PayPalTransactionDetails {
   }>;
 }
 
+// Add PayPal to the Window interface
+declare global {
+  interface Window {
+    paypal?: any;
+  }
+}
+
 // Default sandbox client ID in case one isn't provided
 const DEFAULT_CLIENT_ID = 'ASipB9r2XrYB0XD5cfzEItB8jtUq79EcN5uOYATHHJAEbWlQS3odGAH-RJb19wLH1QzHuk9zjUp1wUKc';
 
@@ -167,13 +174,6 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
                   user_action: "PAY_NOW",
                   return_url: window.location.href,
                   cancel_url: window.location.href,
-                  payment_method: {
-                    payee_preferred: "IMMEDIATE_PAYMENT_REQUIRED"
-                  },
-                  stored_payment_source: {
-                    payment_initiator: "CUSTOMER",
-                    payment_type: "ONEOFF"
-                  }
                 }
               });
             }}
@@ -195,7 +195,7 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
                   const accessToken = session.data.session?.access_token || '';
                   
                   // Use the constant string URL to fix TypeScript error
-                  const response = await fetch(PAYPAL_API_URL, {
+                  const response = await fetch(PAYPAL_API_URL as string, {
                     method: 'POST',
                     headers: {
                       'Content-Type': 'application/json',
