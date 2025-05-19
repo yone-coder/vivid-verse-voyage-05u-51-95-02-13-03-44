@@ -1,7 +1,5 @@
 
 import React, { useEffect, useRef, useState } from 'react';
-import { CreditCard } from 'lucide-react';
-import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -40,13 +38,11 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
   const [isScriptError, setIsScriptError] = useState(false);
   const [scriptLoadCount, setScriptLoadCount] = useState(0);
   
-  // Get client ID from props, localStorage, or use default
-  const storedClientId = localStorage.getItem('paypal_client_id');
-  const clientId = propClientId || storedClientId || DEFAULT_CLIENT_ID;
+  // Always use the provided client ID or default - don't try to get from localStorage
+  const clientId = propClientId || DEFAULT_CLIENT_ID;
   
-  // Get environment setting from localStorage (default to sandbox if not set)
-  const storedEnvironment = localStorage.getItem('paypal_environment') || 'sandbox';
-  const environment = isProduction || storedEnvironment === 'production' ? 'production' : 'sandbox';
+  // Environment based on props
+  const environment = isProduction ? 'production' : 'sandbox';
   
   // Check for valid amount
   const validAmount = amount && parseFloat(amount) > 0;
@@ -71,7 +67,7 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
     // Create and add the script with proper parameters
     const script = document.createElement('script');
     // Include 'buttons,hosted-fields' components to ensure we have all necessary components
-    script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=${currency}&components=buttons,hosted-fields&intent=capture`;
+    script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=${currency}&components=buttons&intent=capture`;
     script.async = true;
     script.defer = true;
     
@@ -102,9 +98,7 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
       
       toast({
         title: "PayPal Error",
-        description: environment === 'production' 
-          ? "Could not load PayPal. Please check your Live API key or try again later."
-          : "Could not load PayPal. Please check your Sandbox API key or try again later.",
+        description: "Could not load PayPal. Please try again later.",
         variant: "destructive",
       });
       
@@ -146,7 +140,7 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
         },
         createOrder: (_data: any, actions: any) => {
           console.log(`Creating PayPal order with amount: ${amount} in ${environment} mode`);
-          // Create the actual order with real amount
+          // Create the order with real amount
           return actions.order.create({
             intent: 'CAPTURE',
             purchase_units: [{
@@ -269,7 +263,7 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
         }
       });
     };
-  }, [clientId, currency, validAmount, isDisabled, environment]);
+  }, [clientId, currency, validAmount, isDisabled]);
   
   // Render the PayPal button when script is loaded and when amount changes
   useEffect(() => {
@@ -281,7 +275,7 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
   // Return a container for the PayPal button to render in
   return (
     <div className="w-full mb-2">
-      {(!isScriptLoaded || (setLoading && isScriptLoaded && !window.paypal?.Buttons)) && (
+      {(!isScriptLoaded || isScriptError) && (
         <div className="flex items-center justify-center p-4 text-gray-500 text-sm">
           <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
