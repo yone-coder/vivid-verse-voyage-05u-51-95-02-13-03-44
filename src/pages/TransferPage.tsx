@@ -12,6 +12,10 @@ import PayPalButton from '@/components/transfer/PayPalButton';
 import { internationalPaymentMethods, nationalPaymentMethods } from '@/components/transfer/PaymentMethods';
 import { toast } from "@/hooks/use-toast";
 
+// You would normally store this in an environment variable
+// Using a sandbox client ID as fallback - in production, use your live client ID
+const PAYPAL_CLIENT_ID = 'sb'; // Replace with your actual PayPal client ID or use environment variable
+
 const TransferPage: React.FC = () => {
   const [transferType, setTransferType] = useState<'international' | 'national'>('international');
   const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
@@ -49,7 +53,7 @@ const TransferPage: React.FC = () => {
     setIsDrawerOpen(false);
     toast({
       title: "Payment Successful",
-      description: `Your payment of $${amount} was completed successfully with PayPal. Transaction ID: ${details.id}`,
+      description: `Your transfer of $${amount} was completed successfully with PayPal. Transaction ID: ${details.id}`,
       variant: "success",
     });
   };
@@ -69,11 +73,13 @@ const TransferPage: React.FC = () => {
     ? internationalPaymentMethods 
     : nationalPaymentMethods;
   
-  // Currency symbol based on transfer type - Fix for HTG display
+  // Currency symbol based on transfer type
   const currencySymbol = transferType === 'international' ? '$' : 'HTG ';
   
   // Currency name for display
   const currencyName = transferType === 'international' ? 'USD' : 'Haitian Gourdes';
+  // Currency code for PayPal
+  const currencyCode = transferType === 'international' ? 'USD' : 'HTG';
 
   // Reset selected method when changing transfer type
   const handleTransferTypeChange = (value: 'international' | 'national') => {
@@ -125,10 +131,14 @@ const TransferPage: React.FC = () => {
               isDisabled={!amount || parseFloat(amount) <= 0 || paypalSuccess || paypalLoading}
               onSuccess={handlePaypalSuccess}
               onError={handlePaypalError}
+              clientId={PAYPAL_CLIENT_ID}
+              currency={currencyCode}
             />
-            <p className="text-xs text-gray-500 text-center">
-              {paypalSuccess ? "Payment complete! ✓" : "- or -"}
-            </p>
+            {!paypalSuccess && (
+              <p className="text-xs text-gray-500 text-center mt-2">
+                Secure payment processing via PayPal
+              </p>
+            )}
           </div>
         )}
         
