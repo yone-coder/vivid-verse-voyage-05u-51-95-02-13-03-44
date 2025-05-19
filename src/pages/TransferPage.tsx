@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { ArrowRight, CreditCard } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -98,7 +97,34 @@ const TransferPage: React.FC = () => {
       
       // If we have next steps to follow
       if (data.nextSteps?.redirectUrl) {
-        window.location.href = data.nextSteps.redirectUrl;
+        // For demo purposes, we'll simulate a successful payment
+        // In a real app, we would redirect to data.nextSteps.redirectUrl
+        
+        if (data.nextSteps.redirectUrl.includes('paypal.com')) {
+          toast({
+            title: "Demo Mode",
+            description: "In a real app, you would be redirected to PayPal now. Payment simulated as successful.",
+          });
+          
+          // Simulate successful payment after a delay
+          setTimeout(() => {
+            toast({
+              title: "Payment Successful",
+              description: "Your transfer has been completed successfully.",
+              variant: "success",
+            });
+          }, 1500);
+        } else {
+          // For other payment methods, we'd redirect to our own confirmation page
+          // window.location.href = data.nextSteps.redirectUrl;
+          
+          // For demo, just show toast
+          toast({
+            title: "Payment Processing",
+            description: "Your payment is being processed. You'll receive confirmation shortly.",
+            variant: "success",
+          });
+        }
       }
     } catch (error) {
       console.error("Payment error:", error);
