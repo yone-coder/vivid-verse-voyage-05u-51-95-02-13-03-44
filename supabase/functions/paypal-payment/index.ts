@@ -27,6 +27,7 @@ interface PaymentRequest {
     recipientPhone?: string
     transferPurpose?: string
   }
+  createOrder?: boolean
 }
 
 serve(async (req: Request) => {
@@ -49,7 +50,7 @@ serve(async (req: Request) => {
     }
 
     // Get the request data
-    const { amount, currency, paymentMethod, orderDetails }: PaymentRequest = await req.json()
+    const { amount, currency, paymentMethod, orderDetails, createOrder }: PaymentRequest = await req.json()
 
     // Validate the input
     if (!amount || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
@@ -129,6 +130,99 @@ serve(async (req: Request) => {
           success: true, 
           message: "Payment verified and saved",
           transaction: transactionData
+        }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      )
+    } 
+    
+    // Create PayPal order if requested (for credit card payments)
+    if (createOrder === true && paymentMethod === "credit-card") {
+      // Get authentication token from PayPal
+      const auth = Buffer.from(`${clientId}:${clientSecret}`).toString("base64")
+      const tokenResponse = await fetch("https://api-m.paypal.com/v1/oauth2/token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Authorization": `Basic ${auth}`
+        },
+        body: "grant_type=client_credentials"
+      })
+
+      const tokenData = await tokenResponse.json()
+      
+      if (!tokenResponse.ok) {
+        console.error("Error getting PayPal access token:", tokenData)
+        throw new Error("Failed to authenticate with PayPal")
+      }
+
+      // Create a PayPal order
+      const orderResponse = await fetch("https://api-m.paypal.com/v2/checkout/orders", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${tokenData.access_token}`
+        },
+        body: JSON.stringify({
+          intent: "CAPTURE",
+          purchase_units: [
+            {
+              amount: {
+                currency_code: currency,
+                value: amount
+              },
+              description: "Money Transfer Service"
+            }
+          ],
+          application_context: {
+            return_url: `${req.headers.get("origin")}/transfer/success`,
+            cancel_url: `${req.headers.get("origin")}/transfer`,
+            user_action: "PAY_NOW",
+            shipping_preference: "NO_SHIPPING"
+          }
+        })
+      })
+
+      const orderData = await orderResponse.json()
+      
+      if (!orderResponse.ok) {
+        console.error("Error creating PayPal order:", orderData)
+        throw new Error("Failed to create PayPal order")
+      }
+
+      // Save initial pending transaction
+      const { data: transactionData, error: transactionError } = await supabase
+        .from("transactions")
+        .insert({
+          amount: parseFloat(amount),
+          currency,
+          status: "pending",
+          order_id: orderData.id,
+          payment_provider: "paypal",
+          payment_token: null,
+          user_id: req.headers.get("authorization") ? req.headers.get("authorization")!.split(" ")[1] : null
+        })
+        .select()
+        .single()
+      
+      if (transactionError) {
+        console.error("Error creating transaction:", transactionError)
+        // Continue despite error to allow payment flow
+      }
+
+      // Find the approval URL to redirect the user to PayPal
+      const approvalLink = orderData.links.find((link: any) => link.rel === "approve")
+      
+      if (!approvalLink) {
+        throw new Error("PayPal approval URL not found")
+      }
+
+      return new Response(
+        JSON.stringify({
+          success: true,
+          message: "PayPal order created",
+          orderId: orderData.id,
+          approvalUrl: approvalLink.href,
+          transaction: transactionData || null
         }),
         { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       )
