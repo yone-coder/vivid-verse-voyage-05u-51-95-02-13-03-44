@@ -11,11 +11,10 @@ import TransferConfirmationDrawer from '@/components/transfer/TransferConfirmati
 import PayPalButton from '@/components/transfer/PayPalButton';
 import { internationalPaymentMethods, nationalPaymentMethods } from '@/components/transfer/PaymentMethods';
 import { toast } from "@/hooks/use-toast";
-
-// Using a sandbox client ID for development - you should replace this with your actual PayPal client ID in production
-const PAYPAL_CLIENT_ID = 'AZDxjDScFpQtjWTOUtWKbyN_bDt4OgqaF4eYXlewfBP4-8aqX3PiV8e1GWU6liB2CUXlkA59kJXE7M6R'; // PayPal sandbox client ID
+import { useLanguage } from '@/context/LanguageContext';
 
 const TransferPage: React.FC = () => {
+  const { t } = useLanguage();
   const [transferType, setTransferType] = useState<'international' | 'national'>('international');
   const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
   const [amount, setAmount] = useState('');
@@ -39,22 +38,27 @@ const TransferPage: React.FC = () => {
       setIsDrawerOpen(true);
     } else {
       // When using international credit card with PayPal, focus on the PayPal button
-      const paypalButtonElement = document.querySelector('.paypal-button-container button');
-      if (paypalButtonElement) {
-        // If PayPal button is rendered, we'll scroll to it to make it visible
-        paypalButtonElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        toast({
-          title: "Payment Method",
-          description: "Please use the PayPal button to complete your payment.",
-          variant: "default",
-        });
-      } else {
-        // Fallback if PayPal button isn't rendered yet
-        toast({
-          title: "PayPal Loading",
-          description: "The PayPal payment option is being prepared. Please wait a moment.",
-          variant: "default",
-        });
+      const paypalButtonContainer = document.querySelector('.paypal-button-container');
+      if (paypalButtonContainer) {
+        // If PayPal container is rendered, scroll to it
+        paypalButtonContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        // Check if the PayPal button is actually rendered inside
+        const paypalButton = paypalButtonContainer.querySelector('iframe');
+        if (paypalButton) {
+          toast({
+            title: "Payment Method",
+            description: "Please use the PayPal button to complete your payment.",
+            variant: "default",
+          });
+        } else {
+          // Fallback if PayPal button isn't rendered yet
+          toast({
+            title: "PayPal Loading",
+            description: "The PayPal payment option is being prepared. Please wait a moment.",
+            variant: "default",
+          });
+        }
       }
     }
   };
@@ -151,7 +155,7 @@ const TransferPage: React.FC = () => {
               isDisabled={!amount || parseFloat(amount) <= 0 || paypalSuccess || paypalLoading}
               onSuccess={handlePaypalSuccess}
               onError={handlePaypalError}
-              clientId={PAYPAL_CLIENT_ID}
+              clientId="AZDxjDScFpQtjWTOUtWKbyN_bDt4OgqaF4eYXlewfBP4-8aqX3PiV8e1GWU6liB2CUXlkA59kJXE7M6R"
               currency={currencyCode}
               setLoading={setPaypalLoading}
             />
