@@ -25,14 +25,35 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
   const paypalButtonRef = useRef<HTMLDivElement>(null);
   const scriptLoaded = useRef<boolean>(false);
   const scriptLoading = useRef<boolean>(false);
+  const scriptRef = useRef<HTMLScriptElement | null>(null);
+
+  // Cleanup function to remove any existing PayPal scripts
+  const cleanupPayPalScript = () => {
+    if (scriptRef.current && document.body.contains(scriptRef.current)) {
+      document.body.removeChild(scriptRef.current);
+      scriptRef.current = null;
+    }
+    // Clean up any rendered buttons
+    if (paypalButtonRef.current) {
+      paypalButtonRef.current.innerHTML = '';
+    }
+    scriptLoaded.current = false;
+    scriptLoading.current = false;
+  };
 
   useEffect(() => {
     // Function to load the PayPal SDK script
     const loadPayPalScript = () => {
       if (scriptLoaded.current || scriptLoading.current) return;
       
+      // Clean up any existing script first
+      cleanupPayPalScript();
+      
       scriptLoading.current = true;
       const script = document.createElement('script');
+      scriptRef.current = script;
+      
+      // Make sure to include all required components and parameters
       script.src = 'https://www.paypal.com/sdk/js?client-id=test&currency=USD&components=buttons';
       script.async = true;
       
@@ -40,11 +61,13 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
         scriptLoaded.current = true;
         scriptLoading.current = false;
         console.log("PayPal SDK loaded successfully");
-        if (window.paypal && paypalButtonRef.current) {
-          setTimeout(() => {
+        
+        // Give a little delay to ensure the SDK is fully initialized
+        setTimeout(() => {
+          if (window.paypal && paypalButtonRef.current) {
             renderPayPalButton();
-          }, 100); // Small delay to ensure SDK is initialized
-        }
+          }
+        }, 500);
       };
       
       script.onerror = () => {
@@ -56,20 +79,14 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
       };
       
       document.body.appendChild(script);
-      
-      // Clean up
-      return () => {
-        if (document.body.contains(script)) {
-          document.body.removeChild(script);
-        }
-        // Clean up any rendered buttons
-        if (paypalButtonRef.current) {
-          paypalButtonRef.current.innerHTML = '';
-        }
-      };
     };
 
     loadPayPalScript();
+    
+    // Clean up on component unmount
+    return () => {
+      cleanupPayPalScript();
+    };
   }, []);
   
   useEffect(() => {
@@ -85,7 +102,10 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
       return;
     }
     
-    // Ensure the PayPal.Buttons constructor is available
+    // Clear the container first
+    paypalButtonRef.current.innerHTML = '';
+    
+    // Check if Buttons is properly loaded and available
     if (!window.paypal.Buttons) {
       console.error("PayPal Buttons constructor is not available");
       if (onError) {
@@ -95,11 +115,13 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
     }
 
     try {
-      // Clear the container first
-      paypalButtonRef.current.innerHTML = '';
-      
       const button = window.paypal.Buttons({
-        fundingSource: window.paypal.FUNDING.PAYPAL,
+        style: {
+          layout: 'vertical',
+          color: 'blue',
+          shape: 'rect',
+          label: 'paypal'
+        },
         createOrder: (_data: any, actions: any) => {
           return actions.order.create({
             purchase_units: [{
@@ -126,9 +148,22 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
         }
       });
       
-      button.render(paypalButtonRef.current);
+      if (button.render) {
+        button.render(paypalButtonRef.current)
+          .catch((renderError: any) => {
+            console.error("Error rendering PayPal button:", renderError);
+            if (onError) {
+              onError(renderError);
+            }
+          });
+      } else {
+        console.error("PayPal button render method not available");
+        if (onError) {
+          onError("PayPal button render method not available");
+        }
+      }
     } catch (error) {
-      console.error("Error rendering PayPal button:", error);
+      console.error("Error creating PayPal button:", error);
       if (onError) {
         onError(error);
       }
