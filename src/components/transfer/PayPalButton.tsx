@@ -22,6 +22,9 @@ interface PayPalButtonProps {
   isProduction?: boolean;
 }
 
+// Default sandbox client ID in case one isn't provided
+const DEFAULT_CLIENT_ID = 'ASipB9r2XrYB0XD5cfzEItB8jtUq79EcN5uOYATHHJAEbWlQS3odGAH-RJb19wLH1QzHuk9zjUp1wUKc';
+
 const PayPalButton: React.FC<PayPalButtonProps> = ({ 
   amount, 
   isDisabled = false, 
@@ -37,21 +40,20 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
   const [isScriptError, setIsScriptError] = useState(false);
   const [scriptLoadCount, setScriptLoadCount] = useState(0);
   
-  // Get client ID from props or localStorage
+  // Get client ID from props, localStorage, or use default
   const storedClientId = localStorage.getItem('paypal_client_id');
-  const clientId = propClientId || storedClientId || '';
+  const clientId = propClientId || storedClientId || DEFAULT_CLIENT_ID;
   
   // Get environment setting from localStorage (default to sandbox if not set)
   const storedEnvironment = localStorage.getItem('paypal_environment') || 'sandbox';
   const environment = isProduction || storedEnvironment === 'production' ? 'production' : 'sandbox';
   
-  // Check for valid amount and client ID
+  // Check for valid amount
   const validAmount = amount && parseFloat(amount) > 0;
-  const validClientId = !!clientId && clientId.length > 10;
   
   // Function to load PayPal SDK
   const loadPayPalScript = () => {
-    if (isDisabled || !validAmount || isScriptLoaded || scriptLoadCount > 2 || !validClientId) return;
+    if (isDisabled || !validAmount || isScriptLoaded || scriptLoadCount > 2) return;
     
     if (setLoading) setLoading(true);
     
@@ -275,58 +277,6 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
       renderPayPalButton();
     }
   }, [isScriptLoaded, amount, isDisabled, validAmount]);
-  
-  // Show a message when client ID is missing
-  if (!validClientId) {
-    return (
-      <div className="w-full mb-2">
-        <Button
-          onClick={() => {
-            toast({
-              title: "PayPal Configuration Required",
-              description: "Please configure your PayPal API keys before making a payment.",
-              variant: "default",
-            });
-          }}
-          className="w-full bg-[#0070BA] hover:bg-[#005ea6] mb-2 flex items-center justify-center gap-2"
-        >
-          <CreditCard className="h-4 w-4" />
-          <span>Configure PayPal</span>
-        </Button>
-      </div>
-    );
-  }
-  
-  // If the button is disabled or amount is invalid, show our custom button
-  if (isDisabled || !validAmount) {
-    return (
-      <Button
-        disabled={true}
-        className="w-full bg-[#0070BA] hover:bg-[#005ea6] mb-2 flex items-center justify-center gap-2"
-      >
-        <CreditCard className="h-4 w-4" />
-        <span>Pay with PayPal</span>
-      </Button>
-    );
-  }
-  
-  // If there was an error loading the script, show a fallback button that opens PayPal in a new window
-  if (isScriptError) {
-    return (
-      <Button
-        onClick={() => {
-          const paypalCheckoutUrl = environment === 'production'
-            ? `https://www.paypal.com/checkoutnow?token=EC-DEMO`
-            : `https://www.sandbox.paypal.com/checkoutnow?token=EC-DEMO`;
-          window.open(paypalCheckoutUrl, '_blank', 'noopener,noreferrer');
-        }}
-        className="w-full bg-[#0070BA] hover:bg-[#005ea6] mb-2 flex items-center justify-center gap-2"
-      >
-        <CreditCard className="h-4 w-4" />
-        <span>Continue with PayPal</span>
-      </Button>
-    );
-  }
   
   // Return a container for the PayPal button to render in
   return (

@@ -9,11 +9,13 @@ import AmountInput from '@/components/transfer/AmountInput';
 import PaymentMethodList from '@/components/transfer/PaymentMethodList';
 import TransferConfirmationDrawer from '@/components/transfer/TransferConfirmationDrawer';
 import PayPalButton from '@/components/transfer/PayPalButton';
-import PayPalConfig from '@/components/transfer/PayPalConfig';
 import { internationalPaymentMethods, nationalPaymentMethods } from '@/components/transfer/PaymentMethods';
 import { toast } from "@/hooks/use-toast";
 import { useLanguage } from '@/context/LanguageContext';
 import { supabase } from "@/integrations/supabase/client";
+
+// Default PayPal client ID - Using a sandbox client ID that works with PayPal's test environment
+const DEFAULT_PAYPAL_CLIENT_ID = 'ASipB9r2XrYB0XD5cfzEItB8jtUq79EcN5uOYATHHJAEbWlQS3odGAH-RJb19wLH1QzHuk9zjUp1wUKc';
 
 const TransferPage: React.FC = () => {
   const { t } = useLanguage();
@@ -23,10 +25,11 @@ const TransferPage: React.FC = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [paypalSuccess, setPaypalSuccess] = useState(false);
   const [paypalLoading, setPaypalLoading] = useState(false);
-  const [showPayPalConfig, setShowPayPalConfig] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  
+  // Modified to use default client ID if not available in localStorage
   const [paypalClientId, setPaypalClientId] = useState<string | null>(null);
   const [isProduction, setIsProduction] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
   
   // Check for stored PayPal client ID on component mount
   useEffect(() => {
@@ -35,10 +38,17 @@ const TransferPage: React.FC = () => {
     
     if (storedClientId) {
       setPaypalClientId(storedClientId);
+    } else {
+      // Set default client ID if none exists
+      setPaypalClientId(DEFAULT_PAYPAL_CLIENT_ID);
+      localStorage.setItem('paypal_client_id', DEFAULT_PAYPAL_CLIENT_ID);
     }
     
     if (storedEnvironment) {
       setIsProduction(storedEnvironment === 'production');
+    } else {
+      // Default to sandbox environment
+      localStorage.setItem('paypal_environment', 'sandbox');
     }
   }, []);
   
@@ -55,13 +65,6 @@ const TransferPage: React.FC = () => {
     
     // For credit card payments using PayPal
     if (transferType === 'international' && selectedMethod === 'credit-card') {
-      // Show config if no client ID is set
-      if (!paypalClientId) {
-        setShowPayPalConfig(true);
-        return;
-      }
-      
-      // If we have a client ID, create a PayPal order and redirect to PayPal
       try {
         setIsProcessing(true);
         
@@ -108,17 +111,6 @@ const TransferPage: React.FC = () => {
     }
   };
 
-  const handlePayPalConfigSave = (clientId: string, production: boolean) => {
-    setPaypalClientId(clientId);
-    setIsProduction(production);
-    setShowPayPalConfig(false);
-    
-    // After saving, trigger a PayPal button render attempt
-    setTimeout(() => {
-      handleContinue();
-    }, 500);
-  };
-
   const handlePaypalSuccess = (details: any) => {
     setPaypalSuccess(true);
     setPaypalLoading(false);
@@ -131,10 +123,6 @@ const TransferPage: React.FC = () => {
       variant: "success",
     });
     
-    // Here you would typically redirect to a success page
-    // window.location.href = '/transfer-success';
-    
-    // For now, we'll just display the success message
     console.log("Payment completed successfully:", details);
   };
 
@@ -176,18 +164,6 @@ const TransferPage: React.FC = () => {
     <div className="min-h-screen bg-gray-50 pb-16">
       {/* Header */}
       <TransferHeader />
-      
-      {/* PayPal Config Modal */}
-      {showPayPalConfig && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
-          <div className="w-full max-w-md">
-            <PayPalConfig 
-              onSave={handlePayPalConfigSave}
-              onCancel={() => setShowPayPalConfig(false)}
-            />
-          </div>
-        </div>
-      )}
       
       <div className="max-w-md mx-auto p-4">
         {isProduction && (
@@ -243,7 +219,7 @@ const TransferPage: React.FC = () => {
               isDisabled={!amount || parseFloat(amount) <= 0 || paypalSuccess || paypalLoading}
               onSuccess={handlePaypalSuccess}
               onError={handlePaypalError}
-              clientId={paypalClientId || undefined}
+              clientId={paypalClientId || DEFAULT_PAYPAL_CLIENT_ID}
               currency={currencyCode}
               setLoading={setPaypalLoading}
               isProduction={isProduction}
