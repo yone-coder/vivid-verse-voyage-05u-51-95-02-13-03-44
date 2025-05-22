@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { CreditCard } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 declare global {
   interface Window {
@@ -18,6 +19,7 @@ interface PayPalButtonProps {
   clientId?: string;
   currency?: string;
   setLoading?: (isLoading: boolean) => void;
+  isProduction?: boolean;
 }
 
 const PayPalButton: React.FC<PayPalButtonProps> = ({ 
@@ -25,21 +27,31 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
   isDisabled = false, 
   onSuccess, 
   onError,
-  clientId = 'AZDxjDScFpQtjWTOUtWKbyN_bDt4OgqaF4eYXlewfBP4-8aqX3PiV8e1GWU6liB2CUXlkA59kJXE7M6R', // PayPal sandbox client ID
+  clientId: propClientId,
   currency = 'USD',
-  setLoading
+  setLoading,
+  isProduction = false
 }) => {
   const paypalButtonRef = useRef<HTMLDivElement>(null);
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
   const [isScriptError, setIsScriptError] = useState(false);
   const [scriptLoadCount, setScriptLoadCount] = useState(0);
   
+  // Get client ID from props or localStorage
+  const storedClientId = localStorage.getItem('paypal_client_id');
+  const clientId = propClientId || storedClientId || '';
+  
+  // Get environment setting from localStorage (default to sandbox if not set)
+  const storedEnvironment = localStorage.getItem('paypal_environment') || 'sandbox';
+  const environment = isProduction || storedEnvironment === 'production' ? 'production' : 'sandbox';
+  
   // Check for valid amount and client ID
   const validAmount = amount && parseFloat(amount) > 0;
+  const validClientId = !!clientId && clientId.length > 10;
   
   // Function to load PayPal SDK
   const loadPayPalScript = () => {
-    if (isDisabled || !validAmount || isScriptLoaded || scriptLoadCount > 2) return;
+    if (isDisabled || !validAmount || isScriptLoaded || scriptLoadCount > 2 || !validClientId) return;
     
     if (setLoading) setLoading(true);
     
@@ -62,7 +74,7 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
     script.defer = true;
     
     script.onload = () => {
-      console.log('PayPal SDK script loaded successfully');
+      console.log(`PayPal SDK script loaded successfully in ${environment} mode`);
       setIsScriptLoaded(true);
       if (setLoading) setLoading(false);
       
@@ -88,7 +100,9 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
       
       toast({
         title: "PayPal Error",
-        description: "Could not load PayPal. Please check your internet connection or try again later.",
+        description: environment === 'production' 
+          ? "Could not load PayPal. Please check your Live API key or try again later."
+          : "Could not load PayPal. Please check your Sandbox API key or try again later.",
         variant: "destructive",
       });
       
@@ -129,7 +143,7 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
           label: 'pay'
         },
         createOrder: (_data: any, actions: any) => {
-          console.log('Creating PayPal order with amount:', amount);
+          console.log(`Creating PayPal order with amount: ${amount} in ${environment} mode`);
           // Create the actual order with real amount
           return actions.order.create({
             intent: 'CAPTURE',
@@ -146,11 +160,37 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
             }
           });
         },
-        onApprove: (data: any, actions: any) => {
+        onApprove: async (data: any, actions: any) => {
           console.log('Payment approved:', data);
           if (setLoading) setLoading(true);
-          return actions.order.capture().then((details: any) => {
+          
+          try {
+            // Capture the funds from the transaction
+            const details = await actions.order.capture();
             console.log('Payment completed successfully', details);
+            
+            // Send transaction details to our backend
+            const response = await fetch('https://wkfzhcszhgewkvwukzes.supabase.co/functions/v1/paypal-payment', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'x-paypal-transaction-id': details.purchase_units[0].payments.captures[0].id,
+                'x-paypal-order-id': data.orderID,
+                'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token || ''}`
+              },
+              body: JSON.stringify({
+                amount: amount,
+                currency: currency,
+                paymentMethod: 'paypal'
+              })
+            });
+            
+            if (!response.ok) {
+              throw new Error('Failed to verify payment with server');
+            }
+            
+            const serverResponse = await response.json();
+            
             toast({
               title: "Payment Successful",
               description: `Your payment of ${currency} ${amount} was completed successfully.`,
@@ -158,11 +198,20 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
             });
             
             if (onSuccess) {
-              onSuccess(details);
+              onSuccess({...details, serverData: serverResponse});
             }
+          } catch (error) {
+            console.error('Error finalizing payment:', error);
+            if (onError) onError(error);
             
+            toast({
+              title: "Payment Verification Failed",
+              description: "There was an issue verifying your payment with our server.",
+              variant: "destructive",
+            });
+          } finally {
             if (setLoading) setLoading(false);
-          });
+          }
         },
         onCancel: (data: any) => {
           console.log('Payment cancelled:', data);
@@ -218,7 +267,7 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
         }
       });
     };
-  }, [clientId, currency, validAmount, isDisabled]);
+  }, [clientId, currency, validAmount, isDisabled, environment]);
   
   // Render the PayPal button when script is loaded and when amount changes
   useEffect(() => {
@@ -226,6 +275,27 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
       renderPayPalButton();
     }
   }, [isScriptLoaded, amount, isDisabled, validAmount]);
+  
+  // Show a message when client ID is missing
+  if (!validClientId) {
+    return (
+      <div className="w-full mb-2">
+        <Button
+          onClick={() => {
+            toast({
+              title: "PayPal Configuration Required",
+              description: "Please configure your PayPal API keys before making a payment.",
+              variant: "default",
+            });
+          }}
+          className="w-full bg-[#0070BA] hover:bg-[#005ea6] mb-2 flex items-center justify-center gap-2"
+        >
+          <CreditCard className="h-4 w-4" />
+          <span>Configure PayPal</span>
+        </Button>
+      </div>
+    );
+  }
   
   // If the button is disabled or amount is invalid, show our custom button
   if (isDisabled || !validAmount) {
@@ -245,7 +315,9 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
     return (
       <Button
         onClick={() => {
-          const paypalCheckoutUrl = `https://www.paypal.com/checkoutnow?token=EC-DEMO`;
+          const paypalCheckoutUrl = environment === 'production'
+            ? `https://www.paypal.com/checkoutnow?token=EC-DEMO`
+            : `https://www.sandbox.paypal.com/checkoutnow?token=EC-DEMO`;
           window.open(paypalCheckoutUrl, '_blank', 'noopener,noreferrer');
         }}
         className="w-full bg-[#0070BA] hover:bg-[#005ea6] mb-2 flex items-center justify-center gap-2"
@@ -273,6 +345,13 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
         className="paypal-button-container"
         style={{ minHeight: '45px' }}
       />
+      {environment === 'production' && isScriptLoaded && (
+        <div className="mt-1 text-center">
+          <span className="text-xs text-green-600 font-medium bg-green-50 px-2 py-1 rounded-full">
+            Live Production Mode
+          </span>
+        </div>
+      )}
     </div>
   );
 };

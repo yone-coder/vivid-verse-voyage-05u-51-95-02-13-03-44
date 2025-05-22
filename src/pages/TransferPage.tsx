@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Drawer } from "@/components/ui/drawer";
@@ -9,9 +9,11 @@ import AmountInput from '@/components/transfer/AmountInput';
 import PaymentMethodList from '@/components/transfer/PaymentMethodList';
 import TransferConfirmationDrawer from '@/components/transfer/TransferConfirmationDrawer';
 import PayPalButton from '@/components/transfer/PayPalButton';
+import PayPalConfig from '@/components/transfer/PayPalConfig';
 import { internationalPaymentMethods, nationalPaymentMethods } from '@/components/transfer/PaymentMethods';
 import { toast } from "@/hooks/use-toast";
 import { useLanguage } from '@/context/LanguageContext';
+import { supabase } from "@/integrations/supabase/client";
 
 const TransferPage: React.FC = () => {
   const { t } = useLanguage();
@@ -21,9 +23,27 @@ const TransferPage: React.FC = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [paypalSuccess, setPaypalSuccess] = useState(false);
   const [paypalLoading, setPaypalLoading] = useState(false);
+  const [showPayPalConfig, setShowPayPalConfig] = useState(false);
+  const [paypalClientId, setPaypalClientId] = useState<string | null>(null);
+  const [isProduction, setIsProduction] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  
+  // Check for stored PayPal client ID on component mount
+  useEffect(() => {
+    const storedClientId = localStorage.getItem('paypal_client_id');
+    const storedEnvironment = localStorage.getItem('paypal_environment');
+    
+    if (storedClientId) {
+      setPaypalClientId(storedClientId);
+    }
+    
+    if (storedEnvironment) {
+      setIsProduction(storedEnvironment === 'production');
+    }
+  }, []);
   
   // Handle the continue button click
-  const handleContinue = () => {
+  const handleContinue = async () => {
     if (!selectedMethod || !amount || parseFloat(amount) <= 0) {
       toast({
         title: "Missing Information",
@@ -33,34 +53,70 @@ const TransferPage: React.FC = () => {
       return;
     }
     
-    // For methods other than credit card, open drawer for confirmation
-    if (!(transferType === 'international' && selectedMethod === 'credit-card')) {
-      setIsDrawerOpen(true);
-    } else {
-      // When using international credit card with PayPal, focus on the PayPal button
-      const paypalButtonContainer = document.querySelector('.paypal-button-container');
-      if (paypalButtonContainer) {
-        // If PayPal container is rendered, scroll to it
-        paypalButtonContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        
-        // Check if the PayPal button is actually rendered inside
-        const paypalButton = paypalButtonContainer.querySelector('iframe');
-        if (paypalButton) {
-          toast({
-            title: "Payment Method",
-            description: "Please use the PayPal button to complete your payment.",
-            variant: "default",
-          });
-        } else {
-          // Fallback if PayPal button isn't rendered yet
-          toast({
-            title: "PayPal Loading",
-            description: "The PayPal payment option is being prepared. Please wait a moment.",
-            variant: "default",
-          });
-        }
+    // For credit card payments using PayPal
+    if (transferType === 'international' && selectedMethod === 'credit-card') {
+      // Show config if no client ID is set
+      if (!paypalClientId) {
+        setShowPayPalConfig(true);
+        return;
       }
+      
+      // If we have a client ID, create a PayPal order and redirect to PayPal
+      try {
+        setIsProcessing(true);
+        
+        const response = await fetch('https://wkfzhcszhgewkvwukzes.supabase.co/functions/v1/paypal-payment', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token || ''}`
+          },
+          body: JSON.stringify({
+            amount,
+            currency: transferType === 'international' ? 'USD' : 'HTG',
+            paymentMethod: 'credit-card',
+            createOrder: true
+          })
+        });
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to process payment');
+        }
+        
+        const data = await response.json();
+        
+        if (data.success && data.approvalUrl) {
+          // Redirect to PayPal for payment approval
+          window.location.href = data.approvalUrl;
+        } else {
+          throw new Error('No PayPal approval URL received');
+        }
+      } catch (error) {
+        console.error('Payment error:', error);
+        toast({
+          title: "Payment Error",
+          description: error instanceof Error ? error.message : "An unexpected error occurred",
+          variant: "destructive",
+        });
+      } finally {
+        setIsProcessing(false);
+      }
+    } else {
+      // For other payment methods, open drawer for confirmation
+      setIsDrawerOpen(true);
     }
+  };
+
+  const handlePayPalConfigSave = (clientId: string, production: boolean) => {
+    setPaypalClientId(clientId);
+    setIsProduction(production);
+    setShowPayPalConfig(false);
+    
+    // After saving, trigger a PayPal button render attempt
+    setTimeout(() => {
+      handleContinue();
+    }, 500);
   };
 
   const handlePaypalSuccess = (details: any) => {
@@ -121,7 +177,39 @@ const TransferPage: React.FC = () => {
       {/* Header */}
       <TransferHeader />
       
+      {/* PayPal Config Modal */}
+      {showPayPalConfig && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+          <div className="w-full max-w-md">
+            <PayPalConfig 
+              onSave={handlePayPalConfigSave}
+              onCancel={() => setShowPayPalConfig(false)}
+            />
+          </div>
+        </div>
+      )}
+      
       <div className="max-w-md mx-auto p-4">
+        {isProduction && (
+          <div className="bg-green-50 border border-green-200 rounded-md p-3 mb-4">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-green-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <h3 className="text-sm font-medium text-green-800">
+                  Live Production Mode
+                </h3>
+                <p className="text-xs text-green-600 mt-1">
+                  You are in production mode. All transactions will process real money.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+        
         {/* Transfer Type Tabs */}
         <TransferTypeSelector 
           transferType={transferType} 
@@ -155,13 +243,14 @@ const TransferPage: React.FC = () => {
               isDisabled={!amount || parseFloat(amount) <= 0 || paypalSuccess || paypalLoading}
               onSuccess={handlePaypalSuccess}
               onError={handlePaypalError}
-              clientId="AZDxjDScFpQtjWTOUtWKbyN_bDt4OgqaF4eYXlewfBP4-8aqX3PiV8e1GWU6liB2CUXlkA59kJXE7M6R"
+              clientId={paypalClientId || undefined}
               currency={currencyCode}
               setLoading={setPaypalLoading}
+              isProduction={isProduction}
             />
             {!paypalSuccess && (
               <p className="text-xs text-gray-500 text-center mt-2">
-                Secure payment processing via PayPal
+                Secure payment processing via PayPal {isProduction ? "(Live Mode)" : "(Test Mode)"}
               </p>
             )}
           </div>
@@ -170,12 +259,24 @@ const TransferPage: React.FC = () => {
         {/* Continue Button */}
         <Button 
           onClick={handleContinue}
-          disabled={!selectedMethod || !amount || parseFloat(amount) <= 0 || paypalSuccess}
+          disabled={!selectedMethod || !amount || parseFloat(amount) <= 0 || paypalSuccess || isProcessing}
           className="w-full"
           size="lg"
         >
-          {paypalSuccess ? "Payment Complete ✓" : "Continue to Send Money"}
-          {!paypalSuccess && <ArrowRight className="ml-1 h-4 w-4" />}
+          {isProcessing ? (
+            <>
+              <span className="mr-2">Processing...</span>
+              <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            </>
+          ) : (
+            <>
+              {paypalSuccess ? "Payment Complete ✓" : "Continue to Send Money"}
+              {!paypalSuccess && <ArrowRight className="ml-1 h-4 w-4" />}
+            </>
+          )}
         </Button>
         
         {/* Information */}
