@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { ArrowRight, CreditCard } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -9,12 +10,9 @@ import PaymentMethodList from '@/components/transfer/PaymentMethodList';
 import TransferConfirmationDrawer from '@/components/transfer/TransferConfirmationDrawer';
 import { internationalPaymentMethods, nationalPaymentMethods } from '@/components/transfer/PaymentMethods';
 import { toast } from "@/hooks/use-toast";
-import { config } from '@/config';
 
-// Select the active payment API URL based on configuration
-const PAYMENT_API_URL = config.ACTIVE_BACKEND === 'nodejs' 
-  ? config.NODE_API_URL 
-  : config.PAYMENT_API_URL;
+// API URL as a constant
+const PAYMENT_API_URL = 'https://wkfzhcszhgewkvwukzes.supabase.co/functions/v1/paypal-payment';
 
 const TransferPage: React.FC = () => {
   const [transferType, setTransferType] = useState<'international' | 'national'>('international');
@@ -89,7 +87,7 @@ const TransferPage: React.FC = () => {
     setError(null);
     
     try {
-      console.log(`Creating payment for ${currencySymbol}${amount} using ${selectedMethod} via ${PAYMENT_API_URL}`);
+      console.log(`Creating payment for ${currencySymbol}${amount} using ${selectedMethod}`);
       
       // Create payment via our API
       const response = await fetch(PAYMENT_API_URL, {
@@ -126,18 +124,10 @@ const TransferPage: React.FC = () => {
       if (data.nextSteps?.redirectUrl) {
         console.log("Redirect URL received:", data.nextSteps.redirectUrl);
         
-        // Handle redirect based on payment method
+        // For PayPal or credit card payments, set the redirect URL
         if (selectedMethod === 'credit-card' || selectedMethod === 'paypal') {
           toast({
             title: "Redirecting to PayPal",
-            description: "You'll be redirected to complete your payment in a new tab.",
-          });
-          
-          // Set the redirect URL to trigger the useEffect
-          setRedirectUrl(data.nextSteps.redirectUrl);
-        } else if (selectedMethod === 'moncash') {
-          toast({
-            title: "Redirecting to MonCash",
             description: "You'll be redirected to complete your payment in a new tab.",
           });
           
