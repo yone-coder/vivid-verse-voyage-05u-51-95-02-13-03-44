@@ -202,7 +202,7 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
                   const session = await supabase.auth.getSession();
                   const accessToken = session.data.session?.access_token || '';
                   
-                  // Use explicit string type for the URL
+                  // The URL is explicitly typed as string above
                   const response = await fetch(PAYPAL_API_URL, {
                     method: 'POST',
                     headers: {
