@@ -12,10 +12,10 @@ import {
 import { PaymentMethod } from './PaymentMethodItem';
 import { Loader2, AlertCircle } from 'lucide-react';
 import { toast } from "@/hooks/use-toast";
+import { PAYPAL_BACKEND_URL } from './PaymentMethods';
 
 // Backend API URLs as explicit string types
 const MONCASH_BACKEND_URL: string = 'https://moncash-backend.onrender.com';
-const PAYPAL_BACKEND_URL: string = 'https://paypal-backend-9mw4.onrender.com';
 
 interface TransferConfirmationDrawerProps {
   isOpen: boolean;
@@ -215,36 +215,36 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
       // Get the base URL for the current site to use for return/cancel URLs
       const baseUrl = window.location.origin;
       
+      console.log("Creating order with PayPal backend:", PAYPAL_BACKEND_URL);
+      
       // Create order via PayPal backend
-      const response = await fetch(`${PAYPAL_BACKEND_URL}/api/paypal/create-order`, {
+      const response = await fetch(`${PAYPAL_BACKEND_URL}/create-order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           amount: parseFloat(amount).toFixed(2),
           currency: 'USD',
           returnUrl: `${baseUrl}/transfer/success`,
-          cancelUrl: `${baseUrl}/transfer/cancel`,
-          description: 'Money transfer payment',
-          brandName: 'Money Transfer Service'
+          cancelUrl: `${baseUrl}/transfer/cancel`
         })
       });
       
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to create payment');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `Failed to create payment. Status: ${response.status}`);
       }
       
       const data = await response.json();
-      console.log('Payment order created:', data);
+      console.log('PayPal order created:', data);
       
-      // Find the approval URL to redirect the user to PayPal Checkout
-      const approvalLink = data.links && data.links.find((link: any) => link.rel === 'approve');
-      
-      if (approvalLink && approvalLink.href) {
-        // Redirect to PayPal checkout
-        window.location.href = approvalLink.href;
+      if (data.id) {
+        // Store the order ID for later reference
+        localStorage.setItem('paypal_order_id', data.id);
+        
+        // Redirect to PayPal checkout (for sandbox testing)
+        window.location.href = `https://www.sandbox.paypal.com/checkoutnow?token=${data.id}`;
       } else {
-        throw new Error('No approval URL found in PayPal response');
+        throw new Error('No order ID found in PayPal response');
       }
       
     } catch (error) {
@@ -308,7 +308,7 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
             transferType === 'national' && selectedMethod.id === 'moncash' ? 
               'Continue to MonCash' : 
                 transferType === 'international' && selectedMethod.id === 'credit-card' ?
-                  'Continue to Payment' : 'Continue to Payment'
+                  'Continue to PayPal Payment' : 'Continue to Payment'
           )}
         </Button>
         <DrawerClose asChild>

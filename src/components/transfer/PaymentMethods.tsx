@@ -10,6 +10,9 @@ import {
 } from 'lucide-react';
 import { PaymentMethod } from './PaymentMethodItem';
 
+// PayPal backend API URL as a constant
+export const PAYPAL_BACKEND_URL = 'https://paypal-backend-9mw4.onrender.com';
+
 // International payment methods (USD)
 export const internationalPaymentMethods: PaymentMethod[] = [
   { 
@@ -17,7 +20,8 @@ export const internationalPaymentMethods: PaymentMethod[] = [
     name: 'Credit or Debit Card', 
     icon: CreditCard, 
     description: 'Safe and secure card payment',
-    fee: '3.5% + $0.30' 
+    fee: '3.5% + $0.30',
+    processorUrl: PAYPAL_BACKEND_URL
   },
   { 
     id: 'bank-transfer', 

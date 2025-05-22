@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -12,6 +11,7 @@ export interface PaymentMethod {
   fee: string;
   available?: boolean;
   unavailableReason?: string;
+  processorUrl?: string;
 }
 
 interface PaymentMethodItemProps {
