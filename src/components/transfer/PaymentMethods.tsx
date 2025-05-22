@@ -6,7 +6,9 @@ import {
   Send,
   DollarSign,
   Smartphone,
-  XCircle
+  XCircle,
+  CircleDollarSign,
+  Landmark 
 } from 'lucide-react';
 import { PaymentMethod } from './PaymentMethodItem';
 
@@ -33,14 +35,14 @@ export const internationalPaymentMethods: PaymentMethod[] = [
   { 
     id: 'zelle', 
     name: 'Zelle', 
-    icon: Send,
+    icon: Landmark,
     description: 'Fast transfers between US banks',
     fee: 'Free' 
   },
   { 
     id: 'paypal', 
     name: 'PayPal', 
-    icon: Send,
+    icon: CircleDollarSign,
     description: 'Send using your PayPal balance',
     fee: '2.9% + $0.30' 
   },

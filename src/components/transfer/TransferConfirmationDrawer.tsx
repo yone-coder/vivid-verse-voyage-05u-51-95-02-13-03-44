@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import {
@@ -10,9 +9,10 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer";
 import { PaymentMethod } from './PaymentMethodItem';
-import { Loader2, AlertCircle } from 'lucide-react';
+import { Loader2, AlertCircle, ArrowRight } from 'lucide-react';
 import { toast } from "@/hooks/use-toast";
 import { PAYPAL_BACKEND_URL } from './PaymentMethods';
+import ReceiverDetailsForm, { ReceiverDetails } from './ReceiverDetailsForm';
 
 // Backend API URLs as explicit string types
 const MONCASH_BACKEND_URL: string = 'https://moncash-backend.onrender.com';
@@ -39,6 +39,8 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
   isLoading = false
 }) => {
   const [isProcessing, setIsProcessing] = useState(false);
+  const [receiverDetails, setReceiverDetails] = useState<ReceiverDetails | null>(null);
+  const [step, setStep] = useState<'summary' | 'receiverDetails' | 'confirmation'>('summary');
 
   if (!selectedMethod) return null;
   
@@ -258,23 +260,125 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
     }
   };
 
+  // Validate receiver details for international transfers
+  const isReceiverDetailsValid = () => {
+    if (!receiverDetails) return false;
+    
+    const { fullName, phoneNumber, address } = receiverDetails;
+    return fullName.trim() !== '' && phoneNumber.trim() !== '' && address.trim() !== '';
+  };
+
   // Handle payment method selection and routing
   const handlePaymentContinue = () => {
-    if (transferType === 'national' && selectedMethod.id === 'moncash') {
+    if (transferType === 'international') {
+      // For international transfers, go to receiver details first
+      setStep('receiverDetails');
+    } else if (transferType === 'national' && selectedMethod.id === 'moncash') {
       return handleMonCashPayment();
-    } else if (transferType === 'international' && selectedMethod.id === 'credit-card') {
-      return handleCreditCardPayment();
     } else {
       return onContinue();
     }
   };
 
+  // Handle final confirmation for international transfers
+  const handleFinalConfirmation = () => {
+    // For international transfers with credit card
+    if (transferType === 'international' && selectedMethod.id === 'credit-card') {
+      return handleCreditCardPayment();
+    } else {
+      // For other payment methods
+      return onContinue();
+    }
+  };
+
+  // Render summary step
+  if (step === 'summary') {
+    return (
+      <DrawerContent>
+        <DrawerHeader>
+          <DrawerTitle>Confirm Money Transfer</DrawerTitle>
+          <DrawerDescription>
+            You're about to send {currencySymbol}{amount} to Haiti using {selectedMethod.name}
+          </DrawerDescription>
+        </DrawerHeader>
+        <div className="px-4">
+          <div className="rounded-lg border p-4 mb-4">
+            <div className="flex justify-between mb-2">
+              <span className="text-gray-500">Amount:</span>
+              <span className="font-medium">{currencySymbol}{amount}</span>
+            </div>
+            <div className="flex justify-between mb-2">
+              <span className="text-gray-500">Fee:</span>
+              <span className="font-medium">{calculateFee()}</span>
+            </div>
+            <div className="border-t my-2"></div>
+            <div className="flex justify-between font-bold">
+              <span>Total:</span>
+              <span>{calculateTotal()}</span>
+            </div>
+          </div>
+        </div>
+        <DrawerFooter>
+          <Button 
+            onClick={handlePaymentContinue} 
+            disabled={isLoading || isProcessing}
+          >
+            {isLoading || isProcessing ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Processing...
+              </>
+            ) : (
+              transferType === 'international' ? 
+                'Continue to Receiver Details' : 
+                transferType === 'national' && selectedMethod.id === 'moncash' ? 
+                  'Continue to MonCash' : 'Continue to Payment'
+            )}
+          </Button>
+          <DrawerClose asChild>
+            <Button variant="outline" disabled={isLoading || isProcessing}>Cancel</Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    );
+  }
+
+  // Render receiver details step
+  if (step === 'receiverDetails') {
+    return (
+      <DrawerContent>
+        <DrawerHeader>
+          <DrawerTitle>Receiver Details</DrawerTitle>
+          <DrawerDescription>
+            Please provide details about who will receive the money in Haiti
+          </DrawerDescription>
+        </DrawerHeader>
+        <div className="px-4">
+          <ReceiverDetailsForm onDetailsChange={setReceiverDetails} />
+        </div>
+        <DrawerFooter>
+          <Button 
+            onClick={() => setStep('confirmation')} 
+            disabled={!isReceiverDetailsValid()}
+          >
+            Continue to Confirmation
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
+          <Button variant="outline" onClick={() => setStep('summary')}>
+            Back
+          </Button>
+        </DrawerFooter>
+      </DrawerContent>
+    );
+  }
+
+  // Render confirmation step
   return (
     <DrawerContent>
       <DrawerHeader>
-        <DrawerTitle>Confirm Money Transfer</DrawerTitle>
+        <DrawerTitle>Final Confirmation</DrawerTitle>
         <DrawerDescription>
-          You're about to send {currencySymbol}{amount} to Haiti using {selectedMethod.name}
+          Review your transfer and receiver details before proceeding
         </DrawerDescription>
       </DrawerHeader>
       <div className="px-4">
@@ -293,10 +397,24 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
             <span>{calculateTotal()}</span>
           </div>
         </div>
+
+        {receiverDetails && (
+          <div className="rounded-lg border p-4 mb-4">
+            <h4 className="font-medium mb-2">Receiver Details</h4>
+            <div className="space-y-1 text-sm">
+              <p><span className="text-gray-500">Name:</span> {receiverDetails.fullName}</p>
+              <p><span className="text-gray-500">Phone:</span> {receiverDetails.phoneNumber}</p>
+              <p><span className="text-gray-500">Address:</span> {receiverDetails.address}</p>
+              {receiverDetails.additionalInfo && (
+                <p><span className="text-gray-500">Additional Info:</span> {receiverDetails.additionalInfo}</p>
+              )}
+            </div>
+          </div>
+        )}
       </div>
       <DrawerFooter>
         <Button 
-          onClick={handlePaymentContinue} 
+          onClick={handleFinalConfirmation} 
           disabled={isLoading || isProcessing}
         >
           {isLoading || isProcessing ? (
@@ -305,15 +423,13 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
               Processing...
             </>
           ) : (
-            transferType === 'national' && selectedMethod.id === 'moncash' ? 
-              'Continue to MonCash' : 
-                transferType === 'international' && selectedMethod.id === 'credit-card' ?
-                  'Continue to PayPal Payment' : 'Continue to Payment'
+            transferType === 'international' && selectedMethod.id === 'credit-card' ?
+              'Continue to PayPal Payment' : 'Complete Transfer'
           )}
         </Button>
-        <DrawerClose asChild>
-          <Button variant="outline" disabled={isLoading || isProcessing}>Cancel</Button>
-        </DrawerClose>
+        <Button variant="outline" onClick={() => setStep('receiverDetails')}>
+          Back to Receiver Details
+        </Button>
       </DrawerFooter>
     </DrawerContent>
   );
