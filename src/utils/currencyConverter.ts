@@ -1,0 +1,80 @@
+
+// Base URL for the Bank of the Republic of Haiti (BRH) exchange rate API
+// Note: This is a placeholder. You would need to replace with the actual API endpoint
+const BRH_API_URL = 'https://brh.ht/api/exchange-rates';
+
+// Our discount percentage from the official rate (e.g. 2% lower than the official rate)
+const OUR_RATE_DISCOUNT = 0.02; 
+
+export interface ExchangeRateData {
+  usdToHtg: number;
+  lastUpdated: Date;
+  isLive: boolean;
+}
+
+// Cache the exchange rate data
+let cachedRateData: ExchangeRateData | null = null;
+let lastFetchTime: number = 0;
+const CACHE_DURATION = 15 * 60 * 1000; // 15 minutes in milliseconds
+
+/**
+ * Get the current USD to HTG exchange rate
+ * Fetches from API or returns cached value if recently fetched
+ */
+export const getExchangeRate = async (): Promise<ExchangeRateData> => {
+  const now = Date.now();
+  
+  // Return cached data if still valid
+  if (cachedRateData && (now - lastFetchTime < CACHE_DURATION)) {
+    return cachedRateData;
+  }
+  
+  try {
+    // In a production environment, you would fetch the real rate from an API
+    // const response = await fetch(BRH_API_URL);
+    // const data = await response.json();
+    
+    // For now, we'll use a hardcoded rate that simulates the BRH rate
+    // The current USD to HTG exchange rate is approximately 140 HTG per USD
+    const brhRate = 140.5;
+    
+    // Apply our discount to offer a slightly lower rate than the official one
+    const ourRate = brhRate * (1 - OUR_RATE_DISCOUNT);
+    
+    cachedRateData = {
+      usdToHtg: ourRate,
+      lastUpdated: new Date(),
+      isLive: true
+    };
+    
+    lastFetchTime = now;
+    return cachedRateData;
+  } catch (error) {
+    console.error('Failed to fetch exchange rate:', error);
+    
+    // If we can't get a live rate, return our cached rate or a fallback
+    if (cachedRateData) {
+      return {
+        ...cachedRateData,
+        isLive: false
+      };
+    }
+    
+    // Fallback rate if we have no cached data either
+    return {
+      usdToHtg: 138.0,
+      lastUpdated: new Date(),
+      isLive: false
+    };
+  }
+};
+
+/**
+ * Convert USD to HTG using our exchange rate
+ * @param usdAmount - Amount in USD to convert
+ * @returns Promise with the converted amount in HTG
+ */
+export const convertUsdToHtg = async (usdAmount: number): Promise<number> => {
+  const { usdToHtg } = await getExchangeRate();
+  return usdAmount * usdToHtg;
+};

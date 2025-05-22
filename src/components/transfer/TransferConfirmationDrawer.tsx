@@ -354,7 +354,10 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
           </DrawerDescription>
         </DrawerHeader>
         <div className="px-4">
-          <ReceiverDetailsForm onDetailsChange={setReceiverDetails} />
+          <ReceiverDetailsForm 
+            onDetailsChange={setReceiverDetails} 
+            amount={amount} 
+          />
         </div>
         <DrawerFooter>
           <Button 
