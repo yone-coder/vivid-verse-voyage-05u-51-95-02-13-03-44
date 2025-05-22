@@ -9,8 +9,15 @@ This directory contains the React frontend application for the money transfer se
 - `vite.config.ts`: Vite configuration
 
 ## Running the application
-Run the application using the scripts defined in the root package.json:
+Run the application using:
 
 ```
+cd frontend
 npm run dev
+```
+
+Or from the root:
+
+```
+npm run frontend:dev
 ```

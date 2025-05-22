@@ -13,3 +13,9 @@ Deploy the functions using the Supabase CLI:
 ```
 supabase functions deploy paypal-payment
 ```
+
+Or from the root:
+
+```
+npm run deploy:functions
+```

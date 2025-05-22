@@ -8,10 +8,10 @@ module.exports = {
   // Project structure
   structure: {
     frontend: {
-      root: './',
-      src: './src',
-      public: './public',
-      vite: './vite.config.ts'
+      root: './frontend',
+      src: './frontend/src',
+      public: './frontend/public',
+      vite: './frontend/vite.config.ts'
     },
     backend: {
       root: './backend',
@@ -21,9 +21,9 @@ module.exports = {
 
   // Scripts that could be run (for documentation)
   scripts: {
-    'frontend:dev': 'vite',
-    'frontend:build': 'tsc && vite build',
-    'frontend:preview': 'vite preview',
+    'frontend:dev': 'cd frontend && vite',
+    'frontend:build': 'cd frontend && tsc && vite build',
+    'frontend:preview': 'cd frontend && vite preview',
     'deploy:functions': 'supabase functions deploy paypal-payment'
   }
 };
