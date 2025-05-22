@@ -1,6 +1,6 @@
 
-import React, { useState, useEffect } from 'react';
-import { ArrowRight, CreditCard } from 'lucide-react';
+import React, { useState } from 'react';
+import { ArrowRight } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Drawer } from "@/components/ui/drawer";
 import TransferHeader from '@/components/transfer/TransferHeader';
@@ -8,48 +8,89 @@ import TransferTypeSelector from '@/components/transfer/TransferTypeSelector';
 import AmountInput from '@/components/transfer/AmountInput';
 import PaymentMethodList from '@/components/transfer/PaymentMethodList';
 import TransferConfirmationDrawer from '@/components/transfer/TransferConfirmationDrawer';
+import PayPalButton from '@/components/transfer/PayPalButton';
 import { internationalPaymentMethods, nationalPaymentMethods } from '@/components/transfer/PaymentMethods';
 import { toast } from "@/hooks/use-toast";
-
-// API URL as a constant
-const PAYMENT_API_URL = 'https://wkfzhcszhgewkvwukzes.supabase.co/functions/v1/paypal-payment';
+import { useLanguage } from '@/context/LanguageContext';
 
 const TransferPage: React.FC = () => {
+  const { t } = useLanguage();
   const [transferType, setTransferType] = useState<'international' | 'national'>('international');
-  const [selectedMethod, setSelectedMethod] = useState<string | null>('credit-card'); // Default to credit card
+  const [selectedMethod, setSelectedMethod] = useState<string | null>(null);
   const [amount, setAmount] = useState('');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [redirectUrl, setRedirectUrl] = useState<string | null>(null);
+  const [paypalSuccess, setPaypalSuccess] = useState(false);
+  const [paypalLoading, setPaypalLoading] = useState(false);
   
-  // Auto-select credit card option when international is chosen
-  useEffect(() => {
-    if (transferType === 'international') {
-      // Pre-select credit card option for easier testing
-      setSelectedMethod('credit-card');
+  // Handle the continue button click
+  const handleContinue = () => {
+    if (!selectedMethod || !amount || parseFloat(amount) <= 0) {
+      toast({
+        title: "Missing Information",
+        description: "Please select a payment method and enter a valid amount.",
+        variant: "destructive",
+      });
+      return;
     }
-  }, [transferType]);
-
-  // Effect to handle redirect if URL is available
-  useEffect(() => {
-    if (redirectUrl) {
-      const redirectWindow = window.open(redirectUrl, '_blank');
-      
-      // Check if the popup was blocked
-      if (!redirectWindow || redirectWindow.closed || typeof redirectWindow.closed === 'undefined') {
-        console.error("Popup was blocked by the browser");
-        toast({
-          title: "Popup Blocked",
-          description: "Please allow popups for this site to complete your payment.",
-          variant: "destructive",
-        });
+    
+    // For methods other than credit card, open drawer for confirmation
+    if (!(transferType === 'international' && selectedMethod === 'credit-card')) {
+      setIsDrawerOpen(true);
+    } else {
+      // When using international credit card with PayPal, focus on the PayPal button
+      const paypalButtonContainer = document.querySelector('.paypal-button-container');
+      if (paypalButtonContainer) {
+        // If PayPal container is rendered, scroll to it
+        paypalButtonContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        // Check if the PayPal button is actually rendered inside
+        const paypalButton = paypalButtonContainer.querySelector('iframe');
+        if (paypalButton) {
+          toast({
+            title: "Payment Method",
+            description: "Please use the PayPal button to complete your payment.",
+            variant: "default",
+          });
+        } else {
+          // Fallback if PayPal button isn't rendered yet
+          toast({
+            title: "PayPal Loading",
+            description: "The PayPal payment option is being prepared. Please wait a moment.",
+            variant: "default",
+          });
+        }
       }
-      
-      // Reset the redirect URL after attempt
-      setRedirectUrl(null);
     }
-  }, [redirectUrl]);
+  };
+
+  const handlePaypalSuccess = (details: any) => {
+    setPaypalSuccess(true);
+    setPaypalLoading(false);
+    setIsDrawerOpen(false);
+    
+    // Show success message with transaction details
+    toast({
+      title: "Payment Successful",
+      description: `Your transfer of $${amount} was completed successfully with PayPal. Transaction ID: ${details.id}`,
+      variant: "success",
+    });
+    
+    // Here you would typically redirect to a success page
+    // window.location.href = '/transfer-success';
+    
+    // For now, we'll just display the success message
+    console.log("Payment completed successfully:", details);
+  };
+
+  const handlePaypalError = (err: any) => {
+    setPaypalLoading(false);
+    toast({
+      title: "Payment Failed",
+      description: "There was an issue processing your PayPal payment. Please try again.",
+      variant: "destructive",
+    });
+    console.error("PayPal error:", err);
+  };
 
   // Get the current payment methods based on selected transfer type
   const currentPaymentMethods = transferType === 'international' 
@@ -61,98 +102,19 @@ const TransferPage: React.FC = () => {
   
   // Currency name for display
   const currencyName = transferType === 'international' ? 'USD' : 'Haitian Gourdes';
-  // Currency code for API
+  // Currency code for PayPal
   const currencyCode = transferType === 'international' ? 'USD' : 'HTG';
 
   // Reset selected method when changing transfer type
   const handleTransferTypeChange = (value: 'international' | 'national') => {
     setTransferType(value);
-    setSelectedMethod(value === 'international' ? 'credit-card' : null); // Auto-select credit card for international
-    setError(null); // Clear any previous errors
+    setSelectedMethod(null);
+    setPaypalSuccess(false);
+    setPaypalLoading(false);
   };
   
-  // Handle the continue button click to create a payment
-  const handleContinuePayment = async () => {
-    // Validate inputs
-    if (!amount || parseFloat(amount) <= 0 || !selectedMethod) {
-      toast({
-        title: "Invalid Input",
-        description: "Please enter a valid amount and select a payment method.",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    setIsLoading(true);
-    setError(null);
-    
-    try {
-      console.log(`Creating payment for ${currencySymbol}${amount} using ${selectedMethod}`);
-      
-      // Create payment via our API
-      const response = await fetch(PAYMENT_API_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          amount,
-          currency: currencyCode,
-          paymentMethod: selectedMethod,
-          developmentMode: true // Explicitly tell the API to use development mode
-        })
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to create payment');
-      }
-      
-      const data = await response.json();
-      
-      console.log("Payment created successfully:", data);
-      
-      // Close the drawer after successful API call
-      setIsDrawerOpen(false);
-      
-      toast({
-        title: "Payment Initiated",
-        description: "Your payment has been initiated successfully.",
-      });
-      
-      // If we have next steps to follow with redirectUrl
-      if (data.nextSteps?.redirectUrl) {
-        console.log("Redirect URL received:", data.nextSteps.redirectUrl);
-        
-        // For PayPal or credit card payments, set the redirect URL
-        if (selectedMethod === 'credit-card' || selectedMethod === 'paypal') {
-          toast({
-            title: "Redirecting to PayPal",
-            description: "You'll be redirected to complete your payment in a new tab.",
-          });
-          
-          // Set the redirect URL to trigger the useEffect
-          setRedirectUrl(data.nextSteps.redirectUrl);
-        } else {
-          // For other payment methods, use internal redirect
-          window.location.href = data.nextSteps.redirectUrl;
-        }
-      }
-    } catch (error) {
-      console.error("Payment error:", error);
-      const errorMessage = error instanceof Error ? error.message : "Failed to process payment. Please try again.";
-      
-      setError(errorMessage);
-      
-      toast({
-        title: "Payment Failed",
-        description: errorMessage,
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // Show PayPal button when international and credit card are selected
+  const showPaypalButton = transferType === 'international' && selectedMethod === 'credit-card';
   
   return (
     <div className="min-h-screen bg-gray-50 pb-16">
@@ -165,30 +127,6 @@ const TransferPage: React.FC = () => {
           transferType={transferType} 
           onTransferTypeChange={handleTransferTypeChange}
         />
-        
-        {/* Credit Card Recommendation */}
-        {transferType === 'international' && (
-          <div className="bg-blue-50 border border-blue-200 rounded-md p-3 mb-4">
-            <div className="flex items-start">
-              <CreditCard className="h-5 w-5 text-blue-600 mt-0.5 mr-2 flex-shrink-0" />
-              <div>
-                <h3 className="text-sm font-medium text-blue-800">
-                  Credit/Debit Card Recommended
-                </h3>
-                <p className="text-xs text-blue-600 mt-1">
-                  For international transfers, credit cards offer the fastest and most secure way to send money to Haiti.
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-        
-        {/* Error Message */}
-        {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 rounded-md p-3 mb-4">
-            <p className="text-sm">{error}</p>
-          </div>
-        )}
         
         {/* Amount Input */}
         <AmountInput
@@ -204,19 +142,40 @@ const TransferPage: React.FC = () => {
           selectedMethod={selectedMethod}
           onMethodChange={(value) => {
             setSelectedMethod(value);
-            setError(null); // Clear errors when method changes
+            setPaypalSuccess(false);
+            setPaypalLoading(false);
           }}
         />
         
+        {/* PayPal Button for international credit card payments */}
+        {showPaypalButton && (
+          <div className="mt-4 mb-2">
+            <PayPalButton 
+              amount={amount} 
+              isDisabled={!amount || parseFloat(amount) <= 0 || paypalSuccess || paypalLoading}
+              onSuccess={handlePaypalSuccess}
+              onError={handlePaypalError}
+              clientId="AZDxjDScFpQtjWTOUtWKbyN_bDt4OgqaF4eYXlewfBP4-8aqX3PiV8e1GWU6liB2CUXlkA59kJXE7M6R"
+              currency={currencyCode}
+              setLoading={setPaypalLoading}
+            />
+            {!paypalSuccess && (
+              <p className="text-xs text-gray-500 text-center mt-2">
+                Secure payment processing via PayPal
+              </p>
+            )}
+          </div>
+        )}
+        
         {/* Continue Button */}
         <Button 
-          onClick={() => setIsDrawerOpen(true)}
-          disabled={!selectedMethod || !amount || parseFloat(amount) <= 0}
-          className="w-full mt-4"
+          onClick={handleContinue}
+          disabled={!selectedMethod || !amount || parseFloat(amount) <= 0 || paypalSuccess}
+          className="w-full"
           size="lg"
         >
-          Continue to Send Money
-          <ArrowRight className="ml-1 h-4 w-4" />
+          {paypalSuccess ? "Payment Complete ✓" : "Continue to Send Money"}
+          {!paypalSuccess && <ArrowRight className="ml-1 h-4 w-4" />}
         </Button>
         
         {/* Information */}
@@ -237,8 +196,6 @@ const TransferPage: React.FC = () => {
           selectedMethod={currentPaymentMethods.find(m => m.id === selectedMethod)}
           transferType={transferType}
           currencySymbol={currencySymbol}
-          onContinue={handleContinuePayment}
-          isLoading={isLoading}
         />
       </Drawer>
     </div>

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import {
@@ -10,7 +9,6 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer";
 import { PaymentMethod } from './PaymentMethodItem';
-import { Loader2 } from 'lucide-react';
 
 interface TransferConfirmationDrawerProps {
   isOpen: boolean;
@@ -19,8 +17,6 @@ interface TransferConfirmationDrawerProps {
   selectedMethod: PaymentMethod | undefined;
   transferType: 'international' | 'national';
   currencySymbol: string;
-  onContinue: () => void;
-  isLoading?: boolean;
 }
 
 const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
@@ -29,9 +25,7 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
   amount,
   selectedMethod,
   transferType,
-  currencySymbol,
-  onContinue,
-  isLoading = false
+  currencySymbol
 }) => {
   if (!selectedMethod) return null;
 
@@ -43,7 +37,6 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
         case 'bank-transfer': return `${currencySymbol}0.25`;
         case 'cashapp': return `${currencySymbol}${(parseFloat(amount) * 0.015).toFixed(2)}`;
         case 'paypal': return `${currencySymbol}${((parseFloat(amount) * 0.029) + 0.3).toFixed(2)}`;
-        case 'credit-card': return `${currencySymbol}${((parseFloat(amount) * 0.035) + 0.3).toFixed(2)}`;
         default: return `${currencySymbol}${((parseFloat(amount) * 0.035) + 0.3).toFixed(2)}`;
       }
     } else {
@@ -77,7 +70,6 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
         case 'bank-transfer': return `${currencySymbol}${(parseFloat(amount) + 0.25).toFixed(2)}`;
         case 'cashapp': return `${currencySymbol}${(parseFloat(amount) * 1.015).toFixed(2)}`;
         case 'paypal': return `${currencySymbol}${(parseFloat(amount) + ((parseFloat(amount) * 0.029) + 0.3)).toFixed(2)}`;
-        case 'credit-card': return `${currencySymbol}${(parseFloat(amount) + ((parseFloat(amount) * 0.035) + 0.3)).toFixed(2)}`;
         default: return `${currencySymbol}${(parseFloat(amount) + ((parseFloat(amount) * 0.035) + 0.3)).toFixed(2)}`;
       }
     } else {
@@ -130,29 +122,11 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
             <span>{calculateTotal()}</span>
           </div>
         </div>
-        
-        {selectedMethod && (selectedMethod.id === 'credit-card' || selectedMethod.id === 'paypal') && (
-          <div className="rounded-lg bg-blue-50 p-3 mb-4 text-sm">
-            <p className="text-blue-700">
-              You'll be redirected to PayPal to securely complete this payment.
-              {selectedMethod.id === 'credit-card' && " You can use your credit card without a PayPal account."}
-            </p>
-          </div>
-        )}
       </div>
       <DrawerFooter>
-        <Button onClick={onContinue} disabled={isLoading}>
-          {isLoading ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Processing...
-            </>
-          ) : (
-            'Continue to Payment'
-          )}
-        </Button>
+        <Button>Continue to Payment</Button>
         <DrawerClose asChild>
-          <Button variant="outline" disabled={isLoading}>Cancel</Button>
+          <Button variant="outline">Cancel</Button>
         </DrawerClose>
       </DrawerFooter>
     </DrawerContent>
