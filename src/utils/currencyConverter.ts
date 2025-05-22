@@ -3,9 +3,6 @@
 // Note: This is a placeholder. You would need to replace with the actual API endpoint
 const BRH_API_URL = 'https://brh.ht/api/exchange-rates';
 
-// Our discount percentage from the official rate (e.g. 10% lower than the official rate)
-const OUR_RATE_DISCOUNT = 0.10; 
-
 export interface ExchangeRateData {
   usdToHtg: number;
   originalRate: number; // Original BRH rate before our discount
@@ -35,16 +32,14 @@ export const getExchangeRate = async (): Promise<ExchangeRateData> => {
     // const response = await fetch(BRH_API_URL);
     // const data = await response.json();
     
-    // For now, we'll use a hardcoded rate that simulates the BRH rate
-    // The current USD to HTG exchange rate is approximately 140 HTG per USD
-    const brhRate = 130;
-    
-    // Apply our discount to offer a lower rate than the official one
-    const ourRate = brhRate * (1 - OUR_RATE_DISCOUNT);
+    // For now, use a fixed rate of 120 HTG per USD
+    // In a real app, we might fetch the BRH rate and apply our own calculation
+    const brhRate = 130; // This is kept for reference but not displayed to users
+    const ourRate = 120; // Our fixed rate
     
     cachedRateData = {
       usdToHtg: ourRate,
-      originalRate: brhRate,
+      originalRate: brhRate, // Keep track internally but don't display
       lastUpdated: new Date(),
       isLive: true
     };
@@ -63,10 +58,9 @@ export const getExchangeRate = async (): Promise<ExchangeRateData> => {
     }
     
     // Fallback rate if we have no cached data either
-    const fallbackBrhRate = 130;
     return {
-      usdToHtg: fallbackBrhRate * (1 - OUR_RATE_DISCOUNT),
-      originalRate: fallbackBrhRate,
+      usdToHtg: 120, // Fixed fallback rate
+      originalRate: 130, // Keep internally but don't display
       lastUpdated: new Date(),
       isLive: false
     };
