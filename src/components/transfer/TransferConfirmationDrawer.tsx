@@ -13,9 +13,9 @@ import { PaymentMethod } from './PaymentMethodItem';
 import { Loader2 } from 'lucide-react';
 import { toast } from "@/hooks/use-toast";
 
-// Backend API URLs
-const MONCASH_BACKEND_URL = 'https://moncash-backend.onrender.com';
-const PAYPAL_BACKEND_URL = 'https://paypal-backend-9mw4.onrender.com';
+// Backend API URLs as explicit string types
+const MONCASH_BACKEND_URL: string = 'https://moncash-backend.onrender.com';
+const PAYPAL_BACKEND_URL: string = 'https://paypal-backend-9mw4.onrender.com';
 
 interface TransferConfirmationDrawerProps {
   isOpen: boolean;

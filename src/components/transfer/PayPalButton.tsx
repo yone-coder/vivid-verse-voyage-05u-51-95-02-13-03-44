@@ -44,7 +44,7 @@ declare global {
 const DEFAULT_CLIENT_ID = 'ASipB9r2XrYB0XD5cfzEItB8jtUq79EcN5uOYATHHJAEbWlQS3odGAH-RJb19wLH1QzHuk9zjUp1wUKc';
 
 // Type-safe API URL as a constant string
-const PAYPAL_API_URL = 'https://wkfzhcszhgewkvwukzes.supabase.co/functions/v1/paypal-payment';
+const PAYPAL_API_URL: string = 'https://wkfzhcszhgewkvwukzes.supabase.co/functions/v1/paypal-payment';
 
 const PayPalButton: React.FC<PayPalButtonProps> = ({ 
   amount, 
