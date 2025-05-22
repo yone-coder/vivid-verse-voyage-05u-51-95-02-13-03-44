@@ -15,7 +15,8 @@ module.exports = {
     },
     backend: {
       root: './backend',
-      functions: './backend/functions'
+      functions: './backend/functions',
+      nodejs: './backend/nodejs'
     }
   },
 
@@ -24,6 +25,7 @@ module.exports = {
     'frontend:dev': 'cd frontend && vite',
     'frontend:build': 'cd frontend && tsc && vite build',
     'frontend:preview': 'cd frontend && vite preview',
-    'deploy:functions': 'supabase functions deploy paypal-payment'
+    'deploy:functions': 'supabase functions deploy paypal-payment',
+    'backend:dev': 'cd backend/nodejs && node server.js'
   }
 };

@@ -11,8 +11,10 @@ import { internationalPaymentMethods, nationalPaymentMethods } from '@/component
 import { toast } from "@/hooks/use-toast";
 import { config } from '@/config';
 
-// API URL from configuration
-const PAYMENT_API_URL = config.PAYMENT_API_URL;
+// Select the active payment API URL based on configuration
+const PAYMENT_API_URL = config.ACTIVE_BACKEND === 'nodejs' 
+  ? config.NODE_API_URL 
+  : config.PAYMENT_API_URL;
 
 const TransferPage: React.FC = () => {
   const [transferType, setTransferType] = useState<'international' | 'national'>('international');
@@ -87,7 +89,7 @@ const TransferPage: React.FC = () => {
     setError(null);
     
     try {
-      console.log(`Creating payment for ${currencySymbol}${amount} using ${selectedMethod}`);
+      console.log(`Creating payment for ${currencySymbol}${amount} using ${selectedMethod} via ${PAYMENT_API_URL}`);
       
       // Create payment via our API
       const response = await fetch(PAYMENT_API_URL, {
