@@ -1,10 +1,9 @@
-
 // Base URL for the Bank of the Republic of Haiti (BRH) exchange rate API
 // Note: This is a placeholder. You would need to replace with the actual API endpoint
 const BRH_API_URL = 'https://brh.ht/api/exchange-rates';
 
 // Our fixed rate for USD to HTG conversion
-const OUR_FIXED_RATE = 120; 
+const OUR_FIXED_RATE = 127.5; 
 
 export interface ExchangeRateData {
   usdToHtg: number;
