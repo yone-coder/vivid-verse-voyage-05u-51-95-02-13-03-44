@@ -74,6 +74,12 @@ const AmountInput: React.FC<AmountInputProps> = ({
               </span>
             )}
           </div>
+          {exchangeRate && (
+            <div className="mt-2 text-xs text-blue-600 flex justify-between">
+              <span>BRH Rate: {exchangeRate.originalRate.toFixed(2)} HTG</span>
+              <span>Our Rate: {exchangeRate.usdToHtg.toFixed(2)} HTG</span>
+            </div>
+          )}
           {usdAmount > 0 && exchangeRate && (
             <div className="mt-2 text-sm font-medium text-green-700 flex justify-between">
               <span>Receiver Gets:</span>
