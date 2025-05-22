@@ -13,8 +13,9 @@ import { PaymentMethod } from './PaymentMethodItem';
 import { Loader2 } from 'lucide-react';
 import { toast } from "@/hooks/use-toast";
 
-// MonCash backend API URL
+// Backend API URLs
 const MONCASH_BACKEND_URL = 'https://moncash-backend.onrender.com';
+const PAYPAL_BACKEND_URL = 'https://paypal-backend-9mw4.onrender.com';
 
 interface TransferConfirmationDrawerProps {
   isOpen: boolean;
@@ -174,6 +175,72 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
     }
   };
 
+  // Handle Credit Card payment via PayPal backend
+  const handleCreditCardPayment = async () => {
+    if (transferType !== 'international' || selectedMethod.id !== 'credit-card') {
+      return onContinue();
+    }
+
+    setIsProcessing(true);
+    
+    try {
+      // Get the base URL for the current site to use for return/cancel URLs
+      const baseUrl = window.location.origin;
+      
+      // Create order via PayPal backend
+      const response = await fetch(`${PAYPAL_BACKEND_URL}/api/paypal/create-order`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: parseFloat(amount).toFixed(2),
+          currency: 'USD',
+          returnUrl: `${baseUrl}/transfer/success`,
+          cancelUrl: `${baseUrl}/transfer/cancel`,
+          description: 'Money transfer payment',
+          brandName: 'Money Transfer Service'
+        })
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create payment');
+      }
+      
+      const data = await response.json();
+      console.log('Payment order created:', data);
+      
+      // Find the approval URL to redirect the user to PayPal Checkout
+      const approvalLink = data.links && data.links.find((link: any) => link.rel === 'approve');
+      
+      if (approvalLink && approvalLink.href) {
+        // Redirect to PayPal checkout
+        window.location.href = approvalLink.href;
+      } else {
+        throw new Error('No approval URL found in PayPal response');
+      }
+      
+    } catch (error) {
+      console.error('Credit card payment error:', error);
+      toast({
+        title: "Payment Failed",
+        description: error instanceof Error ? error.message : "Failed to process credit card payment. Please try again.",
+        variant: "destructive",
+      });
+      setIsProcessing(false);
+    }
+  };
+
+  // Handle payment method selection and routing
+  const handlePaymentContinue = () => {
+    if (transferType === 'national' && selectedMethod.id === 'moncash') {
+      return handleMonCashPayment();
+    } else if (transferType === 'international' && selectedMethod.id === 'credit-card') {
+      return handleCreditCardPayment();
+    } else {
+      return onContinue();
+    }
+  };
+
   return (
     <DrawerContent>
       <DrawerHeader>
@@ -201,7 +268,7 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
       </div>
       <DrawerFooter>
         <Button 
-          onClick={transferType === 'national' && selectedMethod.id === 'moncash' ? handleMonCashPayment : onContinue} 
+          onClick={handlePaymentContinue} 
           disabled={isLoading || isProcessing}
         >
           {isLoading || isProcessing ? (
@@ -211,7 +278,9 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
             </>
           ) : (
             transferType === 'national' && selectedMethod.id === 'moncash' ? 
-            'Continue to MonCash' : 'Continue to Payment'
+              'Continue to MonCash' : 
+                transferType === 'international' && selectedMethod.id === 'credit-card' ?
+                  'Continue to Payment' : 'Continue to Payment'
           )}
         </Button>
         <DrawerClose asChild>
