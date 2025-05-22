@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import {
   DrawerClose,
@@ -11,6 +11,10 @@ import {
 } from "@/components/ui/drawer";
 import { PaymentMethod } from './PaymentMethodItem';
 import { Loader2 } from 'lucide-react';
+import { toast } from "@/hooks/use-toast";
+
+// MonCash backend API URL
+const MONCASH_BACKEND_URL = 'https://moncash-backend.onrender.com';
 
 interface TransferConfirmationDrawerProps {
   isOpen: boolean;
@@ -33,6 +37,8 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
   onContinue,
   isLoading = false
 }) => {
+  const [isProcessing, setIsProcessing] = useState(false);
+
   if (!selectedMethod) return null;
 
   // Calculate fees based on method and transfer type
@@ -104,6 +110,70 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
     }
   };
 
+  // Handle MonCash payment process
+  const handleMonCashPayment = async () => {
+    if (transferType !== 'national' || selectedMethod.id !== 'moncash') {
+      // For non-MonCash payments, use the regular flow
+      onContinue();
+      return;
+    }
+
+    setIsProcessing(true);
+    
+    try {
+      // Step 1: Get access token
+      const tokenResponse = await fetch(`${MONCASH_BACKEND_URL}/api/get-token`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      
+      if (!tokenResponse.ok) {
+        const errorData = await tokenResponse.json();
+        throw new Error(errorData.error || 'Failed to get MonCash access token');
+      }
+      
+      const tokenData = await tokenResponse.json();
+      const accessToken = tokenData.accessToken;
+      
+      if (!accessToken) {
+        throw new Error('Invalid access token received from MonCash');
+      }
+      
+      // Step 2: Create payment and get redirect URL
+      const paymentResponse = await fetch(`${MONCASH_BACKEND_URL}/api/create-payment`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          accessToken,
+          amount: parseFloat(amount)
+        })
+      });
+      
+      if (!paymentResponse.ok) {
+        const errorData = await paymentResponse.json();
+        throw new Error(errorData.error || 'Failed to create MonCash payment');
+      }
+      
+      const paymentData = await paymentResponse.json();
+      
+      if (!paymentData.paymentUrl) {
+        throw new Error('No payment URL received from MonCash');
+      }
+      
+      // Step 3: Redirect to MonCash payment page
+      window.location.href = paymentData.paymentUrl;
+      
+    } catch (error) {
+      console.error('MonCash payment error:', error);
+      toast({
+        title: "Payment Failed",
+        description: error instanceof Error ? error.message : "Failed to process MonCash payment. Please try again.",
+        variant: "destructive",
+      });
+      setIsProcessing(false);
+    }
+  };
+
   return (
     <DrawerContent>
       <DrawerHeader>
@@ -130,18 +200,22 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
         </div>
       </div>
       <DrawerFooter>
-        <Button onClick={onContinue} disabled={isLoading}>
-          {isLoading ? (
+        <Button 
+          onClick={transferType === 'national' && selectedMethod.id === 'moncash' ? handleMonCashPayment : onContinue} 
+          disabled={isLoading || isProcessing}
+        >
+          {isLoading || isProcessing ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Processing...
             </>
           ) : (
-            'Continue to Payment'
+            transferType === 'national' && selectedMethod.id === 'moncash' ? 
+            'Continue to MonCash' : 'Continue to Payment'
           )}
         </Button>
         <DrawerClose asChild>
-          <Button variant="outline" disabled={isLoading}>Cancel</Button>
+          <Button variant="outline" disabled={isLoading || isProcessing}>Cancel</Button>
         </DrawerClose>
       </DrawerFooter>
     </DrawerContent>

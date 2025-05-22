@@ -36,6 +36,9 @@ const TransferPage: React.FC = () => {
     if (transferType === 'international') {
       // Pre-select credit card option for easier testing
       setSelectedMethod('credit-card');
+    } else {
+      // Pre-select MonCash for national transfers
+      setSelectedMethod('moncash');
     }
   }, [transferType]);
 
@@ -94,7 +97,7 @@ const TransferPage: React.FC = () => {
   // Reset selected method when changing transfer type
   const handleTransferTypeChange = (value: 'international' | 'national') => {
     setTransferType(value);
-    setSelectedMethod(value === 'international' ? 'credit-card' : null); // Auto-select credit card for international
+    setSelectedMethod(value === 'international' ? 'credit-card' : 'moncash'); // Auto-select appropriate default
     setPaypalSuccess(false);
     setPaypalLoading(false);
   };
@@ -112,6 +115,13 @@ const TransferPage: React.FC = () => {
         variant: "destructive",
       });
       return;
+    }
+    
+    // Special handling for national transfers with MonCash
+    // The actual MonCash API call is handled in the TransferConfirmationDrawer component
+    if (transferType === 'national' && selectedMethod === 'moncash') {
+      console.log("MonCash payment selected - will be handled by drawer component");
+      return; // Let the drawer component handle it
     }
     
     setIsLoading(true);
@@ -209,6 +219,7 @@ const TransferPage: React.FC = () => {
       <TransferHeader />
       
       <div className="max-w-md mx-auto p-4">
+        {/* Mode banners */}
         {isProduction && (
           <div className="bg-green-50 border border-green-200 rounded-md p-3 mb-4">
             <div className="flex items-center">
@@ -246,6 +257,23 @@ const TransferPage: React.FC = () => {
                 </h3>
                 <p className="text-xs text-blue-600 mt-1">
                   For international transfers, credit cards offer the fastest and most secure way to send money to Haiti.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {/* MonCash Recommendation for national transfers */}
+        {transferType === 'national' && (
+          <div className="bg-red-50 border border-red-200 rounded-md p-3 mb-4">
+            <div className="flex items-start">
+              <CreditCard className="h-5 w-5 text-red-600 mt-0.5 mr-2 flex-shrink-0" />
+              <div>
+                <h3 className="text-sm font-medium text-red-800">
+                  MonCash Recommended
+                </h3>
+                <p className="text-xs text-red-600 mt-1">
+                  For national transfers within Haiti, MonCash offers the fastest and most secure way to send money.
                 </p>
               </div>
             </div>
