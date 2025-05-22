@@ -126,10 +126,18 @@ const TransferPage: React.FC = () => {
       if (data.nextSteps?.redirectUrl) {
         console.log("Redirect URL received:", data.nextSteps.redirectUrl);
         
-        // For PayPal or credit card payments, set the redirect URL
+        // Handle redirect based on payment method
         if (selectedMethod === 'credit-card' || selectedMethod === 'paypal') {
           toast({
             title: "Redirecting to PayPal",
+            description: "You'll be redirected to complete your payment in a new tab.",
+          });
+          
+          // Set the redirect URL to trigger the useEffect
+          setRedirectUrl(data.nextSteps.redirectUrl);
+        } else if (selectedMethod === 'moncash') {
+          toast({
+            title: "Redirecting to MonCash",
             description: "You'll be redirected to complete your payment in a new tab.",
           });
           

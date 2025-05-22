@@ -4,14 +4,14 @@
 interface Config {
   PAYMENT_API_URL: string;
   NODE_API_URL: string;
-  ACTIVE_BACKEND: 'supabase' | 'nodejs';
+  ACTIVE_BACKEND: 'supabase' | 'nodejs' | 'moncash';
 }
 
 // Default configuration for development
 const defaultConfig: Config = {
   PAYMENT_API_URL: 'https://wkfzhcszhgewkvwukzes.supabase.co/functions/v1/paypal-payment',
   NODE_API_URL: 'http://localhost:3000/api/payment/create-payment',
-  ACTIVE_BACKEND: 'nodejs' // Switch to 'nodejs' to use the Node.js backend
+  ACTIVE_BACKEND: 'nodejs' // Switch to 'moncash' to use the MonCash backend
 };
 
 // Production configuration can be added here if needed
