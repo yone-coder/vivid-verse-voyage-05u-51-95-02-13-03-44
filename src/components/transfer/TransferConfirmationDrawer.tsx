@@ -10,7 +10,7 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer";
 import { PaymentMethod } from './PaymentMethodItem';
-import { Loader2 } from 'lucide-react';
+import { Loader2, AlertCircle } from 'lucide-react';
 import { toast } from "@/hooks/use-toast";
 
 // Backend API URLs as explicit string types
@@ -41,6 +41,34 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
   const [isProcessing, setIsProcessing] = useState(false);
 
   if (!selectedMethod) return null;
+  
+  // Check if the selected method is available
+  const isMethodAvailable = selectedMethod.available !== false;
+  
+  // If method is unavailable, show an error message
+  if (!isMethodAvailable) {
+    return (
+      <DrawerContent>
+        <DrawerHeader>
+          <DrawerTitle>Payment Method Unavailable</DrawerTitle>
+          <DrawerDescription>
+            {selectedMethod.unavailableReason || "This payment method is currently unavailable."}
+          </DrawerDescription>
+        </DrawerHeader>
+        <div className="px-4 py-6 flex flex-col items-center">
+          <AlertCircle className="h-16 w-16 text-red-500 mb-4" />
+          <p className="text-center text-gray-700">
+            Please select MonCash as your payment method for national transfers at this time.
+          </p>
+        </div>
+        <DrawerFooter>
+          <DrawerClose asChild>
+            <Button variant="outline">Go Back</Button>
+          </DrawerClose>
+        </DrawerFooter>
+      </DrawerContent>
+    );
+  }
 
   // Calculate fees based on method and transfer type
   const calculateFee = () => {

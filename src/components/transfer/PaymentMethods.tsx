@@ -5,7 +5,8 @@ import {
   Banknote, 
   Send,
   DollarSign,
-  Smartphone
+  Smartphone,
+  XCircle
 } from 'lucide-react';
 import { PaymentMethod } from './PaymentMethodItem';
 
@@ -55,41 +56,52 @@ export const nationalPaymentMethods: PaymentMethod[] = [
     name: 'MonCash', 
     icon: Smartphone, 
     description: 'Mobile money service by Digicel',
-    fee: '1% (min 5 HTG)' 
+    fee: '1% (min 5 HTG)',
+    available: true
   },
   { 
     id: 'natcash', 
     name: 'Natcash', 
     icon: Smartphone, 
     description: 'National digital wallet service',
-    fee: '0.5% (min 3 HTG)' 
+    fee: '0.5% (min 3 HTG)',
+    available: false,
+    unavailableReason: 'Coming soon'
   },
   { 
     id: 'bnc', 
     name: 'BNC Bank', 
     icon: Banknote, 
     description: 'Banque Nationale de Crédit',
-    fee: '10 HTG' 
+    fee: '10 HTG',
+    available: false,
+    unavailableReason: 'Currently unavailable'
   },
   { 
     id: 'unibank', 
     name: 'Unibank', 
     icon: Banknote, 
     description: 'Unibank S.A.',
-    fee: '12 HTG' 
+    fee: '12 HTG',
+    available: false,
+    unavailableReason: 'Coming soon'
   },
   { 
     id: 'sogebank', 
     name: 'SogeBank', 
     icon: Banknote, 
     description: 'Société Générale Haïtienne de Banque',
-    fee: '15 HTG' 
+    fee: '15 HTG',
+    available: false,
+    unavailableReason: 'Currently unavailable'
   },
   { 
     id: 'buh', 
     name: 'BUH', 
     icon: Banknote, 
     description: 'Banque de l\'Union Haïtienne',
-    fee: '10 HTG' 
+    fee: '10 HTG',
+    available: false,
+    unavailableReason: 'Coming soon'
   }
 ];

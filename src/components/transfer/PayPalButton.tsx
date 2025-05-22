@@ -43,8 +43,8 @@ declare global {
 // Default sandbox client ID in case one isn't provided
 const DEFAULT_CLIENT_ID = 'ASipB9r2XrYB0XD5cfzEItB8jtUq79EcN5uOYATHHJAEbWlQS3odGAH-RJb19wLH1QzHuk9zjUp1wUKc';
 
-// Type-safe API URL as a constant string
-const PAYPAL_API_URL: string = 'https://wkfzhcszhgewkvwukzes.supabase.co/functions/v1/paypal-payment';
+// Type-safe API URL as a string constant
+const PAYPAL_API_URL = 'https://wkfzhcszhgewkvwukzes.supabase.co/functions/v1/paypal-payment';
 
 const PayPalButton: React.FC<PayPalButtonProps> = ({ 
   amount, 
@@ -203,7 +203,7 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
                   const accessToken = session.data.session?.access_token || '';
                   
                   // The URL is explicitly typed as string above
-                  const response = await fetch(PAYPAL_API_URL, {
+                  const response = await fetch(PAYPAL_API_URL as string, {
                     method: 'POST',
                     headers: {
                       'Content-Type': 'application/json',
@@ -244,7 +244,7 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
                   variant: "destructive",
                 });
               } finally {
-                if (setLoading) setLoading(false);
+                if (setLoading) setIsLoading(false);
               }
             }}
             onCancel={() => {
