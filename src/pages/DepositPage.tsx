@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from 'react';
 const PayPalCheckoutPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [showCheckout, setShowCheckout] = useState(false);
+  const [amount, setAmount] = useState('');
   const iframeRef = useRef(null);
 
   // The HTML content for the iframe (you would typically serve this from a separate URL)
@@ -205,10 +206,11 @@ const PayPalCheckoutPage = () => {
               },
 
               createOrder: function(data, actions) {
+                  const orderAmount = window.orderAmount || '100.00';
                   return fetch(\`\${BACKEND_URL}/create_order\`, {
                       method: "post", 
                       headers: { "Content-Type": "application/json; charset=utf-8" },
-                      body: JSON.stringify({ "intent": intent })
+                      body: JSON.stringify({ "intent": intent, "amount": orderAmount })
                   })
                   .then((response) => response.json())
                   .then((order) => { return order.id; });
@@ -260,10 +262,11 @@ const PayPalCheckoutPage = () => {
           if (paypal.HostedFields.isEligible()) {
               paypal_hosted_fields = paypal.HostedFields.render({
                 createOrder: () => {
+                  const orderAmount = window.orderAmount || '100.00';
                   return fetch(\`\${BACKEND_URL}/create_order\`, {
                       method: "post", 
                       headers: { "Content-Type": "application/json; charset=utf-8" },
-                      body: JSON.stringify({ "intent": intent })
+                      body: JSON.stringify({ "intent": intent, "amount": orderAmount })
                   })
                   .then((response) => response.json())
                   .then((order) => { order_id = order.id; return order.id; });
@@ -366,7 +369,13 @@ const PayPalCheckoutPage = () => {
     };
 
     window.addEventListener('message', handleMessage);
-    return () => window.removeEventListener('message', handleMessage);
+    // Create blob URL for iframe content
+  const createIframeUrl = () => {
+    const blob = new Blob([iframeContent], { type: 'text/html' });
+    return URL.createObjectURL(blob);
+  };
+
+  return () => window.removeEventListener('message', handleMessage);
   }, []);
 
   // Handle iframe load
@@ -374,10 +383,19 @@ const PayPalCheckoutPage = () => {
     setIsLoading(false);
   };
 
-  // Create blob URL for iframe content
-  const createIframeUrl = () => {
-    const blob = new Blob([iframeContent], { type: 'text/html' });
-    return URL.createObjectURL(blob);
+  // Update iframe with amount when checkout opens
+  const openCheckout = () => {
+    if (!amount || parseFloat(amount) <= 0) {
+      alert('Please enter a valid amount');
+      return;
+    }
+    setShowCheckout(true);
+    // Pass amount to iframe via window object
+    setTimeout(() => {
+      if (iframeRef.current && iframeRef.current.contentWindow) {
+        iframeRef.current.contentWindow.orderAmount = amount;
+      }
+    }, 1000);
   };
 
   return (
@@ -392,14 +410,31 @@ const PayPalCheckoutPage = () => {
                 alt="NFT Bored Ape" 
                 className="mx-auto w-64 h-64 object-cover rounded-lg mb-4"
               />
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">
+              <h2 className="text-3xl font-bold text-gray-900 mb-6">
                 AI-Generated NFT Bored Ape
               </h2>
-              <p className="text-xl text-green-600 font-semibold mb-6">
-                $100.00 USD
-              </p>
+              
+              <div className="mb-6">
+                <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-2">
+                  Enter Amount (USD)
+                </label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
+                  <input
+                    type="number"
+                    id="amount"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    placeholder="0.00"
+                    min="0.01"
+                    step="0.01"
+                    className="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg text-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+              </div>
+              
               <button
-                onClick={() => setShowCheckout(true)}
+                onClick={openCheckout}
                 className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg text-lg transition-colors"
               >
                 Buy Now with PayPal
