@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 
 const PayPalCheckoutPage = () => {
@@ -401,72 +400,147 @@ const PayPalCheckoutPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <div className="max-w-2xl mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black">
+      {/* Ambient Background */}
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 via-purple-600/10 to-cyan-500/10 animate-pulse"></div>
+      
+      {/* Floating orbs */}
+      <div className="absolute top-20 left-20 w-72 h-72 bg-gradient-to-r from-blue-400/20 to-purple-600/20 rounded-full blur-3xl animate-pulse"></div>
+      <div className="absolute bottom-20 right-20 w-96 h-96 bg-gradient-to-r from-cyan-400/20 to-blue-600/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+
+      <div className="relative z-10">
         {!showCheckout ? (
           /* Product Display */
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <div className="text-center">
-              <img 
-                src="https://cdn.discordapp.com/attachments/1060825015681028127/1076385063903694908/rauljr7_3d_e83fed6a-69aa-4a6a-b0ec-928edd57aecf.png" 
-                alt="NFT Bored Ape" 
-                className="mx-auto w-64 h-64 object-cover rounded-lg mb-4"
-              />
-              <h2 className="text-3xl font-bold text-gray-900 mb-6">
-                AI-Generated NFT Bored Ape
-              </h2>
-              
-              <div className="mb-6">
-                <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-2">
-                  Enter Amount (USD)
-                </label>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
-                  <input
-                    type="number"
-                    id="amount"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    placeholder="0.00"
-                    min="0.01"
-                    step="0.01"
-                    className="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg text-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
+          <div className="container mx-auto px-4 py-12">
+            <div className="max-w-4xl mx-auto">
+              <div className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-3xl p-8 shadow-2xl">
+                <div className="grid lg:grid-cols-2 gap-12 items-center">
+                  {/* Product Image */}
+                  <div className="relative group">
+                    <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-500 rounded-2xl blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
+                    <div className="relative">
+                      <img 
+                        src="https://cdn.discordapp.com/attachments/1060825015681028127/1076385063903694908/rauljr7_3d_e83fed6a-69aa-4a6a-b0ec-928edd57aecf.png" 
+                        alt="NFT Bored Ape" 
+                        className="w-full aspect-square object-cover rounded-2xl shadow-2xl transform group-hover:scale-105 transition-transform duration-700"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-2xl"></div>
+                    </div>
+                  </div>
+
+                  {/* Product Details */}
+                  <div className="space-y-8">
+                    <div>
+                      <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 rounded-full mb-4">
+                        <span className="text-sm font-medium text-blue-300">Premium NFT Collection</span>
+                      </div>
+                      <h1 className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent mb-4">
+                        AI-Generated Bored Ape
+                      </h1>
+                      <p className="text-gray-300 text-lg leading-relaxed">
+                        Exclusive digital artwork powered by advanced AI algorithms. Each piece is unique and authenticated on the blockchain.
+                      </p>
+                    </div>
+
+                    {/* Amount Input */}
+                    <div className="space-y-4">
+                      <label className="block text-sm font-semibold text-gray-200 uppercase tracking-wider">
+                        Set Your Price
+                      </label>
+                      <div className="relative group">
+                        <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl blur opacity-30 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+                        <div className="relative">
+                          <span className="absolute left-6 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl font-bold">$</span>
+                          <input
+                            type="number"
+                            value={amount}
+                            onChange={(e) => setAmount(e.target.value)}
+                            placeholder="0.00"
+                            min="0.01"
+                            step="0.01"
+                            className="w-full pl-12 pr-6 py-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl text-white text-xl font-medium placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent transition-all duration-300"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Buy Button */}
+                    <button
+                      onClick={openCheckout}
+                      className="group relative w-full py-4 px-8 bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-500 rounded-xl font-bold text-white text-lg overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/25"
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-r from-blue-700 via-purple-700 to-cyan-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      <div className="relative flex items-center justify-center space-x-3">
+                        <span>Secure Checkout</span>
+                        <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                        </svg>
+                      </div>
+                    </button>
+
+                    {/* Security badges */}
+                    <div className="flex items-center justify-center space-x-6 pt-4">
+                      <div className="flex items-center space-x-2 text-gray-400 text-sm">
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                        </svg>
+                        <span>256-bit SSL</span>
+                      </div>
+                      <div className="flex items-center space-x-2 text-gray-400 text-sm">
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                        <span>Verified</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-              
-              <button
-                onClick={openCheckout}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg text-lg transition-colors"
-              >
-                Buy Now with PayPal
-              </button>
             </div>
           </div>
         ) : (
-          /* Checkout Iframe */
-          <div className="bg-white rounded-lg shadow-md overflow-hidden">
-            <div className="border-b px-6 py-4 flex justify-between items-center">
-              <h2 className="text-xl font-semibold text-gray-900">Checkout</h2>
-              <button
-                onClick={() => setShowCheckout(false)}
-                className="text-gray-500 hover:text-gray-700 text-2xl font-bold"
-              >
-                ×
-              </button>
+          /* Full-width Checkout Iframe */
+          <div className="min-h-screen flex flex-col">
+            {/* Header */}
+            <div className="bg-black/20 backdrop-blur-xl border-b border-white/10">
+              <div className="container mx-auto px-6 py-4 flex justify-between items-center">
+                <div className="flex items-center space-x-4">
+                  <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg"></div>
+                  <h2 className="text-xl font-bold text-white">Secure Checkout</h2>
+                  <div className="hidden sm:flex items-center space-x-2 px-3 py-1 bg-green-500/20 border border-green-500/30 rounded-full">
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    <span className="text-green-300 text-sm font-medium">${amount}</span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowCheckout(false)}
+                  className="group p-2 hover:bg-white/10 rounded-full transition-all duration-300"
+                >
+                  <svg className="w-6 h-6 text-gray-400 group-hover:text-white transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
             </div>
 
-            <div className="relative">
+            {/* Full-width Iframe Container */}
+            <div className="flex-1 relative">
               {isLoading && (
-                <div className="absolute inset-0 bg-white flex items-center justify-center z-10">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-slate-900 to-black flex items-center justify-center z-10">
+                  <div className="flex flex-col items-center space-y-4">
+                    <div className="relative">
+                      <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 blur-sm animate-pulse"></div>
+                      <div className="relative w-16 h-16 border-4 border-transparent border-t-blue-500 border-r-purple-500 rounded-full animate-spin"></div>
+                    </div>
+                    <p className="text-gray-300 font-medium">Loading secure checkout...</p>
+                  </div>
                 </div>
               )}
 
               <iframe
                 ref={iframeRef}
                 src={createIframeUrl()}
-                className="w-full h-96 border-0"
+                className="w-full h-full min-h-[600px] border-0"
                 onLoad={handleIframeLoad}
                 title="PayPal Checkout"
                 sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
@@ -475,6 +549,23 @@ const PayPalCheckoutPage = () => {
           </div>
         )}
       </div>
+
+      <style jsx>{`
+        @keyframes tilt {
+          0%, 50%, 100% {
+            transform: rotate(0deg);
+          }
+          25% {
+            transform: rotate(0.5deg);
+          }
+          75% {
+            transform: rotate(-0.5deg);
+          }
+        }
+        .animate-tilt {
+          animation: tilt 10s infinite linear;
+        }
+      `}</style>
     </div>
   );
 };
