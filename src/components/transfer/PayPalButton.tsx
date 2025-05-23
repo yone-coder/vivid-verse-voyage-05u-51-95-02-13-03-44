@@ -1,10 +1,19 @@
-
 import React, { useState, useEffect } from 'react';
 import { PayPalButtons } from '@paypal/react-paypal-js';
 import { Button } from "@/components/ui/button";
 import { Check, RefreshCw, AlertTriangle } from 'lucide-react';
 import { useToast } from "@/components/ui/use-toast";
 import { PAYPAL_BACKEND_URL } from './PaymentMethods';
+
+// Define the PayPal global object type
+declare global {
+  interface Window {
+    paypal?: {
+      Buttons?: any;
+      [key: string]: any;
+    };
+  }
+}
 
 interface PayPalButtonProps {
   amount: string;
