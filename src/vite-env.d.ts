@@ -10,5 +10,5 @@ interface Window {
       render: (options: any) => Promise<any>;
     };
     [key: string]: any;
-  }
+  };
 }

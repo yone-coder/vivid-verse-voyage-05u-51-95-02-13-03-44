@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Loader2, AlertTriangle } from 'lucide-react';
@@ -73,7 +72,6 @@ const PayPalHostedCheckout: React.FC<PayPalHostedCheckoutProps> = ({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           intent: 'capture',
-          // Pass amount and remove return/cancel URLs for in-app checkout
           amount: parseFloat(amount),
           in_app_checkout: true
         })
@@ -179,8 +177,12 @@ const PayPalHostedCheckout: React.FC<PayPalHostedCheckoutProps> = ({
             '.valid': { color: 'green' },
             '.invalid': { color: 'red' },
             'input': {
-              'font-size': '14px',
-              'color': '#333'
+              'font-size': '16px',
+              'color': '#333',
+              'padding': '12px',
+              'border': 'none',
+              'outline': 'none',
+              'width': '100%'
             }
           },
 
@@ -253,43 +255,45 @@ const PayPalHostedCheckout: React.FC<PayPalHostedCheckoutProps> = ({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div className="text-center">
-        <h3 className="text-lg font-semibold mb-2">Complete Your Payment</h3>
-        <p className="text-gray-600">Amount: ${amount} USD</p>
+        <h3 className="text-xl font-semibold mb-2">Complete Your Payment</h3>
+        <p className="text-gray-600 text-lg">${amount} USD</p>
       </div>
 
       {/* PayPal Buttons */}
-      <div>
-        <h4 className="font-medium mb-3">Pay with PayPal</h4>
+      <div className="bg-gray-50 rounded-lg p-6">
+        <h4 className="font-medium mb-4 text-center">Pay with PayPal</h4>
         <div ref={paypalButtonsRef}></div>
       </div>
 
-      <div className="text-center text-gray-500">
-        <span>OR</span>
+      <div className="flex items-center justify-center">
+        <div className="flex-grow border-t border-gray-300"></div>
+        <span className="px-4 text-gray-500 text-sm">OR</span>
+        <div className="flex-grow border-t border-gray-300"></div>
       </div>
 
       {/* Credit Card Form */}
-      <div>
-        <h4 className="font-medium mb-3">Pay with Credit Card</h4>
-        <form ref={cardFormRef} className="space-y-4">
+      <div className="bg-white rounded-lg border p-6">
+        <h4 className="font-medium mb-6 text-center">Pay with Credit Card</h4>
+        <form ref={cardFormRef} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium mb-1">Card Number</label>
-            <div id="card-number" className="border rounded-md p-3 bg-white"></div>
+            <label className="block text-sm font-medium mb-2 text-gray-700">Card Number</label>
+            <div id="card-number" className="border border-gray-300 rounded-lg p-0 bg-white min-h-[48px] flex items-center"></div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium mb-1">Expiration Date</label>
-              <div id="expiration-date" className="border rounded-md p-3 bg-white"></div>
+              <label className="block text-sm font-medium mb-2 text-gray-700">Expiration Date</label>
+              <div id="expiration-date" className="border border-gray-300 rounded-lg p-0 bg-white min-h-[48px] flex items-center"></div>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Security Code</label>
-              <div id="cvv" className="border rounded-md p-3 bg-white"></div>
+              <label className="block text-sm font-medium mb-2 text-gray-700">Security Code</label>
+              <div id="cvv" className="border border-gray-300 rounded-lg p-0 bg-white min-h-[48px] flex items-center"></div>
             </div>
           </div>
 
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-full h-12 text-lg font-medium mt-8">
             Pay ${amount}
           </Button>
         </form>
