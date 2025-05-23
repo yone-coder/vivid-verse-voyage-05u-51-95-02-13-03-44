@@ -1,63 +1,110 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-const PayPalCheckout = () => {
-  const paypalRef = useRef();
+const PayPalCreditCardCheckout = () => {
+  const cardNumberRef = useRef();
+  const expiryDateRef = useRef();
+  const cvvRef = useRef();
   const [amount, setAmount] = useState('10.00');
   const [currency, setCurrency] = useState('USD');
   const [description, setDescription] = useState('Sample Product');
   const [paymentStatus, setPaymentStatus] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [hostedFieldsInstance, setHostedFieldsInstance] = useState(null);
+  const [cardValid, setCardValid] = useState(false);
 
   // Replace with your actual PayPal Client ID
   const CLIENT_ID = 'AU23YbLMTqxG3iSvnhcWtix6rGN14uw3axYJgrDe8VqUVng8XiQmmeiaxJWbnpbZP_f4--RTg146F1Mj';
 
   useEffect(() => {
-    // Load PayPal SDK
+    // Load PayPal SDK with hosted fields
     const script = document.createElement('script');
-    script.src = `https://www.paypal.com/sdk/js?client-id=${CLIENT_ID}&currency=${currency}&enable-funding=venmo,paylater&components=buttons,hosted-fields`;
+    script.src = `https://www.paypal.com/sdk/js?client-id=${CLIENT_ID}&currency=${currency}&components=hosted-fields`;
     script.async = true;
-    
+
     script.onload = () => {
-      if (window.paypal) {
-        window.paypal.Buttons({
-          createOrder: (data, actions) => {
-            return actions.order.create({
-              purchase_units: [{
-                amount: {
-                  value: amount,
-                  currency_code: currency
-                },
-                description: description
-              }]
+      if (window.paypal && window.paypal.HostedFields) {
+        window.paypal.HostedFields.render({
+          createOrder: () => {
+            return fetch('/api/orders', {
+              method: 'post',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                purchase_units: [{
+                  amount: {
+                    value: amount,
+                    currency_code: currency
+                  },
+                  description: description
+                }]
+              })
+            }).then(res => res.json()).then(data => data.id).catch(() => {
+              // Fallback: create order directly (for demo purposes)
+              return window.paypal.HostedFields.createOrder({
+                purchase_units: [{
+                  amount: {
+                    value: amount,
+                    currency_code: currency
+                  },
+                  description: description
+                }]
+              });
             });
           },
-          onApprove: async (data, actions) => {
-            setIsLoading(true);
-            try {
-              const details = await actions.order.capture();
-              setPaymentStatus('success');
-              console.log('Payment completed:', details);
-              
-              // Here you would typically send the payment details to your backend
-              // to verify and process the payment
-              
-            } catch (error) {
-              console.error('Payment error:', error);
-              setPaymentStatus('error');
-            } finally {
-              setIsLoading(false);
+          styles: {
+            'input': {
+              'font-size': '16px',
+              'font-family': 'system-ui, -apple-system, sans-serif',
+              'color': '#374151'
+            },
+            ':focus': {
+              'color': '#1f2937'
+            },
+            '.invalid': {
+              'color': '#ef4444'
             }
           },
-          onError: (err) => {
-            console.error('PayPal error:', err);
-            setPaymentStatus('error');
-          },
-          onCancel: (data) => {
-            console.log('Payment cancelled:', data);
-            setPaymentStatus('cancelled');
+          fields: {
+            number: {
+              selector: '#card-number',
+              placeholder: '1234 1234 1234 1234'
+            },
+            cvv: {
+              selector: '#cvv',
+              placeholder: '123'
+            },
+            expirationDate: {
+              selector: '#expiry-date',
+              placeholder: 'MM/YY'
+            }
           }
-        }).render(paypalRef.current);
+        }).then((hostedFields) => {
+          setHostedFieldsInstance(hostedFields);
+
+          // Listen for field validation events
+          hostedFields.on('validityChange', (event) => {
+            const formValid = Object.keys(event.fields).every(key => {
+              return event.fields[key].isValid;
+            });
+            setCardValid(formValid);
+          });
+
+          hostedFields.on('cardTypeChange', (event) => {
+            // Handle card type changes if needed
+            console.log('Card type:', event.card.type);
+          });
+
+        }).catch((err) => {
+          console.error('Error rendering hosted fields:', err);
+          setPaymentStatus('error');
+        });
       }
+    };
+
+    script.onerror = () => {
+      console.error('Failed to load PayPal SDK');
+      setPaymentStatus('error');
     };
 
     document.body.appendChild(script);
@@ -70,16 +117,47 @@ const PayPalCheckout = () => {
     };
   }, [amount, currency, description]);
 
+  const handleSubmit = async () => {
+    if (!hostedFieldsInstance || !cardValid) {
+      alert('Please fill in all card details correctly');
+      return;
+    }
+
+    setIsLoading(true);
+    
+    try {
+      const result = await hostedFieldsInstance.submit({
+        // Collect additional data
+        contingencies: ['3D_SECURE']
+      });
+
+      if (result.liabilityShift) {
+        // 3D Secure authentication was successful
+        console.log('Payment completed with 3D Secure:', result);
+      } else {
+        console.log('Payment completed:', result);
+      }
+
+      setPaymentStatus('success');
+    } catch (error) {
+      console.error('Payment error:', error);
+      setPaymentStatus('error');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const resetPayment = () => {
     setPaymentStatus('');
-    window.location.reload(); // Simple way to reset PayPal buttons
+    setCardValid(false);
+    window.location.reload();
   };
 
   return (
     <div className="max-w-md mx-auto bg-white shadow-lg rounded-lg p-6 mt-8">
       <div className="text-center mb-6">
         <h1 className="text-2xl font-bold text-gray-800 mb-2">Secure Checkout</h1>
-        <p className="text-gray-600">Pay safely with PayPal</p>
+        <p className="text-gray-600">Pay with your credit or debit card</p>
       </div>
 
       {/* Payment Configuration */}
@@ -196,44 +274,71 @@ const PayPalCheckout = () => {
         </div>
       )}
 
-      {paymentStatus === 'cancelled' && (
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-              </svg>
-            </div>
-            <div className="ml-3">
-              <h3 className="text-sm font-medium text-yellow-800">Payment Cancelled</h3>
-              <p className="text-sm text-yellow-700 mt-1">Your payment was cancelled. You can try again when ready.</p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* PayPal Button Container */}
+      {/* Credit Card Form */}
       {!paymentStatus && (
         <div>
-          <div className="text-center mb-4">
-            <p className="text-sm text-gray-600">
-              You'll be redirected to PayPal to complete your payment securely
-            </p>
+          <div className="space-y-4 mb-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Card Number
+              </label>
+              <div 
+                id="card-number" 
+                ref={cardNumberRef}
+                className="w-full px-3 py-3 border border-gray-300 rounded-md focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent bg-white"
+                style={{ minHeight: '44px' }}
+              ></div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Expiry Date
+                </label>
+                <div 
+                  id="expiry-date" 
+                  ref={expiryDateRef}
+                  className="w-full px-3 py-3 border border-gray-300 rounded-md focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent bg-white"
+                  style={{ minHeight: '44px' }}
+                ></div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  CVV
+                </label>
+                <div 
+                  id="cvv" 
+                  ref={cvvRef}
+                  className="w-full px-3 py-3 border border-gray-300 rounded-md focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent bg-white"
+                  style={{ minHeight: '44px' }}
+                ></div>
+              </div>
+            </div>
           </div>
-          
-          {isLoading && (
-            <div className="text-center mb-4">
-              <div className="inline-flex items-center">
-                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+
+          {/* Submit Button */}
+          <button
+            onClick={handleSubmit}
+            disabled={!cardValid || isLoading}
+            className={`w-full py-3 px-4 rounded-md font-medium transition-colors ${
+              cardValid && !isLoading
+                ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            }`}
+          >
+            {isLoading ? (
+              <div className="flex items-center justify-center">
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                Processing payment...
+                Processing...
               </div>
-            </div>
-          )}
-          
-          <div ref={paypalRef}></div>
+            ) : (
+              `Pay ${currency === 'USD' ? '$' : ''}${amount} ${currency !== 'USD' ? currency : ''}`
+            )}
+          </button>
         </div>
       )}
 
@@ -243,8 +348,11 @@ const PayPalCheckout = () => {
           <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
           </svg>
-          Secured by PayPal
+          Secured by PayPal • Your card details are encrypted
         </div>
+        <p className="text-xs text-gray-400 mt-1">
+          We accept Visa, Mastercard, American Express, and Discover
+        </p>
       </div>
 
       {/* Setup Instructions */}
@@ -258,6 +366,7 @@ const PayPalCheckout = () => {
             <li>Create a PayPal Developer account</li>
             <li>Get your Client ID from the PayPal Developer Dashboard</li>
             <li>Replace 'YOUR_PAYPAL_CLIENT_ID' in the code with your actual Client ID</li>
+            <li>Set up a backend endpoint to handle order creation (optional for basic demo)</li>
           </ol>
         </div>
       )}
@@ -265,4 +374,4 @@ const PayPalCheckout = () => {
   );
 };
 
-export default PayPalCheckout;
+export default PayPalCreditCardCheckout;
