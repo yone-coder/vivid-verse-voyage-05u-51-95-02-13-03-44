@@ -4,7 +4,11 @@
 // Define PayPal global object
 interface Window {
   paypal?: {
-    Buttons: (options: any) => { render: (element: HTMLElement | null) => void };
+    Buttons: (options: any) => { render: (element: HTMLElement | string) => void };
+    HostedFields: {
+      isEligible: () => boolean;
+      render: (options: any) => Promise<any>;
+    };
     [key: string]: any;
   }
 }

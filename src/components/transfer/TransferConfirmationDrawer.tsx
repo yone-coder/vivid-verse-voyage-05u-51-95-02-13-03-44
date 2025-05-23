@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import {
@@ -14,11 +13,10 @@ import { Loader2, AlertCircle, ArrowRight } from 'lucide-react';
 import { toast } from "@/hooks/use-toast";
 import { PAYPAL_BACKEND_URL } from './PaymentMethods';
 import ReceiverDetailsForm, { ReceiverDetails } from './ReceiverDetailsForm';
-import PayPalButton from './PayPalButton';
+import PayPalHostedCheckout from './PayPalHostedCheckout';
 
 // Backend API URLs as explicit string types
 const MONCASH_BACKEND_URL: string = 'https://moncash-backend.onrender.com';
-const PAYPAL_CHECKOUT_URL: string = 'https://paypal-with-nodejs.onrender.com';
 
 interface TransferConfirmationDrawerProps {
   isOpen: boolean;
@@ -44,7 +42,6 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
   const [isProcessing, setIsProcessing] = useState(false);
   const [receiverDetails, setReceiverDetails] = useState<ReceiverDetails | null>(null);
   const [step, setStep] = useState<'summary' | 'receiverDetails' | 'confirmation'>('summary');
-  const [paymentError, setPaymentError] = useState<string | null>(null);
 
   if (!selectedMethod) return null;
 
@@ -87,7 +84,6 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
         default: return `${currencySymbol}${((parseFloat(amount) * 0.035) + 0.3).toFixed(2)}`;
       }
     } else {
-      // New fee structure for national transfers based on amount ranges
       const amountNum = parseFloat(amount);
 
       if (amountNum >= 1000 && amountNum <= 1999) {
@@ -99,7 +95,6 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
       } else if (amountNum >= 8000 && amountNum <= 11999) {
         return '275 HTG';
       } else {
-        // For amounts outside the specified ranges, keep the original logic
         switch (selectedMethod.id) {
           case 'moncash': return `${Math.max(5, parseFloat(amount) * 0.01).toFixed(2)} HTG`;
           case 'natcash': return `${Math.max(3, parseFloat(amount) * 0.005).toFixed(2)} HTG`;
@@ -123,7 +118,6 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
       const amountNum = parseFloat(amount);
       let fee = 0;
 
-      // Calculate fee based on the new structure
       if (amountNum >= 1000 && amountNum <= 1999) {
         fee = 65;
       } else if (amountNum >= 2000 && amountNum <= 3999) {
@@ -133,7 +127,6 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
       } else if (amountNum >= 8000 && amountNum <= 11999) {
         fee = 275;
       } else {
-        // For amounts outside the specified ranges, keep the original logic
         switch (selectedMethod.id) {
           case 'moncash': fee = Math.max(5, amountNum * 0.01); break;
           case 'natcash': fee = Math.max(3, amountNum * 0.005); break;
@@ -148,7 +141,6 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
   // Handle MonCash payment process
   const handleMonCashPayment = async () => {
     if (transferType !== 'national' || selectedMethod.id !== 'moncash') {
-      // For non-MonCash payments, use the regular flow
       onContinue();
       return;
     }
@@ -156,7 +148,6 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
     setIsProcessing(true);
 
     try {
-      // Step 1: Get access token
       const tokenResponse = await fetch(`${MONCASH_BACKEND_URL}/api/get-token`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
@@ -174,7 +165,6 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
         throw new Error('Invalid access token received from MonCash');
       }
 
-      // Step 2: Create payment and get redirect URL
       const paymentResponse = await fetch(`${MONCASH_BACKEND_URL}/api/create-payment`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -195,7 +185,6 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
         throw new Error('No payment URL received from MonCash');
       }
 
-      // Step 3: Redirect to MonCash payment page
       window.location.href = paymentData.paymentUrl;
 
     } catch (error) {
@@ -208,11 +197,6 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
       setIsProcessing(false);
     }
   };
-  
-  // NEW: Handle redirect to PayPal Checkout page for credit cards
-  const handleCreditCardCheckout = () => {
-    window.location.href = PAYPAL_CHECKOUT_URL;
-  };
 
   // Handle PayPal payment success
   const handlePayPalSuccess = (details: any) => {
@@ -222,7 +206,6 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
       variant: "default",
     });
     
-    // Close the drawer and reset
     onOpenChange(false);
     setStep('summary');
     setReceiverDetails(null);
@@ -232,12 +215,16 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
   const handlePayPalError = (error: any) => {
     console.error('PayPal error:', error);
     setIsProcessing(false);
-    setPaymentError(error instanceof Error ? error.message : "An error occurred with PayPal. Please try again.");
     toast({
       title: "PayPal Error",
       description: "An error occurred with PayPal. Please try again or use another payment method.",
       variant: "destructive",
     });
+  };
+
+  // Handle PayPal payment cancel
+  const handlePayPalCancel = () => {
+    setStep('summary');
   };
 
   // Validate receiver details for international transfers
@@ -251,7 +238,6 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
   // Handle payment method selection and routing
   const handlePaymentContinue = () => {
     if (transferType === 'international') {
-      // For international transfers, go to receiver details first
       setStep('receiverDetails');
     } else if (transferType === 'national' && selectedMethod.id === 'moncash') {
       return handleMonCashPayment();
@@ -384,32 +370,15 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
           </div>
         )}
 
-        {/* Credit Card Payment Button - Updated to redirect to PayPal Checkout page */}
+        {/* PayPal Hosted Checkout for Credit Card payments */}
         {transferType === 'international' && selectedMethod.id === 'credit-card' && (
           <div className="mb-4">
-            <div className="text-sm text-gray-600 mb-2">
-              Complete your payment securely with PayPal's hosted checkout:
-            </div>
-            <Button 
-              onClick={handleCreditCardCheckout}
-              className="w-full bg-blue-500 hover:bg-blue-600"
-              disabled={isProcessing}
-            >
-              {isProcessing ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Processing...
-                </>
-              ) : (
-                <>Proceed to Secure Checkout</>
-              )}
-            </Button>
-            {paymentError && (
-              <div className="mt-2 text-xs text-red-500 flex items-center">
-                <AlertCircle className="h-3 w-3 mr-1" />
-                {paymentError}
-              </div>
-            )}
+            <PayPalHostedCheckout
+              amount={amount}
+              onSuccess={handlePayPalSuccess}
+              onError={handlePayPalError}
+              onCancel={handlePayPalCancel}
+            />
           </div>
         )}
       </div>
