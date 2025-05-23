@@ -111,7 +111,7 @@ const PayPalCheckoutPage = () => {
 
     <script>
       // Configuration - Update this URL to your deployed backend
-      const BACKEND_URL = 'http://localhost:3000'; // Change this to your Render.com URL
+      const BACKEND_URL = 'https://paypal-with-nodejs.onrender.com'; // Change this to your Render.com URL
 
       // Helper / Utility functions
       let current_customer_id;
