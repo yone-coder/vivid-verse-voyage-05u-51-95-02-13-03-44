@@ -227,7 +227,7 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
     setStep('summary');
   };
 
-  // Validate receiver details for international transfers
+  // Validate receiver details for all transfers
   const isReceiverDetailsValid = () => {
     if (!receiverDetails) return false;
 
@@ -235,15 +235,10 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
     return fullName.trim() !== '' && phoneNumber.trim() !== '' && address.trim() !== '';
   };
 
-  // Handle payment method selection and routing
+  // Handle payment method selection and routing - ALL transfers now require receiver details
   const handlePaymentContinue = () => {
-    if (transferType === 'international') {
-      setStep('receiverDetails');
-    } else if (transferType === 'national' && selectedMethod.id === 'moncash') {
-      return handleMonCashPayment();
-    } else {
-      return onContinue();
-    }
+    // All transfers (both international and national) now require receiver details
+    setStep('receiverDetails');
   };
 
   // Render summary step
@@ -284,10 +279,7 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
                 Processing...
               </>
             ) : (
-              transferType === 'international' ? 
-                'Continue to Receiver Details' : 
-                transferType === 'national' && selectedMethod.id === 'moncash' ? 
-                  'Continue to MonCash' : 'Continue to Payment'
+              'Continue to Receiver Details'
             )}
           </Button>
           <DrawerClose asChild>
@@ -330,7 +322,7 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
     );
   }
 
-  // Render confirmation step with PayPal integration
+  // Render confirmation step with payment integration
   return (
     <DrawerContent>
       <DrawerHeader>
@@ -379,6 +371,27 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
               onError={handlePayPalError}
               onCancel={handlePayPalCancel}
             />
+          </div>
+        )}
+
+        {/* MonCash payment button for national transfers */}
+        {transferType === 'national' && selectedMethod.id === 'moncash' && (
+          <div className="mb-4">
+            <Button 
+              onClick={handleMonCashPayment} 
+              disabled={isProcessing}
+              className="w-full bg-red-600 hover:bg-red-700 text-white"
+              size="lg"
+            >
+              {isProcessing ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Processing MonCash Payment...
+                </>
+              ) : (
+                'Complete MonCash Payment'
+              )}
+            </Button>
           </div>
         )}
       </div>
