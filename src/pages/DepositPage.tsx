@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 
 const PayPalCheckoutPage = () => {
@@ -349,6 +350,12 @@ const PayPalCheckoutPage = () => {
   </body>
 </html>`;
 
+  // Create blob URL for iframe content - moved outside useEffect
+  const createIframeUrl = () => {
+    const blob = new Blob([iframeContent], { type: 'text/html' });
+    return URL.createObjectURL(blob);
+  };
+
   // Handle messages from iframe
   useEffect(() => {
     const handleMessage = (event) => {
@@ -369,13 +376,8 @@ const PayPalCheckoutPage = () => {
     };
 
     window.addEventListener('message', handleMessage);
-    // Create blob URL for iframe content
-  const createIframeUrl = () => {
-    const blob = new Blob([iframeContent], { type: 'text/html' });
-    return URL.createObjectURL(blob);
-  };
 
-  return () => window.removeEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
   }, []);
 
   // Handle iframe load
