@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { PayPalButtons } from '@paypal/react-paypal-js';
 import { Button } from "@/components/ui/button";
@@ -25,28 +26,45 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
   const [paypalReady, setPaypalReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [orderID, setOrderID] = useState<string | null>(null);
+  const [sdkLoaded, setSdkLoaded] = useState(false);
 
   useEffect(() => {
     // Check if PayPal script is loaded and ready
     const checkPayPalReady = () => {
-      if (window.paypal) {
+      if (window.paypal && window.paypal.Buttons) {
         setPaypalReady(true);
-      } else {
+        setSdkLoaded(true);
+        console.log("PayPal SDK loaded successfully with Buttons API");
+      } else if (window.paypal) {
+        console.log("PayPal SDK loaded but Buttons API not available");
+        setSdkLoaded(true);
         setPaypalReady(false);
+      } else {
+        console.log("PayPal SDK not loaded yet");
+        setPaypalReady(false);
+        setSdkLoaded(false);
       }
     };
 
     checkPayPalReady();
 
     // Poll for PayPal availability for a few seconds
+    const checkInterval = setInterval(checkPayPalReady, 1000);
     const timeout = setTimeout(() => {
+      clearInterval(checkInterval);
       checkPayPalReady();
       if (!paypalReady) {
-        console.log("PayPal SDK not loaded after timeout");
+        console.log("PayPal SDK not loaded properly after timeout");
+        if (sdkLoaded && !window.paypal?.Buttons) {
+          setError("PayPal checkout is currently unavailable. Please try again later or use an alternative payment method.");
+        }
       }
-    }, 3000);
+    }, 5000);
 
-    return () => clearTimeout(timeout);
+    return () => {
+      clearInterval(checkInterval);
+      clearTimeout(timeout);
+    };
   }, []);
 
   const createOrder = async () => {
@@ -194,6 +212,45 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
     }
   };
   
+  // Try to reload PayPal SDK
+  const reloadPayPalSDK = () => {
+    setError(null);
+    
+    // Remove existing PayPal script if any
+    const existingScript = document.querySelector('script[src*="paypal.com/sdk/js"]');
+    if (existingScript && existingScript.parentNode) {
+      existingScript.parentNode.removeChild(existingScript);
+    }
+    
+    // Create a new script element
+    const script = document.createElement('script');
+    script.src = 'https://www.paypal.com/sdk/js?client-id=AU23YbLMTqxG3iSvnhcWtix6rGN14uw3axYJgrDe8VqUVng8XiQmmeiaxJWbnpbZP_f4--RTg146F1Mj&currency=USD&intent=capture&enable-funding=venmo,paylater,card&disable-funding=credit';
+    script.async = true;
+    script.onload = () => {
+      console.log("PayPal SDK reloaded successfully");
+      setTimeout(() => {
+        if (window.paypal && window.paypal.Buttons) {
+          setPaypalReady(true);
+          setSdkLoaded(true);
+          toast({
+            title: "PayPal Ready",
+            description: "PayPal checkout is now available.",
+            variant: "success",
+          });
+        } else {
+          setPaypalReady(false);
+          setSdkLoaded(true);
+          setError("PayPal checkout is still unavailable. Please try an alternative payment method.");
+        }
+      }, 1000);
+    };
+    script.onerror = () => {
+      console.error("Failed to reload PayPal SDK");
+      setError("Could not load PayPal. Please check your internet connection and try again.");
+    };
+    document.body.appendChild(script);
+  };
+  
   if (!paypalReady && showFallbackButton) {
     return (
       <div className="space-y-3">
@@ -219,8 +276,20 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
           </div>
         )}
         
-        <div className="text-xs text-gray-500 text-center">
-          PayPal buttons are loading. If they don't appear, use the button above.
+        <div className="flex flex-col space-y-2">
+          <div className="text-xs text-gray-500 text-center">
+            PayPal buttons are not available right now.
+          </div>
+          
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={reloadPayPalSDK} 
+            disabled={loading}
+          >
+            <RefreshCw className="h-3 w-3 mr-1" />
+            Try to reload PayPal
+          </Button>
         </div>
       </div>
     );
@@ -235,22 +304,29 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
         </div>
       )}
       
-      <PayPalButtons
-        style={{
-          layout: "vertical",
-          color: "blue",
-          shape: "rect",
-          label: "pay",
-        }}
-        forceReRender={[amount, currency]}
-        createOrder={createOrder}
-        onApprove={onApprove}
-        onError={(err) => {
-          console.error("PayPal Error:", err);
-          setError("An error occurred with PayPal. Please try again.");
-          onError(err);
-        }}
-      />
+      {paypalReady ? (
+        <PayPalButtons
+          style={{
+            layout: "vertical",
+            color: "blue",
+            shape: "rect",
+            label: "pay",
+          }}
+          forceReRender={[amount, currency]}
+          createOrder={createOrder}
+          onApprove={onApprove}
+          onError={(err) => {
+            console.error("PayPal Error:", err);
+            setError("An error occurred with PayPal. Please try again.");
+            onError(err);
+          }}
+        />
+      ) : (
+        <div className="p-4 border border-gray-200 rounded bg-gray-50 flex items-center justify-center">
+          <RefreshCw className="h-5 w-5 animate-spin mr-2 text-gray-400" />
+          <span className="text-sm text-gray-500">Loading PayPal checkout...</span>
+        </div>
+      )}
       
       {loading && (
         <div className="flex justify-center items-center mt-2">
