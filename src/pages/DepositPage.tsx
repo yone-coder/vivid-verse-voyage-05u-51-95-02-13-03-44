@@ -202,8 +202,8 @@ const DepositPage: React.FC = () => {
                 'input': {
                   'font-size': '16px',
                   'font-family': 'Arial, sans-serif',
-                  'color': 'var(--foreground)',
-                  'font-weight': 'normal',
+                  'color': '#3a3a3a',
+                  'font-weight': '400',
                   'transition': 'color 160ms linear',
                   'background-color': 'transparent'
                 }
