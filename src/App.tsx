@@ -1,3 +1,4 @@
+
 import React, { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -35,6 +36,7 @@ import KidsHobbiesPage from "./pages/KidsHobbiesPage";
 import SportsOutdoorsPage from "./pages/SportsOutdoorsPage";
 import AutomotivePage from "./pages/AutomotivePage";
 import CategoriesPage from "./pages/CategoriesPage";
+import PayPalCheckout from "./pages/PayPalCheckout";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -77,6 +79,7 @@ const App = () => {
                       <Route path="/transfer" element={<TransferPage />} />
                       <Route path="/topup" element={<TopUpPage />} />
                       <Route path="/netflix" element={<NetflixPage />} />
+                      <Route path="/paypal-checkout" element={<PayPalCheckout />} />
                       
                       {/* New category pages */}
                       <Route path="/electronics" element={<ElectronicsPage />} />
