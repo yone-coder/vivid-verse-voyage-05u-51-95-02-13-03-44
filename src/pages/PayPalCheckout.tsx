@@ -1,29 +1,26 @@
-
 import React, { useEffect, useRef, useState } from 'react';
-import { useToast } from "@/hooks/use-toast";
 
 const PayPalCheckout = () => {
-  const paypalRef = useRef<HTMLDivElement>(null);
+  const paypalRef = useRef();
   const [amount, setAmount] = useState('10.00');
   const [currency, setCurrency] = useState('USD');
   const [description, setDescription] = useState('Sample Product');
   const [paymentStatus, setPaymentStatus] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
 
   // Replace with your actual PayPal Client ID
-  const CLIENT_ID = 'AU23YbLMTqxG3iSvnhcWtix6rGN14uw3axYJgrDe8VqUVng8XiQmmeiaxJWbnpbZP_f4--RTg146F1Mj'; // Using sandbox for demo purposes
+  const CLIENT_ID = 'AU23YbLMTqxG3iSvnhcWtix6rGN14uw3axYJgrDe8VqUVng8XiQmmeiaxJWbnpbZP_f4--RTg146F1Mj';
 
   useEffect(() => {
     // Load PayPal SDK
     const script = document.createElement('script');
-    script.src = `https://www.paypal.com/sdk/js?client-id=${CLIENT_ID}&currency=${currency}&disable-funding=credit,card`;
+    script.src = `https://www.paypal.com/sdk/js?client-id=${CLIENT_ID}&currency=${currency}&enable-funding=venmo,paylater&components=buttons,hosted-fields`;
     script.async = true;
     
     script.onload = () => {
-      if (window.paypal && paypalRef.current) {
+      if (window.paypal) {
         window.paypal.Buttons({
-          createOrder: (data: any, actions: any) => {
+          createOrder: (data, actions) => {
             return actions.order.create({
               purchase_units: [{
                 amount: {
@@ -34,17 +31,12 @@ const PayPalCheckout = () => {
               }]
             });
           },
-          onApprove: async (data: any, actions: any) => {
+          onApprove: async (data, actions) => {
             setIsLoading(true);
             try {
               const details = await actions.order.capture();
               setPaymentStatus('success');
               console.log('Payment completed:', details);
-              toast({
-                title: "Payment Successful",
-                description: "Your payment has been processed successfully.",
-                variant: "default",
-              });
               
               // Here you would typically send the payment details to your backend
               // to verify and process the payment
@@ -52,32 +44,17 @@ const PayPalCheckout = () => {
             } catch (error) {
               console.error('Payment error:', error);
               setPaymentStatus('error');
-              toast({
-                title: "Payment Failed",
-                description: "There was an error processing your payment.",
-                variant: "destructive",
-              });
             } finally {
               setIsLoading(false);
             }
           },
-          onError: (err: any) => {
+          onError: (err) => {
             console.error('PayPal error:', err);
             setPaymentStatus('error');
-            toast({
-              title: "Payment Error",
-              description: "There was an error with PayPal. Please try again.",
-              variant: "destructive",
-            });
           },
-          onCancel: (data: any) => {
+          onCancel: (data) => {
             console.log('Payment cancelled:', data);
             setPaymentStatus('cancelled');
-            toast({
-              title: "Payment Cancelled",
-              description: "You've cancelled the payment process.",
-              variant: "default",
-            });
           }
         }).render(paypalRef.current);
       }
@@ -91,7 +68,7 @@ const PayPalCheckout = () => {
         document.body.removeChild(script);
       }
     };
-  }, [amount, currency, description, toast]);
+  }, [amount, currency, description]);
 
   const resetPayment = () => {
     setPaymentStatus('');
