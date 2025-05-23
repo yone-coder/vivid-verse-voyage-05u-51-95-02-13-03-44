@@ -12,7 +12,7 @@ const PayPalCheckout = () => {
   const { toast } = useToast();
 
   // Replace with your actual PayPal Client ID
-  const CLIENT_ID = 'sb'; // Using sandbox for demo purposes
+  const CLIENT_ID = 'AU23YbLMTqxG3iSvnhcWtix6rGN14uw3axYJgrDe8VqUVng8XiQmmeiaxJWbnpbZP_f4--RTg146F1Mj'; // Using sandbox for demo purposes
 
   useEffect(() => {
     // Load PayPal SDK
