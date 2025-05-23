@@ -1,7 +1,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Loader2, AlertTriangle, Check } from 'lucide-react';
+import { Loader2, AlertTriangle } from 'lucide-react';
 import { toast } from "@/hooks/use-toast";
 
 interface PayPalHostedCheckoutProps {
@@ -71,7 +71,12 @@ const PayPalHostedCheckout: React.FC<PayPalHostedCheckoutProps> = ({
       const response = await fetch(`${SERVER_URL}/create_order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ intent: 'capture' })
+        body: JSON.stringify({ 
+          intent: 'capture',
+          // Pass amount and remove return/cancel URLs for in-app checkout
+          amount: parseFloat(amount),
+          in_app_checkout: true
+        })
       });
 
       if (!response.ok) {
@@ -115,7 +120,7 @@ const PayPalHostedCheckout: React.FC<PayPalHostedCheckoutProps> = ({
       paypalInitialized.current = true;
       setLoading(false);
 
-      // Initialize PayPal Buttons
+      // Initialize PayPal Buttons with in-app configuration
       if (paypalButtonsRef.current) {
         const buttons = window.paypal.Buttons({
           style: {
