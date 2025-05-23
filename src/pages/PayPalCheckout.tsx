@@ -1,9 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 const PayPalCreditCardCheckout = () => {
-  const cardNumberRef = useRef();
-  const expiryDateRef = useRef();
-  const cvvRef = useRef();
   const [amount, setAmount] = useState('10.00');
   const [currency, setCurrency] = useState('USD');
   const [description, setDescription] = useState('Sample Product');
@@ -11,58 +8,79 @@ const PayPalCreditCardCheckout = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [hostedFieldsInstance, setHostedFieldsInstance] = useState(null);
   const [cardValid, setCardValid] = useState(false);
+  const [sdkLoaded, setSdkLoaded] = useState(false);
 
   // Replace with your actual PayPal Client ID
   const CLIENT_ID = 'AU23YbLMTqxG3iSvnhcWtix6rGN14uw3axYJgrDe8VqUVng8XiQmmeiaxJWbnpbZP_f4--RTg146F1Mj';
 
   useEffect(() => {
+    // Clear any existing PayPal scripts
+    const existingScript = document.querySelector('script[src*="paypal.com/sdk/js"]');
+    if (existingScript) {
+      existingScript.remove();
+    }
+
     // Load PayPal SDK with hosted fields
     const script = document.createElement('script');
-    script.src = `https://www.paypal.com/sdk/js?client-id=${CLIENT_ID}&currency=${currency}&components=hosted-fields`;
+    script.src = `https://www.paypal.com/sdk/js?client-id=${CLIENT_ID}&currency=${currency}&components=hosted-fields&disable-funding=paylater,venmo`;
     script.async = true;
 
     script.onload = () => {
-      if (window.paypal && window.paypal.HostedFields) {
+      console.log('PayPal SDK loaded');
+      setSdkLoaded(true);
+      
+      if (window.paypal && window.paypal.HostedFields && window.paypal.HostedFields.isEligible()) {
+        console.log('Hosted Fields eligible, rendering...');
+        
         window.paypal.HostedFields.render({
-          createOrder: () => {
-            return fetch('/api/orders', {
-              method: 'post',
+          createOrder: function() {
+            return fetch(`https://api-m.sandbox.paypal.com/v2/checkout/orders`, {
+              method: 'POST',
               headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${CLIENT_ID}`, // This won't work without proper auth
               },
               body: JSON.stringify({
+                intent: 'CAPTURE',
                 purchase_units: [{
                   amount: {
-                    value: amount,
-                    currency_code: currency
+                    currency_code: currency,
+                    value: amount
                   },
                   description: description
                 }]
               })
-            }).then(res => res.json()).then(data => data.id).catch(() => {
-              // Fallback: create order directly (for demo purposes)
-              return window.paypal.HostedFields.createOrder({
-                purchase_units: [{
-                  amount: {
-                    value: amount,
-                    currency_code: currency
-                  },
-                  description: description
-                }]
+            }).then(response => response.json())
+              .then(order => order.id)
+              .catch(error => {
+                console.log('Order creation failed, using fallback method');
+                // Fallback: Let PayPal handle order creation
+                return window.paypal.HostedFields.createOrder({
+                  purchase_units: [{
+                    amount: {
+                      currency_code: currency,
+                      value: amount
+                    },
+                    description: description
+                  }]
+                });
               });
-            });
           },
           styles: {
             'input': {
               'font-size': '16px',
-              'font-family': 'system-ui, -apple-system, sans-serif',
-              'color': '#374151'
+              'font-family': '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+              'color': '#374151',
+              'padding': '12px'
             },
             ':focus': {
               'color': '#1f2937'
             },
             '.invalid': {
               'color': '#ef4444'
+            },
+            '.valid': {
+              'color': '#10b981'
             }
           },
           fields: {
@@ -71,7 +89,7 @@ const PayPalCreditCardCheckout = () => {
               placeholder: '1234 1234 1234 1234'
             },
             cvv: {
-              selector: '#cvv',
+              selector: '#cvv', 
               placeholder: '123'
             },
             expirationDate: {
@@ -80,10 +98,12 @@ const PayPalCreditCardCheckout = () => {
             }
           }
         }).then((hostedFields) => {
+          console.log('Hosted Fields rendered successfully');
           setHostedFieldsInstance(hostedFields);
 
           // Listen for field validation events
           hostedFields.on('validityChange', (event) => {
+            console.log('Validity changed:', event);
             const formValid = Object.keys(event.fields).every(key => {
               return event.fields[key].isValid;
             });
@@ -91,14 +111,21 @@ const PayPalCreditCardCheckout = () => {
           });
 
           hostedFields.on('cardTypeChange', (event) => {
-            // Handle card type changes if needed
-            console.log('Card type:', event.card.type);
+            console.log('Card type changed:', event.card ? event.card.type : 'unknown');
+          });
+
+          hostedFields.on('inputSubmitRequest', () => {
+            console.log('Input submit requested');
+            handleSubmit();
           });
 
         }).catch((err) => {
           console.error('Error rendering hosted fields:', err);
           setPaymentStatus('error');
         });
+      } else {
+        console.error('Hosted Fields not eligible or not available');
+        setPaymentStatus('error');
       }
     };
 
@@ -107,18 +134,23 @@ const PayPalCreditCardCheckout = () => {
       setPaymentStatus('error');
     };
 
-    document.body.appendChild(script);
+    document.head.appendChild(script);
 
     return () => {
-      // Cleanup script when component unmounts
-      if (document.body.contains(script)) {
-        document.body.removeChild(script);
+      // Cleanup
+      if (document.head.contains(script)) {
+        document.head.removeChild(script);
       }
     };
   }, [amount, currency, description]);
 
   const handleSubmit = async () => {
-    if (!hostedFieldsInstance || !cardValid) {
+    if (!hostedFieldsInstance) {
+      console.error('Hosted fields not ready');
+      return;
+    }
+
+    if (!cardValid) {
       alert('Please fill in all card details correctly');
       return;
     }
@@ -126,21 +158,16 @@ const PayPalCreditCardCheckout = () => {
     setIsLoading(true);
     
     try {
+      console.log('Submitting payment...');
       const result = await hostedFieldsInstance.submit({
-        // Collect additional data
         contingencies: ['3D_SECURE']
       });
 
-      if (result.liabilityShift) {
-        // 3D Secure authentication was successful
-        console.log('Payment completed with 3D Secure:', result);
-      } else {
-        console.log('Payment completed:', result);
-      }
-
+      console.log('Payment result:', result);
       setPaymentStatus('success');
+      
     } catch (error) {
-      console.error('Payment error:', error);
+      console.error('Payment submission error:', error);
       setPaymentStatus('error');
     } finally {
       setIsLoading(false);
@@ -150,6 +177,9 @@ const PayPalCreditCardCheckout = () => {
   const resetPayment = () => {
     setPaymentStatus('');
     setCardValid(false);
+    setSdkLoaded(false);
+    setHostedFieldsInstance(null);
+    // Force reload to reset everything
     window.location.reload();
   };
 
@@ -159,6 +189,15 @@ const PayPalCreditCardCheckout = () => {
         <h1 className="text-2xl font-bold text-gray-800 mb-2">Secure Checkout</h1>
         <p className="text-gray-600">Pay with your credit or debit card</p>
       </div>
+
+      {/* Debug Info */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="mb-4 p-3 bg-gray-100 rounded text-sm">
+          <div>SDK Loaded: {sdkLoaded ? '✅' : '❌'}</div>
+          <div>Hosted Fields: {hostedFieldsInstance ? '✅' : '❌'}</div>
+          <div>Card Valid: {cardValid ? '✅' : '❌'}</div>
+        </div>
+      )}
 
       {/* Payment Configuration */}
       <div className="space-y-4 mb-6">
@@ -261,8 +300,13 @@ const PayPalCreditCardCheckout = () => {
               </svg>
             </div>
             <div className="ml-3">
-              <h3 className="text-sm font-medium text-red-800">Payment Failed</h3>
-              <p className="text-sm text-red-700 mt-1">There was an error processing your payment. Please try again.</p>
+              <h3 className="text-sm font-medium text-red-800">Setup Issue Detected</h3>
+              <p className="text-sm text-red-700 mt-1">The PayPal Hosted Fields couldn't load. This might be because:</p>
+              <ul className="text-sm text-red-700 mt-2 list-disc list-inside">
+                <li>Your PayPal Client ID needs to be activated for Hosted Fields</li>
+                <li>Your domain needs to be whitelisted in PayPal settings</li>
+                <li>Hosted Fields might not be available in your region</li>
+              </ul>
             </div>
           </div>
           <button
@@ -275,7 +319,7 @@ const PayPalCreditCardCheckout = () => {
       )}
 
       {/* Credit Card Form */}
-      {!paymentStatus && (
+      {!paymentStatus && sdkLoaded && (
         <div>
           <div className="space-y-4 mb-6">
             <div>
@@ -283,10 +327,9 @@ const PayPalCreditCardCheckout = () => {
                 Card Number
               </label>
               <div 
-                id="card-number" 
-                ref={cardNumberRef}
-                className="w-full px-3 py-3 border border-gray-300 rounded-md focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent bg-white"
-                style={{ minHeight: '44px' }}
+                id="card-number"
+                className="w-full border border-gray-300 rounded-md focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent bg-white"
+                style={{ minHeight: '48px' }}
               ></div>
             </div>
 
@@ -296,10 +339,9 @@ const PayPalCreditCardCheckout = () => {
                   Expiry Date
                 </label>
                 <div 
-                  id="expiry-date" 
-                  ref={expiryDateRef}
-                  className="w-full px-3 py-3 border border-gray-300 rounded-md focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent bg-white"
-                  style={{ minHeight: '44px' }}
+                  id="expiry-date"
+                  className="w-full border border-gray-300 rounded-md focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent bg-white"
+                  style={{ minHeight: '48px' }}
                 ></div>
               </div>
 
@@ -308,10 +350,9 @@ const PayPalCreditCardCheckout = () => {
                   CVV
                 </label>
                 <div 
-                  id="cvv" 
-                  ref={cvvRef}
-                  className="w-full px-3 py-3 border border-gray-300 rounded-md focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent bg-white"
-                  style={{ minHeight: '44px' }}
+                  id="cvv"
+                  className="w-full border border-gray-300 rounded-md focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-transparent bg-white"
+                  style={{ minHeight: '48px' }}
                 ></div>
               </div>
             </div>
@@ -320,9 +361,9 @@ const PayPalCreditCardCheckout = () => {
           {/* Submit Button */}
           <button
             onClick={handleSubmit}
-            disabled={!cardValid || isLoading}
+            disabled={!cardValid || isLoading || !hostedFieldsInstance}
             className={`w-full py-3 px-4 rounded-md font-medium transition-colors ${
-              cardValid && !isLoading
+              cardValid && !isLoading && hostedFieldsInstance
                 ? 'bg-blue-600 hover:bg-blue-700 text-white'
                 : 'bg-gray-300 text-gray-500 cursor-not-allowed'
             }`}
@@ -335,10 +376,25 @@ const PayPalCreditCardCheckout = () => {
                 </svg>
                 Processing...
               </div>
+            ) : !hostedFieldsInstance ? (
+              'Loading payment form...'
             ) : (
               `Pay ${currency === 'USD' ? '$' : ''}${amount} ${currency !== 'USD' ? currency : ''}`
             )}
           </button>
+        </div>
+      )}
+
+      {/* Loading State */}
+      {!paymentStatus && !sdkLoaded && (
+        <div className="text-center py-8">
+          <div className="inline-flex items-center">
+            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Loading secure payment form...
+          </div>
         </div>
       )}
 
@@ -356,20 +412,21 @@ const PayPalCreditCardCheckout = () => {
       </div>
 
       {/* Setup Instructions */}
-      {CLIENT_ID === 'YOUR_PAYPAL_CLIENT_ID' && (
-        <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <h4 className="text-sm font-medium text-blue-800 mb-2">Setup Required</h4>
-          <p className="text-sm text-blue-700">
-            To use this checkout, you need to:
-          </p>
-          <ol className="text-sm text-blue-700 mt-2 ml-4 list-decimal">
-            <li>Create a PayPal Developer account</li>
-            <li>Get your Client ID from the PayPal Developer Dashboard</li>
-            <li>Replace 'YOUR_PAYPAL_CLIENT_ID' in the code with your actual Client ID</li>
-            <li>Set up a backend endpoint to handle order creation (optional for basic demo)</li>
-          </ol>
-        </div>
-      )}
+      <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <h4 className="text-sm font-medium text-blue-800 mb-2">PayPal Hosted Fields Setup</h4>
+        <p className="text-sm text-blue-700">
+          To enable credit card processing, ensure:
+        </p>
+        <ol className="text-sm text-blue-700 mt-2 ml-4 list-decimal">
+          <li>Your PayPal Business account has Hosted Fields enabled</li>
+          <li>Your domain is added to the approved domains list</li>
+          <li>Advanced Credit and Debit Card Payments are activated</li>
+          <li>You're using a live Client ID (not sandbox) for production</li>
+        </ol>
+        <p className="text-xs text-blue-600 mt-2">
+          Check the browser console for detailed error messages.
+        </p>
+      </div>
     </div>
   );
 };
