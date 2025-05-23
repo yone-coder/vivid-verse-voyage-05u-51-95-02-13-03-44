@@ -171,75 +171,93 @@ const NFTPaymentPage: React.FC = () => {
       // Initialize Hosted Fields for Credit Cards
       if (window.paypal.HostedFields && window.paypal.HostedFields.isEligible()) {
         if (cardNumberRef.current && expirationDateRef.current && cvvRef.current) {
-          paypalHostedFields = await window.paypal.HostedFields.render({
-            createOrder: async () => {
-              orderId = await createOrder();
-              return orderId;
-            },
-
-            styles: {
-              '.valid': { color: 'green' },
-              '.invalid': { color: 'red' },
-              'input': {
-                'font-size': '16pt',
-                'color': '#ffffff'
-              }
-            },
-
-            fields: {
-              number: {
-                selector: '#card-number',
-                placeholder: '4111 1111 1111 1111'
+          try {
+            paypalHostedFields = await window.paypal.HostedFields.render({
+              createOrder: async () => {
+                orderId = await createOrder();
+                return orderId;
               },
-              cvv: {
-                selector: '#cvv',
-                placeholder: '123'
-              },
-              expirationDate: {
-                selector: '#expiration-date',
-                placeholder: 'MM/YY'
-              }
-            }
-          });
 
-          // Handle credit card form submission
-          if (cardFormRef.current) {
-            cardFormRef.current.addEventListener('submit', async (event) => {
-              event.preventDefault();
-
-              const submitBtn = document.getElementById('card-submit');
-              if (submitBtn) {
-                submitBtn.setAttribute('disabled', '');
-                (submitBtn as HTMLInputElement).value = 'Processing...';
-              }
-
-              try {
-                if (!paypalHostedFields) {
-                  throw new Error('Payment system not initialized');
+              styles: {
+                '.valid': { 
+                  color: 'green' 
+                },
+                '.invalid': { 
+                  color: 'red' 
+                },
+                'input': {
+                  'font-size': '16px',
+                  'font-family': 'Arial, sans-serif',
+                  'color': '#333333',
+                  'font-weight': 'normal',
+                  'transition': 'color 160ms linear',
                 }
+              },
 
-                await paypalHostedFields.submit({
-                  cardholderName: 'Card Holder',
-                  billingAddress: {
-                    streetAddress: '123 Main St',
-                    extendedAddress: '',
-                    region: 'CA',
-                    locality: 'San Jose',
-                    postalCode: '95131',
-                    countryCodeAlpha2: 'US'
-                  }
-                });
-
-                const email = emailInputRef.current?.value || '';
-                const orderDetails = await completeOrder(orderId, email);
-                handlePaymentSuccess(orderDetails);
-
-              } catch (error) {
-                console.error('Error processing card payment:', error);
-                showErrorMessage('Card payment failed. Please check your details and try again.');
-                resetSubmitButton();
+              fields: {
+                number: {
+                  selector: '#card-number',
+                  placeholder: '4111 1111 1111 1111',
+                },
+                cvv: {
+                  selector: '#cvv',
+                  placeholder: '123',
+                },
+                expirationDate: {
+                  selector: '#expiration-date',
+                  placeholder: 'MM/YY',
+                }
               }
             });
+
+            console.log('PayPal Hosted Fields initialized successfully');
+
+            // Handle credit card form submission
+            if (cardFormRef.current) {
+              cardFormRef.current.addEventListener('submit', async (event) => {
+                event.preventDefault();
+
+                const submitBtn = document.getElementById('card-submit');
+                if (submitBtn) {
+                  submitBtn.setAttribute('disabled', '');
+                  (submitBtn as HTMLInputElement).value = 'Processing...';
+                }
+
+                try {
+                  if (!paypalHostedFields) {
+                    throw new Error('Payment system not initialized');
+                  }
+
+                  // Submit the card data to PayPal
+                  await paypalHostedFields.submit({
+                    cardholderName: 'Card Holder',
+                    billingAddress: {
+                      streetAddress: '123 Main St',
+                      extendedAddress: '',
+                      region: 'CA',
+                      locality: 'San Jose',
+                      postalCode: '95131',
+                      countryCodeAlpha2: 'US'
+                    }
+                  });
+
+                  // Complete the order
+                  const email = emailInputRef.current?.value || '';
+                  const orderDetails = await completeOrder(orderId, email);
+                  handlePaymentSuccess(orderDetails);
+
+                } catch (error) {
+                  console.error('Error processing card payment:', error);
+                  showErrorMessage('Card payment failed. Please check your details and try again.');
+                  resetSubmitButton();
+                }
+              });
+            }
+          } catch (hostedFieldsError) {
+            console.error('Error initializing PayPal Hosted Fields:', hostedFieldsError);
+            if (cardFormRef.current) {
+              cardFormRef.current.innerHTML = '<p>Credit card payments are not available at this time.</p>';
+            }
           }
         }
       } else {
@@ -385,17 +403,17 @@ const NFTPaymentPage: React.FC = () => {
                 
                 <div className="mb-4">
                   <label htmlFor="card-number" className="block mb-2">Card Number</label>
-                  <div id="card-number" ref={cardNumberRef} className="border border-input bg-background h-11 rounded-md"></div>
+                  <div id="card-number" ref={cardNumberRef} className="border border-input bg-background h-11 rounded-md px-3"></div>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label htmlFor="expiration-date" className="block mb-2">Expiration Date</label>
-                    <div id="expiration-date" ref={expirationDateRef} className="border border-input bg-background h-11 rounded-md"></div>
+                    <div id="expiration-date" ref={expirationDateRef} className="border border-input bg-background h-11 rounded-md px-3"></div>
                   </div>
                   <div>
                     <label htmlFor="cvv" className="block mb-2">Security Code</label>
-                    <div id="cvv" ref={cvvRef} className="border border-input bg-background h-11 rounded-md"></div>
+                    <div id="cvv" ref={cvvRef} className="border border-input bg-background h-11 rounded-md px-3"></div>
                   </div>
                 </div>
                 
