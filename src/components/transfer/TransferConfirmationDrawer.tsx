@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import {
@@ -17,6 +18,7 @@ import PayPalButton from './PayPalButton';
 
 // Backend API URLs as explicit string types
 const MONCASH_BACKEND_URL: string = 'https://moncash-backend.onrender.com';
+const PAYPAL_CHECKOUT_URL: string = 'https://paypal-with-nodejs.onrender.com';
 
 interface TransferConfirmationDrawerProps {
   isOpen: boolean;
@@ -206,6 +208,11 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
       setIsProcessing(false);
     }
   };
+  
+  // NEW: Handle redirect to PayPal Checkout page for credit cards
+  const handleCreditCardCheckout = () => {
+    window.location.href = PAYPAL_CHECKOUT_URL;
+  };
 
   // Handle PayPal payment success
   const handlePayPalSuccess = (details: any) => {
@@ -377,18 +384,26 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
           </div>
         )}
 
-        {/* PayPal Payment Component */}
+        {/* Credit Card Payment Button - Updated to redirect to PayPal Checkout page */}
         {transferType === 'international' && selectedMethod.id === 'credit-card' && (
           <div className="mb-4">
             <div className="text-sm text-gray-600 mb-2">
-              Complete your payment securely with PayPal:
+              Complete your payment securely with PayPal's hosted checkout:
             </div>
-            <PayPalButton
-              amount={amount}
-              currency={currencySymbol === '$' ? 'USD' : 'HTG'}
-              onSuccess={handlePayPalSuccess}
-              onError={handlePayPalError}
-            />
+            <Button 
+              onClick={handleCreditCardCheckout}
+              className="w-full bg-blue-500 hover:bg-blue-600"
+              disabled={isProcessing}
+            >
+              {isProcessing ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                <>Proceed to Secure Checkout</>
+              )}
+            </Button>
             {paymentError && (
               <div className="mt-2 text-xs text-red-500 flex items-center">
                 <AlertCircle className="h-3 w-3 mr-1" />
