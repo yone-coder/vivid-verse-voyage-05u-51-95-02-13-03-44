@@ -28,6 +28,17 @@ interface TransferConfirmationDrawerProps {
   isLoading?: boolean;
 }
 
+// Define a PayPal window type to avoid TypeScript errors
+interface PayPalNamespace {
+  Buttons?: (config: any) => { render: (element: HTMLElement) => void };
+}
+
+declare global {
+  interface Window {
+    paypal?: PayPalNamespace;
+  }
+}
+
 const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
   isOpen,
   onOpenChange,
@@ -61,10 +72,15 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
     script.src = 'https://www.paypal.com/sdk/js?client-id=AU23YbLMTqxG3iSvnhcWtix6rGN14uw3axYJgrDe8VqUVng8XiQmmeiaxJWbnpbZP_f4--RTg146F1Mj&currency=USD&intent=capture&enable-funding=venmo,paylater,card&disable-funding=credit';
     script.async = true;
     script.onload = () => {
+      console.log("PayPal SDK loaded successfully");
       setPaypalLoaded(true);
-      renderPayPalButton();
+      setTimeout(() => {
+        // Small delay to ensure SDK is fully initialized
+        renderPayPalButton();
+      }, 500);
     };
-    script.onerror = () => {
+    script.onerror = (e) => {
+      console.error("PayPal SDK failed to load:", e);
       toast({
         title: "PayPal Load Error",
         description: "Failed to load PayPal. Please refresh and try again.",
@@ -75,114 +91,148 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
   };
 
   const renderPayPalButton = () => {
-    if (!window.paypal || !paypalRef.current) return;
+    if (!window.paypal || !paypalRef.current) {
+      console.error("PayPal not loaded or container not found");
+      return;
+    }
+
+    if (!window.paypal.Buttons) {
+      console.error("PayPal Buttons function not found in the SDK");
+      toast({
+        title: "PayPal SDK Error",
+        description: "PayPal checkout is currently unavailable. Please try another payment method.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     // Clear any existing buttons
     paypalRef.current.innerHTML = '';
 
-    window.paypal.Buttons({
-      style: {
-        layout: 'vertical',
-        color: 'blue',
-        shape: 'rect',
-        label: 'paypal',
-        height: 45
-      },
-      createOrder: async (data: any, actions: any) => {
-        try {
-          setIsProcessing(true);
-          
-          const response = await fetch(`${PAYPAL_BACKEND_URL}/create-order`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              amount: parseFloat(amount).toFixed(2),
-              currency: 'USD'
-            })
-          });
-
-          if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            throw new Error(errorData.error || 'Failed to create order');
-          }
-
-          const orderData = await response.json();
-          console.log('Order created:', orderData);
-          
-          return orderData.id;
-        } catch (error) {
-          console.error('Error creating order:', error);
-          setIsProcessing(false);
-          toast({
-            title: "Order Creation Failed",
-            description: error instanceof Error ? error.message : "Failed to create PayPal order",
-            variant: "destructive",
-          });
-          throw error;
-        }
-      },
-      onApprove: async (data: any, actions: any) => {
-        try {
-          console.log('Payment approved, capturing order:', data.orderID);
-          
-          const response = await fetch(`${PAYPAL_BACKEND_URL}/capture-order`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ orderID: data.orderID })
-          });
-
-          if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            throw new Error(errorData.error || 'Failed to capture payment');
-          }
-
-          const captureData = await response.json();
-          console.log('Payment captured:', captureData);
-
-          if (captureData.status === 'COMPLETED') {
-            toast({
-              title: "Payment Successful!",
-              description: `Your payment of ${currencySymbol}${amount} has been processed successfully.`,
-              variant: "default",
-            });
+    try {
+      const PayPalButtons = window.paypal.Buttons({
+        style: {
+          layout: 'vertical',
+          color: 'blue',
+          shape: 'rect',
+          label: 'paypal',
+          height: 45
+        },
+        createOrder: async (data: any, actions: any) => {
+          try {
+            setIsProcessing(true);
             
-            // Close the drawer and reset
-            onOpenChange(false);
-            setStep('summary');
-            setReceiverDetails(null);
-          } else {
-            throw new Error('Payment was not completed successfully');
+            const response = await fetch(`${PAYPAL_BACKEND_URL}/create-order`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                amount: parseFloat(amount).toFixed(2),
+                currency: 'USD'
+              })
+            });
+
+            if (!response.ok) {
+              const errorData = await response.json().catch(() => ({}));
+              throw new Error(errorData.error || 'Failed to create order');
+            }
+
+            const orderData = await response.json();
+            console.log('Order created:', orderData);
+            
+            return orderData.id;
+          } catch (error) {
+            console.error('Error creating order:', error);
+            setIsProcessing(false);
+            toast({
+              title: "Order Creation Failed",
+              description: error instanceof Error ? error.message : "Failed to create PayPal order",
+              variant: "destructive",
+            });
+            throw error;
           }
-        } catch (error) {
-          console.error('Error capturing payment:', error);
+        },
+        onApprove: async (data: any, actions: any) => {
+          try {
+            console.log('Payment approved, capturing order:', data.orderID);
+            
+            const response = await fetch(`${PAYPAL_BACKEND_URL}/capture-order`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ orderID: data.orderID })
+            });
+
+            if (!response.ok) {
+              const errorData = await response.json().catch(() => ({}));
+              throw new Error(errorData.error || 'Failed to capture payment');
+            }
+
+            const captureData = await response.json();
+            console.log('Payment captured:', captureData);
+
+            if (captureData.status === 'COMPLETED') {
+              toast({
+                title: "Payment Successful!",
+                description: `Your payment of ${currencySymbol}${amount} has been processed successfully.`,
+                variant: "default",
+              });
+              
+              // Close the drawer and reset
+              onOpenChange(false);
+              setStep('summary');
+              setReceiverDetails(null);
+            } else {
+              throw new Error('Payment was not completed successfully');
+            }
+          } catch (error) {
+            console.error('Error capturing payment:', error);
+            toast({
+              title: "Payment Capture Failed",
+              description: error instanceof Error ? error.message : "Failed to complete payment",
+              variant: "destructive",
+            });
+          } finally {
+            setIsProcessing(false);
+          }
+        },
+        onError: (err: any) => {
+          console.error('PayPal error:', err);
+          setIsProcessing(false);
           toast({
-            title: "Payment Capture Failed",
-            description: error instanceof Error ? error.message : "Failed to complete payment",
+            title: "PayPal Error",
+            description: "An error occurred with PayPal. Please try again.",
             variant: "destructive",
           });
-        } finally {
+        },
+        onCancel: (data: any) => {
+          console.log('Payment cancelled:', data);
           setIsProcessing(false);
+          toast({
+            title: "Payment Cancelled",
+            description: "Your payment was cancelled.",
+            variant: "default",
+          });
         }
-      },
-      onError: (err: any) => {
-        console.error('PayPal error:', err);
-        setIsProcessing(false);
+      });
+
+      if (PayPalButtons.render) {
+        PayPalButtons.render(paypalRef.current);
+        console.log("PayPal buttons rendered successfully");
+      } else {
+        console.error("PayPal Buttons render method not available");
         toast({
           title: "PayPal Error",
-          description: "An error occurred with PayPal. Please try again.",
+          description: "Unable to display PayPal checkout. Please try another payment method.",
           variant: "destructive",
         });
-      },
-      onCancel: (data: any) => {
-        console.log('Payment cancelled:', data);
-        setIsProcessing(false);
-        toast({
-          title: "Payment Cancelled",
-          description: "Your payment was cancelled.",
-          variant: "default",
-        });
       }
-    }).render(paypalRef.current);
+    } catch (error) {
+      console.error("Error rendering PayPal buttons:", error);
+      toast({
+        title: "PayPal Error",
+        description: "Failed to initialize PayPal checkout. Please try again later.",
+        variant: "destructive",
+      });
+    }
   };
 
   if (!selectedMethod) return null;
