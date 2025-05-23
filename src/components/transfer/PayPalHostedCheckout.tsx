@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Loader2, AlertTriangle } from 'lucide-react';
@@ -170,58 +171,100 @@ const PayPalHostedCheckout: React.FC<PayPalHostedCheckoutProps> = ({
 
       // Initialize Hosted Fields for Credit Cards
       if (window.paypal.HostedFields && window.paypal.HostedFields.isEligible()) {
-        const hostedFields = await window.paypal.HostedFields.render({
-          createOrder: createOrder,
-
-          styles: {
-            '.valid': { color: 'green' },
-            '.invalid': { color: 'red' },
-            'input': {
-              'font-size': '16px',
-              'color': '#333',
-              'padding': '12px',
-              'border': 'none',
-              'outline': 'none',
-              'width': '100%'
-            }
-          },
-
-          fields: {
-            number: {
-              selector: '#card-number',
-              placeholder: '4111 1111 1111 1111'
+        try {
+          // Get a client token first
+          const clientToken = await getClientToken();
+          
+          const hostedFields = await window.paypal.HostedFields.render({
+            createOrder: createOrder,
+            styles: {
+              '.valid': { color: 'green' },
+              '.invalid': { color: 'red' },
+              'input': {
+                'font-size': '16px',
+                'font-family': 'Arial, sans-serif',
+                'color': '#333',
+                'transition': 'color 160ms linear, background-color 160ms linear',
+                'line-height': '1.4',
+                'width': '100%',
+                'padding': '0.6em 0.7em'
+              },
+              ':focus': {
+                'color': '#000'
+              }
             },
-            cvv: {
-              selector: '#cvv',
-              placeholder: '123'
-            },
-            expirationDate: {
-              selector: '#expiration-date',
-              placeholder: 'MM/YY'
-            }
-          }
-        });
-
-        // Handle credit card form submission
-        if (cardFormRef.current) {
-          cardFormRef.current.addEventListener('submit', async (event) => {
-            event.preventDefault();
-            
-            try {
-              await hostedFields.submit({});
-              toast({
-                title: "Payment Processing",
-                description: "Your card payment is being processed...",
-                variant: "default",
-              });
-            } catch (error) {
-              console.error('Error processing card payment:', error);
-              onError(error);
+            fields: {
+              number: {
+                selector: '#card-number',
+                placeholder: '4111 1111 1111 1111',
+              },
+              cvv: {
+                selector: '#cvv',
+                placeholder: '123',
+              },
+              expirationDate: {
+                selector: '#expiration-date',
+                placeholder: 'MM/YY',
+              }
             }
           });
-        }
-      }
 
+          // Handle form submission
+          if (cardFormRef.current) {
+            cardFormRef.current.addEventListener('submit', async (event) => {
+              event.preventDefault();
+              
+              try {
+                const state = hostedFields.getState();
+                const formValid = Object.keys(state.fields).every(key => {
+                  return state.fields[key].isValid;
+                });
+                
+                if (!formValid) {
+                  toast({
+                    title: "Invalid Card Details",
+                    description: "Please check your card information and try again.",
+                    variant: "destructive",
+                  });
+                  return;
+                }
+                
+                const { liabilityShift, liabilityShifted } = await hostedFields.submit({
+                  contingencies: ['3D_SECURE']
+                });
+                
+                if (!liabilityShifted && liabilityShift === 'POSSIBLE') {
+                  toast({
+                    title: "3D Secure Authentication Failed",
+                    description: "Your card could not be authenticated.",
+                    variant: "destructive",
+                  });
+                  return;
+                }
+                
+                toast({
+                  title: "Payment Processing",
+                  description: "Your payment is being processed...",
+                  variant: "default",
+                });
+              } catch (error) {
+                console.error('Error processing card payment:', error);
+                toast({
+                  title: "Payment Failed",
+                  description: "There was a problem processing your payment. Please try again.",
+                  variant: "destructive",
+                });
+                onError(error);
+              }
+            });
+          }
+        } catch (error) {
+          console.error('Error initializing hosted fields:', error);
+          setError('Failed to initialize card payment system');
+        }
+      } else {
+        console.log('PayPal Hosted Fields not eligible');
+      }
     } catch (error) {
       console.error('Error initializing PayPal:', error);
       setError('Failed to initialize payment system');
@@ -279,17 +322,17 @@ const PayPalHostedCheckout: React.FC<PayPalHostedCheckoutProps> = ({
         <form ref={cardFormRef} className="space-y-6">
           <div>
             <label className="block text-sm font-medium mb-2 text-gray-700">Card Number</label>
-            <div id="card-number" className="border border-gray-300 rounded-lg p-0 bg-white min-h-[48px] flex items-center"></div>
+            <div id="card-number" className="border border-gray-300 rounded-lg bg-white h-[48px] flex items-center overflow-hidden"></div>
           </div>
 
           <div className="grid grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium mb-2 text-gray-700">Expiration Date</label>
-              <div id="expiration-date" className="border border-gray-300 rounded-lg p-0 bg-white min-h-[48px] flex items-center"></div>
+              <div id="expiration-date" className="border border-gray-300 rounded-lg bg-white h-[48px] flex items-center overflow-hidden"></div>
             </div>
             <div>
               <label className="block text-sm font-medium mb-2 text-gray-700">Security Code</label>
-              <div id="cvv" className="border border-gray-300 rounded-lg p-0 bg-white min-h-[48px] flex items-center"></div>
+              <div id="cvv" className="border border-gray-300 rounded-lg bg-white h-[48px] flex items-center overflow-hidden"></div>
             </div>
           </div>
 
