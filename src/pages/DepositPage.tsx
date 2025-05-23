@@ -66,21 +66,12 @@ const PayPalCheckoutPage = () => {
       <div class="row">
         <div class="col-sm"></div>
         <div class="col-sm">
-          <h2 class="ms-text-center">ai-generated NFT Bored Ape</h2>
-          <div class="ms-text-center pb-2">
-            <div class="ms-label ms-large ms-action2 ms-light">$100.00 USD</div>
-          </div>
           <div id="alerts" class="ms-text-center"></div>
           <div id="loading" class="spinner-container ms-div-center">
             <div class="spinner"></div>
           </div>
           <div id="content" class="hide">
-            <div class="ms-card ms-fill">
-              <div class="ms-card-content">
-                <img src="https://cdn.discordapp.com/attachments/1060825015681028127/1076385063903694908/rauljr7_3d_e83fed6a-69aa-4a6a-b0ec-928edd57aecf.png" style="width:400px">
-              </div>
-            </div>
-                          <div id="payment_options">
+            <div id="payment_options">
               <div class="row ms-form-group" id="card-form">
               <div>
                 <label for="card-number">Card Number</label>
@@ -100,12 +91,10 @@ const PayPalCheckoutPage = () => {
               </div>
               <div><button class="ms-fullwidth mt-2 ms-medium" type="submit" id="purchase-btn">Purchase</button></div>
             </div>
-              <hr><hr>
             </div>
           </div>
         </div>
         <div class="col-sm"></div>
-        <footer style="margin-top:50px" class="ms-footer"> Footer Intentionally left empty :) </footer>
       </div>
     </div>
 
@@ -393,14 +382,7 @@ const PayPalCheckoutPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Main App Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <h1 className="text-2xl font-bold text-gray-900">My E-commerce Store</h1>
-        </div>
-      </header>
-
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-2xl mx-auto px-4 py-8">
         {!showCheckout ? (
           /* Product Display */
           <div className="bg-white rounded-lg shadow-md p-6">
@@ -436,18 +418,18 @@ const PayPalCheckoutPage = () => {
                 ×
               </button>
             </div>
-            
+
             <div className="relative">
               {isLoading && (
                 <div className="absolute inset-0 bg-white flex items-center justify-center z-10">
                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
                 </div>
               )}
-              
+
               <iframe
                 ref={iframeRef}
                 src={createIframeUrl()}
-                className="w-full h-screen border-0"
+                className="w-full h-96 border-0"
                 onLoad={handleIframeLoad}
                 title="PayPal Checkout"
                 sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
@@ -455,19 +437,6 @@ const PayPalCheckoutPage = () => {
             </div>
           </div>
         )}
-      </div>
-
-      {/* Instructions */}
-      <div className="max-w-7xl mx-auto px-4 py-4">
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <h3 className="font-semibold text-blue-900 mb-2">Setup Instructions:</h3>
-          <ol className="text-blue-800 text-sm space-y-1">
-            <li>1. Replace "REPLACE_WITH_YOUR_CLIENT_ID" with your PayPal client ID in the iframe content</li>
-            <li>2. Update the BACKEND_URL to point to your PayPal backend server</li>
-            <li>3. The iframe uses postMessage to communicate payment status back to the React app</li>
-            <li>4. In production, serve the HTML content from a separate URL instead of using blob URLs</li>
-          </ol>
-        </div>
       </div>
     </div>
   );
