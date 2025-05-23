@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { PayPalButtons } from '@paypal/react-paypal-js';
 import { Button } from "@/components/ui/button";
@@ -243,7 +242,6 @@ const PayPalButton: React.FC<PayPalButtonProps> = ({
           shape: "rect",
           label: "pay",
         }}
-        disabled={loading}
         forceReRender={[amount, currency]}
         createOrder={createOrder}
         onApprove={onApprove}
