@@ -1,4 +1,3 @@
-
 import React, { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -37,6 +36,7 @@ import SportsOutdoorsPage from "./pages/SportsOutdoorsPage";
 import AutomotivePage from "./pages/AutomotivePage";
 import CategoriesPage from "./pages/CategoriesPage";
 import NFTPaymentPage from "./pages/NFTPaymentPage";
+import DepositPage from "./pages/DepositPage";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -80,6 +80,7 @@ const App = () => {
                       <Route path="/topup" element={<TopUpPage />} />
                       <Route path="/netflix" element={<NetflixPage />} />
                       <Route path="/nft-payment" element={<NFTPaymentPage />} />
+                      <Route path="/deposit" element={<DepositPage />} />
                       
                       {/* Category pages */}
                       <Route path="/electronics" element={<ElectronicsPage />} />
