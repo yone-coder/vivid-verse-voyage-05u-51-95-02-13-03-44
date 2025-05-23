@@ -8,94 +8,259 @@ const PayPalCheckoutPage = () => {
 
   // The HTML content for the iframe (you would typically serve this from a separate URL)
   const iframeContent = `<!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>PPCP Advanced</title>
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/minstyle.io@2.0.1/dist/css/minstyle.io.min.css">
     <style>
-      .hide {
-          display:none !important;
-      }
-      .spinner-container {
-          width: 100px;
-          height: 100px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
       }
 
-      .div_input {
-        display: inline-block;
-        height: 40px;
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      .payment-container {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        padding: 40px;
+        box-shadow: 0 32px 64px rgba(0, 0, 0, 0.15);
         width: 100%;
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        appearance: none;
-        -webkit-box-sizing: border-box;
-        box-sizing: border-box;
-        -webkit-box-shadow: none;
-        box-shadow: none;
-        font-size: 0.98rem;
-        background-color: rgba(var(--main-bg), 1);
-        border: 2px solid rgba(var(--default-border-color), 1);
-        border-radius: var(--default-border-radius);
-        margin: 0;
-        padding: 0 0.8rem;
+        max-width: 480px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .hide {
+        display: none !important;
+      }
+
+      .spinner-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 120px;
       }
 
       .spinner {
-          border: 8px solid rgba(0, 0, 0, 0.1);
-          border-top-color: lightblue;
-          border-radius: 50%;
-          width: 50px;
-          height: 50px;
-          animation: spin 1s ease-in-out infinite;
+        width: 40px;
+        height: 40px;
+        border: 3px solid rgba(102, 126, 234, 0.1);
+        border-top: 3px solid #667eea;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
       }
 
       @keyframes spin {
-          to {
-              transform: rotate(360deg);
-          }
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
+      .form-group {
+        margin-bottom: 24px;
+      }
+
+      .form-label {
+        display: block;
+        font-size: 14px;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 8px;
+        letter-spacing: 0.025em;
+      }
+
+      .div_input {
+        width: 100%;
+        height: 52px;
+        background: #f8fafc;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 0 16px;
+        font-size: 16px;
+        color: #1a202c;
+        transition: all 0.2s ease;
+        outline: none;
+        display: flex;
+        align-items: center;
+      }
+
+      .div_input:focus-within {
+        border-color: #667eea;
+        background: #ffffff;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+
+      .purchase-btn {
+        width: 100%;
+        height: 52px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 12px;
+        color: white;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        letter-spacing: 0.025em;
+        margin-top: 12px;
+      }
+
+      .purchase-btn:hover:not(:disabled) {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+      }
+
+      .purchase-btn:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .paypal-buttons {
+        margin-bottom: 32px;
+      }
+
+      .divider {
+        display: flex;
+        align-items: center;
+        margin: 32px 0;
+        color: #64748b;
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .divider::before,
+      .divider::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: #e2e8f0;
+      }
+
+      .divider span {
+        padding: 0 16px;
+      }
+
+      .alert {
+        padding: 16px;
+        border-radius: 12px;
+        margin-bottom: 24px;
+        font-size: 14px;
+        font-weight: 500;
+        position: relative;
+      }
+
+      .alert-success {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .alert-error {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .alert-warning {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .close-btn {
+        position: absolute;
+        top: 12px;
+        right: 16px;
+        background: none;
+        border: none;
+        color: inherit;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        opacity: 0.8;
+        padding: 4px;
+        line-height: 1;
+      }
+
+      .close-btn:hover {
+        opacity: 1;
+      }
+
+      .title {
+        text-align: center;
+        font-size: 24px;
+        font-weight: 700;
+        color: #1a202c;
+        margin-bottom: 32px;
+        letter-spacing: -0.025em;
+      }
+
+      #payment_options {
+        margin-top: 20px;
       }
     </style>
   </head>
   <body>
-    <div class="container">
-      <div class="row">
-        <div class="col-sm"></div>
-        <div class="col-sm">
-          <div id="alerts" class="ms-text-center"></div>
-          <div id="loading" class="spinner-container ms-div-center">
-            <div class="spinner"></div>
-          </div>
-          <div id="content" class="hide">
-            <div id="payment_options">
-              <div class="row ms-form-group" id="card-form">
-              <div>
-                <label for="card-number">Card Number</label>
-                <div class="div_input" type="text" id="card-number"></div>
-              </div>
-              <div class="col-md mb-2">
-                <label for="expiration-date">Expiration Date</label>
-                <div id="expiration-date" class="div_input"></div>
-              </div>
-              <div class="col-md mb-2">
-                <label for="cvv">Security Code</label>
-                <div id="cvv" class="div_input"></div>
-              </div>
-              <div>
-                <label for="email">Email</label>
-                <div class="div_input" id="email" placeholder="username@email.com"></div>
-              </div>
-              <div><button class="ms-fullwidth mt-2 ms-medium" type="submit" id="purchase-btn">Purchase</button></div>
-            </div>
-            </div>
-          </div>
+    <div class="payment-container">
+      <h1 class="title">Secure Checkout</h1>
+      
+      <div id="alerts"></div>
+      
+      <div id="loading" class="spinner-container">
+        <div class="spinner"></div>
+      </div>
+      
+      <div id="content" class="hide">
+        <div id="payment_options" class="paypal-buttons"></div>
+        
+        <div class="divider">
+          <span>or pay with card</span>
         </div>
-        <div class="col-sm"></div>
+        
+        <div id="card-form">
+          <div class="form-group">
+            <label class="form-label" for="card-number">Card Number</label>
+            <div class="div_input" id="card-number"></div>
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="expiration-date">Expiry Date</label>
+              <div class="div_input" id="expiration-date"></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="cvv">CVV</label>
+              <div class="div_input" id="cvv"></div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="email">Email Address</label>
+            <div class="div_input" id="email" placeholder="your@email.com"></div>
+          </div>
+          
+          <button class="purchase-btn" type="submit" id="purchase-btn">
+            Complete Purchase
+          </button>
+        </div>
       </div>
     </div>
 
