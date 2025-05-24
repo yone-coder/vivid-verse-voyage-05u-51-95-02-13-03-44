@@ -53,7 +53,7 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
       }
 
       const script = document.createElement('script');
-      script.src = `https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=USD&disable-funding=credit&enable-funding=paylater`;
+      script.src = `https://www.paypal.com/sdk/js?client-id=AU23YbLMTqxG3iSvnhcWtix6rGN14uw3axYJgrDe8VqUVng8XiQmmeiaxJWbnpbZP_f4--RTg146F1Mj&currency=USD&disable-funding=credit&enable-funding=paylater`;
       script.onload = () => setPaypalLoaded(true);
       script.onerror = () => {
         console.error('Failed to load PayPal SDK');
