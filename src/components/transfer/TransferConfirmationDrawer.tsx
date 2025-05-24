@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import {
   DrawerClose,
@@ -13,7 +14,7 @@ import { Loader2, AlertCircle, ArrowRight } from 'lucide-react';
 import { toast } from "@/hooks/use-toast";
 import { PAYPAL_BACKEND_URL } from './PaymentMethods';
 import ReceiverDetailsForm, { ReceiverDetails } from './ReceiverDetailsForm';
-import PayPalHostedCheckout from './PayPalHostedCheckout';
+import PayPalIframeCheckout from './PayPalIframeCheckout';
 
 // Backend API URLs as explicit string types
 const MONCASH_BACKEND_URL: string = 'https://moncash-backend.onrender.com';
@@ -42,6 +43,7 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
   const [isProcessing, setIsProcessing] = useState(false);
   const [receiverDetails, setReceiverDetails] = useState<ReceiverDetails | null>(null);
   const [step, setStep] = useState<'summary' | 'receiverDetails' | 'confirmation'>('summary');
+  const [showPayPalIframe, setShowPayPalIframe] = useState(false);
 
   if (!selectedMethod) return null;
 
@@ -201,11 +203,12 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
   // Handle PayPal payment success
   const handlePayPalSuccess = (details: any) => {
     toast({
-      title: "Payment Successful!",
-      description: `Your payment of ${currencySymbol}${amount} has been processed successfully.`,
+      title: "Transfer Payment Successful!",
+      description: `Your transfer payment of ${currencySymbol}${amount} has been processed successfully.`,
       variant: "default",
     });
     
+    setShowPayPalIframe(false);
     onOpenChange(false);
     setStep('summary');
     setReceiverDetails(null);
@@ -215,16 +218,22 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
   const handlePayPalError = (error: any) => {
     console.error('PayPal error:', error);
     setIsProcessing(false);
+    setShowPayPalIframe(false);
     toast({
-      title: "PayPal Error",
-      description: "An error occurred with PayPal. Please try again or use another payment method.",
+      title: "Payment Error",
+      description: "An error occurred with the payment. Please try again.",
       variant: "destructive",
     });
   };
 
   // Handle PayPal payment cancel
   const handlePayPalCancel = () => {
-    setStep('summary');
+    setShowPayPalIframe(false);
+    toast({
+      title: "Payment Cancelled",
+      description: "Your payment was cancelled.",
+      variant: "default",
+    });
   };
 
   // Validate receiver details for all transfers
@@ -240,6 +249,26 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
     // All transfers (both international and national) now require receiver details
     setStep('receiverDetails');
   };
+
+  // Handle credit card payment with iframe
+  const handleCreditCardPayment = () => {
+    if (transferType === 'international' && selectedMethod.id === 'credit-card') {
+      setShowPayPalIframe(true);
+    }
+  };
+
+  // Render PayPal iframe if active
+  if (showPayPalIframe) {
+    return (
+      <PayPalIframeCheckout
+        amount={amount}
+        onSuccess={handlePayPalSuccess}
+        onError={handlePayPalError}
+        onCancel={handlePayPalCancel}
+        onClose={() => setShowPayPalIframe(false)}
+      />
+    );
+  }
 
   // Render summary step
   if (step === 'summary') {
@@ -362,15 +391,24 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
           </div>
         )}
 
-        {/* PayPal Hosted Checkout for Credit Card payments */}
+        {/* Credit Card payment button for international transfers */}
         {transferType === 'international' && selectedMethod.id === 'credit-card' && (
           <div className="mb-4">
-            <PayPalHostedCheckout
-              amount={amount}
-              onSuccess={handlePayPalSuccess}
-              onError={handlePayPalError}
-              onCancel={handlePayPalCancel}
-            />
+            <Button 
+              onClick={handleCreditCardPayment} 
+              disabled={isProcessing}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+              size="lg"
+            >
+              {isProcessing ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Processing Credit Card Payment...
+                </>
+              ) : (
+                'Complete Credit Card Payment'
+              )}
+            </Button>
           </div>
         )}
 
