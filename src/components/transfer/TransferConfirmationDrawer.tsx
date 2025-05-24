@@ -12,12 +12,11 @@ import {
 import { PaymentMethod } from './PaymentMethodItem';
 import { Loader2, AlertCircle, ArrowRight } from 'lucide-react';
 import { toast } from "@/hooks/use-toast";
-import { PAYPAL_BACKEND_URL } from './PaymentMethods';
 import ReceiverDetailsForm, { ReceiverDetails } from './ReceiverDetailsForm';
-import PayPalIframeCheckout from './PayPalIframeCheckout';
 
 // Backend API URLs as explicit string types
 const MONCASH_BACKEND_URL: string = 'https://moncash-backend.onrender.com';
+const PAYPAL_BACKEND_URL: string = 'https://paypal-with-nodejs.onrender.com';
 
 interface TransferConfirmationDrawerProps {
   isOpen: boolean;
@@ -43,7 +42,6 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
   const [isProcessing, setIsProcessing] = useState(false);
   const [receiverDetails, setReceiverDetails] = useState<ReceiverDetails | null>(null);
   const [step, setStep] = useState<'summary' | 'receiverDetails' | 'confirmation'>('summary');
-  const [showPayPalIframe, setShowPayPalIframe] = useState(false);
 
   if (!selectedMethod) return null;
 
@@ -200,40 +198,57 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
     }
   };
 
-  // Handle PayPal payment success
-  const handlePayPalSuccess = (details: any) => {
-    toast({
-      title: "Transfer Payment Successful!",
-      description: `Your transfer payment of ${currencySymbol}${amount} has been processed successfully.`,
-      variant: "default",
-    });
-    
-    setShowPayPalIframe(false);
-    onOpenChange(false);
-    setStep('summary');
-    setReceiverDetails(null);
-  };
+  // Handle PayPal credit card payment
+  const handleCreditCardPayment = async () => {
+    if (transferType !== 'international' || selectedMethod.id !== 'credit-card') {
+      onContinue();
+      return;
+    }
 
-  // Handle PayPal payment error
-  const handlePayPalError = (error: any) => {
-    console.error('PayPal error:', error);
-    setIsProcessing(false);
-    setShowPayPalIframe(false);
-    toast({
-      title: "Payment Error",
-      description: "An error occurred with the payment. Please try again.",
-      variant: "destructive",
-    });
-  };
+    setIsProcessing(true);
 
-  // Handle PayPal payment cancel
-  const handlePayPalCancel = () => {
-    setShowPayPalIframe(false);
-    toast({
-      title: "Payment Cancelled",
-      description: "Your payment was cancelled.",
-      variant: "default",
-    });
+    try {
+      console.log('Creating PayPal order for credit card payment...');
+
+      const response = await fetch(`${PAYPAL_BACKEND_URL}/api/paypal/create-order`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          amount: parseFloat(amount),
+          currency: 'USD',
+          description: `Transfer payment of $${amount}`
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create PayPal order');
+      }
+
+      const orderData = await response.json();
+      console.log('PayPal order created:', orderData);
+
+      // Find the approval URL from PayPal response
+      const approvalUrl = orderData.links?.find((link: any) => link.rel === 'approve')?.href;
+
+      if (!approvalUrl) {
+        throw new Error('No approval URL received from PayPal');
+      }
+
+      // Redirect to PayPal for payment
+      window.location.href = approvalUrl;
+
+    } catch (error) {
+      console.error('PayPal payment error:', error);
+      toast({
+        title: "Payment Failed",
+        description: error instanceof Error ? error.message : "Failed to process credit card payment. Please try again.",
+        variant: "destructive",
+      });
+      setIsProcessing(false);
+    }
   };
 
   // Validate receiver details for all transfers
@@ -249,26 +264,6 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
     // All transfers (both international and national) now require receiver details
     setStep('receiverDetails');
   };
-
-  // Handle credit card payment with iframe
-  const handleCreditCardPayment = () => {
-    if (transferType === 'international' && selectedMethod.id === 'credit-card') {
-      setShowPayPalIframe(true);
-    }
-  };
-
-  // Render PayPal iframe if active
-  if (showPayPalIframe) {
-    return (
-      <PayPalIframeCheckout
-        amount={amount}
-        onSuccess={handlePayPalSuccess}
-        onError={handlePayPalError}
-        onCancel={handlePayPalCancel}
-        onClose={() => setShowPayPalIframe(false)}
-      />
-    );
-  }
 
   // Render summary step
   if (step === 'summary') {
@@ -403,7 +398,7 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
               {isProcessing ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Processing Credit Card Payment...
+                  Creating PayPal Order...
                 </>
               ) : (
                 'Complete Credit Card Payment'
