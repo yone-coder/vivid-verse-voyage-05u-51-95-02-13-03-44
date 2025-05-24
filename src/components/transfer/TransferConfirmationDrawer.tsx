@@ -230,10 +230,13 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
       const orderData = await response.json();
       console.log('PayPal order created:', orderData);
 
-      // Find the approval URL from PayPal response
-      const approvalUrl = orderData.links?.find((link: any) => link.rel === 'approve')?.href;
+      // Find the approval URL from PayPal response - look for both 'approve' and 'payer-action'
+      const approvalUrl = orderData.links?.find((link: any) => 
+        link.rel === 'approve' || link.rel === 'payer-action'
+      )?.href;
 
       if (!approvalUrl) {
+        console.error('Available links:', orderData.links);
         throw new Error('No approval URL received from PayPal');
       }
 
