@@ -589,39 +589,112 @@ const PayPalCheckoutPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Minimal Header */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-4xl mx-auto px-6 py-4 flex justify-between items-center">
-          <div className="flex items-center space-x-3">
-            <h2 className="text-lg font-semibold text-gray-900">Checkout</h2>
-            <span className="px-2 py-1 bg-gray-100 text-gray-700 text-sm rounded-full font-medium">
-              ${amount}
-            </span>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+      {/* Enhanced Header */}
+      <div className="bg-white/80 backdrop-blur-sm border-b border-slate-200/60 shadow-sm">
+        <div className="max-w-7xl mx-auto px-6 py-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center">
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                </svg>
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-slate-900">Secure Checkout</h1>
+                <p className="text-slate-600 text-sm">Complete your purchase safely</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center space-x-4">
+              <div className="bg-gradient-to-r from-emerald-500 to-green-500 text-white px-4 py-2 rounded-xl font-semibold text-lg shadow-lg">
+                ${amount}
+              </div>
+              <div className="flex items-center space-x-2 text-slate-600">
+                <svg className="w-5 h-5 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                </svg>
+                <span className="text-sm font-medium">SSL Secured</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Iframe Container */}
-      <div className="flex-1 flex items-center justify-center p-6">
-        <div className="w-full max-w-lg relative">
-          {isLoading && (
-            <div className="absolute inset-0 bg-white flex items-center justify-center z-10">
-              <div className="flex flex-col items-center space-y-3">
-                <div className="w-6 h-6 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
-                <p className="text-gray-600 text-sm">Loading...</p>
+      {/* Progress Indicator */}
+      <div className="bg-white/50 backdrop-blur-sm border-b border-slate-200/50">
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="flex items-center justify-center space-x-8">
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-semibold">1</div>
+              <span className="text-slate-700 font-medium">Cart</span>
+            </div>
+            <div className="w-16 h-px bg-slate-300"></div>
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-semibold">2</div>
+              <span className="text-blue-600 font-semibold">Payment</span>
+            </div>
+            <div className="w-16 h-px bg-slate-300"></div>
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-slate-300 text-slate-600 rounded-full flex items-center justify-center text-sm font-semibold">3</div>
+              <span className="text-slate-500">Confirmation</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Full Width Iframe Container */}
+      <div className="flex-1 relative">
+        {isLoading && (
+          <div className="absolute inset-0 bg-white/90 backdrop-blur-sm flex items-center justify-center z-20">
+            <div className="bg-white rounded-2xl shadow-xl p-8 flex flex-col items-center space-y-4">
+              <div className="relative">
+                <div className="w-12 h-12 border-4 border-slate-200 border-t-blue-600 rounded-full animate-spin"></div>
+                <div className="absolute inset-0 w-12 h-12 border-4 border-transparent border-r-indigo-600 rounded-full animate-spin" style={{animationDirection: 'reverse', animationDuration: '1.5s'}}></div>
+              </div>
+              <div className="text-center">
+                <p className="text-slate-700 font-semibold">Loading Payment Options</p>
+                <p className="text-slate-500 text-sm">Setting up secure checkout...</p>
               </div>
             </div>
-          )}
+          </div>
+        )}
 
-          <iframe
-            ref={iframeRef}
-            src={createIframeUrl()}
-            className="w-full h-[600px] border-0 rounded-2xl shadow-sm"
-            onLoad={handleIframeLoad}
-            title="PayPal Checkout"
-            sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
-          />
+        <iframe
+          ref={iframeRef}
+          src={createIframeUrl()}
+          className="w-full h-[calc(100vh-200px)] border-0"
+          onLoad={handleIframeLoad}
+          title="PayPal Checkout"
+          sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+        />
+      </div>
+
+      {/* Footer */}
+      <div className="bg-white/80 backdrop-blur-sm border-t border-slate-200/60">
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="flex items-center justify-center space-x-6 text-sm text-slate-600">
+            <div className="flex items-center space-x-2">
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+              <span>256-bit SSL encryption</span>
+            </div>
+            <div className="w-px h-4 bg-slate-300"></div>
+            <div className="flex items-center space-x-2">
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M18 8a6 6 0 01-7.743 5.743L10 14l-.257-.257A6 6 0 1118 8zm-2 0a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+              </svg>
+              <span>PCI DSS compliant</span>
+            </div>
+            <div className="w-px h-4 bg-slate-300"></div>
+            <div className="flex items-center space-x-2">
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              </svg>
+              <span>Money-back guarantee</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
