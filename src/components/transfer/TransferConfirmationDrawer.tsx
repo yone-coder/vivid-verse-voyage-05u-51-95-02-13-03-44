@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import {
   DrawerClose,
@@ -42,6 +41,143 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
   const [isProcessing, setIsProcessing] = useState(false);
   const [receiverDetails, setReceiverDetails] = useState<ReceiverDetails | null>(null);
   const [step, setStep] = useState<'summary' | 'receiverDetails' | 'confirmation'>('summary');
+  const [paypalLoaded, setPaypalLoaded] = useState(false);
+  const paypalRef = useRef<HTMLDivElement>(null);
+
+  // Load PayPal SDK when component mounts
+  useEffect(() => {
+    const loadPayPalScript = () => {
+      if (window.paypal) {
+        setPaypalLoaded(true);
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = `https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=USD&disable-funding=credit&enable-funding=paylater`;
+      script.onload = () => setPaypalLoaded(true);
+      script.onerror = () => {
+        console.error('Failed to load PayPal SDK');
+        toast({
+          title: "PayPal Error",
+          description: "Failed to load PayPal. Please refresh and try again.",
+          variant: "destructive",
+        });
+      };
+      document.body.appendChild(script);
+    };
+
+    if (transferType === 'international' && selectedMethod?.id === 'credit-card') {
+      loadPayPalScript();
+    }
+  }, [transferType, selectedMethod]);
+
+  // Initialize PayPal buttons when step changes to confirmation
+  useEffect(() => {
+    if (
+      paypalLoaded && 
+      step === 'confirmation' && 
+      transferType === 'international' && 
+      selectedMethod?.id === 'credit-card' &&
+      paypalRef.current &&
+      window.paypal
+    ) {
+      // Clear any existing PayPal buttons
+      paypalRef.current.innerHTML = '';
+
+      window.paypal.Buttons({
+        style: {
+          layout: 'vertical',
+          color: 'blue',
+          shape: 'rect',
+          label: 'pay',
+          height: 50
+        },
+        createOrder: async (data: any, actions: any) => {
+          try {
+            setIsProcessing(true);
+            
+            const response = await fetch(`${PAYPAL_BACKEND_URL}/api/paypal/create-order`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                amount: parseFloat(amount),
+                currency: 'USD',
+                description: `Transfer payment of $${amount}`
+              })
+            });
+
+            if (!response.ok) {
+              throw new Error('Failed to create order');
+            }
+
+            const orderData = await response.json();
+            return orderData.id;
+          } catch (error) {
+            console.error('Error creating PayPal order:', error);
+            setIsProcessing(false);
+            throw error;
+          }
+        },
+        onApprove: async (data: any, actions: any) => {
+          try {
+            const response = await fetch(`${PAYPAL_BACKEND_URL}/api/paypal/capture-order/${data.orderID}`, {
+              method: 'POST'
+            });
+
+            if (!response.ok) {
+              throw new Error('Failed to capture payment');
+            }
+
+            const captureData = await response.json();
+            
+            if (captureData.success) {
+              toast({
+                title: "Payment Successful!",
+                description: `Your payment of $${amount} has been processed successfully.`,
+                variant: "default",
+              });
+              onContinue();
+              onOpenChange(false);
+            } else {
+              throw new Error('Payment was not completed');
+            }
+          } catch (error) {
+            console.error('Error capturing payment:', error);
+            toast({
+              title: "Payment Failed",
+              description: "There was an error processing your payment. Please try again.",
+              variant: "destructive",
+            });
+          } finally {
+            setIsProcessing(false);
+          }
+        },
+        onError: (err: any) => {
+          console.error('PayPal error:', err);
+          setIsProcessing(false);
+          toast({
+            title: "Payment Error",
+            description: "There was an error with PayPal. Please try again.",
+            variant: "destructive",
+          });
+        },
+        onCancel: (data: any) => {
+          console.log('Payment cancelled:', data);
+          setIsProcessing(false);
+          toast({
+            title: "Payment Cancelled",
+            description: "Your payment was cancelled.",
+            variant: "default",
+          });
+        }
+      }).render(paypalRef.current).catch((error: any) => {
+        console.error('Failed to render PayPal buttons:', error);
+        setIsProcessing(false);
+      });
+    }
+  }, [paypalLoaded, step, transferType, selectedMethod, amount]);
 
   if (!selectedMethod) return null;
 
@@ -198,62 +334,6 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
     }
   };
 
-  // Handle PayPal credit card payment
-  const handleCreditCardPayment = async () => {
-    if (transferType !== 'international' || selectedMethod.id !== 'credit-card') {
-      onContinue();
-      return;
-    }
-
-    setIsProcessing(true);
-
-    try {
-      console.log('Creating PayPal order for credit card payment...');
-
-      const response = await fetch(`${PAYPAL_BACKEND_URL}/api/paypal/create-order`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          amount: parseFloat(amount),
-          currency: 'USD',
-          description: `Transfer payment of $${amount}`
-        })
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to create PayPal order');
-      }
-
-      const orderData = await response.json();
-      console.log('PayPal order created:', orderData);
-
-      // Find the approval URL from PayPal response - look for both 'approve' and 'payer-action'
-      const approvalUrl = orderData.links?.find((link: any) => 
-        link.rel === 'approve' || link.rel === 'payer-action'
-      )?.href;
-
-      if (!approvalUrl) {
-        console.error('Available links:', orderData.links);
-        throw new Error('No approval URL received from PayPal');
-      }
-
-      // Redirect to PayPal for payment
-      window.location.href = approvalUrl;
-
-    } catch (error) {
-      console.error('PayPal payment error:', error);
-      toast({
-        title: "Payment Failed",
-        description: error instanceof Error ? error.message : "Failed to process credit card payment. Please try again.",
-        variant: "destructive",
-      });
-      setIsProcessing(false);
-    }
-  };
-
   // Validate receiver details for all transfers
   const isReceiverDetailsValid = () => {
     if (!receiverDetails) return false;
@@ -389,24 +469,28 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
           </div>
         )}
 
-        {/* Credit Card payment button for international transfers */}
+        {/* PayPal Buttons for Credit Card payment */}
         {transferType === 'international' && selectedMethod.id === 'credit-card' && (
           <div className="mb-4">
-            <Button 
-              onClick={handleCreditCardPayment} 
-              disabled={isProcessing}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-              size="lg"
-            >
-              {isProcessing ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Creating PayPal Order...
-                </>
-              ) : (
-                'Complete Credit Card Payment'
-              )}
-            </Button>
+            {paypalLoaded ? (
+              <div>
+                <div className="mb-3 text-center text-sm text-gray-600">
+                  Pay with Credit Card or PayPal
+                </div>
+                <div ref={paypalRef} className="min-h-[60px]"></div>
+                {isProcessing && (
+                  <div className="flex items-center justify-center mt-2">
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <span className="text-sm text-gray-600">Processing payment...</span>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="flex items-center justify-center py-4">
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <span className="text-sm text-gray-600">Loading PayPal...</span>
+              </div>
+            )}
           </div>
         )}
 
