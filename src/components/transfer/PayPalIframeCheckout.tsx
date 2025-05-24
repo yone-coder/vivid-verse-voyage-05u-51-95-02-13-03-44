@@ -2,6 +2,13 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Loader2, X } from 'lucide-react';
 
+// Extend Window interface to include transferAmount
+declare global {
+  interface Window {
+    transferAmount?: string;
+  }
+}
+
 interface PayPalIframeCheckoutProps {
   amount: string;
   onSuccess: (details: any) => void;
@@ -10,18 +17,8 @@ interface PayPalIframeCheckoutProps {
   onClose: () => void;
 }
 
-const PayPalIframeCheckout: React.FC<PayPalIframeCheckoutProps> = ({
-  amount,
-  onSuccess,
-  onError,
-  onCancel,
-  onClose
-}) => {
-  const [isLoading, setIsLoading] = useState(true);
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-
-  // The HTML content for the iframe
-  const iframeContent = `<!DOCTYPE html>
+// The HTML content for the iframe
+const iframeContent = `<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -263,11 +260,21 @@ const PayPalIframeCheckout: React.FC<PayPalIframeCheckoutProps> = ({
   </body>
 </html>`;
 
-  // Create blob URL for iframe content
-  const createIframeUrl = () => {
-    const blob = new Blob([iframeContent], { type: 'text/html' });
-    return URL.createObjectURL(blob);
-  };
+// Create blob URL for iframe content - moved outside component like in DepositPage
+const createIframeUrl = () => {
+  const blob = new Blob([iframeContent], { type: 'text/html' });
+  return URL.createObjectURL(blob);
+};
+
+const PayPalIframeCheckout: React.FC<PayPalIframeCheckoutProps> = ({
+  amount,
+  onSuccess,
+  onError,
+  onCancel,
+  onClose
+}) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
   // Handle messages from iframe
   useEffect(() => {

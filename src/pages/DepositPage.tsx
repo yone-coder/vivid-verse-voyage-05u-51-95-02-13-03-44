@@ -1,12 +1,8 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 
-const PayPalCheckoutPage = () => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [showCheckout, setShowCheckout] = useState(false);
-  const [amount, setAmount] = useState('');
-  const iframeRef = useRef(null);
-
-  // The HTML content for the iframe (you would typically serve this from a separate URL)
+// Create blob URL for iframe content - moved outside component
+const createIframeUrl = () => {
   const iframeContent = `<!DOCTYPE html>
 <html lang="en">
   <head>
@@ -514,11 +510,15 @@ const PayPalCheckoutPage = () => {
   </body>
 </html>`;
 
-  // Create blob URL for iframe content - moved outside useEffect
-  const createIframeUrl = () => {
-    const blob = new Blob([iframeContent], { type: 'text/html' });
-    return URL.createObjectURL(blob);
-  };
+  const blob = new Blob([iframeContent], { type: 'text/html' });
+  return URL.createObjectURL(blob);
+};
+
+const PayPalCheckoutPage = () => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [showCheckout, setShowCheckout] = useState(false);
+  const [amount, setAmount] = useState('');
+  const iframeRef = useRef(null);
 
   // Handle messages from iframe
   useEffect(() => {
@@ -715,22 +715,24 @@ const PayPalCheckoutPage = () => {
         )}
       </div>
 
-      <style jsx>{`
-        @keyframes tilt {
-          0%, 50%, 100% {
-            transform: rotate(0deg);
+      <style>
+        {`
+          @keyframes tilt {
+            0%, 50%, 100% {
+              transform: rotate(0deg);
+            }
+            25% {
+              transform: rotate(0.5deg);
+            }
+            75% {
+              transform: rotate(-0.5deg);
+            }
           }
-          25% {
-            transform: rotate(0.5deg);
+          .animate-tilt {
+            animation: tilt 10s infinite linear;
           }
-          75% {
-            transform: rotate(-0.5deg);
-          }
-        }
-        .animate-tilt {
-          animation: tilt 10s infinite linear;
-        }
-      `}</style>
+        `}
+      </style>
     </div>
   );
 };

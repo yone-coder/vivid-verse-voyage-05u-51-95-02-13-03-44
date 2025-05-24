@@ -1,23 +1,6 @@
 
 import React from 'react';
 
-// Define proper PayPal types
-declare global {
-  interface Window {
-    paypal?: {
-      Buttons: (options: any) => {
-        render: (element: string | HTMLElement) => void;
-        isEligible: () => boolean;
-        close: () => void;
-      };
-      HostedFields: {
-        isEligible: () => boolean;
-        render: (options: any) => Promise<any>;
-      };
-    };
-  }
-}
-
 interface PayPalButtonProps {
   amount: string;
   onSuccess: (details: any) => void;

@@ -21,6 +21,7 @@ const PayPalDepositPage = () => {
               purchase_units: [
                 {
                   amount: {
+                    currency_code: "USD",
                     value: "100.00",
                   },
                 },
