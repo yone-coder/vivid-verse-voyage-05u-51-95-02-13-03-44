@@ -17,24 +17,37 @@ const createIframeUrl = () => {
       }
 
       body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-        background: #fafafa;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         min-height: 100vh;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 24px;
-        color: #1f2937;
+        padding: 20px;
+        color: #1a202c;
       }
 
       .payment-container {
-        background: white;
-        border-radius: 16px;
-        padding: 48px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        padding: 40px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         width: 100%;
-        max-width: 400px;
-        border: 1px solid #f3f4f6;
+        max-width: 480px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .payment-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
       }
 
       .hide {
@@ -43,18 +56,27 @@ const createIframeUrl = () => {
 
       .spinner-container {
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
-        height: 80px;
+        height: 120px;
+        gap: 16px;
       }
 
       .spinner {
-        width: 24px;
-        height: 24px;
-        border: 2px solid #f3f4f6;
-        border-top: 2px solid #6b7280;
+        width: 32px;
+        height: 32px;
+        border: 3px solid rgba(102, 126, 234, 0.1);
+        border-top: 3px solid #667eea;
         border-radius: 50%;
-        animation: spin 1s linear infinite;
+        animation: spin 0.8s linear infinite;
+      }
+
+      .spinner-text {
+        color: #667eea;
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: 0.5px;
       }
 
       @keyframes spin {
@@ -63,204 +85,374 @@ const createIframeUrl = () => {
       }
 
       .form-group {
-        margin-bottom: 20px;
+        margin-bottom: 24px;
+        position: relative;
       }
 
       .form-label {
         display: block;
-        font-size: 13px;
-        font-weight: 500;
-        color: #6b7280;
-        margin-bottom: 6px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #4a5568;
+        margin-bottom: 8px;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 1px;
+        font-size: 12px;
       }
 
       .div_input {
         width: 100%;
-        height: 44px;
-        background: #fafafa;
-        border: 1px solid #e5e7eb;
-        border-radius: 8px;
-        padding: 0 14px;
-        font-size: 15px;
-        color: #1f2937;
-        transition: all 0.15s ease;
+        height: 56px;
+        background: #ffffff;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 0 20px;
+        font-size: 16px;
+        color: #2d3748;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         outline: none;
         display: flex;
         align-items: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .div_input::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+        opacity: 0;
+        transition: opacity 0.3s ease;
       }
 
       .div_input:focus-within {
-        border-color: #000;
-        background: #fff;
+        border-color: #667eea;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px -5px rgba(102, 126, 234, 0.2);
+      }
+
+      .div_input:focus-within::before {
+        opacity: 1;
+      }
+
+      .div_input:hover {
+        border-color: #cbd5e0;
+        transform: translateY(-1px);
       }
 
       .form-row {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 12px;
+        gap: 16px;
       }
 
       .purchase-btn {
         width: 100%;
-        height: 44px;
-        background: #000;
+        height: 56px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         border: none;
-        border-radius: 8px;
+        border-radius: 12px;
         color: white;
-        font-size: 15px;
-        font-weight: 500;
+        font-size: 16px;
+        font-weight: 600;
         cursor: pointer;
-        transition: all 0.15s ease;
-        margin-top: 8px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        margin-top: 16px;
+        position: relative;
+        overflow: hidden;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 10px 25px -5px rgba(102, 126, 234, 0.4);
+      }
+
+      .purchase-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s ease;
       }
 
       .purchase-btn:hover:not(:disabled) {
-        background: #1f2937;
+        transform: translateY(-2px);
+        box-shadow: 0 15px 35px -5px rgba(102, 126, 234, 0.5);
+      }
+
+      .purchase-btn:hover:not(:disabled)::before {
+        left: 100%;
+      }
+
+      .purchase-btn:active:not(:disabled) {
+        transform: translateY(0);
       }
 
       .purchase-btn:disabled {
-        opacity: 0.6;
+        opacity: 0.7;
         cursor: not-allowed;
+        transform: none;
       }
 
       .paypal-buttons {
-        margin-bottom: 24px;
+        margin-bottom: 32px;
       }
 
       .divider {
         display: flex;
         align-items: center;
-        margin: 24px 0;
-        color: #9ca3af;
-        font-size: 13px;
+        margin: 32px 0;
+        color: #718096;
+        font-size: 14px;
         font-weight: 500;
+        position: relative;
       }
 
       .divider::before,
       .divider::after {
         content: '';
         flex: 1;
-        height: 1px;
-        background: #e5e7eb;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
       }
 
       .divider span {
-        padding: 0 12px;
+        padding: 0 20px;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 1px;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #667eea;
       }
 
       .alert {
-        padding: 16px;
-        border-radius: 8px;
-        margin-bottom: 20px;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 24px;
         font-size: 14px;
         font-weight: 500;
         position: relative;
+        border: 1px solid;
+        backdrop-filter: blur(10px);
       }
 
       .alert-success {
-        background: #f0fdf4;
-        color: #166534;
-        border: 1px solid #bbf7d0;
+        background: rgba(72, 187, 120, 0.1);
+        color: #2f855a;
+        border-color: rgba(72, 187, 120, 0.2);
       }
 
       .alert-error {
-        background: #fef2f2;
-        color: #dc2626;
-        border: 1px solid #fecaca;
+        background: rgba(245, 101, 101, 0.1);
+        color: #c53030;
+        border-color: rgba(245, 101, 101, 0.2);
       }
 
       .alert-warning {
-        background: #fffbeb;
-        color: #d97706;
-        border: 1px solid #fed7aa;
+        background: rgba(237, 137, 54, 0.1);
+        color: #dd6b20;
+        border-color: rgba(237, 137, 54, 0.2);
       }
 
       .close-btn {
         position: absolute;
-        top: 12px;
-        right: 12px;
+        top: 16px;
+        right: 16px;
         background: none;
         border: none;
         color: inherit;
-        font-size: 16px;
+        font-size: 18px;
         cursor: pointer;
         opacity: 0.6;
-        padding: 2px;
+        padding: 4px;
         line-height: 1;
+        border-radius: 4px;
+        transition: all 0.2s ease;
       }
 
       .close-btn:hover {
         opacity: 1;
+        background: rgba(0, 0, 0, 0.1);
       }
 
       .title {
         text-align: center;
-        font-size: 20px;
-        font-weight: 600;
-        color: #1f2937;
-        margin-bottom: 32px;
-        letter-spacing: -0.5px;
-      }
-
-      #payment_options {
-        margin-top: 16px;
-      }
-
-      .ms-alert {
-        padding: 16px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-        font-size: 14px;
+        font-size: 28px;
+        font-weight: 700;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 40px;
+        letter-spacing: -1px;
         position: relative;
       }
 
+      .title::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 2px;
+      }
+
+      #payment_options {
+        margin-top: 20px;
+      }
+
+      .ms-alert {
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 24px;
+        font-size: 14px;
+        position: relative;
+        border: 1px solid;
+        backdrop-filter: blur(10px);
+      }
+
       .ms-alert.ms-action {
-        background: #f0fdf4;
-        color: #166534;
-        border: 1px solid #bbf7d0;
+        background: rgba(72, 187, 120, 0.1);
+        color: #2f855a;
+        border-color: rgba(72, 187, 120, 0.2);
       }
 
       .ms-alert.ms-action2 {
-        background: #fef2f2;
-        color: #dc2626;
-        border: 1px solid #fecaca;
+        background: rgba(245, 101, 101, 0.1);
+        color: #c53030;
+        border-color: rgba(245, 101, 101, 0.2);
       }
 
       .ms-close {
         position: absolute;
-        top: 12px;
-        right: 12px;
+        top: 16px;
+        right: 16px;
         background: none;
         border: none;
         color: inherit;
-        font-size: 16px;
+        font-size: 18px;
         cursor: pointer;
         opacity: 0.6;
-        padding: 2px;
+        padding: 4px;
         line-height: 1;
+        border-radius: 4px;
+        transition: all 0.2s ease;
       }
 
       .ms-close:hover {
         opacity: 1;
+        background: rgba(0, 0, 0, 0.1);
       }
 
       .ms-close::before {
         content: '×';
       }
+
+      /* Enhanced PayPal button styling */
+      .paypal-buttons iframe {
+        border-radius: 12px !important;
+      }
+
+      /* Email field specific styling */
+      #email {
+        font-family: inherit;
+        font-size: 16px;
+        color: #2d3748;
+      }
+
+      /* Card field enhancements */
+      .div_input input {
+        background: transparent;
+        border: none;
+        outline: none;
+        width: 100%;
+        height: 100%;
+        font-size: 16px;
+        color: #2d3748;
+        font-family: inherit;
+      }
+
+      /* Responsive design */
+      @media (max-width: 640px) {
+        .payment-container {
+          padding: 24px;
+          margin: 12px;
+        }
+        
+        .form-row {
+          grid-template-columns: 1fr;
+          gap: 12px;
+        }
+        
+        .title {
+          font-size: 24px;
+          margin-bottom: 32px;
+        }
+        
+        .div_input {
+          height: 52px;
+          font-size: 16px;
+          padding: 0 16px;
+        }
+        
+        .purchase-btn {
+          height: 52px;
+          font-size: 15px;
+        }
+      }
+
+      /* Loading animation improvements */
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      #content {
+        animation: fadeIn 0.6s ease-out;
+      }
+
+      /* Success message styling */
+      .success-checkmark {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #48bb78;
+        margin-right: 8px;
+        position: relative;
+      }
+
+      .success-checkmark::after {
+        content: '✓';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        font-size: 10px;
+        font-weight: bold;
+      }
     </style>
   </head>
   <body>
     <div class="payment-container">
-      <h1 class="title">Checkout</h1>
+      <h1 class="title">Secure Checkout</h1>
       
       <div id="alerts"></div>
       
       <div id="loading" class="spinner-container">
         <div class="spinner"></div>
+        <div class="spinner-text">Loading Payment Options...</div>
       </div>
       
       <div id="content" class="hide">
@@ -278,18 +470,20 @@ const createIframeUrl = () => {
           
           <div class="form-row">
             <div class="form-group">
-              <label class="form-label" for="expiration-date">Expiry</label>
+              <label class="form-label" for="expiration-date">Expiry Date</label>
               <div class="div_input" id="expiration-date"></div>
             </div>
             <div class="form-group">
-              <label class="form-label" for="cvv">CVV</label>
+              <label class="form-label" for="cvv">Security Code</label>
               <div class="div_input" id="cvv"></div>
             </div>
           </div>
           
           <div class="form-group">
-            <label class="form-label" for="email">Email</label>
-            <div class="div_input" id="email" placeholder="your@email.com"></div>
+            <label class="form-label" for="email">Email Address</label>
+            <div class="div_input" id="email">
+              <input type="email" placeholder="your@email.com" style="background: none; border: none; outline: none; width: 100%; font-size: 16px; color: #2d3748;">
+            </div>
           </div>
           
           <button class="purchase-btn" type="submit" id="purchase-btn">
@@ -362,7 +556,7 @@ const createIframeUrl = () => {
       const intent = "capture";
 
       let display_error_alert = () => {
-          document.getElementById("alerts").innerHTML = \`<div class="ms-alert ms-action2 ms-small"><span class="ms-close"></span><p>An error occurred. Please try again.</p></div>\`;
+          document.getElementById("alerts").innerHTML = \`<div class="ms-alert ms-action2 ms-small"><span class="ms-close"></span><p>❌ An error occurred. Please try again.</p></div>\`;
       }
 
       let display_success_message = (object) => {
@@ -371,7 +565,7 @@ const createIframeUrl = () => {
           console.log(order_details);
           let intent_object = intent === "authorize" ? "authorizations" : "captures";
           
-          document.getElementById("alerts").innerHTML = \`<div class='ms-alert ms-action'>Payment successful! Thank you \` + (order_details?.payer?.name?.given_name || '') + \` \` + (order_details?.payer?.name?.surname || '') + \`</div>\`;
+          document.getElementById("alerts").innerHTML = \`<div class='ms-alert ms-action'><span class="success-checkmark"></span>Payment successful! Thank you \` + (order_details?.payer?.name?.given_name || '') + \` \` + (order_details?.payer?.name?.surname || '') + \`</div>\`;
 
           paypal_buttons.close();
           document.getElementById("card-form").classList.add("hide");
@@ -403,7 +597,8 @@ const createIframeUrl = () => {
                   color: 'black',
                   layout: 'vertical',
                   label: 'paypal',
-                  height: 44
+                  height: 50,
+                  borderRadius: 12
               },
 
               createOrder: function(data, actions) {
@@ -439,7 +634,7 @@ const createIframeUrl = () => {
               },
 
               onCancel: function (data) {
-                  document.getElementById("alerts").innerHTML = \`<div class="ms-alert ms-action2 ms-small"><span class="ms-close"></span><p>Payment cancelled</p></div>\`;
+                  document.getElementById("alerts").innerHTML = \`<div class="ms-alert ms-action2 ms-small"><span class="ms-close"></span><p>⚠️ Payment cancelled</p></div>\`;
                   
                   // Notify parent window of cancelled payment
                   window.parent.postMessage({ 
@@ -474,14 +669,19 @@ const createIframeUrl = () => {
                 },
                 styles: {
                   '.valid': {
-                    color: 'green'
+                    color: '#48bb78'
                   },
                   '.invalid': {
-                    color: 'red'
+                    color: '#f56565'
                   },
                   'input': {
-                      'font-size': '15px',
-                      'color': '#1f2937'
+                      'font-size': '16px',
+                      'color': '#2d3748',
+                      'font-family': '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", sans-serif',
+                      'padding': '0',
+                      '::placeholder': {
+                        'color': '#a0aec0'
+                      }
                   },
                 },
                 fields: {
@@ -501,17 +701,28 @@ const createIframeUrl = () => {
               }).then((card_fields) => {
                document.querySelector("#purchase-btn").addEventListener("click", (event) => {
                   event.preventDefault();
+                  
+                  // Get email value
+                  const emailInput = document.querySelector("#email input");
+                  const emailValue = emailInput ? emailInput.value : '';
+                  
+                  if (!emailValue || !emailValue.includes('@')) {
+                    document.getElementById("alerts").innerHTML = \`<div class="ms-alert ms-action2 ms-small"><span class="ms-close"></span><p>⚠️ Please enter a valid email address</p></div>\`;
+                    return;
+                  }
+                  
                   document.querySelector("#purchase-btn").setAttribute("disabled", "");
-                  document.querySelector("#purchase-btn").textContent = "Processing...";
+                  document.querySelector("#purchase-btn").textContent = "Processing Payment...";
+                  
                   card_fields
                     .submit({
-                      cardholderName: "Raúl Uriarte, Jr.",
+                      cardholderName: "Card Holder",
                       billingAddress: {
-                        streetAddress: "123 Springfield Rd",
+                        streetAddress: "123 Main St",
                         extendedAddress: "",
-                        region: "AZ",
-                        locality: "CHANDLER",
-                        postalCode: "85224",
+                        region: "CA",
+                        locality: "San Jose",
+                        postalCode: "95131",
                         countryCodeAlpha2: "US",
                       },
                     })
@@ -522,7 +733,7 @@ const createIframeUrl = () => {
                           body: JSON.stringify({
                               "intent": intent,
                               "order_id": order_id,
-                              "email": document.getElementById("email").value
+                              "email": emailValue
                           })
                       })
                       .then((response) => response.json())
@@ -532,6 +743,7 @@ const createIframeUrl = () => {
                        .catch((error) => {
                           console.log(error);
                           display_error_alert();
+                          reset_purchase_button();
                        });
                     })
                     .catch((err) => {
@@ -544,7 +756,9 @@ const createIframeUrl = () => {
             }
       })
       .catch((error) => {
+          console.log(error);
           reset_purchase_button();
+          display_error_alert();
       });
     </script>
   </body>
@@ -589,73 +803,14 @@ const PayPalCheckoutPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
-      {/* Enhanced Header */}
-      <div className="bg-white/80 backdrop-blur-sm border-b border-slate-200/60 shadow-sm">
-        <div className="max-w-7xl mx-auto px-6 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                </svg>
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-slate-900">Secure Checkout</h1>
-                <p className="text-slate-600 text-sm">Complete your purchase safely</p>
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-4">
-              <div className="bg-gradient-to-r from-emerald-500 to-green-500 text-white px-4 py-2 rounded-xl font-semibold text-lg shadow-lg">
-                ${amount}
-              </div>
-              <div className="flex items-center space-x-2 text-slate-600">
-                <svg className="w-5 h-5 text-emerald-500" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-                </svg>
-                <span className="text-sm font-medium">SSL Secured</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Progress Indicator */}
-      <div className="bg-white/50 backdrop-blur-sm border-b border-slate-200/50">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-center space-x-8">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-semibold">1</div>
-              <span className="text-slate-700 font-medium">Cart</span>
-            </div>
-            <div className="w-16 h-px bg-slate-300"></div>
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-semibold">2</div>
-              <span className="text-blue-600 font-semibold">Payment</span>
-            </div>
-            <div className="w-16 h-px bg-slate-300"></div>
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-slate-300 text-slate-600 rounded-full flex items-center justify-center text-sm font-semibold">3</div>
-              <span className="text-slate-500">Confirmation</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Full Width Iframe Container */}
-      <div className="flex-1 relative">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      {/* Full-width iframe container */}
+      <div className="w-full h-screen relative">
         {isLoading && (
-          <div className="absolute inset-0 bg-white/90 backdrop-blur-sm flex items-center justify-center z-20">
-            <div className="bg-white rounded-2xl shadow-xl p-8 flex flex-col items-center space-y-4">
-              <div className="relative">
-                <div className="w-12 h-12 border-4 border-slate-200 border-t-blue-600 rounded-full animate-spin"></div>
-                <div className="absolute inset-0 w-12 h-12 border-4 border-transparent border-r-indigo-600 rounded-full animate-spin" style={{animationDirection: 'reverse', animationDuration: '1.5s'}}></div>
-              </div>
-              <div className="text-center">
-                <p className="text-slate-700 font-semibold">Loading Payment Options</p>
-                <p className="text-slate-500 text-sm">Setting up secure checkout...</p>
-              </div>
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center z-10">
+            <div className="flex flex-col items-center space-y-4">
+              <div className="w-8 h-8 border-3 border-purple-300 border-t-purple-600 rounded-full animate-spin"></div>
+              <p className="text-purple-200 text-lg font-medium">Loading Secure Checkout...</p>
             </div>
           </div>
         )}
@@ -663,39 +818,11 @@ const PayPalCheckoutPage = () => {
         <iframe
           ref={iframeRef}
           src={createIframeUrl()}
-          className="w-full h-[calc(100vh-200px)] border-0"
+          className="w-full h-full border-0"
           onLoad={handleIframeLoad}
           title="PayPal Checkout"
           sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
         />
-      </div>
-
-      {/* Footer */}
-      <div className="bg-white/80 backdrop-blur-sm border-t border-slate-200/60">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-center space-x-6 text-sm text-slate-600">
-            <div className="flex items-center space-x-2">
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-              </svg>
-              <span>256-bit SSL encryption</span>
-            </div>
-            <div className="w-px h-4 bg-slate-300"></div>
-            <div className="flex items-center space-x-2">
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M18 8a6 6 0 01-7.743 5.743L10 14l-.257-.257A6 6 0 1118 8zm-2 0a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
-              </svg>
-              <span>PCI DSS compliant</span>
-            </div>
-            <div className="w-px h-4 bg-slate-300"></div>
-            <div className="flex items-center space-x-2">
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-              </svg>
-              <span>Money-back guarantee</span>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );
