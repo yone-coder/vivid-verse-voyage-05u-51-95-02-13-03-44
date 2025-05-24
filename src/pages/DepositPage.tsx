@@ -556,16 +556,14 @@ const createIframeUrl = () => {
 
 const PayPalCheckoutPage = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const [showCheckout, setShowCheckout] = useState(false);
-  const [amount, setAmount] = useState('');
   const iframeRef = useRef(null);
+  const amount = '100.00'; // Static amount
 
   // Handle messages from iframe
   useEffect(() => {
     const handleMessage = (event) => {
       if (event.data.type === 'PAYMENT_SUCCESS') {
         console.log('Payment successful:', event.data.orderDetails);
-        setShowCheckout(false);
         alert(`Payment successful! Order ID: ${event.data.orderDetails.id}`);
       } else if (event.data.type === 'PAYMENT_CANCELLED') {
         console.log('Payment cancelled');
@@ -582,14 +580,7 @@ const PayPalCheckoutPage = () => {
 
   const handleIframeLoad = () => {
     setIsLoading(false);
-  };
-
-  const openCheckout = () => {
-    if (!amount || parseFloat(amount) <= 0) {
-      alert('Please enter a valid amount');
-      return;
-    }
-    setShowCheckout(true);
+    // Set the static amount in the iframe
     setTimeout(() => {
       if (iframeRef.current && iframeRef.current.contentWindow) {
         iframeRef.current.contentWindow.orderAmount = amount;
@@ -598,101 +589,41 @@ const PayPalCheckoutPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      {!showCheckout ? (
-        /* Ultra Minimal Product Display */
-        <div className="flex items-center justify-center min-h-screen p-6">
-          <div className="max-w-md w-full space-y-8">
-            {/* Product Image */}
-            <div className="aspect-square rounded-2xl overflow-hidden bg-gray-100">
-              <img 
-                src="https://cdn.discordapp.com/attachments/1060825015681028127/1076385063903694908/rauljr7_3d_e83fed6a-69aa-4a6a-b0ec-928edd57aecf.png" 
-                alt="Digital Art" 
-                className="w-full h-full object-cover"
-              />
-            </div>
-
-            {/* Product Info */}
-            <div className="space-y-6">
-              <div className="text-center">
-                <h1 className="text-2xl font-semibold text-gray-900 mb-2">Digital Art Collection</h1>
-                <p className="text-gray-600">Exclusive AI-generated artwork</p>
-              </div>
-
-              {/* Price Input */}
-              <div className="space-y-2">
-                <label className="block text-sm font-medium text-gray-700">Price</label>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
-                  <input
-                    type="number"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    placeholder="0.00"
-                    min="0.01"
-                    step="0.01"
-                    className="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none text-lg"
-                  />
-                </div>
-              </div>
-
-              {/* Checkout Button */}
-              <button
-                onClick={openCheckout}
-                className="w-full py-3 px-4 bg-black text-white font-medium rounded-lg hover:bg-gray-800 transition-colors duration-200"
-              >
-                Checkout
-              </button>
-            </div>
+    <div className="min-h-screen bg-gray-50">
+      {/* Minimal Header */}
+      <div className="bg-white border-b border-gray-200">
+        <div className="max-w-4xl mx-auto px-6 py-4 flex justify-between items-center">
+          <div className="flex items-center space-x-3">
+            <h2 className="text-lg font-semibold text-gray-900">Checkout</h2>
+            <span className="px-2 py-1 bg-gray-100 text-gray-700 text-sm rounded-full font-medium">
+              ${amount}
+            </span>
           </div>
         </div>
-      ) : (
-        /* Sleek Checkout Interface */
-        <div className="min-h-screen flex flex-col bg-gray-50">
-          {/* Minimal Header */}
-          <div className="bg-white border-b border-gray-200">
-            <div className="max-w-4xl mx-auto px-6 py-4 flex justify-between items-center">
-              <div className="flex items-center space-x-3">
-                <h2 className="text-lg font-semibold text-gray-900">Checkout</h2>
-                <span className="px-2 py-1 bg-gray-100 text-gray-700 text-sm rounded-full font-medium">
-                  ${amount}
-                </span>
+      </div>
+
+      {/* Iframe Container */}
+      <div className="flex-1 flex items-center justify-center p-6">
+        <div className="w-full max-w-lg relative">
+          {isLoading && (
+            <div className="absolute inset-0 bg-white flex items-center justify-center z-10">
+              <div className="flex flex-col items-center space-y-3">
+                <div className="w-6 h-6 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
+                <p className="text-gray-600 text-sm">Loading...</p>
               </div>
-              <button
-                onClick={() => setShowCheckout(false)}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
-              >
-                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
             </div>
-          </div>
+          )}
 
-          {/* Iframe Container */}
-          <div className="flex-1 flex items-center justify-center p-6">
-            <div className="w-full max-w-lg relative">
-              {isLoading && (
-                <div className="absolute inset-0 bg-white flex items-center justify-center z-10">
-                  <div className="flex flex-col items-center space-y-3">
-                    <div className="w-6 h-6 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
-                    <p className="text-gray-600 text-sm">Loading...</p>
-                  </div>
-                </div>
-              )}
-
-              <iframe
-                ref={iframeRef}
-                src={createIframeUrl()}
-                className="w-full h-[600px] border-0 rounded-2xl shadow-sm"
-                onLoad={handleIframeLoad}
-                title="PayPal Checkout"
-                sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
-              />
-            </div>
-          </div>
+          <iframe
+            ref={iframeRef}
+            src={createIframeUrl()}
+            className="w-full h-[600px] border-0 rounded-2xl shadow-sm"
+            onLoad={handleIframeLoad}
+            title="PayPal Checkout"
+            sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+          />
         </div>
-      )}
+      </div>
     </div>
   );
 };
