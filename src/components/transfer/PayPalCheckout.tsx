@@ -9,29 +9,10 @@ interface PayPalCheckoutProps {
   onError: (error: any) => void;
 }
 
-declare global {
-  interface Window {
-    paypal?: {
-      Buttons: (config: any) => {
-        render: (selector: string | HTMLElement) => Promise<void>;
-      };
-      CardFields: (config: any) => {
-        isEligible: () => boolean;
-        NameField: (config: any) => { render: (selector: string) => void };
-        NumberField: (config: any) => { render: (selector: string) => void };
-        CVVField: (config: any) => { render: (selector: string) => void };
-        ExpiryField: (config: any) => { render: (selector: string) => void };
-        submit: (data: any) => Promise<void>;
-      };
-    };
-  }
-}
-
 const PayPalCheckout: React.FC<PayPalCheckoutProps> = ({ amount, onSuccess, onError }) => {
   const [paypalLoaded, setPaypalLoaded] = useState(false);
   const [loading, setLoading] = useState(true);
   const paypalButtonRef = useRef<HTMLDivElement>(null);
-  const cardFieldsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Check if PayPal script is already loaded
@@ -44,7 +25,7 @@ const PayPalCheckout: React.FC<PayPalCheckoutProps> = ({ amount, onSuccess, onEr
 
     // Load PayPal SDK
     const script = document.createElement('script');
-    script.src = `https://www.paypal.com/sdk/js?client-id=AVHblE6HlBNWN_oyhv9PBWS_TfIhJCM5rSc8TaV4j6kggMNM6I5YJQxxCsJGcxV-bCl3dF6FHGX8IqCo&buyer-country=US&currency=USD&components=buttons,card-fields&enable-funding=venmo`;
+    script.src = `https://www.paypal.com/sdk/js?client-id=AVHblE6HlBNWN_oyhv9PBWS_TfIhJCM5rSc8TaV4j6kggMNM6I5YJQxxCsJGcxV-bCl3dF6FHGX8IqCo&buyer-country=US&currency=USD&components=buttons&enable-funding=venmo`;
     script.setAttribute('data-sdk-integration-source', 'developer-studio');
     
     script.onload = () => {
@@ -126,22 +107,32 @@ const PayPalCheckout: React.FC<PayPalCheckoutProps> = ({ amount, onSuccess, onEr
     }
 
     try {
-      // Render PayPal Buttons
-      window.paypal.Buttons({
-        createOrder: createOrder,
-        onApprove: onApprove,
-        onError: function (error: any) {
-          console.error('PayPal Button Error:', error);
-          onError(error);
-        },
-        style: {
-          shape: "rect",
-          layout: "vertical",
-          color: "gold",
-          label: "paypal",
-        },
-      }).render(paypalButtonRef.current);
+      // Check if Buttons function exists and is callable
+      if (typeof window.paypal.Buttons === 'function') {
+        // Render PayPal Buttons
+        const buttons = window.paypal.Buttons({
+          createOrder: createOrder,
+          onApprove: onApprove,
+          onError: function (error: any) {
+            console.error('PayPal Button Error:', error);
+            onError(error);
+          },
+          style: {
+            shape: "rect",
+            layout: "vertical",
+            color: "gold",
+            label: "paypal",
+          },
+        });
 
+        if (buttons && typeof buttons.render === 'function') {
+          buttons.render(paypalButtonRef.current);
+        } else {
+          throw new Error('PayPal buttons render method not available');
+        }
+      } else {
+        throw new Error('PayPal Buttons function not available');
+      }
     } catch (error) {
       console.error('Error initializing PayPal:', error);
       onError(error);
