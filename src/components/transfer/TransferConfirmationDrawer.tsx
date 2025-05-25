@@ -13,7 +13,6 @@ import { PaymentMethod } from './PaymentMethodItem';
 import { Loader2, AlertCircle, ArrowRight } from 'lucide-react';
 import { toast } from "@/hooks/use-toast";
 import ReceiverDetailsForm, { ReceiverDetails } from './ReceiverDetailsForm';
-import PayPalCheckout from './PayPalCheckout';
 
 // Backend API URLs as explicit string types
 const MONCASH_BACKEND_URL: string = 'https://moncash-backend.onrender.com';
@@ -199,6 +198,62 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
     }
   };
 
+  // Handle PayPal credit card payment
+  const handleCreditCardPayment = async () => {
+    if (transferType !== 'international' || selectedMethod.id !== 'credit-card') {
+      onContinue();
+      return;
+    }
+
+    setIsProcessing(true);
+
+    try {
+      console.log('Creating PayPal order for credit card payment...');
+
+      const response = await fetch(`${PAYPAL_BACKEND_URL}/api/paypal/create-order`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          amount: parseFloat(amount),
+          currency: 'USD',
+          description: `Transfer payment of $${amount}`
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create PayPal order');
+      }
+
+      const orderData = await response.json();
+      console.log('PayPal order created:', orderData);
+
+      // Find the approval URL from PayPal response - look for both 'approve' and 'payer-action'
+      const approvalUrl = orderData.links?.find((link: any) => 
+        link.rel === 'approve' || link.rel === 'payer-action'
+      )?.href;
+
+      if (!approvalUrl) {
+        console.error('Available links:', orderData.links);
+        throw new Error('No approval URL received from PayPal');
+      }
+
+      // Redirect to PayPal for payment
+      window.location.href = approvalUrl;
+
+    } catch (error) {
+      console.error('PayPal payment error:', error);
+      toast({
+        title: "Payment Failed",
+        description: error instanceof Error ? error.message : "Failed to process credit card payment. Please try again.",
+        variant: "destructive",
+      });
+      setIsProcessing(false);
+    }
+  };
+
   // Validate receiver details for all transfers
   const isReceiverDetailsValid = () => {
     if (!receiverDetails) return false;
@@ -211,27 +266,6 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
   const handlePaymentContinue = () => {
     // All transfers (both international and national) now require receiver details
     setStep('receiverDetails');
-  };
-
-  // Handle PayPal payment success
-  const handlePayPalSuccess = (orderData: any) => {
-    console.log('PayPal payment successful:', orderData);
-    toast({
-      title: "Payment Successful",
-      description: "Your transfer has been processed successfully.",
-      variant: "default",
-    });
-    onOpenChange(false);
-  };
-
-  // Handle PayPal payment error
-  const handlePayPalError = (error: any) => {
-    console.error('PayPal payment error:', error);
-    toast({
-      title: "Payment Failed",
-      description: "There was an error processing your payment. Please try again.",
-      variant: "destructive",
-    });
   };
 
   // Render summary step
@@ -355,14 +389,24 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
           </div>
         )}
 
-        {/* PayPal payment component for international transfers */}
+        {/* Credit Card payment button for international transfers */}
         {transferType === 'international' && selectedMethod.id === 'credit-card' && (
           <div className="mb-4">
-            <PayPalCheckout
-              amount={parseFloat(amount)}
-              onSuccess={handlePayPalSuccess}
-              onError={handlePayPalError}
-            />
+            <Button 
+              onClick={handleCreditCardPayment} 
+              disabled={isProcessing}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+              size="lg"
+            >
+              {isProcessing ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Creating PayPal Order...
+                </>
+              ) : (
+                'Complete Credit Card Payment'
+              )}
+            </Button>
           </div>
         )}
 
