@@ -11,7 +11,7 @@ const PayPalPayment = () => {
   useEffect(() => {
     // Load PayPal SDK
     const script = document.createElement('script');
-    script.src = `https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&currency=${currency}`;
+    script.src = `https://www.paypal.com/sdk/js?client-id=AU23YbLMTqxG3iSvnhcWtix6rGN14uw3axYJgrDe8VqUVng8XiQmmeiaxJWbnpbZP_f4--RTg146F1Mj&currency=${currency}`;
     script.async = true;
     script.onload = () => setIsLoaded(true);
     document.body.appendChild(script);
