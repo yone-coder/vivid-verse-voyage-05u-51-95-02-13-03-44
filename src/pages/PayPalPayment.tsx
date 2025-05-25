@@ -1,22 +1,19 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 
 const PayPalPayment = () => {
-  const paypalRef = useRef();
+  const paypalRef = useRef<HTMLDivElement>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [amount, setAmount] = useState('10.00');
   const [currency, setCurrency] = useState('USD');
   const [description, setDescription] = useState('Payment for services');
 
   useEffect(() => {
-    // Load PayPal SDK with additional parameters for better card support
+    // Load PayPal SDK
     const script = document.createElement('script');
-    script.src = `https://www.paypal.com/sdk/js?client-id=AU23YbLMTqxG3iSvnhcWtix6rGN14uw3axYJgrDe8VqUVng8XiQmmeiaxJWbnpbZP_f4--RTg146F1Mj&currency=${currency}&intent=capture&enable-funding=venmo,paylater&disable-funding=card`;
+    script.src = `https://www.paypal.com/sdk/js?client-id=AU23YbLMTqxG3iSvnhcWtix6rGN14uw3axYJgrDe8VqUVng8XiQmmeiaxJWbnpbZP_f4--RTg146F1Mj&currency=${currency}`;
     script.async = true;
     script.onload = () => setIsLoaded(true);
-    script.onerror = () => {
-      console.error('Failed to load PayPal SDK');
-      alert('Failed to load PayPal. Please refresh the page and try again.');
-    };
     document.body.appendChild(script);
 
     return () => {
@@ -34,60 +31,41 @@ const PayPalPayment = () => {
       paypalRef.current.innerHTML = '';
       
       window.paypal.Buttons({
-        createOrder: (data, actions) => {
+        createOrder: (data: any, actions: any) => {
           return actions.order.create({
-            intent: 'CAPTURE',
             purchase_units: [{
               amount: {
-                value: parseFloat(amount).toFixed(2),
+                value: amount,
                 currency_code: currency
               },
-              description: description,
-              soft_descriptor: description.substring(0, 22) // Max 22 characters
-            }],
-            application_context: {
-              brand_name: 'Your Business Name',
-              landing_page: 'NO_PREFERENCE',
-              user_action: 'PAY_NOW',
-              return_url: window.location.href,
-              cancel_url: window.location.href
-            }
+              description: description
+            }]
           });
         },
-        onApprove: async (data, actions) => {
+        onApprove: async (data: any, actions: any) => {
           try {
             const details = await actions.order.capture();
-            console.log('Payment successful:', details);
-            
-            // More robust success handling
-            if (details.status === 'COMPLETED') {
-              alert(`Payment successful! Transaction ID: ${details.id}`);
-              // Here you would send the payment details to your server for verification
-              // Example: await verifyPaymentOnServer(details);
-            } else {
-              console.warn('Payment not completed:', details);
-              alert('Payment processing... Please check your account for confirmation.');
-            }
+            alert(`Transaction completed by ${details.payer.name.given_name}! Order ID: ${data.orderID}`);
+            console.log('Payment details:', details);
+            // Here you would typically send the payment details to your server
           } catch (error) {
             console.error('Error capturing payment:', error);
-            alert('Payment verification failed. Please contact support if money was charged.');
+            alert('Payment failed. Please try again.');
           }
         },
-        onError: (err) => {
+        onError: (err: any) => {
           console.error('PayPal error:', err);
-          alert('Payment failed. Please try again or use a different payment method.');
+          alert('An error occurred with PayPal. Please try again.');
         },
-        onCancel: (data) => {
+        onCancel: (data: any) => {
           console.log('Payment cancelled:', data);
-          // Don't show alert for cancellation as it's user-initiated
+          alert('Payment was cancelled.');
         },
         style: {
           layout: 'vertical',
           color: 'blue',
           shape: 'rect',
-          label: 'paypal',
-          height: 40,
-          tagline: false
+          label: 'paypal'
         }
       }).render(paypalRef.current);
     }
@@ -174,20 +152,11 @@ const PayPalPayment = () => {
         </ol>
       </div>
 
-      {/* Troubleshooting Note */}
-      <div className="bg-red-50 border border-red-200 rounded-md p-4 mt-4">
-        <h3 className="text-sm font-medium text-red-800 mb-2">Card Payment Issues?</h3>
-        <p className="text-sm text-red-700 mb-2">
-          If card payments fail, common causes include:
-        </p>
-        <ul className="text-sm text-red-700 ml-4 list-disc space-y-1">
-          <li>Using Sandbox Client ID in production (or vice versa)</li>
-          <li>Client ID doesn't support card processing</li>
-          <li>Insufficient PayPal account verification</li>
-          <li>Regional restrictions on card processing</li>
-        </ul>
-        <p className="text-sm text-red-700 mt-2">
-          Try using PayPal account instead of cards, or contact PayPal support to enable card processing.
+      {/* Security Note */}
+      <div className="bg-blue-50 border border-blue-200 rounded-md p-4 mt-4">
+        <h3 className="text-sm font-medium text-blue-800 mb-2">Security Note</h3>
+        <p className="text-sm text-blue-700">
+          Always verify payments on your server before fulfilling orders. Never rely solely on client-side confirmation.
         </p>
       </div>
     </div>
