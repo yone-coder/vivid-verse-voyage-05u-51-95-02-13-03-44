@@ -44,11 +44,11 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <LanguageProvider>
-        <AuthProvider>
-          <AuthOverlayProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
+        <BrowserRouter>
+          <AuthProvider>
+            <AuthOverlayProvider>
+              <Toaster />
+              <Sonner />
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/for-you" element={<ForYou />} />
@@ -81,9 +81,9 @@ const App = () => (
                 <Route path="/paypal-guest-checkout" element={<PayPalGuestCheckout />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
-            </BrowserRouter>
-          </AuthOverlayProvider>
-        </AuthProvider>
+            </AuthOverlayProvider>
+          </AuthProvider>
+        </BrowserRouter>
       </LanguageProvider>
     </TooltipProvider>
   </QueryClientProvider>
