@@ -1,21 +1,9 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertCircle, CheckCircle, Package, CreditCard, Shield, Users, Clock } from 'lucide-react';
-
-// Declare PayPal SDK types
-declare global {
-  interface Window {
-    paypal?: {
-      Buttons: (config: any) => {
-        render: (selector: string | HTMLElement) => Promise<void>;
-      };
-    };
-  }
-}
 
 const PayPalGuestCheckout = () => {
   const [backendUrl, setBackendUrl] = useState('');
