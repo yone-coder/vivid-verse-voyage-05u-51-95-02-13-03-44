@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import {
@@ -47,12 +46,30 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
 
   // Load PayPal SDK when component mounts
   useEffect(() => {
-    if (typeof window !== 'undefined' && !window.paypal && !document.querySelector('#paypal-sdk-script')) {
+    if (typeof window !== 'undefined' && !document.querySelector('#paypal-sdk-script')) {
       const script = document.createElement('script');
       script.id = 'paypal-sdk-script';
       script.src = `https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}&currency=USD&intent=capture&components=buttons`;
       script.async = true;
-      script.onload = () => setPaypalSdkLoaded(true);
+      
+      script.onload = () => {
+        console.log('PayPal SDK script loaded');
+        // Add a small delay to ensure the SDK is fully initialized
+        setTimeout(() => {
+          if (window.paypal && window.paypal.Buttons && typeof window.paypal.Buttons === 'function') {
+            console.log('PayPal SDK fully initialized');
+            setPaypalSdkLoaded(true);
+          } else {
+            console.error('PayPal SDK loaded but Buttons method not available');
+            toast({
+              title: "Payment Error",
+              description: "PayPal payment system failed to initialize properly",
+              variant: "destructive",
+            });
+          }
+        }, 100);
+      };
+      
       script.onerror = () => {
         console.error('Failed to load PayPal SDK');
         toast({
@@ -61,8 +78,9 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
           variant: "destructive",
         });
       };
+      
       document.head.appendChild(script);
-    } else if (window.paypal) {
+    } else if (window.paypal && window.paypal.Buttons && typeof window.paypal.Buttons === 'function') {
       setPaypalSdkLoaded(true);
     }
   }, []);
@@ -172,105 +190,134 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
   // Initialize PayPal buttons
   const initializePayPalButtons = () => {
     const paypalContainer = document.getElementById('paypal-button-container');
-    if (!paypalContainer || !window.paypal) return;
+    if (!paypalContainer) {
+      console.error('PayPal container not found');
+      return;
+    }
+
+    if (!window.paypal || !window.paypal.Buttons || typeof window.paypal.Buttons !== 'function') {
+      console.error('PayPal SDK not properly loaded');
+      toast({
+        title: "Payment Error",
+        description: "PayPal payment system not ready",
+        variant: "destructive",
+      });
+      return;
+    }
 
     // Clear any existing buttons
     paypalContainer.innerHTML = '';
 
-    window.paypal.Buttons({
-      createOrder: async () => {
-        try {
-          console.log('Creating PayPal order...');
-          const response = await fetch(`${PAYPAL_BACKEND_URL}/api/paypal/create-order`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              amount: parseFloat(amount),
-              currency: 'USD',
-              description: `Transfer payment of $${amount}`
-            })
-          });
+    try {
+      window.paypal.Buttons({
+        createOrder: async () => {
+          try {
+            console.log('Creating PayPal order...');
+            const response = await fetch(`${PAYPAL_BACKEND_URL}/api/paypal/create-order`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                amount: parseFloat(amount),
+                currency: 'USD',
+                description: `Transfer payment of $${amount}`
+              })
+            });
 
-          if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'Failed to create PayPal order');
+            if (!response.ok) {
+              const errorData = await response.json();
+              throw new Error(errorData.error || 'Failed to create PayPal order');
+            }
+
+            const orderData = await response.json();
+            console.log('PayPal order created:', orderData);
+            return orderData.id;
+          } catch (error) {
+            console.error('Error creating PayPal order:', error);
+            toast({
+              title: "Payment Error",
+              description: "Failed to create payment order",
+              variant: "destructive",
+            });
+            throw error;
           }
+        },
 
-          const orderData = await response.json();
-          console.log('PayPal order created:', orderData);
-          return orderData.id;
-        } catch (error) {
-          console.error('Error creating PayPal order:', error);
+        onApprove: async (data) => {
+          try {
+            console.log('PayPal payment approved:', data);
+            setIsProcessing(true);
+
+            const response = await fetch(`${PAYPAL_BACKEND_URL}/api/paypal/capture-order/${data.orderID}`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (!response.ok) {
+              throw new Error('Failed to capture payment');
+            }
+
+            const result = await response.json();
+            console.log('Payment captured:', result);
+
+            toast({
+              title: "Payment Successful!",
+              description: `Your payment of $${amount} has been processed successfully.`,
+              variant: "default",
+            });
+
+            onContinue();
+            onOpenChange(false);
+          } catch (error) {
+            console.error('Error capturing payment:', error);
+            toast({
+              title: "Payment Failed",
+              description: "Failed to complete payment. Please try again.",
+              variant: "destructive",
+            });
+          } finally {
+            setIsProcessing(false);
+          }
+        },
+
+        onError: (error) => {
+          console.error('PayPal error:', error);
           toast({
             title: "Payment Error",
-            description: "Failed to create payment order",
+            description: "An error occurred with PayPal. Please try again.",
             variant: "destructive",
           });
-          throw error;
-        }
-      },
+        },
 
-      onApprove: async (data) => {
-        try {
-          console.log('PayPal payment approved:', data);
-          setIsProcessing(true);
-
-          const response = await fetch(`${PAYPAL_BACKEND_URL}/api/paypal/capture-order/${data.orderID}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
-          });
-
-          if (!response.ok) {
-            throw new Error('Failed to capture payment');
-          }
-
-          const result = await response.json();
-          console.log('Payment captured:', result);
-
+        onCancel: () => {
           toast({
-            title: "Payment Successful!",
-            description: `Your payment of $${amount} has been processed successfully.`,
-            variant: "default",
-          });
-
-          onContinue();
-          onOpenChange(false);
-        } catch (error) {
-          console.error('Error capturing payment:', error);
-          toast({
-            title: "Payment Failed",
-            description: "Failed to complete payment. Please try again.",
+            title: "Payment Cancelled",
+            description: "Your payment was cancelled.",
             variant: "destructive",
           });
-        } finally {
-          setIsProcessing(false);
-        }
-      },
+        },
 
-      onError: (error) => {
-        console.error('PayPal error:', error);
+        style: {
+          color: 'gold',
+          shape: 'rect',
+          label: 'paypal',
+          layout: 'vertical'
+        }
+      }).render('#paypal-button-container').catch((error) => {
+        console.error('Error rendering PayPal buttons:', error);
         toast({
           title: "Payment Error",
-          description: "An error occurred with PayPal. Please try again.",
+          description: "Failed to initialize PayPal buttons",
           variant: "destructive",
         });
-      },
-
-      onCancel: () => {
-        toast({
-          title: "Payment Cancelled",
-          description: "Your payment was cancelled.",
-          variant: "destructive",
-        });
-      },
-
-      style: {
-        color: 'gold',
-        shape: 'rect',
-        label: 'paypal',
-        layout: 'vertical'
-      }
-    }).render('#paypal-button-container');
+      });
+    } catch (error) {
+      console.error('Error initializing PayPal buttons:', error);
+      toast({
+        title: "Payment Error",
+        description: "Failed to initialize PayPal payment system",
+        variant: "destructive",
+      });
+    }
   };
 
   // Handle MonCash payment process
