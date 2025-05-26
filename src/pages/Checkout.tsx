@@ -8,6 +8,8 @@ const Checkout = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [message, setMessage] = useState("");
 
+  const API_BASE = 'https://paypal-with-nodejs.onrender.com';
+
   const onCurrencyChange = ({ target: { value } }) => {
     setCurrency(value);
     dispatch({
@@ -19,87 +21,101 @@ const Checkout = () => {
     });
   };
 
-  // Create order directly with PayPal (no backend needed for demo)
-  const onCreateOrder = (data, actions) => {
-    console.log('Creating order with amount:', amount, 'currency:', currency);
+  // Create order on your backend
+  const onCreateOrder = async (data, actions) => {
+    setIsProcessing(true);
+    setMessage("");
     
-    return actions.order.create({
-      purchase_units: [
-        {
-          amount: {
-            currency_code: currency,
-            value: amount,
-          },
-          description: `Payment of ${amount} ${currency}`,
+    try {
+      console.log('Creating order with amount:', amount, 'currency:', currency);
+
+      const response = await fetch(`${API_BASE}/api/orders`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      ],
-      application_context: {
-        brand_name: "Your Store Name",
-        landing_page: "NO_PREFERENCE",
-        user_action: "PAY_NOW",
-        return_url: window.location.origin + "/success",
-        cancel_url: window.location.origin + "/cancel",
-      },
-    });
+        body: JSON.stringify({
+          amount: parseFloat(amount),
+          currency: currency
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Failed to create order:', response.status, errorText);
+        throw new Error(`Failed to create order: ${response.status}`);
+      }
+
+      const orderData = await response.json();
+      console.log('Order created:', orderData);
+
+      if (orderData.id) {
+        return orderData.id;
+      } else {
+        throw new Error('No order ID received from backend');
+      }
+    } catch (error) {
+      console.error('Error creating order:', error);
+      setMessage('Failed to create order. Please try again.');
+      setIsProcessing(false);
+      throw error;
+    }
   };
 
-  // Handle order approval
-  const onApproveOrder = (data, actions) => {
+  // Capture the order on your backend
+  const onApproveOrder = async (data, actions) => {
     setIsProcessing(true);
-    console.log('Approving order:', data.orderID);
+    
+    try {
+      console.log('Capturing order:', data.orderID);
 
-    return actions.order.capture().then((details) => {
-      console.log('Order captured:', details);
-      
-      const name = details.payer.name.given_name;
-      const transactionId = details.purchase_units[0].payments.captures[0].id;
-      
-      setMessage(`🎉 Payment completed successfully by ${name}! Transaction ID: ${transactionId}`);
-      setIsProcessing(false);
-      
-      // Here you would typically:
-      // 1. Send the transaction details to your backend
-      // 2. Update your database
-      // 3. Send confirmation email
-      // 4. Redirect to success page
-      
-      console.log("Transaction completed:", details);
-    }).catch((error) => {
+      const response = await fetch(`${API_BASE}/api/orders/${data.orderID}/capture`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Failed to capture order:', response.status, errorText);
+        throw new Error(`Failed to capture payment: ${response.status}`);
+      }
+
+      const orderData = await response.json();
+      console.log('Order captured:', orderData);
+
+      if (orderData.success || orderData.status === 'COMPLETED') {
+        setMessage(`✅ Payment completed successfully! Order ID: ${data.orderID}`);
+        // You can redirect or update UI here
+        // window.location.href = '/success';
+      } else {
+        throw new Error('Payment capture failed - invalid response');
+      }
+    } catch (error) {
       console.error('Error capturing order:', error);
-      setMessage("❌ Payment processing failed. Please try again.");
+      setMessage('❌ Payment processing failed. Please try again.');
+      throw error;
+    } finally {
       setIsProcessing(false);
-    });
+    }
   };
 
   const onError = (err) => {
     console.error('PayPal error:', err);
-    setMessage("❌ An error occurred during payment processing.");
+    setMessage('❌ An error occurred during payment processing.');
     setIsProcessing(false);
   };
 
   const onCancel = (data) => {
     console.log('Payment cancelled:', data);
-    setMessage("ℹ️ Payment was cancelled.");
+    setMessage('ℹ️ Payment was cancelled.');
     setIsProcessing(false);
   };
 
   return (
     <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-        PayPal Checkout
-      </h2>
-
-      {message && (
-        <div className={`p-4 mb-4 rounded-lg ${
-          message.includes('successfully') 
-            ? 'bg-green-100 text-green-800 border border-green-200' 
-            : message.includes('cancelled')
-            ? 'bg-yellow-100 text-yellow-800 border border-yellow-200'
-            : 'bg-red-100 text-red-800 border border-red-200'
-        }`}>
-          {message}
-        </div>
-      )}
+      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">PayPal Checkout</h2>
 
       {isPending ? (
         <div className="flex items-center justify-center py-8">
@@ -111,37 +127,44 @@ const Checkout = () => {
           <div className="space-y-4 mb-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Amount ({currency}):
-                <input 
-                  type="number" 
-                  value={amount} 
-                  onChange={(e) => setAmount(e.target.value)}
-                  step="0.01"
-                  min="0.01"
-                  disabled={isProcessing}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100"
-                />
+                Amount ($):
               </label>
+              <input 
+                type="number" 
+                value={amount} 
+                onChange={(e) => setAmount(e.target.value)}
+                step="0.01"
+                min="0.01"
+                disabled={isProcessing}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100"
+              />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Currency:
-                <select 
-                  value={currency} 
-                  onChange={onCurrencyChange}
-                  disabled={isProcessing}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100"
-                >
-                  <option value="USD">💵 USD</option>
-                  <option value="EUR">💶 EUR</option>
-                  <option value="GBP">💷 GBP</option>
-                  <option value="CAD">🍁 CAD</option>
-                  <option value="AUD">🇦🇺 AUD</option>
-                </select>
               </label>
+              <select 
+                value={currency} 
+                onChange={onCurrencyChange}
+                disabled={isProcessing}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100"
+              >
+                <option value="USD">💵 USD</option>
+                <option value="EUR">💶 Euro</option>
+              </select>
             </div>
           </div>
+
+          {message && (
+            <div className={`p-3 mb-4 rounded-md ${
+              message.includes('✅') ? 'bg-green-50 text-green-800 border border-green-200' :
+              message.includes('❌') ? 'bg-red-50 text-red-800 border border-red-200' :
+              'bg-blue-50 text-blue-800 border border-blue-200'
+            }`}>
+              {message}
+            </div>
+          )}
 
           {isProcessing && (
             <div className="flex items-center justify-center py-4 mb-4">
@@ -150,26 +173,24 @@ const Checkout = () => {
             </div>
           )}
 
-          <div className={isProcessing ? 'opacity-50 pointer-events-none' : ''}>
-            <PayPalButtons 
-              style={{ 
-                layout: "vertical",
-                color: "gold",
-                shape: "rect",
-                label: "paypal",
-                height: 40
-              }}
-              createOrder={onCreateOrder}
-              onApprove={onApproveOrder}
-              onError={onError}
-              onCancel={onCancel}
-              disabled={isProcessing}
-            />
-          </div>
+          <PayPalButtons 
+            style={{ 
+              layout: "vertical",
+              color: "gold",
+              shape: "rect",
+              label: "paypal",
+              height: 40
+            }}
+            disabled={isProcessing || !amount || parseFloat(amount) <= 0}
+            createOrder={onCreateOrder}
+            onApprove={onApproveOrder}
+            onError={onError}
+            onCancel={onCancel}
+          />
 
-          <div className="mt-4 text-sm text-gray-500 text-center">
-            <p>💳 Test with PayPal sandbox accounts</p>
-            <p>🔒 Secure payment processing</p>
+          <div className="mt-4 text-xs text-gray-500 text-center">
+            <p>Test Mode: Use PayPal sandbox credentials</p>
+            <p>Amount: ${amount} {currency}</p>
           </div>
         </>
       )}
