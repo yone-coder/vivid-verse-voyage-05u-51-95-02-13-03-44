@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 import { toast } from 'sonner';
@@ -18,7 +17,7 @@ const Checkout: React.FC = () => {
         ...options,
         currency: value,
       },
-    });
+    } as any);
   };
 
   // Create order on your backend
