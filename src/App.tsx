@@ -1,3 +1,4 @@
+
 import React, { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -126,8 +127,7 @@ const App = () => {
 
 // Component to handle the auth overlay
 const AppAuthOverlay = () => {
-  const { isAuthOverlay } = useAuthOverlay();
-  const { closeAuthOverlay } = useAuthOverlay();
+  const { isAuthOverlayOpen, closeAuthOverlay } = useAuthOverlay();
   return (
     <AuthOverlay isOpen={isAuthOverlayOpen} onClose={closeAuthOverlay} />
   );
