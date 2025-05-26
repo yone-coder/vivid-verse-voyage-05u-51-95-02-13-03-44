@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 import { toast } from 'sonner';
@@ -12,11 +13,12 @@ const Checkout: React.FC = () => {
   const onCurrencyChange = ({ target: { value } }: React.ChangeEvent<HTMLSelectElement>) => {
     setCurrency(value);
     dispatch({
-      type: "resetOptions",
-      value: {
-        ...options,
-        currency: value,
-      },
+      type: "setLoadingStatus",
+      value: "pending",
+    });
+    dispatch({
+      type: "setLoadingStatus",
+      value: "succeeded",
     });
   };
 
