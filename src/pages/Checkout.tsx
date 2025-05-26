@@ -12,11 +12,7 @@ const Checkout: React.FC = () => {
   const onCurrencyChange = ({ target: { value } }: React.ChangeEvent<HTMLSelectElement>) => {
     setCurrency(value);
     dispatch({
-      type: "setLoadingStatus",
-      value: "pending",
-    });
-    dispatch({
-      type: "setLoadingStatus", 
+      type: "resetOptions",
       value: {
         ...options,
         currency: value,
