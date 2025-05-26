@@ -1,4 +1,3 @@
-
 import React, { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -41,13 +40,14 @@ import NFTPaymentPage from "./pages/NFTPaymentPage";
 import DepositPage from "./pages/DepositPage";
 import PayPalDepositPage from "./pages/PayPalDepositPage";
 import PayPalPayment from "./pages/PayPalPayment";
+import Checkout from "./pages/Checkout";
 
 // Create a client
 const queryClient = new QueryClient();
 
 // PayPal configuration
 const paypalOptions = {
-  "client-id": "YOUR_PAYPAL_CLIENT_ID_HERE", // Replace with your actual PayPal Client ID
+  clientId: "AU23YbLMTqxG3iSvnhcWtix6rGN14uw3axYJgrDe8VqUVng8XiQmmeiaxJWbnpbZP_f4--RTg146F1Mj",
   currency: "USD",
   intent: "capture",
   // Add more options as needed
@@ -98,6 +98,7 @@ const App = () => {
                         <Route path="/deposit" element={<DepositPage />} />
                         <Route path="/paypal-deposit" element={<PayPalDepositPage />} />
                         <Route path="/paypal-payment" element={<PayPalPayment />} />
+                        <Route path="/checkout" element={<Checkout />} />
 
                         {/* Category pages */}
                         <Route path="/electronics" element={<ElectronicsPage />} />
