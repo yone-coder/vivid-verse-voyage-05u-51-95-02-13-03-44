@@ -41,6 +41,7 @@ import DepositPage from "./pages/DepositPage";
 import PayPalDepositPage from "./pages/PayPalDepositPage";
 import PayPalPayment from "./pages/PayPalPayment";
 import Checkout from "./pages/Checkout";
+import PayPalCheckout from "./pages/PayPalCheckout";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -99,6 +100,7 @@ const App = () => {
                         <Route path="/paypal-deposit" element={<PayPalDepositPage />} />
                         <Route path="/paypal-payment" element={<PayPalPayment />} />
                         <Route path="/checkout" element={<Checkout />} />
+                        <Route path="/paypal-checkout" element={<PayPalCheckout />} />
 
                         {/* Category pages */}
                         <Route path="/electronics" element={<ElectronicsPage />} />
