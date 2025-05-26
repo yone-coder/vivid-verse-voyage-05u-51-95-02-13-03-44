@@ -20,7 +20,7 @@ const SubmitPayment = ({ clientToken }) => {
 
     setPaying(true);
     try {
-      const { data } = await axios.post('https://your-backend.onrender.com/api/paypal/capture-order', {
+      const { data } = await axios.post('https://paypal-with-nodejs.onrender.com/api/paypal/capture-order', {
         orderID: hostedFields.orderId,
       });
       alert('Payment successful!');
@@ -51,7 +51,7 @@ const PaymentForm = () => {
   React.useEffect(() => {
     // Fetch client token from backend
     axios
-      .get('https://your-backend.onrender.com/api/paypal/client-token')
+      .get('https://paypal-with-nodejs.onrender.com/api/paypal/client-token')
       .then((response) => setClientToken(response.data.clientToken))
       .catch((error) => console.error('Error fetching client token:', error));
   }, []);
@@ -69,7 +69,7 @@ const PaymentForm = () => {
     >
       <PayPalHostedFieldsProvider
         createOrder={async () => {
-          const { data } = await axios.post('https://your-backend.onrender.com/api/paypal/create-order');
+          const { data } = await axios.post('https://paypal-with-nodejs.onrender.com/api/paypal/create-order');
           return data.orderID;
         }}
       >
