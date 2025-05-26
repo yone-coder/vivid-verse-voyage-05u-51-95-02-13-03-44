@@ -4,10 +4,8 @@ import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 
 const Checkout: React.FC = () => {
   const [{ options, isPending }, dispatch] = usePayPalScriptReducer();
-  const [currency, setCurrency] = useState(options.currency);
+  const [currency, setCurrency] = useState(options.currency || "USD");
   const [amount, setAmount] = useState("8.99");
-
-  const API_BASE = import.meta.env.VITE_API_URL || 'https://paypal-with-nodejs.onrender.com';
 
   const onCurrencyChange = ({ target: { value } }: React.ChangeEvent<HTMLSelectElement>) => {
     setCurrency(value);
@@ -17,27 +15,29 @@ const Checkout: React.FC = () => {
         ...options,
         currency: value,
       },
-    });
+    } as any);
   };
 
-  // Create order on your backend
+  // Create order using Supabase edge function
   const onCreateOrder = async (data: any, actions: any) => {
     try {
-      const response = await fetch(`${API_BASE}/api/orders`, {
+      const response = await fetch('/functions/v1/paypal-payment', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           amount: amount,
-          currency: currency
+          currency: currency,
+          paymentMethod: 'paypal',
+          createOrder: true
         }),
       });
 
       const orderData = await response.json();
       
-      if (orderData.id) {
-        return orderData.id;
+      if (orderData.success && orderData.orderId) {
+        return orderData.orderId;
       } else {
         throw new Error('No order ID received');
       }
@@ -47,21 +47,27 @@ const Checkout: React.FC = () => {
     }
   };
 
-  // Capture the order on your backend
+  // Capture the order using Supabase edge function
   const onApproveOrder = async (data: any, actions: any) => {
     try {
-      const response = await fetch(`${API_BASE}/api/orders/${data.orderID}/capture`, {
+      const response = await fetch('/functions/v1/paypal-payment', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'x-paypal-transaction-id': data.orderID,
+          'x-paypal-order-id': data.orderID,
         },
+        body: JSON.stringify({
+          amount: amount,
+          currency: currency,
+          paymentMethod: 'paypal'
+        }),
       });
 
       const orderData = await response.json();
 
       if (orderData.success) {
-        alert(`Transaction completed! Order ID: ${orderData.orderID}`);
-        // Redirect to success page or update UI
+        alert(`Transaction completed! Order ID: ${data.orderID}`);
       } else {
         throw new Error('Payment capture failed');
       }
