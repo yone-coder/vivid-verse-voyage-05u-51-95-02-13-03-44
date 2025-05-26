@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { CreditCard, Lock, AlertCircle, CheckCircle } from 'lucide-react';
+import { API_BASE_URL } from '../config/api';
 
 const PayPalHostedFields = () => {
   const [paypalLoaded, setPaypalLoaded] = useState(false);
