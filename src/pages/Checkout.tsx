@@ -7,7 +7,7 @@ const Checkout: React.FC = () => {
   const [currency, setCurrency] = useState(options.currency);
   const [amount, setAmount] = useState("8.99");
 
-  const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+  const API_BASE = import.meta.env.VITE_API_URL || 'https://paypal-with-nodejs.onrender.com';
 
   const onCurrencyChange = ({ target: { value } }: React.ChangeEvent<HTMLSelectElement>) => {
     setCurrency(value);
