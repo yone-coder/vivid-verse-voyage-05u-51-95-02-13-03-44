@@ -1,13 +1,14 @@
 
 import React, { useState } from 'react';
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
+import { toast } from 'sonner';
 
 const Checkout: React.FC = () => {
   const [{ options, isPending }, dispatch] = usePayPalScriptReducer();
-  const [currency, setCurrency] = useState(options.currency);
+  const [currency, setCurrency] = useState(options.currency || "USD");
   const [amount, setAmount] = useState("8.99");
 
-  const API_BASE = import.meta.env.VITE_API_URL || 'https://paypal-with-nodejs.onrender.com';
+  const API_BASE = 'https://paypal-with-nodejs.onrender.com';
 
   const onCurrencyChange = ({ target: { value } }: React.ChangeEvent<HTMLSelectElement>) => {
     setCurrency(value);
@@ -23,26 +24,36 @@ const Checkout: React.FC = () => {
   // Create order on your backend
   const onCreateOrder = async (data: any, actions: any) => {
     try {
+      console.log('Creating order with amount:', amount, 'currency:', currency);
+      
       const response = await fetch(`${API_BASE}/api/orders`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          amount: amount,
+          amount: parseFloat(amount),
           currency: currency
         }),
       });
 
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Failed to create order:', response.status, errorText);
+        throw new Error(`Failed to create order: ${response.status}`);
+      }
+
       const orderData = await response.json();
+      console.log('Order created:', orderData);
       
       if (orderData.id) {
         return orderData.id;
       } else {
-        throw new Error('No order ID received');
+        throw new Error('No order ID received from backend');
       }
     } catch (error) {
       console.error('Error creating order:', error);
+      toast.error('Failed to create order. Please try again.');
       throw error;
     }
   };
@@ -50,6 +61,8 @@ const Checkout: React.FC = () => {
   // Capture the order on your backend
   const onApproveOrder = async (data: any, actions: any) => {
     try {
+      console.log('Capturing order:', data.orderID);
+      
       const response = await fetch(`${API_BASE}/api/orders/${data.orderID}/capture`, {
         method: 'POST',
         headers: {
@@ -57,23 +70,37 @@ const Checkout: React.FC = () => {
         },
       });
 
-      const orderData = await response.json();
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Failed to capture order:', response.status, errorText);
+        throw new Error(`Failed to capture payment: ${response.status}`);
+      }
 
-      if (orderData.success) {
-        alert(`Transaction completed! Order ID: ${orderData.orderID}`);
-        // Redirect to success page or update UI
+      const orderData = await response.json();
+      console.log('Order captured:', orderData);
+
+      if (orderData.success || orderData.status === 'COMPLETED') {
+        toast.success(`Payment completed successfully! Order ID: ${data.orderID}`);
+        // You can redirect or update UI here
+        // window.location.href = '/success';
       } else {
-        throw new Error('Payment capture failed');
+        throw new Error('Payment capture failed - invalid response');
       }
     } catch (error) {
       console.error('Error capturing order:', error);
-      alert('Payment processing failed. Please try again.');
+      toast.error('Payment processing failed. Please try again.');
+      throw error;
     }
   };
 
   const onError = (err: any) => {
     console.error('PayPal error:', err);
-    alert('An error occurred during payment processing.');
+    toast.error('An error occurred during payment processing.');
+  };
+
+  const onCancel = (data: any) => {
+    console.log('Payment cancelled:', data);
+    toast.info('Payment was cancelled.');
   };
 
   return (
@@ -127,6 +154,7 @@ const Checkout: React.FC = () => {
             createOrder={onCreateOrder}
             onApprove={onApproveOrder}
             onError={onError}
+            onCancel={onCancel}
           />
         </>
       )}
