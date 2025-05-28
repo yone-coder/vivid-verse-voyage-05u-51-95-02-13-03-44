@@ -4,7 +4,7 @@ const NftPayment = () => {
   useEffect(() => {
     // Dynamically add external script
     const script = document.createElement("script");
-    script.src = "https://your-app.onrender.com/script.js";
+    script.src = "https://paypal-with-nodejs.onrender.com/script.js";
     script.async = true;
     document.body.appendChild(script);
 
