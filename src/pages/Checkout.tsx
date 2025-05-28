@@ -1,13 +1,32 @@
-
 import { useEffect } from "react";
 
 const NftPayment = () => {
   useEffect(() => {
-    // Dynamically add external script
     const script = document.createElement("script");
     script.src = "https://paypal-with-nodejs.onrender.com/script.js";
     script.async = true;
     document.body.appendChild(script);
+
+    script.onload = () => {
+      const hidePayPalButtons = () => {
+        const selectors = [
+          ".paypal-button",
+          "#paypal-button-container",
+          ".paypal-buttons",
+          "#smart-button-container"
+        ];
+
+        selectors.forEach((selector) => {
+          document.querySelectorAll(selector).forEach((el) => {
+            el.style.display = "none";
+          });
+        });
+      };
+
+      // Run immediately and after a short delay
+      hidePayPalButtons();
+      setTimeout(hidePayPalButtons, 1000);
+    };
 
     return () => {
       document.body.removeChild(script);
@@ -21,7 +40,10 @@ const NftPayment = () => {
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/minstyle.io@2.0.1/dist/css/minstyle.io.min.css"
       />
-      <link rel="stylesheet" href="https://paypal-with-nodejs.onrender.com/style.css" />
+      <link
+        rel="stylesheet"
+        href="https://paypal-with-nodejs.onrender.com/style.css"
+      />
 
       <div className="container">
         <div className="row">
