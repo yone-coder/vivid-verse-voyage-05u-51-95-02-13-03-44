@@ -39,7 +39,13 @@ const PayPalHostedFields = () => {
       }
 
       const data = await response.json();
-      addDebugInfo('Client token received successfully');
+      addDebugInfo(`Client token received: ${data.clientToken ? 'SUCCESS' : 'FAILED'}`);
+      
+      // Log the token format for debugging
+      if (data.clientToken) {
+        addDebugInfo(`Token starts with: ${data.clientToken.substring(0, 10)}...`);
+      }
+      
       return data.clientToken;
     } catch (error) {
       addDebugInfo(`Error getting client token: ${error.message}`);
@@ -58,9 +64,9 @@ const PayPalHostedFields = () => {
         existingScript.remove();
       }
 
-      // Load PayPal SDK
+      // Load PayPal SDK with data-client-token for Hosted Fields
       const script = document.createElement('script');
-      script.src = `https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}&components=hosted-fields&debug=true`;
+      script.src = `https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}&components=hosted-fields&debug=true&data-client-token=true`;
       script.async = true;
 
       script.onload = () => {
@@ -78,7 +84,7 @@ const PayPalHostedFields = () => {
     });
   };
 
-  const initializeHostedFields = (token) => {
+  const initializeHostedFields = async (token) => {
     addDebugInfo('Initializing Hosted Fields...');
 
     if (!window.paypal) {
@@ -96,79 +102,86 @@ const PayPalHostedFields = () => {
       return;
     }
 
-    addDebugInfo(`PayPal HostedFields available, rendering with token: ${token.substring(0, 20)}...`);
+    // Validate token format
+    if (typeof token !== 'string' || token.length < 10) {
+      addDebugInfo(`ERROR: Invalid client token format. Token: ${token}`);
+      return;
+    }
 
-    window.paypal.HostedFields.render({
-      // Add the client token here
-      authorization: token,
+    addDebugInfo(`Initializing with token: ${token.substring(0, 20)}...`);
 
-      createOrder: async () => {
-        addDebugInfo('Creating order...');
-        try {
-          const response = await fetch(`${BACKEND_URL}/api/paypal/create-order`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              amount: '10.00',
-              currency: 'USD'
-            }),
-          });
+    try {
+      const hostedFields = await window.paypal.HostedFields.render({
+        // The client token for authorization
+        authorization: token,
 
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+        createOrder: async () => {
+          addDebugInfo('Creating order...');
+          try {
+            const response = await fetch(`${BACKEND_URL}/api/paypal/create-order`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                amount: '10.00',
+                currency: 'USD'
+              }),
+            });
+
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            addDebugInfo(`Order created with ID: ${data.id}`);
+            return data.id;
+          } catch (error) {
+            addDebugInfo(`Error creating order: ${error.message}`);
+            setPaymentStatus('Error creating payment order: ' + error.message);
+            throw error;
           }
+        },
 
-          const data = await response.json();
-          addDebugInfo(`Order created with ID: ${data.id}`);
-          return data.id;
-        } catch (error) {
-          addDebugInfo(`Error creating order: ${error.message}`);
-          setPaymentStatus('Error creating payment order: ' + error.message);
-          throw error;
-        }
-      },
+        styles: {
+          '.valid': {
+            'color': '#28a745'
+          },
+          '.invalid': {
+            'color': '#dc3545'
+          },
+          'input': {
+            'font-size': '16px',
+            'font-family': 'system-ui, -apple-system, sans-serif',
+            'color': '#374151',
+            'padding': '12px',
+            'border': 'none',
+            'outline': 'none',
+            'width': '100%',
+            'box-sizing': 'border-box',
+            'background': 'transparent'
+          },
+          ':focus': {
+            'outline': 'none'
+          }
+        },
 
-      styles: {
-        '.valid': {
-          'color': '#28a745'
-        },
-        '.invalid': {
-          'color': '#dc3545'
-        },
-        'input': {
-          'font-size': '16px',
-          'font-family': 'system-ui, -apple-system, sans-serif',
-          'color': '#374151',
-          'padding': '12px',
-          'border': '1px solid #d1d5db',
-          'border-radius': '6px',
-          'width': '100%',
-          'box-sizing': 'border-box'
-        },
-        ':focus': {
-          'border-color': '#3b82f6',
-          'outline': 'none',
-          'box-shadow': '0 0 0 3px rgba(59, 130, 246, 0.1)'
+        fields: {
+          number: {
+            selector: '#card-number',
+            placeholder: '1234 5678 9012 3456'
+          },
+          cvv: {
+            selector: '#cvv',
+            placeholder: '123'
+          },
+          expirationDate: {
+            selector: '#expiration-date',
+            placeholder: 'MM/YY'
+          }
         }
-      },
+      });
 
-      fields: {
-        number: {
-          selector: '#card-number',
-          placeholder: '1234 5678 9012 3456'
-        },
-        cvv: {
-          selector: '#cvv',
-          placeholder: '123'
-        },
-        expirationDate: {
-          selector: '#expiration-date',
-          placeholder: 'MM/YY'
-        }
-      }
-    }).then((hostedFields) => {
       addDebugInfo('Hosted Fields rendered successfully');
       setHostedFieldsInstance(hostedFields);
       setInitializationComplete(true);
@@ -188,6 +201,7 @@ const PayPalHostedFields = () => {
         // Check if all fields are valid
         const allFieldsValid = Object.values(event.fields).every(field => field.isValid);
         setIsFormValid(allFieldsValid);
+        addDebugInfo(`All fields valid: ${allFieldsValid}`);
       });
 
       hostedFields.on('cardTypeChange', (event) => {
@@ -207,49 +221,77 @@ const PayPalHostedFields = () => {
         addDebugInfo(`Field ${event.emittedBy} blurred`);
       });
 
-    }).catch((error) => {
+      hostedFields.on('empty', (event) => {
+        addDebugInfo(`Field ${event.emittedBy} is empty`);
+      });
+
+      hostedFields.on('notEmpty', (event) => {
+        addDebugInfo(`Field ${event.emittedBy} is not empty`);
+      });
+
+    } catch (error) {
       addDebugInfo(`Error rendering Hosted Fields: ${error.message}`);
       console.error('Hosted Fields Error:', error);
-    });
+      setPaymentStatus('Failed to initialize payment form: ' + error.message);
+    }
   };
 
   // Initial setup effect
   useEffect(() => {
     const initializePayPal = async () => {
       addDebugInfo('Starting PayPal initialization...');
+      setInitializationComplete(false);
+      setClientToken(null);
+      setSdkLoaded(false);
 
       try {
-        // Load SDK and get client token concurrently
-        const [token] = await Promise.all([
-          getClientToken(),
-          loadPayPalSDK()
-        ]);
+        // Load SDK first
+        await loadPayPalSDK();
+        
+        // Then get client token
+        const token = await getClientToken();
+        
+        if (!token) {
+          throw new Error('No client token received from backend');
+        }
 
-        addDebugInfo('Both SDK and client token ready, setting client token...');
+        addDebugInfo('SDK loaded and client token received, setting state...');
         setClientToken(token);
       } catch (error) {
         addDebugInfo(`Initialization failed: ${error.message}`);
+        setPaymentStatus('Failed to initialize payment system: ' + error.message);
       }
     };
 
+    // Clear any previous state
+    setHostedFieldsInstance(null);
+    setFieldStates({});
+    setIsFormValid(false);
+    setPaymentStatus('');
+    
     initializePayPal();
   }, []);
 
   // Effect to initialize hosted fields when both SDK and token are ready
   useEffect(() => {
-    if (sdkLoaded && clientToken && !initializationComplete) {
+    if (sdkLoaded && clientToken && !initializationComplete && !hostedFieldsInstance) {
       addDebugInfo('Both SDK loaded and client token available, initializing hosted fields...');
       // Small delay to ensure DOM is ready
       setTimeout(() => {
         initializeHostedFields(clientToken);
-      }, 100);
+      }, 500);
     }
-  }, [sdkLoaded, clientToken, initializationComplete]);
+  }, [sdkLoaded, clientToken, initializationComplete, hostedFieldsInstance]);
 
   const submitForm = async () => {
-    if (!hostedFieldsInstance || !isFormValid) {
-      const message = !hostedFieldsInstance ? 'Hosted fields not initialized' : 'Form validation failed';
-      addDebugInfo(`Submit blocked: ${message}`);
+    if (!hostedFieldsInstance) {
+      addDebugInfo('Submit blocked: Hosted fields not initialized');
+      setPaymentStatus('Payment form not ready. Please wait...');
+      return;
+    }
+
+    if (!isFormValid) {
+      addDebugInfo('Submit blocked: Form validation failed');
       setPaymentStatus('Please fill in all required fields correctly');
       return;
     }
@@ -283,8 +325,8 @@ const PayPalHostedFields = () => {
         setPaymentStatus('Payment successful!');
         addDebugInfo('Payment completed successfully');
       } else {
-        setPaymentStatus('Payment failed: ' + captureResult.error);
-        addDebugInfo(`Payment failed: ${captureResult.error}`);
+        setPaymentStatus('Payment failed: ' + (captureResult.error || 'Unknown error'));
+        addDebugInfo(`Payment failed: ${captureResult.error || 'Unknown error'}`);
       }
     } catch (error) {
       addDebugInfo(`Payment error: ${error.message}`);
@@ -307,11 +349,36 @@ const PayPalHostedFields = () => {
     try {
       addDebugInfo('Testing backend connection...');
       const response = await fetch(`${BACKEND_URL}/health`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       const data = await response.json();
       addDebugInfo(`Backend test successful: ${JSON.stringify(data)}`);
     } catch (error) {
       addDebugInfo(`Backend test failed: ${error.message}`);
     }
+  };
+
+  const resetPayPal = () => {
+    addDebugInfo('Resetting PayPal integration...');
+    setInitializationComplete(false);
+    setHostedFieldsInstance(null);
+    setClientToken(null);
+    setSdkLoaded(false);
+    setFieldStates({});
+    setIsFormValid(false);
+    setPaymentStatus('');
+    
+    // Remove existing script
+    const existingScript = document.querySelector(`script[src*="paypal.com/sdk/js"]`);
+    if (existingScript) {
+      existingScript.remove();
+    }
+    
+    // Trigger re-initialization
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
   };
 
   return (
@@ -324,7 +391,7 @@ const PayPalHostedFields = () => {
         </div>
 
         {/* Loading state */}
-        {!initializationComplete && (
+        {!initializationComplete && !paymentStatus.includes('Failed') && (
           <div className="mb-4 p-3 bg-blue-50 text-blue-800 rounded-lg flex items-center gap-2">
             <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
             Initializing payment form...
@@ -337,8 +404,8 @@ const PayPalHostedFields = () => {
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Card Number
             </label>
-            <div className={`border rounded-lg p-3 min-h-[50px] ${getFieldStatus('number') === 'valid' ? 'border-green-500' : getFieldStatus('number') === 'invalid' ? 'border-red-500' : 'border-gray-300'}`}>
-              <div id="card-number"></div>
+            <div className={`border rounded-lg p-0 min-h-[50px] flex items-center ${getFieldStatus('number') === 'valid' ? 'border-green-500 bg-green-50' : getFieldStatus('number') === 'invalid' ? 'border-red-500 bg-red-50' : 'border-gray-300 bg-gray-50'}`}>
+              <div id="card-number" className="w-full p-3"></div>
             </div>
           </div>
 
@@ -348,8 +415,8 @@ const PayPalHostedFields = () => {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Expiry Date
               </label>
-              <div className={`border rounded-lg p-3 min-h-[50px] ${getFieldStatus('expirationDate') === 'valid' ? 'border-green-500' : getFieldStatus('expirationDate') === 'invalid' ? 'border-red-500' : 'border-gray-300'}`}>
-                <div id="expiration-date"></div>
+              <div className={`border rounded-lg p-0 min-h-[50px] flex items-center ${getFieldStatus('expirationDate') === 'valid' ? 'border-green-500 bg-green-50' : getFieldStatus('expirationDate') === 'invalid' ? 'border-red-500 bg-red-50' : 'border-gray-300 bg-gray-50'}`}>
+                <div id="expiration-date" className="w-full p-3"></div>
               </div>
             </div>
 
@@ -357,8 +424,8 @@ const PayPalHostedFields = () => {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 CVV
               </label>
-              <div className={`border rounded-lg p-3 min-h-[50px] ${getFieldStatus('cvv') === 'valid' ? 'border-green-500' : getFieldStatus('cvv') === 'invalid' ? 'border-red-500' : 'border-gray-300'}`}>
-                <div id="cvv"></div>
+              <div className={`border rounded-lg p-0 min-h-[50px] flex items-center ${getFieldStatus('cvv') === 'valid' ? 'border-green-500 bg-green-50' : getFieldStatus('cvv') === 'invalid' ? 'border-red-500 bg-red-50' : 'border-gray-300 bg-gray-50'}`}>
+                <div id="cvv" className="w-full p-3"></div>
               </div>
             </div>
           </div>
@@ -415,12 +482,20 @@ const PayPalHostedFields = () => {
         <div className="flex items-center gap-2 mb-3">
           <Info className="w-5 h-5 text-blue-600" />
           <h3 className="font-medium text-gray-800">Debug Information</h3>
-          <button
-            onClick={testBackendConnection}
-            className="ml-auto px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
-          >
-            Test Backend
-          </button>
+          <div className="ml-auto flex gap-2">
+            <button
+              onClick={testBackendConnection}
+              className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+              Test Backend
+            </button>
+            <button
+              onClick={resetPayPal}
+              className="px-3 py-1 text-sm bg-orange-600 text-white rounded hover:bg-orange-700"
+            >
+              Reset
+            </button>
+          </div>
         </div>
 
         <div className="space-y-2">
@@ -434,7 +509,7 @@ const PayPalHostedFields = () => {
             <div>
               <span className="font-medium">Client Token:</span> 
               <span className={clientToken ? 'text-green-600' : 'text-red-600'}>
-                {clientToken ? 'Yes' : 'No'}
+                {clientToken ? `Yes (${clientToken.length} chars)` : 'No'}
               </span>
             </div>
             <div>
@@ -457,7 +532,7 @@ const PayPalHostedFields = () => {
               {debugInfo.length === 0 ? (
                 <div className="p-2 text-gray-500 text-sm">No debug info yet...</div>
               ) : (
-                debugInfo.slice(-10).map((info, index) => (
+                debugInfo.slice(-15).map((info, index) => (
                   <div key={index} className="p-2 text-xs border-b last:border-b-0 font-mono">
                     {info}
                   </div>
