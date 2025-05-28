@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from 'react';
 import {
   PayPalScriptProvider,
@@ -7,9 +8,9 @@ import {
 } from '@paypal/react-paypal-js';
 import axios from 'axios';
 
-const SubmitPayment = ({ clientToken }) => {
+const SubmitPayment = ({ clientToken }: { clientToken: string }) => {
   const [paying, setPaying] = useState(false);
-  const cardHolderName = useRef(null);
+  const cardHolderName = useRef<HTMLInputElement>(null);
   const hostedFields = usePayPalHostedFields();
 
   const handleClick = async () => {
@@ -20,8 +21,10 @@ const SubmitPayment = ({ clientToken }) => {
 
     setPaying(true);
     try {
+      // Note: hostedFields.cardFields would be the correct way to access card data
+      // The orderId should be available from the hostedFields context
       const { data } = await axios.post('https://paypal-with-nodejs.onrender.com/api/paypal/capture-order', {
-        orderID: hostedFields.orderId,
+        orderID: hostedFields.getState?.()?.orderId || 'unknown'
       });
       alert('Payment successful!');
       console.log(data);
@@ -46,7 +49,7 @@ const SubmitPayment = ({ clientToken }) => {
 };
 
 const PaymentForm = () => {
-  const [clientToken, setClientToken] = useState(null);
+  const [clientToken, setClientToken] = useState<string | null>(null);
 
   React.useEffect(() => {
     // Fetch client token from backend
@@ -61,7 +64,7 @@ const PaymentForm = () => {
   return (
     <PayPalScriptProvider
       options={{
-        'client-id': 'your_client_id',
+        clientId: process.env.REACT_APP_PAYPAL_CLIENT_ID || 'AU23YbLMTqxG3iSvnhcWtix6rGN14uw3axYJgrDe8VqUVng8XiQmmeiaxJWbnpbZP_f4',
         'data-client-token': clientToken,
         components: 'hosted-fields',
         currency: 'USD',

@@ -173,96 +173,66 @@ export type Database = {
         }
         Relationships: []
       }
-      tournaments: {
-        Row: {
-          banner_url: string
-          created_at: string
-          current_participants: number
-          end_date: string
-          game: string
-          id: string
-          max_participants: number
-          position: number | null
-          prize_pool: number
-          start_date: string
-          status: Database["public"]["Enums"]["tournament_status"]
-          title: string
-          updated_at: string
-        }
-        Insert: {
-          banner_url: string
-          created_at?: string
-          current_participants?: number
-          end_date: string
-          game?: string
-          id?: string
-          max_participants: number
-          position?: number | null
-          prize_pool: number
-          start_date: string
-          status?: Database["public"]["Enums"]["tournament_status"]
-          title: string
-          updated_at?: string
-        }
-        Update: {
-          banner_url?: string
-          created_at?: string
-          current_participants?: number
-          end_date?: string
-          game?: string
-          id?: string
-          max_participants?: number
-          position?: number | null
-          prize_pool?: number
-          start_date?: string
-          status?: Database["public"]["Enums"]["tournament_status"]
-          title?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
       transactions: {
         Row: {
-          amount: number
-          created_at: string
-          currency: string
-          id: string
+          created: string
+          id: number
+          item_name: string | null
+          item_number: string | null
+          item_price: number | null
+          item_price_currency: string | null
+          modified: string
           order_id: string
-          payment_provider: string
-          payment_token: string | null
-          reference: string | null
-          status: string
-          transaction_id: string | null
-          updated_at: string
-          user_id: string
+          paid_amount: number
+          paid_amount_currency: string
+          payment_source: string | null
+          payment_source_card_brand: string | null
+          payment_source_card_expiry: string | null
+          payment_source_card_last_digits: string | null
+          payment_source_card_name: string | null
+          payment_source_card_type: string | null
+          payment_status: string
+          transaction_id: string
         }
         Insert: {
-          amount: number
-          created_at?: string
-          currency?: string
-          id?: string
+          created?: string
+          id?: never
+          item_name?: string | null
+          item_number?: string | null
+          item_price?: number | null
+          item_price_currency?: string | null
+          modified?: string
           order_id: string
-          payment_provider?: string
-          payment_token?: string | null
-          reference?: string | null
-          status: string
-          transaction_id?: string | null
-          updated_at?: string
-          user_id: string
+          paid_amount: number
+          paid_amount_currency: string
+          payment_source?: string | null
+          payment_source_card_brand?: string | null
+          payment_source_card_expiry?: string | null
+          payment_source_card_last_digits?: string | null
+          payment_source_card_name?: string | null
+          payment_source_card_type?: string | null
+          payment_status: string
+          transaction_id: string
         }
         Update: {
-          amount?: number
-          created_at?: string
-          currency?: string
-          id?: string
+          created?: string
+          id?: never
+          item_name?: string | null
+          item_number?: string | null
+          item_price?: number | null
+          item_price_currency?: string | null
+          modified?: string
           order_id?: string
-          payment_provider?: string
-          payment_token?: string | null
-          reference?: string | null
-          status?: string
-          transaction_id?: string | null
-          updated_at?: string
-          user_id?: string
+          paid_amount?: number
+          paid_amount_currency?: string
+          payment_source?: string | null
+          payment_source_card_brand?: string | null
+          payment_source_card_expiry?: string | null
+          payment_source_card_last_digits?: string | null
+          payment_source_card_name?: string | null
+          payment_source_card_type?: string | null
+          payment_status?: string
+          transaction_id?: string
         }
         Relationships: []
       }

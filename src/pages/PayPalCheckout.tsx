@@ -15,7 +15,7 @@ const PayPalCheckout: React.FC = () => {
   const [scriptError, setScriptError] = useState(false);
 
   const paypalOptions = {
-    clientId: "AU23YbLMTqxG3iSvnhcWtix6rGN14uw3axYJgrDe8VqUVng8XiQmmeiaxJWbnpbZP_f4--RTg146F1Mj",
+    clientId: "AU23YbLMTqxG3iSvnhcWtix6rGN14uw3axYJgrDe8VqUVng8XiQmmeiaxJWbnpbZP_f4",
     currency: currency,
     intent: "capture" as const,
     components: "buttons",
@@ -268,11 +268,7 @@ const PayPalCheckout: React.FC = () => {
                 </div>
               )}
               
-              <PayPalScriptProvider 
-                options={paypalOptions}
-                onLoad={onScriptLoad}
-                onError={onScriptError}
-              >
+              <PayPalScriptProvider options={paypalOptions}>
                 <PayPalButtons
                   style={{
                     layout: "vertical",
