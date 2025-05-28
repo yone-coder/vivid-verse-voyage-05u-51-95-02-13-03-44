@@ -9,6 +9,7 @@ const PayPalHostedFields = () => {
   const [fieldStates, setFieldStates] = useState({});
   const [debugInfo, setDebugInfo] = useState([]);
   const [sdkLoaded, setSdkLoaded] = useState(false);
+  const [clientToken, setClientToken] = useState(null);
 
   // Replace with your actual PayPal client ID
   const PAYPAL_CLIENT_ID = 'AU23YbLMTqxG3iSvnhcWtix6rGN14uw3axYJgrDe8VqUVng8XiQmmeiaxJWbnpbZP_f4--RTg146F1Mj';
@@ -21,43 +22,86 @@ const PayPalHostedFields = () => {
     setDebugInfo(prev => [...prev, `${new Date().toLocaleTimeString()}: ${message}`]);
   };
 
-  useEffect(() => {
-    addDebugInfo('Starting PayPal SDK load...');
-    
-    // Check if script already exists
-    const existingScript = document.querySelector(`script[src*="paypal.com/sdk/js"]`);
-    if (existingScript) {
-      addDebugInfo('PayPal script already exists, removing...');
-      existingScript.remove();
+  // Get client token from backend
+  const getClientToken = async () => {
+    try {
+      addDebugInfo('Fetching client token from backend...');
+      const response = await fetch(`${BACKEND_URL}/api/paypal/client-token`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      addDebugInfo('Client token received successfully');
+      setClientToken(data.clientToken);
+      return data.clientToken;
+    } catch (error) {
+      addDebugInfo(`Error getting client token: ${error.message}`);
+      throw error;
     }
+  };
 
-    // Load PayPal SDK with additional parameters for debugging
-    const script = document.createElement('script');
-    script.src = `https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}&components=hosted-fields&debug=true`;
-    script.async = true;
-    
-    script.onload = () => {
-      addDebugInfo('PayPal SDK loaded successfully');
-      setSdkLoaded(true);
-      initializeHostedFields();
-    };
-    
-    script.onerror = (error) => {
-      addDebugInfo('Error loading PayPal SDK: ' + error.toString());
-    };
-    
-    document.head.appendChild(script);
+  useEffect(() => {
+    const initializePayPal = async () => {
+      addDebugInfo('Starting PayPal initialization...');
 
-    return () => {
-      if (script.parentNode) {
-        script.parentNode.removeChild(script);
+      try {
+        // First get the client token
+        const token = await getClientToken();
+        
+        // Then load the SDK
+        await loadPayPalSDK();
+        
+        // Finally initialize hosted fields
+        initializeHostedFields(token);
+      } catch (error) {
+        addDebugInfo(`Initialization failed: ${error.message}`);
       }
     };
+
+    initializePayPal();
   }, []);
 
-  const initializeHostedFields = () => {
+  const loadPayPalSDK = () => {
+    return new Promise((resolve, reject) => {
+      addDebugInfo('Loading PayPal SDK...');
+
+      // Check if script already exists
+      const existingScript = document.querySelector(`script[src*="paypal.com/sdk/js"]`);
+      if (existingScript) {
+        addDebugInfo('PayPal script already exists, removing...');
+        existingScript.remove();
+      }
+
+      // Load PayPal SDK
+      const script = document.createElement('script');
+      script.src = `https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}&components=hosted-fields&debug=true`;
+      script.async = true;
+
+      script.onload = () => {
+        addDebugInfo('PayPal SDK loaded successfully');
+        setSdkLoaded(true);
+        resolve();
+      };
+
+      script.onerror = (error) => {
+        addDebugInfo('Error loading PayPal SDK: ' + error.toString());
+        reject(error);
+      };
+
+      document.head.appendChild(script);
+    });
+  };
+
+  const initializeHostedFields = (token) => {
     addDebugInfo('Initializing Hosted Fields...');
-    
+
     if (!window.paypal) {
       addDebugInfo('ERROR: PayPal SDK not available on window object');
       return;
@@ -68,9 +112,17 @@ const PayPalHostedFields = () => {
       return;
     }
 
+    if (!token) {
+      addDebugInfo('ERROR: Client token not available');
+      return;
+    }
+
     addDebugInfo('PayPal HostedFields available, rendering...');
 
     window.paypal.HostedFields.render({
+      // Add the client token here
+      authorization: token,
+      
       createOrder: async () => {
         addDebugInfo('Creating order...');
         try {
@@ -293,9 +345,9 @@ const PayPalHostedFields = () => {
           {/* Submit Button */}
           <button
             onClick={submitForm}
-            disabled={isLoading || !isFormValid}
+            disabled={isLoading || !isFormValid || !clientToken}
             className={`w-full py-3 px-4 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors ${
-              isLoading || !isFormValid
+              isLoading || !isFormValid || !clientToken
                 ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 : 'bg-blue-600 text-white hover:bg-blue-700'
             }`}
@@ -349,13 +401,19 @@ const PayPalHostedFields = () => {
             Test Backend
           </button>
         </div>
-        
+
         <div className="space-y-2">
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
               <span className="font-medium">SDK Loaded:</span> 
               <span className={sdkLoaded ? 'text-green-600' : 'text-red-600'}>
                 {sdkLoaded ? 'Yes' : 'No'}
+              </span>
+            </div>
+            <div>
+              <span className="font-medium">Client Token:</span> 
+              <span className={clientToken ? 'text-green-600' : 'text-red-600'}>
+                {clientToken ? 'Yes' : 'No'}
               </span>
             </div>
             <div>
@@ -368,12 +426,8 @@ const PayPalHostedFields = () => {
               <span className="font-medium">Backend URL:</span> 
               <span className="text-blue-600">{BACKEND_URL}</span>
             </div>
-            <div>
-              <span className="font-medium">Client ID:</span> 
-              <span className="text-blue-600">{PAYPAL_CLIENT_ID.substring(0, 20)}...</span>
-            </div>
           </div>
-          
+
           <div className="mt-3">
             <div className="font-medium text-sm mb-2">Recent Activity:</div>
             <div className="bg-white rounded border max-h-40 overflow-y-auto">
