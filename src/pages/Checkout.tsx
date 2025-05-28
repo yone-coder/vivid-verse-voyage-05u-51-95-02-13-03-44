@@ -8,9 +8,14 @@ const PayPalPaymentComponent = () => {
   const [orderID, setOrderID] = useState('');
   const [purchaseButtonDisabled, setPurchaseButtonDisabled] = useState(false);
   const [purchaseButtonText, setPurchaseButtonText] = useState('Purchase');
+  const [hostedFieldsInstance, setHostedFieldsInstance] = useState(null);
   
   const cardFormRef = useRef(null);
   const paymentOptionsRef = useRef(null);
+  const cardNumberRef = useRef(null);
+  const cvvRef = useRef(null);
+  const expirationDateRef = useRef(null);
+  const isInitialized = useRef(false);
   
   // Replace with your actual backend URL
   const API_BASE_URL = "https://paypal-with-nodejs.onrender.com";
@@ -21,9 +26,11 @@ const PayPalPaymentComponent = () => {
   // Utility function to load PayPal SDK
   const loadPayPalSDK = (clientToken) => {
     return new Promise((resolve, reject) => {
-      if (window.paypal) {
-        resolve(window.paypal);
-        return;
+      // Remove existing PayPal script if it exists
+      const existingScript = document.querySelector('script[src*="paypal.com/sdk/js"]');
+      if (existingScript) {
+        existingScript.remove();
+        delete window.paypal;
       }
 
       const script = document.createElement('script');
@@ -31,7 +38,10 @@ const PayPalPaymentComponent = () => {
       
       script.src = paypalSDKUrl;
       script.setAttribute('data-client-token', clientToken);
-      script.onload = () => resolve(window.paypal);
+      script.onload = () => {
+        // Small delay to ensure PayPal SDK is fully loaded
+        setTimeout(() => resolve(window.paypal), 100);
+      };
       script.onerror = reject;
       document.head.appendChild(script);
     });
@@ -64,20 +74,20 @@ const PayPalPaymentComponent = () => {
       </div>`
     );
     
-    if (paypalButtonsInstance) {
+    if (paypalButtonsInstance && paypalButtonsInstance.close) {
       paypalButtonsInstance.close();
     }
     
     // Hide card form
     if (cardFormRef.current) {
-      cardFormRef.current.classList.add('hidden');
+      cardFormRef.current.style.display = 'none';
     }
   };
 
   const displayErrorAlert = () => {
     setAlerts(
       `<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-        <span class="cursor-pointer float-right" onClick="this.parentElement.remove()">×</span>
+        <span class="cursor-pointer float-right text-xl font-bold" onclick="this.parentElement.remove()">×</span>
         <p>An Error Occurred! (View console for more info)</p>
       </div>`
     );
@@ -88,24 +98,31 @@ const PayPalPaymentComponent = () => {
     setPurchaseButtonText('Purchase');
   };
 
-  const handleCardFormSubmit = (event, cardFields) => {
+  const handleCardFormSubmit = async (event) => {
     event.preventDefault();
+    
+    if (!hostedFieldsInstance) {
+      console.error('Hosted fields not initialized');
+      return;
+    }
+
     setPurchaseButtonDisabled(true);
     setPurchaseButtonText('Loading...');
 
-    cardFields.submit({
-      cardholderName: "Raúl Uriarte, Jr.",
-      billingAddress: {
-        streetAddress: "123 Springfield Rd",
-        extendedAddress: "",
-        region: "AZ",
-        locality: "CHANDLER",
-        postalCode: "85224",
-        countryCodeAlpha2: "US",
-      },
-    })
-    .then(() => {
-      return fetch(`${API_BASE_URL}/complete_order`, {
+    try {
+      await hostedFieldsInstance.submit({
+        cardholderName: "Raúl Uriarte, Jr.",
+        billingAddress: {
+          streetAddress: "123 Springfield Rd",
+          extendedAddress: "",
+          region: "AZ",
+          locality: "CHANDLER",
+          postalCode: "85224",
+          countryCodeAlpha2: "US",
+        },
+      });
+
+      const response = await fetch(`${API_BASE_URL}/complete_order`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -114,23 +131,44 @@ const PayPalPaymentComponent = () => {
           email: email
         })
       });
-    })
-    .then(response => response.json())
-    .then(orderDetails => {
+
+      const orderDetails = await response.json();
       displaySuccessMessage(orderDetails, paypalButtons);
-    })
-    .catch(error => {
-      console.log(error);
+    } catch (error) {
+      console.error('Card submission error:', error);
       resetPurchaseButton();
       displayErrorAlert();
-    });
+    }
+  };
+
+  const clearAlerts = () => {
+    setAlerts('');
   };
 
   useEffect(() => {
+    // Cleanup function
+    return () => {
+      if (paypalButtons && paypalButtons.close) {
+        try {
+          paypalButtons.close();
+        } catch (e) {
+          console.log('Error closing PayPal buttons:', e);
+        }
+      }
+    };
+  }, [paypalButtons]);
+
+  useEffect(() => {
+    if (isInitialized.current) return;
+    
     const initializePayPal = async () => {
       try {
+        console.log('Initializing PayPal...');
         const clientToken = await getClientToken();
+        console.log('Got client token');
+        
         const paypal = await loadPayPalSDK(clientToken);
+        console.log('PayPal SDK loaded');
         
         setLoading(false);
 
@@ -167,25 +205,28 @@ const PayPalPaymentComponent = () => {
           onCancel: () => {
             setAlerts(
               `<div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-4">
-                <span class="cursor-pointer float-right" onClick="this.parentElement.remove()">×</span>
+                <span class="cursor-pointer float-right text-xl font-bold" onclick="this.parentElement.remove()">×</span>
                 <p>Order cancelled!</p>
               </div>`
             );
           },
           onError: (err) => {
-            console.log(err);
+            console.log('PayPal button error:', err);
             displayErrorAlert();
           }
         });
 
         if (paymentOptionsRef.current) {
-          buttons.render(paymentOptionsRef.current);
+          await buttons.render(paymentOptionsRef.current);
           setPayPalButtons(buttons);
+          console.log('PayPal buttons rendered');
         }
 
         // Initialize Hosted Fields for card payments
-        if (paypal.HostedFields.isEligible()) {
-          paypal.HostedFields.render({
+        if (paypal.HostedFields && paypal.HostedFields.isEligible()) {
+          console.log('Initializing hosted fields...');
+          
+          const hostedFields = await paypal.HostedFields.render({
             createOrder: async () => {
               const response = await fetch(`${API_BASE_URL}/create_order`, {
                 method: "POST",
@@ -200,8 +241,9 @@ const PayPalPaymentComponent = () => {
               '.valid': { color: 'green' },
               '.invalid': { color: 'red' },
               'input': {
-                'font-size': '16pt',
-                'color': '#ffffff'
+                'font-size': '16px',
+                'color': '#000000',
+                'padding': '12px'
               },
             },
             fields: {
@@ -218,12 +260,15 @@ const PayPalPaymentComponent = () => {
                 placeholder: "MM/YY"
               }
             }
-          }).then((cardFields) => {
-            if (cardFormRef.current) {
-              cardFormRef.current.addEventListener('submit', (e) => handleCardFormSubmit(e, cardFields));
-            }
           });
+          
+          setHostedFieldsInstance(hostedFields);
+          console.log('Hosted fields initialized');
+        } else {
+          console.log('Hosted fields not eligible');
         }
+
+        isInitialized.current = true;
 
       } catch (error) {
         console.error('Error initializing PayPal:', error);
@@ -235,9 +280,22 @@ const PayPalPaymentComponent = () => {
     initializePayPal();
   }, []);
 
+  // Handle alert close clicks
+  useEffect(() => {
+    const handleAlertClick = (e) => {
+      if (e.target.onclick || e.target.getAttribute('onclick')) {
+        e.target.parentElement.remove();
+        setAlerts('');
+      }
+    };
+
+    document.addEventListener('click', handleAlertClick);
+    return () => document.removeEventListener('click', handleAlertClick);
+  }, []);
+
   return (
     <div className="max-w-md mx-auto bg-white rounded-lg shadow-lg p-6">
-      <h2 className="text-2xl font-bold text-center mb-4">AI-Generated NFT Bored Ape</h2>
+      <h2 className="text-2xl font-bold text-center mb-4 text-gray-800">AI-Generated NFT Bored Ape</h2>
       
       <div className="text-center mb-4">
         <span className="inline-block bg-blue-500 text-white px-4 py-2 rounded-lg text-lg font-semibold">
@@ -245,7 +303,12 @@ const PayPalPaymentComponent = () => {
         </span>
       </div>
 
-      <div dangerouslySetInnerHTML={{ __html: alerts }} className="mb-4" />
+      {alerts && (
+        <div 
+          dangerouslySetInnerHTML={{ __html: alerts }} 
+          className="mb-4" 
+        />
+      )}
 
       {loading ? (
         <div className="flex justify-center items-center h-32">
@@ -273,7 +336,9 @@ const PayPalPaymentComponent = () => {
                 </label>
                 <div 
                   id="card-number" 
-                  className="w-full p-3 border border-gray-300 rounded-md bg-black text-white"
+                  ref={cardNumberRef}
+                  className="w-full p-3 border border-gray-300 rounded-md bg-white"
+                  style={{ minHeight: '45px' }}
                 />
               </div>
               
@@ -284,7 +349,9 @@ const PayPalPaymentComponent = () => {
                   </label>
                   <div 
                     id="expiration-date" 
-                    className="w-full p-3 border border-gray-300 rounded-md bg-black text-white"
+                    ref={expirationDateRef}
+                    className="w-full p-3 border border-gray-300 rounded-md bg-white"
+                    style={{ minHeight: '45px' }}
                   />
                 </div>
                 <div>
@@ -293,7 +360,9 @@ const PayPalPaymentComponent = () => {
                   </label>
                   <div 
                     id="cvv" 
-                    className="w-full p-3 border border-gray-300 rounded-md bg-black text-white"
+                    ref={cvvRef}
+                    className="w-full p-3 border border-gray-300 rounded-md bg-white"
+                    style={{ minHeight: '45px' }}
                   />
                 </div>
               </div>
@@ -314,10 +383,7 @@ const PayPalPaymentComponent = () => {
               </div>
               
               <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  // Form submission will be handled by PayPal hosted fields
-                }}
+                onClick={handleCardFormSubmit}
                 disabled={purchaseButtonDisabled}
                 className={`w-full py-3 px-4 rounded-md font-medium ${
                   purchaseButtonDisabled 
