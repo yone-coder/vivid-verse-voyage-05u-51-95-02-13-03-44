@@ -12,7 +12,7 @@ const PayPalHostedFields = () => {
   const PAYPAL_CLIENT_ID = 'YOUR_PAYPAL_CLIENT_ID';
   
   // Replace with your backend URL (Render.com)
-  const BACKEND_URL = 'https://your-app.onrender.com';
+  const BACKEND_URL = 'https://paypal-with-nodejs.onrender.com';
 
   useEffect(() => {
     // Load PayPal SDK
