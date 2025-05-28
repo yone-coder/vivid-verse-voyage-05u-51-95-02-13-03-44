@@ -233,10 +233,6 @@ const NftPayment = () => {
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/minstyle.io@2.0.1/dist/css/minstyle.io.min.css"
       />
-      <link
-        rel="stylesheet"
-        href="https://paypal-with-nodejs.onrender.com/style.css"
-      />
 
       <div className="stripe-container">
         <div className="stripe-card">
