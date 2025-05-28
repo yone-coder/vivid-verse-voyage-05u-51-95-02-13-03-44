@@ -1,3 +1,4 @@
+
 import { useEffect } from "react";
 
 const NftPayment = () => {
@@ -78,8 +79,6 @@ const NftPayment = () => {
                     />
                   </div>
                 </form>
-                <hr />
-                <hr />
               </div>
             </div>
           </div>
