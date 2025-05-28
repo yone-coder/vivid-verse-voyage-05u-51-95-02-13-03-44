@@ -10,6 +10,7 @@ const PayPalHostedFields = () => {
   const [debugInfo, setDebugInfo] = useState([]);
   const [sdkLoaded, setSdkLoaded] = useState(false);
   const [clientToken, setClientToken] = useState(null);
+  const [initializationComplete, setInitializationComplete] = useState(false);
 
   // Replace with your actual PayPal client ID
   const PAYPAL_CLIENT_ID = 'AU23YbLMTqxG3iSvnhcWtix6rGN14uw3axYJgrDe8VqUVng8XiQmmeiaxJWbnpbZP_f4--RTg146F1Mj';
@@ -39,34 +40,12 @@ const PayPalHostedFields = () => {
 
       const data = await response.json();
       addDebugInfo('Client token received successfully');
-      setClientToken(data.clientToken);
       return data.clientToken;
     } catch (error) {
       addDebugInfo(`Error getting client token: ${error.message}`);
       throw error;
     }
   };
-
-  useEffect(() => {
-    const initializePayPal = async () => {
-      addDebugInfo('Starting PayPal initialization...');
-
-      try {
-        // First get the client token
-        const token = await getClientToken();
-        
-        // Then load the SDK
-        await loadPayPalSDK();
-        
-        // Finally initialize hosted fields
-        initializeHostedFields(token);
-      } catch (error) {
-        addDebugInfo(`Initialization failed: ${error.message}`);
-      }
-    };
-
-    initializePayPal();
-  }, []);
 
   const loadPayPalSDK = () => {
     return new Promise((resolve, reject) => {
@@ -117,12 +96,12 @@ const PayPalHostedFields = () => {
       return;
     }
 
-    addDebugInfo('PayPal HostedFields available, rendering...');
+    addDebugInfo(`PayPal HostedFields available, rendering with token: ${token.substring(0, 20)}...`);
 
     window.paypal.HostedFields.render({
       // Add the client token here
       authorization: token,
-      
+
       createOrder: async () => {
         addDebugInfo('Creating order...');
         try {
@@ -192,6 +171,7 @@ const PayPalHostedFields = () => {
     }).then((hostedFields) => {
       addDebugInfo('Hosted Fields rendered successfully');
       setHostedFieldsInstance(hostedFields);
+      setInitializationComplete(true);
 
       // Add validation listeners
       hostedFields.on('validityChange', (event) => {
@@ -232,6 +212,39 @@ const PayPalHostedFields = () => {
       console.error('Hosted Fields Error:', error);
     });
   };
+
+  // Initial setup effect
+  useEffect(() => {
+    const initializePayPal = async () => {
+      addDebugInfo('Starting PayPal initialization...');
+
+      try {
+        // Load SDK and get client token concurrently
+        const [token] = await Promise.all([
+          getClientToken(),
+          loadPayPalSDK()
+        ]);
+
+        addDebugInfo('Both SDK and client token ready, setting client token...');
+        setClientToken(token);
+      } catch (error) {
+        addDebugInfo(`Initialization failed: ${error.message}`);
+      }
+    };
+
+    initializePayPal();
+  }, []);
+
+  // Effect to initialize hosted fields when both SDK and token are ready
+  useEffect(() => {
+    if (sdkLoaded && clientToken && !initializationComplete) {
+      addDebugInfo('Both SDK loaded and client token available, initializing hosted fields...');
+      // Small delay to ensure DOM is ready
+      setTimeout(() => {
+        initializeHostedFields(clientToken);
+      }, 100);
+    }
+  }, [sdkLoaded, clientToken, initializationComplete]);
 
   const submitForm = async () => {
     if (!hostedFieldsInstance || !isFormValid) {
@@ -310,6 +323,14 @@ const PayPalHostedFields = () => {
           <h2 className="text-xl font-semibold text-gray-800">Payment Details</h2>
         </div>
 
+        {/* Loading state */}
+        {!initializationComplete && (
+          <div className="mb-4 p-3 bg-blue-50 text-blue-800 rounded-lg flex items-center gap-2">
+            <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+            Initializing payment form...
+          </div>
+        )}
+
         <div className="space-y-4">
           {/* Card Number */}
           <div>
@@ -345,9 +366,9 @@ const PayPalHostedFields = () => {
           {/* Submit Button */}
           <button
             onClick={submitForm}
-            disabled={isLoading || !isFormValid || !clientToken}
+            disabled={isLoading || !isFormValid || !initializationComplete}
             className={`w-full py-3 px-4 rounded-lg font-medium flex items-center justify-center gap-2 transition-colors ${
-              isLoading || !isFormValid || !clientToken
+              isLoading || !isFormValid || !initializationComplete
                 ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 : 'bg-blue-600 text-white hover:bg-blue-700'
             }`}
@@ -417,14 +438,16 @@ const PayPalHostedFields = () => {
               </span>
             </div>
             <div>
+              <span className="font-medium">Initialization:</span> 
+              <span className={initializationComplete ? 'text-green-600' : 'text-orange-600'}>
+                {initializationComplete ? 'Complete' : 'In Progress'}
+              </span>
+            </div>
+            <div>
               <span className="font-medium">Form Valid:</span> 
               <span className={isFormValid ? 'text-green-600' : 'text-red-600'}>
                 {isFormValid ? 'Yes' : 'No'}
               </span>
-            </div>
-            <div>
-              <span className="font-medium">Backend URL:</span> 
-              <span className="text-blue-600">{BACKEND_URL}</span>
             </div>
           </div>
 
