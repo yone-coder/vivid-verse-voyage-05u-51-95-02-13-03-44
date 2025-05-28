@@ -9,7 +9,7 @@ const PayPalHostedFields = () => {
   const [fieldStates, setFieldStates] = useState({});
 
   // Replace with your actual PayPal client ID
-  const PAYPAL_CLIENT_ID = 'YOUR_PAYPAL_CLIENT_ID';
+  const PAYPAL_CLIENT_ID = 'AU23YbLMTqxG3iSvnhcWtix6rGN14uw3axYJgrDe8VqUVng8XiQmmeiaxJWbnpbZP_f4';
   
   // Replace with your backend URL (Render.com)
   const BACKEND_URL = 'https://paypal-with-nodejs.onrender.com';
