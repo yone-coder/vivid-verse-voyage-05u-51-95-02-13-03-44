@@ -9,6 +9,7 @@ import StepThreeTransfer from '@/components/transfer/StepThreeTransfer';
 
 export interface TransferData {
   amount: string;
+  transferType: 'international' | 'national';
   receiverDetails: {
     fullName: string;
     phoneNumber: string;
@@ -21,6 +22,7 @@ const MultiStepTransferPage: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [transferData, setTransferData] = useState<TransferData>({
     amount: '',
+    transferType: 'international',
     receiverDetails: {
       fullName: '',
       phoneNumber: '',
@@ -79,7 +81,7 @@ const MultiStepTransferPage: React.FC = () => {
 
         <div className="text-center mb-6">
           <h2 className="text-lg font-semibold">
-            {currentStep === 1 && 'Enter Amount'}
+            {currentStep === 1 && 'Transfer Type & Amount'}
             {currentStep === 2 && 'Recipient Details'}
             {currentStep === 3 && 'Payment'}
           </h2>
@@ -92,6 +94,8 @@ const MultiStepTransferPage: React.FC = () => {
           <StepOneTransfer 
             amount={transferData.amount}
             onAmountChange={(amount) => updateTransferData({ amount })}
+            transferType={transferData.transferType}
+            onTransferTypeChange={(transferType) => updateTransferData({ transferType })}
           />
         )}
         
@@ -103,7 +107,10 @@ const MultiStepTransferPage: React.FC = () => {
         )}
         
         {currentStep === 3 && (
-          <StepThreeTransfer amount={transferData.amount} />
+          <StepThreeTransfer 
+            amount={transferData.amount} 
+            transferType={transferData.transferType}
+          />
         )}
       </div>
 
