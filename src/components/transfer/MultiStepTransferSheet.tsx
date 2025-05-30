@@ -1,10 +1,10 @@
-
 import React, { useState, useRef } from 'react';
 import { ArrowRight, ArrowLeft, X, GripHorizontal } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import StepOneTransfer from '@/components/transfer/StepOneTransfer';
 import StepTwoTransfer from '@/components/transfer/StepTwoTransfer';
+import StepThreeTransfer from '@/components/transfer/StepThreeTransfer';
 import PaymentMethodList from '@/components/transfer/PaymentMethodList';
 import PayPalHostedCheckout from '@/components/transfer/PayPalHostedCheckout';
 import { internationalPaymentMethods } from '@/components/transfer/PaymentMethods';
@@ -209,20 +209,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
         )}
 
         {currentStep === 4 && (
-          <div className="space-y-4">
-            <div className="text-center mb-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Complete Payment</h3>
-              <p className="text-sm text-gray-600">
-                Sending ${transferData.amount} to {transferData.receiverDetails.fullName}
-              </p>
-            </div>
-            <PayPalHostedCheckout
-              amount={transferData.amount}
-              onSuccess={handlePaymentSuccess}
-              onError={handlePaymentError}
-              onCancel={() => setCurrentStep(3)}
-            />
-          </div>
+          <StepThreeTransfer amount={transferData.amount} />
         )}
       </div>
 
