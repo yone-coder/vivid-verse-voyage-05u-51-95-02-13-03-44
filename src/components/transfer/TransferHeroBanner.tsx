@@ -3,7 +3,6 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchHeroBanners } from "@/integrations/supabase/hero";
 import { setupStorageBuckets } from "@/integrations/supabase/setupStorage";
 import { toast } from "sonner";
-import BannerSlides from '../home/hero/BannerSlides';
 import BannerControls from '../home/hero/BannerControls';
 import NewsTicker from '../home/hero/NewsTicker';
 import { BannerType } from '../home/hero/types';
@@ -131,8 +130,8 @@ export default function TransferHeroBanner() {
   if (isLoading) {
     return (
       <div className="px-4" style={{ marginTop: offset }}>
-        <div className="relative w-full bg-gray-200 animate-pulse aspect-[16/5] rounded-3xl shadow-lg">
-          <div className="absolute inset-0 flex items-center justify-center rounded-3xl">
+        <div className="relative w-full bg-gray-200 animate-pulse aspect-[16/5] rounded-3xl shadow-lg overflow-hidden">
+          <div className="absolute inset-0 flex items-center justify-center">
             <span className="text-gray-400">Loading banners...</span>
           </div>
         </div>
@@ -143,31 +142,34 @@ export default function TransferHeroBanner() {
   return (
     <>
       <div className="px-4" style={{ marginTop: offset }}>
-        <div className="relative w-full overflow-hidden rounded-3xl shadow-lg aspect-[16/5] bg-gray-100">
-          <div className="absolute inset-0 rounded-3xl overflow-hidden">
-            <div className="relative w-full h-full">
-              {slidesToShow.map((banner, index) => {
-                const isActive = index === activeIndex;
-                const isPrevious = index === previousIndex;
-                
-                return (
-                  <div
-                    key={banner.id}
-                    className={`absolute inset-0 w-full h-full transition-transform duration-500 ease-out ${
-                      isActive ? "translate-y-0 z-10" : 
-                      isPrevious ? "-translate-y-full z-0 hidden" : "translate-y-full z-0 hidden"
-                    }`}
-                  >
-                    <img
-                      src={banner.image} 
-                      alt={banner.alt || "Banner image"}
-                      className="w-full h-full object-cover rounded-3xl"
-                    />
-                  </div>
-                );
-              })}
-            </div>
+        {/* Main container with rounded borders and overflow hidden */}
+        <div className="relative w-full rounded-3xl shadow-lg aspect-[16/5] bg-gray-100 overflow-hidden">
+          {/* Image slides container */}
+          <div className="absolute inset-0 w-full h-full">
+            {slidesToShow.map((banner, index) => {
+              const isActive = index === activeIndex;
+              const isPrevious = index === previousIndex;
+              
+              return (
+                <div
+                  key={banner.id}
+                  className={`absolute inset-0 w-full h-full transition-transform duration-500 ease-out ${
+                    isActive ? "translate-y-0 z-10" : 
+                    isPrevious ? "-translate-y-full z-0 hidden" : "translate-y-full z-0 hidden"
+                  }`}
+                >
+                  <img
+                    src={banner.image} 
+                    alt={banner.alt || "Banner image"}
+                    className="w-full h-full object-cover"
+                    style={{ borderRadius: 'inherit' }}
+                  />
+                </div>
+              );
+            })}
           </div>
+          
+          {/* Banner controls overlay */}
           <BannerControls
             slidesCount={slidesToShow.length}
             activeIndex={activeIndex}
