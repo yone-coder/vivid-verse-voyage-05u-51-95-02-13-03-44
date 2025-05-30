@@ -13,43 +13,49 @@ const TransferHomePage: React.FC = () => {
     {
       id: 'send',
       title: 'Send',
-      icon: <Send className="h-5 w-5" />,
-      color: 'bg-blue-500 hover:bg-blue-600',
+      icon: <Send className="h-6 w-6" />,
+      color: 'from-blue-500 to-blue-600',
+      hoverColor: 'hover:from-blue-600 hover:to-blue-700',
       action: () => navigate('/multi-step-transfer')
     },
     {
       id: 'track',
       title: 'Track',
-      icon: <Search className="h-5 w-5" />,
-      color: 'bg-green-500 hover:bg-green-600',
+      icon: <Search className="h-6 w-6" />,
+      color: 'from-emerald-500 to-emerald-600',
+      hoverColor: 'hover:from-emerald-600 hover:to-emerald-700',
       action: () => console.log('Track transfer')
     },
     {
       id: 'history',
       title: 'History',
-      icon: <History className="h-5 w-5" />,
-      color: 'bg-purple-500 hover:bg-purple-600',
+      icon: <History className="h-6 w-6" />,
+      color: 'from-purple-500 to-purple-600',
+      hoverColor: 'hover:from-purple-600 hover:to-purple-700',
       action: () => console.log('Transfer history')
     },
     {
       id: 'cards',
       title: 'Cards',
-      icon: <CreditCard className="h-5 w-5" />,
-      color: 'bg-orange-500 hover:bg-orange-600',
+      icon: <CreditCard className="h-6 w-6" />,
+      color: 'from-orange-500 to-orange-600',
+      hoverColor: 'hover:from-orange-600 hover:to-orange-700',
       action: () => console.log('Payment methods')
     },
     {
       id: 'locations',
       title: 'Locations',
-      icon: <MapPin className="h-5 w-5" />,
-      color: 'bg-red-500 hover:bg-red-600',
+      icon: <MapPin className="h-6 w-6" />,
+      color: 'from-red-500 to-red-600',
+      hoverColor: 'hover:from-red-600 hover:to-red-700',
       action: () => console.log('Pickup locations')
     },
     {
       id: 'support',
       title: 'Support',
-      icon: <Phone className="h-5 w-5" />,
-      color: 'bg-indigo-500 hover:bg-indigo-600',
+      icon: <Phone className="h-6 w-6" />,
+      color: 'from-indigo-500 to-indigo-600',
+      hoverColor: 'hover:from-indigo-600 hover:to-indigo-700',
       action: () => console.log('Customer support')
     }
   ];
@@ -62,59 +68,73 @@ const TransferHomePage: React.FC = () => {
       {/* Hero Banner */}
       <HeroBanner />
       
+      {/* Modern Quick Actions Section - Positioned right after hero banner */}
+      <div className="bg-white shadow-sm border-b border-gray-100">
+        <div className="max-w-md mx-auto px-6 py-8">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Quick Actions</h2>
+            <p className="text-gray-500 text-sm">Everything you need at your fingertips</p>
+          </div>
+          
+          <div className="grid grid-cols-3 gap-6">
+            {quickActions.map((action) => (
+              <button
+                key={action.id}
+                onClick={action.action}
+                className="group flex flex-col items-center space-y-3 p-4 rounded-2xl transition-all duration-300 hover:scale-105 hover:shadow-lg"
+              >
+                <div className={`
+                  relative w-16 h-16 rounded-2xl bg-gradient-to-br ${action.color} ${action.hoverColor}
+                  flex items-center justify-center text-white shadow-lg
+                  transition-all duration-300 group-hover:shadow-xl
+                  before:absolute before:inset-0 before:rounded-2xl before:bg-white before:opacity-0 
+                  before:transition-opacity before:duration-300 group-hover:before:opacity-10
+                `}>
+                  {action.icon}
+                </div>
+                <span className="text-sm font-semibold text-gray-700 group-hover:text-gray-900 transition-colors duration-300">
+                  {action.title}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* Welcome Section */}
-      <div className="bg-white py-6">
+      <div className="bg-white py-8">
         <div className="max-w-md mx-auto px-4 text-center">
-          <h1 className="text-xl font-bold text-gray-900 mb-2">
+          <h1 className="text-2xl font-bold text-gray-900 mb-3">
             Send Money to Haiti
           </h1>
-          <p className="text-gray-600 text-sm">
+          <p className="text-gray-600 text-base leading-relaxed">
             Fast, secure, and reliable money transfers with competitive exchange rates
           </p>
         </div>
       </div>
 
-      {/* Quick Actions */}
+      {/* Featured Section */}
       <div className="max-w-md mx-auto px-4 pb-20">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
-        
-        {/* Circular Quick Action Buttons */}
-        <div className="grid grid-cols-3 gap-4 mb-8">
-          {quickActions.map((action) => (
-            <button
-              key={action.id}
-              onClick={action.action}
-              className="flex flex-col items-center space-y-2"
-            >
-              <div className={`${action.color} w-16 h-16 rounded-full flex items-center justify-center text-white shadow-lg transition-all duration-200 transform hover:scale-105 active:scale-95`}>
-                {action.icon}
-              </div>
-              <span className="text-xs font-medium text-gray-700">{action.title}</span>
-            </button>
-          ))}
-        </div>
-
-        {/* Featured Section */}
-        <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg p-6 text-white">
-          <h3 className="text-lg font-semibold mb-2">Why Choose Our Service?</h3>
-          <ul className="space-y-2 text-sm">
-            <li className="flex items-center">
-              <div className="w-2 h-2 bg-white rounded-full mr-3"></div>
-              Competitive exchange rates
-            </li>
-            <li className="flex items-center">
-              <div className="w-2 h-2 bg-white rounded-full mr-3"></div>
-              24-48 hour delivery
-            </li>
-            <li className="flex items-center">
-              <div className="w-2 h-2 bg-white rounded-full mr-3"></div>
-              Secure & encrypted transfers
-            </li>
-            <li className="flex items-center">
-              <div className="w-2 h-2 bg-white rounded-full mr-3"></div>
-              Multiple pickup locations
-            </li>
-          </ul>
+        <div className="bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 rounded-3xl p-8 text-white shadow-2xl">
+          <h3 className="text-xl font-bold mb-6">Why Choose Our Service?</h3>
+          <div className="space-y-4">
+            <div className="flex items-center space-x-4">
+              <div className="w-2 h-2 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full"></div>
+              <span className="text-gray-100">Competitive exchange rates</span>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="w-2 h-2 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-full"></div>
+              <span className="text-gray-100">24-48 hour delivery</span>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full"></div>
+              <span className="text-gray-100">Secure & encrypted transfers</span>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="w-2 h-2 bg-gradient-to-r from-orange-400 to-red-400 rounded-full"></div>
+              <span className="text-gray-100">Multiple pickup locations</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
