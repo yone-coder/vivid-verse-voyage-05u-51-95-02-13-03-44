@@ -2,6 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, ArrowLeft, X, DollarSign, User, CreditCard, Shield, Clock, CheckCircle } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { motion } from 'framer-motion';
 import StepOneTransfer from '@/components/transfer/StepOneTransfer';
 import StepTwoTransfer from '@/components/transfer/StepTwoTransfer';
 import StepThreeTransfer from '@/components/transfer/StepThreeTransfer';
@@ -160,6 +161,67 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
 
   const stepLabels = ['Amount', 'Recipient', 'Payment Method', 'Payment'];
 
+  // Animation variants for step indicator
+  const stepVariants = {
+    inactive: { 
+      scale: 1,
+      backgroundColor: '#E5E7EB',
+      color: '#6B7280'
+    },
+    active: { 
+      scale: 1.1,
+      backgroundColor: '#DC2626',
+      color: '#FFFFFF',
+      transition: { 
+        type: "spring",
+        stiffness: 260,
+        damping: 20
+      }
+    },
+    completed: {
+      scale: 1,
+      backgroundColor: '#10B981',
+      color: '#FFFFFF',
+      transition: {
+        type: "spring",
+        stiffness: 260,
+        damping: 20
+      }
+    }
+  };
+
+  const lineVariants = {
+    inactive: {
+      backgroundColor: '#E5E7EB',
+      scaleX: 1
+    },
+    active: {
+      backgroundColor: '#10B981',
+      scaleX: 1,
+      transition: {
+        duration: 0.5,
+        ease: "easeInOut"
+      }
+    }
+  };
+
+  const labelVariants = {
+    inactive: {
+      color: '#6B7280',
+      fontWeight: 400
+    },
+    active: {
+      color: '#DC2626',
+      fontWeight: 600,
+      transition: { duration: 0.2 }
+    },
+    completed: {
+      color: '#10B981',
+      fontWeight: 500,
+      transition: { duration: 0.2 }
+    }
+  };
+
   // Calculate transfer fee and total
   const transferFee = transferData.amount ? (parseFloat(transferData.amount) * 0.02).toFixed(2) : '0.00';
   const totalAmount = transferData.amount ? (parseFloat(transferData.amount) + parseFloat(transferFee)).toFixed(2) : '0.00';
@@ -220,33 +282,55 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
         </div>
       )}
       
-      {/* Step Indicator */}
-      <div className="px-6 py-3 border-b bg-gray-50 flex-shrink-0">
+      {/* Animated Step Indicator */}
+      <div className="px-6 py-4 border-b bg-gray-50 flex-shrink-0">
         <div className="flex items-center justify-between">
           {[1, 2, 3, 4].map((step, index) => (
             <React.Fragment key={step}>
               <div className="flex flex-col items-center">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium transition-all duration-200 ${
-                  step === currentStep 
-                    ? 'bg-blue-600 text-white scale-110 shadow-lg' 
-                    : step < currentStep 
-                      ? 'bg-green-500 text-white' 
-                      : 'bg-gray-200 text-gray-500'
-                }`}>
-                  {step < currentStep ? <CheckCircle className="h-4 w-4" /> : 
-                   step === 1 ? <DollarSign className="h-4 w-4" /> :
-                   step === 2 ? <User className="h-4 w-4" /> :
-                   step === 3 ? <CreditCard className="h-4 w-4" /> :
-                   <Shield className="h-4 w-4" />}
-                </div>
-                <span className="text-xs text-gray-600 mt-1 font-medium">
+                <motion.div 
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium transition-all duration-200 shadow-sm"
+                  variants={stepVariants}
+                  initial="inactive"
+                  animate={
+                    step === currentStep ? 'active' : 
+                    step < currentStep ? 'completed' : 
+                    'inactive'
+                  }
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {step < currentStep ? (
+                    <CheckCircle className="h-4 w-4" />
+                  ) : step === 1 ? (
+                    <DollarSign className="h-4 w-4" />
+                  ) : step === 2 ? (
+                    <User className="h-4 w-4" />
+                  ) : step === 3 ? (
+                    <CreditCard className="h-4 w-4" />
+                  ) : (
+                    <Shield className="h-4 w-4" />
+                  )}
+                </motion.div>
+                <motion.span 
+                  className="text-xs mt-1 font-medium"
+                  variants={labelVariants}
+                  initial="inactive"
+                  animate={
+                    step === currentStep ? 'active' : 
+                    step < currentStep ? 'completed' : 
+                    'inactive'
+                  }
+                >
                   {stepLabels[index]}
-                </span>
+                </motion.span>
               </div>
               {index < 3 && (
-                <div className={`flex-1 h-0.5 mx-3 transition-all duration-300 ${
-                  step < currentStep ? 'bg-green-500' : 'bg-gray-200'
-                }`} />
+                <motion.div 
+                  className="flex-1 h-0.5 mx-3 rounded-full origin-left"
+                  variants={lineVariants}
+                  initial="inactive"
+                  animate={step < currentStep ? 'active' : 'inactive'}
+                />
               )}
             </React.Fragment>
           ))}
