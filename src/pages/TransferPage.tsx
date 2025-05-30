@@ -26,8 +26,8 @@ export default function PaytmApp() {
 
   return (
     <div className="max-w-sm mx-auto bg-gradient-to-b from-blue-100 to-blue-50 min-h-screen px-1">
-      {/* Header */}
-      <div className="flex items-center justify-between px-1 py-3">
+      {/* Header - Now Sticky */}
+      <div className="sticky top-0 z-50 bg-gradient-to-b from-blue-100 to-blue-50 flex items-center justify-between px-1 py-3 shadow-sm">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
             <User className="w-6 h-6 text-gray-400" />
