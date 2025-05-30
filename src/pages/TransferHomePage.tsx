@@ -3,7 +3,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Send, Search, Clock, CreditCard, MapPin, Phone } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import HeroBanner from '@/components/HeroBanner';
+import HeroBanner from '@/components/home/HeroBanner';
 
 const TransferHomePage: React.FC = () => {
   const navigate = useNavigate();
@@ -61,7 +61,7 @@ const TransferHomePage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Banner */}
+      {/* Hero Banner - using the same component as ForYou page */}
       <HeroBanner />
       
       {/* Welcome Section */}
