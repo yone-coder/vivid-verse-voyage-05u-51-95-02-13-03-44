@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { ArrowRight, ArrowLeft, X, DollarSign, User, CreditCard, Shield, Clock, CheckCircle } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -143,8 +144,8 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
       </div>
 
       {/* Step Content - Scrollable with proper bottom padding for sticky buttons */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="px-6 py-4 pb-24">
+      <div className="flex-1 overflow-y-auto pb-20">
+        <div className="px-6 py-4">
           {currentStep === 1 && (
             <div className="space-y-6">
               <div className="text-center mb-6">
