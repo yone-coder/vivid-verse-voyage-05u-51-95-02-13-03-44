@@ -1,30 +1,44 @@
 
-import React from 'react';
-import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Gift, Users, Lightbulb, Zap, Truck, Plus } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Users, Lightbulb, Truck, Plus } from 'lucide-react';
 
 export default function PaytmApp() {
+  const [activeSlide, setActiveSlide] = useState(0);
+  
+  // Sample banner data for the sliding functionality
+  const bannerSlides = [
+    {
+      title: "Scan & Pay",
+      subtitle: "wherever you go",
+      buttonText: "Use UPI on Paytm →"
+    },
+    {
+      title: "Quick Transfer",
+      subtitle: "instant money transfer",
+      buttonText: "Send Money Now →"
+    },
+    {
+      title: "Bill Payments",
+      subtitle: "pay all your bills",
+      buttonText: "Pay Bills →"
+    }
+  ];
+
+  // Auto-slide functionality
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveSlide((prev) => (prev + 1) % bannerSlides.length);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [bannerSlides.length]);
+
+  const handleSlideClick = (index: number) => {
+    setActiveSlide(index);
+  };
+
   return (
     <div className="max-w-sm mx-auto bg-gradient-to-b from-blue-100 to-blue-50 min-h-screen">
-      {/* Status Bar */}
-      <div className="flex justify-between items-center px-4 py-2 text-sm text-gray-700">
-        <span>1:57 PM</span>
-        <div className="flex items-center gap-1">
-          <span className="text-xs">159 k/s</span>
-          <span className="text-xs">4G</span>
-          <div className="flex gap-1">
-            <div className="w-1 h-3 bg-gray-400 rounded-sm"></div>
-            <div className="w-1 h-3 bg-gray-400 rounded-sm"></div>
-            <div className="w-1 h-3 bg-gray-400 rounded-sm"></div>
-            <div className="w-1 h-3 bg-gray-600 rounded-sm"></div>
-          </div>
-          <span className="text-xs">4G</span>
-          <div className="w-6 h-3 border border-gray-400 rounded-sm relative">
-            <div className="w-1 h-2 bg-red-500 absolute left-0.5 top-0.5 rounded-sm"></div>
-          </div>
-          <div className="w-3 h-3 bg-gray-400 rounded-full"></div>
-        </div>
-      </div>
-
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3">
         <div className="flex items-center gap-3">
@@ -44,40 +58,56 @@ export default function PaytmApp() {
         </div>
       </div>
 
-      {/* Scan & Pay Banner */}
-      <div className="mx-4 mb-4 bg-white rounded-xl p-4 relative overflow-hidden">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-2xl font-bold text-blue-900 mb-2">Scan & Pay</h2>
-            <p className="text-blue-900 text-lg mb-4">wherever you go</p>
-            <button className="bg-yellow-400 text-blue-900 px-4 py-2 rounded-full font-semibold flex items-center gap-2">
-              Use UPI on Paytm →
-            </button>
-          </div>
-          <div className="relative">
-            <div className="w-24 h-32 bg-blue-500 rounded-lg transform rotate-12 flex flex-col items-center justify-center text-white">
-              <span className="text-xs font-bold mb-2">Paytm</span>
-              <span className="text-xs mb-1">Accepted Here</span>
-              <div className="w-16 h-16 bg-white rounded border-2 border-gray-300 flex items-center justify-center">
-                <QrCode className="w-12 h-12 text-black" />
+      {/* Functional Scan & Pay Banner */}
+      <div className="mb-4 bg-white rounded-xl relative overflow-hidden">
+        <div className="relative h-40">
+          {bannerSlides.map((slide, index) => (
+            <div
+              key={index}
+              className={`absolute inset-0 p-4 transition-transform duration-500 ease-in-out ${
+                index === activeSlide ? 'translate-x-0' : 
+                index < activeSlide ? '-translate-x-full' : 'translate-x-full'
+              }`}
+            >
+              <div className="flex items-center justify-between h-full">
+                <div>
+                  <h2 className="text-2xl font-bold text-blue-900 mb-2">{slide.title}</h2>
+                  <p className="text-blue-900 text-lg mb-4">{slide.subtitle}</p>
+                  <button className="bg-yellow-400 text-blue-900 px-4 py-2 rounded-full font-semibold flex items-center gap-2">
+                    {slide.buttonText}
+                  </button>
+                </div>
+                <div className="relative">
+                  <div className="w-24 h-32 bg-blue-500 rounded-lg transform rotate-12 flex flex-col items-center justify-center text-white">
+                    <span className="text-xs font-bold mb-2">Paytm</span>
+                    <span className="text-xs mb-1">Accepted Here</span>
+                    <div className="w-16 h-16 bg-white rounded border-2 border-gray-300 flex items-center justify-center">
+                      <QrCode className="w-12 h-12 text-black" />
+                    </div>
+                    <span className="text-xs mt-1">Bhim UPI</span>
+                  </div>
+                </div>
               </div>
-              <span className="text-xs mt-1">Bhim UPI</span>
             </div>
-          </div>
+          ))}
         </div>
-        <div className="flex justify-center mt-4 gap-1">
-          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-          <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
-          <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
-          <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
-          <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
-          <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
-          <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
+        
+        {/* Slide indicators */}
+        <div className="flex justify-center pb-4 gap-1">
+          {bannerSlides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => handleSlideClick(index)}
+              className={`w-2 h-2 rounded-full transition-colors ${
+                index === activeSlide ? 'bg-blue-500' : 'bg-gray-300'
+              }`}
+            />
+          ))}
         </div>
       </div>
 
       {/* Money Transfer */}
-      <div className="mx-4 mb-4 bg-white rounded-xl p-4">
+      <div className="mb-4 bg-white rounded-xl p-4">
         <h3 className="text-2xl font-bold text-gray-900 mb-4">Money Transfer</h3>
         <div className="grid grid-cols-4 gap-4 mb-4">
           <div className="flex flex-col items-center">
@@ -136,7 +166,7 @@ export default function PaytmApp() {
       </div>
 
       {/* Recharge & Bill Payments */}
-      <div className="mx-4 mb-4 bg-white rounded-xl p-4">
+      <div className="mb-4 bg-white rounded-xl p-4">
         <h3 className="text-2xl font-bold text-gray-900 mb-4">Recharge & Bill Payments</h3>
         <div className="grid grid-cols-4 gap-4">
           <div className="flex flex-col items-center">
