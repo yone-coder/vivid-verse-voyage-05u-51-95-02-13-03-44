@@ -1,17 +1,139 @@
 
-import React from 'react';
-import { CreditCard, Smartphone } from 'lucide-react';
+import React, { useState } from 'react';
+import { CreditCard, Smartphone, Loader2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { toast } from "@/hooks/use-toast";
 
 interface StepThreeTransferProps {
   amount: string;
   transferType?: 'international' | 'national';
 }
 
+// Backend API URLs
+const MONCASH_BACKEND_URL: string = 'https://moncash-backend.onrender.com';
+const PAYPAL_BACKEND_URL: string = 'https://paypal-with-nodejs.onrender.com';
+
 const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount, transferType = 'international' }) => {
+  const [isProcessing, setIsProcessing] = useState(false);
+  
   const currencySymbol = transferType === 'international' ? '$' : 'HTG ';
   const paymentMethod = transferType === 'international' ? 'Credit/Debit Card' : 'MonCash';
   const PaymentIcon = transferType === 'international' ? CreditCard : Smartphone;
+
+  // Handle MonCash payment process
+  const handleMonCashPayment = async () => {
+    setIsProcessing(true);
+
+    try {
+      const tokenResponse = await fetch(`${MONCASH_BACKEND_URL}/api/get-token`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      if (!tokenResponse.ok) {
+        const errorData = await tokenResponse.json();
+        throw new Error(errorData.error || 'Failed to get MonCash access token');
+      }
+
+      const tokenData = await tokenResponse.json();
+      const accessToken = tokenData.accessToken;
+
+      if (!accessToken) {
+        throw new Error('Invalid access token received from MonCash');
+      }
+
+      const paymentResponse = await fetch(`${MONCASH_BACKEND_URL}/api/create-payment`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          accessToken,
+          amount: parseFloat(amount)
+        })
+      });
+
+      if (!paymentResponse.ok) {
+        const errorData = await paymentResponse.json();
+        throw new Error(errorData.error || 'Failed to create MonCash payment');
+      }
+
+      const paymentData = await paymentResponse.json();
+
+      if (!paymentData.paymentUrl) {
+        throw new Error('No payment URL received from MonCash');
+      }
+
+      window.location.href = paymentData.paymentUrl;
+
+    } catch (error) {
+      console.error('MonCash payment error:', error);
+      toast({
+        title: "Payment Failed",
+        description: error instanceof Error ? error.message : "Failed to process MonCash payment. Please try again.",
+        variant: "destructive",
+      });
+      setIsProcessing(false);
+    }
+  };
+
+  // Handle PayPal credit card payment
+  const handleCreditCardPayment = async () => {
+    setIsProcessing(true);
+
+    try {
+      console.log('Creating PayPal order for credit card payment...');
+
+      const response = await fetch(`${PAYPAL_BACKEND_URL}/api/paypal/create-order`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          amount: parseFloat(amount),
+          currency: 'USD',
+          description: `Transfer payment of $${amount}`
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create PayPal order');
+      }
+
+      const orderData = await response.json();
+      console.log('PayPal order created:', orderData);
+
+      // Find the approval URL from PayPal response
+      const approvalUrl = orderData.links?.find((link: any) => 
+        link.rel === 'approve' || link.rel === 'payer-action'
+      )?.href;
+
+      if (!approvalUrl) {
+        console.error('Available links:', orderData.links);
+        throw new Error('No approval URL received from PayPal');
+      }
+
+      // Redirect to PayPal for payment
+      window.location.href = approvalUrl;
+
+    } catch (error) {
+      console.error('PayPal payment error:', error);
+      toast({
+        title: "Payment Failed",
+        description: error instanceof Error ? error.message : "Failed to process credit card payment. Please try again.",
+        variant: "destructive",
+      });
+      setIsProcessing(false);
+    }
+  };
+
+  // Handle payment method selection and routing
+  const handleCompletePayment = () => {
+    if (transferType === 'international') {
+      handleCreditCardPayment();
+    } else {
+      handleMonCashPayment();
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -48,8 +170,20 @@ const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount, transferT
       </div>
 
       {/* Payment Button */}
-      <Button className="w-full" size="lg">
-        Complete Payment ({currencySymbol}{amount})
+      <Button 
+        className="w-full" 
+        size="lg"
+        onClick={handleCompletePayment}
+        disabled={isProcessing}
+      >
+        {isProcessing ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Processing...
+          </>
+        ) : (
+          `Complete Payment (${currencySymbol}${amount})`
+        )}
       </Button>
 
       {/* Security Notice */}
