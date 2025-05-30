@@ -1,3 +1,4 @@
+
 import { useEffect } from "react";
 
 const NftPayment = () => {
@@ -17,7 +18,8 @@ const NftPayment = () => {
         ];
 
         selectors.forEach((selector) => {
-          document.querySelectorAll(selector).forEach((el) => {
+          const elements = document.querySelectorAll(selector) as NodeListOf<HTMLElement>;
+          elements.forEach((el) => {
             el.style.display = "none";
           });
         });
@@ -29,7 +31,9 @@ const NftPayment = () => {
     };
 
     return () => {
-      document.body.removeChild(script);
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
     };
   }, []);
 

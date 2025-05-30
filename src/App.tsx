@@ -1,3 +1,4 @@
+
 import React, { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -43,6 +44,7 @@ import PayPalPayment from "./pages/PayPalPayment";
 import Checkout from "./pages/Checkout";
 import PayPalCheckout from "./pages/PayPalCheckout";
 import PayPalHostedCheckout from "./pages/PayPalHostedCheckout";
+import DynamicPayPalCheckout from "./pages/DynamicPayPalCheckout";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -103,6 +105,7 @@ const App = () => {
                         <Route path="/checkout" element={<Checkout />} />
                         <Route path="/paypal-checkout" element={<PayPalCheckout />} />
                         <Route path="/paypal-hosted-checkout" element={<PayPalHostedCheckout />} />
+                        <Route path="/dynamic-paypal-checkout" element={<DynamicPayPalCheckout />} />
 
                         {/* Category pages */}
                         <Route path="/electronics" element={<ElectronicsPage />} />
