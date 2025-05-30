@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Users, Lightbulb, Truck, Plus } from 'lucide-react';
+import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Users, Lightbulb, Truck, Plus, Send } from 'lucide-react';
 
 export default function PaytmApp() {
   const [activeSlide, setActiveSlide] = useState(0);
@@ -158,11 +158,11 @@ export default function PaytmApp() {
         </div>
       </div>
 
-      {/* Bottom Scan QR Button */}
+      {/* Bottom Send Button */}
       <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2">
         <button className="bg-blue-600 text-white px-8 py-4 rounded-full flex items-center gap-3 shadow-lg">
-          <QrCode className="w-6 h-6" />
-          <span className="text-lg font-semibold">Scan QR</span>
+          <Send className="w-6 h-6" />
+          <span className="text-lg font-semibold">Send</span>
         </button>
       </div>
     </div>
