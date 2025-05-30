@@ -1,8 +1,12 @@
+
 import React, { useState, useEffect } from 'react';
 import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Users, Lightbulb, Truck, Plus, Send } from 'lucide-react';
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import MultiStepTransferSheet from '@/components/transfer/MultiStepTransferSheet';
 
 export default function PaytmApp() {
   const [activeSlide, setActiveSlide] = useState(0);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
   
   // Sample banner data - now just for images
   const bannerImages = [
@@ -158,13 +162,20 @@ export default function PaytmApp() {
         </div>
       </div>
 
-      {/* Bottom Send Button */}
-      <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2">
-        <button className="bg-blue-600 text-white px-8 py-4 rounded-full flex items-center gap-3 shadow-lg">
-          <Send className="w-6 h-6" />
-          <span className="text-lg font-semibold">Send</span>
-        </button>
-      </div>
+      {/* Bottom Send Button with Sheet */}
+      <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+        <SheetTrigger asChild>
+          <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2">
+            <button className="bg-blue-600 text-white px-8 py-4 rounded-full flex items-center gap-3 shadow-lg">
+              <Send className="w-6 h-6" />
+              <span className="text-lg font-semibold">Send</span>
+            </button>
+          </div>
+        </SheetTrigger>
+        <SheetContent side="bottom" className="h-[80vh] p-0">
+          <MultiStepTransferSheet onClose={() => setIsSheetOpen(false)} />
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }
