@@ -132,7 +132,7 @@ export default function TransferHeroBanner() {
     return (
       <div className="px-4" style={{ marginTop: offset }}>
         <div className="relative w-full bg-gray-200 animate-pulse aspect-[16/5] rounded-3xl shadow-lg">
-          <div className="absolute inset-0 flex items-center justify-center">
+          <div className="absolute inset-0 flex items-center justify-center rounded-3xl">
             <span className="text-gray-400">Loading banners...</span>
           </div>
         </div>
@@ -143,12 +143,14 @@ export default function TransferHeroBanner() {
   return (
     <>
       <div className="px-4" style={{ marginTop: offset }}>
-        <div className="relative overflow-hidden rounded-3xl shadow-lg aspect-[16/5]">
-          <BannerSlides 
-            slides={slidesToShow}
-            activeIndex={activeIndex}
-            previousIndex={previousIndex}
-          />
+        <div className="relative w-full overflow-hidden rounded-3xl shadow-lg aspect-[16/5] bg-gray-100">
+          <div className="absolute inset-0 rounded-3xl overflow-hidden">
+            <BannerSlides 
+              slides={slidesToShow}
+              activeIndex={activeIndex}
+              previousIndex={previousIndex}
+            />
+          </div>
           <BannerControls
             slidesCount={slidesToShow.length}
             activeIndex={activeIndex}
