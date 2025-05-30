@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Send, Search, Clock, CreditCard, MapPin, Phone, History } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import HeroBanner from '@/components/home/HeroBanner';
-import TransferHomeHeader from '@/components/transfer/TransferHomeHeader';
+import AliExpressHeader from '@/components/home/AliExpressHeader';
 
 const TransferHomePage: React.FC = () => {
   const navigate = useNavigate();
@@ -62,8 +62,61 @@ const TransferHomePage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Custom Transfer Header */}
-      <TransferHomeHeader />
+      {/* Use AliExpressHeader but without category tabs */}
+      <div className="relative">
+        <div className="bg-white shadow-sm sticky top-0 z-50">
+          <div className="max-w-md mx-auto px-4 py-1">
+            <div className="flex items-center justify-between h-10">
+              {/* Left: Logo */}
+              <div className="flex items-center space-x-1">
+                <div className="flex items-center">
+                  <div className="text-orange-500 font-bold text-lg">Ali</div>
+                  <div className="text-gray-700 font-bold text-lg">Express</div>
+                </div>
+              </div>
+
+              {/* Center: Search Bar */}
+              <div className="flex flex-1 mx-2">
+                <div className="w-full">
+                  <div className="relative flex items-center w-full">
+                    <div className="absolute left-2">
+                      <Search className="h-3.5 w-3.5 text-gray-400" />
+                    </div>
+                    <input
+                      type="text"
+                      className="w-full pl-7 pr-11 py-1 h-7 rounded-full text-xs border border-gray-200 focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500"
+                      placeholder="Search transfers..."
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Right: Language and Notifications */}
+              <div className="flex items-center space-x-2 flex-shrink-0">
+                <div className="flex items-center bg-black bg-opacity-40 px-2 py-1 rounded-full space-x-1">
+                  <img
+                    src="https://flagcdn.com/us.svg"
+                    alt="USA"
+                    className="h-4 w-4 rounded-full object-cover"
+                  />
+                  <span className="text-white text-xs font-medium">EN</span>
+                </div>
+                <div className="cursor-pointer relative hover:bg-black hover:bg-opacity-30 p-1 rounded-full">
+                  <div className="h-4 w-4 text-gray-600 relative">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
+                      <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+                      <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+                    </svg>
+                    <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] rounded-full h-3.5 w-3.5 flex items-center justify-center">
+                      2
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       
       {/* Hero Banner */}
       <HeroBanner />
