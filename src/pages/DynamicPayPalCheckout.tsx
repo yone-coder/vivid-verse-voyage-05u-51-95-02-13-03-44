@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 
 declare global {
@@ -326,7 +325,7 @@ const DynamicPayPalCheckout: React.FC = () => {
                         )
                         .then(() => {
                           console.log('Card fields submitted, completing order...');
-                          const emailInput = document.getElementById("email") as HTMLInputElement;
+                          const emailInput = document.getElementById("email");
                           return fetch(\`\${API_BASE_URL}/complete_order\`, {
                               method: "post", 
                               headers: { "Content-Type": "application/json; charset=utf-8" },
