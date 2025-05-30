@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import TransferHeader from '@/components/transfer/TransferHeader';
 import StepOneTransfer from '@/components/transfer/StepOneTransfer';
@@ -19,6 +20,7 @@ export interface TransferData {
 
 const MultiStepTransferPage: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(1);
+  const navigate = useNavigate();
   const [transferData, setTransferData] = useState<TransferData>({
     amount: '',
     receiverDetails: {
@@ -38,6 +40,8 @@ const MultiStepTransferPage: React.FC = () => {
   const handlePreviousStep = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
+    } else {
+      navigate('/transfer');
     }
   };
 
@@ -110,16 +114,14 @@ const MultiStepTransferPage: React.FC = () => {
       {/* Sticky Navigation Buttons */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
         <div className="max-w-md mx-auto flex gap-3">
-          {currentStep > 1 && (
-            <Button 
-              variant="outline" 
-              onClick={handlePreviousStep}
-              className="flex-1"
-            >
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Previous
-            </Button>
-          )}
+          <Button 
+            variant="outline" 
+            onClick={handlePreviousStep}
+            className="flex-1"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            {currentStep === 1 ? 'Back to Home' : 'Previous'}
+          </Button>
           
           {currentStep < 3 && (
             <Button 

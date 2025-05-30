@@ -1,145 +1,110 @@
-import React, { useEffect } from "react";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+import { ThemeProvider } from "next-themes";
 import Index from "./pages/Index";
 import ForYou from "./pages/ForYou";
+import SearchPage from "./pages/SearchPage";
+import ProductDetail from "./pages/ProductDetail";
 import Posts from "./pages/Posts";
-import Messages from "./pages/Messages";
-import Trending from "./pages/Trending";
 import Videos from "./pages/Videos";
 import Reels from "./pages/Reels";
-import NotFound from "./pages/NotFound";
-import ProductDetail from "./pages/ProductDetail";
-import SearchPage from "./pages/SearchPage";
-import AdminPanel from "./pages/AdminPanel";
-import MainLayout from "./components/layout/MainLayout";
-import { ThemeProvider } from "@/components/theme-provider";
-import AuthPage from "./pages/AuthPage";
-import { AuthProvider } from "./context/AuthContext";
-import { AuthOverlayProvider, useAuthOverlay } from "./context/AuthOverlayContext";
-import AuthOverlay from "./components/auth/AuthOverlay";
-import { setupStorageBuckets } from "./integrations/supabase/setupStorage";
+import Trending from "./pages/Trending";
+import Messages from "./pages/Messages";
 import ProfilePage from "./pages/ProfilePage";
 import MoreMenu from "./pages/MoreMenu";
-import TransferPage from "./pages/TransferPage";
-import TopUpPage from "./pages/TopUpPage";
-import NetflixPage from "./pages/NetflixPage";
+import AuthPage from "./pages/AuthPage";
+import CategoriesPage from "./pages/CategoriesPage";
+import FashionPage from "./pages/FashionPage";
 import ElectronicsPage from "./pages/ElectronicsPage";
 import HomeLivingPage from "./pages/HomeLivingPage";
-import FashionPage from "./pages/FashionPage";
-import EntertainmentPage from "./pages/EntertainmentPage";
-import KidsHobbiesPage from "./pages/KidsHobbiesPage";
 import SportsOutdoorsPage from "./pages/SportsOutdoorsPage";
 import AutomotivePage from "./pages/AutomotivePage";
-import CategoriesPage from "./pages/CategoriesPage";
-import NFTPaymentPage from "./pages/NFTPaymentPage";
-import DepositPage from "./pages/DepositPage";
-import PayPalDepositPage from "./pages/PayPalDepositPage";
-import PayPalPayment from "./pages/PayPalPayment";
+import KidsHobbiesPage from "./pages/KidsHobbiesPage";
+import EntertainmentPage from "./pages/EntertainmentPage";
+import AdminPanel from "./pages/AdminPanel";
 import Checkout from "./pages/Checkout";
 import PayPalCheckout from "./pages/PayPalCheckout";
 import PayPalHostedCheckout from "./pages/PayPalHostedCheckout";
+import PayPalPayment from "./pages/PayPalPayment";
 import DynamicPayPalCheckout from "./pages/DynamicPayPalCheckout";
+import PayPalDepositPage from "./pages/PayPalDepositPage";
+import DepositPage from "./pages/DepositPage";
+import NFTPaymentPage from "./pages/NFTPaymentPage";
+import TopUpPage from "./pages/TopUpPage";
+import NetflixPage from "./pages/NetflixPage";
+import TransferPage from "./pages/TransferPage";
+import TransferHomePage from "./pages/TransferHomePage";
 import MultiStepTransferPage from "./pages/MultiStepTransferPage";
+import SignupPage from "./pages/SignupPage";
+import NotFound from "./pages/NotFound";
+import MainLayout from "./components/layout/MainLayout";
+import { AuthOverlayProvider } from "./context/AuthOverlayContext";
+import "./App.css";
 
-// Create a client
 const queryClient = new QueryClient();
 
-// PayPal configuration
-const paypalOptions = {
-  clientId: "AU23YbLMTqxG3iSvnhcWtix6rGN14uw3axYJgrDe8VqUVng8XiQmmeiaxJWbnpbZP_f4--RTg146F1Mj",
-  currency: "USD",
-  intent: "capture",
-  // Add more options as needed
-  // "enable-funding": "venmo,paylater",
-  // "disable-funding": "card"
-};
-
-const App = () => {
-  useEffect(() => {
-    // Initialize storage buckets on app startup
-    setupStorageBuckets().catch(console.error);
-  }, []);
-
+function App() {
   return (
-    <React.StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider defaultTheme="light">
-          <TooltipProvider>
-            <PayPalScriptProvider options={paypalOptions}>
-              <Toaster />
-              <Sonner />
-              <BrowserRouter>
-                <AuthProvider>
-                  <AuthOverlayProvider>
-                    <Routes>
-                      <Route element={<MainLayout />}>
-                        <Route path="/" element={<Navigate to="/for-you" replace />} />
-                        <Route path="/for-you" element={<ForYou />} />
-                        <Route path="/posts" element={<Posts />} />
-                        <Route path="/messages" element={<Messages />} />
-                        <Route path="/trending" element={<Trending />} />
-                        <Route path="/videos" element={<Videos />} />
-                        <Route path="/reels" element={<Reels />} />
-                        <Route path="/browse" element={<ForYou />} />
-                        <Route path="/product/:id" element={<ProductDetail />} />
-                        <Route path="/admin" element={<AdminPanel />} />
-                        <Route path="/search" element={<SearchPage />} />
-                        <Route path="/categories" element={<Navigate to="/reels" replace />} />
-                        <Route path="/auth" element={<AuthPage />} />
-                        <Route path="/cart" element={<NotFound />} />
-                        <Route path="/wishlist" element={<NotFound />} />
-                        <Route path="/more" element={<MoreMenu />} />
-                        <Route path="/account" element={<ProfilePage />} />
-                        <Route path="/transfer" element={<TransferPage />} />
-                        <Route path="/multi-step-transfer" element={<MultiStepTransferPage />} />
-                        <Route path="/topup" element={<TopUpPage />} />
-                        <Route path="/netflix" element={<NetflixPage />} />
-                        <Route path="/nft-payment" element={<NFTPaymentPage />} />
-                        <Route path="/deposit" element={<DepositPage />} />
-                        <Route path="/paypal-deposit" element={<PayPalDepositPage />} />
-                        <Route path="/paypal-payment" element={<PayPalPayment />} />
-                        <Route path="/checkout" element={<Checkout />} />
-                        <Route path="/paypal-checkout" element={<PayPalCheckout />} />
-                        <Route path="/paypal-hosted-checkout" element={<PayPalHostedCheckout />} />
-                        <Route path="/dynamic-paypal-checkout" element={<DynamicPayPalCheckout />} />
-
-                        {/* Category pages */}
-                        <Route path="/electronics" element={<ElectronicsPage />} />
-                        <Route path="/home-living" element={<HomeLivingPage />} />
-                        <Route path="/fashion" element={<FashionPage />} />
-                        <Route path="/entertainment" element={<EntertainmentPage />} />
-                        <Route path="/kids-hobbies" element={<KidsHobbiesPage />} />
-                        <Route path="/sports-outdoors" element={<SportsOutdoorsPage />} />
-                        <Route path="/automotive" element={<AutomotivePage />} />
-                        <Route path="/all-categories" element={<CategoriesPage />} />
-
-                        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                        <Route path="*" element={<NotFound />} />
-                      </Route>
-                    </Routes>
-                    <AppAuthOverlay />
-                  </AuthOverlayProvider>
-                </AuthProvider>
-              </BrowserRouter>
-            </PayPalScriptProvider>
-          </TooltipProvider>
-        </ThemeProvider>
-      </QueryClientProvider>
-    </React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+        <TooltipProvider>
+          <Router>
+            <AuthOverlayProvider>
+              <div className="App min-h-screen bg-background text-foreground">
+                <Routes>
+                  <Route path="/" element={<MainLayout />}>
+                    <Route index element={<ForYou />} />
+                    <Route path="for-you" element={<ForYou />} />
+                    <Route path="index" element={<Index />} />
+                    <Route path="search" element={<SearchPage />} />
+                    <Route path="product/:id" element={<ProductDetail />} />
+                    <Route path="posts" element={<Posts />} />
+                    <Route path="videos" element={<Videos />} />
+                    <Route path="reels" element={<Reels />} />
+                    <Route path="trending" element={<Trending />} />
+                    <Route path="messages" element={<Messages />} />
+                    <Route path="profile" element={<ProfilePage />} />
+                    <Route path="more" element={<MoreMenu />} />
+                    <Route path="auth" element={<AuthPage />} />
+                    <Route path="categories" element={<CategoriesPage />} />
+                    <Route path="categories/fashion" element={<FashionPage />} />
+                    <Route path="categories/electronics" element={<ElectronicsPage />} />
+                    <Route path="categories/home-living" element={<HomeLivingPage />} />
+                    <Route path="categories/sports-outdoors" element={<SportsOutdoorsPage />} />
+                    <Route path="categories/automotive" element={<AutomotivePage />} />
+                    <Route path="categories/kids-hobbies" element={<KidsHobbiesPage />} />
+                    <Route path="categories/entertainment" element={<EntertainmentPage />} />
+                    <Route path="admin" element={<AdminPanel />} />
+                    <Route path="checkout" element={<Checkout />} />
+                    <Route path="paypal-checkout" element={<PayPalCheckout />} />
+                    <Route path="paypal-hosted-checkout" element={<PayPalHostedCheckout />} />
+                    <Route path="paypal-payment" element={<PayPalPayment />} />
+                    <Route path="dynamic-paypal-checkout" element={<DynamicPayPalCheckout />} />
+                    <Route path="paypal-deposit" element={<PayPalDepositPage />} />
+                    <Route path="deposit" element={<DepositPage />} />
+                    <Route path="nft-payment" element={<NFTPaymentPage />} />
+                    <Route path="topup" element={<TopUpPage />} />
+                    <Route path="netflix" element={<NetflixPage />} />
+                    <Route path="transfer-old" element={<TransferPage />} />
+                    <Route path="transfer" element={<TransferHomePage />} />
+                    <Route path="multi-step-transfer" element={<MultiStepTransferPage />} />
+                    <Route path="signup" element={<SignupPage />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Route>
+                </Routes>
+                <Toaster />
+                <Sonner />
+              </div>
+            </AuthOverlayProvider>
+          </Router>
+        </TooltipProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
   );
-};
-
-// Component to handle the auth overlay
-const AppAuthOverlay = () => {
-  const { isAuthOverlayOpen, closeAuthOverlay } = useAuthOverlay();
-  return (
-    <AuthOverlay isOpen={isAuthOverlayOpen} onClose={closeAuthOverlay} />
-  );
-};
+}
 
 export default App;
