@@ -145,11 +145,28 @@ export default function TransferHeroBanner() {
       <div className="px-4" style={{ marginTop: offset }}>
         <div className="relative w-full overflow-hidden rounded-3xl shadow-lg aspect-[16/5] bg-gray-100">
           <div className="absolute inset-0 rounded-3xl overflow-hidden">
-            <BannerSlides 
-              slides={slidesToShow}
-              activeIndex={activeIndex}
-              previousIndex={previousIndex}
-            />
+            <div className="relative w-full h-full">
+              {slidesToShow.map((banner, index) => {
+                const isActive = index === activeIndex;
+                const isPrevious = index === previousIndex;
+                
+                return (
+                  <div
+                    key={banner.id}
+                    className={`absolute inset-0 w-full h-full transition-transform duration-500 ease-out ${
+                      isActive ? "translate-y-0 z-10" : 
+                      isPrevious ? "-translate-y-full z-0 hidden" : "translate-y-full z-0 hidden"
+                    }`}
+                  >
+                    <img
+                      src={banner.image} 
+                      alt={banner.alt || "Banner image"}
+                      className="w-full h-full object-cover rounded-3xl"
+                    />
+                  </div>
+                );
+              })}
+            </div>
           </div>
           <BannerControls
             slidesCount={slidesToShow.length}
