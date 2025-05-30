@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from 'react';
 import { ArrowRight, ArrowLeft, X, GripHorizontal } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -44,15 +43,24 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
 
   const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     setIsDragging(true);
     const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
     const currentHeight = panelRef.current?.offsetHeight || 0;
     setDragStart({ y: clientY, height: (currentHeight / window.innerHeight) * 100 });
+    
+    // Prevent any other interactions during drag
+    document.body.style.userSelect = 'none';
+    document.body.style.pointerEvents = 'none';
+    if (panelRef.current) {
+      panelRef.current.style.pointerEvents = 'auto';
+    }
   };
 
   const handleDragMove = (e: MouseEvent | TouchEvent) => {
     if (!isDragging) return;
     e.preventDefault();
+    e.stopPropagation();
     
     const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
     const deltaY = dragStart.y - clientY;
@@ -64,6 +72,14 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
 
   const handleDragEnd = () => {
     setIsDragging(false);
+    
+    // Restore normal interactions
+    document.body.style.userSelect = '';
+    document.body.style.pointerEvents = '';
+    if (panelRef.current) {
+      panelRef.current.style.pointerEvents = '';
+    }
+    
     // Snap to common positions
     if (panelHeight < 40) {
       setPanelHeight(30);
@@ -76,24 +92,37 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
 
   React.useEffect(() => {
     if (isDragging) {
-      const handleMouseMove = (e: MouseEvent) => handleDragMove(e);
-      const handleTouchMove = (e: TouchEvent) => {
+      const handleMouseMove = (e: MouseEvent) => {
         e.preventDefault();
+        e.stopPropagation();
         handleDragMove(e);
       };
-      const handleMouseUp = () => handleDragEnd();
-      const handleTouchEnd = () => handleDragEnd();
+      const handleTouchMove = (e: TouchEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        handleDragMove(e);
+      };
+      const handleMouseUp = (e: MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        handleDragEnd();
+      };
+      const handleTouchEnd = (e: TouchEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        handleDragEnd();
+      };
 
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('touchmove', handleTouchMove, { passive: false });
-      document.addEventListener('mouseup', handleMouseUp);
-      document.addEventListener('touchend', handleTouchEnd);
+      document.addEventListener('mousemove', handleMouseMove, { capture: true });
+      document.addEventListener('touchmove', handleTouchMove, { passive: false, capture: true });
+      document.addEventListener('mouseup', handleMouseUp, { capture: true });
+      document.addEventListener('touchend', handleTouchEnd, { capture: true });
 
       return () => {
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('touchmove', handleTouchMove);
-        document.removeEventListener('mouseup', handleMouseUp);
-        document.removeEventListener('touchend', handleTouchEnd);
+        document.removeEventListener('mousemove', handleMouseMove, { capture: true });
+        document.removeEventListener('touchmove', handleTouchMove, { capture: true });
+        document.removeEventListener('mouseup', handleMouseUp, { capture: true });
+        document.removeEventListener('touchend', handleTouchEnd, { capture: true });
       };
     }
   }, [isDragging, dragStart, panelHeight]);
@@ -138,16 +167,19 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
   return (
     <div 
       ref={panelRef}
-      className="flex flex-col h-full bg-white rounded-t-lg shadow-lg"
+      className={`flex flex-col h-full bg-white rounded-t-lg shadow-lg transition-all duration-200 ${
+        isDragging ? 'select-none' : ''
+      }`}
       style={{ height: `${panelHeight}vh` }}
     >
-      {/* Enhanced Drag Handle */}
+      {/* Enhanced Drag Handle - Only this area should be draggable */}
       <div 
         className={`flex flex-col items-center py-3 cursor-grab active:cursor-grabbing bg-gray-50 rounded-t-lg border-b border-gray-200 transition-all duration-200 hover:bg-gray-100 ${
-          isDragging ? 'bg-gray-200' : ''
+          isDragging ? 'bg-gray-200 cursor-grabbing' : ''
         }`}
         onMouseDown={handleDragStart}
         onTouchStart={handleDragStart}
+        style={{ touchAction: 'none' }}
       >
         <div className="w-12 h-1 bg-gray-400 rounded-full mb-2"></div>
         <GripHorizontal className="h-4 w-4 text-gray-500" />
@@ -159,6 +191,8 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
           size="sm" 
           onClick={onClose}
           className="absolute top-2 right-2 h-8 w-8 p-0 hover:bg-gray-200"
+          onMouseDown={(e) => e.stopPropagation()}
+          onTouchStart={(e) => e.stopPropagation()}
         >
           <X className="h-4 w-4" />
         </Button>
@@ -230,13 +264,15 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
         )}
       </div>
 
-      {/* Navigation Buttons */}
-      <div className="border-t bg-white p-4">
+      {/* Navigation Buttons - These should remain sticky and not interfere with dragging */}
+      <div className="border-t bg-white p-4 sticky bottom-0">
         <div className="flex gap-3">
           <Button 
             variant="outline" 
             onClick={currentStep === 1 ? onClose : handlePreviousStep}
             className="flex-1"
+            onMouseDown={(e) => e.stopPropagation()}
+            onTouchStart={(e) => e.stopPropagation()}
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             {currentStep === 1 ? 'Cancel' : 'Previous'}
@@ -251,6 +287,8 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
                 (currentStep === 3 && !canProceedFromStep3)
               }
               className="flex-1"
+              onMouseDown={(e) => e.stopPropagation()}
+              onTouchStart={(e) => e.stopPropagation()}
             >
               Next
               <ArrowRight className="ml-2 h-4 w-4" />
