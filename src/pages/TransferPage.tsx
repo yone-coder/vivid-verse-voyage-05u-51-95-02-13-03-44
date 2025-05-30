@@ -4,37 +4,21 @@ import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Us
 export default function PaytmApp() {
   const [activeSlide, setActiveSlide] = useState(0);
   
-  // Sample banner data for the sliding functionality
-  const bannerSlides = [
-    {
-      title: "Scan & Pay",
-      subtitle: "wherever you go",
-      buttonText: "Use UPI on Paytm →"
-    },
-    {
-      title: "Quick Transfer",
-      subtitle: "instant money transfer",
-      buttonText: "Send Money Now →"
-    },
-    {
-      title: "Bill Payments",
-      subtitle: "pay all your bills",
-      buttonText: "Pay Bills →"
-    }
+  // Sample banner data - now just for images
+  const bannerImages = [
+    "/lovable-uploads/2102d3a1-ec6e-4c76-8ee0-549c3ae3d54e.png",
+    "/lovable-uploads/4dbaee7c-2ac5-4a1b-9f9b-121275273e79.png",
+    "/lovable-uploads/dd1cad7b-c3b6-43a6-9bc6-deb38a120604.png"
   ];
 
   // Auto-slide functionality
   useEffect(() => {
     const interval = setInterval(() => {
-      setActiveSlide((prev) => (prev + 1) % bannerSlides.length);
+      setActiveSlide((prev) => (prev + 1) % bannerImages.length);
     }, 3000);
 
     return () => clearInterval(interval);
-  }, [bannerSlides.length]);
-
-  const handleSlideClick = (index: number) => {
-    setActiveSlide(index);
-  };
+  }, [bannerImages.length]);
 
   return (
     <div className="max-w-sm mx-auto bg-gradient-to-b from-blue-100 to-blue-50 min-h-screen px-1">
@@ -57,50 +41,23 @@ export default function PaytmApp() {
         </div>
       </div>
 
-      {/* Functional Scan & Pay Banner */}
+      {/* Image Carousel */}
       <div className="mb-4 bg-white rounded-xl relative overflow-hidden mx-1">
         <div className="relative h-40">
-          {bannerSlides.map((slide, index) => (
+          {bannerImages.map((image, index) => (
             <div
               key={index}
-              className={`absolute inset-0 p-4 transition-transform duration-500 ease-in-out ${
+              className={`absolute inset-0 transition-transform duration-500 ease-in-out ${
                 index === activeSlide ? 'translate-x-0' : 
                 index < activeSlide ? '-translate-x-full' : 'translate-x-full'
               }`}
             >
-              <div className="flex items-center justify-between h-full">
-                <div>
-                  <h2 className="text-2xl font-bold text-blue-900 mb-2">{slide.title}</h2>
-                  <p className="text-blue-900 text-lg mb-4">{slide.subtitle}</p>
-                  <button className="bg-yellow-400 text-blue-900 px-4 py-2 rounded-full font-semibold flex items-center gap-2">
-                    {slide.buttonText}
-                  </button>
-                </div>
-                <div className="relative">
-                  <div className="w-24 h-32 bg-blue-500 rounded-lg transform rotate-12 flex flex-col items-center justify-center text-white">
-                    <span className="text-xs font-bold mb-2">Paytm</span>
-                    <span className="text-xs mb-1">Accepted Here</span>
-                    <div className="w-16 h-16 bg-white rounded border-2 border-gray-300 flex items-center justify-center">
-                      <QrCode className="w-12 h-12 text-black" />
-                    </div>
-                    <span className="text-xs mt-1">Bhim UPI</span>
-                  </div>
-                </div>
-              </div>
+              <img
+                src={image}
+                alt={`Banner ${index + 1}`}
+                className="w-full h-full object-cover rounded-xl"
+              />
             </div>
-          ))}
-        </div>
-        
-        {/* Slide indicators */}
-        <div className="flex justify-center pb-4 gap-1">
-          {bannerSlides.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => handleSlideClick(index)}
-              className={`w-2 h-2 rounded-full transition-colors ${
-                index === activeSlide ? 'bg-blue-500' : 'bg-gray-300'
-              }`}
-            />
           ))}
         </div>
       </div>
