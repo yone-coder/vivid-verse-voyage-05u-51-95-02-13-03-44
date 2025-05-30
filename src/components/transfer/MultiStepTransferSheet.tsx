@@ -1,4 +1,5 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+
+import React, { useState } from 'react';
 import { ArrowRight, ArrowLeft, X, DollarSign, User, CreditCard, Shield, Clock, CheckCircle } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import StepOneTransfer from '@/components/transfer/StepOneTransfer';
@@ -35,96 +36,6 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
     },
     selectedPaymentMethod: 'credit-card'
   });
-
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStartY, setDragStartY] = useState(0);
-  const [dragCurrentY, setDragCurrentY] = useState(0);
-  const [dragOffset, setDragOffset] = useState(0);
-  
-  const sheetRef = useRef<HTMLDivElement>(null);
-  const dragThreshold = 80;
-
-  // Get client Y coordinate from touch or mouse event
-  const getClientY = useCallback((e: TouchEvent | MouseEvent | React.TouchEvent | React.MouseEvent) => {
-    if ('touches' in e) {
-      return e.touches[0]?.clientY || 0;
-    }
-    return e.clientY;
-  }, []);
-
-  // Handle drag start
-  const handleDragStart = useCallback((e: React.TouchEvent | React.MouseEvent) => {
-    e.preventDefault();
-    const clientY = getClientY(e);
-    setIsDragging(true);
-    setDragStartY(clientY);
-    setDragCurrentY(clientY);
-    setDragOffset(0);
-  }, [getClientY]);
-
-  // Handle drag move with throttling
-  const handleDragMove = useCallback((e: TouchEvent | MouseEvent) => {
-    if (!isDragging) return;
-    
-    e.preventDefault();
-    const clientY = getClientY(e);
-    const deltaY = dragStartY - clientY;
-    
-    setDragCurrentY(clientY);
-    setDragOffset(deltaY);
-
-    // Smooth expansion/collapse based on drag distance
-    if (deltaY > dragThreshold && !isExpanded) {
-      setIsExpanded(true);
-      setDragOffset(0);
-    } else if (deltaY < -dragThreshold && isExpanded) {
-      setIsExpanded(false);
-      setDragOffset(0);
-    }
-  }, [isDragging, dragStartY, dragThreshold, isExpanded, getClientY]);
-
-  // Handle drag end
-  const handleDragEnd = useCallback(() => {
-    if (!isDragging) return;
-    
-    setIsDragging(false);
-    setDragOffset(0);
-    setDragStartY(0);
-    setDragCurrentY(0);
-  }, [isDragging]);
-
-  // Set up event listeners for drag
-  useEffect(() => {
-    if (!isDragging) return;
-
-    const handleTouchMove = (e: TouchEvent) => {
-      e.preventDefault();
-      handleDragMove(e);
-    };
-
-    const handleMouseMove = (e: MouseEvent) => {
-      e.preventDefault();
-      handleDragMove(e);
-    };
-
-    const handleTouchEnd = () => handleDragEnd();
-    const handleMouseUp = () => handleDragEnd();
-
-    // Add event listeners with passive: false for touch events to allow preventDefault
-    document.addEventListener('touchmove', handleTouchMove, { passive: false });
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('touchend', handleTouchEnd);
-    document.addEventListener('mouseup', handleMouseUp);
-
-    // Cleanup function
-    return () => {
-      document.removeEventListener('touchmove', handleTouchMove);
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('touchend', handleTouchEnd);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [isDragging, handleDragMove, handleDragEnd]);
 
   const handleNextStep = () => {
     if (currentStep < 4) {
@@ -167,34 +78,11 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
   const transferFee = transferData.amount ? (parseFloat(transferData.amount) * 0.02).toFixed(2) : '0.00';
   const totalAmount = transferData.amount ? (parseFloat(transferData.amount) + parseFloat(transferFee)).toFixed(2) : '0.00';
 
-  // Calculate dynamic height with smooth transitions
-  const getSheetHeight = () => {
-    const baseHeight = isExpanded ? 95 : 60;
-    const dragEffect = isDragging ? Math.max(-5, Math.min(5, dragOffset / 20)) : 0;
-    return Math.max(40, Math.min(98, baseHeight + dragEffect));
-  };
-
   return (
-    <div 
-      ref={sheetRef}
-      className={`flex flex-col bg-white rounded-t-lg shadow-lg transition-all duration-300 ease-out relative ${
-        isDragging ? 'transition-none' : ''
-      }`}
-      style={{ 
-        height: `${getSheetHeight()}vh`,
-        transform: isDragging ? `translateY(${Math.max(-10, Math.min(10, -dragOffset / 8))}px)` : 'none'
-      }}
-    >
-      {/* Drag Bar */}
-      <div 
-        className="flex flex-col items-center py-4 cursor-grab active:cursor-grabbing bg-gray-50 rounded-t-lg border-b touch-none select-none"
-        onTouchStart={handleDragStart}
-        onMouseDown={handleDragStart}
-        style={{ touchAction: 'none' }}
-      >
-        <div className={`w-12 h-1 bg-gray-300 rounded-full transition-all duration-200 ${
-          isDragging ? 'bg-blue-400 w-16' : ''
-        }`}></div>
+    <div className="flex flex-col bg-white rounded-t-lg shadow-lg h-[95vh] relative">
+      {/* Header Bar */}
+      <div className="flex flex-col items-center py-4 bg-gray-50 rounded-t-lg border-b">
+        <div className="w-12 h-1 bg-gray-300 rounded-full"></div>
         
         <Button 
           variant="ghost" 
