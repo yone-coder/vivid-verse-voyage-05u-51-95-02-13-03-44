@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import StepOneTransfer from '@/components/transfer/StepOneTransfer';
 import StepTwoTransfer from '@/components/transfer/StepTwoTransfer';
-import StepThreeTransfer from '@/components/transfer/StepThreeTransfer';
+import PaymentMethodList from '@/components/transfer/PaymentMethodList';
+import { internationalPaymentMethods } from '@/components/transfer/PaymentMethods';
 
 export interface TransferData {
   amount: string;
@@ -15,6 +16,7 @@ export interface TransferData {
     address: string;
     additionalInfo?: string;
   };
+  selectedPaymentMethod?: string;
 }
 
 interface MultiStepTransferSheetProps {
@@ -30,7 +32,8 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
       phoneNumber: '',
       address: '',
       additionalInfo: '',
-    }
+    },
+    selectedPaymentMethod: 'credit-card'
   });
 
   const [isDragging, setIsDragging] = useState(false);
@@ -97,12 +100,17 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
     setTransferData(prev => ({ ...prev, ...data }));
   };
 
+  const handlePaymentMethodChange = (methodId: string) => {
+    updateTransferData({ selectedPaymentMethod: methodId });
+  };
+
   const canProceedFromStep1 = transferData.amount && parseFloat(transferData.amount) > 0;
   const canProceedFromStep2 = transferData.receiverDetails.fullName && 
                               transferData.receiverDetails.phoneNumber && 
                               transferData.receiverDetails.address;
+  const canProceedFromStep3 = transferData.selectedPaymentMethod;
 
-  const stepLabels = ['Amount', 'Recipient', 'Payment'];
+  const stepLabels = ['Amount', 'Recipient', 'Payment Method'];
 
   return (
     <div 
@@ -175,7 +183,19 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
         )}
         
         {currentStep === 3 && (
-          <StepThreeTransfer amount={transferData.amount} />
+          <div className="space-y-4">
+            <div className="text-center mb-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Choose Payment Method</h3>
+              <p className="text-sm text-gray-600">
+                Select how you'd like to send ${transferData.amount} to {transferData.receiverDetails.fullName}
+              </p>
+            </div>
+            <PaymentMethodList
+              methods={internationalPaymentMethods}
+              selectedMethod={transferData.selectedPaymentMethod || null}
+              onMethodChange={handlePaymentMethodChange}
+            />
+          </div>
         )}
       </div>
 
@@ -191,13 +211,22 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
             {currentStep === 1 ? 'Cancel' : 'Previous'}
           </Button>
           
-          {currentStep < 3 && (
+          {currentStep < 3 ? (
             <Button 
               onClick={handleNextStep}
               disabled={currentStep === 1 ? !canProceedFromStep1 : !canProceedFromStep2}
               className="flex-1"
             >
               Next
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          ) : (
+            <Button 
+              onClick={() => console.log('Process payment:', transferData)}
+              disabled={!canProceedFromStep3}
+              className="flex-1"
+            >
+              Complete Transfer
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           )}
