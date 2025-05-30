@@ -1,232 +1,184 @@
 
-import React, { useState, useEffect } from 'react';
-import { ArrowRight, CreditCard } from 'lucide-react';
-import { Button } from "@/components/ui/button";
-import { Drawer } from "@/components/ui/drawer";
-import TransferHeader from '@/components/transfer/TransferHeader';
-import TransferHeroBanner from '@/components/transfer/TransferHeroBanner';
-import TransferTypeSelector from '@/components/transfer/TransferTypeSelector';
-import AmountInput from '@/components/transfer/AmountInput';
-import PaymentMethodList from '@/components/transfer/PaymentMethodList';
-import TransferConfirmationDrawer from '@/components/transfer/TransferConfirmationDrawer';
-import { internationalPaymentMethods, nationalPaymentMethods, PAYPAL_BACKEND_URL } from '@/components/transfer/PaymentMethods';
-import { toast } from "@/hooks/use-toast";
+import React from 'react';
+import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Gift, Users, Lightbulb, Zap, Truck, Plus } from 'lucide-react';
 
-const TransferPage: React.FC = () => {
-  const [transferType, setTransferType] = useState<'international' | 'national'>('international');
-  const [selectedMethod, setSelectedMethod] = useState<string | null>('credit-card');
-  const [amount, setAmount] = useState('');
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  
-  // Auto-select credit card option when international is chosen
-  useEffect(() => {
-    if (transferType === 'international') {
-      // Pre-select credit card option for easier testing
-      setSelectedMethod('credit-card');
-    } else {
-      // Pre-select MonCash for national transfers
-      setSelectedMethod('moncash');
-    }
-  }, [transferType]);
-  
-  // Get the current payment methods based on selected transfer type
-  const currentPaymentMethods = transferType === 'international' 
-    ? internationalPaymentMethods 
-    : nationalPaymentMethods;
-  
-  // Currency symbol based on transfer type
-  const currencySymbol = transferType === 'international' ? '$' : 'HTG ';
-  
-  // Currency name for display
-  const currencyName = transferType === 'international' ? 'USD' : 'Haitian Gourdes';
-  // Currency code for PayPal
-  const currencyCode = transferType === 'international' ? 'USD' : 'HTG';
-
-  // Reset selected method when changing transfer type
-  const handleTransferTypeChange = (value: 'international' | 'national') => {
-    setTransferType(value);
-    setSelectedMethod(value === 'international' ? 'credit-card' : 'moncash'); // Auto-select appropriate default
-  };
-  
-  // Handle the continue button click to create a payment
-  const handleContinuePayment = async () => {
-    // Validate inputs
-    if (!amount || parseFloat(amount) <= 0 || !selectedMethod) {
-      toast({
-        title: "Invalid Input",
-        description: "Please enter a valid amount and select a payment method.",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    // Special handling for national transfers with MonCash
-    // The actual MonCash API call is handled in the TransferConfirmationDrawer component
-    if (transferType === 'national' && selectedMethod === 'moncash') {
-      console.log("MonCash payment selected - will be handled by drawer component");
-      return; // Let the drawer component handle it
-    }
-    
-    // Special handling for international transfers with credit card
-    // The actual PayPal API call is now handled in the TransferConfirmationDrawer component
-    if (transferType === 'international' && selectedMethod === 'credit-card') {
-      console.log("Credit card payment selected - will be handled by drawer component");
-      return; // Let the drawer component handle it
-    }
-    
-    setIsLoading(true);
-    
-    try {
-      console.log(`Creating payment for ${currencySymbol}${amount} using ${selectedMethod}`);
-      
-      // Handle other payment methods - use the render.com backend URL directly
-      const response = await fetch(`${PAYPAL_BACKEND_URL}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          amount,
-          currency: currencyCode,
-          paymentMethod: selectedMethod
-        })
-      });
-      
-      const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to create payment');
-      }
-      
-      console.log("Payment created successfully:", data);
-      
-      toast({
-        title: "Payment Initiated",
-        description: "Your payment has been initiated successfully.",
-        variant: "success",
-      });
-      
-      setIsDrawerOpen(false);
-      
-      // If we have next steps to follow
-      if (data.nextSteps?.redirectUrl) {
-        window.location.href = data.nextSteps.redirectUrl;
-      }
-      
-    } catch (error) {
-      console.error("Payment error:", error);
-      toast({
-        title: "Payment Failed",
-        description: error instanceof Error ? error.message : "Failed to process payment. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  
+export default function PaytmApp() {
   return (
-    <div className="min-h-screen bg-gray-50 pb-16">
-      {/* Header */}
-      <TransferHeader />
-      
-      {/* Hero Banner with curvy borders and padding */}
-      <TransferHeroBanner />
-      
-      <div className="max-w-md mx-auto p-4">
-        {/* Transfer Type Tabs */}
-        <TransferTypeSelector 
-          transferType={transferType} 
-          onTransferTypeChange={handleTransferTypeChange}
-        />
-        
-        {/* Credit Card Recommendation */}
-        {transferType === 'international' && (
-          <div className="bg-blue-50 border border-blue-200 rounded-md p-3 mb-4">
-            <div className="flex items-start">
-              <CreditCard className="h-5 w-5 text-blue-600 mt-0.5 mr-2 flex-shrink-0" />
-              <div>
-                <h3 className="text-sm font-medium text-blue-800">
-                  Credit/Debit Card Recommended
-                </h3>
-                <p className="text-xs text-blue-600 mt-1">
-                  For international transfers, credit cards offer the fastest and most secure way to send money to Haiti.
-                </p>
-              </div>
-            </div>
+    <div className="max-w-sm mx-auto bg-gradient-to-b from-blue-100 to-blue-50 min-h-screen">
+      {/* Status Bar */}
+      <div className="flex justify-between items-center px-4 py-2 text-sm text-gray-700">
+        <span>1:57 PM</span>
+        <div className="flex items-center gap-1">
+          <span className="text-xs">159 k/s</span>
+          <span className="text-xs">4G</span>
+          <div className="flex gap-1">
+            <div className="w-1 h-3 bg-gray-400 rounded-sm"></div>
+            <div className="w-1 h-3 bg-gray-400 rounded-sm"></div>
+            <div className="w-1 h-3 bg-gray-400 rounded-sm"></div>
+            <div className="w-1 h-3 bg-gray-600 rounded-sm"></div>
           </div>
-        )}
-        
-        {/* MonCash Recommendation for national transfers */}
-        {transferType === 'national' && (
-          <div className="bg-red-50 border border-red-200 rounded-md p-3 mb-4">
-            <div className="flex items-start">
-              <CreditCard className="h-5 w-5 text-red-600 mt-0.5 mr-2 flex-shrink-0" />
-              <div>
-                <h3 className="text-sm font-medium text-red-800">
-                  MonCash Recommended
-                </h3>
-                <p className="text-xs text-red-600 mt-1">
-                  For national transfers within Haiti, MonCash offers the fastest and most secure way to send money.
-                </p>
-              </div>
-            </div>
+          <span className="text-xs">4G</span>
+          <div className="w-6 h-3 border border-gray-400 rounded-sm relative">
+            <div className="w-1 h-2 bg-red-500 absolute left-0.5 top-0.5 rounded-sm"></div>
           </div>
-        )}
-        
-        {/* Amount Input */}
-        <AmountInput
-          amount={amount}
-          onAmountChange={setAmount}
-          currencySymbol={currencySymbol}
-          currencyName={currencyName}
-        />
-        
-        {/* Payment Method Selection */}
-        <PaymentMethodList
-          methods={currentPaymentMethods}
-          selectedMethod={selectedMethod}
-          onMethodChange={(value) => {
-            setSelectedMethod(value);
-          }}
-        />
-        
-        {/* Continue Button */}
-        <Button 
-          onClick={() => setIsDrawerOpen(true)}
-          disabled={!selectedMethod || !amount || parseFloat(amount) <= 0}
-          className="w-full mt-4"
-          size="lg"
-        >
-          Continue to Send Money
-          <ArrowRight className="ml-1 h-4 w-4" />
-        </Button>
-        
-        {/* Information */}
-        <div className="mt-6 text-center">
-          <p className="text-xs text-gray-500">
-            All transfers are secure and encrypted. Recipient typically receives
-            funds within 24-48 hours depending on the payment method and local conditions.
-          </p>
+          <div className="w-3 h-3 bg-gray-400 rounded-full"></div>
         </div>
       </div>
-      
-      {/* Drawer for confirmation */}
-      <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
-        <TransferConfirmationDrawer
-          isOpen={isDrawerOpen}
-          onOpenChange={setIsDrawerOpen}
-          amount={amount}
-          selectedMethod={currentPaymentMethods.find(m => m.id === selectedMethod)}
-          transferType={transferType}
-          currencySymbol={currencySymbol}
-          onContinue={handleContinuePayment}
-          isLoading={isLoading}
-        />
-      </Drawer>
+
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 py-3">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+            <User className="w-6 h-6 text-gray-400" />
+          </div>
+          <div className="flex items-center">
+            <span className="text-2xl font-bold text-blue-900">Paytm</span>
+            <span className="text-red-500 text-xl ml-1">❤</span>
+            <span className="text-2xl font-bold text-blue-600 ml-1">UPI</span>
+            <span className="text-yellow-500 text-xl">⚡</span>
+          </div>
+        </div>
+        <div className="flex items-center gap-4">
+          <Search className="w-6 h-6 text-blue-600" />
+          <Bell className="w-6 h-6 text-blue-600" />
+        </div>
+      </div>
+
+      {/* Scan & Pay Banner */}
+      <div className="mx-4 mb-4 bg-white rounded-xl p-4 relative overflow-hidden">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold text-blue-900 mb-2">Scan & Pay</h2>
+            <p className="text-blue-900 text-lg mb-4">wherever you go</p>
+            <button className="bg-yellow-400 text-blue-900 px-4 py-2 rounded-full font-semibold flex items-center gap-2">
+              Use UPI on Paytm →
+            </button>
+          </div>
+          <div className="relative">
+            <div className="w-24 h-32 bg-blue-500 rounded-lg transform rotate-12 flex flex-col items-center justify-center text-white">
+              <span className="text-xs font-bold mb-2">Paytm</span>
+              <span className="text-xs mb-1">Accepted Here</span>
+              <div className="w-16 h-16 bg-white rounded border-2 border-gray-300 flex items-center justify-center">
+                <QrCode className="w-12 h-12 text-black" />
+              </div>
+              <span className="text-xs mt-1">Bhim UPI</span>
+            </div>
+          </div>
+        </div>
+        <div className="flex justify-center mt-4 gap-1">
+          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+          <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
+          <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
+          <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
+          <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
+          <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
+          <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
+        </div>
+      </div>
+
+      {/* Money Transfer */}
+      <div className="mx-4 mb-4 bg-white rounded-xl p-4">
+        <h3 className="text-2xl font-bold text-gray-900 mb-4">Money Transfer</h3>
+        <div className="grid grid-cols-4 gap-4 mb-4">
+          <div className="flex flex-col items-center">
+            <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center mb-2">
+              <QrCode className="w-6 h-6 text-white" />
+            </div>
+            <span className="text-sm text-gray-700 text-center">Scan & Pay</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center mb-2">
+              <Upload className="w-6 h-6 text-white" />
+            </div>
+            <span className="text-sm text-gray-700 text-center">To Mobile</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center mb-2">
+              <Building2 className="w-6 h-6 text-white" />
+            </div>
+            <span className="text-sm text-gray-700 text-center">To Bank A/C</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center mb-2">
+              <User className="w-6 h-6 text-white" />
+            </div>
+            <span className="text-sm text-gray-700 text-center">To Self A/c</span>
+          </div>
+        </div>
+        <div className="grid grid-cols-4 gap-4">
+          <div className="flex flex-col items-center">
+            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-2">
+              <FileText className="w-6 h-6 text-blue-600" />
+            </div>
+            <span className="text-sm text-gray-700 text-center">Balance & History</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-2">
+              <div className="w-6 h-6 bg-blue-500 rounded flex items-center justify-center">
+                <QrCode className="w-4 h-4 text-white" />
+              </div>
+            </div>
+            <span className="text-sm text-gray-700 text-center">Receive Money</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-2">
+              <Users className="w-6 h-6 text-blue-600" />
+            </div>
+            <span className="text-sm text-gray-700 text-center">Refer & Win</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-2">
+              <span className="text-blue-600 font-bold text-lg">⚡</span>
+            </div>
+            <span className="text-sm text-gray-700 text-center">All UPI Services</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Recharge & Bill Payments */}
+      <div className="mx-4 mb-4 bg-white rounded-xl p-4">
+        <h3 className="text-2xl font-bold text-gray-900 mb-4">Recharge & Bill Payments</h3>
+        <div className="grid grid-cols-4 gap-4">
+          <div className="flex flex-col items-center">
+            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-2">
+              <Smartphone className="w-6 h-6 text-blue-600" />
+            </div>
+            <span className="text-sm text-gray-700 text-center">Mobile Recharge</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-2">
+              <Truck className="w-6 h-6 text-green-600" />
+            </div>
+            <span className="text-sm text-gray-700 text-center">FASTag Recharge</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center mb-2">
+              <Lightbulb className="w-6 h-6 text-yellow-600" />
+            </div>
+            <span className="text-sm text-gray-700 text-center">Electricity Bill</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center mb-2">
+              <span className="text-red-600 font-bold">Lo</span>
+            </div>
+            <span className="text-sm text-gray-700 text-center">Loan Payments</span>
+          </div>
+        </div>
+        <div className="mt-4">
+          <button className="flex items-center gap-2 text-blue-600 font-medium">
+            <Plus className="w-5 h-5" />
+            Add New or View existing Bills
+          </button>
+        </div>
+      </div>
+
+      {/* Bottom Scan QR Button */}
+      <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2">
+        <button className="bg-blue-600 text-white px-8 py-4 rounded-full flex items-center gap-3 shadow-lg">
+          <QrCode className="w-6 h-6" />
+          <span className="text-lg font-semibold">Scan QR</span>
+        </button>
+      </div>
     </div>
   );
-};
-
-export default TransferPage;
+}
