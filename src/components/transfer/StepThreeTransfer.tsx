@@ -1,232 +1,313 @@
 
 import React, { useEffect, useRef } from 'react';
-import { Shield, CreditCard } from 'lucide-react';
+import { Shield } from 'lucide-react';
 
 interface StepThreeTransferProps {
   amount: string;
 }
 
 const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount }) => {
-  const paypalContainerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!paypalContainerRef.current) return;
+    if (!containerRef.current) return;
 
     // Clear any existing content
-    paypalContainerRef.current.innerHTML = '';
+    containerRef.current.innerHTML = '';
 
-    // Create the styled PayPal checkout content
-    const checkoutContent = document.createElement('div');
-    checkoutContent.innerHTML = `
-      <div class="transfer-payment-container">
-        <style>
-          .transfer-payment-container {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-          }
-          
-          .transfer-payment-container .payment-card {
-            background: white;
-            border-radius: 8px;
-            padding: 1.5rem;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-            border: 1px solid #e5e7eb;
-          }
-          
-          .transfer-payment-container .form-group {
-            margin-bottom: 1rem;
-          }
-          
-          .transfer-payment-container .form-label {
-            display: block;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: #374151;
-            margin-bottom: 0.375rem;
-          }
-          
-          .transfer-payment-container .form-input {
-            width: 100%;
-            padding: 0.75rem;
-            background: white;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
-            color: #111827;
-            font-size: 1rem;
-            font-family: inherit;
-            transition: all 0.15s ease;
-          }
-          
-          .transfer-payment-container .form-input:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-          }
-          
-          .transfer-payment-container .card-row {
-            display: flex;
-            gap: 0.75rem;
-            margin-top: 0.5rem;
-          }
-          
-          .transfer-payment-container .card-field {
-            flex: 1;
-            padding: 0.75rem;
-            background: white;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
-            transition: all 0.15s ease;
-            min-height: 48px;
-            display: flex;
-            align-items: center;
-          }
-          
-          .transfer-payment-container .card-field:focus-within {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-          }
-          
-          .transfer-payment-container .pay-button {
-            width: 100%;
-            padding: 0.875rem 1rem;
-            background: #3b82f6;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            margin-top: 1.5rem;
-            font-family: inherit;
-            min-height: 48px;
-          }
-          
-          .transfer-payment-container .pay-button:hover:not(:disabled) {
-            background: #2563eb;
-          }
-          
-          .transfer-payment-container .pay-button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-          }
-          
-          .transfer-payment-container .alert {
-            padding: 1rem;
-            border-radius: 6px;
-            margin-bottom: 1rem;
-            position: relative;
-            font-size: 0.875rem;
-          }
-          
-          .transfer-payment-container .alert-success {
-            background: #f0fdf4;
-            border: 1px solid #bbf7d0;
-            color: #15803d;
-          }
-          
-          .transfer-payment-container .alert-error {
-            background: #fef2f2;
-            border: 1px solid #fecaca;
-            color: #dc2626;
-          }
-          
-          .transfer-payment-container .alert-close {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.75rem;
-            background: none;
-            border: none;
-            color: inherit;
-            font-size: 1.125rem;
-            cursor: pointer;
-            opacity: 0.7;
-            width: 20px;
-            height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-          }
-          
-          .transfer-payment-container .loading-spinner {
-            width: 32px;
-            height: 32px;
-            border: 2px solid #e5e7eb;
-            border-top: 2px solid #3b82f6;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
-          }
-          
-          .transfer-payment-container .loading-container {
-            text-align: center;
-            padding: 2rem 0;
-          }
-          
-          .transfer-payment-container .loading-text {
-            margin-top: 1rem;
-            color: #6b7280;
-            font-size: 0.875rem;
-          }
-          
-          .transfer-payment-container .hide {
-            display: none !important;
-          }
-          
-          @keyframes spin {
-            to { transform: rotate(360deg); }
-          }
-        </style>
-        
-        <div class="payment-card">
-          <div id="alerts"></div>
-          
-          <div id="loading" class="loading-container">
-            <div class="loading-spinner"></div>
-            <p class="loading-text">Initializing secure payment...</p>
-          </div>
-          
-          <div id="content" class="hide">
-            <form id="card-form">
-              <div class="form-group">
-                <label for="email" class="form-label">Email Address</label>
-                <input type="email" id="email" class="form-input" placeholder="Enter your email address" required>
+    // Add the exact styles from DynamicPayPalCheckout
+    const styleElement = document.createElement('style');
+    styleElement.textContent = `
+      :root {
+        --bg-primary: #0f0f14;
+        --bg-secondary: #1a1a21;
+        --bg-card: #ffffff;
+        --text-primary: #1a1a21;
+        --text-secondary: #6b7280;
+        --text-muted: #9ca3af;
+        --accent-primary: #5b5bd6;
+        --accent-hover: #4c4cc4;
+        --success: #059669;
+        --error: #dc2626;
+        --border: #e5e7eb;
+        --border-focus: #5b5bd6;
+        --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      }
+
+      .transfer-checkout-card {
+        background: var(--bg-card);
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: var(--shadow-lg);
+        border: 1px solid var(--border);
+      }
+
+      .transfer-payment-form {
+        space-y: 1rem;
+      }
+
+      .transfer-form-group {
+        margin-bottom: 1rem;
+      }
+
+      .transfer-form-label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--text-primary);
+        margin-bottom: 0.375rem;
+      }
+
+      .transfer-form-input, .transfer-form-field {
+        width: 100%;
+        padding: 0.75rem 0.875rem;
+        background: var(--bg-card);
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
+        color: var(--text-primary);
+        font-size: 1rem;
+        font-family: inherit;
+        transition: all 0.15s ease;
+        appearance: none;
+      }
+
+      .transfer-form-input:focus, .transfer-form-field:focus {
+        outline: none;
+        border-color: var(--border-focus);
+        box-shadow: 0 0 0 3px rgba(91, 91, 214, 0.1);
+      }
+
+      .transfer-form-input::placeholder {
+        color: var(--text-muted);
+        font-size: 1rem;
+      }
+
+      .transfer-card-row {
+        display: flex;
+        gap: 0.75rem;
+        margin-top: 0.5rem;
+      }
+
+      .transfer-card-row .transfer-card-field {
+        flex: 1;
+      }
+
+      .transfer-card-field {
+        padding: 0.75rem 0.875rem;
+        background: var(--bg-card);
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
+        transition: all 0.15s ease;
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+        width: 100%;
+      }
+
+      .transfer-card-field:focus-within {
+        border-color: var(--border-focus);
+        box-shadow: 0 0 0 3px rgba(91, 91, 214, 0.1);
+      }
+
+      .transfer-card-field iframe {
+        border: none !important;
+        outline: none !important;
+        width: 100% !important;
+        height: 20px !important;
+      }
+
+      .transfer-pay-button {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        background: var(--accent-primary);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        margin-top: 1.5rem;
+        font-family: inherit;
+        min-height: 48px;
+      }
+
+      .transfer-pay-button:hover:not(:disabled) {
+        background: var(--accent-hover);
+        transform: translateY(-1px);
+      }
+
+      .transfer-pay-button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .transfer-alert {
+        padding: 0.875rem 1rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        position: relative;
+        font-size: 0.875rem;
+      }
+
+      .transfer-alert-success {
+        background: #f0fdf4;
+        border: 1px solid #bbf7d0;
+        color: var(--success);
+      }
+
+      .transfer-alert-error {
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        color: var(--error);
+      }
+
+      .transfer-alert-close {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.75rem;
+        background: none;
+        border: none;
+        color: inherit;
+        font-size: 1.125rem;
+        cursor: pointer;
+        opacity: 0.7;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .transfer-alert-close:hover {
+        opacity: 1;
+      }
+
+      .transfer-loading-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 3rem 0;
+      }
+
+      .transfer-spinner {
+        width: 32px;
+        height: 32px;
+        border: 2px solid var(--border);
+        border-top: 2px solid var(--accent-primary);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      .transfer-hide {
+        display: none !important;
+      }
+
+      .transfer-security-info {
+        text-align: center;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border);
+      }
+
+      .transfer-security-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+        font-weight: 500;
+      }
+
+      .transfer-security-icon {
+        width: 16px;
+        height: 16px;
+        color: var(--success);
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    `;
+    document.head.appendChild(styleElement);
+
+    // Create the checkout container with exact structure from DynamicPayPalCheckout
+    const checkoutContainer = document.createElement('div');
+    checkoutContainer.innerHTML = `
+      <div class="transfer-checkout-card">
+        <!-- Alerts -->
+        <div id="transfer-alerts"></div>
+
+        <!-- Loading State -->
+        <div id="transfer-loading" class="transfer-loading-container">
+          <div class="transfer-spinner"></div>
+        </div>
+
+        <!-- Payment Form -->
+        <div id="transfer-content" class="transfer-hide">
+          <form id="transfer-card-form" class="transfer-payment-form">
+            <!-- Email -->
+            <div class="transfer-form-group">
+              <label for="transfer-email" class="transfer-form-label">Email</label>
+              <input type="email" id="transfer-email" class="transfer-form-input" placeholder="Enter your email" required />
+            </div>
+
+            <!-- Card Information -->
+            <div class="transfer-form-group">
+              <label class="transfer-form-label">Card information</label>
+              <div class="transfer-card-field" id="transfer-card-number"></div>
+              <div class="transfer-card-row">
+                <div class="transfer-card-field" id="transfer-expiration-date"></div>
+                <div class="transfer-card-field" id="transfer-cvv"></div>
               </div>
-              
-              <div class="form-group">
-                <label class="form-label">Card Information</label>
-                <div class="card-field" id="card-number"></div>
-                <div class="card-row">
-                  <div class="card-field" id="expiration-date"></div>
-                  <div class="card-field" id="cvv"></div>
-                </div>
-              </div>
-              
-              <button type="submit" class="pay-button">Loading...</button>
-            </form>
+            </div>
+
+            <!-- Button text will be populated dynamically -->
+            <button type="submit" class="transfer-pay-button">Loading...</button>
+          </form>
+
+          <!-- Security Info -->
+          <div class="transfer-security-info">
+            <div class="transfer-security-badge">
+              <svg class="transfer-security-icon" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
+              </svg>
+              Secured by PayPal
+            </div>
           </div>
         </div>
       </div>
     `;
 
-    paypalContainerRef.current.appendChild(checkoutContent);
+    containerRef.current.appendChild(checkoutContainer);
 
-    // Load the PayPal integration script
+    // Load the exact JavaScript from DynamicPayPalCheckout with transfer-specific modifications
     const script = document.createElement('script');
     script.innerHTML = `
-      // PayPal integration code
-      let current_customer_id;
-      let order_id;
-      let currentPrice = null;
-      let paypal_hosted_fields = null;
+      // Global variables to store application state
+      let transfer_current_customer_id;
+      let transfer_order_id;
+      let transfer_currentPrice = null;
+      let transfer_paypal_hosted_fields = null;
 
-      const API_BASE_URL = "https://paypal-with-nodejs.onrender.com";
-      const paypal_sdk_url = "https://www.paypal.com/sdk/js";
-      const client_id = "AU23YbLMTqxG3iSvnhcWtix6rGN14uw3axYJgrDe8VqUVng8XiQmmeiaxJWbnpbZP_f4--RTg146F1Mj";
-      const currency = "USD";
-      const intent = "capture";
+      // Replace this URL with your actual Render.com backend URL
+      const TRANSFER_API_BASE_URL = "https://paypal-with-nodejs.onrender.com";
+
+      // PayPal SDK configuration
+      const transfer_paypal_sdk_url = "https://www.paypal.com/sdk/js";
+      const transfer_client_id = "AU23YbLMTqxG3iSvnhcWtix6rGN14uw3axYJgrDe8VqUVng8XiQmmeiaxJWbnpbZP_f4--RTg146F1Mj";
+      const transfer_currency = "USD";
+      const transfer_intent = "capture";
       const transferAmount = "${amount}";
 
-      let script_to_head = (attributes_object) => {
+      /**
+       * Helper function to dynamically load PayPal SDK script
+       */
+      let transfer_script_to_head = (attributes_object) => {
           return new Promise((resolve, reject) => {
             const script = document.createElement('script');
             for (const name of Object.keys(attributes_object)) {
@@ -238,16 +319,19 @@ const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount }) => {
           });
       }
 
-      const fetchCurrentPrice = () => {
+      /**
+       * Fetch current price from backend for transfer
+       */
+      const transfer_fetchCurrentPrice = () => {
         const priceData = {
           value: transferAmount,
           display: "$" + parseFloat(transferAmount).toFixed(2),
           currency: "USD"
         };
         
-        currentPrice = priceData;
+        transfer_currentPrice = priceData;
         
-        const submitBtn = document.querySelector('.pay-button');
+        const submitBtn = document.querySelector('.transfer-pay-button');
         if (submitBtn) {
           submitBtn.textContent = \`Complete Transfer \${priceData.display}\`;
         }
@@ -255,29 +339,38 @@ const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount }) => {
         return Promise.resolve(priceData);
       };
 
-      const reset_purchase_button = () => {
-          const btn = document.querySelector("#card-form").querySelector("button[type='submit']");
+      /**
+       * Reset the purchase button to its normal state
+       */
+      let transfer_reset_purchase_button = () => {
+          const btn = document.querySelector("#transfer-card-form").querySelector("button[type='submit']");
           if (btn) {
             btn.removeAttribute("disabled");
-            const buttonText = currentPrice ? \`Complete Transfer \${currentPrice.display}\` : "Complete Transfer";
+            const buttonText = transfer_currentPrice ? \`Complete Transfer \${transfer_currentPrice.display}\` : "Complete Transfer";
             btn.textContent = buttonText;
           }
       }
 
-      const is_user_logged_in = () => {
+      /**
+       * Simulate user authentication check
+       */
+      const transfer_is_user_logged_in = () => {
         return new Promise((resolve) => {
-          current_customer_id = "";
+          transfer_current_customer_id = "";
           resolve();
         });
       }
 
-      const get_client_token = () => {
+      /**
+       * Get PayPal client token for hosted fields
+       */
+      const transfer_get_client_token = () => {
         return new Promise(async (resolve, reject) => {
           try {
-            const response = await fetch(\`\${API_BASE_URL}/get_client_token\`, {
+            const response = await fetch(\`\${TRANSFER_API_BASE_URL}/get_client_token\`, {
               method: "POST", 
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ "customer_id": current_customer_id }),
+              body: JSON.stringify({ "customer_id": transfer_current_customer_id }),
             });
 
             if (!response.ok) {
@@ -293,79 +386,88 @@ const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount }) => {
         });
       }
 
-      let handle_click = (event) => {
-          if (event.target.classList.contains("alert-close")) {
-              event.target.closest(".alert").remove();
+      /**
+       * Global click handler for alert close buttons
+       */
+      let transfer_handle_click = (event) => {
+          if (event.target.classList.contains("transfer-alert-close")) {
+              event.target.closest(".transfer-alert").remove();
           }
       }
 
-      document.addEventListener("click", handle_click);
+      document.addEventListener("click", transfer_handle_click);
 
-      let display_error_alert = (message = "An error occurred. Please try again.") => {
-          const alertsContainer = document.getElementById("alerts");
+      /**
+       * Display error alert with custom message
+       */
+      let transfer_display_error_alert = (message = "An error occurred. Please try again.") => {
+          const alertsContainer = document.getElementById("transfer-alerts");
           if (alertsContainer) {
-            alertsContainer.innerHTML = \`<div class="alert alert-error"><button class="alert-close">×</button>\${message}</div>\`;
+            alertsContainer.innerHTML = \`<div class="transfer-alert transfer-alert-error"><button class="transfer-alert-close">×</button>\${message}</div>\`;
           }
       }
 
-      let display_success_message = (order_details) => {
-          console.log('Payment completed:', order_details);
-          let intent_object = intent === "authorize" ? "authorizations" : "captures";
+      /**
+       * Display success message after payment completion
+       */
+      let transfer_display_success_message = (order_details) => {
+          console.log('Transfer payment completed:', order_details);
+          let intent_object = transfer_intent === "authorize" ? "authorizations" : "captures";
           const firstName = order_details?.payer?.name?.given_name || '';
           const lastName = order_details?.payer?.name?.surname || '';
           const amount = order_details.purchase_units[0].payments[intent_object][0].amount.value;
           const currency = order_details.purchase_units[0].payments[intent_object][0].amount.currency_code;
 
-          const alertsContainer = document.getElementById("alerts");
+          const alertsContainer = document.getElementById("transfer-alerts");
           if (alertsContainer) {
-            alertsContainer.innerHTML = \`<div class='alert alert-success'>Transfer successful! Thank you \${firstName} \${lastName}. Your money transfer to Haiti has been initiated and will be available for pickup within 24-48 hours.</div>\`;
+            alertsContainer.innerHTML = \`<div class='transfer-alert transfer-alert-success'>Transfer successful! Thank you \${firstName} \${lastName}. Your money transfer to Haiti has been initiated and will be available for pickup within 24-48 hours.</div>\`;
           }
 
-          const cardForm = document.getElementById("card-form");
+          const cardForm = document.getElementById("transfer-card-form");
           if (cardForm) {
-            cardForm.classList.add("hide");
+            cardForm.classList.add("transfer-hide");
           }
       }
 
-      // Initialize the payment system
+      // Initialize the transfer payment system
       console.log('Starting transfer payment initialization...');
 
-      is_user_logged_in()
+      transfer_is_user_logged_in()
       .then(() => {
           console.log('User login check completed');
-          return fetchCurrentPrice();
+          return transfer_fetchCurrentPrice();
       })
       .then((priceData) => {
           console.log('Price set, now getting client token...');
-          return get_client_token();
+          return transfer_get_client_token();
       })
       .then((client_token) => {
           console.log('Client token received, loading PayPal SDK...');
-          return script_to_head({
-              "src": paypal_sdk_url + "?client-id=" + client_id + "&enable-funding=venmo&currency=" + currency + "&intent=" + intent + "&components=hosted-fields", 
+          return transfer_script_to_head({
+              "src": transfer_paypal_sdk_url + "?client-id=" + transfer_client_id + "&enable-funding=venmo&currency=" + transfer_currency + "&intent=" + transfer_intent + "&components=hosted-fields", 
               "data-client-token": client_token
           });
       })
       .then(() => {
           console.log('PayPal SDK loaded, initializing payment form...');
 
-          const loadingElement = document.getElementById("loading");
-          const contentElement = document.getElementById("content");
+          const loadingElement = document.getElementById("transfer-loading");
+          const contentElement = document.getElementById("transfer-content");
           
-          if (loadingElement) loadingElement.classList.add("hide");
-          if (contentElement) contentElement.classList.remove("hide");
+          if (loadingElement) loadingElement.classList.add("transfer-hide");
+          if (contentElement) contentElement.classList.remove("transfer-hide");
 
           if (window.paypal && window.paypal.HostedFields.isEligible()) {
               console.log('Hosted Fields are eligible, setting up...');
 
-              paypal_hosted_fields = window.paypal.HostedFields.render({
+              transfer_paypal_hosted_fields = window.paypal.HostedFields.render({
                 createOrder: () => {
                   console.log('Creating order with transfer amount...');
-                  return fetch(\`\${API_BASE_URL}/create_order\`, {
+                  return fetch(\`\${TRANSFER_API_BASE_URL}/create_order\`, {
                       method: "post", 
                       headers: { "Content-Type": "application/json; charset=utf-8" },
                       body: JSON.stringify({ 
-                          "intent": intent,
+                          "intent": transfer_intent,
                           "amount": transferAmount
                       })
                   })
@@ -376,22 +478,23 @@ const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount }) => {
                       return response.json();
                   })
                   .then((order) => { 
-                      order_id = order.id; 
-                      console.log('Order created with ID:', order_id);
+                      transfer_order_id = order.id; 
+                      console.log('Order created with ID:', transfer_order_id);
                       return order.id; 
                   });
                 },
                 styles: {
                   'input': {
                       'font-size': '16px',
-                      'color': '#111827',
-                      'font-family': 'Inter, sans-serif'
+                      'color': '#1a1a21',
+                      'font-family': 'Inter, sans-serif',
+                      'font-weight': '400'
                   },
                   ':focus': {
-                      'color': '#111827'
+                      'color': '#1a1a21'
                   },
                   '.valid': {
-                      'color': '#111827'
+                      'color': '#1a1a21'
                   },
                   '.invalid': {
                       'color': '#dc2626'
@@ -399,22 +502,22 @@ const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount }) => {
                 },
                 fields: {
                   number: {
-                    selector: "#card-number",
+                    selector: "#transfer-card-number",
                     placeholder: "1234 1234 1234 1234"
                   },
                   cvv: {
-                    selector: "#cvv",
+                    selector: "#transfer-cvv",
                     placeholder: "CVC"
                   },
                   expirationDate: {
-                    selector: "#expiration-date",
+                    selector: "#transfer-expiration-date",
                     placeholder: "MM / YY"
                   }
                 }
               }).then((card_fields) => {
                 console.log('Hosted Fields rendered successfully');
 
-                const cardForm = document.querySelector("#card-form");
+                const cardForm = document.querySelector("#transfer-card-form");
                 if (cardForm) {
                   cardForm.addEventListener("submit", (event) => {
                     event.preventDefault();
@@ -441,13 +544,13 @@ const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount }) => {
                       )
                       .then(() => {
                         console.log('Card fields submitted, completing order...');
-                        const emailInput = document.getElementById("email");
-                        return fetch(\`\${API_BASE_URL}/complete_order\`, {
+                        const emailInput = document.getElementById("transfer-email");
+                        return fetch(\`\${TRANSFER_API_BASE_URL}/complete_order\`, {
                             method: "post", 
                             headers: { "Content-Type": "application/json; charset=utf-8" },
                             body: JSON.stringify({
-                                "intent": intent,
-                                "order_id": order_id,
+                                "intent": transfer_intent,
+                                "order_id": transfer_order_id,
                                 "email": emailInput ? emailInput.value : ""
                             })
                         })
@@ -459,34 +562,34 @@ const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount }) => {
                         })
                         .then((order_details) => {
                             console.log('Order completed successfully');
-                            display_success_message(order_details);
+                            transfer_display_success_message(order_details);
                          })
                          .catch((error) => {
                             console.error('Error completing order:', error);
-                            display_error_alert("Transfer processing failed. Please try again.");
-                            reset_purchase_button();
+                            transfer_display_error_alert("Transfer processing failed. Please try again.");
+                            transfer_reset_purchase_button();
                          });
                       })
                       .catch((err) => {
                         console.error('Error submitting card fields:', err);
-                        reset_purchase_button();
-                        display_error_alert("Card validation failed. Please check your information.");
+                        transfer_reset_purchase_button();
+                        transfer_display_error_alert("Card validation failed. Please check your information.");
                       });
                   });
                 }
               });
             } else {
               console.error('Hosted Fields not eligible in this browser');
-              const alertsContainer = document.getElementById("alerts");
+              const alertsContainer = document.getElementById("transfer-alerts");
               if (alertsContainer) {
-                alertsContainer.innerHTML = \`<div class="alert alert-error"><button class="alert-close">×</button>Card payments are not supported in this browser.</div>\`;
+                alertsContainer.innerHTML = \`<div class="transfer-alert transfer-alert-error"><button class="transfer-alert-close">×</button>Card payments are not supported in this browser.</div>\`;
               }
             }
       })
       .catch((error) => {
           console.error('Application initialization failed:', error);
-          reset_purchase_button();
-          display_error_alert("Failed to initialize payment system. Please refresh the page.");
+          transfer_reset_purchase_button();
+          transfer_display_error_alert("Failed to initialize payment system. Please refresh the page.");
       });
     `;
 
@@ -496,6 +599,9 @@ const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount }) => {
       // Cleanup
       if (script.parentNode) {
         script.parentNode.removeChild(script);
+      }
+      if (styleElement.parentNode) {
+        styleElement.parentNode.removeChild(styleElement);
       }
     };
   }, [amount]);
@@ -526,7 +632,7 @@ const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount }) => {
       </div>
 
       {/* PayPal Checkout Container */}
-      <div ref={paypalContainerRef}></div>
+      <div ref={containerRef}></div>
     </div>
   );
 };
