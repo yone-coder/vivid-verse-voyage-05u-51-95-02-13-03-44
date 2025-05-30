@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useQuery } from "@tanstack/react-query";
 import { fetchHeroBanners } from "@/integrations/supabase/hero";
@@ -131,7 +130,10 @@ export default function TransferHeroBanner() {
 
   if (isLoading) {
     return (
-      <div className="relative w-full bg-gray-200 animate-pulse aspect-[16/5] mx-4 rounded-3xl">
+      <div 
+        className="relative w-full bg-gray-200 animate-pulse aspect-[16/5] mx-4 rounded-3xl shadow-lg"
+        style={{ marginTop: offset }}
+      >
         <div className="absolute inset-0 flex items-center justify-center">
           <span className="text-gray-400">Loading banners...</span>
         </div>
@@ -142,7 +144,7 @@ export default function TransferHeroBanner() {
   return (
     <>
       <div
-        className="relative overflow-hidden mx-4 rounded-3xl shadow-lg"
+        className="relative overflow-hidden mx-4 rounded-3xl shadow-lg aspect-[16/5]"
         style={{ marginTop: offset }}
       >
         <BannerSlides 
