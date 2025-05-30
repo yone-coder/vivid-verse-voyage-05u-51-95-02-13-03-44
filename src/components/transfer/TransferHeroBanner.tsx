@@ -130,12 +130,11 @@ export default function TransferHeroBanner() {
 
   if (isLoading) {
     return (
-      <div 
-        className="relative w-full bg-gray-200 animate-pulse aspect-[16/5] mx-4 rounded-3xl shadow-lg"
-        style={{ marginTop: offset }}
-      >
-        <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-gray-400">Loading banners...</span>
+      <div className="px-4" style={{ marginTop: offset }}>
+        <div className="relative w-full bg-gray-200 animate-pulse aspect-[16/5] rounded-3xl shadow-lg">
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="text-gray-400">Loading banners...</span>
+          </div>
         </div>
       </div>
     );
@@ -143,23 +142,22 @@ export default function TransferHeroBanner() {
 
   return (
     <>
-      <div
-        className="relative overflow-hidden mx-4 rounded-3xl shadow-lg aspect-[16/5]"
-        style={{ marginTop: offset }}
-      >
-        <BannerSlides 
-          slides={slidesToShow}
-          activeIndex={activeIndex}
-          previousIndex={previousIndex}
-        />
-        <BannerControls
-          slidesCount={slidesToShow.length}
-          activeIndex={activeIndex}
-          previousIndex={previousIndex}
-          setActiveIndex={setActiveIndex}
-          setPreviousIndex={setPreviousIndex}
-          progress={progress}
-        />
+      <div className="px-4" style={{ marginTop: offset }}>
+        <div className="relative overflow-hidden rounded-3xl shadow-lg aspect-[16/5]">
+          <BannerSlides 
+            slides={slidesToShow}
+            activeIndex={activeIndex}
+            previousIndex={previousIndex}
+          />
+          <BannerControls
+            slidesCount={slidesToShow.length}
+            activeIndex={activeIndex}
+            previousIndex={previousIndex}
+            setActiveIndex={setActiveIndex}
+            setPreviousIndex={setPreviousIndex}
+            progress={progress}
+          />
+        </div>
       </div>
       {/* News Ticker */}
       {showNews && <NewsTicker />}
