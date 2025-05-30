@@ -1,5 +1,6 @@
+
 import React, { useState, useRef } from 'react';
-import { ArrowRight, ArrowLeft, X, GripHorizontal, Expand } from 'lucide-react';
+import { ArrowRight, ArrowLeft, X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import StepOneTransfer from '@/components/transfer/StepOneTransfer';
 import StepTwoTransfer from '@/components/transfer/StepTwoTransfer';
@@ -38,93 +39,52 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState({ y: 0 });
-  const panelRef = useRef<HTMLDivElement>(null);
+  const [startY, setStartY] = useState(0);
 
-  const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleDragStart = (e: React.TouchEvent | React.MouseEvent) => {
     setIsDragging(true);
     const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
-    setDragStart({ y: clientY });
-    
-    // Prevent any other interactions during drag
-    document.body.style.userSelect = 'none';
-    document.body.style.pointerEvents = 'none';
-    if (panelRef.current) {
-      panelRef.current.style.pointerEvents = 'auto';
-    }
+    setStartY(clientY);
   };
 
-  const handleDragMove = (e: MouseEvent | TouchEvent) => {
+  const handleDragMove = (e: TouchEvent | MouseEvent) => {
     if (!isDragging) return;
-    e.preventDefault();
-    e.stopPropagation();
     
     const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
-    const deltaY = dragStart.y - clientY;
+    const deltaY = startY - clientY;
     
-    // If dragging up significantly (more than 50px), expand
-    if (deltaY > 50 && !isExpanded) {
+    // Expand when dragging up more than 80px
+    if (deltaY > 80 && !isExpanded) {
       setIsExpanded(true);
     }
-    // If dragging down significantly and expanded, collapse
-    else if (deltaY < -50 && isExpanded) {
+    // Collapse when dragging down more than 80px
+    else if (deltaY < -80 && isExpanded) {
       setIsExpanded(false);
     }
   };
 
   const handleDragEnd = () => {
     setIsDragging(false);
-    
-    // Restore normal interactions
-    document.body.style.userSelect = '';
-    document.body.style.pointerEvents = '';
-    if (panelRef.current) {
-      panelRef.current.style.pointerEvents = '';
-    }
   };
 
   React.useEffect(() => {
     if (isDragging) {
-      const handleMouseMove = (e: MouseEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-        handleDragMove(e);
-      };
-      const handleTouchMove = (e: TouchEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-        handleDragMove(e);
-      };
-      const handleMouseUp = (e: MouseEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-        handleDragEnd();
-      };
-      const handleTouchEnd = (e: TouchEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-        handleDragEnd();
-      };
+      const handleMove = (e: TouchEvent | MouseEvent) => handleDragMove(e);
+      const handleEnd = () => handleDragEnd();
 
-      document.addEventListener('mousemove', handleMouseMove, { capture: true });
-      document.addEventListener('touchmove', handleTouchMove, { passive: false, capture: true });
-      document.addEventListener('mouseup', handleMouseUp, { capture: true });
-      document.addEventListener('touchend', handleTouchEnd, { capture: true });
+      document.addEventListener('touchmove', handleMove);
+      document.addEventListener('mousemove', handleMove);
+      document.addEventListener('touchend', handleEnd);
+      document.addEventListener('mouseup', handleEnd);
 
       return () => {
-        document.removeEventListener('mousemove', handleMouseMove, { capture: true });
-        document.removeEventListener('touchmove', handleTouchMove, { capture: true });
-        document.removeEventListener('mouseup', handleMouseUp, { capture: true });
-        document.removeEventListener('touchend', handleTouchEnd, { capture: true });
+        document.removeEventListener('touchmove', handleMove);
+        document.removeEventListener('mousemove', handleMove);
+        document.removeEventListener('touchend', handleEnd);
+        document.removeEventListener('mouseup', handleEnd);
       };
     }
-  }, [isDragging, dragStart, isExpanded]);
-
-  const toggleExpanded = () => {
-    setIsExpanded(!isExpanded);
-  };
+  }, [isDragging, startY, isExpanded]);
 
   const handleNextStep = () => {
     if (currentStep < 4) {
@@ -165,62 +125,41 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
 
   return (
     <div 
-      ref={panelRef}
-      className={`flex flex-col bg-white rounded-t-lg shadow-lg transition-all duration-300 ${
-        isDragging ? 'select-none' : ''
+      className={`flex flex-col bg-white rounded-t-lg shadow-lg transition-all duration-500 ease-out ${
+        isDragging ? 'transition-none' : ''
       }`}
       style={{ 
-        height: isExpanded ? '95vh' : '60vh',
-        transform: isDragging ? 'scale(1.01)' : 'scale(1)'
+        height: isExpanded ? '95vh' : '60vh'
       }}
     >
-      {/* Enhanced Drag Handle - Drag to expand */}
+      {/* Simple Drag Bar */}
       <div 
-        className={`flex flex-col items-center py-3 cursor-grab active:cursor-grabbing bg-gray-50 rounded-t-lg border-b border-gray-200 transition-all duration-200 hover:bg-gray-100 ${
-          isDragging ? 'bg-gray-200 cursor-grabbing' : ''
-        }`}
-        onMouseDown={handleDragStart}
+        className="flex flex-col items-center py-4 cursor-grab active:cursor-grabbing bg-gray-50 rounded-t-lg border-b"
         onTouchStart={handleDragStart}
-        style={{ touchAction: 'none' }}
+        onMouseDown={handleDragStart}
       >
-        <div className="w-12 h-1 bg-gray-400 rounded-full mb-2"></div>
-        <div className="flex items-center gap-2">
-          <GripHorizontal className="h-4 w-4 text-gray-500" />
-          <button 
-            onClick={toggleExpanded}
-            className="p-1 rounded hover:bg-gray-200 transition-colors"
-            onMouseDown={(e) => e.stopPropagation()}
-            onTouchStart={(e) => e.stopPropagation()}
-          >
-            <Expand className="h-4 w-4 text-gray-500" />
-          </button>
-        </div>
-        <div className="text-xs text-gray-500 mt-1">
-          {isExpanded ? 'Drag down to collapse' : 'Drag up to expand'}
-        </div>
+        <div className="w-12 h-1 bg-gray-300 rounded-full"></div>
         
-        {/* Close button in top right */}
+        {/* Close button */}
         <Button 
           variant="ghost" 
           size="sm" 
           onClick={onClose}
-          className="absolute top-2 right-2 h-8 w-8 p-0 hover:bg-gray-200"
-          onMouseDown={(e) => e.stopPropagation()}
-          onTouchStart={(e) => e.stopPropagation()}
+          className="absolute top-3 right-3 h-8 w-8 p-0"
         >
           <X className="h-4 w-4" />
         </Button>
       </div>
       
-      {/* Compact Step Indicator */}
+      {/* Step Indicator */}
       <div className="px-6 py-3 border-b bg-gray-50">
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center justify-between">
           {[1, 2, 3, 4].map((step, index) => (
             <React.Fragment key={step}>
               <div className="flex flex-col items-center">
                 <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium transition-all ${
                   step === currentStep 
-                    ? 'bg-blue-600 text-white shadow-md' 
+                    ? 'bg-blue-600 text-white' 
                     : step < currentStep 
                       ? 'bg-green-500 text-white' 
                       : 'bg-gray-200 text-gray-500'
@@ -241,7 +180,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
         </div>
       </div>
 
-      {/* Step Content */}
+      {/* Step Content - Scrollable */}
       <div className="flex-1 overflow-y-auto px-6 py-4">
         {currentStep === 1 && (
           <StepOneTransfer 
@@ -278,15 +217,13 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
         )}
       </div>
 
-      {/* Navigation Buttons - These should remain sticky and not interfere with dragging */}
-      <div className="border-t bg-white p-4 sticky bottom-0">
+      {/* Sticky Navigation Buttons */}
+      <div className="border-t bg-white p-4 flex-shrink-0">
         <div className="flex gap-3">
           <Button 
             variant="outline" 
             onClick={currentStep === 1 ? onClose : handlePreviousStep}
             className="flex-1"
-            onMouseDown={(e) => e.stopPropagation()}
-            onTouchStart={(e) => e.stopPropagation()}
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             {currentStep === 1 ? 'Cancel' : 'Previous'}
@@ -301,8 +238,6 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
                 (currentStep === 3 && !canProceedFromStep3)
               }
               className="flex-1"
-              onMouseDown={(e) => e.stopPropagation()}
-              onTouchStart={(e) => e.stopPropagation()}
             >
               Next
               <ArrowRight className="ml-2 h-4 w-4" />
