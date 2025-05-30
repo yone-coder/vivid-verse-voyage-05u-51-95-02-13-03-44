@@ -256,7 +256,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
       </div>
 
       {/* Step Content - Scrollable with proper bottom padding for sticky buttons */}
-      <div className="flex-1 overflow-y-auto px-6 py-4 pb-24" style={{ 
+      <div className="flex-1 overflow-y-auto px-6 py-4 pb-20" style={{ 
         scrollBehavior: 'smooth',
         WebkitOverflowScrolling: 'touch'
       }}>
@@ -391,8 +391,8 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
         )}
       </div>
 
-      {/* Sticky Navigation Buttons - Fixed at bottom with higher z-index */}
-      <div className="absolute bottom-0 left-0 right-0 border-t bg-white p-4 flex-shrink-0 z-50">
+      {/* Sticky Navigation Buttons - Fixed at bottom with no gap */}
+      <div className="absolute bottom-0 left-0 right-0 border-t bg-white px-4 py-3 flex-shrink-0 z-50">
         <div className="flex gap-3">
           <Button 
             variant="outline" 
