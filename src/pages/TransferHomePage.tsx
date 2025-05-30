@@ -68,29 +68,29 @@ const TransferHomePage: React.FC = () => {
       {/* Hero Banner */}
       <HeroBanner />
       
-      {/* Full Width Quick Actions Section - Edge to edge scrolling */}
+      {/* Quick Actions Section - 5.5 icons visible on mobile */}
       <div className="bg-white shadow-sm border-b border-gray-100">
-        <div className="overflow-x-auto px-4 py-6">
-          <div className="flex space-x-4 pb-2" style={{ width: 'max-content' }}>
+        <div className="overflow-x-auto py-6">
+          <div className="flex gap-3 px-4" style={{ width: 'max-content' }}>
             {quickActions.map((action, index) => (
               <button
                 key={action.id}
                 onClick={action.action}
-                className={`group flex flex-col items-center space-y-2 p-3 rounded-2xl transition-all duration-300 hover:scale-105 hover:shadow-lg flex-shrink-0 ${
-                  index >= 5 ? 'opacity-50' : ''
-                }`}
-                style={{ minWidth: '70px' }}
+                className="group flex flex-col items-center space-y-2 p-2 rounded-2xl transition-all duration-300 hover:scale-105 hover:shadow-lg flex-shrink-0"
+                style={{ width: '60px' }}
               >
                 <div className={`
-                  relative w-12 h-12 rounded-2xl bg-gradient-to-br ${action.color} ${action.hoverColor}
+                  relative w-11 h-11 rounded-2xl bg-gradient-to-br ${action.color} ${action.hoverColor}
                   flex items-center justify-center text-white shadow-lg
                   transition-all duration-300 group-hover:shadow-xl
                   before:absolute before:inset-0 before:rounded-2xl before:bg-white before:opacity-0 
                   before:transition-opacity before:duration-300 group-hover:before:opacity-10
                 `}>
-                  {action.icon}
+                  <div className="scale-90">
+                    {action.icon}
+                  </div>
                 </div>
-                <span className="text-xs font-semibold text-gray-700 group-hover:text-gray-900 transition-colors duration-300 text-center">
+                <span className="text-xs font-semibold text-gray-700 group-hover:text-gray-900 transition-colors duration-300 text-center leading-tight">
                   {action.title}
                 </span>
               </button>
