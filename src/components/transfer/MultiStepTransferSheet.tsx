@@ -1,7 +1,7 @@
+
 import React, { useState, useRef } from 'react';
 import { ArrowRight, ArrowLeft, X, GripHorizontal } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import StepOneTransfer from '@/components/transfer/StepOneTransfer';
 import StepTwoTransfer from '@/components/transfer/StepTwoTransfer';
 import StepThreeTransfer from '@/components/transfer/StepThreeTransfer';
@@ -39,10 +39,11 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
 
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ y: 0, height: 0 });
-  const [panelHeight, setPanelHeight] = useState(80);
+  const [panelHeight, setPanelHeight] = useState(60);
   const panelRef = useRef<HTMLDivElement>(null);
 
   const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
+    e.preventDefault();
     setIsDragging(true);
     const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
     const currentHeight = panelRef.current?.offsetHeight || 0;
@@ -51,28 +52,40 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
 
   const handleDragMove = (e: MouseEvent | TouchEvent) => {
     if (!isDragging) return;
+    e.preventDefault();
     
     const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
     const deltaY = dragStart.y - clientY;
     const deltaPercent = (deltaY / window.innerHeight) * 100;
-    const newHeight = Math.min(90, Math.max(40, dragStart.height + deltaPercent));
+    const newHeight = Math.min(95, Math.max(30, dragStart.height + deltaPercent));
     
     setPanelHeight(newHeight);
   };
 
   const handleDragEnd = () => {
     setIsDragging(false);
+    // Snap to common positions
+    if (panelHeight < 40) {
+      setPanelHeight(30);
+    } else if (panelHeight < 70) {
+      setPanelHeight(60);
+    } else {
+      setPanelHeight(90);
+    }
   };
 
   React.useEffect(() => {
     if (isDragging) {
       const handleMouseMove = (e: MouseEvent) => handleDragMove(e);
-      const handleTouchMove = (e: TouchEvent) => handleDragMove(e);
+      const handleTouchMove = (e: TouchEvent) => {
+        e.preventDefault();
+        handleDragMove(e);
+      };
       const handleMouseUp = () => handleDragEnd();
       const handleTouchEnd = () => handleDragEnd();
 
       document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('touchmove', handleTouchMove);
+      document.addEventListener('touchmove', handleTouchMove, { passive: false });
       document.addEventListener('mouseup', handleMouseUp);
       document.addEventListener('touchend', handleTouchEnd);
 
@@ -83,7 +96,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
         document.removeEventListener('touchend', handleTouchEnd);
       };
     }
-  }, [isDragging, dragStart]);
+  }, [isDragging, dragStart, panelHeight]);
 
   const handleNextStep = () => {
     if (currentStep < 4) {
@@ -125,26 +138,31 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
   return (
     <div 
       ref={panelRef}
-      className="flex flex-col h-full"
+      className="flex flex-col h-full bg-white rounded-t-lg shadow-lg"
       style={{ height: `${panelHeight}vh` }}
     >
-      {/* Drag Handle */}
+      {/* Enhanced Drag Handle */}
       <div 
-        className="flex justify-center py-2 cursor-grab active:cursor-grabbing bg-gray-50 rounded-t-lg"
+        className={`flex flex-col items-center py-3 cursor-grab active:cursor-grabbing bg-gray-50 rounded-t-lg border-b border-gray-200 transition-all duration-200 hover:bg-gray-100 ${
+          isDragging ? 'bg-gray-200' : ''
+        }`}
         onMouseDown={handleDragStart}
         onTouchStart={handleDragStart}
       >
-        <GripHorizontal className="h-5 w-5 text-gray-400" />
+        <div className="w-12 h-1 bg-gray-400 rounded-full mb-2"></div>
+        <GripHorizontal className="h-4 w-4 text-gray-500" />
+        <div className="text-xs text-gray-500 mt-1">Drag to resize</div>
+        
+        {/* Close button in top right */}
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          onClick={onClose}
+          className="absolute top-2 right-2 h-8 w-8 p-0 hover:bg-gray-200"
+        >
+          <X className="h-4 w-4" />
+        </Button>
       </div>
-
-      {/* Header */}
-      <SheetHeader className="px-6 py-3 border-b">
-        <div className="flex items-center justify-end">
-          <Button variant="ghost" size="sm" onClick={onClose}>
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
-      </SheetHeader>
       
       {/* Compact Step Indicator */}
       <div className="px-6 py-3 border-b bg-gray-50">
