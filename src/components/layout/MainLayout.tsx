@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Footer from "@/components/layout/Footer";
@@ -17,6 +18,7 @@ export default function MainLayout() {
   const isProductPage = pathname.includes('/product/');
   const isRootHomePage = pathname === "/" || pathname === "/for-you";
   const isForYouPage = pathname === "/" || pathname === "/for-you";
+  const isMultiStepTransferPage = pathname === "/multi-step-transfer";
   const { toast } = useToast();
   const [isFavorite, setIsFavorite] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -65,7 +67,7 @@ export default function MainLayout() {
   const headerHeightStyle = `
     :root {
       --header-height: ${isMobile ? '80px' : '120px'};
-      --bottom-nav-height: ${isMobile ? '48px' : '0px'};
+      --bottom-nav-height: ${isMobile && !isMultiStepTransferPage ? '48px' : '0px'};
     }
   `;
 
@@ -93,11 +95,13 @@ export default function MainLayout() {
         {/* Show Footer only on non-mobile and on specific pages */}
         {!isMobile && !isRootHomePage && <Footer />}
 
-        {/* Floating action button - now always visible */}
-        <FloatingActionButton onClick={() => setShowProductUpload(true)} />
+        {/* Floating action button - now always visible except on multi-step transfer page */}
+        {!isMultiStepTransferPage && (
+          <FloatingActionButton onClick={() => setShowProductUpload(true)} />
+        )}
 
-        {/* Show IndexBottomNav on all mobile views */}
-        {isMobile && <IndexBottomNav />}
+        {/* Show IndexBottomNav on all mobile views except multi-step transfer page */}
+        {isMobile && !isMultiStepTransferPage && <IndexBottomNav />}
 
         {/* Product Upload Overlay */}
         <ProductUploadOverlay
