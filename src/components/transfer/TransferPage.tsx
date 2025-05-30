@@ -135,13 +135,13 @@ const TransferPage: React.FC = () => {
   };
   
   return (
-    <div className="min-h-screen bg-gray-50 pb-16">
+    <div className="min-h-screen bg-gray-50 pb-12">
       {/* Header */}
       <TransferHeader />
       
-      <div className="max-w-md mx-auto px-4">
+      <div className="max-w-md mx-auto px-2">
         {/* Transfer Type Tabs */}
-        <div className="px-4">
+        <div className="px-2">
           <TransferTypeSelector 
             transferType={transferType} 
             onTransferTypeChange={handleTransferTypeChange}
@@ -150,7 +150,7 @@ const TransferPage: React.FC = () => {
         
         {/* Credit Card Recommendation */}
         {transferType === 'international' && (
-          <div className="bg-blue-50 border border-blue-200 rounded-md p-3 mb-4 mx-4">
+          <div className="bg-blue-50 border border-blue-200 rounded-md p-2 mb-3 mx-2">
             <div className="flex items-start">
               <CreditCard className="h-5 w-5 text-blue-600 mt-0.5 mr-2 flex-shrink-0" />
               <div>
@@ -167,7 +167,7 @@ const TransferPage: React.FC = () => {
         
         {/* MonCash Recommendation for national transfers */}
         {transferType === 'national' && (
-          <div className="bg-red-50 border border-red-200 rounded-md p-3 mb-4 mx-4">
+          <div className="bg-red-50 border border-red-200 rounded-md p-2 mb-3 mx-2">
             <div className="flex items-start">
               <CreditCard className="h-5 w-5 text-red-600 mt-0.5 mr-2 flex-shrink-0" />
               <div>
@@ -183,7 +183,7 @@ const TransferPage: React.FC = () => {
         )}
         
         {/* Amount Input */}
-        <div className="px-4">
+        <div className="px-2">
           <AmountInput
             amount={amount}
             onAmountChange={setAmount}
@@ -193,7 +193,7 @@ const TransferPage: React.FC = () => {
         </div>
         
         {/* Payment Method Selection */}
-        <div className="px-4">
+        <div className="px-2">
           <PaymentMethodList
             methods={currentPaymentMethods}
             selectedMethod={selectedMethod}
@@ -204,11 +204,11 @@ const TransferPage: React.FC = () => {
         </div>
         
         {/* Continue Button */}
-        <div className="px-4">
+        <div className="px-2">
           <Button 
             onClick={() => setIsDrawerOpen(true)}
             disabled={!selectedMethod || !amount || parseFloat(amount) <= 0 || !isSelectedMethodAvailable}
-            className="w-full mt-4"
+            className="w-full mt-3"
             size="lg"
           >
             Continue to Send Money
@@ -217,7 +217,7 @@ const TransferPage: React.FC = () => {
         </div>
         
         {/* Information */}
-        <div className="mt-6 text-center px-4">
+        <div className="mt-4 text-center px-2">
           <p className="text-xs text-gray-500">
             {transferType === 'national' ? 
               "MonCash is currently the only available payment method for national transfers." :
