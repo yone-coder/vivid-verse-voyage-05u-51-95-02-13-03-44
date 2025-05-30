@@ -145,21 +145,19 @@ export default function TransferHeroBanner() {
         className="relative overflow-hidden mx-4 rounded-3xl shadow-lg"
         style={{ marginTop: offset }}
       >
-        <div className="rounded-3xl overflow-hidden">
-          <BannerSlides 
-            slides={slidesToShow}
-            activeIndex={activeIndex}
-            previousIndex={previousIndex}
-          />
-          <BannerControls
-            slidesCount={slidesToShow.length}
-            activeIndex={activeIndex}
-            previousIndex={previousIndex}
-            setActiveIndex={setActiveIndex}
-            setPreviousIndex={setPreviousIndex}
-            progress={progress}
-          />
-        </div>
+        <BannerSlides 
+          slides={slidesToShow}
+          activeIndex={activeIndex}
+          previousIndex={previousIndex}
+        />
+        <BannerControls
+          slidesCount={slidesToShow.length}
+          activeIndex={activeIndex}
+          previousIndex={previousIndex}
+          setActiveIndex={setActiveIndex}
+          setPreviousIndex={setPreviousIndex}
+          progress={progress}
+        />
       </div>
       {/* News Ticker */}
       {showNews && <NewsTicker />}
