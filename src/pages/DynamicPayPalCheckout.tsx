@@ -1,10 +1,5 @@
-import React, { useEffect } from 'react';
 
-declare global {
-  interface Window {
-    paypal: any;
-  }
-}
+import React, { useEffect } from 'react';
 
 const DynamicPayPalCheckout: React.FC = () => {
   useEffect(() => {
@@ -66,12 +61,6 @@ const DynamicPayPalCheckout: React.FC = () => {
             .then(priceData => {
               // Store the price data globally for later use
               currentPrice = priceData;
-
-              // Update the price display in the header
-              const priceElement = document.querySelector('.product-price');
-              if (priceElement) {
-                priceElement.innerHTML = priceData.display;
-              }
 
               // Update the button text with the fetched price
               const submitBtn = document.querySelector('.pay-button');
@@ -438,47 +427,6 @@ const DynamicPayPalCheckout: React.FC = () => {
           border: 1px solid var(--border);
         }
 
-        .checkout-header {
-          text-align: center;
-          margin-bottom: 2rem;
-        }
-
-        .product-image {
-          width: 80px;
-          height: 80px;
-          border-radius: 12px;
-          margin: 0 auto 1rem;
-          display: block;
-          box-shadow: var(--shadow);
-          object-fit: cover;
-        }
-
-        .product-title {
-          font-size: 1.25rem;
-          font-weight: 600;
-          color: var(--text-primary);
-          margin-bottom: 0.25rem;
-        }
-
-        .product-price {
-          font-size: 1.5rem;
-          font-weight: 700;
-          color: var(--text-primary);
-          min-height: 2rem;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .price-loading {
-          width: 60px;
-          height: 20px;
-          background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-          background-size: 200% 100%;
-          animation: loading 1.5s infinite;
-          border-radius: 4px;
-        }
-
         .payment-form {
           space-y: 1rem;
         }
@@ -695,20 +643,6 @@ const DynamicPayPalCheckout: React.FC = () => {
 
       <div className="container">
         <div className="checkout-card">
-          {/* Header */}
-          <div className="checkout-header">
-            <img 
-              src="https://cdn.discordapp.com/attachments/1060825015681028127/1076385063903694908/rauljr7_3d_e83fed6a-69aa-4a6a-b0ec-928edd57aecf.png" 
-              alt="Bored Ape NFT" 
-              className="product-image"
-            />
-            <div className="product-title">AI-Generated NFT Bored Ape</div>
-            {/* Price will be populated dynamically */}
-            <div className="product-price">
-              <div className="price-loading"></div>
-            </div>
-          </div>
-
           {/* Alerts */}
           <div id="alerts"></div>
 
