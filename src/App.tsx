@@ -1,4 +1,3 @@
-
 import React, { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -45,6 +44,7 @@ import Checkout from "./pages/Checkout";
 import PayPalCheckout from "./pages/PayPalCheckout";
 import PayPalHostedCheckout from "./pages/PayPalHostedCheckout";
 import DynamicPayPalCheckout from "./pages/DynamicPayPalCheckout";
+import MultiStepTransferPage from "./pages/MultiStepTransferPage";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -96,6 +96,7 @@ const App = () => {
                         <Route path="/more" element={<MoreMenu />} />
                         <Route path="/account" element={<ProfilePage />} />
                         <Route path="/transfer" element={<TransferPage />} />
+                        <Route path="/multi-step-transfer" element={<MultiStepTransferPage />} />
                         <Route path="/topup" element={<TopUpPage />} />
                         <Route path="/netflix" element={<NetflixPage />} />
                         <Route path="/nft-payment" element={<NFTPaymentPage />} />
