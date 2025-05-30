@@ -6,6 +6,7 @@ import { SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import StepOneTransfer from '@/components/transfer/StepOneTransfer';
 import StepTwoTransfer from '@/components/transfer/StepTwoTransfer';
 import PaymentMethodList from '@/components/transfer/PaymentMethodList';
+import PayPalHostedCheckout from '@/components/transfer/PayPalHostedCheckout';
 import { internationalPaymentMethods } from '@/components/transfer/PaymentMethods';
 
 export interface TransferData {
@@ -85,7 +86,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
   }, [isDragging, dragStart]);
 
   const handleNextStep = () => {
-    if (currentStep < 3) {
+    if (currentStep < 4) {
       setCurrentStep(currentStep + 1);
     }
   };
@@ -104,13 +105,22 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
     updateTransferData({ selectedPaymentMethod: methodId });
   };
 
+  const handlePaymentSuccess = (details: any) => {
+    console.log('Payment successful:', details);
+    onClose();
+  };
+
+  const handlePaymentError = (error: any) => {
+    console.error('Payment error:', error);
+  };
+
   const canProceedFromStep1 = transferData.amount && parseFloat(transferData.amount) > 0;
   const canProceedFromStep2 = transferData.receiverDetails.fullName && 
                               transferData.receiverDetails.phoneNumber && 
                               transferData.receiverDetails.address;
   const canProceedFromStep3 = transferData.selectedPaymentMethod;
 
-  const stepLabels = ['Amount', 'Recipient', 'Payment Method'];
+  const stepLabels = ['Amount', 'Recipient', 'Payment Method', 'Payment'];
 
   return (
     <div 
@@ -140,7 +150,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
       {/* Compact Step Indicator */}
       <div className="px-6 py-3 border-b bg-gray-50">
         <div className="flex items-center justify-between mb-2">
-          {[1, 2, 3].map((step, index) => (
+          {[1, 2, 3, 4].map((step, index) => (
             <React.Fragment key={step}>
               <div className="flex flex-col items-center">
                 <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium transition-all ${
@@ -156,7 +166,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
                   {stepLabels[index]}
                 </span>
               </div>
-              {index < 2 && (
+              {index < 3 && (
                 <div className={`flex-1 h-0.5 mx-3 transition-all ${
                   step < currentStep ? 'bg-green-500' : 'bg-gray-200'
                 }`} />
@@ -197,6 +207,23 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
             />
           </div>
         )}
+
+        {currentStep === 4 && (
+          <div className="space-y-4">
+            <div className="text-center mb-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Complete Payment</h3>
+              <p className="text-sm text-gray-600">
+                Sending ${transferData.amount} to {transferData.receiverDetails.fullName}
+              </p>
+            </div>
+            <PayPalHostedCheckout
+              amount={transferData.amount}
+              onSuccess={handlePaymentSuccess}
+              onError={handlePaymentError}
+              onCancel={() => setCurrentStep(3)}
+            />
+          </div>
+        )}
       </div>
 
       {/* Navigation Buttons */}
@@ -211,24 +238,21 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
             {currentStep === 1 ? 'Cancel' : 'Previous'}
           </Button>
           
-          {currentStep < 3 ? (
+          {currentStep < 4 ? (
             <Button 
               onClick={handleNextStep}
-              disabled={currentStep === 1 ? !canProceedFromStep1 : !canProceedFromStep2}
+              disabled={
+                (currentStep === 1 && !canProceedFromStep1) ||
+                (currentStep === 2 && !canProceedFromStep2) ||
+                (currentStep === 3 && !canProceedFromStep3)
+              }
               className="flex-1"
             >
               Next
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           ) : (
-            <Button 
-              onClick={() => console.log('Process payment:', transferData)}
-              disabled={!canProceedFromStep3}
-              className="flex-1"
-            >
-              Complete Transfer
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
+            <div className="flex-1"></div>
           )}
         </div>
       </div>
