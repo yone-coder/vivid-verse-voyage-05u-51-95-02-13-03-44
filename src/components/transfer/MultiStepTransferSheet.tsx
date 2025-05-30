@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { ArrowRight, ArrowLeft, X, GripHorizontal } from 'lucide-react';
+import { ArrowRight, ArrowLeft, X, GripHorizontal, Expand } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import StepOneTransfer from '@/components/transfer/StepOneTransfer';
 import StepTwoTransfer from '@/components/transfer/StepTwoTransfer';
@@ -36,9 +36,9 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
     selectedPaymentMethod: 'credit-card'
   });
 
+  const [isExpanded, setIsExpanded] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState({ y: 0, height: 0 });
-  const [panelHeight, setPanelHeight] = useState(60);
+  const [dragStart, setDragStart] = useState({ y: 0 });
   const panelRef = useRef<HTMLDivElement>(null);
 
   const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
@@ -46,8 +46,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
     e.stopPropagation();
     setIsDragging(true);
     const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
-    const currentHeight = panelRef.current?.offsetHeight || 0;
-    setDragStart({ y: clientY, height: (currentHeight / window.innerHeight) * 100 });
+    setDragStart({ y: clientY });
     
     // Prevent any other interactions during drag
     document.body.style.userSelect = 'none';
@@ -64,10 +63,15 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
     
     const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
     const deltaY = dragStart.y - clientY;
-    const deltaPercent = (deltaY / window.innerHeight) * 100;
-    const newHeight = Math.min(95, Math.max(30, dragStart.height + deltaPercent));
     
-    setPanelHeight(newHeight);
+    // If dragging up significantly (more than 50px), expand
+    if (deltaY > 50 && !isExpanded) {
+      setIsExpanded(true);
+    }
+    // If dragging down significantly and expanded, collapse
+    else if (deltaY < -50 && isExpanded) {
+      setIsExpanded(false);
+    }
   };
 
   const handleDragEnd = () => {
@@ -78,15 +82,6 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
     document.body.style.pointerEvents = '';
     if (panelRef.current) {
       panelRef.current.style.pointerEvents = '';
-    }
-    
-    // Snap to common positions
-    if (panelHeight < 40) {
-      setPanelHeight(30);
-    } else if (panelHeight < 70) {
-      setPanelHeight(60);
-    } else {
-      setPanelHeight(90);
     }
   };
 
@@ -125,7 +120,11 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
         document.removeEventListener('touchend', handleTouchEnd, { capture: true });
       };
     }
-  }, [isDragging, dragStart, panelHeight]);
+  }, [isDragging, dragStart, isExpanded]);
+
+  const toggleExpanded = () => {
+    setIsExpanded(!isExpanded);
+  };
 
   const handleNextStep = () => {
     if (currentStep < 4) {
@@ -167,12 +166,15 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
   return (
     <div 
       ref={panelRef}
-      className={`flex flex-col h-full bg-white rounded-t-lg shadow-lg transition-all duration-200 ${
+      className={`flex flex-col bg-white rounded-t-lg shadow-lg transition-all duration-300 ${
         isDragging ? 'select-none' : ''
       }`}
-      style={{ height: `${panelHeight}vh` }}
+      style={{ 
+        height: isExpanded ? '95vh' : '60vh',
+        transform: isDragging ? 'scale(1.01)' : 'scale(1)'
+      }}
     >
-      {/* Enhanced Drag Handle - Only this area should be draggable */}
+      {/* Enhanced Drag Handle - Drag to expand */}
       <div 
         className={`flex flex-col items-center py-3 cursor-grab active:cursor-grabbing bg-gray-50 rounded-t-lg border-b border-gray-200 transition-all duration-200 hover:bg-gray-100 ${
           isDragging ? 'bg-gray-200 cursor-grabbing' : ''
@@ -182,8 +184,20 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
         style={{ touchAction: 'none' }}
       >
         <div className="w-12 h-1 bg-gray-400 rounded-full mb-2"></div>
-        <GripHorizontal className="h-4 w-4 text-gray-500" />
-        <div className="text-xs text-gray-500 mt-1">Drag to resize</div>
+        <div className="flex items-center gap-2">
+          <GripHorizontal className="h-4 w-4 text-gray-500" />
+          <button 
+            onClick={toggleExpanded}
+            className="p-1 rounded hover:bg-gray-200 transition-colors"
+            onMouseDown={(e) => e.stopPropagation()}
+            onTouchStart={(e) => e.stopPropagation()}
+          >
+            <Expand className="h-4 w-4 text-gray-500" />
+          </button>
+        </div>
+        <div className="text-xs text-gray-500 mt-1">
+          {isExpanded ? 'Drag down to collapse' : 'Drag up to expand'}
+        </div>
         
         {/* Close button in top right */}
         <Button 
