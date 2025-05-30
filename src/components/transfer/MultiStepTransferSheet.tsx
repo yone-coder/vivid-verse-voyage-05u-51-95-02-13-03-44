@@ -1,5 +1,5 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { ArrowRight, ArrowLeft, X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import StepOneTransfer from '@/components/transfer/StepOneTransfer';
@@ -39,52 +39,93 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
-  const [startY, setStartY] = useState(0);
+  const [dragStartY, setDragStartY] = useState(0);
+  const [dragCurrentY, setDragCurrentY] = useState(0);
+  const [dragOffset, setDragOffset] = useState(0);
+  
+  const sheetRef = useRef<HTMLDivElement>(null);
+  const dragThreshold = 80; // Pixels to drag before expanding/collapsing
 
-  const handleDragStart = (e: React.TouchEvent | React.MouseEvent) => {
+  // Get client Y coordinate from touch or mouse event
+  const getClientY = useCallback((e: TouchEvent | MouseEvent | React.TouchEvent | React.MouseEvent) => {
+    if ('touches' in e) {
+      return e.touches[0]?.clientY || 0;
+    }
+    return e.clientY;
+  }, []);
+
+  // Handle drag start
+  const handleDragStart = useCallback((e: React.TouchEvent | React.MouseEvent) => {
+    e.preventDefault();
+    const clientY = getClientY(e);
     setIsDragging(true);
-    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
-    setStartY(clientY);
-  };
+    setDragStartY(clientY);
+    setDragCurrentY(clientY);
+    setDragOffset(0);
+  }, [getClientY]);
 
-  const handleDragMove = (e: TouchEvent | MouseEvent) => {
+  // Handle drag move with throttling
+  const handleDragMove = useCallback((e: TouchEvent | MouseEvent) => {
     if (!isDragging) return;
     
-    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
-    const deltaY = startY - clientY;
+    e.preventDefault();
+    const clientY = getClientY(e);
+    const deltaY = dragStartY - clientY;
     
-    // Expand when dragging up more than 80px
-    if (deltaY > 80 && !isExpanded) {
+    setDragCurrentY(clientY);
+    setDragOffset(deltaY);
+
+    // Smooth expansion/collapse based on drag distance
+    if (deltaY > dragThreshold && !isExpanded) {
       setIsExpanded(true);
-    }
-    // Collapse when dragging down more than 80px
-    else if (deltaY < -80 && isExpanded) {
+      setDragOffset(0);
+    } else if (deltaY < -dragThreshold && isExpanded) {
       setIsExpanded(false);
+      setDragOffset(0);
     }
-  };
+  }, [isDragging, dragStartY, dragThreshold, isExpanded, getClientY]);
 
-  const handleDragEnd = () => {
+  // Handle drag end
+  const handleDragEnd = useCallback(() => {
+    if (!isDragging) return;
+    
     setIsDragging(false);
-  };
+    setDragOffset(0);
+    setDragStartY(0);
+    setDragCurrentY(0);
+  }, [isDragging]);
 
-  React.useEffect(() => {
-    if (isDragging) {
-      const handleMove = (e: TouchEvent | MouseEvent) => handleDragMove(e);
-      const handleEnd = () => handleDragEnd();
+  // Set up event listeners for drag
+  useEffect(() => {
+    if (!isDragging) return;
 
-      document.addEventListener('touchmove', handleMove);
-      document.addEventListener('mousemove', handleMove);
-      document.addEventListener('touchend', handleEnd);
-      document.addEventListener('mouseup', handleEnd);
+    const handleTouchMove = (e: TouchEvent) => {
+      e.preventDefault();
+      handleDragMove(e);
+    };
 
-      return () => {
-        document.removeEventListener('touchmove', handleMove);
-        document.removeEventListener('mousemove', handleMove);
-        document.removeEventListener('touchend', handleEnd);
-        document.removeEventListener('mouseup', handleEnd);
-      };
-    }
-  }, [isDragging, startY, isExpanded]);
+    const handleMouseMove = (e: MouseEvent) => {
+      e.preventDefault();
+      handleDragMove(e);
+    };
+
+    const handleTouchEnd = () => handleDragEnd();
+    const handleMouseUp = () => handleDragEnd();
+
+    // Add event listeners with passive: false for touch events to allow preventDefault
+    document.addEventListener('touchmove', handleTouchMove, { passive: false });
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('touchend', handleTouchEnd);
+    document.addEventListener('mouseup', handleMouseUp);
+
+    // Cleanup function
+    return () => {
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('touchend', handleTouchEnd);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDragging, handleDragMove, handleDragEnd]);
 
   const handleNextStep = () => {
     if (currentStep < 4) {
@@ -123,43 +164,55 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
 
   const stepLabels = ['Amount', 'Recipient', 'Payment Method', 'Payment'];
 
+  // Calculate dynamic height with smooth transitions
+  const getSheetHeight = () => {
+    const baseHeight = isExpanded ? 95 : 60;
+    const dragEffect = isDragging ? Math.max(-5, Math.min(5, dragOffset / 20)) : 0;
+    return Math.max(40, Math.min(98, baseHeight + dragEffect));
+  };
+
   return (
     <div 
-      className={`flex flex-col bg-white rounded-t-lg shadow-lg transition-all duration-500 ease-out ${
+      ref={sheetRef}
+      className={`flex flex-col bg-white rounded-t-lg shadow-lg transition-all duration-300 ease-out ${
         isDragging ? 'transition-none' : ''
       }`}
       style={{ 
-        height: isExpanded ? '95vh' : '60vh'
+        height: `${getSheetHeight()}vh`,
+        transform: isDragging ? `translateY(${Math.max(-10, Math.min(10, -dragOffset / 8))}px)` : 'none'
       }}
     >
-      {/* Simple Drag Bar */}
+      {/* Improved Drag Bar */}
       <div 
-        className="flex flex-col items-center py-4 cursor-grab active:cursor-grabbing bg-gray-50 rounded-t-lg border-b"
+        className="flex flex-col items-center py-4 cursor-grab active:cursor-grabbing bg-gray-50 rounded-t-lg border-b touch-none select-none"
         onTouchStart={handleDragStart}
         onMouseDown={handleDragStart}
+        style={{ touchAction: 'none' }}
       >
-        <div className="w-12 h-1 bg-gray-300 rounded-full"></div>
+        <div className={`w-12 h-1 bg-gray-300 rounded-full transition-all duration-200 ${
+          isDragging ? 'bg-blue-400 w-16' : ''
+        }`}></div>
         
         {/* Close button */}
         <Button 
           variant="ghost" 
           size="sm" 
           onClick={onClose}
-          className="absolute top-3 right-3 h-8 w-8 p-0"
+          className="absolute top-3 right-3 h-8 w-8 p-0 hover:bg-gray-200 transition-colors"
         >
           <X className="h-4 w-4" />
         </Button>
       </div>
       
       {/* Step Indicator */}
-      <div className="px-6 py-3 border-b bg-gray-50">
+      <div className="px-6 py-3 border-b bg-gray-50 flex-shrink-0">
         <div className="flex items-center justify-between">
           {[1, 2, 3, 4].map((step, index) => (
             <React.Fragment key={step}>
               <div className="flex flex-col items-center">
-                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium transition-all ${
+                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium transition-all duration-200 ${
                   step === currentStep 
-                    ? 'bg-blue-600 text-white' 
+                    ? 'bg-blue-600 text-white scale-110' 
                     : step < currentStep 
                       ? 'bg-green-500 text-white' 
                       : 'bg-gray-200 text-gray-500'
@@ -171,7 +224,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
                 </span>
               </div>
               {index < 3 && (
-                <div className={`flex-1 h-0.5 mx-3 transition-all ${
+                <div className={`flex-1 h-0.5 mx-3 transition-all duration-300 ${
                   step < currentStep ? 'bg-green-500' : 'bg-gray-200'
                 }`} />
               )}
@@ -181,7 +234,10 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
       </div>
 
       {/* Step Content - Scrollable */}
-      <div className="flex-1 overflow-y-auto px-6 py-4">
+      <div className="flex-1 overflow-y-auto px-6 py-4" style={{ 
+        scrollBehavior: 'smooth',
+        WebkitOverflowScrolling: 'touch'
+      }}>
         {currentStep === 1 && (
           <StepOneTransfer 
             amount={transferData.amount}
@@ -223,7 +279,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
           <Button 
             variant="outline" 
             onClick={currentStep === 1 ? onClose : handlePreviousStep}
-            className="flex-1"
+            className="flex-1 transition-all duration-200"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             {currentStep === 1 ? 'Cancel' : 'Previous'}
@@ -237,7 +293,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
                 (currentStep === 2 && !canProceedFromStep2) ||
                 (currentStep === 3 && !canProceedFromStep3)
               }
-              className="flex-1"
+              className="flex-1 transition-all duration-200"
             >
               Next
               <ArrowRight className="ml-2 h-4 w-4" />
