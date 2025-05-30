@@ -68,35 +68,35 @@ const TransferHomePage: React.FC = () => {
       {/* Hero Banner */}
       <HeroBanner />
       
-      {/* Modern Quick Actions Section - Positioned right after hero banner */}
+      {/* Horizontal Quick Actions Section - No heading, 5.5 icons visible on mobile */}
       <div className="bg-white shadow-sm border-b border-gray-100">
-        <div className="max-w-md mx-auto px-6 py-8">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Quick Actions</h2>
-            <p className="text-gray-500 text-sm">Everything you need at your fingertips</p>
-          </div>
-          
-          <div className="grid grid-cols-3 gap-6">
-            {quickActions.map((action) => (
-              <button
-                key={action.id}
-                onClick={action.action}
-                className="group flex flex-col items-center space-y-3 p-4 rounded-2xl transition-all duration-300 hover:scale-105 hover:shadow-lg"
-              >
-                <div className={`
-                  relative w-16 h-16 rounded-2xl bg-gradient-to-br ${action.color} ${action.hoverColor}
-                  flex items-center justify-center text-white shadow-lg
-                  transition-all duration-300 group-hover:shadow-xl
-                  before:absolute before:inset-0 before:rounded-2xl before:bg-white before:opacity-0 
-                  before:transition-opacity before:duration-300 group-hover:before:opacity-10
-                `}>
-                  {action.icon}
-                </div>
-                <span className="text-sm font-semibold text-gray-700 group-hover:text-gray-900 transition-colors duration-300">
-                  {action.title}
-                </span>
-              </button>
-            ))}
+        <div className="max-w-md mx-auto px-4 py-6">
+          <div className="overflow-x-auto">
+            <div className="flex space-x-4 pb-2" style={{ width: 'calc(100% + 2rem)' }}>
+              {quickActions.map((action, index) => (
+                <button
+                  key={action.id}
+                  onClick={action.action}
+                  className={`group flex flex-col items-center space-y-2 p-3 rounded-2xl transition-all duration-300 hover:scale-105 hover:shadow-lg flex-shrink-0 ${
+                    index >= 5 ? 'opacity-50' : ''
+                  }`}
+                  style={{ minWidth: '70px' }}
+                >
+                  <div className={`
+                    relative w-12 h-12 rounded-2xl bg-gradient-to-br ${action.color} ${action.hoverColor}
+                    flex items-center justify-center text-white shadow-lg
+                    transition-all duration-300 group-hover:shadow-xl
+                    before:absolute before:inset-0 before:rounded-2xl before:bg-white before:opacity-0 
+                    before:transition-opacity before:duration-300 group-hover:before:opacity-10
+                  `}>
+                    {action.icon}
+                  </div>
+                  <span className="text-xs font-semibold text-gray-700 group-hover:text-gray-900 transition-colors duration-300 text-center">
+                    {action.title}
+                  </span>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
