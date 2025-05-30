@@ -143,7 +143,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
       </div>
 
       {/* Step Content - Scrollable with proper bottom padding for sticky buttons */}
-      <div className="flex-1 overflow-y-auto pb-32">
+      <div className="flex-1 overflow-y-auto pb-64">
         <div className="px-6 py-4">
           {currentStep === 1 && (
             <div className="space-y-6">
