@@ -10,7 +10,7 @@ interface FloatingActionButtonProps {
 
 const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({ onClick }) => {
   const location = useLocation();
-  const isTransferPage = location.pathname === '/transfer';
+  const isTransferPage = location.pathname === '/transfer-old';
 
   return (
     <motion.button
