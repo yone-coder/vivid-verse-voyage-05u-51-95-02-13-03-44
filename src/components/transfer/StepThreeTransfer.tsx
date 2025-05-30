@@ -15,83 +15,83 @@ const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount }) => {
     // Clear any existing content
     paypalContainerRef.current.innerHTML = '';
 
-    // Create the dynamic PayPal checkout content
+    // Create the styled PayPal checkout content
     const checkoutContent = document.createElement('div');
     checkoutContent.innerHTML = `
-      <div class="dynamic-paypal-container">
+      <div class="transfer-payment-container">
         <style>
-          .dynamic-paypal-container {
+          .transfer-payment-container {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
           }
           
-          .dynamic-paypal-container .checkout-card {
+          .transfer-payment-container .payment-card {
             background: white;
-            border-radius: 12px;
+            border-radius: 8px;
             padding: 1.5rem;
             box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
             border: 1px solid #e5e7eb;
           }
           
-          .dynamic-paypal-container .form-group {
+          .transfer-payment-container .form-group {
             margin-bottom: 1rem;
           }
           
-          .dynamic-paypal-container .form-label {
+          .transfer-payment-container .form-label {
             display: block;
             font-size: 0.875rem;
             font-weight: 500;
-            color: #1a1a21;
+            color: #374151;
             margin-bottom: 0.375rem;
           }
           
-          .dynamic-paypal-container .form-input {
+          .transfer-payment-container .form-input {
             width: 100%;
-            padding: 0.75rem 0.875rem;
+            padding: 0.75rem;
             background: white;
-            border: 1.5px solid #e5e7eb;
-            border-radius: 8px;
-            color: #1a1a21;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            color: #111827;
             font-size: 1rem;
             font-family: inherit;
             transition: all 0.15s ease;
           }
           
-          .dynamic-paypal-container .form-input:focus {
+          .transfer-payment-container .form-input:focus {
             outline: none;
-            border-color: #5b5bd6;
-            box-shadow: 0 0 0 3px rgba(91, 91, 214, 0.1);
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
           }
           
-          .dynamic-paypal-container .card-row {
+          .transfer-payment-container .card-row {
             display: flex;
             gap: 0.75rem;
             margin-top: 0.5rem;
           }
           
-          .dynamic-paypal-container .card-field {
+          .transfer-payment-container .card-field {
             flex: 1;
-            padding: 0.75rem 0.875rem;
+            padding: 0.75rem;
             background: white;
-            border: 1.5px solid #e5e7eb;
-            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
             transition: all 0.15s ease;
             min-height: 48px;
             display: flex;
             align-items: center;
           }
           
-          .dynamic-paypal-container .card-field:focus-within {
-            border-color: #5b5bd6;
-            box-shadow: 0 0 0 3px rgba(91, 91, 214, 0.1);
+          .transfer-payment-container .card-field:focus-within {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
           }
           
-          .dynamic-paypal-container .pay-button {
+          .transfer-payment-container .pay-button {
             width: 100%;
             padding: 0.875rem 1rem;
-            background: #5b5bd6;
+            background: #3b82f6;
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
@@ -101,48 +101,74 @@ const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount }) => {
             min-height: 48px;
           }
           
-          .dynamic-paypal-container .pay-button:hover:not(:disabled) {
-            background: #4c4cc4;
-            transform: translateY(-1px);
+          .transfer-payment-container .pay-button:hover:not(:disabled) {
+            background: #2563eb;
           }
           
-          .dynamic-paypal-container .pay-button:disabled {
+          .transfer-payment-container .pay-button:disabled {
             opacity: 0.6;
             cursor: not-allowed;
-            transform: none;
           }
           
-          .dynamic-paypal-container .alert {
-            padding: 0.875rem 1rem;
-            border-radius: 8px;
+          .transfer-payment-container .alert {
+            padding: 1rem;
+            border-radius: 6px;
             margin-bottom: 1rem;
             position: relative;
             font-size: 0.875rem;
           }
           
-          .dynamic-paypal-container .alert-success {
+          .transfer-payment-container .alert-success {
             background: #f0fdf4;
             border: 1px solid #bbf7d0;
-            color: #059669;
+            color: #15803d;
           }
           
-          .dynamic-paypal-container .alert-error {
+          .transfer-payment-container .alert-error {
             background: #fef2f2;
             border: 1px solid #fecaca;
             color: #dc2626;
           }
           
-          .dynamic-paypal-container .spinner {
+          .transfer-payment-container .alert-close {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.75rem;
+            background: none;
+            border: none;
+            color: inherit;
+            font-size: 1.125rem;
+            cursor: pointer;
+            opacity: 0.7;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+          
+          .transfer-payment-container .loading-spinner {
             width: 32px;
             height: 32px;
             border: 2px solid #e5e7eb;
-            border-top: 2px solid #5b5bd6;
+            border-top: 2px solid #3b82f6;
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 0 auto;
           }
           
-          .dynamic-paypal-container .hide {
+          .transfer-payment-container .loading-container {
+            text-align: center;
+            padding: 2rem 0;
+          }
+          
+          .transfer-payment-container .loading-text {
+            margin-top: 1rem;
+            color: #6b7280;
+            font-size: 0.875rem;
+          }
+          
+          .transfer-payment-container .hide {
             display: none !important;
           }
           
@@ -151,19 +177,19 @@ const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount }) => {
           }
         </style>
         
-        <div class="checkout-card">
+        <div class="payment-card">
           <div id="alerts"></div>
           
-          <div id="loading" style="text-align: center; padding: 2rem 0;">
-            <div class="spinner"></div>
-            <p style="margin-top: 1rem; color: #6b7280;">Initializing secure payment...</p>
+          <div id="loading" class="loading-container">
+            <div class="loading-spinner"></div>
+            <p class="loading-text">Initializing secure payment...</p>
           </div>
           
           <div id="content" class="hide">
             <form id="card-form">
               <div class="form-group">
-                <label for="email" class="form-label">Email</label>
-                <input type="email" id="email" class="form-input" placeholder="Enter your email" required>
+                <label for="email" class="form-label">Email Address</label>
+                <input type="email" id="email" class="form-input" placeholder="Enter your email address" required>
               </div>
               
               <div class="form-group">
@@ -213,7 +239,6 @@ const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount }) => {
       }
 
       const fetchCurrentPrice = () => {
-        // Use the transfer amount instead of fetching from server
         const priceData = {
           value: transferAmount,
           display: "$" + parseFloat(transferAmount).toFixed(2),
@@ -224,7 +249,7 @@ const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount }) => {
         
         const submitBtn = document.querySelector('.pay-button');
         if (submitBtn) {
-          submitBtn.textContent = \`Pay \${priceData.display}\`;
+          submitBtn.textContent = \`Complete Transfer \${priceData.display}\`;
         }
         
         return Promise.resolve(priceData);
@@ -234,7 +259,7 @@ const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount }) => {
           const btn = document.querySelector("#card-form").querySelector("button[type='submit']");
           if (btn) {
             btn.removeAttribute("disabled");
-            const buttonText = currentPrice ? \`Pay \${currentPrice.display}\` : "Pay Now";
+            const buttonText = currentPrice ? \`Complete Transfer \${currentPrice.display}\` : "Complete Transfer";
             btn.textContent = buttonText;
           }
       }
@@ -293,7 +318,7 @@ const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount }) => {
 
           const alertsContainer = document.getElementById("alerts");
           if (alertsContainer) {
-            alertsContainer.innerHTML = \`<div class='alert alert-success'>Payment successful! Thank you \${firstName} \${lastName}. The money transfer has been initiated.</div>\`;
+            alertsContainer.innerHTML = \`<div class='alert alert-success'>Transfer successful! Thank you \${firstName} \${lastName}. Your money transfer to Haiti has been initiated and will be available for pickup within 24-48 hours.</div>\`;
           }
 
           const cardForm = document.getElementById("card-form");
@@ -359,15 +384,14 @@ const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount }) => {
                 styles: {
                   'input': {
                       'font-size': '16px',
-                      'color': '#1a1a21',
-                      'font-family': 'Inter, sans-serif',
-                      'font-weight': '400'
+                      'color': '#111827',
+                      'font-family': 'Inter, sans-serif'
                   },
                   ':focus': {
-                      'color': '#1a1a21'
+                      'color': '#111827'
                   },
                   '.valid': {
-                      'color': '#1a1a21'
+                      'color': '#111827'
                   },
                   '.invalid': {
                       'color': '#dc2626'
@@ -399,7 +423,7 @@ const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount }) => {
                     const submitBtn = cardForm.querySelector("button[type='submit']");
                     if (submitBtn) {
                       submitBtn.setAttribute("disabled", "");
-                      submitBtn.textContent = "Processing...";
+                      submitBtn.textContent = "Processing Transfer...";
                     }
 
                     card_fields
@@ -439,7 +463,7 @@ const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount }) => {
                          })
                          .catch((error) => {
                             console.error('Error completing order:', error);
-                            display_error_alert("Payment processing failed. Please try again.");
+                            display_error_alert("Transfer processing failed. Please try again.");
                             reset_purchase_button();
                          });
                       })
