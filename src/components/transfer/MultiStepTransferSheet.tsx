@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, ArrowLeft, X, DollarSign, User, CreditCard, Shield, Clock, CheckCircle } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -161,7 +160,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
 
   const stepLabels = ['Amount', 'Recipient', 'Payment Method', 'Payment'];
 
-  // Animation variants for step indicator
+  // Animation variants for step indicator - similar to bottom nav
   const stepVariants = {
     inactive: { 
       scale: 1,
@@ -169,7 +168,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
       color: '#6B7280'
     },
     active: { 
-      scale: 1.1,
+      scale: 1.05,
       backgroundColor: '#DC2626',
       color: '#FFFFFF',
       transition: { 
@@ -282,14 +281,18 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
         </div>
       )}
       
-      {/* Animated Step Indicator */}
+      {/* Animated Step Indicator - Bottom Nav Style */}
       <div className="px-6 py-4 border-b bg-gray-50 flex-shrink-0">
         <div className="flex items-center justify-between">
           {[1, 2, 3, 4].map((step, index) => (
             <React.Fragment key={step}>
               <div className="flex flex-col items-center">
                 <motion.div 
-                  className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium transition-all duration-200 shadow-sm"
+                  className={`rounded-full flex items-center justify-center text-xs font-medium transition-all duration-300 shadow-sm ${
+                    step === currentStep 
+                      ? 'w-auto h-8 px-3 bg-red-600 text-white' 
+                      : 'w-8 h-8 bg-gray-200 text-gray-600'
+                  }`}
                   variants={stepVariants}
                   initial="inactive"
                   animate={
@@ -301,28 +304,25 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
                 >
                   {step < currentStep ? (
                     <CheckCircle className="h-4 w-4" />
-                  ) : step === 1 ? (
-                    <DollarSign className="h-4 w-4" />
-                  ) : step === 2 ? (
-                    <User className="h-4 w-4" />
-                  ) : step === 3 ? (
-                    <CreditCard className="h-4 w-4" />
+                  ) : step === currentStep ? (
+                    <div className="flex items-center space-x-2">
+                      {step === 1 ? (
+                        <DollarSign className="h-4 w-4" />
+                      ) : step === 2 ? (
+                        <User className="h-4 w-4" />
+                      ) : step === 3 ? (
+                        <CreditCard className="h-4 w-4" />
+                      ) : (
+                        <Shield className="h-4 w-4" />
+                      )}
+                      <span className="font-medium whitespace-nowrap">
+                        {stepLabels[index]}
+                      </span>
+                    </div>
                   ) : (
-                    <Shield className="h-4 w-4" />
+                    step
                   )}
                 </motion.div>
-                <motion.span 
-                  className="text-xs mt-1 font-medium"
-                  variants={labelVariants}
-                  initial="inactive"
-                  animate={
-                    step === currentStep ? 'active' : 
-                    step < currentStep ? 'completed' : 
-                    'inactive'
-                  }
-                >
-                  {stepLabels[index]}
-                </motion.span>
               </div>
               {index < 3 && (
                 <motion.div 
