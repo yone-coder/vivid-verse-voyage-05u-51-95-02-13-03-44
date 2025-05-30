@@ -139,16 +139,18 @@ const TransferPage: React.FC = () => {
       {/* Header */}
       <TransferHeader />
       
-      <div className="max-w-md mx-auto px-8">
+      <div className="max-w-md mx-auto px-4">
         {/* Transfer Type Tabs */}
-        <TransferTypeSelector 
-          transferType={transferType} 
-          onTransferTypeChange={handleTransferTypeChange}
-        />
+        <div className="px-4">
+          <TransferTypeSelector 
+            transferType={transferType} 
+            onTransferTypeChange={handleTransferTypeChange}
+          />
+        </div>
         
         {/* Credit Card Recommendation */}
         {transferType === 'international' && (
-          <div className="bg-blue-50 border border-blue-200 rounded-md p-3 mb-4">
+          <div className="bg-blue-50 border border-blue-200 rounded-md p-3 mb-4 mx-4">
             <div className="flex items-start">
               <CreditCard className="h-5 w-5 text-blue-600 mt-0.5 mr-2 flex-shrink-0" />
               <div>
@@ -165,7 +167,7 @@ const TransferPage: React.FC = () => {
         
         {/* MonCash Recommendation for national transfers */}
         {transferType === 'national' && (
-          <div className="bg-red-50 border border-red-200 rounded-md p-3 mb-4">
+          <div className="bg-red-50 border border-red-200 rounded-md p-3 mb-4 mx-4">
             <div className="flex items-start">
               <CreditCard className="h-5 w-5 text-red-600 mt-0.5 mr-2 flex-shrink-0" />
               <div>
@@ -181,35 +183,41 @@ const TransferPage: React.FC = () => {
         )}
         
         {/* Amount Input */}
-        <AmountInput
-          amount={amount}
-          onAmountChange={setAmount}
-          currencySymbol={currencySymbol}
-          currencyName={currencyName}
-        />
+        <div className="px-4">
+          <AmountInput
+            amount={amount}
+            onAmountChange={setAmount}
+            currencySymbol={currencySymbol}
+            currencyName={currencyName}
+          />
+        </div>
         
         {/* Payment Method Selection */}
-        <PaymentMethodList
-          methods={currentPaymentMethods}
-          selectedMethod={selectedMethod}
-          onMethodChange={(value) => {
-            setSelectedMethod(value);
-          }}
-        />
+        <div className="px-4">
+          <PaymentMethodList
+            methods={currentPaymentMethods}
+            selectedMethod={selectedMethod}
+            onMethodChange={(value) => {
+              setSelectedMethod(value);
+            }}
+          />
+        </div>
         
         {/* Continue Button */}
-        <Button 
-          onClick={() => setIsDrawerOpen(true)}
-          disabled={!selectedMethod || !amount || parseFloat(amount) <= 0 || !isSelectedMethodAvailable}
-          className="w-full mt-4"
-          size="lg"
-        >
-          Continue to Send Money
-          <ArrowRight className="ml-1 h-4 w-4" />
-        </Button>
+        <div className="px-4">
+          <Button 
+            onClick={() => setIsDrawerOpen(true)}
+            disabled={!selectedMethod || !amount || parseFloat(amount) <= 0 || !isSelectedMethodAvailable}
+            className="w-full mt-4"
+            size="lg"
+          >
+            Continue to Send Money
+            <ArrowRight className="ml-1 h-4 w-4" />
+          </Button>
+        </div>
         
         {/* Information */}
-        <div className="mt-6 text-center">
+        <div className="mt-6 text-center px-4">
           <p className="text-xs text-gray-500">
             {transferType === 'national' ? 
               "MonCash is currently the only available payment method for national transfers." :
