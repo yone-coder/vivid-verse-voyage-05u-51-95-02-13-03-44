@@ -139,7 +139,7 @@ const TransferPage: React.FC = () => {
       {/* Header */}
       <TransferHeader />
       
-      <div className="max-w-md mx-auto px-6">
+      <div className="max-w-md mx-auto px-8">
         {/* Transfer Type Tabs */}
         <TransferTypeSelector 
           transferType={transferType} 
