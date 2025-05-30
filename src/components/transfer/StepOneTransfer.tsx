@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { CreditCard, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { getExchangeRate, ExchangeRateData } from "@/utils/currencyConverter";
@@ -37,24 +37,7 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
     <div className="space-y-6">
       {/* Header Information */}
       <div className="text-center">
-        <h1 className="text-xl font-semibold mb-2">
-          Send money internationally to Haiti in US Dollars from anywhere in the world.
-        </h1>
-      </div>
-
-      {/* Credit Card Recommendation */}
-      <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
-        <div className="flex items-start">
-          <CreditCard className="h-5 w-5 text-blue-600 mt-0.5 mr-3 flex-shrink-0" />
-          <div>
-            <h3 className="text-sm font-medium text-blue-800 mb-1">
-              Credit/Debit Card Recommended
-            </h3>
-            <p className="text-xs text-blue-600">
-              For international transfers, credit cards offer the fastest and most secure way to send money to Haiti.
-            </p>
-          </div>
-        </div>
+        <p className="text-gray-600">Enter the amount you want to send</p>
       </div>
 
       {/* Exchange Rate Information */}
