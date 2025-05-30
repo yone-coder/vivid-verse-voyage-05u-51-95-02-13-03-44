@@ -11,7 +11,7 @@ const TransferHeader: React.FC = () => {
   };
   
   return (
-    <div className="bg-white flex items-center p-4 sticky top-0 z-10 shadow-sm">
+    <div className="bg-white flex items-center p-4 sticky top-0 z-50 shadow-sm">
       <button 
         onClick={handleBackClick}
         className="p-2 rounded-full hover:bg-gray-100"
