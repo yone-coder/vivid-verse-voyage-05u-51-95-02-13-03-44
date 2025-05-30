@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { ArrowRight, ArrowLeft, X } from 'lucide-react';
+import { ArrowRight, ArrowLeft, X, DollarSign, User, CreditCard, Shield, CheckCircle, Clock, AlertCircle } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import StepOneTransfer from '@/components/transfer/StepOneTransfer';
 import StepTwoTransfer from '@/components/transfer/StepTwoTransfer';
@@ -44,7 +44,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
   const [dragOffset, setDragOffset] = useState(0);
   
   const sheetRef = useRef<HTMLDivElement>(null);
-  const dragThreshold = 80; // Pixels to drag before expanding/collapsing
+  const dragThreshold = 80;
 
   // Get client Y coordinate from touch or mouse event
   const getClientY = useCallback((e: TouchEvent | MouseEvent | React.TouchEvent | React.MouseEvent) => {
@@ -112,13 +112,11 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
     const handleTouchEnd = () => handleDragEnd();
     const handleMouseUp = () => handleDragEnd();
 
-    // Add event listeners with passive: false for touch events to allow preventDefault
     document.addEventListener('touchmove', handleTouchMove, { passive: false });
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('touchend', handleTouchEnd);
     document.addEventListener('mouseup', handleMouseUp);
 
-    // Cleanup function
     return () => {
       document.removeEventListener('touchmove', handleTouchMove);
       document.removeEventListener('mousemove', handleMouseMove);
@@ -162,7 +160,8 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
                               transferData.receiverDetails.address;
   const canProceedFromStep3 = transferData.selectedPaymentMethod;
 
-  const stepLabels = ['Amount', 'Recipient', 'Payment Method', 'Payment'];
+  const stepLabels = ['Amount', 'Recipient', 'Payment', 'Review'];
+  const stepIcons = [DollarSign, User, CreditCard, CheckCircle];
 
   // Calculate dynamic height with smooth transitions
   const getSheetHeight = () => {
@@ -170,6 +169,10 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
     const dragEffect = isDragging ? Math.max(-5, Math.min(5, dragOffset / 20)) : 0;
     return Math.max(40, Math.min(98, baseHeight + dragEffect));
   };
+
+  // Calculate transfer fee and total
+  const transferFee = transferData.amount ? parseFloat(transferData.amount) * 0.029 : 0;
+  const totalAmount = transferData.amount ? parseFloat(transferData.amount) + transferFee : 0;
 
   return (
     <div 
@@ -182,9 +185,9 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
         transform: isDragging ? `translateY(${Math.max(-10, Math.min(10, -dragOffset / 8))}px)` : 'none'
       }}
     >
-      {/* Improved Drag Bar */}
+      {/* Enhanced Drag Bar */}
       <div 
-        className="flex flex-col items-center py-4 cursor-grab active:cursor-grabbing bg-gray-50 rounded-t-lg border-b touch-none select-none"
+        className="flex flex-col items-center py-4 cursor-grab active:cursor-grabbing bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-lg border-b touch-none select-none"
         onTouchStart={handleDragStart}
         onMouseDown={handleDragStart}
         style={{ touchAction: 'none' }}
@@ -192,6 +195,12 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
         <div className={`w-12 h-1 bg-gray-300 rounded-full transition-all duration-200 ${
           isDragging ? 'bg-blue-400 w-16' : ''
         }`}></div>
+        
+        {/* Transfer Title */}
+        <div className="mt-2 text-center">
+          <h2 className="text-lg font-bold text-gray-900">International Transfer</h2>
+          <p className="text-sm text-gray-600">Send money worldwide securely</p>
+        </div>
         
         {/* Close button */}
         <Button 
@@ -204,82 +213,230 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
         </Button>
       </div>
       
-      {/* Step Indicator */}
-      <div className="px-6 py-3 border-b bg-gray-50 flex-shrink-0">
+      {/* Enhanced Step Indicator */}
+      <div className="px-6 py-4 border-b bg-gradient-to-r from-gray-50 to-blue-50 flex-shrink-0">
         <div className="flex items-center justify-between">
-          {[1, 2, 3, 4].map((step, index) => (
-            <React.Fragment key={step}>
-              <div className="flex flex-col items-center">
-                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium transition-all duration-200 ${
-                  step === currentStep 
-                    ? 'bg-blue-600 text-white scale-110' 
-                    : step < currentStep 
-                      ? 'bg-green-500 text-white' 
-                      : 'bg-gray-200 text-gray-500'
-                }`}>
-                  {step < currentStep ? '✓' : step}
+          {[1, 2, 3, 4].map((step, index) => {
+            const StepIcon = stepIcons[index];
+            return (
+              <React.Fragment key={step}>
+                <div className="flex flex-col items-center">
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-300 ${
+                    step === currentStep 
+                      ? 'bg-blue-600 text-white scale-110 shadow-lg' 
+                      : step < currentStep 
+                        ? 'bg-green-500 text-white shadow-md' 
+                        : 'bg-gray-200 text-gray-500'
+                  }`}>
+                    {step < currentStep ? (
+                      <CheckCircle className="w-5 h-5" />
+                    ) : (
+                      <StepIcon className="w-5 h-5" />
+                    )}
+                  </div>
+                  <span className={`text-xs mt-2 font-medium transition-colors ${
+                    step === currentStep ? 'text-blue-600' : 'text-gray-600'
+                  }`}>
+                    {stepLabels[index]}
+                  </span>
                 </div>
-                <span className="text-xs text-gray-600 mt-1 font-medium">
-                  {stepLabels[index]}
-                </span>
-              </div>
-              {index < 3 && (
-                <div className={`flex-1 h-0.5 mx-3 transition-all duration-300 ${
-                  step < currentStep ? 'bg-green-500' : 'bg-gray-200'
-                }`} />
-              )}
-            </React.Fragment>
-          ))}
+                {index < 3 && (
+                  <div className={`flex-1 h-1 mx-3 rounded-full transition-all duration-300 ${
+                    step < currentStep ? 'bg-green-500' : 'bg-gray-200'
+                  }`} />
+                )}
+              </React.Fragment>
+            );
+          })}
         </div>
       </div>
 
-      {/* Step Content - Scrollable */}
-      <div className="flex-1 overflow-y-auto px-6 py-4" style={{ 
+      {/* Transfer Summary Bar */}
+      {transferData.amount && (
+        <div className="px-6 py-3 bg-blue-50 border-b flex items-center justify-between flex-shrink-0">
+          <div className="flex items-center gap-2">
+            <DollarSign className="w-4 h-4 text-blue-600" />
+            <span className="text-sm font-medium text-gray-700">
+              Sending: <span className="text-blue-600">${transferData.amount}</span>
+            </span>
+          </div>
+          {transferData.receiverDetails.fullName && (
+            <div className="flex items-center gap-2">
+              <User className="w-4 h-4 text-green-600" />
+              <span className="text-sm text-gray-700">
+                To: <span className="font-medium">{transferData.receiverDetails.fullName}</span>
+              </span>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Step Content - Enhanced */}
+      <div className="flex-1 overflow-y-auto px-6 py-6" style={{ 
         scrollBehavior: 'smooth',
         WebkitOverflowScrolling: 'touch'
       }}>
         {currentStep === 1 && (
-          <StepOneTransfer 
-            amount={transferData.amount}
-            onAmountChange={(amount) => updateTransferData({ amount })}
-          />
+          <div className="space-y-6">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <DollarSign className="w-8 h-8 text-blue-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">How much are you sending?</h3>
+              <p className="text-gray-600 mb-6">Enter the amount you want to transfer</p>
+            </div>
+            
+            <StepOneTransfer 
+              amount={transferData.amount}
+              onAmountChange={(amount) => updateTransferData({ amount })}
+            />
+            
+            {/* Exchange Rate Info */}
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Clock className="w-4 h-4 text-amber-600" />
+                <span className="text-sm font-medium text-amber-800">Exchange Rate</span>
+              </div>
+              <p className="text-sm text-amber-700">
+                1 USD = 0.85 EUR • Rate locked for 30 minutes
+              </p>
+            </div>
+          </div>
         )}
         
         {currentStep === 2 && (
-          <StepTwoTransfer 
-            receiverDetails={transferData.receiverDetails}
-            onDetailsChange={(receiverDetails) => updateTransferData({ receiverDetails })}
-          />
+          <div className="space-y-6">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <User className="w-8 h-8 text-green-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Who are you sending to?</h3>
+              <p className="text-gray-600 mb-6">Enter recipient details</p>
+            </div>
+            
+            <StepTwoTransfer 
+              receiverDetails={transferData.receiverDetails}
+              onDetailsChange={(receiverDetails) => updateTransferData({ receiverDetails })}
+            />
+            
+            {/* Security Notice */}
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Shield className="w-4 h-4 text-green-600" />
+                <span className="text-sm font-medium text-green-800">Secure Transfer</span>
+              </div>
+              <p className="text-sm text-green-700">
+                All transfers are encrypted and monitored for your security
+              </p>
+            </div>
+          </div>
         )}
         
         {currentStep === 3 && (
-          <div className="space-y-4">
-            <div className="text-center mb-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Choose Payment Method</h3>
-              <p className="text-sm text-gray-600">
-                Select how you'd like to send ${transferData.amount} to {transferData.receiverDetails.fullName}
+          <div className="space-y-6">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <CreditCard className="w-8 h-8 text-purple-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Choose Payment Method</h3>
+              <p className="text-gray-600 mb-6">
+                Select how you'd like to pay for this transfer
               </p>
             </div>
+            
             <PaymentMethodList
               methods={internationalPaymentMethods}
               selectedMethod={transferData.selectedPaymentMethod || null}
               onMethodChange={handlePaymentMethodChange}
             />
+            
+            {/* Fee Breakdown */}
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <h4 className="font-medium text-blue-900 mb-3">Fee Breakdown</h4>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Transfer amount:</span>
+                  <span className="font-medium">${transferData.amount}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Transfer fee (2.9%):</span>
+                  <span className="font-medium">${transferFee.toFixed(2)}</span>
+                </div>
+                <div className="border-t pt-2 flex justify-between">
+                  <span className="font-medium text-gray-900">Total to pay:</span>
+                  <span className="font-bold text-blue-600">${totalAmount.toFixed(2)}</span>
+                </div>
+              </div>
+            </div>
           </div>
         )}
 
         {currentStep === 4 && (
-          <StepThreeTransfer amount={transferData.amount} />
+          <div className="space-y-6">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <CheckCircle className="w-8 h-8 text-green-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Review & Confirm</h3>
+              <p className="text-gray-600 mb-6">Please review your transfer details</p>
+            </div>
+            
+            {/* Transfer Summary */}
+            <div className="bg-gray-50 rounded-lg p-6 space-y-4">
+              <div className="flex items-center justify-between border-b pb-4">
+                <span className="text-gray-600">You're sending</span>
+                <span className="text-2xl font-bold text-blue-600">${transferData.amount}</span>
+              </div>
+              
+              <div className="space-y-3">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">To</span>
+                  <span className="font-medium">{transferData.receiverDetails.fullName}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Phone</span>
+                  <span className="font-medium">{transferData.receiverDetails.phoneNumber}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Address</span>
+                  <span className="font-medium text-right max-w-48">{transferData.receiverDetails.address}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Payment method</span>
+                  <span className="font-medium">Credit Card</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Total cost</span>
+                  <span className="font-bold text-green-600">${totalAmount.toFixed(2)}</span>
+                </div>
+              </div>
+            </div>
+            
+            {/* Important Notice */}
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+              <div className="flex items-start gap-2">
+                <AlertCircle className="w-5 h-5 text-yellow-600 mt-0.5" />
+                <div>
+                  <p className="text-sm font-medium text-yellow-800 mb-1">Important</p>
+                  <p className="text-sm text-yellow-700">
+                    Transfer will be processed within 1-3 business days. You'll receive email confirmation once completed.
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+            <StepThreeTransfer amount={transferData.amount} />
+          </div>
         )}
       </div>
 
-      {/* Sticky Navigation Buttons */}
+      {/* Enhanced Navigation Buttons */}
       <div className="border-t bg-white p-4 flex-shrink-0">
         <div className="flex gap-3">
           <Button 
             variant="outline" 
             onClick={currentStep === 1 ? onClose : handlePreviousStep}
-            className="flex-1 transition-all duration-200"
+            className="flex-1 transition-all duration-200 hover:bg-gray-50"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             {currentStep === 1 ? 'Cancel' : 'Previous'}
@@ -293,13 +450,22 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
                 (currentStep === 2 && !canProceedFromStep2) ||
                 (currentStep === 3 && !canProceedFromStep3)
               }
-              className="flex-1 transition-all duration-200"
+              className="flex-1 transition-all duration-200 bg-blue-600 hover:bg-blue-700"
             >
-              Next
+              Continue
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           ) : (
-            <div className="flex-1"></div>
+            <Button 
+              onClick={() => {
+                console.log('Transfer confirmed!', transferData);
+                onClose();
+              }}
+              className="flex-1 transition-all duration-200 bg-green-600 hover:bg-green-700"
+            >
+              <CheckCircle className="mr-2 h-4 w-4" />
+              Confirm Transfer
+            </Button>
           )}
         </div>
       </div>
