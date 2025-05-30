@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, ArrowLeft, X, DollarSign, User, CreditCard, Shield, Clock, CheckCircle } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import StepOneTransfer from '@/components/transfer/StepOneTransfer';
@@ -25,6 +26,12 @@ interface MultiStepTransferSheetProps {
 
 const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose }) => {
   const [currentStep, setCurrentStep] = useState(1);
+  const [isFullHeight, setIsFullHeight] = useState(false);
+  const [startY, setStartY] = useState(0);
+  const [currentY, setCurrentY] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
+  
   const [transferData, setTransferData] = useState<TransferData>({
     amount: '',
     receiverDetails: {
@@ -65,6 +72,86 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
     console.error('Payment error:', error);
   };
 
+  // Touch/Mouse event handlers for drag functionality
+  const handleStart = (clientY: number) => {
+    setStartY(clientY);
+    setCurrentY(clientY);
+    setIsDragging(true);
+  };
+
+  const handleMove = (clientY: number) => {
+    if (!isDragging) return;
+    setCurrentY(clientY);
+  };
+
+  const handleEnd = () => {
+    if (!isDragging) return;
+    
+    const deltaY = startY - currentY;
+    const threshold = 100; // pixels to trigger full height
+
+    if (deltaY > threshold) {
+      setIsFullHeight(true);
+    } else if (deltaY < -threshold && isFullHeight) {
+      setIsFullHeight(false);
+    }
+
+    setIsDragging(false);
+    setStartY(0);
+    setCurrentY(0);
+  };
+
+  // Touch events
+  const handleTouchStart = (e: React.TouchEvent) => {
+    handleStart(e.touches[0].clientY);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    handleMove(e.touches[0].clientY);
+  };
+
+  const handleTouchEnd = () => {
+    handleEnd();
+  };
+
+  // Mouse events
+  const handleMouseDown = (e: React.MouseEvent) => {
+    handleStart(e.clientY);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    handleMove(e.clientY);
+  };
+
+  const handleMouseUp = () => {
+    handleEnd();
+  };
+
+  // Add global mouse event listeners
+  useEffect(() => {
+    const handleGlobalMouseMove = (e: MouseEvent) => {
+      if (isDragging) {
+        handleMove(e.clientY);
+      }
+    };
+
+    const handleGlobalMouseUp = () => {
+      if (isDragging) {
+        handleEnd();
+      }
+    };
+
+    if (isDragging) {
+      document.addEventListener('mousemove', handleGlobalMouseMove);
+      document.addEventListener('mouseup', handleGlobalMouseUp);
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleGlobalMouseMove);
+      document.removeEventListener('mouseup', handleGlobalMouseUp);
+    };
+  }, [isDragging]);
+
   const canProceedFromStep1 = transferData.amount && parseFloat(transferData.amount) > 0;
   const canProceedFromStep2 = transferData.receiverDetails.fullName && 
                               transferData.receiverDetails.phoneNumber && 
@@ -78,9 +165,22 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
   const totalAmount = transferData.amount ? (parseFloat(transferData.amount) + parseFloat(transferFee)).toFixed(2) : '0.00';
 
   return (
-    <div className="flex flex-col bg-white rounded-t-lg shadow-lg h-[95vh] relative">
-      {/* Header Bar */}
-      <div className="flex flex-col items-center py-4 bg-gray-50 rounded-t-lg border-b flex-shrink-0">
+    <div 
+      ref={panelRef}
+      className={`flex flex-col bg-white rounded-t-lg shadow-lg relative transition-all duration-300 ${
+        isFullHeight ? 'h-screen' : 'h-[95vh]'
+      }`}
+    >
+      {/* Draggable Header Bar */}
+      <div 
+        className="flex flex-col items-center py-4 bg-gray-50 rounded-t-lg border-b flex-shrink-0 cursor-grab active:cursor-grabbing"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        onMouseDown={handleMouseDown}
+        onMouseMove={isDragging ? handleMouseMove : undefined}
+        onMouseUp={handleMouseUp}
+      >
         <div className="w-12 h-1 bg-gray-300 rounded-full"></div>
         
         <Button 
@@ -91,6 +191,17 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
         >
           <X className="h-4 w-4" />
         </Button>
+
+        {isFullHeight && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsFullHeight(false)}
+            className="absolute top-3 left-3 h-8 w-8 p-0 hover:bg-gray-200 transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+        )}
       </div>
       
       {/* Transfer Summary Bar */}
