@@ -51,7 +51,7 @@ const MultiStepTransferPage: React.FC = () => {
                               transferData.receiverDetails.address;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pb-20">
       <TransferHeader />
       
       {/* Step Indicator */}
@@ -87,7 +87,7 @@ const MultiStepTransferPage: React.FC = () => {
       </div>
 
       {/* Step Content */}
-      <div className="max-w-md mx-auto px-4 pb-16">
+      <div className="max-w-md mx-auto px-4">
         {currentStep === 1 && (
           <StepOneTransfer 
             amount={transferData.amount}
@@ -105,9 +105,11 @@ const MultiStepTransferPage: React.FC = () => {
         {currentStep === 3 && (
           <StepThreeTransfer amount={transferData.amount} />
         )}
+      </div>
 
-        {/* Navigation Buttons */}
-        <div className="flex gap-3 mt-6">
+      {/* Sticky Navigation Buttons */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
+        <div className="max-w-md mx-auto flex gap-3">
           {currentStep > 1 && (
             <Button 
               variant="outline" 
