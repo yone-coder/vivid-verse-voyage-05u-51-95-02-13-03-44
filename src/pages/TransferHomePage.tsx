@@ -1,9 +1,10 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Send, Search, Clock, CreditCard, MapPin, Phone } from 'lucide-react';
+import { Send, Search, Clock, CreditCard, MapPin, Phone, History } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import HeroBanner from '@/components/home/HeroBanner';
+import TransferHomeHeader from '@/components/transfer/TransferHomeHeader';
 
 const TransferHomePage: React.FC = () => {
   const navigate = useNavigate();
@@ -11,49 +12,43 @@ const TransferHomePage: React.FC = () => {
   const quickActions = [
     {
       id: 'send',
-      title: 'Send Money',
-      description: 'Send money to Haiti',
-      icon: <Send className="h-6 w-6" />,
+      title: 'Send',
+      icon: <Send className="h-5 w-5" />,
       color: 'bg-blue-500 hover:bg-blue-600',
       action: () => navigate('/multi-step-transfer')
     },
     {
       id: 'track',
-      title: 'Track Transfer',
-      description: 'Check transfer status',
-      icon: <Search className="h-6 w-6" />,
+      title: 'Track',
+      icon: <Search className="h-5 w-5" />,
       color: 'bg-green-500 hover:bg-green-600',
       action: () => console.log('Track transfer')
     },
     {
       id: 'history',
-      title: 'Transfer History',
-      description: 'View past transfers',
-      icon: <Clock className="h-6 w-6" />,
+      title: 'History',
+      icon: <History className="h-5 w-5" />,
       color: 'bg-purple-500 hover:bg-purple-600',
       action: () => console.log('Transfer history')
     },
     {
       id: 'cards',
-      title: 'Payment Methods',
-      description: 'Manage cards & accounts',
-      icon: <CreditCard className="h-6 w-6" />,
+      title: 'Cards',
+      icon: <CreditCard className="h-5 w-5" />,
       color: 'bg-orange-500 hover:bg-orange-600',
       action: () => console.log('Payment methods')
     },
     {
       id: 'locations',
-      title: 'Pickup Locations',
-      description: 'Find nearby locations',
-      icon: <MapPin className="h-6 w-6" />,
+      title: 'Locations',
+      icon: <MapPin className="h-5 w-5" />,
       color: 'bg-red-500 hover:bg-red-600',
       action: () => console.log('Pickup locations')
     },
     {
       id: 'support',
-      title: 'Customer Support',
-      description: 'Get help & assistance',
-      icon: <Phone className="h-6 w-6" />,
+      title: 'Support',
+      icon: <Phone className="h-5 w-5" />,
       color: 'bg-indigo-500 hover:bg-indigo-600',
       action: () => console.log('Customer support')
     }
@@ -61,13 +56,16 @@ const TransferHomePage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero Banner - using the same component as ForYou page */}
+      {/* Custom Transfer Header */}
+      <TransferHomeHeader />
+      
+      {/* Hero Banner */}
       <HeroBanner />
       
       {/* Welcome Section */}
-      <div className="bg-white py-8">
+      <div className="bg-white py-6">
         <div className="max-w-md mx-auto px-4 text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+          <h1 className="text-xl font-bold text-gray-900 mb-2">
             Send Money to Haiti
           </h1>
           <p className="text-gray-600 text-sm">
@@ -80,26 +78,24 @@ const TransferHomePage: React.FC = () => {
       <div className="max-w-md mx-auto px-4 pb-20">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
         
-        <div className="grid grid-cols-2 gap-4">
+        {/* Circular Quick Action Buttons */}
+        <div className="grid grid-cols-3 gap-4 mb-8">
           {quickActions.map((action) => (
             <button
               key={action.id}
               onClick={action.action}
-              className={`${action.color} text-white p-4 rounded-lg shadow-sm transition-all duration-200 transform hover:scale-105 active:scale-95`}
+              className="flex flex-col items-center space-y-2"
             >
-              <div className="flex flex-col items-center text-center space-y-2">
+              <div className={`${action.color} w-16 h-16 rounded-full flex items-center justify-center text-white shadow-lg transition-all duration-200 transform hover:scale-105 active:scale-95`}>
                 {action.icon}
-                <div>
-                  <h3 className="font-medium text-sm">{action.title}</h3>
-                  <p className="text-xs opacity-90">{action.description}</p>
-                </div>
               </div>
+              <span className="text-xs font-medium text-gray-700">{action.title}</span>
             </button>
           ))}
         </div>
 
         {/* Featured Section */}
-        <div className="mt-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg p-6 text-white">
+        <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg p-6 text-white">
           <h3 className="text-lg font-semibold mb-2">Why Choose Our Service?</h3>
           <ul className="space-y-2 text-sm">
             <li className="flex items-center">
