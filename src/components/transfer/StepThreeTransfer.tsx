@@ -1,11 +1,7 @@
 
-import React, { useState } from 'react';
-import { CreditCard, Smartphone, Loader2 } from 'lucide-react';
+import React from 'react';
+import { CreditCard, Smartphone } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { toast } from "@/hooks/use-toast";
-
-// Backend API URL for MonCash
-const MONCASH_BACKEND_URL: string = 'https://moncash-backend.onrender.com';
 
 interface StepThreeTransferProps {
   amount: string;
@@ -13,94 +9,9 @@ interface StepThreeTransferProps {
 }
 
 const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount, transferType = 'international' }) => {
-  const [isProcessing, setIsProcessing] = useState(false);
-  
   const currencySymbol = transferType === 'international' ? '$' : 'HTG ';
   const paymentMethod = transferType === 'international' ? 'Credit/Debit Card' : 'MonCash';
   const PaymentIcon = transferType === 'international' ? CreditCard : Smartphone;
-
-  // Handle MonCash payment process
-  const handleMonCashPayment = async () => {
-    if (transferType !== 'national') {
-      toast({
-        title: "Payment Method Not Available",
-        description: "MonCash is only available for national transfers.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsProcessing(true);
-
-    try {
-      console.log('Getting MonCash access token...');
-      
-      const tokenResponse = await fetch(`${MONCASH_BACKEND_URL}/api/get-token`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
-      });
-
-      if (!tokenResponse.ok) {
-        const errorData = await tokenResponse.json();
-        throw new Error(errorData.error || 'Failed to get MonCash access token');
-      }
-
-      const tokenData = await tokenResponse.json();
-      const accessToken = tokenData.accessToken;
-
-      if (!accessToken) {
-        throw new Error('Invalid access token received from MonCash');
-      }
-
-      console.log('Creating MonCash payment...');
-
-      const paymentResponse = await fetch(`${MONCASH_BACKEND_URL}/api/create-payment`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          accessToken,
-          amount: parseFloat(amount)
-        })
-      });
-
-      if (!paymentResponse.ok) {
-        const errorData = await paymentResponse.json();
-        throw new Error(errorData.error || 'Failed to create MonCash payment');
-      }
-
-      const paymentData = await paymentResponse.json();
-
-      if (!paymentData.paymentUrl) {
-        throw new Error('No payment URL received from MonCash');
-      }
-
-      console.log('Redirecting to MonCash payment URL...');
-      window.location.href = paymentData.paymentUrl;
-
-    } catch (error) {
-      console.error('MonCash payment error:', error);
-      toast({
-        title: "Payment Failed",
-        description: error instanceof Error ? error.message : "Failed to process MonCash payment. Please try again.",
-        variant: "destructive",
-      });
-      setIsProcessing(false);
-    }
-  };
-
-  // Handle payment button click
-  const handleCompletePayment = () => {
-    if (transferType === 'national') {
-      handleMonCashPayment();
-    } else {
-      // For international transfers, show a message or handle differently
-      toast({
-        title: "Payment Method",
-        description: "International payment processing will be implemented soon.",
-        variant: "default",
-      });
-    }
-  };
 
   return (
     <div className="space-y-6">
@@ -137,20 +48,8 @@ const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount, transferT
       </div>
 
       {/* Payment Button */}
-      <Button 
-        className="w-full" 
-        size="lg"
-        onClick={handleCompletePayment}
-        disabled={isProcessing}
-      >
-        {isProcessing ? (
-          <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Processing MonCash Payment...
-          </>
-        ) : (
-          `Complete Payment (${currencySymbol}${amount})`
-        )}
+      <Button className="w-full" size="lg">
+        Complete Payment ({currencySymbol}{amount})
       </Button>
 
       {/* Security Notice */}
