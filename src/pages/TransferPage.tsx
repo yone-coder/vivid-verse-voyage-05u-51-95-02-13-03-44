@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Users, Lightbulb, Truck, Plus } from 'lucide-react';
 
@@ -38,7 +37,7 @@ export default function PaytmApp() {
   };
 
   return (
-    <div className="max-w-sm mx-auto bg-gradient-to-b from-blue-100 to-blue-50 min-h-screen">
+    <div className="max-w-sm mx-auto bg-gradient-to-b from-blue-100 to-blue-50 min-h-screen px-4">
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3">
         <div className="flex items-center gap-3">
@@ -59,7 +58,7 @@ export default function PaytmApp() {
       </div>
 
       {/* Functional Scan & Pay Banner */}
-      <div className="mb-4 bg-white rounded-xl relative overflow-hidden">
+      <div className="mb-4 bg-white rounded-xl relative overflow-hidden mx-4">
         <div className="relative h-40">
           {bannerSlides.map((slide, index) => (
             <div
@@ -107,7 +106,7 @@ export default function PaytmApp() {
       </div>
 
       {/* Money Transfer */}
-      <div className="mb-4 bg-white rounded-xl p-4">
+      <div className="mb-4 bg-white rounded-xl p-4 mx-4">
         <h3 className="text-2xl font-bold text-gray-900 mb-4">Money Transfer</h3>
         <div className="grid grid-cols-4 gap-4 mb-4">
           <div className="flex flex-col items-center">
@@ -166,7 +165,7 @@ export default function PaytmApp() {
       </div>
 
       {/* Recharge & Bill Payments */}
-      <div className="mb-4 bg-white rounded-xl p-4">
+      <div className="mb-4 bg-white rounded-xl p-4 mx-4">
         <h3 className="text-2xl font-bold text-gray-900 mb-4">Recharge & Bill Payments</h3>
         <div className="grid grid-cols-4 gap-4">
           <div className="flex flex-col items-center">
