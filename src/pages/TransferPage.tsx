@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Users, Lightbulb, Truck, Plus, Send } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -26,27 +25,27 @@ export default function PaytmApp() {
 
   return (
     <div className="max-w-sm mx-auto bg-gradient-to-b from-blue-100 to-blue-50 min-h-screen px-1">
-      {/* Header - Now Sticky */}
-      <div className="sticky top-0 z-50 bg-gradient-to-b from-blue-100 to-blue-50 flex items-center justify-between px-1 py-3 shadow-sm">
+      {/* Header - Now Sticky with Reduced Height */}
+      <div className="sticky top-0 z-50 bg-gradient-to-b from-blue-100 to-blue-50 flex items-center justify-between px-1 py-2 shadow-sm">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-            <User className="w-6 h-6 text-gray-400" />
+          <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+            <User className="w-5 h-5 text-gray-400" />
           </div>
           <div className="flex items-center">
-            <span className="text-2xl font-bold text-blue-900">Paytm</span>
-            <span className="text-red-500 text-xl ml-1">❤</span>
-            <span className="text-2xl font-bold text-blue-600 ml-1">UPI</span>
-            <span className="text-yellow-500 text-xl">⚡</span>
+            <span className="text-xl font-bold text-blue-900">Paytm</span>
+            <span className="text-red-500 text-lg ml-1">❤</span>
+            <span className="text-xl font-bold text-blue-600 ml-1">UPI</span>
+            <span className="text-yellow-500 text-lg">⚡</span>
           </div>
         </div>
-        <div className="flex items-center gap-4">
-          <Search className="w-6 h-6 text-blue-600" />
-          <Bell className="w-6 h-6 text-blue-600" />
+        <div className="flex items-center gap-3">
+          <Search className="w-5 h-5 text-blue-600" />
+          <Bell className="w-5 h-5 text-blue-600" />
         </div>
       </div>
 
-      {/* Image Carousel */}
-      <div className="mb-4 bg-white rounded-xl relative overflow-hidden mx-1">
+      {/* Image Carousel - Added top padding */}
+      <div className="pt-4 mb-4 bg-white rounded-xl relative overflow-hidden mx-1">
         <div className="relative h-40">
           {bannerImages.map((image, index) => (
             <div
