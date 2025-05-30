@@ -139,8 +139,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
 
       {/* Header */}
       <SheetHeader className="px-6 py-3 border-b">
-        <div className="flex items-center justify-between">
-          <SheetTitle className="text-lg">Send Money to Haiti</SheetTitle>
+        <div className="flex items-center justify-end">
           <Button variant="ghost" size="sm" onClick={onClose}>
             <X className="h-4 w-4" />
           </Button>
