@@ -1,8 +1,10 @@
+
 import React, { useState, useEffect } from 'react';
 import { ArrowRight, CreditCard } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Drawer } from "@/components/ui/drawer";
 import TransferHeader from '@/components/transfer/TransferHeader';
+import TransferHeroBanner from '@/components/transfer/TransferHeroBanner';
 import TransferTypeSelector from '@/components/transfer/TransferTypeSelector';
 import AmountInput from '@/components/transfer/AmountInput';
 import PaymentMethodList from '@/components/transfer/PaymentMethodList';
@@ -12,7 +14,7 @@ import { toast } from "@/hooks/use-toast";
 
 const TransferPage: React.FC = () => {
   const [transferType, setTransferType] = useState<'international' | 'national'>('international');
-  const [selectedMethod, setSelectedMethod] = useState<string | null>('credit-card'); // Default to credit card
+  const [selectedMethod, setSelectedMethod] = useState<string | null>('credit-card');
   const [amount, setAmount] = useState('');
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -128,6 +130,9 @@ const TransferPage: React.FC = () => {
     <div className="min-h-screen bg-gray-50 pb-16">
       {/* Header */}
       <TransferHeader />
+      
+      {/* Hero Banner with curvy borders and padding */}
+      <TransferHeroBanner />
       
       <div className="max-w-md mx-auto p-4">
         {/* Transfer Type Tabs */}
