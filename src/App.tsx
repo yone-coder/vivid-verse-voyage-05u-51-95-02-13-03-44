@@ -1,3 +1,4 @@
+
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -5,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "next-themes";
+import { AuthProvider } from "./context/AuthContext";
 import Index from "./pages/Index";
 import ForYou from "./pages/ForYou";
 import SearchPage from "./pages/SearchPage";
@@ -53,53 +55,55 @@ function App() {
       <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
         <TooltipProvider>
           <Router>
-            <AuthOverlayProvider>
-              <div className="App min-h-screen bg-background text-foreground">
-                <Routes>
-                  <Route path="/" element={<MainLayout />}>
-                    <Route index element={<ForYou />} />
-                    <Route path="for-you" element={<ForYou />} />
-                    <Route path="index" element={<Index />} />
-                    <Route path="search" element={<SearchPage />} />
-                    <Route path="product/:id" element={<ProductDetail />} />
-                    <Route path="posts" element={<Posts />} />
-                    <Route path="videos" element={<Videos />} />
-                    <Route path="reels" element={<Reels />} />
-                    <Route path="trending" element={<Trending />} />
-                    <Route path="messages" element={<Messages />} />
-                    <Route path="profile" element={<ProfilePage />} />
-                    <Route path="more" element={<MoreMenu />} />
-                    <Route path="auth" element={<AuthPage />} />
-                    <Route path="categories" element={<CategoriesPage />} />
-                    <Route path="categories/fashion" element={<FashionPage />} />
-                    <Route path="categories/electronics" element={<ElectronicsPage />} />
-                    <Route path="categories/home-living" element={<HomeLivingPage />} />
-                    <Route path="categories/sports-outdoors" element={<SportsOutdoorsPage />} />
-                    <Route path="categories/automotive" element={<AutomotivePage />} />
-                    <Route path="categories/kids-hobbies" element={<KidsHobbiesPage />} />
-                    <Route path="categories/entertainment" element={<EntertainmentPage />} />
-                    <Route path="admin" element={<AdminPanel />} />
-                    <Route path="checkout" element={<Checkout />} />
-                    <Route path="paypal-checkout" element={<PayPalCheckout />} />
-                    <Route path="paypal-hosted-checkout" element={<PayPalHostedCheckout />} />
-                    <Route path="paypal-payment" element={<PayPalPayment />} />
-                    <Route path="dynamic-paypal-checkout" element={<DynamicPayPalCheckout />} />
-                    <Route path="paypal-deposit" element={<PayPalDepositPage />} />
-                    <Route path="deposit" element={<DepositPage />} />
-                    <Route path="nft-payment" element={<NFTPaymentPage />} />
-                    <Route path="topup" element={<TopUpPage />} />
-                    <Route path="netflix" element={<NetflixPage />} />
-                    <Route path="transfer-old" element={<TransferPage />} />
-                    <Route path="transfer" element={<TransferHomePage />} />
-                    <Route path="multi-step-transfer" element={<MultiStepTransferPage />} />
-                    <Route path="signup" element={<SignupPage />} />
-                    <Route path="*" element={<NotFound />} />
-                  </Route>
-                </Routes>
-                <Toaster />
-                <Sonner />
-              </div>
-            </AuthOverlayProvider>
+            <AuthProvider>
+              <AuthOverlayProvider>
+                <div className="App min-h-screen bg-background text-foreground">
+                  <Routes>
+                    <Route path="/" element={<MainLayout />}>
+                      <Route index element={<ForYou />} />
+                      <Route path="for-you" element={<ForYou />} />
+                      <Route path="index" element={<Index />} />
+                      <Route path="search" element={<SearchPage />} />
+                      <Route path="product/:id" element={<ProductDetail />} />
+                      <Route path="posts" element={<Posts />} />
+                      <Route path="videos" element={<Videos />} />
+                      <Route path="reels" element={<Reels />} />
+                      <Route path="trending" element={<Trending />} />
+                      <Route path="messages" element={<Messages />} />
+                      <Route path="profile" element={<ProfilePage />} />
+                      <Route path="more" element={<MoreMenu />} />
+                      <Route path="auth" element={<AuthPage />} />
+                      <Route path="categories" element={<CategoriesPage />} />
+                      <Route path="categories/fashion" element={<FashionPage />} />
+                      <Route path="categories/electronics" element={<ElectronicsPage />} />
+                      <Route path="categories/home-living" element={<HomeLivingPage />} />
+                      <Route path="categories/sports-outdoors" element={<SportsOutdoorsPage />} />
+                      <Route path="categories/automotive" element={<AutomotivePage />} />
+                      <Route path="categories/kids-hobbies" element={<KidsHobbiesPage />} />
+                      <Route path="categories/entertainment" element={<EntertainmentPage />} />
+                      <Route path="admin" element={<AdminPanel />} />
+                      <Route path="checkout" element={<Checkout />} />
+                      <Route path="paypal-checkout" element={<PayPalCheckout />} />
+                      <Route path="paypal-hosted-checkout" element={<PayPalHostedCheckout />} />
+                      <Route path="paypal-payment" element={<PayPalPayment />} />
+                      <Route path="dynamic-paypal-checkout" element={<DynamicPayPalCheckout />} />
+                      <Route path="paypal-deposit" element={<PayPalDepositPage />} />
+                      <Route path="deposit" element={<DepositPage />} />
+                      <Route path="nft-payment" element={<NFTPaymentPage />} />
+                      <Route path="topup" element={<TopUpPage />} />
+                      <Route path="netflix" element={<NetflixPage />} />
+                      <Route path="transfer-old" element={<TransferPage />} />
+                      <Route path="transfer" element={<TransferHomePage />} />
+                      <Route path="multi-step-transfer" element={<MultiStepTransferPage />} />
+                      <Route path="signup" element={<SignupPage />} />
+                      <Route path="*" element={<NotFound />} />
+                    </Route>
+                  </Routes>
+                  <Toaster />
+                  <Sonner />
+                </div>
+              </AuthOverlayProvider>
+            </AuthProvider>
           </Router>
         </TooltipProvider>
       </ThemeProvider>
