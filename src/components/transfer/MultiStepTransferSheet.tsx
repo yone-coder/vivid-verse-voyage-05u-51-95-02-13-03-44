@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowRight, ArrowLeft, X, DollarSign, User, CreditCard, Shield, Clock, CheckCircle, Receipt } from 'lucide-react';
+import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, Clock, CheckCircle, Receipt } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { motion } from 'framer-motion';
@@ -241,20 +241,11 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
         isFullHeight ? 'h-screen' : 'h-[95vh]'
       }`}
     >
-      {/* Header with Title */}
-      <div className="flex items-center justify-between py-4 px-4 bg-white rounded-t-lg flex-shrink-0">
+      {/* Header with Title only - removed X button */}
+      <div className="flex items-center justify-center py-4 px-4 bg-white rounded-t-lg flex-shrink-0">
         <h1 className="text-xl font-semibold text-gray-900">
           {stepTitles[currentStep - 1]}
         </h1>
-        
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          onClick={onClose}
-          className="h-8 w-8 p-0 hover:bg-gray-200 transition-colors"
-        >
-          <X className="h-4 w-4" />
-        </Button>
       </div>
       
       {/* Animated Step Indicator */}
