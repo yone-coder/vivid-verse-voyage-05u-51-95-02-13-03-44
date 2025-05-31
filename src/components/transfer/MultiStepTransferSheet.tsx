@@ -337,29 +337,32 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
                 <p className="text-gray-600">Enter the amount you want to send</p>
               </div>
               
-              <StepOneTransfer 
-                amount={transferData.amount}
-                onAmountChange={(amount) => updateTransferData({ amount })}
-              />
-              
-              {transferData.amount && (
-                <div className="bg-white border border-gray-200 rounded-lg p-4">
-                  <div className="space-y-3">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">You send</span>
-                      <span className="font-semibold">${transferData.amount}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Transfer fee</span>
-                      <span className="font-semibold">${transferFee}</span>
-                    </div>
-                    <div className="border-t pt-3 flex justify-between">
-                      <span className="font-semibold text-gray-900">Total</span>
-                      <span className="font-bold text-lg text-blue-600">${totalAmount}</span>
+              <div className="bg-white border border-gray-200 rounded-lg p-6 space-y-6">
+                <StepOneTransfer 
+                  amount={transferData.amount}
+                  onAmountChange={(amount) => updateTransferData({ amount })}
+                />
+                
+                {transferData.amount && (
+                  <div className="border-t pt-4">
+                    <h3 className="font-semibold text-gray-900 mb-3">Transfer Summary</h3>
+                    <div className="space-y-3">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">You send</span>
+                        <span className="font-semibold">${transferData.amount}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Transfer fee</span>
+                        <span className="font-semibold">${transferFee}</span>
+                      </div>
+                      <div className="border-t pt-3 flex justify-between">
+                        <span className="font-semibold text-gray-900">Total</span>
+                        <span className="font-bold text-lg text-blue-600">${totalAmount}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           )}
           
