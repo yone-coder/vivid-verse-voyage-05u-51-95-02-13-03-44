@@ -229,6 +229,9 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
   const transferFee = transferData.amount ? (parseFloat(transferData.amount) * 0.02).toFixed(2) : '0.00';
   const totalAmount = transferData.amount ? (parseFloat(transferData.amount) + parseFloat(transferFee)).toFixed(2) : '0.00';
 
+  // Calculate receiver amount (assuming USD to HTG conversion rate of 127.5)
+  const receiverAmount = transferData.amount ? (parseFloat(transferData.amount) * 127.5).toFixed(2) : '0.00';
+
   return (
     <div 
       ref={panelRef}
@@ -354,6 +357,10 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-600">Transfer fee</span>
                         <span className="font-semibold">${transferFee}</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Receiver gets</span>
+                        <span className="font-semibold">{receiverAmount} HTG</span>
                       </div>
                       <div className="border-t pt-3 flex justify-between">
                         <span className="font-semibold text-gray-900">Total</span>
