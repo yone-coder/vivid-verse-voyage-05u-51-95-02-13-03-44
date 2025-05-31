@@ -91,6 +91,20 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
         </div>
       </div>
 
+      {/* Conversion Display - Moved before fee display */}
+      {usdAmount > 0 && exchangeRate && (
+        <div className="border border-gray-200 rounded-md p-2 bg-gray-50">
+          <div className="flex items-center justify-between">
+            <span className="text-xs text-gray-600">Recipient Gets</span>
+            <div className="text-right">
+              <div className="text-sm font-bold text-black">
+                {htgAmount.toFixed(2)} HTG
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Fee Display */}
       {usdAmount > 0 && (
         <div className="border border-gray-200 rounded-md p-2 bg-blue-50">
@@ -101,24 +115,7 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
             </div>
             <div className="flex items-center justify-between text-sm border-t border-blue-200 pt-1">
               <span className="font-medium text-gray-900">Total to Pay</span>
-              <span className="font-bold text-blue-600">${totalAmount.toFixed(2)}</span>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Conversion Display */}
-      {usdAmount > 0 && exchangeRate && (
-        <div className="border border-gray-200 rounded-md p-2 bg-gray-50">
-          <div className="flex items-center justify-between">
-            <span className="text-xs text-gray-600">Recipient Gets</span>
-            <div className="text-right">
-              <div className="text-sm font-bold text-black">
-                {htgAmount.toFixed(2)} HTG
-              </div>
-              <div className="text-xs text-gray-500">
-                ≈ ${usdAmount.toFixed(2)} USD
-              </div>
+              <span className="text-lg font-bold text-blue-600">${totalAmount.toFixed(2)}</span>
             </div>
           </div>
         </div>
