@@ -33,8 +33,8 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
   const usdAmount = parseFloat(amount) || 0;
   const htgAmount = exchangeRate ? usdAmount * exchangeRate.usdToHtg : 0;
   
-  // Calculate fee (2% of amount)
-  const transferFee = usdAmount * 0.02;
+  // Calculate fee (15% on each $100)
+  const transferFee = Math.ceil(usdAmount / 100) * 15;
   const totalAmount = usdAmount + transferFee;
 
   return (
@@ -96,7 +96,7 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
         <div className="border border-gray-200 rounded-md p-2 bg-blue-50">
           <div className="space-y-1">
             <div className="flex items-center justify-between text-xs">
-              <span className="text-gray-600">Transfer Fee (2%)</span>
+              <span className="text-gray-600">Transfer Fee (15% per $100)</span>
               <span className="font-medium text-black">${transferFee.toFixed(2)}</span>
             </div>
             <div className="flex items-center justify-between text-sm border-t border-blue-200 pt-1">

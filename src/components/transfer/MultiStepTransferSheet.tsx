@@ -226,8 +226,8 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
     }
   };
 
-  // Calculate transfer fee and total
-  const transferFee = transferData.amount ? (parseFloat(transferData.amount) * 0.02).toFixed(2) : '0.00';
+  // Calculate transfer fee and total using new 15% per $100 logic
+  const transferFee = transferData.amount ? (Math.ceil(parseFloat(transferData.amount) / 100) * 15).toFixed(2) : '0.00';
   const totalAmount = transferData.amount ? (parseFloat(transferData.amount) + parseFloat(transferFee)).toFixed(2) : '0.00';
 
   // Calculate receiver amount (assuming USD to HTG conversion rate of 127.5)
@@ -345,35 +345,6 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
                 amount={transferData.amount}
                 onAmountChange={(amount) => updateTransferData({ amount })}
               />
-
-              {/* Transfer Summary Card */}
-              {transferData.amount && parseFloat(transferData.amount) > 0 && (
-                <Card className="bg-gray-50 border-gray-200">
-                  <CardContent className="p-4">
-                    <h3 className="font-semibold text-gray-900 mb-3 text-sm">Transfer Summary</h3>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Amount to send:</span>
-                        <span className="font-medium">${transferData.amount}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Transfer fee (2%):</span>
-                        <span className="font-medium">${transferFee}</span>
-                      </div>
-                      <div className="border-t border-gray-300 pt-2 flex justify-between items-center">
-                        <span className="font-semibold text-gray-900">Total to pay:</span>
-                        <span className="text-lg font-bold text-blue-600">${totalAmount}</span>
-                      </div>
-                      <div className="bg-green-50 rounded-lg p-2 mt-3">
-                        <div className="flex justify-between text-xs">
-                          <span className="text-green-700">Recipient receives:</span>
-                          <span className="font-medium text-green-800">{receiverAmount} HTG</span>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
             </div>
           )}
           
