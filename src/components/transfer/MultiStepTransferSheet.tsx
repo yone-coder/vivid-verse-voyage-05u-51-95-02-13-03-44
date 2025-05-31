@@ -269,16 +269,19 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
         )}
       </div>
       
-      {/* Animated Step Indicator - Bottom Nav Style */}
+      {/* Animated Step Indicator - Fixed Layout */}
       <div className="px-6 py-4 border-b bg-gray-50 flex-shrink-0">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center">
           {[1, 2, 3, 4, 5].map((step, index) => (
             <React.Fragment key={step}>
-              <div className="flex flex-col items-center">
+              {/* Step Circle */}
+              <div className="flex flex-col items-center relative">
                 <motion.div 
-                  className={`rounded-full flex items-center justify-center text-xs font-medium transition-all duration-300 shadow-sm ${
+                  className={`rounded-full flex items-center justify-center text-xs font-medium transition-all duration-300 shadow-sm relative z-10 ${
                     step === currentStep 
                       ? 'w-auto h-8 px-3 bg-red-600 text-white' 
+                      : step < currentStep
+                      ? 'w-8 h-8 bg-green-600 text-white'
                       : 'w-8 h-8 bg-gray-200 text-gray-600'
                   }`}
                   variants={stepVariants}
@@ -313,10 +316,27 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
                     step
                   )}
                 </motion.div>
+                
+                {/* Step Label */}
+                <motion.span 
+                  className="text-xs mt-2 text-center font-medium"
+                  variants={labelVariants}
+                  initial="inactive"
+                  animate={
+                    step === currentStep ? 'active' : 
+                    step < currentStep ? 'completed' : 
+                    'inactive'
+                  }
+                >
+                  {stepLabels[index]}
+                </motion.span>
               </div>
+              
+              {/* Connecting Line */}
               {index < 4 && (
                 <motion.div 
-                  className="flex-1 h-0.5 mx-3 rounded-full origin-left"
+                  className="flex-1 h-0.5 mx-4 rounded-full relative"
+                  style={{ minWidth: '40px' }}
                   variants={lineVariants}
                   initial="inactive"
                   animate={step < currentStep ? 'active' : 'inactive'}
