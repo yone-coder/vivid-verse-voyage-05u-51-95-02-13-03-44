@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import {
@@ -309,9 +308,6 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
               'Continue to Receiver Details'
             )}
           </Button>
-          <DrawerClose asChild>
-            <Button variant="outline" disabled={isLoading || isProcessing}>Cancel</Button>
-          </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
     );
@@ -435,9 +431,6 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
         <Button variant="outline" onClick={() => setStep('receiverDetails')}>
           Back to Receiver Details
         </Button>
-        <DrawerClose asChild>
-          <Button variant="outline" disabled={isProcessing}>Cancel</Button>
-        </DrawerClose>
       </DrawerFooter>
     </DrawerContent>
   );
