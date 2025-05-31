@@ -269,8 +269,8 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
         )}
       </div>
       
-      {/* Animated Step Indicator - Bottom Nav Style */}
-      <div className="px-6 py-4 border-b bg-gray-50 flex-shrink-0">
+      {/* Animated Step Indicator - Bottom Nav Style with reduced height */}
+      <div className="px-6 py-2 border-b bg-gray-50 flex-shrink-0">
         <div className="flex items-center justify-between">
           {[1, 2, 3, 4, 5].map((step, index) => (
             <React.Fragment key={step}>
