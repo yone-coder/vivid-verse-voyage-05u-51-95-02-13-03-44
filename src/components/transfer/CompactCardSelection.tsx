@@ -85,7 +85,7 @@ const CompactCardSelection: React.FC<CompactCardSelectionProps> = ({
   onMethodChange
 }) => {
   return (
-    <div className="space-y-3 max-w-sm mx-auto px-2">
+    <div className="space-y-3 max-w-sm mx-auto px-0.5">
       <div className="text-center mb-4">
         <div className="flex items-center justify-center mb-2">
           <CreditCard className="h-4 w-4 text-gray-600 mr-2" />
