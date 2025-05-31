@@ -343,32 +343,23 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
               />
               
               {transferData.amount && (
-                <div className="bg-gray-50 rounded-lg p-4 space-y-3">
-                  <h3 className="font-semibold text-gray-900">Transfer Details</h3>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Amount to send</span>
-                      <span className="font-medium">${transferData.amount}</span>
+                <div className="bg-white border border-gray-200 rounded-lg p-4">
+                  <div className="space-y-3">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">You send</span>
+                      <span className="font-semibold">${transferData.amount}</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Transfer fee (2%)</span>
-                      <span className="font-medium">${transferFee}</span>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Transfer fee</span>
+                      <span className="font-semibold">${transferFee}</span>
                     </div>
-                    <div className="border-t pt-2 flex justify-between">
-                      <span className="font-semibold">Total amount</span>
-                      <span className="font-bold text-blue-600">${totalAmount}</span>
+                    <div className="border-t pt-3 flex justify-between">
+                      <span className="font-semibold text-gray-900">Total</span>
+                      <span className="font-bold text-lg text-blue-600">${totalAmount}</span>
                     </div>
                   </div>
                 </div>
               )}
-              
-              <div className="bg-blue-50 rounded-lg p-4 flex items-start space-x-3">
-                <Clock className="h-5 w-5 text-blue-600 mt-0.5" />
-                <div>
-                  <h4 className="font-medium text-blue-900">Fast Transfer</h4>
-                  <p className="text-sm text-blue-700">Money typically arrives within minutes</p>
-                </div>
-              </div>
             </div>
           )}
           
