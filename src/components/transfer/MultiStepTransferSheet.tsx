@@ -272,8 +272,8 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
         )}
       </div>
       
-      {/* Animated Step Indicator - Bottom Nav Style with reduced height */}
-      <div className="px-6 py-2 border-b bg-gray-50 flex-shrink-0">
+      {/* Animated Step Indicator - Fixed padding */}
+      <div className="px-4 py-3 border-b bg-gray-50 flex-shrink-0">
         <div className="flex items-center justify-between">
           {[1, 2, 3, 4, 5].map((step, index) => (
             <React.Fragment key={step}>
@@ -281,8 +281,8 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
                 <motion.div 
                   className={`rounded-full flex items-center justify-center text-xs font-medium transition-all duration-300 shadow-sm ${
                     step === currentStep 
-                      ? 'w-auto h-8 px-3 bg-red-600 text-white' 
-                      : 'w-8 h-8 bg-gray-200 text-gray-600'
+                      ? 'w-auto h-7 px-2 bg-red-600 text-white' 
+                      : 'w-7 h-7 bg-gray-200 text-gray-600'
                   }`}
                   variants={stepVariants}
                   initial="inactive"
@@ -294,21 +294,21 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
                   whileTap={{ scale: 0.95 }}
                 >
                   {step < currentStep ? (
-                    <CheckCircle className="h-4 w-4" />
+                    <CheckCircle className="h-3 w-3" />
                   ) : step === currentStep ? (
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-1">
                       {step === 1 ? (
-                        <DollarSign className="h-4 w-4" />
+                        <DollarSign className="h-3 w-3" />
                       ) : step === 2 ? (
-                        <User className="h-4 w-4" />
+                        <User className="h-3 w-3" />
                       ) : step === 3 ? (
-                        <CreditCard className="h-4 w-4" />
+                        <CreditCard className="h-3 w-3" />
                       ) : step === 4 ? (
-                        <Shield className="h-4 w-4" />
+                        <Shield className="h-3 w-3" />
                       ) : (
-                        <Receipt className="h-4 w-4" />
+                        <Receipt className="h-3 w-3" />
                       )}
-                      <span className="font-medium whitespace-nowrap">
+                      <span className="font-medium whitespace-nowrap text-xs">
                         {stepLabels[index]}
                       </span>
                     </div>
@@ -319,7 +319,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
               </div>
               {index < 4 && (
                 <motion.div 
-                  className="flex-1 h-0.5 mx-3 rounded-full origin-left"
+                  className="flex-1 h-0.5 mx-2 rounded-full origin-left"
                   variants={lineVariants}
                   initial="inactive"
                   animate={step < currentStep ? 'active' : 'inactive'}
@@ -397,37 +397,35 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
           )}
 
           {currentStep === 4 && (
-            <div className="space-y-6">
-              <div className="text-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Review & Pay</h2>
-                <p className="text-gray-600">Review your transfer details before proceeding</p>
+            <div className="space-y-4">
+              <div className="text-center mb-4">
+                <h2 className="text-xl font-bold text-gray-900 mb-1">Review & Pay</h2>
+                <p className="text-gray-600 text-sm">Review your transfer details before proceeding</p>
               </div>
               
-              <div className="bg-gray-50 rounded-lg p-6 space-y-4">
-                <div className="border-b pb-4">
-                  <h3 className="font-semibold text-gray-900 mb-3">Transfer Summary</h3>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Recipient</span>
-                      <span className="font-medium">{transferData.receiverDetails.fullName}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Phone</span>
-                      <span className="font-medium">{transferData.receiverDetails.phoneNumber}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Amount</span>
-                      <span className="font-medium">${transferData.amount}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Fee</span>
-                      <span className="font-medium">${transferFee}</span>
-                    </div>
+              <div className="bg-black text-white rounded-xl p-4 space-y-3">
+                <h3 className="font-semibold text-white mb-2 text-sm">Transfer Summary</h3>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-gray-300">To:</span>
+                    <span className="font-medium text-right">{transferData.receiverDetails.fullName}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-300">Amount:</span>
+                    <span className="font-medium">${transferData.amount}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-300">Fee:</span>
+                    <span className="font-medium">${transferFee}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-300">Rate:</span>
+                    <span className="font-medium">1 USD = 127.5 HTG</span>
                   </div>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-lg font-semibold">Total to pay</span>
-                  <span className="text-xl font-bold text-blue-600">${totalAmount}</span>
+                <div className="border-t border-gray-700 pt-2 flex justify-between items-center">
+                  <span className="font-semibold text-sm">Total</span>
+                  <span className="text-lg font-bold text-green-400">${totalAmount}</span>
                 </div>
               </div>
               
