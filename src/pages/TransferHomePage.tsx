@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Send, Search, Clock, CreditCard, MapPin, Phone, History } from 'lucide-react';
+import { Send, Search, Clock, CreditCard, MapPin, Phone, History, Plus, User, Shield, DollarSign, Smartphone, Bell, Users, LogIn, UserPlus, Globe } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import HeroBanner from '@/components/home/HeroBanner';
 import AliExpressHeader from '@/components/home/AliExpressHeader';
@@ -27,6 +27,22 @@ const TransferHomePage: React.FC = () => {
       action: () => console.log('Track transfer')
     },
     {
+      id: 'rates',
+      title: 'Rates',
+      icon: <DollarSign className="h-6 w-6" />,
+      color: 'from-green-500 to-green-600',
+      hoverColor: 'hover:from-green-600 hover:to-green-700',
+      action: () => console.log('View exchange rates')
+    },
+    {
+      id: 'fees',
+      title: 'Fees',
+      icon: <CreditCard className="h-6 w-6" />,
+      color: 'from-orange-500 to-orange-600',
+      hoverColor: 'hover:from-orange-600 hover:to-orange-700',
+      action: () => console.log('Fee calculator')
+    },
+    {
       id: 'history',
       title: 'History',
       icon: <History className="h-6 w-6" />,
@@ -35,28 +51,124 @@ const TransferHomePage: React.FC = () => {
       action: () => console.log('Transfer history')
     },
     {
-      id: 'cards',
-      title: 'Cards',
-      icon: <CreditCard className="h-6 w-6" />,
-      color: 'from-orange-500 to-orange-600',
-      hoverColor: 'hover:from-orange-600 hover:to-orange-700',
-      action: () => console.log('Payment methods')
+      id: 'add',
+      title: 'Add',
+      icon: <Plus className="h-6 w-6" />,
+      color: 'from-cyan-500 to-cyan-600',
+      hoverColor: 'hover:from-cyan-600 hover:to-cyan-700',
+      action: () => console.log('Add recipient')
     },
     {
-      id: 'locations',
-      title: 'Locations',
-      icon: <MapPin className="h-6 w-6" />,
-      color: 'from-red-500 to-red-600',
-      hoverColor: 'hover:from-red-600 hover:to-red-700',
-      action: () => console.log('Pickup locations')
-    },
-    {
-      id: 'support',
-      title: 'Support',
-      icon: <Phone className="h-6 w-6" />,
+      id: 'manage',
+      title: 'Manage',
+      icon: <User className="h-6 w-6" />,
       color: 'from-indigo-500 to-indigo-600',
       hoverColor: 'hover:from-indigo-600 hover:to-indigo-700',
+      action: () => console.log('Manage recipients')
+    },
+    {
+      id: 'profile',
+      title: 'Profile',
+      icon: <User className="h-6 w-6" />,
+      color: 'from-slate-500 to-slate-600',
+      hoverColor: 'hover:from-slate-600 hover:to-slate-700',
+      action: () => console.log('User profile')
+    },
+    {
+      id: 'verify',
+      title: 'Verify',
+      icon: <Shield className="h-6 w-6" />,
+      color: 'from-yellow-500 to-yellow-600',
+      hoverColor: 'hover:from-yellow-600 hover:to-yellow-700',
+      action: () => console.log('Identity verification')
+    },
+    {
+      id: 'secure',
+      title: 'Secure',
+      icon: <Shield className="h-6 w-6" />,
+      color: 'from-red-500 to-red-600',
+      hoverColor: 'hover:from-red-600 hover:to-red-700',
+      action: () => console.log('Security settings')
+    },
+    {
+      id: 'topup',
+      title: 'Topup',
+      icon: <Plus className="h-6 w-6" />,
+      color: 'from-teal-500 to-teal-600',
+      hoverColor: 'hover:from-teal-600 hover:to-teal-700',
+      action: () => console.log('Add funds')
+    },
+    {
+      id: 'balance',
+      title: 'Balance',
+      icon: <DollarSign className="h-6 w-6" />,
+      color: 'from-lime-500 to-lime-600',
+      hoverColor: 'hover:from-lime-600 hover:to-lime-700',
+      action: () => console.log('Check balance')
+    },
+    {
+      id: 'withdraw',
+      title: 'Withdraw',
+      icon: <DollarSign className="h-6 w-6" />,
+      color: 'from-amber-500 to-amber-600',
+      hoverColor: 'hover:from-amber-600 hover:to-amber-700',
+      action: () => console.log('Withdraw funds')
+    },
+    {
+      id: 'app',
+      title: 'App',
+      icon: <Smartphone className="h-6 w-6" />,
+      color: 'from-violet-500 to-violet-600',
+      hoverColor: 'hover:from-violet-600 hover:to-violet-700',
+      action: () => console.log('Download app')
+    },
+    {
+      id: 'notify',
+      title: 'Notify',
+      icon: <Bell className="h-6 w-6" />,
+      color: 'from-pink-500 to-pink-600',
+      hoverColor: 'hover:from-pink-600 hover:to-pink-700',
+      action: () => console.log('Manage notifications')
+    },
+    {
+      id: 'help',
+      title: 'Help',
+      icon: <Phone className="h-6 w-6" />,
+      color: 'from-rose-500 to-rose-600',
+      hoverColor: 'hover:from-rose-600 hover:to-rose-700',
       action: () => console.log('Customer support')
+    },
+    {
+      id: 'refer',
+      title: 'Refer',
+      icon: <Users className="h-6 w-6" />,
+      color: 'from-fuchsia-500 to-fuchsia-600',
+      hoverColor: 'hover:from-fuchsia-600 hover:to-fuchsia-700',
+      action: () => console.log('Refer friends')
+    },
+    {
+      id: 'login',
+      title: 'Login',
+      icon: <LogIn className="h-6 w-6" />,
+      color: 'from-sky-500 to-sky-600',
+      hoverColor: 'hover:from-sky-600 hover:to-sky-700',
+      action: () => console.log('Sign in')
+    },
+    {
+      id: 'signup',
+      title: 'Signup',
+      icon: <UserPlus className="h-6 w-6" />,
+      color: 'from-emerald-500 to-emerald-600',
+      hoverColor: 'hover:from-emerald-600 hover:to-emerald-700',
+      action: () => console.log('Create account')
+    },
+    {
+      id: 'lang',
+      title: 'Lang',
+      icon: <Globe className="h-6 w-6" />,
+      color: 'from-blue-500 to-blue-600',
+      hoverColor: 'hover:from-blue-600 hover:to-blue-700',
+      action: () => console.log('Toggle language')
     }
   ];
 
