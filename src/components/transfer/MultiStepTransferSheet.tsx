@@ -351,6 +351,10 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
                     <h3 className="font-semibold text-gray-900 mb-3">Transfer Summary</h3>
                     <div className="space-y-3">
                       <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Exchange rate</span>
+                        <span className="font-semibold">1 USD = 127.50 HTG</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
                         <span className="text-gray-600">You send</span>
                         <span className="font-semibold">${transferData.amount}</span>
                       </div>
