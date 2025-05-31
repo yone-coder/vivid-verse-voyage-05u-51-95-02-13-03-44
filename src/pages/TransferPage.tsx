@@ -27,7 +27,7 @@ export default function PaytmApp() {
   return (
     <div className="max-w-sm mx-auto bg-gradient-to-b from-blue-100 to-blue-50 min-h-screen">
       {/* Header - Sticky with proper spacing */}
-      <div className="sticky top-0 z-50 bg-gradient-to-b from-blue-100 to-blue-50 px-4 py-3 shadow-sm">
+      <div className="sticky top-0 z-50 bg-gradient-to-b from-blue-100 to-blue-50 px-2 py-3 shadow-sm">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
@@ -47,8 +47,8 @@ export default function PaytmApp() {
         </div>
       </div>
 
-      {/* Content Container with proper spacing */}
-      <div className="px-4 space-y-4">
+      {/* Content Container with reduced padding */}
+      <div className="px-2 space-y-4">
         {/* Image Carousel - Proper spacing from header */}
         <div className="mt-4 bg-white rounded-xl relative overflow-hidden">
           <div className="relative h-40">
