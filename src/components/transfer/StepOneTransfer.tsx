@@ -32,6 +32,10 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
 
   const usdAmount = parseFloat(amount) || 0;
   const htgAmount = exchangeRate ? usdAmount * exchangeRate.usdToHtg : 0;
+  
+  // Calculate fee (2% of amount)
+  const transferFee = usdAmount * 0.02;
+  const totalAmount = usdAmount + transferFee;
 
   return (
     <div className="space-y-2 max-w-lg mx-auto">
@@ -87,6 +91,22 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
         </div>
       </div>
 
+      {/* Fee Display */}
+      {usdAmount > 0 && (
+        <div className="border border-gray-200 rounded-md p-2 bg-blue-50">
+          <div className="space-y-1">
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-gray-600">Transfer Fee (2%)</span>
+              <span className="font-medium text-black">${transferFee.toFixed(2)}</span>
+            </div>
+            <div className="flex items-center justify-between text-sm border-t border-blue-200 pt-1">
+              <span className="font-medium text-gray-900">Total to Pay</span>
+              <span className="font-bold text-blue-600">${totalAmount.toFixed(2)}</span>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Conversion Display */}
       {usdAmount > 0 && exchangeRate && (
         <div className="border border-gray-200 rounded-md p-2 bg-gray-50">
@@ -108,11 +128,11 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
       <div className="border-t border-gray-100 pt-2">
         <div className="grid grid-cols-3 gap-2 text-center">
           <div>
-            <div className="text-xs text-gray-500">Fee</div>
-            <div className="text-xs font-medium text-black">Included</div>
+            <div className="text-xs text-gray-500">Processing</div>
+            <div className="text-xs font-medium text-black">Instant</div>
           </div>
           <div>
-            <div className="text-xs text-gray-500">Time</div>
+            <div className="text-xs text-gray-500">Delivery</div>
             <div className="text-xs font-medium text-black">24-48h</div>
           </div>
           <div>

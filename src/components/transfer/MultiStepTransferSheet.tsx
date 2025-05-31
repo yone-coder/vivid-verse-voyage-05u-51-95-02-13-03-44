@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, ArrowLeft, X, DollarSign, User, CreditCard, Shield, Clock, CheckCircle, Receipt } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { motion } from 'framer-motion';
 import StepOneTransfer from '@/components/transfer/StepOneTransfer';
 import StepTwoTransfer from '@/components/transfer/StepTwoTransfer';
@@ -330,12 +331,12 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
         </div>
       </div>
 
-      {/* Step Content - Scrollable with proper bottom padding for sticky buttons */}
+      {/* Step Content - Reduced padding and consistent spacing */}
       <div className="flex-1 overflow-y-auto pb-64">
-        <div className="px-6 py-4">
+        <div className="px-4 py-4">
           {currentStep === 1 && (
-            <div className="space-y-6">
-              <div className="text-center mb-6">
+            <div className="space-y-4">
+              <div className="text-center mb-4">
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">Send Money</h2>
                 <p className="text-gray-600">Enter the amount you want to send</p>
               </div>
@@ -344,12 +345,41 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
                 amount={transferData.amount}
                 onAmountChange={(amount) => updateTransferData({ amount })}
               />
+
+              {/* Transfer Summary Card */}
+              {transferData.amount && parseFloat(transferData.amount) > 0 && (
+                <Card className="bg-gray-50 border-gray-200">
+                  <CardContent className="p-4">
+                    <h3 className="font-semibold text-gray-900 mb-3 text-sm">Transfer Summary</h3>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Amount to send:</span>
+                        <span className="font-medium">${transferData.amount}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Transfer fee (2%):</span>
+                        <span className="font-medium">${transferFee}</span>
+                      </div>
+                      <div className="border-t border-gray-300 pt-2 flex justify-between items-center">
+                        <span className="font-semibold text-gray-900">Total to pay:</span>
+                        <span className="text-lg font-bold text-blue-600">${totalAmount}</span>
+                      </div>
+                      <div className="bg-green-50 rounded-lg p-2 mt-3">
+                        <div className="flex justify-between text-xs">
+                          <span className="text-green-700">Recipient receives:</span>
+                          <span className="font-medium text-green-800">{receiverAmount} HTG</span>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
             </div>
           )}
           
           {currentStep === 2 && (
-            <div className="space-y-6">
-              <div className="text-center mb-6">
+            <div className="space-y-4">
+              <div className="text-center mb-4">
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">Recipient Details</h2>
                 <p className="text-gray-600">Who are you sending ${transferData.amount} to?</p>
               </div>
@@ -372,8 +402,8 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
           )}
           
           {currentStep === 3 && (
-            <div className="space-y-6">
-              <div className="text-center mb-6">
+            <div className="space-y-4">
+              <div className="text-center mb-4">
                 <h2 className="text-2xl font-bold text-gray-900 mb-2">Payment Method</h2>
                 <p className="text-gray-600">
                   Choose how you'd like to send ${transferData.amount} to {transferData.receiverDetails.fullName}
@@ -443,7 +473,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
           )}
 
           {currentStep === 5 && (
-            <div className="space-y-6">
+            <div className="space-y-4">
               <div className="text-center mb-6">
                 <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <CheckCircle className="h-8 w-8 text-green-600" />
