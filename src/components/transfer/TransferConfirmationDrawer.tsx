@@ -63,11 +63,6 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
             Please select MonCash as your payment method for national transfers at this time.
           </p>
         </div>
-        <DrawerFooter>
-          <DrawerClose asChild>
-            <Button variant="outline">Go Back</Button>
-          </DrawerClose>
-        </DrawerFooter>
       </DrawerContent>
     );
   }
