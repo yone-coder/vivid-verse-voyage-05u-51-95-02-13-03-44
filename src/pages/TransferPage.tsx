@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Search, Bell, Send, Eye, DollarSign, CreditCard, History, Plus, User, Shield, Smartphone, Upload, Users, LogIn, UserPlus, Globe, Phone, Lightbulb } from 'lucide-react';
+import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Users, Lightbulb, Truck, Plus, Send } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import MultiStepTransferSheet from '@/components/transfer/MultiStepTransferSheet';
 
@@ -24,153 +24,10 @@ export default function PaytmApp() {
     return () => clearInterval(interval);
   }, [bannerImages.length]);
 
-  const quickActions = [
-    {
-      id: 'send',
-      title: 'Send',
-      icon: <Send className="w-6 h-6" />,
-      color: 'bg-blue-600',
-      action: () => setIsSheetOpen(true)
-    },
-    {
-      id: 'track',
-      title: 'Track',
-      icon: <Eye className="w-6 h-6" />,
-      color: 'bg-emerald-600',
-      action: () => console.log('Track transfer')
-    },
-    {
-      id: 'rates',
-      title: 'Rates',
-      icon: <DollarSign className="w-6 h-6" />,
-      color: 'bg-green-600',
-      action: () => console.log('View exchange rates')
-    },
-    {
-      id: 'fees',
-      title: 'Fees',
-      icon: <CreditCard className="w-6 h-6" />,
-      color: 'bg-orange-600',
-      action: () => console.log('Fee calculator')
-    },
-    {
-      id: 'history',
-      title: 'History',
-      icon: <History className="w-6 h-6" />,
-      color: 'bg-purple-600',
-      action: () => console.log('Transfer history')
-    },
-    {
-      id: 'add',
-      title: 'Add',
-      icon: <Plus className="w-6 h-6" />,
-      color: 'bg-cyan-600',
-      action: () => console.log('Add recipient')
-    },
-    {
-      id: 'manage',
-      title: 'Manage',
-      icon: <User className="w-6 h-6" />,
-      color: 'bg-indigo-600',
-      action: () => console.log('Manage recipients')
-    },
-    {
-      id: 'profile',
-      title: 'Profile',
-      icon: <User className="w-6 h-6" />,
-      color: 'bg-slate-600',
-      action: () => console.log('User profile')
-    },
-    {
-      id: 'verify',
-      title: 'Verify',
-      icon: <Shield className="w-6 h-6" />,
-      color: 'bg-yellow-600',
-      action: () => console.log('Identity verification')
-    },
-    {
-      id: 'secure',
-      title: 'Secure',
-      icon: <Shield className="w-6 h-6" />,
-      color: 'bg-red-600',
-      action: () => console.log('Security settings')
-    },
-    {
-      id: 'topup',
-      title: 'Topup',
-      icon: <Upload className="w-6 h-6" />,
-      color: 'bg-teal-600',
-      action: () => console.log('Add funds')
-    },
-    {
-      id: 'balance',
-      title: 'Balance',
-      icon: <DollarSign className="w-6 h-6" />,
-      color: 'bg-lime-600',
-      action: () => console.log('Check balance')
-    },
-    {
-      id: 'withdraw',
-      title: 'Withdraw',
-      icon: <DollarSign className="w-6 h-6" />,
-      color: 'bg-amber-600',
-      action: () => console.log('Withdraw funds')
-    },
-    {
-      id: 'app',
-      title: 'App',
-      icon: <Smartphone className="w-6 h-6" />,
-      color: 'bg-violet-600',
-      action: () => console.log('Download app')
-    },
-    {
-      id: 'notify',
-      title: 'Notify',
-      icon: <Bell className="w-6 h-6" />,
-      color: 'bg-pink-600',
-      action: () => console.log('Manage notifications')
-    },
-    {
-      id: 'help',
-      title: 'Help',
-      icon: <Phone className="w-6 h-6" />,
-      color: 'bg-rose-600',
-      action: () => console.log('Customer support')
-    },
-    {
-      id: 'refer',
-      title: 'Refer',
-      icon: <Users className="w-6 h-6" />,
-      color: 'bg-fuchsia-600',
-      action: () => console.log('Refer friends')
-    },
-    {
-      id: 'login',
-      title: 'Login',
-      icon: <LogIn className="w-6 h-6" />,
-      color: 'bg-sky-600',
-      action: () => console.log('Sign in')
-    },
-    {
-      id: 'signup',
-      title: 'Signup',
-      icon: <UserPlus className="w-6 h-6" />,
-      color: 'bg-emerald-600',
-      action: () => console.log('Create account')
-    },
-    {
-      id: 'lang',
-      title: 'Lang',
-      icon: <Globe className="w-6 h-6" />,
-      color: 'bg-blue-600',
-      action: () => console.log('Toggle language')
-    }
-  ];
-
   return (
     <div className="max-w-sm mx-auto bg-gradient-to-b from-blue-100 to-blue-50 min-h-screen">
       {/* Header - Sticky with proper spacing */}
-      <div className="sticky top-0 z-50 bg-gradient-to-b from-blue-100 to-blue-50 py-3 shadow-sm">
+      <div className="sticky top-0 z-50 bg-gradient-to-b from-blue-100 to-blue-50 px-2 py-3 shadow-sm">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
@@ -213,26 +70,99 @@ export default function PaytmApp() {
           </div>
         </div>
 
-        {/* Quick Actions Grid */}
+        {/* Money Transfer */}
         <div className="bg-white rounded-xl p-4">
-          <h3 className="text-2xl font-bold text-gray-900 mb-4">Quick Actions</h3>
+          <h3 className="text-2xl font-bold text-gray-900 mb-4">Money Transfer</h3>
+          <div className="grid grid-cols-4 gap-4 mb-4">
+            <div className="flex flex-col items-center">
+              <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center mb-2">
+                <QrCode className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-sm text-gray-700 text-center">Scan & Pay</span>
+            </div>
+            <div className="flex flex-col items-center">
+              <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center mb-2">
+                <Upload className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-sm text-gray-700 text-center">To Mobile</span>
+            </div>
+            <div className="flex flex-col items-center">
+              <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center mb-2">
+                <Building2 className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-sm text-gray-700 text-center">To Bank A/C</span>
+            </div>
+            <div className="flex flex-col items-center">
+              <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center mb-2">
+                <User className="w-6 h-6 text-white" />
+              </div>
+              <span className="text-sm text-gray-700 text-center">To Self A/c</span>
+            </div>
+          </div>
           <div className="grid grid-cols-4 gap-4">
-            {quickActions.map((action) => (
-              <button
-                key={action.id}
-                onClick={action.action}
-                className="flex flex-col items-center group"
-              >
-                <div className={`w-12 h-12 ${action.color} rounded-xl flex items-center justify-center mb-2 group-hover:scale-105 transition-transform`}>
-                  <div className="text-white">
-                    {action.icon}
-                  </div>
+            <div className="flex flex-col items-center">
+              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-2">
+                <FileText className="w-6 h-6 text-blue-600" />
+              </div>
+              <span className="text-sm text-gray-700 text-center">Balance & History</span>
+            </div>
+            <div className="flex flex-col items-center">
+              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-2">
+                <div className="w-6 h-6 bg-blue-500 rounded flex items-center justify-center">
+                  <QrCode className="w-4 h-4 text-white" />
                 </div>
-                <span className="text-sm text-gray-700 text-center font-medium">
-                  {action.title}
-                </span>
-              </button>
-            ))}
+              </div>
+              <span className="text-sm text-gray-700 text-center">Receive Money</span>
+            </div>
+            <div className="flex flex-col items-center">
+              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-2">
+                <Users className="w-6 h-6 text-blue-600" />
+              </div>
+              <span className="text-sm text-gray-700 text-center">Refer & Win</span>
+            </div>
+            <div className="flex flex-col items-center">
+              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-2">
+                <span className="text-blue-600 font-bold text-lg">⚡</span>
+              </div>
+              <span className="text-sm text-gray-700 text-center">All UPI Services</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Recharge & Bill Payments */}
+        <div className="bg-white rounded-xl p-4">
+          <h3 className="text-2xl font-bold text-gray-900 mb-4">Recharge & Bill Payments</h3>
+          <div className="grid grid-cols-4 gap-4">
+            <div className="flex flex-col items-center">
+              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-2">
+                <Smartphone className="w-6 h-6 text-blue-600" />
+              </div>
+              <span className="text-sm text-gray-700 text-center">Mobile Recharge</span>
+            </div>
+            <div className="flex flex-col items-center">
+              <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-2">
+                <Truck className="w-6 h-6 text-green-600" />
+              </div>
+              <span className="text-sm text-gray-700 text-center">FASTag Recharge</span>
+            </div>
+            <div className="flex flex-col items-center">
+              <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center mb-2">
+                <Lightbulb className="w-6 h-6 text-yellow-600" />
+              </div>
+              <span className="text-sm text-gray-700 text-center">Electricity Bill</span>
+            </div>
+            <div className="flex flex-col items-center">
+              <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center mb-2">
+                <span className="text-red-600 font-bold">Lo</span>
+              </div>
+              <span className="text-sm text-gray-700 text-center">Loan Payments</span>
+            </div>
+          </div>
+          <div className="mt-4">
+            <button className="flex items-center gap-2 text-blue-600 font-medium">
+              <Plus className="w-5 h-5" />
+              Add New or View existing Bills
+            </button>
           </div>
         </div>
       </div>
