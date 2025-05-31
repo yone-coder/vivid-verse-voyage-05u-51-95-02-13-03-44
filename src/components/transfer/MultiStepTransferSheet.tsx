@@ -269,31 +269,6 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
         )}
       </div>
       
-      {/* Transfer Summary Bar */}
-      {transferData.amount && (
-        <div className="px-6 py-3 bg-blue-50 border-b flex items-center justify-between flex-shrink-0">
-          <div className="flex items-center space-x-2">
-            <DollarSign className="h-4 w-4 text-blue-600" />
-            <span className="text-sm font-medium text-blue-900">
-              {currentStep === 5 ? `Sent $${transferData.amount}` : `Sending $${transferData.amount}`}
-            </span>
-          </div>
-          <div className="flex items-center space-x-2 text-xs text-blue-700">
-            {currentStep === 5 ? (
-              <>
-                <CheckCircle className="h-3 w-3 text-green-600" />
-                <span className="text-green-700">Transfer Complete</span>
-              </>
-            ) : (
-              <>
-                <Shield className="h-3 w-3" />
-                <span>Secure Transfer</span>
-              </>
-            )}
-          </div>
-        </div>
-      )}
-      
       {/* Animated Step Indicator - Bottom Nav Style */}
       <div className="px-6 py-4 border-b bg-gray-50 flex-shrink-0">
         <div className="flex items-center justify-between">
