@@ -567,7 +567,6 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
                       title: 'Transfer Receipt',
                       text: `Transfer of $${transferData.amount} to ${transferData.receiverDetails.fullName} completed successfully. Transaction ID: ${transactionId}`,
                     }).catch(() => {
-                      // Fallback for browsers that don't support Web Share API
                       navigator.clipboard?.writeText(`Transaction ID: ${transactionId}`);
                     });
                   }}

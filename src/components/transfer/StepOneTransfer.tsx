@@ -34,7 +34,7 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
   const htgAmount = exchangeRate ? usdAmount * exchangeRate.usdToHtg : 0;
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 max-w-lg mx-auto">
       {/* Exchange Rate Header */}
       <div className="border border-gray-200 rounded-md p-2">
         <div className="flex items-center justify-between">
