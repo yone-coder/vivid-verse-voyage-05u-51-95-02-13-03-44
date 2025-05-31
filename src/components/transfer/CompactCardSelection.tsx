@@ -204,6 +204,4 @@ const CompactCardSelection: React.FC<CompactCardSelectionProps> = ({
   );
 };
 
-
-
-export default Demo;
+export default CompactCardSelection;
