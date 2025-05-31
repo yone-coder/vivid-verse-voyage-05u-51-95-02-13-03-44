@@ -25,67 +25,54 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
   };
 
   return (
-    <div className="space-y-6">
-      <div className="text-center">
-        <h2 className="text-xl font-semibold mb-2">Recipient Information</h2>
-        <p className="text-gray-600 text-sm">
-          Please provide the details of the person who will receive the money in Haiti.
-        </p>
-      </div>
-
-      <div className="bg-white rounded-lg p-4 shadow-sm border space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="fullName">Full Name *</Label>
+    <div className="space-y-4">
+      <div className="space-y-3">
+        <div className="space-y-1.5">
+          <Label htmlFor="fullName" className="text-sm font-medium">Full Name *</Label>
           <Input 
             id="fullName" 
             placeholder="Enter receiver's full name" 
             value={receiverDetails.fullName}
             onChange={(e) => updateField('fullName', e.target.value)}
+            className="h-10"
             required
           />
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="phoneNumber">Phone Number *</Label>
+        <div className="space-y-1.5">
+          <Label htmlFor="phoneNumber" className="text-sm font-medium">Phone Number *</Label>
           <Input 
             id="phoneNumber" 
             placeholder="Enter receiver's phone number" 
             value={receiverDetails.phoneNumber}
             onChange={(e) => updateField('phoneNumber', e.target.value)}
+            className="h-10"
             required
           />
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="address">Address *</Label>
+        <div className="space-y-1.5">
+          <Label htmlFor="address" className="text-sm font-medium">Address *</Label>
           <Textarea 
             id="address" 
-            placeholder="Enter receiver's complete address in Haiti" 
-            className="min-h-[80px]"
+            placeholder="Enter receiver's complete address" 
+            className="min-h-[70px] resize-none"
             value={receiverDetails.address}
             onChange={(e) => updateField('address', e.target.value)}
             required
           />
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="additionalInfo">Additional Information (Optional)</Label>
+        <div className="space-y-1.5">
+          <Label htmlFor="additionalInfo" className="text-sm font-medium">Additional Info</Label>
           <Textarea 
             id="additionalInfo" 
-            placeholder="Any additional information about the receiver or transfer" 
-            className="min-h-[60px]" 
+            placeholder="Optional additional information" 
+            className="min-h-[60px] resize-none" 
             value={receiverDetails.additionalInfo || ''}
             onChange={(e) => updateField('additionalInfo', e.target.value)}
           />
         </div>
-      </div>
-
-      <div className="bg-yellow-50 border border-yellow-200 rounded-md p-4">
-        <h4 className="font-medium text-yellow-800 mb-1">Important Note:</h4>
-        <p className="text-sm text-yellow-700">
-          Please ensure all information is accurate. The recipient will need to provide identification 
-          matching these details to collect the money.
-        </p>
       </div>
     </div>
   );
