@@ -34,13 +34,13 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
   const htgAmount = exchangeRate ? usdAmount * exchangeRate.usdToHtg : 0;
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       {/* Exchange Rate Header */}
-      <div className="border border-gray-200 rounded-lg p-3">
+      <div className="border border-gray-200 rounded-md p-2">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <TrendingUp className="h-4 w-4 text-black" />
-            <span className="text-sm font-medium text-black">Rate</span>
+          <div className="flex items-center gap-1">
+            <TrendingUp className="h-3 w-3 text-black" />
+            <span className="text-xs font-medium text-black">Rate</span>
           </div>
           {isLoading ? (
             <div className="flex items-center gap-1">
@@ -49,11 +49,11 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
             </div>
           ) : (
             <div className="text-right">
-              <div className="text-sm font-bold text-black">
+              <div className="text-xs font-bold text-black">
                 1 USD = {exchangeRate?.usdToHtg.toFixed(2)} HTG
               </div>
               {!exchangeRate?.isLive && (
-                <div className="text-xs text-gray-400">Offline rate</div>
+                <div className="text-xs text-gray-400">Offline</div>
               )}
             </div>
           )}
@@ -61,26 +61,26 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
       </div>
 
       {/* Amount Input */}
-      <div className="border border-gray-200 rounded-lg p-4">
-        <Label htmlFor="amount" className="text-sm font-medium text-black mb-2">
+      <div className="border border-gray-200 rounded-md p-2">
+        <Label htmlFor="amount" className="text-xs font-medium text-black mb-1 block">
           Send Amount
         </Label>
         <div className="relative">
-          <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+          <div className="absolute inset-y-0 left-2 flex items-center pointer-events-none">
             <span className="text-gray-900 font-bold text-lg">$</span>
           </div>
           <Input
             id="amount"
             type="number"
-            className="pl-8 text-2xl font-bold border-0 shadow-none focus-visible:ring-0 bg-white text-black placeholder-gray-400"
+            className="pl-6 text-xl font-bold border-0 shadow-none focus-visible:ring-0 bg-white text-black placeholder-gray-400 h-10"
             placeholder="0.00"
             value={amount}
             onChange={(e) => onAmountChange(e.target.value)}
             min="1"
             step="0.01"
           />
-          <div className="absolute inset-y-0 right-3 flex items-center">
-            <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">
+          <div className="absolute inset-y-0 right-2 flex items-center">
+            <span className="text-xs font-medium text-gray-500 bg-gray-100 px-1 py-0.5 rounded text-xs">
               USD
             </span>
           </div>
@@ -89,11 +89,11 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
 
       {/* Conversion Display */}
       {usdAmount > 0 && exchangeRate && (
-        <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
+        <div className="border border-gray-200 rounded-md p-2 bg-gray-50">
           <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-600">Recipient Gets</span>
+            <span className="text-xs text-gray-600">Recipient Gets</span>
             <div className="text-right">
-              <div className="text-lg font-bold text-black">
+              <div className="text-sm font-bold text-black">
                 {htgAmount.toFixed(2)} HTG
               </div>
               <div className="text-xs text-gray-500">
@@ -105,19 +105,19 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
       )}
 
       {/* Transfer Info */}
-      <div className="border-t border-gray-100 pt-3">
-        <div className="grid grid-cols-3 gap-3 text-center">
+      <div className="border-t border-gray-100 pt-2">
+        <div className="grid grid-cols-3 gap-2 text-center">
           <div>
             <div className="text-xs text-gray-500">Fee</div>
-            <div className="text-sm font-medium text-black">Included</div>
+            <div className="text-xs font-medium text-black">Included</div>
           </div>
           <div>
             <div className="text-xs text-gray-500">Time</div>
-            <div className="text-sm font-medium text-black">24-48h</div>
+            <div className="text-xs font-medium text-black">24-48h</div>
           </div>
           <div>
             <div className="text-xs text-gray-500">Security</div>
-            <div className="text-sm font-medium text-black">Encrypted</div>
+            <div className="text-xs font-medium text-black">Encrypted</div>
           </div>
         </div>
       </div>
