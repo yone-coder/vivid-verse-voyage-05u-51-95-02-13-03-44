@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, Clock, CheckCircle, Receipt } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -9,6 +8,7 @@ import StepTwoTransfer from '@/components/transfer/StepTwoTransfer';
 import StepThreeTransfer from '@/components/transfer/StepThreeTransfer';
 import PaymentMethodList from '@/components/transfer/PaymentMethodList';
 import PayPalHostedCheckout from '@/components/transfer/PayPalHostedCheckout';
+import CompactCardSelection from '@/components/transfer/CompactCardSelection';
 import { internationalPaymentMethods } from '@/components/transfer/PaymentMethods';
 
 export interface TransferData {
@@ -346,24 +346,26 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
           )}
           
           {currentStep === 3 && (
-            <div className="space-y-4">
-              <div className="text-center mb-4">
-                <p className="text-gray-600">
-                  Choose how you'd like to send ${transferData.amount} to {transferData.receiverDetails.fullName}
+            <div className="space-y-6">
+              <div className="text-center mb-6">
+                <h2 className="text-lg font-semibold text-gray-900 mb-2">Choose Payment Method</h2>
+                <p className="text-sm text-gray-600">
+                  Sending ${transferData.amount} to {transferData.receiverDetails.fullName}
                 </p>
               </div>
               
-              <PaymentMethodList
-                methods={internationalPaymentMethods}
-                selectedMethod={transferData.selectedPaymentMethod || null}
+              <CompactCardSelection
+                selectedMethod={transferData.selectedPaymentMethod}
                 onMethodChange={handlePaymentMethodChange}
               />
               
-              <div className="bg-yellow-50 rounded-lg p-4 flex items-start space-x-3">
-                <Shield className="h-5 w-5 text-yellow-600 mt-0.5" />
-                <div>
-                  <h4 className="font-medium text-yellow-900">Payment Security</h4>
-                  <p className="text-sm text-yellow-700">All payment methods are secured with bank-level encryption</p>
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                <div className="flex items-center space-x-2">
+                  <Shield className="h-4 w-4 text-blue-600 flex-shrink-0" />
+                  <div>
+                    <p className="text-xs font-medium text-blue-800">Bank-Level Security</p>
+                    <p className="text-xs text-blue-600">Your payment information is fully encrypted and protected</p>
+                  </div>
                 </div>
               </div>
             </div>
