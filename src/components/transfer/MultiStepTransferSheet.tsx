@@ -163,7 +163,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
                               transferData.receiverDetails.address;
   const canProceedFromStep3 = transferData.selectedPaymentMethod;
 
-  const stepLabels = ['Amount', 'Recipient', 'Payment Method', 'Payment', 'Receipt'];
+  const stepTitles = ['Send Money', 'Recipient Details', 'Payment Method', 'Review & Pay', 'Transfer Complete'];
 
   // Animation variants for step indicator - similar to bottom nav
   const stepVariants = {
@@ -240,23 +240,17 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
         isFullHeight ? 'h-screen' : 'h-[95vh]'
       }`}
     >
-      {/* Draggable Header Bar */}
-      <div 
-        className="flex flex-col items-center py-4 bg-gray-50 rounded-t-lg border-b flex-shrink-0 cursor-grab active:cursor-grabbing"
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        onMouseDown={handleMouseDown}
-        onMouseMove={isDragging ? handleMouseMove : undefined}
-        onMouseUp={handleMouseUp}
-      >
-        <div className="w-12 h-1 bg-gray-300 rounded-full"></div>
+      {/* Header with Title */}
+      <div className="flex items-center justify-between py-4 px-4 bg-white rounded-t-lg flex-shrink-0">
+        <h1 className="text-xl font-semibold text-gray-900">
+          {stepTitles[currentStep - 1]}
+        </h1>
         
         <Button 
           variant="ghost" 
           size="sm" 
           onClick={onClose}
-          className="absolute top-3 right-3 h-8 w-8 p-0 hover:bg-gray-200 transition-colors"
+          className="h-8 w-8 p-0 hover:bg-gray-200 transition-colors"
         >
           <X className="h-4 w-4" />
         </Button>
@@ -273,8 +267,8 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
         )}
       </div>
       
-      {/* Animated Step Indicator - Fixed padding */}
-      <div className="px-4 py-3 border-b bg-gray-50 flex-shrink-0">
+      {/* Animated Step Indicator - Removed background and border */}
+      <div className="px-4 py-3 flex-shrink-0">
         <div className="flex items-center justify-between">
           {[1, 2, 3, 4, 5].map((step, index) => (
             <React.Fragment key={step}>
@@ -337,7 +331,6 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
           {currentStep === 1 && (
             <div className="space-y-4">
               <div className="text-center mb-4">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Send Money</h2>
                 <p className="text-gray-600">Enter the amount you want to send</p>
               </div>
               
@@ -351,7 +344,6 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
           {currentStep === 2 && (
             <div className="space-y-4">
               <div className="text-center mb-4">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Recipient Details</h2>
                 <p className="text-gray-600">Who are you sending ${transferData.amount} to?</p>
               </div>
               
@@ -375,7 +367,6 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
           {currentStep === 3 && (
             <div className="space-y-4">
               <div className="text-center mb-4">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Payment Method</h2>
                 <p className="text-gray-600">
                   Choose how you'd like to send ${transferData.amount} to {transferData.receiverDetails.fullName}
                 </p>
@@ -400,7 +391,6 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
           {currentStep === 4 && (
             <div className="space-y-4">
               <div className="text-center mb-4">
-                <h2 className="text-xl font-bold text-gray-900 mb-1">Review & Pay</h2>
                 <p className="text-gray-600 text-sm">Review your transfer details before proceeding</p>
               </div>
               
@@ -449,7 +439,6 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
                 <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <CheckCircle className="h-8 w-8 text-green-600" />
                 </div>
-                <h2 className="text-2xl font-bold text-green-800 mb-2">Transfer Complete!</h2>
                 <p className="text-gray-600">Your money has been sent successfully</p>
               </div>
               
