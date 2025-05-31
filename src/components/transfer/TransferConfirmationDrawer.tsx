@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import {
@@ -67,7 +66,7 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
     );
   }
 
-  // Calculate fees based on method and transfer type
+  // calculateFee function
   const calculateFee = () => {
     if (transferType === 'international') {
       switch (selectedMethod.id) {
@@ -98,7 +97,7 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
     }
   };
 
-  // Calculate total with the updated fee structure
+  // calculateTotal function
   const calculateTotal = () => {
     if (transferType === 'international') {
       switch (selectedMethod.id) {
@@ -132,7 +131,7 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
     }
   };
 
-  // Handle MonCash payment process
+  // handleMonCashPayment and handleCreditCardPayment functions
   const handleMonCashPayment = async () => {
     if (transferType !== 'national' || selectedMethod.id !== 'moncash') {
       onContinue();
@@ -192,7 +191,6 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
     }
   };
 
-  // Handle PayPal credit card payment
   const handleCreditCardPayment = async () => {
     if (transferType !== 'international' || selectedMethod.id !== 'credit-card') {
       onContinue();
@@ -224,7 +222,6 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
       const orderData = await response.json();
       console.log('PayPal order created:', orderData);
 
-      // Find the approval URL from PayPal response - look for both 'approve' and 'payer-action'
       const approvalUrl = orderData.links?.find((link: any) => 
         link.rel === 'approve' || link.rel === 'payer-action'
       )?.href;
@@ -234,7 +231,6 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
         throw new Error('No approval URL received from PayPal');
       }
 
-      // Redirect to PayPal for payment
       window.location.href = approvalUrl;
 
     } catch (error) {
@@ -248,7 +244,7 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
     }
   };
 
-  // Validate receiver details for all transfers
+  // validation and continue handlers
   const isReceiverDetailsValid = () => {
     if (!receiverDetails) return false;
 
@@ -256,13 +252,11 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
     return fullName.trim() !== '' && phoneNumber.trim() !== '' && address.trim() !== '';
   };
 
-  // Handle payment method selection and routing - ALL transfers now require receiver details
   const handlePaymentContinue = () => {
-    // All transfers (both international and national) now require receiver details
     setStep('receiverDetails');
   };
 
-  // Render summary step
+  // render steps - summary, receiverDetails, confirmation
   if (step === 'summary') {
     return (
       <DrawerContent>
@@ -308,7 +302,6 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
     );
   }
 
-  // Render receiver details step
   if (step === 'receiverDetails') {
     return (
       <DrawerContent>
@@ -340,7 +333,6 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
     );
   }
 
-  // Render confirmation step with payment integration
   return (
     <DrawerContent>
       <DrawerHeader>
@@ -380,7 +372,6 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
           </div>
         )}
 
-        {/* Credit Card payment button for international transfers */}
         {transferType === 'international' && selectedMethod.id === 'credit-card' && (
           <div className="mb-4">
             <Button 
@@ -401,7 +392,6 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
           </div>
         )}
 
-        {/* MonCash payment button for national transfers */}
         {transferType === 'national' && selectedMethod.id === 'moncash' && (
           <div className="mb-4">
             <Button 
