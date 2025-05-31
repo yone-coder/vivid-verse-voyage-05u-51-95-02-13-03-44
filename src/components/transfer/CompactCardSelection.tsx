@@ -44,24 +44,6 @@ const paymentMethods = [
     bgColor: 'bg-gradient-to-r from-blue-600 to-blue-800',
     textColor: 'text-white',
     processingTime: 'Instant'
-  },
-  {
-    id: 'venmo',
-    name: 'Venmo',
-    description: 'Quick Venmo payment',
-    icon: VenmoLogo,
-    bgColor: 'bg-gradient-to-r from-blue-400 to-blue-600',
-    textColor: 'text-white',
-    processingTime: 'Instant'
-  },
-  {
-    id: 'bank-transfer',
-    name: 'Bank Transfer',
-    description: 'Direct bank transfer',
-    icon: Building2,
-    bgColor: 'bg-gradient-to-r from-green-600 to-green-800',
-    textColor: 'text-white',
-    processingTime: '1-2 days'
   }
 ];
 
@@ -85,7 +67,7 @@ const CompactCardSelection: React.FC<CompactCardSelectionProps> = ({
   onMethodChange
 }) => {
   return (
-    <div className="space-y-3 max-w-sm mx-auto">
+    <div className="space-y-3 max-w-sm mx-auto px-2">
       <div className="text-center mb-4">
         <div className="flex items-center justify-center mb-2">
           <CreditCard className="h-4 w-4 text-gray-600 mr-2" />
