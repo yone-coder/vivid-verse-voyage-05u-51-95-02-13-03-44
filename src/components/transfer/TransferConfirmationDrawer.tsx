@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import {
+  Drawer,
   DrawerContent,
   DrawerDescription,
   DrawerFooter,
@@ -49,20 +50,22 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
   // If method is unavailable, show an error message
   if (!isMethodAvailable) {
     return (
-      <DrawerContent>
-        <DrawerHeader>
-          <DrawerTitle>Payment Method Unavailable</DrawerTitle>
-          <DrawerDescription>
-            {selectedMethod.unavailableReason || "This payment method is currently unavailable."}
-          </DrawerDescription>
-        </DrawerHeader>
-        <div className="px-4 py-6 flex flex-col items-center">
-          <AlertCircle className="h-16 w-16 text-red-500 mb-4" />
-          <p className="text-center text-gray-700">
-            Please select MonCash as your payment method for national transfers at this time.
-          </p>
-        </div>
-      </DrawerContent>
+      <Drawer open={isOpen} onOpenChange={onOpenChange}>
+        <DrawerContent>
+          <DrawerHeader>
+            <DrawerTitle>Payment Method Unavailable</DrawerTitle>
+            <DrawerDescription>
+              {selectedMethod.unavailableReason || "This payment method is currently unavailable."}
+            </DrawerDescription>
+          </DrawerHeader>
+          <div className="px-4 py-6 flex flex-col items-center">
+            <AlertCircle className="h-16 w-16 text-red-500 mb-4" />
+            <p className="text-center text-gray-700">
+              Please select MonCash as your payment method for national transfers at this time.
+            </p>
+          </div>
+        </DrawerContent>
+      </Drawer>
     );
   }
 
@@ -259,11 +262,91 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
   // render steps - summary, receiverDetails, confirmation
   if (step === 'summary') {
     return (
+      <Drawer open={isOpen} onOpenChange={onOpenChange}>
+        <DrawerContent>
+          <DrawerHeader>
+            <DrawerTitle>Confirm Money Transfer</DrawerTitle>
+            <DrawerDescription>
+              You're about to send {currencySymbol}{amount} to Haiti using {selectedMethod.name}
+            </DrawerDescription>
+          </DrawerHeader>
+          <div className="px-4">
+            <div className="rounded-lg border p-4 mb-4">
+              <div className="flex justify-between mb-2">
+                <span className="text-gray-500">Amount:</span>
+                <span className="font-medium">{currencySymbol}{amount}</span>
+              </div>
+              <div className="flex justify-between mb-2">
+                <span className="text-gray-500">Fee:</span>
+                <span className="font-medium">{calculateFee()}</span>
+              </div>
+              <div className="border-t my-2"></div>
+              <div className="flex justify-between font-bold">
+                <span>Total:</span>
+                <span>{calculateTotal()}</span>
+              </div>
+            </div>
+          </div>
+          <DrawerFooter>
+            <Button 
+              onClick={handlePaymentContinue} 
+              disabled={isLoading || isProcessing}
+            >
+              {isLoading || isProcessing ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                'Continue to Receiver Details'
+              )}
+            </Button>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+    );
+  }
+
+  if (step === 'receiverDetails') {
+    return (
+      <Drawer open={isOpen} onOpenChange={onOpenChange}>
+        <DrawerContent>
+          <DrawerHeader>
+            <DrawerTitle>Receiver Details</DrawerTitle>
+            <DrawerDescription>
+              Please provide details about who will receive the money in Haiti
+            </DrawerDescription>
+          </DrawerHeader>
+          <div className="px-4">
+            <ReceiverDetailsForm 
+              onDetailsChange={setReceiverDetails} 
+              amount={amount} 
+            />
+          </div>
+          <DrawerFooter>
+            <Button 
+              onClick={() => setStep('confirmation')} 
+              disabled={!isReceiverDetailsValid()}
+            >
+              Continue to Payment
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+            <Button variant="outline" onClick={() => setStep('summary')}>
+              Back
+            </Button>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+    );
+  }
+
+  return (
+    <Drawer open={isOpen} onOpenChange={onOpenChange}>
       <DrawerContent>
         <DrawerHeader>
-          <DrawerTitle>Confirm Money Transfer</DrawerTitle>
+          <DrawerTitle>Complete Payment</DrawerTitle>
           <DrawerDescription>
-            You're about to send {currencySymbol}{amount} to Haiti using {selectedMethod.name}
+            Review your transfer details and complete the payment
           </DrawerDescription>
         </DrawerHeader>
         <div className="px-4">
@@ -282,142 +365,68 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
               <span>{calculateTotal()}</span>
             </div>
           </div>
-        </div>
-        <DrawerFooter>
-          <Button 
-            onClick={handlePaymentContinue} 
-            disabled={isLoading || isProcessing}
-          >
-            {isLoading || isProcessing ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Processing...
-              </>
-            ) : (
-              'Continue to Receiver Details'
-            )}
-          </Button>
-        </DrawerFooter>
-      </DrawerContent>
-    );
-  }
 
-  if (step === 'receiverDetails') {
-    return (
-      <DrawerContent>
-        <DrawerHeader>
-          <DrawerTitle>Receiver Details</DrawerTitle>
-          <DrawerDescription>
-            Please provide details about who will receive the money in Haiti
-          </DrawerDescription>
-        </DrawerHeader>
-        <div className="px-4">
-          <ReceiverDetailsForm 
-            onDetailsChange={setReceiverDetails} 
-            amount={amount} 
-          />
-        </div>
-        <DrawerFooter>
-          <Button 
-            onClick={() => setStep('confirmation')} 
-            disabled={!isReceiverDetailsValid()}
-          >
-            Continue to Payment
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
-          <Button variant="outline" onClick={() => setStep('summary')}>
-            Back
-          </Button>
-        </DrawerFooter>
-      </DrawerContent>
-    );
-  }
-
-  return (
-    <DrawerContent>
-      <DrawerHeader>
-        <DrawerTitle>Complete Payment</DrawerTitle>
-        <DrawerDescription>
-          Review your transfer details and complete the payment
-        </DrawerDescription>
-      </DrawerHeader>
-      <div className="px-4">
-        <div className="rounded-lg border p-4 mb-4">
-          <div className="flex justify-between mb-2">
-            <span className="text-gray-500">Amount:</span>
-            <span className="font-medium">{currencySymbol}{amount}</span>
-          </div>
-          <div className="flex justify-between mb-2">
-            <span className="text-gray-500">Fee:</span>
-            <span className="font-medium">{calculateFee()}</span>
-          </div>
-          <div className="border-t my-2"></div>
-          <div className="flex justify-between font-bold">
-            <span>Total:</span>
-            <span>{calculateTotal()}</span>
-          </div>
-        </div>
-
-        {receiverDetails && (
-          <div className="rounded-lg border p-4 mb-4">
-            <h4 className="font-medium mb-2">Receiver Details</h4>
-            <div className="space-y-1 text-sm">
-              <p><span className="text-gray-500">Name:</span> {receiverDetails.fullName}</p>
-              <p><span className="text-gray-500">Phone:</span> {receiverDetails.phoneNumber}</p>
-              <p><span className="text-gray-500">Address:</span> {receiverDetails.address}</p>
-              {receiverDetails.additionalInfo && (
-                <p><span className="text-gray-500">Additional Info:</span> {receiverDetails.additionalInfo}</p>
-              )}
+          {receiverDetails && (
+            <div className="rounded-lg border p-4 mb-4">
+              <h4 className="font-medium mb-2">Receiver Details</h4>
+              <div className="space-y-1 text-sm">
+                <p><span className="text-gray-500">Name:</span> {receiverDetails.fullName}</p>
+                <p><span className="text-gray-500">Phone:</span> {receiverDetails.phoneNumber}</p>
+                <p><span className="text-gray-500">Address:</span> {receiverDetails.address}</p>
+                {receiverDetails.additionalInfo && (
+                  <p><span className="text-gray-500">Additional Info:</span> {receiverDetails.additionalInfo}</p>
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {transferType === 'international' && selectedMethod.id === 'credit-card' && (
-          <div className="mb-4">
-            <Button 
-              onClick={handleCreditCardPayment} 
-              disabled={isProcessing}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-              size="lg"
-            >
-              {isProcessing ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Creating PayPal Order...
-                </>
-              ) : (
-                'Complete Credit Card Payment'
-              )}
-            </Button>
-          </div>
-        )}
+          {transferType === 'international' && selectedMethod.id === 'credit-card' && (
+            <div className="mb-4">
+              <Button 
+                onClick={handleCreditCardPayment} 
+                disabled={isProcessing}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                size="lg"
+              >
+                {isProcessing ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Creating PayPal Order...
+                  </>
+                ) : (
+                  'Complete Credit Card Payment'
+                )}
+              </Button>
+            </div>
+          )}
 
-        {transferType === 'national' && selectedMethod.id === 'moncash' && (
-          <div className="mb-4">
-            <Button 
-              onClick={handleMonCashPayment} 
-              disabled={isProcessing}
-              className="w-full bg-red-600 hover:bg-red-700 text-white"
-              size="lg"
-            >
-              {isProcessing ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Processing MonCash Payment...
-                </>
-              ) : (
-                'Complete MonCash Payment'
-              )}
-            </Button>
-          </div>
-        )}
-      </div>
-      <DrawerFooter>
-        <Button variant="outline" onClick={() => setStep('receiverDetails')}>
-          Back to Receiver Details
-        </Button>
-      </DrawerFooter>
-    </DrawerContent>
+          {transferType === 'national' && selectedMethod.id === 'moncash' && (
+            <div className="mb-4">
+              <Button 
+                onClick={handleMonCashPayment} 
+                disabled={isProcessing}
+                className="w-full bg-red-600 hover:bg-red-700 text-white"
+                size="lg"
+              >
+                {isProcessing ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Processing MonCash Payment...
+                  </>
+                ) : (
+                  'Complete MonCash Payment'
+                )}
+              </Button>
+            </div>
+          )}
+        </div>
+        <DrawerFooter>
+          <Button variant="outline" onClick={() => setStep('receiverDetails')}>
+            Back to Receiver Details
+          </Button>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
   );
 };
 
