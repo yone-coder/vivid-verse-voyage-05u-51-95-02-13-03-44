@@ -23,7 +23,7 @@ const paymentMethods = [
     id: 'paypal',
     name: 'PayPal',
     description: 'Pay with your PayPal account',
-    icon: '🅿️',
+    logoUrl: 'https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png',
     bgColor: 'bg-blue-600',
     textColor: 'text-white',
     processingTime: 'Instant'
@@ -32,7 +32,7 @@ const paymentMethods = [
     id: 'venmo',
     name: 'Venmo',
     description: 'Quick payment with Venmo',
-    icon: '💙',
+    logoUrl: 'https://cdn.worldvectorlogo.com/logos/venmo-2.svg',
     bgColor: 'bg-blue-400',
     textColor: 'text-white',
     processingTime: 'Instant'
@@ -49,10 +49,26 @@ const paymentMethods = [
 ];
 
 const cardLogos = [
-  { name: 'Visa', emoji: '💳', color: 'text-blue-600' },
-  { name: 'Mastercard', emoji: '💳', color: 'text-red-600' },
-  { name: 'Amex', emoji: '💳', color: 'text-green-600' },
-  { name: 'Discover', emoji: '💳', color: 'text-orange-600' }
+  { 
+    name: 'Visa', 
+    logoUrl: 'https://usa.visa.com/dam/VCOM/regional/ve/romania/blogs/hero-image/visa-logo-800x450.jpg',
+    color: 'text-blue-600' 
+  },
+  { 
+    name: 'Mastercard', 
+    logoUrl: 'https://brand.mastercard.com/content/dam/mccom/brandcenter/thumbnails/mastercard_vrt_pos_92px_2x.png',
+    color: 'text-red-600' 
+  },
+  { 
+    name: 'Amex', 
+    logoUrl: 'https://logos-world.net/wp-content/uploads/2020/04/American-Express-Logo.png',
+    color: 'text-green-600' 
+  },
+  { 
+    name: 'Discover', 
+    logoUrl: 'https://logos-world.net/wp-content/uploads/2020/04/Discover-Logo.png',
+    color: 'text-orange-600' 
+  }
 ];
 
 const CompactCardSelection: React.FC<CompactCardSelectionProps> = ({
@@ -89,10 +105,23 @@ const CompactCardSelection: React.FC<CompactCardSelectionProps> = ({
                   w-12 h-12 rounded-lg flex items-center justify-center text-lg flex-shrink-0
                   ${method.bgColor} ${method.textColor}
                 `}>
-                  {typeof method.icon === 'string' ? (
-                    method.icon
+                  {method.logoUrl ? (
+                    <img 
+                      src={method.logoUrl} 
+                      alt={method.name}
+                      className="w-8 h-8 object-contain"
+                      onError={(e) => {
+                        // Fallback to icon if logo fails to load
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                        target.nextElementSibling?.classList.remove('hidden');
+                      }}
+                    />
                   ) : (
                     <method.icon className="h-6 w-6" />
+                  )}
+                  {method.logoUrl && (
+                    <method.icon className="h-6 w-6 hidden" />
                   )}
                 </div>
                 
@@ -114,8 +143,21 @@ const CompactCardSelection: React.FC<CompactCardSelectionProps> = ({
                   {method.hasSubOptions && (
                     <div className="flex items-center space-x-2 mt-2">
                       {cardLogos.map((card, index) => (
-                        <div key={index} className={`text-sm ${card.color}`}>
-                          {card.emoji}
+                        <div key={index} className="w-6 h-4 flex items-center justify-center">
+                          <img 
+                            src={card.logoUrl} 
+                            alt={card.name}
+                            className="max-w-full max-h-full object-contain"
+                            onError={(e) => {
+                              // Fallback to text if logo fails to load
+                              const target = e.target as HTMLImageElement;
+                              target.style.display = 'none';
+                              const parent = target.parentElement;
+                              if (parent) {
+                                parent.innerHTML = `<span class="text-xs ${card.color}">${card.name}</span>`;
+                              }
+                            }}
+                          />
                         </div>
                       ))}
                       <span className="text-xs text-gray-500 ml-1">and more</span>
