@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, ArrowLeft, X, DollarSign, User, CreditCard, Shield, Clock, CheckCircle, Receipt } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -304,7 +305,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
                         <Receipt className="h-3 w-3" />
                       )}
                       <span className="font-medium whitespace-nowrap text-xs">
-                        {stepLabels[index]}
+                        {stepTitles[index].split(' ')[0]}
                       </span>
                     </div>
                   ) : (
