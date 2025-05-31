@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Users, Lightbulb, Truck, Plus, Send } from 'lucide-react';
+import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Users, Lightbulb, Truck, Plus, Send, Eye, DollarSign, Calculator, History, UserPlus, Shield, CreditCard, HelpCircle, Globe } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import MultiStepTransferSheet from '@/components/transfer/MultiStepTransferSheet';
 
@@ -23,6 +23,62 @@ export default function PaytmApp() {
 
     return () => clearInterval(interval);
   }, [bannerImages.length]);
+
+  // Action button categories
+  const transferMoneyActions = [
+    { id: 'send', icon: Send, label: 'Send', description: 'Start a new money transfer' },
+    { id: 'track', icon: Eye, label: 'Track', description: 'Track transfer status' },
+    { id: 'rates', icon: DollarSign, label: 'Rates', description: 'View live exchange rates' },
+    { id: 'fees', icon: Calculator, label: 'Fees', description: 'Access the fee calculator' },
+    { id: 'history', icon: History, label: 'History', description: 'View past transactions' },
+  ];
+
+  const recipientsAccountActions = [
+    { id: 'add', icon: Plus, label: 'Add', description: 'Add a new recipient' },
+    { id: 'manage', icon: Users, label: 'Manage', description: 'Manage recipients or settings' },
+    { id: 'profile', icon: User, label: 'Profile', description: 'Go to user account settings' },
+    { id: 'verify', icon: Shield, label: 'Verify', description: 'Start identity verification' },
+    { id: 'secure', icon: Shield, label: 'Secure', description: 'Access security settings' },
+  ];
+
+  const walletBalanceActions = [
+    { id: 'topup', icon: Plus, label: 'Topup', description: 'Add funds to your wallet' },
+    { id: 'balance', icon: DollarSign, label: 'Balance', description: 'Check wallet balance' },
+    { id: 'withdraw', icon: Upload, label: 'Withdraw', description: 'Withdraw money from wallet' },
+  ];
+
+  const appDeviceActions = [
+    { id: 'app', icon: Smartphone, label: 'App', description: 'Download mobile app' },
+    { id: 'notify', icon: Bell, label: 'Notify', description: 'Manage notifications' },
+  ];
+
+  const helpExtrasActions = [
+    { id: 'help', icon: HelpCircle, label: 'Help', description: 'Get support or open chat' },
+    { id: 'refer', icon: Users, label: 'Refer', description: 'Invite a friend / referral system' },
+    { id: 'login', icon: User, label: 'Login', description: 'Sign in' },
+    { id: 'signup', icon: UserPlus, label: 'Signup', description: 'Create account' },
+    { id: 'lang', icon: Globe, label: 'Lang', description: 'Toggle language' },
+  ];
+
+  const handleActionClick = (actionId: string) => {
+    if (actionId === 'send') {
+      setIsSheetOpen(true);
+    } else {
+      console.log(`Action clicked: ${actionId}`);
+    }
+  };
+
+  const ActionButton = ({ action }: { action: any }) => (
+    <div 
+      className="flex flex-col items-center cursor-pointer"
+      onClick={() => handleActionClick(action.id)}
+    >
+      <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center mb-2">
+        <action.icon className="w-6 h-6 text-white" />
+      </div>
+      <span className="text-sm text-gray-700 text-center">{action.label}</span>
+    </div>
+  );
 
   return (
     <div className="max-w-sm mx-auto bg-gradient-to-b from-blue-100 to-blue-50 min-h-screen">
@@ -70,99 +126,53 @@ export default function PaytmApp() {
           </div>
         </div>
 
-        {/* Money Transfer */}
+        {/* Transfer & Money */}
         <div className="bg-white rounded-xl p-4">
-          <h3 className="text-2xl font-bold text-gray-900 mb-4">Money Transfer</h3>
-          <div className="grid grid-cols-4 gap-4 mb-4">
-            <div className="flex flex-col items-center">
-              <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center mb-2">
-                <QrCode className="w-6 h-6 text-white" />
-              </div>
-              <span className="text-sm text-gray-700 text-center">Scan & Pay</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center mb-2">
-                <Upload className="w-6 h-6 text-white" />
-              </div>
-              <span className="text-sm text-gray-700 text-center">To Mobile</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center mb-2">
-                <Building2 className="w-6 h-6 text-white" />
-              </div>
-              <span className="text-sm text-gray-700 text-center">To Bank A/C</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <div className="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center mb-2">
-                <User className="w-6 h-6 text-white" />
-              </div>
-              <span className="text-sm text-gray-700 text-center">To Self A/c</span>
-            </div>
-          </div>
-          <div className="grid grid-cols-4 gap-4">
-            <div className="flex flex-col items-center">
-              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-2">
-                <FileText className="w-6 h-6 text-blue-600" />
-              </div>
-              <span className="text-sm text-gray-700 text-center">Balance & History</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-2">
-                <div className="w-6 h-6 bg-blue-500 rounded flex items-center justify-center">
-                  <QrCode className="w-4 h-4 text-white" />
-                </div>
-              </div>
-              <span className="text-sm text-gray-700 text-center">Receive Money</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-2">
-                <Users className="w-6 h-6 text-blue-600" />
-              </div>
-              <span className="text-sm text-gray-700 text-center">Refer & Win</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-2">
-                <span className="text-blue-600 font-bold text-lg">⚡</span>
-              </div>
-              <span className="text-sm text-gray-700 text-center">All UPI Services</span>
-            </div>
+          <h3 className="text-2xl font-bold text-gray-900 mb-4">🔄 Transfer & Money</h3>
+          <div className="grid grid-cols-3 gap-4">
+            {transferMoneyActions.map((action) => (
+              <ActionButton key={action.id} action={action} />
+            ))}
           </div>
         </div>
 
-        {/* Recharge & Bill Payments */}
+        {/* Recipients & Account */}
         <div className="bg-white rounded-xl p-4">
-          <h3 className="text-2xl font-bold text-gray-900 mb-4">Recharge & Bill Payments</h3>
-          <div className="grid grid-cols-4 gap-4">
-            <div className="flex flex-col items-center">
-              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-2">
-                <Smartphone className="w-6 h-6 text-blue-600" />
-              </div>
-              <span className="text-sm text-gray-700 text-center">Mobile Recharge</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-2">
-                <Truck className="w-6 h-6 text-green-600" />
-              </div>
-              <span className="text-sm text-gray-700 text-center">FASTag Recharge</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center mb-2">
-                <Lightbulb className="w-6 h-6 text-yellow-600" />
-              </div>
-              <span className="text-sm text-gray-700 text-center">Electricity Bill</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center mb-2">
-                <span className="text-red-600 font-bold">Lo</span>
-              </div>
-              <span className="text-sm text-gray-700 text-center">Loan Payments</span>
-            </div>
+          <h3 className="text-2xl font-bold text-gray-900 mb-4">🧾 Recipients & Account</h3>
+          <div className="grid grid-cols-3 gap-4">
+            {recipientsAccountActions.map((action) => (
+              <ActionButton key={action.id} action={action} />
+            ))}
           </div>
-          <div className="mt-4">
-            <button className="flex items-center gap-2 text-blue-600 font-medium">
-              <Plus className="w-5 h-5" />
-              Add New or View existing Bills
-            </button>
+        </div>
+
+        {/* Wallet & Balance */}
+        <div className="bg-white rounded-xl p-4">
+          <h3 className="text-2xl font-bold text-gray-900 mb-4">💰 Wallet & Balance</h3>
+          <div className="grid grid-cols-3 gap-4">
+            {walletBalanceActions.map((action) => (
+              <ActionButton key={action.id} action={action} />
+            ))}
+          </div>
+        </div>
+
+        {/* App & Device */}
+        <div className="bg-white rounded-xl p-4">
+          <h3 className="text-2xl font-bold text-gray-900 mb-4">📱 App & Device</h3>
+          <div className="grid grid-cols-3 gap-4">
+            {appDeviceActions.map((action) => (
+              <ActionButton key={action.id} action={action} />
+            ))}
+          </div>
+        </div>
+
+        {/* Help & Extras */}
+        <div className="bg-white rounded-xl p-4">
+          <h3 className="text-2xl font-bold text-gray-900 mb-4">🔒 Help & Extras</h3>
+          <div className="grid grid-cols-3 gap-4">
+            {helpExtrasActions.map((action) => (
+              <ActionButton key={action.id} action={action} />
+            ))}
           </div>
         </div>
       </div>
