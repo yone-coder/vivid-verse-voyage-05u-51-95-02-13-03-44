@@ -255,20 +255,9 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
         >
           <X className="h-4 w-4" />
         </Button>
-
-        {isFullHeight && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setIsFullHeight(false)}
-            className="absolute top-3 left-3 h-8 w-8 p-0 hover:bg-gray-200 transition-colors"
-          >
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-        )}
       </div>
       
-      {/* Animated Step Indicator - Removed background and border */}
+      {/* Animated Step Indicator */}
       <div className="px-4 py-3 flex-shrink-0">
         <div className="flex items-center justify-between">
           {[1, 2, 3, 4, 5].map((step, index) => (
@@ -549,30 +538,42 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
       {currentStep < 5 && (
         <div className="fixed bottom-0 left-0 right-0 border-t bg-white px-4 py-3 z-[60] shadow-lg">
           <div className="flex gap-3 max-w-md mx-auto">
-            <Button 
-              variant="outline" 
-              onClick={currentStep === 1 ? onClose : handlePreviousStep}
-              className="flex-1 transition-all duration-200"
-            >
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              {currentStep === 1 ? 'Cancel' : 'Previous'}
-            </Button>
-            
-            {currentStep < 4 ? (
+            {currentStep === 1 ? (
               <Button 
                 onClick={handleNextStep}
-                disabled={
-                  (currentStep === 1 && !canProceedFromStep1) ||
-                  (currentStep === 2 && !canProceedFromStep2) ||
-                  (currentStep === 3 && !canProceedFromStep3)
-                }
+                disabled={!canProceedFromStep1}
                 className="flex-1 transition-all duration-200"
               >
-                Next
+                Continue
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             ) : (
-              <div className="flex-1"></div>
+              <>
+                <Button 
+                  variant="outline" 
+                  onClick={handlePreviousStep}
+                  className="flex-1 transition-all duration-200"
+                >
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Previous
+                </Button>
+                
+                {currentStep < 4 ? (
+                  <Button 
+                    onClick={handleNextStep}
+                    disabled={
+                      (currentStep === 2 && !canProceedFromStep2) ||
+                      (currentStep === 3 && !canProceedFromStep3)
+                    }
+                    className="flex-1 transition-all duration-200"
+                  >
+                    Next
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                ) : (
+                  <div className="flex-1"></div>
+                )}
+              </>
             )}
           </div>
         </div>
