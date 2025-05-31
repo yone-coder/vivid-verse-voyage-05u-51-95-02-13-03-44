@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import {
@@ -51,7 +52,7 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
   if (!isMethodAvailable) {
     return (
       <Drawer open={isOpen} onOpenChange={onOpenChange}>
-        <DrawerContent>
+        <DrawerContent className="max-h-[90vh]">
           <DrawerHeader>
             <DrawerTitle>Payment Method Unavailable</DrawerTitle>
             <DrawerDescription>
@@ -263,7 +264,7 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
   if (step === 'summary') {
     return (
       <Drawer open={isOpen} onOpenChange={onOpenChange}>
-        <DrawerContent>
+        <DrawerContent className="max-h-[90vh]">
           <DrawerHeader>
             <DrawerTitle>Confirm Money Transfer</DrawerTitle>
             <DrawerDescription>
@@ -310,7 +311,7 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
   if (step === 'receiverDetails') {
     return (
       <Drawer open={isOpen} onOpenChange={onOpenChange}>
-        <DrawerContent>
+        <DrawerContent className="max-h-[90vh]">
           <DrawerHeader>
             <DrawerTitle>Receiver Details</DrawerTitle>
             <DrawerDescription>
@@ -342,7 +343,7 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
 
   return (
     <Drawer open={isOpen} onOpenChange={onOpenChange}>
-      <DrawerContent>
+      <DrawerContent className="max-h-[90vh]">
         <DrawerHeader>
           <DrawerTitle>Complete Payment</DrawerTitle>
           <DrawerDescription>
