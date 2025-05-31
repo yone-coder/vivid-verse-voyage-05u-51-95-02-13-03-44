@@ -164,7 +164,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
 
   const stepLabels = ['Amount', 'Recipient', 'Payment Method', 'Payment', 'Receipt'];
 
-  // Animation variants for step indicator
+  // Animation variants for step indicator - similar to bottom nav
   const stepVariants = {
     inactive: { 
       scale: 1,
@@ -269,19 +269,17 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
         )}
       </div>
       
-      {/* Step Indicator - Fixed layout with proper spacing */}
-      <div className="px-4 py-6 border-b bg-gray-50 flex-shrink-0">
-        <div className="flex items-center justify-between relative">
+      {/* Animated Step Indicator - Bottom Nav Style */}
+      <div className="px-6 py-4 border-b bg-gray-50 flex-shrink-0">
+        <div className="flex items-center justify-between">
           {[1, 2, 3, 4, 5].map((step, index) => (
             <React.Fragment key={step}>
-              <div className="flex flex-col items-center relative z-10">
+              <div className="flex flex-col items-center">
                 <motion.div 
-                  className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-300 shadow-sm ${
+                  className={`rounded-full flex items-center justify-center text-xs font-medium transition-all duration-300 shadow-sm ${
                     step === currentStep 
-                      ? 'bg-red-600 text-white' 
-                      : step < currentStep 
-                      ? 'bg-green-600 text-white'
-                      : 'bg-gray-200 text-gray-600'
+                      ? 'w-auto h-8 px-3 bg-red-600 text-white' 
+                      : 'w-8 h-8 bg-gray-200 text-gray-600'
                   }`}
                   variants={stepVariants}
                   initial="inactive"
@@ -293,41 +291,32 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
                   whileTap={{ scale: 0.95 }}
                 >
                   {step < currentStep ? (
-                    <CheckCircle className="h-5 w-5" />
+                    <CheckCircle className="h-4 w-4" />
                   ) : step === currentStep ? (
-                    <>
+                    <div className="flex items-center space-x-2">
                       {step === 1 ? (
-                        <DollarSign className="h-5 w-5" />
+                        <DollarSign className="h-4 w-4" />
                       ) : step === 2 ? (
-                        <User className="h-5 w-5" />
+                        <User className="h-4 w-4" />
                       ) : step === 3 ? (
-                        <CreditCard className="h-5 w-5" />
+                        <CreditCard className="h-4 w-4" />
                       ) : step === 4 ? (
-                        <Shield className="h-5 w-5" />
+                        <Shield className="h-4 w-4" />
                       ) : (
-                        <Receipt className="h-5 w-5" />
+                        <Receipt className="h-4 w-4" />
                       )}
-                    </>
+                      <span className="font-medium whitespace-nowrap">
+                        {stepLabels[index]}
+                      </span>
+                    </div>
                   ) : (
                     step
                   )}
                 </motion.div>
-                <span className={`text-xs mt-2 font-medium ${
-                  step === currentStep 
-                    ? 'text-red-600' 
-                    : step < currentStep 
-                    ? 'text-green-600'
-                    : 'text-gray-500'
-                }`}>
-                  {stepLabels[index]}
-                </span>
               </div>
               {index < 4 && (
                 <motion.div 
-                  className="flex-1 h-0.5 mx-2 rounded-full"
-                  style={{
-                    backgroundColor: step < currentStep ? '#10B981' : '#E5E7EB'
-                  }}
+                  className="flex-1 h-0.5 mx-3 rounded-full origin-left"
                   variants={lineVariants}
                   initial="inactive"
                   animate={step < currentStep ? 'active' : 'inactive'}
