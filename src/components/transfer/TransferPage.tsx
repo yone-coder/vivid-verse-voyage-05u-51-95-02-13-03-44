@@ -134,65 +134,62 @@ const TransferPage: React.FC = () => {
   };
   
   return (
-    <div className="min-h-screen bg-gray-50 pb-12">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       {/* Header */}
       <TransferHeader />
       
-      <div className="max-w-md mx-auto px-1">
-        {/* Transfer Type Tabs */}
-        <div className="px-1">
+      {/* Main Content Panel - Centered and Minimal */}
+      <div className="flex-1 flex items-center justify-center px-4 py-8">
+        <div className="w-full max-w-md space-y-6">
+          {/* Transfer Type Tabs */}
           <TransferTypeSelector 
             transferType={transferType} 
             onTransferTypeChange={handleTransferTypeChange}
           />
-        </div>
-        
-        {/* Credit Card Recommendation */}
-        {transferType === 'international' && (
-          <div className="bg-blue-50 border border-blue-200 rounded-md p-2 mb-3 mx-1">
-            <div className="flex items-start">
-              <CreditCard className="h-5 w-5 text-blue-600 mt-0.5 mr-2 flex-shrink-0" />
-              <div>
-                <h3 className="text-sm font-medium text-blue-800">
-                  Credit/Debit Card Recommended
-                </h3>
-                <p className="text-xs text-blue-600 mt-1">
-                  For international transfers, credit cards offer the fastest and most secure way to send money to Haiti.
-                </p>
+          
+          {/* Credit Card Recommendation */}
+          {transferType === 'international' && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <div className="flex items-start">
+                <CreditCard className="h-5 w-5 text-blue-600 mt-0.5 mr-3 flex-shrink-0" />
+                <div>
+                  <h3 className="text-sm font-medium text-blue-800">
+                    Credit/Debit Card Recommended
+                  </h3>
+                  <p className="text-xs text-blue-600 mt-1">
+                    For international transfers, credit cards offer the fastest and most secure way to send money to Haiti.
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
-        )}
-        
-        {/* MonCash Recommendation for national transfers */}
-        {transferType === 'national' && (
-          <div className="bg-red-50 border border-red-200 rounded-md p-2 mb-3 mx-1">
-            <div className="flex items-start">
-              <CreditCard className="h-5 w-5 text-red-600 mt-0.5 mr-2 flex-shrink-0" />
-              <div>
-                <h3 className="text-sm font-medium text-red-800">
-                  MonCash Recommended
-                </h3>
-                <p className="text-xs text-red-600 mt-1">
-                  For national transfers within Haiti, MonCash is currently the only available payment method.
-                </p>
+          )}
+          
+          {/* MonCash Recommendation for national transfers */}
+          {transferType === 'national' && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+              <div className="flex items-start">
+                <CreditCard className="h-5 w-5 text-red-600 mt-0.5 mr-3 flex-shrink-0" />
+                <div>
+                  <h3 className="text-sm font-medium text-red-800">
+                    MonCash Recommended
+                  </h3>
+                  <p className="text-xs text-red-600 mt-1">
+                    For national transfers within Haiti, MonCash is currently the only available payment method.
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
-        )}
-        
-        {/* Amount Input */}
-        <div className="px-1">
+          )}
+          
+          {/* Amount Input */}
           <AmountInput
             amount={amount}
             onAmountChange={setAmount}
             currencySymbol={currencySymbol}
             currencyName={currencyName}
           />
-        </div>
-        
-        {/* Payment Method Selection */}
-        <div className="px-1">
+          
+          {/* Payment Method Selection */}
           <PaymentMethodList
             methods={currentPaymentMethods}
             selectedMethod={selectedMethod}
@@ -200,29 +197,27 @@ const TransferPage: React.FC = () => {
               setSelectedMethod(value);
             }}
           />
-        </div>
-        
-        {/* Continue Button */}
-        <div className="px-1">
+          
+          {/* Continue Button */}
           <Button 
             onClick={() => setIsDrawerOpen(true)}
             disabled={!selectedMethod || !amount || parseFloat(amount) <= 0 || !isSelectedMethodAvailable}
-            className="w-full mt-3"
+            className="w-full"
             size="lg"
           >
             Continue to Send Money
-            <ArrowRight className="ml-1 h-4 w-4" />
+            <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
-        </div>
-        
-        {/* Information */}
-        <div className="mt-4 text-center px-1">
-          <p className="text-xs text-gray-500">
-            {transferType === 'national' ? 
-              "MonCash is currently the only available payment method for national transfers." :
-              "All transfers are secure and encrypted. Recipient typically receives funds within 24-48 hours depending on the payment method and local conditions."
-            }
-          </p>
+          
+          {/* Information */}
+          <div className="text-center">
+            <p className="text-xs text-gray-500">
+              {transferType === 'national' ? 
+                "MonCash is currently the only available payment method for national transfers." :
+                "All transfers are secure and encrypted. Recipient typically receives funds within 24-48 hours depending on the payment method and local conditions."
+              }
+            </p>
+          </div>
         </div>
       </div>
       
