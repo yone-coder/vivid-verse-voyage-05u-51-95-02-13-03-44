@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { ArrowRight, CreditCard } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -139,7 +140,7 @@ const TransferPage: React.FC = () => {
       <TransferHeader />
       
       {/* Main Content Panel - Centered and Minimal */}
-      <div className="flex-1 flex items-center justify-center px-4 py-8">
+      <div className="flex-1 flex items-center justify-center px-4">
         <div className="w-full max-w-md space-y-6">
           {/* Transfer Type Tabs */}
           <TransferTypeSelector 
