@@ -34,7 +34,7 @@ const iframeContent = `<!DOCTYPE html>
 
       body {
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: #ffffff;
         min-height: 100vh;
         display: flex;
         align-items: center;
@@ -43,14 +43,11 @@ const iframeContent = `<!DOCTYPE html>
       }
 
       .payment-container {
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(20px);
-        border-radius: 24px;
-        padding: 40px;
-        box-shadow: 0 32px 64px rgba(0, 0, 0, 0.15);
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 20px;
         width: 100%;
-        max-width: 480px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        max-width: 400px;
       }
 
       .hide {
@@ -65,10 +62,10 @@ const iframeContent = `<!DOCTYPE html>
       }
 
       .spinner {
-        width: 40px;
-        height: 40px;
-        border: 3px solid rgba(102, 126, 234, 0.1);
-        border-top: 3px solid #667eea;
+        width: 32px;
+        height: 32px;
+        border: 2px solid rgba(102, 126, 234, 0.1);
+        border-top: 2px solid #667eea;
         border-radius: 50%;
         animation: spin 1s linear infinite;
       }
@@ -80,11 +77,10 @@ const iframeContent = `<!DOCTYPE html>
 
       .title {
         text-align: center;
-        font-size: 24px;
-        font-weight: 700;
+        font-size: 18px;
+        font-weight: 600;
         color: #1a202c;
-        margin-bottom: 32px;
-        letter-spacing: -0.025em;
+        margin-bottom: 24px;
       }
 
       #payment_options {
@@ -92,29 +88,27 @@ const iframeContent = `<!DOCTYPE html>
       }
 
       .alert {
-        padding: 16px;
-        border-radius: 12px;
-        margin-bottom: 24px;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 16px;
         font-size: 14px;
         font-weight: 500;
       }
 
       .alert-success {
-        background: linear-gradient(135deg, #10b981, #059669);
+        background: #10b981;
         color: white;
-        border: 1px solid rgba(255, 255, 255, 0.2);
       }
 
       .alert-error {
-        background: linear-gradient(135deg, #ef4444, #dc2626);
+        background: #ef4444;
         color: white;
-        border: 1px solid rgba(255, 255, 255, 0.2);
       }
     </style>
   </head>
   <body>
     <div class="payment-container">
-      <h1 class="title">Complete Transfer Payment</h1>
+      <h1 class="title">PayPal Payment</h1>
       
       <div id="alerts"></div>
       
@@ -165,7 +159,7 @@ const iframeContent = `<!DOCTYPE html>
           const order_details = object.order_details;
           const paypal_buttons = object.paypal_buttons;
           
-          document.getElementById("alerts").innerHTML = \`<div class='alert alert-success'>Transfer payment successful! Amount: \` + order_details.purchase_units[0].payments.captures[0].amount.value + \` \` + order_details.purchase_units[0].payments.captures[0].amount.currency_code + \`</div>\`;
+          document.getElementById("alerts").innerHTML = \`<div class='alert alert-success'>Payment successful! Amount: \` + order_details.purchase_units[0].payments.captures[0].amount.value + \` \` + order_details.purchase_units[0].payments.captures[0].amount.currency_code + \`</div>\`;
 
           paypal_buttons.close();
           
@@ -307,40 +301,24 @@ const PayPalIframeCheckout: React.FC<PayPalIframeCheckoutProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl h-[80vh] relative">
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b">
-          <h3 className="text-lg font-semibold">Complete Transfer Payment</h3>
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
+    <div className="relative w-full h-full">
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-gray-50 rounded-lg">
+          <div className="flex flex-col items-center space-y-4">
+            <Loader2 className="h-6 w-6 animate-spin text-blue-500" />
+            <p className="text-sm text-gray-600">Loading PayPal...</p>
+          </div>
         </div>
+      )}
 
-        {/* Iframe Container */}
-        <div className="relative h-[calc(80vh-80px)]">
-          {isLoading && (
-            <div className="absolute inset-0 flex items-center justify-center bg-gray-50">
-              <div className="flex flex-col items-center space-y-4">
-                <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
-                <p className="text-gray-600">Loading secure payment...</p>
-              </div>
-            </div>
-          )}
-
-          <iframe
-            ref={iframeRef}
-            src={createIframeUrl()}
-            className="w-full h-full border-0"
-            onLoad={handleIframeLoad}
-            title="Transfer Payment"
-            sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
-          />
-        </div>
-      </div>
+      <iframe
+        ref={iframeRef}
+        src={createIframeUrl()}
+        className="w-full h-full border-0 rounded-lg"
+        onLoad={handleIframeLoad}
+        title="PayPal Payment"
+        sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+      />
     </div>
   );
 };

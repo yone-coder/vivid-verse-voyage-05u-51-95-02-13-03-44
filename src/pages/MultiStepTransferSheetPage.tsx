@@ -77,19 +77,17 @@ const MultiStepTransferSheetPage: React.FC = () => {
 
   const handlePaymentMethodChange = (methodId: string) => {
     updateTransferData({ selectedPaymentMethod: methodId });
-    // Remove the automatic iframe show logic
   };
 
   const handlePayPalButtonClick = () => {
-    // Redirect to PayPal checkout instead of showing iframe
-    window.open('https://www.paypal.com/checkoutnow', '_blank');
+    setShowPayPalIframe(true);
   };
 
   const handlePaymentSuccess = (details: any) => {
     console.log('Payment successful:', details);
     setPaymentCompleted(true);
     setTransactionId(details.id || `TX${Date.now()}`);
-    setCurrentStep(4); // Move to receipt step (now step 4 instead of 5)
+    setCurrentStep(4);
     setShowPayPalIframe(false);
   };
 
@@ -304,23 +302,46 @@ const MultiStepTransferSheetPage: React.FC = () => {
                 </Button>
               </div>
 
-              {/* Separator Section */}
-              <div className="flex items-center space-x-4 my-6">
-                <Separator className="flex-1" />
-                <span className="text-sm text-gray-500 font-medium px-3">or continue with</span>
-                <Separator className="flex-1" />
-              </div>
-
-              {/* PayPal Iframe Section - Below separator, only show when button is clicked */}
+              {/* Embedded PayPal Iframe - Show immediately after button click */}
               {showPayPalIframe && (
-                <div className="space-y-4">
-                  <PayPalIframeCheckout
-                    amount={totalAmount}
-                    onSuccess={handlePaymentSuccess}
-                    onError={handlePaymentError}
-                    onCancel={handlePaymentCancel}
-                    onClose={() => setShowPayPalIframe(false)}
-                  />
+                <div className="space-y-4 border rounded-lg p-4 bg-gray-50">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold">PayPal Checkout</h3>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowPayPalIframe(false)}
+                      className="text-gray-500 hover:text-gray-700"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                  
+                  <div className="bg-white rounded-lg overflow-hidden" style={{ height: '500px' }}>
+                    <PayPalIframeCheckout
+                      amount={totalAmount}
+                      onSuccess={handlePaymentSuccess}
+                      onError={handlePaymentError}
+                      onCancel={handlePaymentCancel}
+                      onClose={() => setShowPayPalIframe(false)}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Separator Section - Only show when iframe is not shown */}
+              {!showPayPalIframe && (
+                <div className="flex items-center space-x-4 my-6">
+                  <Separator className="flex-1" />
+                  <span className="text-sm text-gray-500 font-medium px-3">or continue with</span>
+                  <Separator className="flex-1" />
+                </div>
+              )}
+
+              {/* Additional payment options can be added here when iframe is not shown */}
+              {!showPayPalIframe && (
+                <div className="text-center py-8 text-gray-500">
+                  <p>Additional payment methods coming soon</p>
                 </div>
               )}
             </div>
