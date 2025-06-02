@@ -19,7 +19,6 @@ export default function MainLayout() {
   const isRootHomePage = pathname === "/" || pathname === "/for-you";
   const isForYouPage = pathname === "/" || pathname === "/for-you";
   const isMultiStepTransferPage = pathname === "/multi-step-transfer";
-  const isMultiStepTransferSheetPage = pathname === "/multi-step-transfer-page";
   const isTransferOldPage = pathname === "/transfer-old";
   const { toast } = useToast();
   const [isFavorite, setIsFavorite] = useState(false);
@@ -69,7 +68,7 @@ export default function MainLayout() {
   const headerHeightStyle = `
     :root {
       --header-height: ${isMobile ? '80px' : '120px'};
-      --bottom-nav-height: ${isMobile && !isMultiStepTransferPage && !isMultiStepTransferSheetPage && !isTransferOldPage ? '48px' : '0px'};
+      --bottom-nav-height: ${isMobile && !isMultiStepTransferPage && !isTransferOldPage ? '48px' : '0px'};
     }
   `;
 
@@ -97,13 +96,13 @@ export default function MainLayout() {
         {/* Show Footer only on non-mobile and on specific pages */}
         {!isMobile && !isRootHomePage && <Footer />}
 
-        {/* Floating action button - now excludes multi-step-transfer-page */}
-        {!isMultiStepTransferPage && !isMultiStepTransferSheetPage && !isTransferOldPage && (
+        {/* Floating action button - now always visible except on multi-step transfer and transfer-old pages */}
+        {!isMultiStepTransferPage && !isTransferOldPage && (
           <FloatingActionButton onClick={() => setShowProductUpload(true)} />
         )}
 
-        {/* Show IndexBottomNav on all mobile views except multi-step transfer pages and transfer-old pages */}
-        {isMobile && !isMultiStepTransferPage && !isMultiStepTransferSheetPage && !isTransferOldPage && <IndexBottomNav />}
+        {/* Show IndexBottomNav on all mobile views except multi-step transfer and transfer-old pages */}
+        {isMobile && !isMultiStepTransferPage && !isTransferOldPage && <IndexBottomNav />}
 
         {/* Product Upload Overlay */}
         <ProductUploadOverlay
