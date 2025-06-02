@@ -1,4 +1,3 @@
-
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -41,6 +40,7 @@ import NetflixPage from "./pages/NetflixPage";
 import TransferPage from "./pages/TransferPage";
 import TransferHomePage from "./pages/TransferHomePage";
 import MultiStepTransferPage from "./pages/MultiStepTransferPage";
+import MultiStepTransferSheetPage from "./pages/MultiStepTransferSheetPage";
 import SignupPage from "./pages/SignupPage";
 import NotFound from "./pages/NotFound";
 import MainLayout from "./components/layout/MainLayout";
@@ -95,6 +95,7 @@ function App() {
                       <Route path="transfer-old" element={<TransferPage />} />
                       <Route path="transfer" element={<TransferHomePage />} />
                       <Route path="multi-step-transfer" element={<MultiStepTransferPage />} />
+                      <Route path="multi-step-transfer-page" element={<MultiStepTransferSheetPage />} />
                       <Route path="signup" element={<SignupPage />} />
                       <Route path="*" element={<NotFound />} />
                     </Route>
