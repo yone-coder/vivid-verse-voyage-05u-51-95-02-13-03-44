@@ -376,20 +376,32 @@ const DynamicPayPalCheckout: React.FC = () => {
     <>
       <style>{`
         :root {
-          --bg-primary: #0f0f14;
-          --bg-secondary: #1a1a21;
+          --bg-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          --bg-secondary: #1e1b2e;
           --bg-card: #ffffff;
-          --text-primary: #1a1a21;
-          --text-secondary: #6b7280;
-          --text-muted: #9ca3af;
-          --accent-primary: #5b5bd6;
-          --accent-hover: #4c4cc4;
-          --success: #059669;
-          --error: #dc2626;
-          --border: #e5e7eb;
-          --border-focus: #5b5bd6;
-          --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-          --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+          --bg-glass: rgba(255, 255, 255, 0.95);
+          --text-primary: #1a1d29;
+          --text-secondary: #6b7394;
+          --text-muted: #9ca3c4;
+          --text-light: rgba(255, 255, 255, 0.9);
+          --accent-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          --accent-secondary: #667eea;
+          --accent-hover: #5a6fd8;
+          --success: #10b981;
+          --success-bg: #d1fae5;
+          --success-border: #6ee7b7;
+          --error: #ef4444;
+          --error-bg: #fee2e2;
+          --error-border: #fca5a5;
+          --border: #e2e8f0;
+          --border-focus: #667eea;
+          --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+          --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+          --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+          --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+          --border-radius: 16px;
+          --border-radius-sm: 12px;
+          --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
@@ -399,77 +411,148 @@ const DynamicPayPalCheckout: React.FC = () => {
         }
 
         body {
-          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-          background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+          background: var(--bg-primary);
           min-height: 100vh;
           color: var(--text-primary);
-          line-height: 1.5;
+          line-height: 1.6;
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;
+          position: relative;
+          overflow-x: hidden;
+        }
+
+        body::before {
+          content: '';
+          position: fixed;
+          top: -50%;
+          left: -50%;
+          width: 200%;
+          height: 200%;
+          background: radial-gradient(circle at 30% 20%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                      radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                      radial-gradient(circle at 40% 40%, rgba(120, 119, 198, 0.2) 0%, transparent 50%);
+          animation: float 20s ease-in-out infinite;
+          pointer-events: none;
+          z-index: -1;
+        }
+
+        @keyframes float {
+          0%, 100% { transform: translate(-20px, -10px) rotate(0deg); }
+          33% { transform: translate(30px, -30px) rotate(120deg); }
+          66% { transform: translate(-20px, 20px) rotate(240deg); }
         }
 
         .container {
-          max-width: 420px;
+          max-width: 440px;
           margin: 0 auto;
           padding: 2rem 1rem;
           min-height: 100vh;
           display: flex;
           flex-direction: column;
           justify-content: center;
+          position: relative;
+          z-index: 1;
         }
 
         .checkout-card {
-          background: var(--bg-card);
-          border-radius: 12px;
-          padding: 2rem;
-          box-shadow: var(--shadow-lg);
-          border: 1px solid var(--border);
+          background: var(--bg-glass);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          border-radius: var(--border-radius);
+          padding: 2.5rem;
+          box-shadow: var(--shadow-xl);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          position: relative;
+          overflow: hidden;
+        }
+
+        .checkout-card::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 1px;
+          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+        }
+
+        .checkout-header {
+          text-align: center;
+          margin-bottom: 2rem;
+        }
+
+        .checkout-title {
+          font-size: 1.75rem;
+          font-weight: 700;
+          background: var(--accent-primary);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          margin-bottom: 0.5rem;
+        }
+
+        .checkout-subtitle {
+          color: var(--text-secondary);
+          font-size: 0.95rem;
+          font-weight: 500;
         }
 
         .payment-form {
-          space-y: 1rem;
+          display: flex;
+          flex-direction: column;
+          gap: 1.5rem;
         }
 
         .form-group {
-          margin-bottom: 1rem;
+          position: relative;
         }
 
         .form-label {
           display: block;
           font-size: 0.875rem;
-          font-weight: 500;
+          font-weight: 600;
           color: var(--text-primary);
-          margin-bottom: 0.375rem;
+          margin-bottom: 0.5rem;
+          letter-spacing: 0.025em;
         }
 
         .form-input, .form-field {
           width: 100%;
-          padding: 0.75rem 0.875rem;
+          padding: 1rem 1.125rem;
           background: var(--bg-card);
-          border: 1.5px solid var(--border);
-          border-radius: 8px;
+          border: 2px solid var(--border);
+          border-radius: var(--border-radius-sm);
           color: var(--text-primary);
           font-size: 1rem;
           font-family: inherit;
-          transition: all 0.15s ease;
+          font-weight: 500;
+          transition: var(--transition);
           appearance: none;
+          box-shadow: var(--shadow-sm);
         }
 
         .form-input:focus, .form-field:focus {
           outline: none;
           border-color: var(--border-focus);
-          box-shadow: 0 0 0 3px rgba(91, 91, 214, 0.1);
+          box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1), var(--shadow);
+          transform: translateY(-1px);
         }
 
         .form-input::placeholder {
           color: var(--text-muted);
-          font-size: 1rem;
+          font-weight: 400;
+        }
+
+        .card-group {
+          display: flex;
+          flex-direction: column;
+          gap: 0.75rem;
         }
 
         .card-row {
           display: flex;
           gap: 0.75rem;
-          margin-top: 0.5rem;
         }
 
         .card-row .card-field {
@@ -477,111 +560,162 @@ const DynamicPayPalCheckout: React.FC = () => {
         }
 
         .card-field {
-          padding: 0.75rem 0.875rem;
+          padding: 1rem 1.125rem;
           background: var(--bg-card);
-          border: 1.5px solid var(--border);
-          border-radius: 8px;
-          transition: all 0.15s ease;
-          min-height: 48px;
+          border: 2px solid var(--border);
+          border-radius: var(--border-radius-sm);
+          transition: var(--transition);
+          min-height: 56px;
           display: flex;
           align-items: center;
           width: 100%;
+          box-shadow: var(--shadow-sm);
+          position: relative;
         }
 
         .card-field:focus-within {
           border-color: var(--border-focus);
-          box-shadow: 0 0 0 3px rgba(91, 91, 214, 0.1);
+          box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1), var(--shadow);
+          transform: translateY(-1px);
         }
 
         .card-field iframe {
           border: none !important;
           outline: none !important;
           width: 100% !important;
-          height: 20px !important;
+          height: 24px !important;
         }
 
         .pay-button {
           width: 100%;
-          padding: 0.875rem 1rem;
+          padding: 1rem 1.5rem;
           background: var(--accent-primary);
           color: white;
           border: none;
-          border-radius: 8px;
-          font-size: 1rem;
-          font-weight: 600;
+          border-radius: var(--border-radius-sm);
+          font-size: 1.1rem;
+          font-weight: 700;
           cursor: pointer;
-          transition: all 0.15s ease;
-          margin-top: 1.5rem;
+          transition: var(--transition);
+          margin-top: 1rem;
           font-family: inherit;
-          min-height: 48px;
+          min-height: 56px;
+          position: relative;
+          overflow: hidden;
+          letter-spacing: 0.025em;
+          box-shadow: var(--shadow-lg);
+        }
+
+        .pay-button::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+          transition: left 0.5s;
         }
 
         .pay-button:hover:not(:disabled) {
-          background: var(--accent-hover);
+          transform: translateY(-2px);
+          box-shadow: 0 25px 50px -12px rgba(102, 126, 234, 0.4);
+        }
+
+        .pay-button:hover:not(:disabled)::before {
+          left: 100%;
+        }
+
+        .pay-button:active:not(:disabled) {
           transform: translateY(-1px);
         }
 
         .pay-button:disabled {
-          opacity: 0.6;
+          opacity: 0.7;
           cursor: not-allowed;
           transform: none;
         }
 
         .alert {
-          padding: 0.875rem 1rem;
-          border-radius: 8px;
-          margin-bottom: 1rem;
+          padding: 1rem 1.25rem;
+          border-radius: var(--border-radius-sm);
+          margin-bottom: 1.5rem;
           position: relative;
-          font-size: 0.875rem;
+          font-size: 0.9rem;
+          font-weight: 500;
+          box-shadow: var(--shadow);
+          animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+          from {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
 
         .alert-success {
-          background: #f0fdf4;
-          border: 1px solid #bbf7d0;
+          background: var(--success-bg);
+          border: 2px solid var(--success-border);
           color: var(--success);
         }
 
         .alert-error {
-          background: #fef2f2;
-          border: 1px solid #fecaca;
+          background: var(--error-bg);
+          border: 2px solid var(--error-border);
           color: var(--error);
         }
 
         .alert-close {
           position: absolute;
-          top: 0.5rem;
-          right: 0.75rem;
+          top: 0.75rem;
+          right: 1rem;
           background: none;
           border: none;
           color: inherit;
-          font-size: 1.125rem;
+          font-size: 1.25rem;
           cursor: pointer;
           opacity: 0.7;
-          width: 20px;
-          height: 20px;
+          width: 24px;
+          height: 24px;
           display: flex;
           align-items: center;
           justify-content: center;
+          border-radius: 50%;
+          transition: var(--transition);
         }
 
         .alert-close:hover {
           opacity: 1;
+          background: rgba(0, 0, 0, 0.1);
         }
 
         .loading-container {
           display: flex;
+          flex-direction: column;
           justify-content: center;
           align-items: center;
-          padding: 3rem 0;
+          padding: 4rem 0;
+          gap: 1.5rem;
         }
 
         .spinner {
-          width: 32px;
-          height: 32px;
-          border: 2px solid var(--border);
-          border-top: 2px solid var(--accent-primary);
+          width: 40px;
+          height: 40px;
+          border: 3px solid rgba(102, 126, 234, 0.1);
+          border-top: 3px solid var(--accent-secondary);
           border-radius: 50%;
           animation: spin 1s linear infinite;
+        }
+
+        .loading-text {
+          color: var(--text-secondary);
+          font-weight: 500;
+          font-size: 0.95rem;
         }
 
         .hide {
@@ -590,18 +724,23 @@ const DynamicPayPalCheckout: React.FC = () => {
 
         .security-info {
           text-align: center;
-          margin-top: 1.5rem;
-          padding-top: 1.5rem;
-          border-top: 1px solid var(--border);
+          margin-top: 2rem;
+          padding-top: 2rem;
+          border-top: 1px solid rgba(203, 213, 225, 0.6);
         }
 
         .security-badge {
           display: inline-flex;
           align-items: center;
-          gap: 0.5rem;
-          font-size: 0.75rem;
+          gap: 0.625rem;
+          font-size: 0.8rem;
           color: var(--text-secondary);
-          font-weight: 500;
+          font-weight: 600;
+          padding: 0.5rem 1rem;
+          background: rgba(102, 126, 234, 0.05);
+          border-radius: 50px;
+          border: 1px solid rgba(102, 126, 234, 0.1);
+          letter-spacing: 0.025em;
         }
 
         .security-icon {
@@ -616,12 +755,12 @@ const DynamicPayPalCheckout: React.FC = () => {
           }
         }
 
-        @keyframes loading {
-          0% {
-            background-position: -200% 0;
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 1;
           }
-          100% {
-            background-position: 200% 0;
+          50% {
+            opacity: 0.5;
           }
         }
 
@@ -631,23 +770,51 @@ const DynamicPayPalCheckout: React.FC = () => {
           }
 
           .checkout-card {
-            padding: 1.5rem;
+            padding: 2rem;
+            border-radius: var(--border-radius-sm);
+          }
+
+          .checkout-title {
+            font-size: 1.5rem;
           }
 
           .card-row {
             gap: 0.5rem;
+          }
+
+          .form-input, .form-field, .card-field {
+            padding: 0.875rem 1rem;
+          }
+
+          .pay-button {
+            font-size: 1rem;
+            padding: 0.875rem 1.25rem;
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          *, *::before, *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
           }
         }
       `}</style>
 
       <div className="container">
         <div className="checkout-card">
+          <div className="checkout-header">
+            <h1 className="checkout-title">Secure Checkout</h1>
+            <p className="checkout-subtitle">Complete your purchase safely</p>
+          </div>
+
           {/* Alerts */}
           <div id="alerts"></div>
 
           {/* Loading State */}
           <div id="loading" className="loading-container">
             <div className="spinner"></div>
+            <div className="loading-text">Initializing secure payment...</div>
           </div>
 
           {/* Payment Form */}
@@ -655,17 +822,25 @@ const DynamicPayPalCheckout: React.FC = () => {
             <form id="card-form" className="payment-form">
               {/* Email */}
               <div className="form-group">
-                <label htmlFor="email" className="form-label">Email</label>
-                <input type="email" id="email" className="form-input" placeholder="Enter your email" required />
+                <label htmlFor="email" className="form-label">Email Address</label>
+                <input 
+                  type="email" 
+                  id="email" 
+                  className="form-input" 
+                  placeholder="your@email.com" 
+                  required 
+                />
               </div>
 
               {/* Card Information */}
               <div className="form-group">
-                <label className="form-label">Card information</label>
-                <div className="card-field" id="card-number"></div>
-                <div className="card-row">
-                  <div className="card-field" id="expiration-date"></div>
-                  <div className="card-field" id="cvv"></div>
+                <label className="form-label">Card Information</label>
+                <div className="card-group">
+                  <div className="card-field" id="card-number"></div>
+                  <div className="card-row">
+                    <div className="card-field" id="expiration-date"></div>
+                    <div className="card-field" id="cvv"></div>
+                  </div>
                 </div>
               </div>
 
