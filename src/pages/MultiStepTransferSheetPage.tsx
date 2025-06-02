@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, Clock, CheckCircle, Receipt } from 'lucide-react';
+import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, Clock, CheckCircle, Receipt, ChevronLeft, X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { motion } from 'framer-motion';
@@ -58,6 +58,10 @@ const MultiStepTransferSheetPage: React.FC = () => {
     } else {
       handlePreviousStep();
     }
+  };
+
+  const handleCloseClick = () => {
+    navigate(-1);
   };
 
   const updateTransferData = (data: Partial<TransferData>) => {
@@ -140,21 +144,37 @@ const MultiStepTransferSheetPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header with step title, back button, and step indicator */}
+      {/* Header with reduced height, drag bar, back button (chevron), and close button */}
       <div className="bg-white sticky top-0 z-50 shadow-sm">
-        <div className="flex items-center p-4">
+        <div className="flex items-center justify-between p-2 h-12">
           <button 
             onClick={handleBackClick}
             className="p-2 rounded-full hover:bg-gray-100"
           >
-            <ArrowLeft size={20} />
+            <ChevronLeft size={20} />
           </button>
-          <h1 className="text-xl font-semibold ml-2">
+          
+          {/* Drag bar in the middle */}
+          <div className="flex-1 flex justify-center">
+            <div className="w-10 h-1 bg-gray-300 rounded-full"></div>
+          </div>
+          
+          <button 
+            onClick={handleCloseClick}
+            className="p-2 rounded-full hover:bg-gray-100"
+          >
+            <X size={20} />
+          </button>
+        </div>
+        
+        {/* Step title below the header controls */}
+        <div className="px-4 pb-2">
+          <h1 className="text-lg font-semibold text-center">
             {stepTitles[currentStep - 1]}
           </h1>
         </div>
         
-        {/* Animated Step Indicator in Header */}
+        {/* Animated Step Indicator */}
         <div className="px-4 pb-3">
           <div className="flex items-center justify-between">
             {[1, 2, 3, 4, 5].map((step, index) => (
