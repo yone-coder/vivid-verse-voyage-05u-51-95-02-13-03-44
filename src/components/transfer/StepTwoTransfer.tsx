@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -105,7 +104,7 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
           </div>
         </div>
 
-        {/* Phone Number with Haiti Country Code - cleaned up styling */}
+        {/* Phone Number with Haiti Country Code - fixed padding issue */}
         <div className="space-y-3">
           <Label htmlFor="phoneNumber" className="text-base font-semibold text-[#333] block">
             Phone Number
@@ -127,7 +126,7 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
               placeholder="Phone number" 
               value={details.phoneNumber}
               onChange={(e) => updateField('phoneNumber', e.target.value)}
-              className="h-12 border-2 border-[#e0e0e0] focus:border-[#2563eb] focus:ring-[#2563eb] transition-all duration-200 rounded-l-none rounded-r-xl bg-[#fafafa] text-[#333] placeholder:text-[#999] font-medium"
+              className="h-12 border-2 border-[#e0e0e0] focus:border-[#2563eb] focus:ring-[#2563eb] transition-all duration-200 rounded-l-none rounded-r-xl bg-[#fafafa] text-[#333] placeholder:text-[#999] font-medium pl-4"
               required
             />
           </div>
