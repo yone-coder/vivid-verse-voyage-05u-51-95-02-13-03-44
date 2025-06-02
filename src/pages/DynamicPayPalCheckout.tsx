@@ -1,144 +1,199 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
-const DynamicPayPalCheckout = () => {
+const PayPalCheckout = () => {
   // State management
   const [loading, setLoading] = useState(true);
-  const [alert, setAlert] = useState(null);
+  const [alerts, setAlerts] = useState([]);
   const [currentPrice, setCurrentPrice] = useState(null);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [formHidden, setFormHidden] = useState(false);
-  const [paypalReady, setPaypalReady] = useState(false);
-
+  const [email, setEmail] = useState('');
+  const [processing, setProcessing] = useState(false);
+  
   // Refs for PayPal integration
   const paypalFieldsRef = useRef(null);
   const orderIdRef = useRef(null);
   const customerIdRef = useRef('');
-  const initializationRef = useRef(false);
 
   // Configuration
   const API_BASE_URL = "https://paypal-with-nodejs.onrender.com";
-  const PAYPAL_CLIENT_ID = "AU23YbLMTqxG3iSvnhcWtix6rGN14uw3axYJgrDe8VqUVng8XiQmmeiaxJWbnpbZP_f4--RTg146F1Mj";
+  const CLIENT_ID = "AU23YbLMTqxG3iSvnhcWtix6rGN14uw3axYJgrDe8VqUVng8XiQmmeiaxJWbnpbZP_f4--RTg146F1Mj";
   const CURRENCY = "USD";
   const INTENT = "capture";
 
-  // Helper function to load external scripts
-  const loadScript = useCallback((attributes) => {
+  // Utility function to load external scripts
+  const loadScript = (attributes) => {
     return new Promise((resolve, reject) => {
-      const existingScript = document.querySelector(`script[src="${attributes.src}"]`);
-      if (existingScript) {
-        resolve();
-        return;
-      }
-
       const script = document.createElement('script');
-      Object.entries(attributes).forEach(([key, value]) => {
-        script.setAttribute(key, value);
+      Object.keys(attributes).forEach(key => {
+        script.setAttribute(key, attributes[key]);
       });
       document.head.appendChild(script);
       script.addEventListener('load', resolve);
       script.addEventListener('error', reject);
     });
-  }, []);
+  };
+
+  // Alert management functions
+  const showAlert = (message, type = 'error') => {
+    const newAlert = {
+      id: Date.now(),
+      message,
+      type
+    };
+    setAlerts(prev => [...prev, newAlert]);
+  };
+
+  const removeAlert = (id) => {
+    setAlerts(prev => prev.filter(alert => alert.id !== id));
+  };
 
   // Fetch current price from backend
-  const fetchCurrentPrice = useCallback(async () => {
+  const fetchCurrentPrice = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/get_price`);
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       const priceData = await response.json();
       setCurrentPrice(priceData);
+      console.log('Price fetched successfully:', priceData);
       return priceData;
     } catch (error) {
-      setAlert({ type: 'error', message: 'Unable to load current pricing. Please refresh the page.' });
+      console.error('Error fetching price:', error);
+      showAlert('Unable to load current pricing. Please refresh the page.');
       throw error;
     }
-  }, [API_BASE_URL]);
+  };
 
   // Get PayPal client token
-  const getClientToken = useCallback(async () => {
+  const getClientToken = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/get_client_token`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ customer_id: customerIdRef.current }),
+        body: JSON.stringify({ "customer_id": customerIdRef.current }),
       });
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      return await response.text();
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const clientToken = await response.text();
+      return clientToken;
     } catch (error) {
+      console.error('Error getting client token:', error);
       throw error;
     }
-  }, [API_BASE_URL]);
+  };
 
-  // Create PayPal order
-  const createOrder = useCallback(async () => {
+  // Initialize PayPal SDK and hosted fields
+  const initializePayPal = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/create_order`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json; charset=utf-8" },
-        body: JSON.stringify({
-          intent: INTENT,
-          amount: currentPrice ? currentPrice.value : null,
-        }),
+      console.log('Starting PayPal initialization...');
+      
+      // Check user login (simulated)
+      customerIdRef.current = "";
+      
+      // Fetch current price
+      await fetchCurrentPrice();
+      
+      // Get client token
+      const clientToken = await getClientToken();
+      
+      // Load PayPal SDK
+      const sdkUrl = `https://www.paypal.com/sdk/js?client-id=${CLIENT_ID}&enable-funding=venmo&currency=${CURRENCY}&intent=${INTENT}&components=hosted-fields`;
+      await loadScript({
+        "src": sdkUrl,
+        "data-client-token": clientToken
       });
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      const order = await response.json();
-      orderIdRef.current = order.id;
-      return order.id;
-    } catch (error) {
-      throw error;
-    }
-  }, [API_BASE_URL, INTENT, currentPrice]);
 
-  // Complete PayPal order
-  const completeOrder = useCallback(async (email) => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/complete_order`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json; charset=utf-8" },
-        body: JSON.stringify({
-          intent: INTENT,
-          order_id: orderIdRef.current,
-          email,
-        }),
-      });
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      return await response.json();
-    } catch (error) {
-      throw error;
-    }
-  }, [API_BASE_URL, INTENT]);
+      // Initialize hosted fields
+      if (window.paypal && window.paypal.HostedFields.isEligible()) {
+        console.log('Hosted Fields are eligible, setting up...');
 
-  // Display success message
-  const displaySuccessMessage = useCallback((orderDetails) => {
-    const intentObject = INTENT === "authorize" ? "authorizations" : "captures";
-    const firstName = orderDetails?.payer?.name?.given_name || '';
-    const lastName = orderDetails?.payer?.name?.surname || '';
-    setAlert({
-      type: 'success',
-      message: `Payment successful! Thank you ${firstName} ${lastName}. Your NFT will be delivered to your email shortly.`,
-    });
-    setFormHidden(true);
-  }, [INTENT]);
+        paypalFieldsRef.current = await window.paypal.HostedFields.render({
+          createOrder: async () => {
+            console.log('Creating order with current price...');
+            const response = await fetch(`${API_BASE_URL}/create_order`, {
+              method: "post",
+              headers: { "Content-Type": "application/json; charset=utf-8" },
+              body: JSON.stringify({
+                "intent": INTENT,
+                "amount": currentPrice ? currentPrice.value : null
+              })
+            });
+
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const order = await response.json();
+            orderIdRef.current = order.id;
+            console.log('Order created with ID:', order.id);
+            return order.id;
+          },
+          styles: {
+            'input': {
+              'font-size': '16px',
+              'color': '#1a1a21',
+              'font-family': 'Inter, sans-serif',
+              'font-weight': '400'
+            },
+            ':focus': {
+              'color': '#1a1a21'
+            },
+            '.valid': {
+              'color': '#1a1a21'
+            },
+            '.invalid': {
+              'color': '#dc2626'
+            }
+          },
+          fields: {
+            number: {
+              selector: "#card-number",
+              placeholder: "1234 1234 1234 1234"
+            },
+            cvv: {
+              selector: "#cvv",
+              placeholder: "CVC"
+            },
+            expirationDate: {
+              selector: "#expiration-date",
+              placeholder: "MM / YY"
+            }
+          }
+        });
+
+        console.log('Hosted Fields rendered successfully');
+        setLoading(false);
+      } else {
+        console.error('Hosted Fields not eligible in this browser');
+        showAlert('Card payments are not supported in this browser.');
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error('PayPal initialization failed:', error);
+      showAlert('Failed to initialize payment system. Please refresh the page.');
+      setLoading(false);
+    }
+  };
 
   // Handle form submission
-  const handleFormSubmit = useCallback(async (event) => {
-    event.preventDefault();
-    setIsProcessing(true);
-    setAlert(null);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!paypalFieldsRef.current) {
+      showAlert('Payment system not ready. Please try again.');
+      return;
+    }
+
+    setProcessing(true);
+    setAlerts([]); // Clear previous alerts
 
     try {
-      const emailInput = document.getElementById("email");
-      const email = emailInput?.value || "";
-      if (!email) {
-        setAlert({ type: 'error', message: 'Please enter your email address.' });
-        return;
-      }
+      console.log('Form submitted, processing payment...');
 
-      if (!paypalFieldsRef.current) {
-        setAlert({ type: 'error', message: 'Payment system not ready. Please try again.' });
-        return;
-      }
-
+      // Submit card fields to PayPal
       await paypalFieldsRef.current.submit({
         cardholderName: "Raúl Uriarte, Jr.",
         billingAddress: {
@@ -151,80 +206,65 @@ const DynamicPayPalCheckout = () => {
         },
       });
 
-      const orderDetails = await completeOrder(email);
-      displaySuccessMessage(orderDetails);
+      console.log('Card fields submitted, completing order...');
+
+      // Complete the order
+      const response = await fetch(`${API_BASE_URL}/complete_order`, {
+        method: "post",
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        body: JSON.stringify({
+          "intent": INTENT,
+          "order_id": orderIdRef.current,
+          "email": email
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const orderDetails = await response.json();
+      console.log('Order completed successfully');
+
+      // Display success message
+      const intentObject = INTENT === "authorize" ? "authorizations" : "captures";
+      const firstName = orderDetails?.payer?.name?.given_name || '';
+      const lastName = orderDetails?.payer?.name?.surname || '';
+      
+      showAlert(
+        `Payment successful! Thank you ${firstName} ${lastName}. Your NFT will be delivered to your email shortly.`,
+        'success'
+      );
+
+      // Hide form after successful payment
+      setLoading(true);
+
     } catch (error) {
-      setAlert({ type: 'error', message: 'Payment processing failed. Please try again.' });
+      console.error('Payment processing error:', error);
+      showAlert('Payment processing failed. Please try again.');
     } finally {
-      setIsProcessing(false);
+      setProcessing(false);
     }
-  }, [completeOrder, displaySuccessMessage]);
+  };
 
-  // Initialize PayPal Hosted Fields
-  const initializePayPalFields = useCallback(async () => {
-    if (!window.paypal?.HostedFields?.isEligible()) {
-      setAlert({ type: 'error', message: 'Card payments are not supported in this browser.' });
-      return;
-    }
-
-    try {
-      const hostedFields = await window.paypal.HostedFields.render({
-        createOrder,
-        styles: {
-          input: { 'font-size': '16px', 'color': '#1a1a21', 'font-family': 'Inter, sans-serif', 'font-weight': '400' },
-          ':focus': { 'color': '#1a1a21' },
-          '.valid': { 'color': '#1a1a21' },
-          '.invalid': { 'color': '#dc2626' },
-        },
-        fields: {
-          number: { selector: "#card-number", placeholder: "1234 1234 1234 1234" },
-          cvv: { selector: "#cvv", placeholder: "CVC" },
-          expirationDate: { selector: "#expiration-date", placeholder: "MM / YY" },
-        },
-      });
-      paypalFieldsRef.current = hostedFields;
-      setPaypalReady(true);
-    } catch (error) {
-      setAlert({ type: 'error', message: 'PayPal fields failed to load.' });
-    }
-  }, [createOrder]);
-
-  // Initialize PayPal
-  const initializePayPal = useCallback(async () => {
-    if (initializationRef.current) return;
-    initializationRef.current = true;
-
-    try {
-      await fetchCurrentPrice();
-      const clientToken = await getClientToken();
-      await loadScript({
-        src: `https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}&enable-funding=venmo&currency=${CURRENCY}&intent=${INTENT}&components=hosted-fields`,
-        "data-client-token": clientToken,
-      });
-      await initializePayPalFields();
-      setLoading(false);
-    } catch (error) {
-      setAlert({ type: 'error', message: 'Failed to initialize payment system. Please refresh the page.' });
-      setLoading(false);
-    }
-  }, [fetchCurrentPrice, getClientToken, loadScript, initializePayPalFields, PAYPAL_CLIENT_ID, CURRENCY, INTENT]);
-
-  // Load Google Fonts and initialize PayPal
+  // Load Google Fonts and initialize PayPal on component mount
   useEffect(() => {
+    // Load Google Fonts
     const fontLink = document.createElement('link');
     fontLink.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap';
     fontLink.rel = 'stylesheet';
     document.head.appendChild(fontLink);
 
+    // Initialize PayPal
     initializePayPal();
 
+    // Cleanup function
     return () => {
-      document.head.removeChild(fontLink);
+      if (fontLink.parentNode) {
+        document.head.removeChild(fontLink);
+      }
     };
-  }, [initializePayPal]);
-
-  // Close alert handler
-  const closeAlert = useCallback(() => setAlert(null), []);
+  }, []);
 
   return (
     <>
@@ -438,10 +478,6 @@ const DynamicPayPalCheckout = () => {
           animation: spin 1s linear infinite;
         }
 
-        .hide {
-          display: none !important;
-        }
-
         .security-info {
           text-align: center;
           margin-top: 1.5rem;
@@ -487,32 +523,42 @@ const DynamicPayPalCheckout = () => {
 
       <div className="container">
         <div className="checkout-card">
-          {alert && (
-            <div className={`alert ${alert.type === 'success' ? 'alert-success' : 'alert-error'}`}>
-              <button className="alert-close" onClick={closeAlert}>×</button>
+          {/* Alerts */}
+          {alerts.map(alert => (
+            <div key={alert.id} className={`alert alert-${alert.type}`}>
+              <button 
+                className="alert-close"
+                onClick={() => removeAlert(alert.id)}
+              >
+                ×
+              </button>
               {alert.message}
             </div>
-          )}
+          ))}
 
-          {loading && (
+          {/* Loading State */}
+          {loading ? (
             <div className="loading-container">
               <div className="spinner"></div>
             </div>
-          )}
-
-          {!loading && !formHidden && (
-            <form id="card-form" className="payment-form" onSubmit={handleFormSubmit}>
+          ) : (
+            /* Payment Form */
+            <form onSubmit={handleSubmit} className="payment-form">
+              {/* Email */}
               <div className="form-group">
                 <label htmlFor="email" className="form-label">Email</label>
-                <input
-                  type="email"
-                  id="email"
-                  className="form-input"
-                  placeholder="Enter your email"
-                  required
+                <input 
+                  type="email" 
+                  id="email" 
+                  className="form-input" 
+                  placeholder="Enter your email" 
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required 
                 />
               </div>
 
+              {/* Card Information */}
               <div className="form-group">
                 <label className="form-label">Card information</label>
                 <div className="card-field" id="card-number"></div>
@@ -522,40 +568,34 @@ const DynamicPayPalCheckout = () => {
                 </div>
               </div>
 
-              <button
-                type="submit"
+              <button 
+                type="submit" 
                 className="pay-button"
-                disabled={isProcessing || !paypalReady}
+                disabled={processing}
               >
-                {isProcessing
-                  ? "Processing..."
-                  : !paypalReady
-                    ? "Loading Payment..."
-                    : currentPrice
-                      ? `Pay ${currentPrice.display}`
-                      : "Pay Now"}
+                {processing 
+                  ? "Processing..." 
+                  : currentPrice 
+                    ? `Pay ${currentPrice.display}` 
+                    : "Pay Now"
+                }
               </button>
             </form>
           )}
 
-          {!loading && !formHidden && (
-            <div className="security-info">
-              <div className="security-badge">
-                <svg className="security-icon" fill="currentColor" viewBox="0 0 20 20">
-                  <path
-                    fillRule="evenodd"
-                    d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
-                    clipRule="evenodd"
-                  ></path>
-                </svg>
-                Secured by PayPal
-              </div>
+          {/* Security Info */}
+          <div className="security-info">
+            <div className="security-badge">
+              <svg className="security-icon" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd"></path>
+              </svg>
+              Secured by PayPal
             </div>
-          )}
+          </div>
         </div>
       </div>
     </>
   );
 };
 
-export default DynamicPayPalCheckout;
+export default PayPalCheckout;
