@@ -444,9 +444,9 @@ const DynamicPayPalCheckout: React.FC = () => {
         }
 
         .container {
-          max-width: 440px;
-          margin: 0 auto;
-          padding: 2rem 1rem;
+          width: 100%;
+          margin: 0;
+          padding: 0;
           min-height: 100vh;
           display: flex;
           flex-direction: column;
