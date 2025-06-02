@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, Clock, CheckCircle, Receipt, ChevronLeft, X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -179,7 +180,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
         <div className="px-4 pb-3">
           <div className="flex items-center justify-between">
             {[1, 2, 3, 4, 5].map((step, index) => (
-              <React.Fragment key={step}>
+              <div key={step} className="flex items-center">
                 <div className="flex flex-col items-center">
                   <motion.div 
                     className={`rounded-full flex items-center justify-center text-xs font-medium transition-all duration-300 shadow-sm ${
@@ -228,7 +229,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
                     animate={step < currentStep ? 'active' : 'inactive'}
                   />
                 )}
-              </React.Fragment>
+              </div>
             ))}
           </div>
         </div>
@@ -260,16 +261,6 @@ const MultiStepTransferSheetPage: React.FC = () => {
                 receiverDetails={transferData.receiverDetails}
                 onDetailsChange={(receiverDetails) => updateTransferData({ receiverDetails })}
               />
-              
-              {(transferData.receiverDetails.firstName || transferData.receiverDetails.lastName) && (
-                <div className="bg-green-50 rounded-lg p-4 flex items-start space-x-3">
-                  <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
-                  <div>
-                    <h4 className="font-medium text-green-900">Secure Transfer</h4>
-                    <p className="text-sm text-green-700">Recipient information is encrypted and secure</p>
-                  </div>
-                </div>
-              )}
             </div>
           )}
           
