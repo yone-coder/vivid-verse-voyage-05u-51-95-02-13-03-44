@@ -35,7 +35,7 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
     <div className="w-full max-w-lg">
       <div className="space-y-6">
         <div className="space-y-2">
-          <Label htmlFor="fullName" className="text-sm font-medium text-gray-900 dark:text-gray-100">
+          <Label htmlFor="fullName" className="text-sm font-medium text-gray-900 dark:text-gray-100 text-left">
             Full Name
           </Label>
           <Input 
@@ -43,13 +43,13 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
             placeholder="Enter receiver's full name" 
             value={details.fullName}
             onChange={(e) => updateField('fullName', e.target.value)}
-            className="h-11 border-gray-200 dark:border-gray-800 focus:border-gray-900 dark:focus:border-gray-100 transition-colors"
+            className="h-11 border-gray-200 dark:border-gray-800 focus:border-gray-900 dark:focus:border-gray-100 transition-colors text-left"
             required
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="phoneNumber" className="text-sm font-medium text-gray-900 dark:text-gray-100">
+          <Label htmlFor="phoneNumber" className="text-sm font-medium text-gray-900 dark:text-gray-100 text-left">
             Phone Number
           </Label>
           <Input 
@@ -57,19 +57,19 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
             placeholder="Enter receiver's phone number" 
             value={details.phoneNumber}
             onChange={(e) => updateField('phoneNumber', e.target.value)}
-            className="h-11 border-gray-200 dark:border-gray-800 focus:border-gray-900 dark:focus:border-gray-100 transition-colors"
+            className="h-11 border-gray-200 dark:border-gray-800 focus:border-gray-900 dark:focus:border-gray-100 transition-colors text-left"
             required
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="address" className="text-sm font-medium text-gray-900 dark:text-gray-100">
+          <Label htmlFor="address" className="text-sm font-medium text-gray-900 dark:text-gray-100 text-left">
             Address
           </Label>
           <Textarea 
             id="address" 
             placeholder="Enter receiver's complete address" 
-            className="min-h-[80px] resize-none border-gray-200 dark:border-gray-800 focus:border-gray-900 dark:focus:border-gray-100 transition-colors"
+            className="min-h-[80px] resize-none border-gray-200 dark:border-gray-800 focus:border-gray-900 dark:focus:border-gray-100 transition-colors text-left"
             value={details.address}
             onChange={(e) => updateField('address', e.target.value)}
             required
@@ -77,14 +77,14 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="additionalInfo" className="text-sm font-medium text-gray-500 dark:text-gray-400">
+          <Label htmlFor="additionalInfo" className="text-sm font-medium text-gray-500 dark:text-gray-400 text-left">
             Additional Information
             <span className="text-xs ml-1 font-normal">(Optional)</span>
           </Label>
           <Textarea 
             id="additionalInfo" 
             placeholder="Optional additional information" 
-            className="min-h-[64px] resize-none border-gray-200 dark:border-gray-800 focus:border-gray-900 dark:focus:border-gray-100 transition-colors" 
+            className="min-h-[64px] resize-none border-gray-200 dark:border-gray-800 focus:border-gray-900 dark:focus:border-gray-100 transition-colors text-left" 
             value={details.additionalInfo || ''}
             onChange={(e) => updateField('additionalInfo', e.target.value)}
           />
