@@ -11,10 +11,12 @@ import StepThreeTransfer from '@/components/transfer/StepThreeTransfer';
 export interface TransferData {
   amount: string;
   receiverDetails: {
-    fullName: string;
+    firstName: string;
+    lastName: string;
     phoneNumber: string;
-    address: string;
-    additionalInfo?: string;
+    department: string;
+    arrondissement: string;
+    commune: string;
   };
 }
 
@@ -24,10 +26,12 @@ const MultiStepTransferPage: React.FC = () => {
   const [transferData, setTransferData] = useState<TransferData>({
     amount: '',
     receiverDetails: {
-      fullName: '',
+      firstName: '',
+      lastName: '',
       phoneNumber: '',
-      address: '',
-      additionalInfo: '',
+      department: 'Artibonite',
+      arrondissement: '',
+      commune: '',
     }
   });
 
@@ -50,9 +54,11 @@ const MultiStepTransferPage: React.FC = () => {
   };
 
   const canProceedFromStep1 = transferData.amount && parseFloat(transferData.amount) > 0;
-  const canProceedFromStep2 = transferData.receiverDetails.fullName && 
+  const canProceedFromStep2 = transferData.receiverDetails.firstName && 
+                              transferData.receiverDetails.lastName && 
                               transferData.receiverDetails.phoneNumber && 
-                              transferData.receiverDetails.address;
+                              transferData.receiverDetails.arrondissement &&
+                              transferData.receiverDetails.commune;
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
