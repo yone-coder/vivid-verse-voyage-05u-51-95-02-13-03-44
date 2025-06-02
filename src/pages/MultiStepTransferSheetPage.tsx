@@ -266,27 +266,107 @@ const MultiStepTransferSheetPage: React.FC = () => {
           )}
           
           {currentStep === 3 && (
-            <div className="space-y-6">
-              <div className="text-center mb-6">
-                <h2 className="text-lg font-semibold text-gray-900 mb-2">Choose Payment Method</h2>
-                <p className="text-sm text-gray-600">
-                  Sending ${transferData.amount} to {transferData.receiverDetails.firstName} {transferData.receiverDetails.lastName}
+            <div className="space-y-8">
+              <div className="text-center mb-8">
+                <h2 className="text-2xl font-bold text-gray-900 mb-3">Choose Payment Method</h2>
+                <p className="text-gray-600 leading-relaxed">
+                  Sending <span className="font-semibold text-blue-600">${transferData.amount}</span> to{' '}
+                  <span className="font-semibold text-gray-900">
+                    {transferData.receiverDetails.firstName} {transferData.receiverDetails.lastName}
+                  </span>
                 </p>
               </div>
               
-              <CompactCardSelection
-                selectedMethod={transferData.selectedPaymentMethod}
-                onMethodChange={handlePaymentMethodChange}
-              />
-              
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                <div className="flex items-center space-x-2">
-                  <Shield className="h-4 w-4 text-blue-600 flex-shrink-0" />
-                  <div>
-                    <p className="text-xs font-medium text-blue-800">Bank-Level Security</p>
-                    <p className="text-xs text-blue-600">Your payment information is fully encrypted and protected</p>
+              {/* Enhanced Transfer Summary Card */}
+              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6 mb-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-gray-900">Transfer Summary</h3>
+                  <div className="flex items-center text-sm text-blue-600">
+                    <Clock className="w-4 h-4 mr-1" />
+                    Instant
                   </div>
                 </div>
+                
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Amount to send</span>
+                    <span className="font-semibold text-lg">${transferData.amount}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Transfer fee</span>
+                    <span className="font-semibold">${transferFee}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Exchange rate</span>
+                    <span className="font-medium">1 USD = 127.5 HTG</span>
+                  </div>
+                  <div className="border-t border-blue-200 pt-3 flex justify-between items-center">
+                    <span className="font-semibold text-gray-900">Total to pay</span>
+                    <span className="text-xl font-bold text-blue-600">${totalAmount}</span>
+                  </div>
+                  <div className="bg-white/50 rounded-lg p-3 mt-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600">Recipient receives</span>
+                      <span className="font-semibold text-green-600">{receiverAmount} HTG</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Payment Methods Section */}
+              <div className="space-y-4">
+                <h4 className="text-lg font-semibold text-gray-900 mb-4">Select Payment Method</h4>
+                <CompactCardSelection
+                  selectedMethod={transferData.selectedPaymentMethod}
+                  onMethodChange={handlePaymentMethodChange}
+                />
+              </div>
+              
+              {/* Security Information - Enhanced */}
+              <div className="bg-green-50 border border-green-200 rounded-2xl p-6">
+                <div className="flex items-start space-x-4">
+                  <div className="flex-shrink-0">
+                    <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                      <Shield className="h-6 w-6 text-green-600" />
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="text-lg font-semibold text-green-900 mb-2">Bank-Level Security</h4>
+                    <p className="text-sm text-green-700 leading-relaxed mb-3">
+                      Your payment information is fully encrypted and protected by industry-leading security measures.
+                    </p>
+                    <div className="grid grid-cols-2 gap-4 text-xs text-green-600">
+                      <div className="flex items-center">
+                        <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                        256-bit SSL encryption
+                      </div>
+                      <div className="flex items-center">
+                        <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                        PCI DSS compliant
+                      </div>
+                      <div className="flex items-center">
+                        <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                        Fraud monitoring
+                      </div>
+                      <div className="flex items-center">
+                        <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                        PayPal protection
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Delivery Timeline */}
+              <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6">
+                <div className="flex items-center space-x-3 mb-3">
+                  <Clock className="h-5 w-5 text-amber-600" />
+                  <h4 className="font-semibold text-amber-900">Delivery Timeline</h4>
+                </div>
+                <p className="text-sm text-amber-700 leading-relaxed">
+                  Your transfer will be available for pickup within <span className="font-semibold">24-48 hours</span>. 
+                  The recipient will receive an SMS notification when the funds are ready.
+                </p>
               </div>
             </div>
           )}
@@ -497,4 +577,3 @@ const MultiStepTransferSheetPage: React.FC = () => {
 };
 
 export default MultiStepTransferSheetPage;
-
