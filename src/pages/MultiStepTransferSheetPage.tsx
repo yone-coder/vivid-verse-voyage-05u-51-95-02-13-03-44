@@ -32,7 +32,6 @@ const MultiStepTransferSheetPage: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [paymentCompleted, setPaymentCompleted] = useState(false);
   const [transactionId, setTransactionId] = useState('');
-  const [showPayPalIframe, setShowPayPalIframe] = useState(false);
   
   const [transferData, setTransferData] = useState<TransferData>({
     amount: '100.00',
@@ -79,26 +78,19 @@ const MultiStepTransferSheetPage: React.FC = () => {
     updateTransferData({ selectedPaymentMethod: methodId });
   };
 
-  const handlePayPalButtonClick = () => {
-    setShowPayPalIframe(true);
-  };
-
   const handlePaymentSuccess = (details: any) => {
     console.log('Payment successful:', details);
     setPaymentCompleted(true);
     setTransactionId(details.id || `TX${Date.now()}`);
     setCurrentStep(4);
-    setShowPayPalIframe(false);
   };
 
   const handlePaymentError = (error: any) => {
     console.error('Payment error:', error);
-    setShowPayPalIframe(false);
   };
 
   const handlePaymentCancel = () => {
     console.log('Payment cancelled');
-    setShowPayPalIframe(false);
   };
 
   const canProceedFromStep1 = transferData.amount && parseFloat(transferData.amount) > 0;
@@ -290,8 +282,8 @@ const MultiStepTransferSheetPage: React.FC = () => {
               {/* PayPal Button Section */}
               <div className="space-y-4">
                 <Button
-                  onClick={handlePayPalButtonClick}
-                  className="w-full h-14 bg-[#0070ba] hover:bg-[#005ea6] text-white font-semibold text-lg rounded-lg flex items-center justify-center space-x-3"
+                  disabled
+                  className="w-full h-14 bg-[#0070ba] hover:bg-[#005ea6] text-white font-semibold text-lg rounded-lg flex items-center justify-center space-x-3 opacity-75"
                 >
                   <img 
                     src="https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png" 
@@ -302,48 +294,34 @@ const MultiStepTransferSheetPage: React.FC = () => {
                 </Button>
               </div>
 
-              {/* Embedded PayPal Iframe - Show immediately after button click */}
-              {showPayPalIframe && (
-                <div className="space-y-4 border rounded-lg p-4 bg-gray-50">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold">PayPal Checkout</h3>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setShowPayPalIframe(false)}
-                      className="text-gray-500 hover:text-gray-700"
-                    >
-                      <X className="w-4 h-4" />
-                    </Button>
-                  </div>
-                  
-                  <div className="bg-white rounded-lg overflow-hidden" style={{ height: '500px' }}>
-                    <PayPalIframeCheckout
-                      amount={totalAmount}
-                      onSuccess={handlePaymentSuccess}
-                      onError={handlePaymentError}
-                      onCancel={handlePaymentCancel}
-                      onClose={() => setShowPayPalIframe(false)}
-                    />
-                  </div>
-                </div>
-              )}
+              {/* Separator Section */}
+              <div className="flex items-center space-x-4 my-6">
+                <Separator className="flex-1" />
+                <span className="text-sm text-gray-500 font-medium px-3">or continue with</span>
+                <Separator className="flex-1" />
+              </div>
 
-              {/* Separator Section - Only show when iframe is not shown */}
-              {!showPayPalIframe && (
-                <div className="flex items-center space-x-4 my-6">
-                  <Separator className="flex-1" />
-                  <span className="text-sm text-gray-500 font-medium px-3">or continue with</span>
-                  <Separator className="flex-1" />
+              {/* PayPal Iframe - Always displayed below separator */}
+              <div className="space-y-4 border rounded-lg p-4 bg-gray-50">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold">PayPal Checkout</h3>
                 </div>
-              )}
+                
+                <div className="bg-white rounded-lg overflow-hidden" style={{ height: '500px' }}>
+                  <PayPalIframeCheckout
+                    amount={totalAmount}
+                    onSuccess={handlePaymentSuccess}
+                    onError={handlePaymentError}
+                    onCancel={handlePaymentCancel}
+                    onClose={() => {}}
+                  />
+                </div>
+              </div>
 
-              {/* Additional payment options can be added here when iframe is not shown */}
-              {!showPayPalIframe && (
-                <div className="text-center py-8 text-gray-500">
-                  <p>Additional payment methods coming soon</p>
-                </div>
-              )}
+              {/* Additional payment options can be added here */}
+              <div className="text-center py-4 text-gray-500">
+                <p>Additional payment methods coming soon</p>
+              </div>
             </div>
           )}
 
@@ -497,16 +475,12 @@ const MultiStepTransferSheetPage: React.FC = () => {
                 ) : currentStep === 3 ? (
                   <Button 
                     onClick={() => {
-                      if (transferData.selectedPaymentMethod === 'paypal') {
-                        setShowPayPalIframe(true);
-                      } else if (transferData.selectedPaymentMethod === 'card') {
-                        // Card payment form is already shown, user needs to complete it
-                      }
+                      // Payment will be handled by the iframe
                     }}
                     disabled={!canProceedFromStep3}
                     className="flex-1 transition-all duration-200"
                   >
-                    {transferData.selectedPaymentMethod === 'paypal' ? 'Pay with PayPal' : 'Continue'}
+                    Continue
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 ) : (
