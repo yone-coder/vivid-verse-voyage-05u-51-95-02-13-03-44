@@ -21,7 +21,6 @@ export interface TransferData {
     department: string;
     arrondissement: string;
     commune: string;
-    additionalInfo?: string;
   };
   selectedPaymentMethod?: string;
 }
@@ -41,7 +40,6 @@ const MultiStepTransferSheetPage: React.FC = () => {
       department: 'Artibonite',
       arrondissement: '',
       commune: '',
-      additionalInfo: '',
     },
     selectedPaymentMethod: 'credit-card'
   });

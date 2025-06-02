@@ -11,7 +11,6 @@ interface ReceiverDetails {
   department: string;
   arrondissement: string;
   commune: string;
-  additionalInfo?: string;
 }
 
 interface StepTwoTransferProps {
@@ -57,8 +56,7 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
     phoneNumber: '',
     department: 'Artibonite',
     arrondissement: '',
-    commune: '',
-    additionalInfo: ''
+    commune: ''
   };
 
   const updateField = (field: keyof ReceiverDetails, value: string) => {
@@ -136,37 +134,38 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
           <p className="text-xs text-gray-500">Enter 8-digit Haitian phone number</p>
         </div>
 
-        {/* Address - Haiti Administrative Divisions */}
+        {/* Address - Haiti Administrative Divisions - Compact Layout */}
         <div className="space-y-4">
           <Label className="text-sm font-medium text-gray-900 dark:text-gray-100">
             Address in Haiti
           </Label>
           
-          {/* Department (Fixed to Artibonite) */}
-          <div className="space-y-2">
-            <Label className="text-xs text-gray-600 dark:text-gray-400">Department</Label>
-            <Input 
-              value="Artibonite"
-              disabled
-              className="h-10 bg-gray-50 border-gray-200 dark:bg-gray-800 dark:border-gray-700 text-gray-600 dark:text-gray-400"
-            />
-          </div>
+          {/* Department and Arrondissement - Horizontal Layout */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-2">
+              <Label className="text-xs text-gray-600 dark:text-gray-400">Department</Label>
+              <Input 
+                value="Artibonite"
+                disabled
+                className="h-10 bg-gray-50 border-gray-200 dark:bg-gray-800 dark:border-gray-700 text-gray-600 dark:text-gray-400"
+              />
+            </div>
 
-          {/* Arrondissement */}
-          <div className="space-y-2">
-            <Label className="text-xs text-gray-600 dark:text-gray-400">Arrondissement</Label>
-            <Select value={details.arrondissement} onValueChange={(value) => updateField('arrondissement', value)}>
-              <SelectTrigger className="h-10 border-gray-200 dark:border-gray-800 focus:border-gray-900 dark:focus:border-gray-100">
-                <SelectValue placeholder="Select arrondissement" />
-              </SelectTrigger>
-              <SelectContent className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 z-50">
-                {Object.keys(artiboniteData).map((arrondissement) => (
-                  <SelectItem key={arrondissement} value={arrondissement} className="hover:bg-gray-100 dark:hover:bg-gray-700">
-                    {arrondissement}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="space-y-2">
+              <Label className="text-xs text-gray-600 dark:text-gray-400">Arrondissement</Label>
+              <Select value={details.arrondissement} onValueChange={(value) => updateField('arrondissement', value)}>
+                <SelectTrigger className="h-10 border-gray-200 dark:border-gray-800 focus:border-gray-900 dark:focus:border-gray-100">
+                  <SelectValue placeholder="Select arrondissement" />
+                </SelectTrigger>
+                <SelectContent className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 z-50">
+                  {Object.keys(artiboniteData).map((arrondissement) => (
+                    <SelectItem key={arrondissement} value={arrondissement} className="hover:bg-gray-100 dark:hover:bg-gray-700">
+                      {arrondissement}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           {/* Commune */}
@@ -189,21 +188,6 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
               </SelectContent>
             </Select>
           </div>
-        </div>
-
-        {/* Additional Information */}
-        <div className="space-y-2">
-          <Label htmlFor="additionalInfo" className="text-sm font-medium text-gray-500 dark:text-gray-400">
-            Additional Information
-            <span className="text-xs ml-1 font-normal">(Optional)</span>
-          </Label>
-          <Input 
-            id="additionalInfo" 
-            placeholder="Street address, landmarks, etc." 
-            value={details.additionalInfo || ''}
-            onChange={(e) => updateField('additionalInfo', e.target.value)}
-            className="h-11 border-gray-200 dark:border-gray-800 focus:border-gray-900 dark:focus:border-gray-100 transition-colors"
-          />
         </div>
       </div>
     </div>

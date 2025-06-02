@@ -12,7 +12,6 @@ export interface ReceiverDetails {
   department: string;
   arrondissement: string;
   commune: string;
-  additionalInfo?: string;
 }
 
 interface ReceiverDetailsFormProps {
@@ -59,7 +58,6 @@ const ReceiverDetailsForm: React.FC<ReceiverDetailsFormProps> = ({ onDetailsChan
       department: "Artibonite",
       arrondissement: "",
       commune: "",
-      additionalInfo: "",
     },
   });
 
@@ -125,35 +123,36 @@ const ReceiverDetailsForm: React.FC<ReceiverDetailsFormProps> = ({ onDetailsChan
           <p className="text-xs text-gray-500">Enter 8-digit Haitian phone number</p>
         </div>
 
-        {/* Address - Haiti Administrative Divisions */}
+        {/* Address - Haiti Administrative Divisions - Compact Layout */}
         <div className="space-y-3">
           <Label className="text-sm font-medium">Address in Haiti</Label>
           
-          {/* Department (Fixed to Artibonite) */}
-          <div className="space-y-2">
-            <Label className="text-xs text-gray-600">Department</Label>
-            <Input 
-              value="Artibonite"
-              disabled
-              className="bg-gray-50 text-gray-600"
-            />
-          </div>
+          {/* Department and Arrondissement - Horizontal Layout */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-2">
+              <Label className="text-xs text-gray-600">Department</Label>
+              <Input 
+                value="Artibonite"
+                disabled
+                className="bg-gray-50 text-gray-600"
+              />
+            </div>
 
-          {/* Arrondissement */}
-          <div className="space-y-2">
-            <Label className="text-xs text-gray-600">Arrondissement</Label>
-            <Select value={watchedValues.arrondissement} onValueChange={handleArrondissementChange}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select arrondissement" />
-              </SelectTrigger>
-              <SelectContent className="bg-white border border-gray-200 z-50">
-                {Object.keys(artiboniteData).map((arrondissement) => (
-                  <SelectItem key={arrondissement} value={arrondissement}>
-                    {arrondissement}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="space-y-2">
+              <Label className="text-xs text-gray-600">Arrondissement</Label>
+              <Select value={watchedValues.arrondissement} onValueChange={handleArrondissementChange}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select arrondissement" />
+                </SelectTrigger>
+                <SelectContent className="bg-white border border-gray-200 z-50">
+                  {Object.keys(artiboniteData).map((arrondissement) => (
+                    <SelectItem key={arrondissement} value={arrondissement}>
+                      {arrondissement}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           {/* Commune */}
@@ -176,19 +175,6 @@ const ReceiverDetailsForm: React.FC<ReceiverDetailsFormProps> = ({ onDetailsChan
               </SelectContent>
             </Select>
           </div>
-        </div>
-
-        {/* Additional Information */}
-        <div className="space-y-2">
-          <Label htmlFor="additionalInfo">
-            Additional Information
-            <span className="text-xs ml-1 font-normal text-gray-500">(Optional)</span>
-          </Label>
-          <Input 
-            id="additionalInfo" 
-            placeholder="Street address, landmarks, etc." 
-            {...form.register("additionalInfo")}
-          />
         </div>
       </div>
     </div>
