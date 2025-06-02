@@ -32,7 +32,7 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
   };
 
   return (
-    <div className="w-full max-w-lg mx-auto">
+    <div className="w-full max-w-lg">
       <div className="space-y-6">
         <div className="space-y-2">
           <Label htmlFor="fullName" className="text-sm font-medium text-gray-900 dark:text-gray-100">
