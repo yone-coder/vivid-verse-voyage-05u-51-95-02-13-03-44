@@ -377,9 +377,6 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
                 <p><span className="text-gray-500">Name:</span> {receiverDetails.firstName} {receiverDetails.lastName}</p>
                 <p><span className="text-gray-500">Phone:</span> +509 {receiverDetails.phoneNumber}</p>
                 <p><span className="text-gray-500">Location:</span> {receiverDetails.commune}, {receiverDetails.arrondissement}, {receiverDetails.department}</p>
-                {receiverDetails.additionalInfo && (
-                  <p><span className="text-gray-500">Additional Info:</span> {receiverDetails.additionalInfo}</p>
-                )}
               </div>
             </div>
           )}

@@ -80,7 +80,7 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
       <div className="space-y-6">
         {/* Full Name - Horizontal Layout */}
         <div className="space-y-2">
-          <Label className="text-sm font-medium text-gray-900 dark:text-gray-100">
+          <Label className="text-sm font-medium text-[#333]">
             Full Name
           </Label>
           <div className="grid grid-cols-2 gap-3">
@@ -89,7 +89,7 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
                 placeholder="First name" 
                 value={details.firstName}
                 onChange={(e) => updateField('firstName', e.target.value)}
-                className="h-11 border-gray-200 dark:border-gray-800 focus:border-gray-900 dark:focus:border-gray-100 transition-colors"
+                className="h-11 border-2 border-gray-200 focus:border-[#ff4747] focus:ring-[#ff4747] transition-all duration-200 rounded-lg"
                 required
               />
             </div>
@@ -98,7 +98,7 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
                 placeholder="Last name" 
                 value={details.lastName}
                 onChange={(e) => updateField('lastName', e.target.value)}
-                className="h-11 border-gray-200 dark:border-gray-800 focus:border-gray-900 dark:focus:border-gray-100 transition-colors"
+                className="h-11 border-2 border-gray-200 focus:border-[#ff4747] focus:ring-[#ff4747] transition-all duration-200 rounded-lg"
                 required
               />
             </div>
@@ -107,11 +107,11 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
 
         {/* Phone Number with Haiti Country Code */}
         <div className="space-y-2">
-          <Label htmlFor="phoneNumber" className="text-sm font-medium text-gray-900 dark:text-gray-100">
+          <Label htmlFor="phoneNumber" className="text-sm font-medium text-[#333]">
             Phone Number
           </Label>
           <div className="flex">
-            <div className="flex items-center px-3 bg-gray-50 border border-r-0 border-gray-200 rounded-l-md dark:bg-gray-800 dark:border-gray-800">
+            <div className="flex items-center px-3 bg-[#ff4747] border-2 border-[#ff4747] border-r-0 rounded-l-lg">
               <div className="flex items-center gap-2">
                 <div className="w-5 h-5 rounded-full overflow-hidden bg-blue-600 flex items-center justify-center">
                   <div className="w-full h-full bg-gradient-to-r from-blue-600 via-red-500 to-red-600 relative">
@@ -119,7 +119,7 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
                     <div className="absolute right-0 top-0 w-1/2 h-full bg-red-600"></div>
                   </div>
                 </div>
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">+509</span>
+                <span className="text-sm font-medium text-white">+509</span>
               </div>
             </div>
             <Input 
@@ -127,7 +127,7 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
               placeholder="XXXX XXXX" 
               value={details.phoneNumber}
               onChange={(e) => updateField('phoneNumber', e.target.value)}
-              className="h-11 border-gray-200 dark:border-gray-800 focus:border-gray-900 dark:focus:border-gray-100 transition-colors rounded-l-none"
+              className="h-11 border-2 border-[#ff4747] focus:border-[#ff4747] focus:ring-[#ff4747] transition-all duration-200 rounded-l-none rounded-r-lg"
               required
             />
           </div>
@@ -136,30 +136,30 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
 
         {/* Address - Haiti Administrative Divisions - Compact Layout */}
         <div className="space-y-4">
-          <Label className="text-sm font-medium text-gray-900 dark:text-gray-100">
+          <Label className="text-sm font-medium text-[#333]">
             Address in Haiti
           </Label>
           
           {/* Department and Arrondissement - Horizontal Layout */}
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-2">
-              <Label className="text-xs text-gray-600 dark:text-gray-400">Department</Label>
+              <Label className="text-xs text-gray-600">Department</Label>
               <Input 
                 value="Artibonite"
                 disabled
-                className="h-10 bg-gray-50 border-gray-200 dark:bg-gray-800 dark:border-gray-700 text-gray-600 dark:text-gray-400"
+                className="h-10 bg-gray-50 border-2 border-gray-200 text-gray-600 rounded-lg"
               />
             </div>
 
             <div className="space-y-2">
-              <Label className="text-xs text-gray-600 dark:text-gray-400">Arrondissement</Label>
+              <Label className="text-xs text-gray-600">Arrondissement</Label>
               <Select value={details.arrondissement} onValueChange={(value) => updateField('arrondissement', value)}>
-                <SelectTrigger className="h-10 border-gray-200 dark:border-gray-800 focus:border-gray-900 dark:focus:border-gray-100">
+                <SelectTrigger className="h-10 border-2 border-gray-200 focus:border-[#ff4747] focus:ring-[#ff4747] rounded-lg">
                   <SelectValue placeholder="Select arrondissement" />
                 </SelectTrigger>
-                <SelectContent className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 z-50">
+                <SelectContent className="bg-white border-2 border-gray-200 rounded-lg z-50">
                   {Object.keys(artiboniteData).map((arrondissement) => (
-                    <SelectItem key={arrondissement} value={arrondissement} className="hover:bg-gray-100 dark:hover:bg-gray-700">
+                    <SelectItem key={arrondissement} value={arrondissement} className="hover:bg-[#fff0f0] focus:bg-[#fff0f0]">
                       {arrondissement}
                     </SelectItem>
                   ))}
@@ -170,18 +170,18 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
 
           {/* Commune */}
           <div className="space-y-2">
-            <Label className="text-xs text-gray-600 dark:text-gray-400">Commune</Label>
+            <Label className="text-xs text-gray-600">Commune</Label>
             <Select 
               value={details.commune} 
               onValueChange={(value) => updateField('commune', value)}
               disabled={!details.arrondissement}
             >
-              <SelectTrigger className="h-10 border-gray-200 dark:border-gray-800 focus:border-gray-900 dark:focus:border-gray-100">
+              <SelectTrigger className="h-10 border-2 border-gray-200 focus:border-[#ff4747] focus:ring-[#ff4747] rounded-lg">
                 <SelectValue placeholder={details.arrondissement ? "Select commune" : "Select arrondissement first"} />
               </SelectTrigger>
-              <SelectContent className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 z-50">
+              <SelectContent className="bg-white border-2 border-gray-200 rounded-lg z-50">
                 {availableCommunes.map((commune) => (
-                  <SelectItem key={commune} value={commune} className="hover:bg-gray-100 dark:hover:bg-gray-700">
+                  <SelectItem key={commune} value={commune} className="hover:bg-[#fff0f0] focus:bg-[#fff0f0]">
                     {commune}
                   </SelectItem>
                 ))}
