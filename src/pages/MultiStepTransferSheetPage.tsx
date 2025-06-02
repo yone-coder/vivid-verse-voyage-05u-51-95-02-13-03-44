@@ -77,11 +77,11 @@ const MultiStepTransferSheetPage: React.FC = () => {
 
   const handlePaymentMethodChange = (methodId: string) => {
     updateTransferData({ selectedPaymentMethod: methodId });
-    if (methodId === 'paypal') {
-      setShowPayPalIframe(true);
-    } else {
-      setShowPayPalIframe(false);
-    }
+    // Remove the automatic iframe show logic
+  };
+
+  const handlePayPalButtonClick = () => {
+    setShowPayPalIframe(true);
   };
 
   const handlePaymentSuccess = (details: any) => {
@@ -291,7 +291,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
               {/* PayPal Button Section */}
               <div className="space-y-4">
                 <Button
-                  onClick={handlePaymentSuccess}
+                  onClick={handlePayPalButtonClick}
                   className="w-full h-14 bg-[#0070ba] hover:bg-[#005ea6] text-white font-semibold text-lg rounded-lg flex items-center justify-center space-x-3"
                 >
                   <img 
@@ -310,16 +310,18 @@ const MultiStepTransferSheetPage: React.FC = () => {
                 <Separator className="flex-1" />
               </div>
 
-              {/* PayPal Iframe Section */}
-              <div className="space-y-4">
-                <PayPalIframeCheckout
-                  amount={totalAmount}
-                  onSuccess={handlePaymentSuccess}
-                  onError={handlePaymentError}
-                  onCancel={handlePaymentCancel}
-                  onClose={() => setShowPayPalIframe(false)}
-                />
-              </div>
+              {/* PayPal Iframe Section - Only show when button is clicked */}
+              {showPayPalIframe && (
+                <div className="space-y-4">
+                  <PayPalIframeCheckout
+                    amount={totalAmount}
+                    onSuccess={handlePaymentSuccess}
+                    onError={handlePaymentError}
+                    onCancel={handlePaymentCancel}
+                    onClose={() => setShowPayPalIframe(false)}
+                  />
+                </div>
+              )}
             </div>
           )}
 
