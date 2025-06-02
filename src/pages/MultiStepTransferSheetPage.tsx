@@ -167,13 +167,6 @@ const MultiStepTransferSheetPage: React.FC = () => {
           </button>
         </div>
         
-        {/* Step title below the header controls */}
-        <div className="px-4 pb-2">
-          <h1 className="text-lg font-semibold text-center">
-            {stepTitles[currentStep - 1]}
-          </h1>
-        </div>
-        
         {/* Animated Step Indicator */}
         <div className="px-4 pb-3">
           <div className="flex items-center justify-between">
