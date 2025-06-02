@@ -228,27 +228,6 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
               </Select>
             </div>
           </div>
-
-          {/* Security Notice */}
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4">
-            <div className="flex items-start space-x-3">
-              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
-                <svg className="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-                </svg>
-              </div>
-              <div className="flex-1">
-                <h4 className="font-medium text-blue-900 text-sm mb-1">Secure Transfer</h4>
-                <p className="text-blue-700 text-xs leading-relaxed">
-                  All recipient information is encrypted using bank-level security protocols. Your data is protected with industry-standard encryption.
-                </p>
-                <div className="flex items-center mt-2 text-xs text-blue-600">
-                  <div className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
-                  256-bit SSL encryption active
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </TooltipProvider>
