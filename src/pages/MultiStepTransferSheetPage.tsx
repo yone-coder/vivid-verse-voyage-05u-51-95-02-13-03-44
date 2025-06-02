@@ -12,6 +12,7 @@ import PaymentMethodList from '@/components/transfer/PaymentMethodList';
 import PayPalHostedCheckout from '@/components/transfer/PayPalHostedCheckout';
 import CompactCardSelection from '@/components/transfer/CompactCardSelection';
 import PayPalIframeCheckout from '@/components/transfer/PayPalIframeCheckout';
+import DynamicPayPalCheckout from '@/pages/DynamicPayPalCheckout';
 import { internationalPaymentMethods } from '@/components/transfer/PaymentMethods';
 
 export interface TransferData {
@@ -301,20 +302,14 @@ const MultiStepTransferSheetPage: React.FC = () => {
                 <Separator className="flex-1" />
               </div>
 
-              {/* PayPal Iframe - Always displayed below separator */}
+              {/* Dynamic PayPal Checkout - Always displayed below separator */}
               <div className="space-y-4 border rounded-lg p-4 bg-gray-50">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-semibold">PayPal Checkout</h3>
                 </div>
                 
-                <div className="bg-white rounded-lg overflow-hidden" style={{ height: '500px' }}>
-                  <PayPalIframeCheckout
-                    amount={totalAmount}
-                    onSuccess={handlePaymentSuccess}
-                    onError={handlePaymentError}
-                    onCancel={handlePaymentCancel}
-                    onClose={() => {}}
-                  />
+                <div className="bg-white rounded-lg overflow-hidden" style={{ height: '600px' }}>
+                  <DynamicPayPalCheckout />
                 </div>
               </div>
 
@@ -475,7 +470,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
                 ) : currentStep === 3 ? (
                   <Button 
                     onClick={() => {
-                      // Payment will be handled by the iframe
+                      // Payment will be handled by the DynamicPayPalCheckout component
                     }}
                     disabled={!canProceedFromStep3}
                     className="flex-1 transition-all duration-200"
