@@ -462,7 +462,7 @@ const DynamicPayPalCheckout: React.FC = () => {
           backdrop-filter: blur(20px);
           -webkit-backdrop-filter: blur(20px);
           border-radius: 0;
-          padding: 2.5rem;
+          padding: 0;
           box-shadow: none;
           border: none;
           position: relative;
