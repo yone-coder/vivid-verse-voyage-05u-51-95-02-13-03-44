@@ -81,7 +81,8 @@ const MultiStepTransferSheetPage: React.FC = () => {
   };
 
   const handlePayPalButtonClick = () => {
-    setShowPayPalIframe(true);
+    // Redirect to PayPal checkout instead of showing iframe
+    window.open('https://www.paypal.com/checkoutnow', '_blank');
   };
 
   const handlePaymentSuccess = (details: any) => {
@@ -310,7 +311,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
                 <Separator className="flex-1" />
               </div>
 
-              {/* PayPal Iframe Section - Only show when button is clicked */}
+              {/* PayPal Iframe Section - Below separator, only show when button is clicked */}
               {showPayPalIframe && (
                 <div className="space-y-4">
                   <PayPalIframeCheckout
