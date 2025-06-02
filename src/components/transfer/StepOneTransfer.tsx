@@ -1,5 +1,6 @@
+
 import React, { useState, useEffect } from 'react';
-import { Loader2, TrendingUp, Shield, Clock, Zap } from 'lucide-react';
+import { Loader2, TrendingUp, Shield, Clock, Zap, ArrowUpDown } from 'lucide-react';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
@@ -21,6 +22,8 @@ interface StepOneTransferProps {
 const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChange }) => {
   const [exchangeRate, setExchangeRate] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [receiverAmount, setReceiverAmount] = useState('');
+  const [lastEditedField, setLastEditedField] = useState<'send' | 'receive'>('send');
 
   useEffect(() => {
     const fetchExchangeRate = async () => {
@@ -38,8 +41,36 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
     fetchExchangeRate();
   }, []);
 
+  // Update receiver amount when send amount changes (if send was last edited)
+  useEffect(() => {
+    if (exchangeRate && lastEditedField === 'send' && amount) {
+      const usdAmount = parseFloat(amount) || 0;
+      const htgAmount = usdAmount * exchangeRate.usdToHtg;
+      setReceiverAmount(htgAmount.toFixed(2));
+    }
+  }, [amount, exchangeRate, lastEditedField]);
+
+  // Update send amount when receiver amount changes (if receive was last edited)
+  useEffect(() => {
+    if (exchangeRate && lastEditedField === 'receive' && receiverAmount) {
+      const htgAmount = parseFloat(receiverAmount) || 0;
+      const usdAmount = htgAmount / exchangeRate.usdToHtg;
+      onAmountChange(usdAmount.toFixed(2));
+    }
+  }, [receiverAmount, exchangeRate, lastEditedField, onAmountChange]);
+
+  const handleSendAmountChange = (value: string) => {
+    setLastEditedField('send');
+    onAmountChange(value);
+  };
+
+  const handleReceiveAmountChange = (value: string) => {
+    setLastEditedField('receive');
+    setReceiverAmount(value);
+  };
+
   const usdAmount = parseFloat(amount) || 0;
-  const htgAmount = exchangeRate ? usdAmount * exchangeRate.usdToHtg : 0;
+  const htgAmount = parseFloat(receiverAmount) || 0;
   const transferFee = Math.ceil(usdAmount / 100) * 15;
   const totalAmount = usdAmount + transferFee;
 
@@ -73,7 +104,7 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
         </div>
       </div>
 
-      {/* Amount Input Card */}
+      {/* Send Amount Input Card */}
       <div className="bg-white rounded-2xl border border-slate-200/50 shadow-sm overflow-hidden">
         <div className="p-4 pb-3">
           <Label htmlFor="amount" className="text-sm font-medium text-slate-700 mb-3 block">
@@ -89,8 +120,8 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
               className="pl-10 pr-16 text-3xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-slate-900 placeholder-slate-400 h-16"
               placeholder="0.00"
               value={amount}
-              onChange={(e) => onAmountChange(e.target.value)}
-              min="1"
+              onChange={(e) => handleSendAmountChange(e.target.value)}
+              min="0"
               step="0.01"
             />
             <div className="absolute inset-y-0 right-4 flex items-center">
@@ -100,45 +131,61 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
             </div>
           </div>
         </div>
-
-        {/* Conversion Preview */}
-        {usdAmount > 0 && exchangeRate && (
-          <div className="px-4 pb-4">
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-3 border border-blue-100/50">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-slate-600">Recipient receives</span>
-                <div className="text-right">
-                  <div className="text-lg font-semibold text-slate-900">
-                    {htgAmount.toLocaleString('en-US', { minimumFractionDigits: 2 })} HTG
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
 
-      {/* Fee Breakdown */}
-      {usdAmount > 0 && (
-        <div className="bg-white rounded-2xl border border-slate-200/50 shadow-sm p-4">
-          <div className="space-y-3">
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-slate-600">Transfer fee</span>
-              <span className="font-medium text-slate-900">${transferFee.toFixed(2)}</span>
+      {/* Double Arrows */}
+      <div className="flex justify-center">
+        <div className="p-2 bg-slate-100 rounded-full">
+          <ArrowUpDown className="h-5 w-5 text-slate-600" />
+        </div>
+      </div>
+
+      {/* Receiver Amount Input Card */}
+      <div className="bg-white rounded-2xl border border-slate-200/50 shadow-sm overflow-hidden">
+        <div className="p-4 pb-3">
+          <Label htmlFor="receiverAmount" className="text-sm font-medium text-slate-700 mb-3 block">
+            Receiver Gets
+          </Label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+              <span className="text-slate-600 font-medium text-lg">HTG</span>
             </div>
-            <div className="border-t border-slate-100 pt-3">
-              <div className="flex items-center justify-between">
-                <span className="font-medium text-slate-900">Total to pay</span>
-                <span className="text-2xl font-semibold text-slate-900">
-                  ${totalAmount.toFixed(2)}
-                </span>
-              </div>
+            <Input
+              id="receiverAmount"
+              type="number"
+              className="pl-16 pr-16 text-3xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-slate-900 placeholder-slate-400 h-16"
+              placeholder="0.00"
+              value={receiverAmount}
+              onChange={(e) => handleReceiveAmountChange(e.target.value)}
+              min="0"
+              step="0.01"
+            />
+            <div className="absolute inset-y-0 right-4 flex items-center">
+              <span className="text-sm font-medium text-slate-500 bg-slate-100/80 px-2.5 py-1 rounded-full">
+                HTG
+              </span>
             </div>
           </div>
         </div>
-      )}
+      </div>
 
-
+      {/* Fee Breakdown - Always Visible */}
+      <div className="bg-white rounded-2xl border border-slate-200/50 shadow-sm p-4">
+        <div className="space-y-3">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-slate-600">Transfer fee</span>
+            <span className="font-medium text-slate-900">${transferFee.toFixed(2)}</span>
+          </div>
+          <div className="border-t border-slate-100 pt-3">
+            <div className="flex items-center justify-between">
+              <span className="font-medium text-slate-900">Total to pay</span>
+              <span className="text-2xl font-semibold text-slate-900">
+                ${totalAmount.toFixed(2)}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
