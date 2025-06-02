@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -105,29 +104,21 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
           </div>
         </div>
 
-        {/* Phone Number with Haiti Country Code - updated styling */}
+        {/* Phone Number - simplified without themed styling */}
         <div className="space-y-3">
           <Label htmlFor="phoneNumber" className="text-base font-semibold text-[#333] block">
             Phone Number
           </Label>
-          <div className="flex rounded-xl overflow-hidden shadow-sm">
-            <div className="flex items-center px-4 bg-[#2563eb] border-2 border-[#2563eb] border-r-0">
-              <div className="flex items-center gap-3">
-                <div className="w-6 h-6 rounded-full overflow-hidden bg-blue-600 flex items-center justify-center shadow-sm">
-                  <div className="w-full h-full bg-gradient-to-r from-blue-600 via-red-500 to-red-600 relative">
-                    <div className="absolute inset-0 bg-blue-600"></div>
-                    <div className="absolute right-0 top-0 w-1/2 h-full bg-red-600"></div>
-                  </div>
-                </div>
-                <span className="text-base font-bold text-white">+509</span>
-              </div>
+          <div className="flex rounded-xl overflow-hidden">
+            <div className="flex items-center px-4 bg-gray-100 border-2 border-gray-300 border-r-0">
+              <span className="text-base font-medium text-gray-700">+509</span>
             </div>
             <Input 
               id="phoneNumber" 
-              placeholder="Phone number" 
+              placeholder="Enter phone number" 
               value={details.phoneNumber}
               onChange={(e) => updateField('phoneNumber', e.target.value)}
-              className="h-12 border-2 border-[#2563eb] focus:border-[#2563eb] focus:ring-[#2563eb] transition-all duration-200 rounded-l-none rounded-r-xl bg-[#fafafa] text-[#333] placeholder:text-[#999] font-medium"
+              className="h-12 border-2 border-gray-300 focus:border-[#2563eb] focus:ring-[#2563eb] transition-all duration-200 rounded-l-none rounded-r-xl bg-[#fafafa] text-[#333] placeholder:text-[#999] font-medium"
               required
             />
           </div>
