@@ -118,7 +118,7 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
               id="amount"
               type="number"
               className="pl-8 pr-12 text-2xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-slate-900 placeholder-slate-400 placeholder:text-2xl placeholder:font-light h-12"
-              placeholder="100.00"
+              placeholder="0.00"
               value={amount}
               onChange={(e) => handleSendAmountChange(e.target.value)}
               min="0"
@@ -154,7 +154,7 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
               id="receiverAmount"
               type="number"
               className="pl-12 pr-12 text-2xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-slate-900 placeholder-slate-400 placeholder:text-2xl placeholder:font-light h-12"
-              placeholder="13250.00"
+              placeholder="0.00"
               value={receiverAmount}
               onChange={(e) => handleReceiveAmountChange(e.target.value)}
               min="0"
