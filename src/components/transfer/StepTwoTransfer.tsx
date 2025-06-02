@@ -78,7 +78,7 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
   return (
     <div className="w-full max-w-lg bg-white">
       <div className="space-y-8">
-        {/* Full Name - Horizontal Layout with AliExpress styling */}
+        {/* Full Name - Horizontal Layout with updated styling */}
         <div className="space-y-3">
           <Label className="text-base font-semibold text-[#333] block">
             Full Name
@@ -89,7 +89,7 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
                 placeholder="First name" 
                 value={details.firstName}
                 onChange={(e) => updateField('firstName', e.target.value)}
-                className="h-12 border-2 border-[#e0e0e0] focus:border-[#ff4747] focus:ring-[#ff4747] transition-all duration-200 rounded-xl bg-[#fafafa] text-[#333] placeholder:text-[#999] font-medium"
+                className="h-12 border-2 border-[#e0e0e0] focus:border-[#2563eb] focus:ring-[#2563eb] transition-all duration-200 rounded-xl bg-[#fafafa] text-[#333] placeholder:text-[#999] font-medium"
                 required
               />
             </div>
@@ -98,20 +98,20 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
                 placeholder="Last name" 
                 value={details.lastName}
                 onChange={(e) => updateField('lastName', e.target.value)}
-                className="h-12 border-2 border-[#e0e0e0] focus:border-[#ff4747] focus:ring-[#ff4747] transition-all duration-200 rounded-xl bg-[#fafafa] text-[#333] placeholder:text-[#999] font-medium"
+                className="h-12 border-2 border-[#e0e0e0] focus:border-[#2563eb] focus:ring-[#2563eb] transition-all duration-200 rounded-xl bg-[#fafafa] text-[#333] placeholder:text-[#999] font-medium"
                 required
               />
             </div>
           </div>
         </div>
 
-        {/* Phone Number with Haiti Country Code - AliExpress styling */}
+        {/* Phone Number with Haiti Country Code - updated styling */}
         <div className="space-y-3">
           <Label htmlFor="phoneNumber" className="text-base font-semibold text-[#333] block">
             Phone Number
           </Label>
           <div className="flex rounded-xl overflow-hidden shadow-sm">
-            <div className="flex items-center px-4 bg-[#ff4747] border-2 border-[#ff4747] border-r-0">
+            <div className="flex items-center px-4 bg-[#2563eb] border-2 border-[#2563eb] border-r-0">
               <div className="flex items-center gap-3">
                 <div className="w-6 h-6 rounded-full overflow-hidden bg-blue-600 flex items-center justify-center shadow-sm">
                   <div className="w-full h-full bg-gradient-to-r from-blue-600 via-red-500 to-red-600 relative">
@@ -127,14 +127,14 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
               placeholder="Phone number" 
               value={details.phoneNumber}
               onChange={(e) => updateField('phoneNumber', e.target.value)}
-              className="h-12 border-2 border-[#ff4747] focus:border-[#ff4747] focus:ring-[#ff4747] transition-all duration-200 rounded-l-none rounded-r-xl bg-[#fafafa] text-[#333] placeholder:text-[#999] font-medium"
+              className="h-12 border-2 border-[#2563eb] focus:border-[#2563eb] focus:ring-[#2563eb] transition-all duration-200 rounded-l-none rounded-r-xl bg-[#fafafa] text-[#333] placeholder:text-[#999] font-medium"
               required
             />
           </div>
           <p className="text-sm text-[#666] font-medium">Enter 8-digit Haitian phone number</p>
         </div>
 
-        {/* Address - Haiti Administrative Divisions - AliExpress styling */}
+        {/* Address - Haiti Administrative Divisions - updated styling */}
         <div className="space-y-5">
           <Label className="text-base font-semibold text-[#333] block">
             Address in Haiti
@@ -154,7 +154,7 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
             <div className="space-y-2">
               <Label className="text-sm font-semibold text-[#666]">Arrondissement</Label>
               <Select value={details.arrondissement} onValueChange={(value) => updateField('arrondissement', value)}>
-                <SelectTrigger className="h-11 border-2 border-[#e0e0e0] focus:border-[#ff4747] focus:ring-[#ff4747] rounded-xl bg-[#fafafa] text-[#333] font-medium">
+                <SelectTrigger className="h-11 border-2 border-[#e0e0e0] focus:border-[#2563eb] focus:ring-[#2563eb] rounded-xl bg-[#fafafa] text-[#333] font-medium">
                   <SelectValue placeholder="Select arrondissement" />
                 </SelectTrigger>
                 <SelectContent className="bg-white border-2 border-[#e0e0e0] rounded-xl z-50 shadow-lg">
@@ -162,7 +162,7 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
                     <SelectItem 
                       key={arrondissement} 
                       value={arrondissement} 
-                      className="hover:bg-[#fff0f0] focus:bg-[#fff0f0] text-[#333] font-medium py-3 px-4 cursor-pointer transition-colors"
+                      className="hover:bg-[#f0f4ff] focus:bg-[#f0f4ff] text-[#333] font-medium py-3 px-4 cursor-pointer transition-colors"
                     >
                       {arrondissement}
                     </SelectItem>
@@ -180,7 +180,7 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
               onValueChange={(value) => updateField('commune', value)}
               disabled={!details.arrondissement}
             >
-              <SelectTrigger className="h-11 border-2 border-[#e0e0e0] focus:border-[#ff4747] focus:ring-[#ff4747] rounded-xl bg-[#fafafa] text-[#333] font-medium">
+              <SelectTrigger className="h-11 border-2 border-[#e0e0e0] focus:border-[#2563eb] focus:ring-[#2563eb] rounded-xl bg-[#fafafa] text-[#333] font-medium">
                 <SelectValue placeholder={details.arrondissement ? "Select commune" : "Select arrondissement first"} />
               </SelectTrigger>
               <SelectContent className="bg-white border-2 border-[#e0e0e0] rounded-xl z-50 shadow-lg">
@@ -188,7 +188,7 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
                   <SelectItem 
                     key={commune} 
                     value={commune} 
-                    className="hover:bg-[#fff0f0] focus:bg-[#fff0f0] text-[#333] font-medium py-3 px-4 cursor-pointer transition-colors"
+                    className="hover:bg-[#f0f4ff] focus:bg-[#f0f4ff] text-[#333] font-medium py-3 px-4 cursor-pointer transition-colors"
                   >
                     {commune}
                   </SelectItem>
@@ -198,10 +198,10 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
           </div>
         </div>
 
-        {/* AliExpress-style security notice */}
-        <div className="bg-gradient-to-r from-[#fff8f8] to-[#fff0f0] border-2 border-[#ffebeb] rounded-xl p-4 mt-6">
+        {/* Updated security notice with blue theme */}
+        <div className="bg-gradient-to-r from-[#f8faff] to-[#f0f4ff] border-2 border-[#e0ebff] rounded-xl p-4 mt-6">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-[#ff4747] rounded-full flex items-center justify-center flex-shrink-0">
+            <div className="w-8 h-8 bg-[#2563eb] rounded-full flex items-center justify-center flex-shrink-0">
               <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
               </svg>
