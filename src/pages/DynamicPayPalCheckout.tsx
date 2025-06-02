@@ -337,9 +337,9 @@ const DynamicPayPalCheckout = () => {
         }
 
         .container {
-          max-width: 420px;
-          margin: 0 auto;
-          padding: 2rem 1rem;
+          width: 100%;
+          margin: 0;
+          padding: 2rem;
           min-height: 100vh;
           display: flex;
           flex-direction: column;
