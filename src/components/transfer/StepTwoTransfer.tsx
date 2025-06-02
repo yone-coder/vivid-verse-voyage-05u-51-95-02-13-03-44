@@ -124,7 +124,7 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
             </div>
             <Input 
               id="phoneNumber" 
-              placeholder="XXXX XXXX" 
+              placeholder="Phone number" 
               value={details.phoneNumber}
               onChange={(e) => updateField('phoneNumber', e.target.value)}
               className="h-12 border-2 border-[#ff4747] focus:border-[#ff4747] focus:ring-[#ff4747] transition-all duration-200 rounded-l-none rounded-r-xl bg-[#fafafa] text-[#333] placeholder:text-[#999] font-medium"
