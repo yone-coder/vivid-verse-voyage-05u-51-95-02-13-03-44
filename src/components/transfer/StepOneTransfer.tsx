@@ -62,14 +62,11 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
             </div>
           ) : (
             <div className="text-right">
-              <div className="text-sm font-semibold text-slate-900">
-                1 USD = {exchangeRate?.usdToHtg.toFixed(2)} HTG
-              </div>
-              <div className="flex items-center gap-1 mt-0.5">
-                <div className={`w-2 h-2 rounded-full ${exchangeRate?.isLive ? 'bg-emerald-500' : 'bg-amber-500'}`} />
-                <span className="text-xs text-slate-500">
-                  {exchangeRate?.isLive ? 'Live' : 'Cached'}
-                </span>
+              <div className="flex items-center gap-2 justify-end">
+                <div className={`w-2 h-2 rounded-full ${exchangeRate?.isLive ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500 animate-pulse'}`} />
+                <div className="text-sm font-semibold text-slate-900">
+                  1 USD = {exchangeRate?.usdToHtg.toFixed(2)} HTG
+                </div>
               </div>
             </div>
           )}
@@ -141,30 +138,7 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
         </div>
       )}
 
-      {/* Service Features */}
-      <div className="grid grid-cols-3 gap-4">
-        <div className="text-center p-3">
-          <div className="inline-flex p-2 bg-blue-100 rounded-xl mb-2">
-            <Zap className="h-4 w-4 text-blue-600" />
-          </div>
-          <div className="text-xs font-medium text-slate-900">Instant</div>
-          <div className="text-xs text-slate-500 mt-0.5">Processing</div>
-        </div>
-        <div className="text-center p-3">
-          <div className="inline-flex p-2 bg-amber-100 rounded-xl mb-2">
-            <Clock className="h-4 w-4 text-amber-600" />
-          </div>
-          <div className="text-xs font-medium text-slate-900">24-48h</div>
-          <div className="text-xs text-slate-500 mt-0.5">Delivery</div>
-        </div>
-        <div className="text-center p-3">
-          <div className="inline-flex p-2 bg-emerald-100 rounded-xl mb-2">
-            <Shield className="h-4 w-4 text-emerald-600" />
-          </div>
-          <div className="text-xs font-medium text-slate-900">Secure</div>
-          <div className="text-xs text-slate-500 mt-0.5">Encrypted</div>
-        </div>
-      </div>
+
     </div>
   );
 };
