@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, Clock, CheckCircle, Receipt, ChevronLeft, X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import StepOneTransfer from '@/components/transfer/StepOneTransfer';
@@ -276,9 +277,9 @@ const MultiStepTransferSheetPage: React.FC = () => {
           )}
           
           {currentStep === 3 && (
-            <div className="space-y-8">
-              <div className="text-center mb-8">
-                <h2 className="text-2xl font-bold text-gray-900 mb-3">Choose Payment Method</h2>
+            <div className="space-y-6">
+              <div className="text-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-900 mb-3">Complete Your Payment</h2>
                 <p className="text-gray-600 leading-relaxed">
                   Sending <span className="font-semibold text-blue-600">${transferData.amount}</span> to{' '}
                   <span className="font-semibold text-gray-900">
@@ -287,31 +288,37 @@ const MultiStepTransferSheetPage: React.FC = () => {
                 </p>
               </div>
               
-              {/* Payment Methods Section */}
+              {/* PayPal Button Section */}
               <div className="space-y-4">
-                <h4 className="text-lg font-semibold text-gray-900 mb-4">Select Payment Method</h4>
-                <CompactCardSelection
-                  selectedMethod={transferData.selectedPaymentMethod}
-                  onMethodChange={handlePaymentMethodChange}
-                />
-                
-                {/* Show iframe when PayPal is selected and user wants to proceed */}
-                {showPayPalIframe && transferData.selectedPaymentMethod === 'paypal' && (
-                  <PayPalIframeCheckout
-                    amount={totalAmount}
-                    onSuccess={handlePaymentSuccess}
-                    onError={handlePaymentError}
-                    onCancel={handlePaymentCancel}
-                    onClose={() => setShowPayPalIframe(false)}
+                <Button
+                  onClick={handlePaymentSuccess}
+                  className="w-full h-14 bg-[#0070ba] hover:bg-[#005ea6] text-white font-semibold text-lg rounded-lg flex items-center justify-center space-x-3"
+                >
+                  <img 
+                    src="https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png" 
+                    alt="PayPal"
+                    className="w-6 h-6 object-contain"
                   />
-                )}
-                
-                {/* Show card payment form when card is selected */}
-                {transferData.selectedPaymentMethod === 'card' && (
-                  <div className="mt-6">
-                    <StepThreeTransfer amount={totalAmount} />
-                  </div>
-                )}
+                  <span>Pay with PayPal</span>
+                </Button>
+              </div>
+
+              {/* Separator Section */}
+              <div className="flex items-center space-x-4 my-6">
+                <Separator className="flex-1" />
+                <span className="text-sm text-gray-500 font-medium px-3">or continue with</span>
+                <Separator className="flex-1" />
+              </div>
+
+              {/* PayPal Iframe Section */}
+              <div className="space-y-4">
+                <PayPalIframeCheckout
+                  amount={totalAmount}
+                  onSuccess={handlePaymentSuccess}
+                  onError={handlePaymentError}
+                  onCancel={handlePaymentCancel}
+                  onClose={() => setShowPayPalIframe(false)}
+                />
               </div>
             </div>
           )}
