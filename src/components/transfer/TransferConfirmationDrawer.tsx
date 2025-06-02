@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import {
@@ -252,8 +251,12 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
   const isReceiverDetailsValid = () => {
     if (!receiverDetails) return false;
 
-    const { fullName, phoneNumber, address } = receiverDetails;
-    return fullName.trim() !== '' && phoneNumber.trim() !== '' && address.trim() !== '';
+    const { firstName, lastName, phoneNumber, arrondissement, commune } = receiverDetails;
+    return firstName.trim() !== '' && 
+           lastName.trim() !== '' && 
+           phoneNumber.trim() !== '' && 
+           arrondissement.trim() !== '' && 
+           commune.trim() !== '';
   };
 
   const handlePaymentContinue = () => {
@@ -371,9 +374,9 @@ const TransferConfirmationDrawer: React.FC<TransferConfirmationDrawerProps> = ({
             <div className="rounded-lg border p-4 mb-4">
               <h4 className="font-medium mb-2">Receiver Details</h4>
               <div className="space-y-1 text-sm">
-                <p><span className="text-gray-500">Name:</span> {receiverDetails.fullName}</p>
-                <p><span className="text-gray-500">Phone:</span> {receiverDetails.phoneNumber}</p>
-                <p><span className="text-gray-500">Address:</span> {receiverDetails.address}</p>
+                <p><span className="text-gray-500">Name:</span> {receiverDetails.firstName} {receiverDetails.lastName}</p>
+                <p><span className="text-gray-500">Phone:</span> +509 {receiverDetails.phoneNumber}</p>
+                <p><span className="text-gray-500">Location:</span> {receiverDetails.commune}, {receiverDetails.arrondissement}, {receiverDetails.department}</p>
                 {receiverDetails.additionalInfo && (
                   <p><span className="text-gray-500">Additional Info:</span> {receiverDetails.additionalInfo}</p>
                 )}

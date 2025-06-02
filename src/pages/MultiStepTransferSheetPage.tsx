@@ -15,9 +15,12 @@ import { internationalPaymentMethods } from '@/components/transfer/PaymentMethod
 export interface TransferData {
   amount: string;
   receiverDetails: {
-    fullName: string;
+    firstName: string;
+    lastName: string;
     phoneNumber: string;
-    address: string;
+    department: string;
+    arrondissement: string;
+    commune: string;
     additionalInfo?: string;
   };
   selectedPaymentMethod?: string;
@@ -32,9 +35,12 @@ const MultiStepTransferSheetPage: React.FC = () => {
   const [transferData, setTransferData] = useState<TransferData>({
     amount: '100.00',
     receiverDetails: {
-      fullName: '',
+      firstName: '',
+      lastName: '',
       phoneNumber: '',
-      address: '',
+      department: 'Artibonite',
+      arrondissement: '',
+      commune: '',
       additionalInfo: '',
     },
     selectedPaymentMethod: 'credit-card'
@@ -84,9 +90,11 @@ const MultiStepTransferSheetPage: React.FC = () => {
   };
 
   const canProceedFromStep1 = transferData.amount && parseFloat(transferData.amount) > 0;
-  const canProceedFromStep2 = transferData.receiverDetails.fullName && 
+  const canProceedFromStep2 = transferData.receiverDetails.firstName && 
+                              transferData.receiverDetails.lastName &&
                               transferData.receiverDetails.phoneNumber && 
-                              transferData.receiverDetails.address;
+                              transferData.receiverDetails.arrondissement &&
+                              transferData.receiverDetails.commune;
   const canProceedFromStep3 = transferData.selectedPaymentMethod;
 
   const stepTitles = ['Send Money', 'Recipient Details', 'Payment Method', 'Review & Pay', 'Transfer Complete'];
@@ -255,7 +263,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
                 onDetailsChange={(receiverDetails) => updateTransferData({ receiverDetails })}
               />
               
-              {transferData.receiverDetails.fullName && (
+              {(transferData.receiverDetails.firstName || transferData.receiverDetails.lastName) && (
                 <div className="bg-green-50 rounded-lg p-4 flex items-start space-x-3">
                   <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
                   <div>
@@ -272,7 +280,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
               <div className="text-center mb-6">
                 <h2 className="text-lg font-semibold text-gray-900 mb-2">Choose Payment Method</h2>
                 <p className="text-sm text-gray-600">
-                  Sending ${transferData.amount} to {transferData.receiverDetails.fullName}
+                  Sending ${transferData.amount} to {transferData.receiverDetails.firstName} {transferData.receiverDetails.lastName}
                 </p>
               </div>
               
@@ -304,7 +312,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
                 <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
                   <div className="flex justify-between">
                     <span className="text-gray-300">To:</span>
-                    <span className="font-medium text-right">{transferData.receiverDetails.fullName}</span>
+                    <span className="font-medium text-right">{transferData.receiverDetails.firstName} {transferData.receiverDetails.lastName}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-300">Amount:</span>
@@ -373,15 +381,15 @@ const MultiStepTransferSheetPage: React.FC = () => {
                   <div className="border-t pt-3 space-y-2">
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Recipient</span>
-                      <span className="font-medium">{transferData.receiverDetails.fullName}</span>
+                      <span className="font-medium">{transferData.receiverDetails.firstName} {transferData.receiverDetails.lastName}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Phone Number</span>
-                      <span className="font-medium">{transferData.receiverDetails.phoneNumber}</span>
+                      <span className="font-medium">+509 {transferData.receiverDetails.phoneNumber}</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Address</span>
-                      <span className="font-medium text-right max-w-xs">{transferData.receiverDetails.address}</span>
+                      <span className="text-gray-600">Location</span>
+                      <span className="font-medium text-right max-w-xs">{transferData.receiverDetails.commune}, {transferData.receiverDetails.arrondissement}, {transferData.receiverDetails.department}</span>
                     </div>
                   </div>
                   
@@ -429,7 +437,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
                   onClick={() => {
                     navigator.share?.({
                       title: 'Transfer Receipt',
-                      text: `Transfer of $${transferData.amount} to ${transferData.receiverDetails.fullName} completed successfully. Transaction ID: ${transactionId}`,
+                      text: `Transfer of $${transferData.amount} to ${transferData.receiverDetails.firstName} ${transferData.receiverDetails.lastName} completed successfully. Transaction ID: ${transactionId}`,
                     }).catch(() => {
                       navigator.clipboard?.writeText(`Transaction ID: ${transactionId}`);
                     });
