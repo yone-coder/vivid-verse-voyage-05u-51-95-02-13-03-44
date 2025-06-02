@@ -777,7 +777,7 @@ const DynamicPayPalCheckout: React.FC = () => {
           }
 
           .checkout-card {
-            padding: 2rem;
+            padding: 0;
             border-radius: var(--border-radius-sm);
           }
 
