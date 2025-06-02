@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { CreditCard, Building2, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -16,34 +17,28 @@ const PayPalLogo = () => (
   />
 );
 
-// Venmo Logo Component using URL
-const VenmoLogo = () => (
-  <img 
-    src="https://cdn.worldvectorlogo.com/logos/venmo-2.svg" 
-    alt="Venmo"
-    className="w-6 h-6 object-contain"
-  />
-);
-
 const paymentMethods = [
   {
     id: 'card',
     name: 'Credit/Debit Card',
-    description: 'Visa, Mastercard, Amex',
+    description: 'Visa, Mastercard, American Express',
     icon: CreditCard,
-    bgColor: 'bg-gradient-to-r from-gray-700 to-gray-900',
+    bgColor: 'bg-gradient-to-br from-slate-700 via-slate-800 to-slate-900',
     textColor: 'text-white',
     processingTime: 'Instant',
-    hasSubOptions: true
+    hasSubOptions: true,
+    popular: true
   },
   {
     id: 'paypal',
     name: 'PayPal',
-    description: 'Pay with PayPal account',
+    description: 'Secure payment with PayPal account',
     icon: PayPalLogo,
-    bgColor: 'bg-gradient-to-r from-blue-600 to-blue-800',
+    bgColor: 'bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800',
     textColor: 'text-white',
-    processingTime: 'Instant'
+    processingTime: 'Instant',
+    hasSubOptions: false,
+    popular: false
   }
 ];
 
@@ -67,56 +62,76 @@ const CompactCardSelection: React.FC<CompactCardSelectionProps> = ({
   onMethodChange
 }) => {
   return (
-    <div className="space-y-3 max-w-sm mx-auto px-2">
-      <div className="text-center mb-4">
-        <div className="flex items-center justify-center mb-2">
-          <CreditCard className="h-4 w-4 text-gray-600 mr-2" />
-          <span className="text-sm font-medium text-gray-700">Payment Method</span>
+    <div className="space-y-4 max-w-lg mx-auto">
+      <div className="text-center mb-6">
+        <div className="flex items-center justify-center mb-3">
+          <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+            <CreditCard className="h-5 w-5 text-blue-600" />
+          </div>
+          <span className="text-lg font-semibold text-gray-900">Choose Payment Method</span>
         </div>
+        <p className="text-sm text-gray-600">Select your preferred payment option</p>
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-3">
         {paymentMethods.map((method) => (
           <motion.button
             key={method.id}
             onClick={() => onMethodChange(method.id)}
             className={`
-              w-full relative p-3 rounded-lg border-2 transition-all duration-300 text-left
+              w-full relative p-4 rounded-2xl border-2 transition-all duration-300 text-left group overflow-hidden
               ${selectedMethod === method.id 
-                ? 'border-blue-500 bg-blue-50 shadow-md ring-1 ring-blue-200' 
-                : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm'
+                ? 'border-blue-500 bg-blue-50 shadow-lg ring-4 ring-blue-100' 
+                : 'border-gray-200 bg-white hover:border-gray-300 hover:shadow-md hover:bg-gray-50'
               }
             `}
             whileTap={{ scale: 0.98 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
           >
+            {/* Popular Badge */}
+            {method.popular && (
+              <div className="absolute top-3 right-3">
+                <span className="bg-gradient-to-r from-orange-400 to-orange-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-sm">
+                  Popular
+                </span>
+              </div>
+            )}
+
             <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-4 flex-1">
+                {/* Icon Container */}
                 <div className={`
-                  w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 shadow-sm
-                  ${method.bgColor} ${method.textColor}
+                  w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg
+                  ${method.bgColor} ${method.textColor} transition-transform duration-300 group-hover:scale-105
                 `}>
-                  {React.createElement(method.icon, { className: "h-5 w-5" })}
+                  {React.createElement(method.icon, { className: "h-6 w-6" })}
                 </div>
 
+                {/* Content */}
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between mb-1">
-                    <h3 className="text-sm font-semibold text-gray-900 truncate pr-2">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-base font-bold text-gray-900 truncate pr-2">
                       {method.name}
                     </h3>
-                    <span className="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full whitespace-nowrap">
-                      {method.processingTime}
-                    </span>
+                    <div className="flex items-center space-x-2">
+                      <span className="text-xs font-medium text-green-600 bg-green-100 px-2 py-1 rounded-full whitespace-nowrap">
+                        ⚡ {method.processingTime}
+                      </span>
+                    </div>
                   </div>
 
-                  <p className="text-xs text-gray-600 mb-2">
+                  <p className="text-sm text-gray-600 mb-3 leading-relaxed">
                     {method.description}
                   </p>
 
-                  {/* Simplified card logos for mobile */}
+                  {/* Card Logos */}
                   {method.hasSubOptions && (
-                    <div className="flex items-center space-x-1">
+                    <div className="flex items-center space-x-2">
+                      <span className="text-xs text-gray-500 mr-1">Accepts:</span>
                       {cardLogos.slice(0, 3).map((card, index) => (
-                        <div key={index} className="bg-white rounded p-1 shadow-sm border w-6 h-4">
+                        <div key={index} className="bg-white rounded-md p-1.5 shadow-sm border border-gray-200 w-8 h-5 flex items-center justify-center">
                           <img 
                             src={card.url} 
                             alt={card.name}
@@ -124,42 +139,57 @@ const CompactCardSelection: React.FC<CompactCardSelectionProps> = ({
                           />
                         </div>
                       ))}
-                      <span className="text-xs text-gray-500 ml-1">+more</span>
+                      <span className="text-xs text-gray-500 font-medium">+more</span>
                     </div>
                   )}
                 </div>
               </div>
 
-              <div className="flex items-center ml-2">
-                {selectedMethod === method.id && (
+              {/* Selection Indicator */}
+              <div className="flex items-center ml-3">
+                {selectedMethod === method.id ? (
                   <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    className="w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center shadow-sm mr-2"
+                    initial={{ scale: 0, rotate: -180 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center shadow-md"
                   >
-                    <span className="text-white text-xs font-bold">✓</span>
+                    <span className="text-white text-sm font-bold">✓</span>
                   </motion.div>
+                ) : (
+                  <div className="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center group-hover:border-gray-400 transition-colors">
+                    <div className="w-2 h-2 bg-gray-200 rounded-full group-hover:bg-gray-300 transition-colors"></div>
+                  </div>
                 )}
-                <ChevronRight className={`h-4 w-4 transition-colors ${
-                  selectedMethod === method.id ? 'text-blue-500' : 'text-gray-400'
-                }`} />
               </div>
             </div>
+
+            {/* Hover Effect Gradient */}
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl pointer-events-none"></div>
           </motion.button>
         ))}
       </div>
 
-      <div className="text-center mt-4 p-3 bg-gray-50 rounded-lg">
-        <div className="flex items-center justify-center space-x-2 mb-1">
-          <svg className="w-3 h-3 text-green-600" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-          </svg>
-          <span className="text-xs font-medium text-gray-700">Secure Payment</span>
+      {/* Security Footer */}
+      <motion.div 
+        className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-2xl p-4 mt-6"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+      >
+        <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+            <svg className="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+            </svg>
+          </div>
+          <div>
+            <h4 className="text-sm font-semibold text-green-900">Bank-Level Security</h4>
+            <p className="text-xs text-green-700 mt-1">
+              256-bit SSL encryption • PCI DSS compliant • Fraud protection
+            </p>
+          </div>
         </div>
-        <p className="text-xs text-gray-500">
-          256-bit SSL encryption
-        </p>
-      </div>
+      </motion.div>
     </div>
   );
 };
