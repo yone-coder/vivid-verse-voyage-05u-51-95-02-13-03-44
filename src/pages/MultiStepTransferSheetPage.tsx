@@ -144,7 +144,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header with reduced height, drag bar, back button (chevron), and close button */}
+      {/* Header with reduced height, back button (chevron), step title, and close button */}
       <div className="bg-white sticky top-0 z-50 shadow-sm">
         <div className="flex items-center justify-between p-2 h-12">
           <button 
@@ -154,9 +154,11 @@ const MultiStepTransferSheetPage: React.FC = () => {
             <ChevronLeft size={20} />
           </button>
           
-          {/* Drag bar in the middle */}
+          {/* Step title in the middle */}
           <div className="flex-1 flex justify-center">
-            <div className="w-10 h-1 bg-gray-300 rounded-full"></div>
+            <h1 className="text-lg font-semibold text-gray-900">
+              {stepTitles[currentStep - 1]}
+            </h1>
           </div>
           
           <button 
