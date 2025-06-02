@@ -1,4 +1,5 @@
 
+
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, Clock, CheckCircle, Receipt, ChevronLeft, X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -152,7 +153,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* Header with reduced height, back button (chevron), step title, and close button */}
-      <div className="sticky top-0 z-50">
+      <div className="bg-white sticky top-0 z-50">
         <div className="flex items-center justify-between p-2 h-12">
           <button 
             onClick={handleBackClick}
@@ -496,3 +497,4 @@ const MultiStepTransferSheetPage: React.FC = () => {
 };
 
 export default MultiStepTransferSheetPage;
+
