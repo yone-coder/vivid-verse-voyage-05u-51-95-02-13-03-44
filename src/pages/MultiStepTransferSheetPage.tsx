@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, Clock, CheckCircle, Receipt } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -141,74 +140,76 @@ const MultiStepTransferSheetPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header with step title and back button */}
-      <div className="bg-white flex items-center p-4 sticky top-0 z-50 shadow-sm">
-        <button 
-          onClick={handleBackClick}
-          className="p-2 rounded-full hover:bg-gray-100"
-        >
-          <ArrowLeft size={20} />
-        </button>
-        <h1 className="text-xl font-semibold ml-2">
-          {stepTitles[currentStep - 1]}
-        </h1>
-      </div>
-      
-      {/* Animated Step Indicator */}
-      <div className="px-4 py-3">
-        <div className="flex items-center justify-between">
-          {[1, 2, 3, 4, 5].map((step, index) => (
-            <React.Fragment key={step}>
-              <div className="flex flex-col items-center">
-                <motion.div 
-                  className={`rounded-full flex items-center justify-center text-xs font-medium transition-all duration-300 shadow-sm ${
-                    step === currentStep 
-                      ? 'w-auto h-7 px-2 bg-red-600 text-white' 
-                      : 'w-7 h-7 bg-gray-200 text-gray-600'
-                  }`}
-                  variants={stepVariants}
-                  initial="inactive"
-                  animate={
-                    step === currentStep ? 'active' : 
-                    step < currentStep ? 'completed' : 
-                    'inactive'
-                  }
-                  whileTap={{ scale: 0.95 }}
-                >
-                  {step < currentStep ? (
-                    <CheckCircle className="h-3 w-3" />
-                  ) : step === currentStep ? (
-                    <div className="flex items-center space-x-1">
-                      {step === 1 ? (
-                        <DollarSign className="h-3 w-3" />
-                      ) : step === 2 ? (
-                        <User className="h-3 w-3" />
-                      ) : step === 3 ? (
-                        <CreditCard className="h-3 w-3" />
-                      ) : step === 4 ? (
-                        <Shield className="h-3 w-3" />
-                      ) : (
-                        <Receipt className="h-3 w-3" />
-                      )}
-                      <span className="font-medium whitespace-nowrap text-xs">
-                        {stepTitles[index].split(' ')[0]}
-                      </span>
-                    </div>
-                  ) : (
-                    step
-                  )}
-                </motion.div>
-              </div>
-              {index < 4 && (
-                <motion.div 
-                  className="flex-1 h-0.5 mx-2 rounded-full origin-left"
-                  variants={lineVariants}
-                  initial="inactive"
-                  animate={step < currentStep ? 'active' : 'inactive'}
-                />
-              )}
-            </React.Fragment>
-          ))}
+      {/* Header with step title, back button, and step indicator */}
+      <div className="bg-white sticky top-0 z-50 shadow-sm">
+        <div className="flex items-center p-4">
+          <button 
+            onClick={handleBackClick}
+            className="p-2 rounded-full hover:bg-gray-100"
+          >
+            <ArrowLeft size={20} />
+          </button>
+          <h1 className="text-xl font-semibold ml-2">
+            {stepTitles[currentStep - 1]}
+          </h1>
+        </div>
+        
+        {/* Animated Step Indicator in Header */}
+        <div className="px-4 pb-3">
+          <div className="flex items-center justify-between">
+            {[1, 2, 3, 4, 5].map((step, index) => (
+              <React.Fragment key={step}>
+                <div className="flex flex-col items-center">
+                  <motion.div 
+                    className={`rounded-full flex items-center justify-center text-xs font-medium transition-all duration-300 shadow-sm ${
+                      step === currentStep 
+                        ? 'w-auto h-7 px-2 bg-red-600 text-white' 
+                        : 'w-7 h-7 bg-gray-200 text-gray-600'
+                    }`}
+                    variants={stepVariants}
+                    initial="inactive"
+                    animate={
+                      step === currentStep ? 'active' : 
+                      step < currentStep ? 'completed' : 
+                      'inactive'
+                    }
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {step < currentStep ? (
+                      <CheckCircle className="h-3 w-3" />
+                    ) : step === currentStep ? (
+                      <div className="flex items-center space-x-1">
+                        {step === 1 ? (
+                          <DollarSign className="h-3 w-3" />
+                        ) : step === 2 ? (
+                          <User className="h-3 w-3" />
+                        ) : step === 3 ? (
+                          <CreditCard className="h-3 w-3" />
+                        ) : step === 4 ? (
+                          <Shield className="h-3 w-3" />
+                        ) : (
+                          <Receipt className="h-3 w-3" />
+                        )}
+                        <span className="font-medium whitespace-nowrap text-xs">
+                          {stepTitles[index].split(' ')[0]}
+                        </span>
+                      </div>
+                    ) : (
+                      step
+                    )}
+                  </motion.div>
+                </div>
+                {index < 4 && (
+                  <motion.div 
+                    className="flex-1 h-0.5 mx-2 rounded-full origin-left"
+                    variants={lineVariants}
+                    initial="inactive"
+                    animate={step < currentStep ? 'active' : 'inactive'}
+                  />
+                )}
+              </React.Fragment>
+            ))}
+          </div>
         </div>
       </div>
 
