@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, Clock, CheckCircle, Receipt, ChevronLeft, X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -180,7 +179,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
         <div className="px-4 pb-3">
           <div className="flex items-center justify-between">
             {[1, 2, 3, 4, 5].map((step, index) => (
-              <div key={step} className="flex items-center">
+              <React.Fragment key={step}>
                 <div className="flex flex-col items-center">
                   <motion.div 
                     className={`rounded-full flex items-center justify-center text-xs font-medium transition-all duration-300 shadow-sm ${
@@ -229,7 +228,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
                     animate={step < currentStep ? 'active' : 'inactive'}
                   />
                 )}
-              </div>
+              </React.Fragment>
             ))}
           </div>
         </div>
