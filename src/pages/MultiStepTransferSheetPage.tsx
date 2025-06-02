@@ -30,7 +30,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
   const [transactionId, setTransactionId] = useState('');
   
   const [transferData, setTransferData] = useState<TransferData>({
-    amount: '',
+    amount: '100.00',
     receiverDetails: {
       fullName: '',
       phoneNumber: '',

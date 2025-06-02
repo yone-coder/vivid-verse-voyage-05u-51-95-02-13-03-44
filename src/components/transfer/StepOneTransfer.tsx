@@ -25,6 +25,13 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
   const [receiverAmount, setReceiverAmount] = useState('');
   const [lastEditedField, setLastEditedField] = useState<'send' | 'receive'>('send');
 
+  // Set initial amount to 100.00 if amount is empty
+  useEffect(() => {
+    if (!amount) {
+      onAmountChange('100.00');
+    }
+  }, [amount, onAmountChange]);
+
   useEffect(() => {
     const fetchExchangeRate = async () => {
       setIsLoading(true);
@@ -117,8 +124,8 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
             <Input
               id="amount"
               type="number"
-              className="pl-8 pr-12 text-2xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-slate-900 placeholder-slate-400 h-12"
-              placeholder="0.00"
+              className="pl-8 pr-12 text-xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-slate-900 placeholder-slate-400 h-12"
+              placeholder="100.00"
               value={amount}
               onChange={(e) => handleSendAmountChange(e.target.value)}
               min="0"
@@ -153,8 +160,8 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
             <Input
               id="receiverAmount"
               type="number"
-              className="pl-12 pr-12 text-2xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-slate-900 placeholder-slate-400 h-12"
-              placeholder="0.00"
+              className="pl-12 pr-12 text-xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-slate-900 placeholder-slate-400 h-12"
+              placeholder="13250.00"
               value={receiverAmount}
               onChange={(e) => handleReceiveAmountChange(e.target.value)}
               min="0"
