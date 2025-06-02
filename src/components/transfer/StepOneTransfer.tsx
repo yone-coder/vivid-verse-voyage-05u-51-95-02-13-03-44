@@ -38,7 +38,7 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
     fetchExchangeRate();
   }, []);
 
-  const usdAmount = amount ? parseFloat(amount) : 0;
+  const usdAmount = parseFloat(amount) || 0;
   const htgAmount = exchangeRate ? usdAmount * exchangeRate.usdToHtg : 0;
   const transferFee = Math.ceil(usdAmount / 100) * 15;
   const totalAmount = usdAmount + transferFee;
@@ -104,40 +104,35 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
           </div>
         </div>
 
-        </div>
-
-      {/* Conversion Display - Separate Card */}
-      {usdAmount > 0 && exchangeRate && (
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-4 border border-blue-100/50">
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-slate-600">Recipient receives</span>
-            <div className="text-right">
-              <div className="text-xl font-semibold text-slate-900">
-                {htgAmount.toLocaleString('en-US', { minimumFractionDigits: 2 })} HTG
+        {/* Conversion Preview */}
+        {usdAmount > 0 && exchangeRate && (
+          <div className="px-4 pb-4">
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-3 border border-blue-100/50">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-slate-600">Recipient receives</span>
+                <div className="text-right">
+                  <div className="text-lg font-semibold text-slate-900">
+                    {htgAmount.toLocaleString('en-US', { minimumFractionDigits: 2 })} HTG
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
       </div>
 
       {/* Fee Breakdown */}
-      {amount && usdAmount > 0 && (
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border border-blue-200/50 shadow-sm p-4">
+      {usdAmount > 0 && (
+        <div className="bg-white rounded-2xl border border-slate-200/50 shadow-sm p-4">
           <div className="space-y-3">
-            <div className="text-sm font-medium text-slate-700 mb-2">Cost Breakdown</div>
             <div className="flex items-center justify-between text-sm">
-              <span className="text-slate-600">Send amount</span>
-              <span className="font-medium text-slate-900">${usdAmount.toFixed(2)}</span>
-            </div>
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-slate-600">Transfer fee (15% per $100)</span>
+              <span className="text-slate-600">Transfer fee</span>
               <span className="font-medium text-slate-900">${transferFee.toFixed(2)}</span>
             </div>
-            <div className="border-t border-blue-200/50 pt-3">
+            <div className="border-t border-slate-100 pt-3">
               <div className="flex items-center justify-between">
-                <span className="font-semibold text-slate-900">Total to pay</span>
-                <span className="text-2xl font-bold text-blue-600">
+                <span className="font-medium text-slate-900">Total to pay</span>
+                <span className="text-2xl font-semibold text-slate-900">
                   ${totalAmount.toFixed(2)}
                 </span>
               </div>
