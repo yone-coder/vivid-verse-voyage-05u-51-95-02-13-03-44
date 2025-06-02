@@ -10,6 +10,7 @@ import StepThreeTransfer from '@/components/transfer/StepThreeTransfer';
 import PaymentMethodList from '@/components/transfer/PaymentMethodList';
 import PayPalHostedCheckout from '@/components/transfer/PayPalHostedCheckout';
 import CompactCardSelection from '@/components/transfer/CompactCardSelection';
+import PayPalIframeCheckout from '@/components/transfer/PayPalIframeCheckout';
 import { internationalPaymentMethods } from '@/components/transfer/PaymentMethods';
 
 export interface TransferData {
@@ -30,6 +31,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [paymentCompleted, setPaymentCompleted] = useState(false);
   const [transactionId, setTransactionId] = useState('');
+  const [showPayPalIframe, setShowPayPalIframe] = useState(false);
   
   const [transferData, setTransferData] = useState<TransferData>({
     amount: '100.00',
@@ -45,7 +47,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
   });
 
   const handleNextStep = () => {
-    if (currentStep < 5) {
+    if (currentStep < 4) {
       setCurrentStep(currentStep + 1);
     }
   };
@@ -74,17 +76,29 @@ const MultiStepTransferSheetPage: React.FC = () => {
 
   const handlePaymentMethodChange = (methodId: string) => {
     updateTransferData({ selectedPaymentMethod: methodId });
+    if (methodId === 'paypal') {
+      setShowPayPalIframe(true);
+    } else {
+      setShowPayPalIframe(false);
+    }
   };
 
   const handlePaymentSuccess = (details: any) => {
     console.log('Payment successful:', details);
     setPaymentCompleted(true);
     setTransactionId(details.id || `TX${Date.now()}`);
-    setCurrentStep(5); // Move to receipt step
+    setCurrentStep(4); // Move to receipt step (now step 4 instead of 5)
+    setShowPayPalIframe(false);
   };
 
   const handlePaymentError = (error: any) => {
     console.error('Payment error:', error);
+    setShowPayPalIframe(false);
+  };
+
+  const handlePaymentCancel = () => {
+    console.log('Payment cancelled');
+    setShowPayPalIframe(false);
   };
 
   const canProceedFromStep1 = transferData.amount && parseFloat(transferData.amount) > 0;
@@ -95,7 +109,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
                               transferData.receiverDetails.commune;
   const canProceedFromStep3 = transferData.selectedPaymentMethod;
 
-  const stepTitles = ['Send Money', 'Recipient Details', 'Payment Method', 'Review & Pay', 'Transfer Complete'];
+  const stepTitles = ['Send Money', 'Recipient Details', 'Payment Method', 'Transfer Complete'];
 
   // Animation variants for step indicator
   const stepVariants = {
@@ -178,7 +192,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
         {/* Animated Step Indicator */}
         <div className="px-4 pb-3">
           <div className="flex items-center justify-between">
-            {[1, 2, 3, 4, 5].map((step, index) => (
+            {[1, 2, 3, 4].map((step, index) => (
               <React.Fragment key={step}>
                 <div className="flex flex-col items-center">
                   <motion.div 
@@ -206,8 +220,6 @@ const MultiStepTransferSheetPage: React.FC = () => {
                           <User className="h-3 w-3" />
                         ) : step === 3 ? (
                           <CreditCard className="h-3 w-3" />
-                        ) : step === 4 ? (
-                          <Shield className="h-3 w-3" />
                         ) : (
                           <Receipt className="h-3 w-3" />
                         )}
@@ -220,7 +232,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
                     )}
                   </motion.div>
                 </div>
-                {index < 4 && (
+                {index < 3 && (
                   <motion.div 
                     className="flex-1 h-0.5 mx-2 rounded-full origin-left"
                     variants={lineVariants}
@@ -282,56 +294,29 @@ const MultiStepTransferSheetPage: React.FC = () => {
                   selectedMethod={transferData.selectedPaymentMethod}
                   onMethodChange={handlePaymentMethodChange}
                 />
+                
+                {/* Show iframe when PayPal is selected and user wants to proceed */}
+                {showPayPalIframe && transferData.selectedPaymentMethod === 'paypal' && (
+                  <PayPalIframeCheckout
+                    amount={totalAmount}
+                    onSuccess={handlePaymentSuccess}
+                    onError={handlePaymentError}
+                    onCancel={handlePaymentCancel}
+                    onClose={() => setShowPayPalIframe(false)}
+                  />
+                )}
+                
+                {/* Show card payment form when card is selected */}
+                {transferData.selectedPaymentMethod === 'card' && (
+                  <div className="mt-6">
+                    <StepThreeTransfer amount={totalAmount} />
+                  </div>
+                )}
               </div>
             </div>
           )}
 
           {currentStep === 4 && (
-            <div className="space-y-4">
-              <div className="text-center mb-4">
-                <p className="text-gray-600 text-sm">Review your transfer details before proceeding</p>
-              </div>
-              
-              <div className="bg-black text-white rounded-xl p-4 space-y-3">
-                <h3 className="font-semibold text-white mb-2 text-sm">Transfer Summary</h3>
-                <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
-                  <div className="flex justify-between">
-                    <span className="text-gray-300">To:</span>
-                    <span className="font-medium text-right">{transferData.receiverDetails.firstName} {transferData.receiverDetails.lastName}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-300">Amount:</span>
-                    <span className="font-medium">${transferData.amount}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-300">Fee:</span>
-                    <span className="font-medium">${transferFee}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-300">Rate:</span>
-                    <span className="font-medium">1 USD = 127.5 HTG</span>
-                  </div>
-                </div>
-                <div className="border-t border-gray-700 pt-2 flex justify-between items-center">
-                  <span className="font-semibold text-sm">Total</span>
-                  <span className="text-lg font-bold text-green-400">${totalAmount}</span>
-                </div>
-              </div>
-              
-              <StepThreeTransfer amount={transferData.amount} />
-              
-              <div className="flex justify-center">
-                <Button 
-                  onClick={handlePaymentSuccess}
-                  className="bg-green-600 hover:bg-green-700 text-white px-8 py-3"
-                >
-                  Complete Payment
-                </Button>
-              </div>
-            </div>
-          )}
-
-          {currentStep === 5 && (
             <div className="space-y-4">
               <div className="text-center mb-6">
                 <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -444,7 +429,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
       </div>
 
       {/* Sticky Navigation Buttons - Fixed at bottom of viewport */}
-      {currentStep < 5 && (
+      {currentStep < 4 && (
         <div className="fixed bottom-0 left-0 right-0 border-t bg-white px-4 py-3 z-[60] shadow-lg">
           <div className="flex gap-3 max-w-md mx-auto">
             {currentStep === 1 ? (
@@ -467,16 +452,30 @@ const MultiStepTransferSheetPage: React.FC = () => {
                   Previous
                 </Button>
                 
-                {currentStep < 4 ? (
+                {currentStep < 3 ? (
                   <Button 
                     onClick={handleNextStep}
                     disabled={
-                      (currentStep === 2 && !canProceedFromStep2) ||
-                      (currentStep === 3 && !canProceedFromStep3)
+                      (currentStep === 2 && !canProceedFromStep2)
                     }
                     className="flex-1 transition-all duration-200"
                   >
                     Next
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                ) : currentStep === 3 ? (
+                  <Button 
+                    onClick={() => {
+                      if (transferData.selectedPaymentMethod === 'paypal') {
+                        setShowPayPalIframe(true);
+                      } else if (transferData.selectedPaymentMethod === 'card') {
+                        // Card payment form is already shown, user needs to complete it
+                      }
+                    }}
+                    disabled={!canProceedFromStep3}
+                    className="flex-1 transition-all duration-200"
+                  >
+                    {transferData.selectedPaymentMethod === 'paypal' ? 'Pay with PayPal' : 'Continue'}
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 ) : (
