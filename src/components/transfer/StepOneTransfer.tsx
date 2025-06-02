@@ -75,27 +75,27 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
   const totalAmount = usdAmount + transferFee;
 
   return (
-    <div className="max-w-md mx-auto space-y-6">
-      {/* Exchange Rate Card */}
-      <div className="bg-gradient-to-r from-slate-50 to-gray-50 rounded-2xl p-4 border border-slate-200/50 shadow-sm">
+    <div className="max-w-md mx-auto space-y-4">
+      {/* Exchange Rate Card - Reduced height */}
+      <div className="bg-gradient-to-r from-slate-50 to-gray-50 rounded-xl p-3 border border-slate-200/50 shadow-sm">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="p-1.5 bg-emerald-100 rounded-lg">
-              <TrendingUp className="h-4 w-4 text-emerald-600" />
+            <div className="p-1 bg-emerald-100 rounded-lg">
+              <TrendingUp className="h-3 w-3 text-emerald-600" />
             </div>
-            <span className="text-sm font-medium text-slate-700">Exchange Rate</span>
+            <span className="text-xs font-medium text-slate-700">Exchange Rate</span>
           </div>
           
           {isLoading ? (
             <div className="flex items-center gap-2">
-              <Loader2 className="h-4 w-4 animate-spin text-slate-400" />
-              <span className="text-sm text-slate-500">Updating...</span>
+              <Loader2 className="h-3 w-3 animate-spin text-slate-400" />
+              <span className="text-xs text-slate-500">Updating...</span>
             </div>
           ) : (
             <div className="text-right">
               <div className="flex items-center gap-2 justify-end">
-                <div className={`w-2 h-2 rounded-full ${exchangeRate?.isLive ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500 animate-pulse'}`} />
-                <div className="text-sm font-semibold text-slate-900">
+                <div className={`w-1.5 h-1.5 rounded-full ${exchangeRate?.isLive ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500 animate-pulse'}`} />
+                <div className="text-xs font-semibold text-slate-900">
                   1 USD = {exchangeRate?.usdToHtg.toFixed(2)} HTG
                 </div>
               </div>
@@ -104,28 +104,28 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
         </div>
       </div>
 
-      {/* Send Amount Input Card */}
-      <div className="bg-white rounded-2xl border border-slate-200/50 shadow-sm overflow-hidden">
-        <div className="p-4 pb-3">
-          <Label htmlFor="amount" className="text-sm font-medium text-slate-700 mb-3 block">
+      {/* Send Amount Input Card - Reduced height */}
+      <div className="bg-white rounded-xl border border-slate-200/50 shadow-sm overflow-hidden">
+        <div className="p-3 pb-2">
+          <Label htmlFor="amount" className="text-xs font-medium text-slate-700 mb-2 block">
             Send Amount
           </Label>
           <div className="relative">
-            <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-              <span className="text-slate-600 font-medium text-2xl">$</span>
+            <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+              <span className="text-slate-600 font-medium text-xl">$</span>
             </div>
             <Input
               id="amount"
               type="number"
-              className="pl-10 pr-16 text-3xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-slate-900 placeholder-slate-400 h-16"
+              className="pl-8 pr-12 text-2xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-slate-900 placeholder-slate-400 h-12"
               placeholder="0.00"
               value={amount}
               onChange={(e) => handleSendAmountChange(e.target.value)}
               min="0"
               step="0.01"
             />
-            <div className="absolute inset-y-0 right-4 flex items-center">
-              <span className="text-sm font-medium text-slate-500 bg-slate-100/80 px-2.5 py-1 rounded-full">
+            <div className="absolute inset-y-0 right-3 flex items-center">
+              <span className="text-xs font-medium text-slate-500 bg-slate-100/80 px-2 py-0.5 rounded-full">
                 USD
               </span>
             </div>
@@ -133,35 +133,35 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
         </div>
       </div>
 
-      {/* Double Arrows */}
+      {/* Double Arrows - Reduced size */}
       <div className="flex justify-center">
-        <div className="p-2 bg-slate-100 rounded-full">
-          <ArrowUpDown className="h-5 w-5 text-slate-600" />
+        <div className="p-1.5 bg-slate-100 rounded-full">
+          <ArrowUpDown className="h-4 w-4 text-slate-600" />
         </div>
       </div>
 
-      {/* Receiver Amount Input Card */}
-      <div className="bg-white rounded-2xl border border-slate-200/50 shadow-sm overflow-hidden">
-        <div className="p-4 pb-3">
-          <Label htmlFor="receiverAmount" className="text-sm font-medium text-slate-700 mb-3 block">
+      {/* Receiver Amount Input Card - Reduced height */}
+      <div className="bg-white rounded-xl border border-slate-200/50 shadow-sm overflow-hidden">
+        <div className="p-3 pb-2">
+          <Label htmlFor="receiverAmount" className="text-xs font-medium text-slate-700 mb-2 block">
             Receiver Gets
           </Label>
           <div className="relative">
-            <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-              <span className="text-slate-600 font-medium text-lg">HTG</span>
+            <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+              <span className="text-slate-600 font-medium text-sm">HTG</span>
             </div>
             <Input
               id="receiverAmount"
               type="number"
-              className="pl-16 pr-16 text-3xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-slate-900 placeholder-slate-400 h-16"
+              className="pl-12 pr-12 text-2xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-slate-900 placeholder-slate-400 h-12"
               placeholder="0.00"
               value={receiverAmount}
               onChange={(e) => handleReceiveAmountChange(e.target.value)}
               min="0"
               step="0.01"
             />
-            <div className="absolute inset-y-0 right-4 flex items-center">
-              <span className="text-sm font-medium text-slate-500 bg-slate-100/80 px-2.5 py-1 rounded-full">
+            <div className="absolute inset-y-0 right-3 flex items-center">
+              <span className="text-xs font-medium text-slate-500 bg-slate-100/80 px-2 py-0.5 rounded-full">
                 HTG
               </span>
             </div>
@@ -169,17 +169,17 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
         </div>
       </div>
 
-      {/* Fee Breakdown - Always Visible */}
-      <div className="bg-white rounded-2xl border border-slate-200/50 shadow-sm p-4">
-        <div className="space-y-3">
-          <div className="flex items-center justify-between text-sm">
+      {/* Fee Breakdown - Always Visible with reduced height */}
+      <div className="bg-white rounded-xl border border-slate-200/50 shadow-sm p-3">
+        <div className="space-y-2">
+          <div className="flex items-center justify-between text-xs">
             <span className="text-slate-600">Transfer fee</span>
             <span className="font-medium text-slate-900">${transferFee.toFixed(2)}</span>
           </div>
-          <div className="border-t border-slate-100 pt-3">
+          <div className="border-t border-slate-100 pt-2">
             <div className="flex items-center justify-between">
-              <span className="font-medium text-slate-900">Total to pay</span>
-              <span className="text-2xl font-semibold text-slate-900">
+              <span className="font-medium text-slate-900 text-sm">Total to pay</span>
+              <span className="text-xl font-semibold text-slate-900">
                 ${totalAmount.toFixed(2)}
               </span>
             </div>
