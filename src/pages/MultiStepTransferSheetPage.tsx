@@ -140,9 +140,9 @@ const MultiStepTransferSheetPage: React.FC = () => {
   const receiverAmount = transferData.amount ? (parseFloat(transferData.amount) * 127.5).toFixed(2) : '0.00';
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-white">
       {/* Header with step title and back button */}
-      <div className="bg-white flex items-center p-4 shadow-sm">
+      <div className="bg-white flex items-center p-4 sticky top-0 z-50 shadow-sm">
         <button 
           onClick={handleBackClick}
           className="p-2 rounded-full hover:bg-gray-100"
@@ -212,12 +212,12 @@ const MultiStepTransferSheetPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Centered Step Content */}
-      <div className="flex-1 flex items-center justify-center px-4">
-        <div className="w-full max-w-md">
+      {/* Step Content */}
+      <div className="flex-1 overflow-y-auto pb-32">
+        <div className="px-4 py-4">
           {currentStep === 1 && (
-            <div className="space-y-6 text-center">
-              <div className="mb-6">
+            <div className="space-y-4">
+              <div className="text-center mb-4">
                 <p className="text-gray-600">Enter the amount you want to send</p>
               </div>
               
@@ -229,8 +229,8 @@ const MultiStepTransferSheetPage: React.FC = () => {
           )}
           
           {currentStep === 2 && (
-            <div className="space-y-6">
-              <div className="text-center mb-6">
+            <div className="space-y-4">
+              <div className="text-center mb-4">
                 <p className="text-gray-600">Who are you sending ${transferData.amount} to?</p>
               </div>
               
@@ -278,8 +278,8 @@ const MultiStepTransferSheetPage: React.FC = () => {
           )}
 
           {currentStep === 4 && (
-            <div className="space-y-6">
-              <div className="text-center mb-6">
+            <div className="space-y-4">
+              <div className="text-center mb-4">
                 <p className="text-gray-600 text-sm">Review your transfer details before proceeding</p>
               </div>
               
@@ -323,7 +323,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
           )}
 
           {currentStep === 5 && (
-            <div className="space-y-6">
+            <div className="space-y-4">
               <div className="text-center mb-6">
                 <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <CheckCircle className="h-8 w-8 text-green-600" />
@@ -434,9 +434,9 @@ const MultiStepTransferSheetPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Fixed Navigation Buttons at bottom */}
+      {/* Sticky Navigation Buttons - Fixed at bottom of viewport */}
       {currentStep < 5 && (
-        <div className="border-t bg-white px-4 py-3 shadow-lg">
+        <div className="fixed bottom-0 left-0 right-0 border-t bg-white px-4 py-3 z-[60] shadow-lg">
           <div className="flex gap-3 max-w-md mx-auto">
             {currentStep === 1 ? (
               <Button 
