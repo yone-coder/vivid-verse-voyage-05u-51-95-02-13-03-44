@@ -302,13 +302,13 @@ const MultiStepTransferSheetPage: React.FC = () => {
                 <Separator className="flex-1" />
               </div>
 
-              {/* Dynamic PayPal Checkout - Always displayed below separator */}
-              <div className="space-y-4 border rounded-lg p-4 bg-gray-50">
+              {/* Dynamic PayPal Checkout - Full width without card background */}
+              <div className="space-y-4">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-semibold">PayPal Checkout</h3>
                 </div>
                 
-                <div className="bg-white rounded-lg overflow-hidden" style={{ height: '600px' }}>
+                <div className="bg-white rounded-lg overflow-hidden w-full" style={{ height: '600px' }}>
                   <DynamicPayPalCheckout />
                 </div>
               </div>
