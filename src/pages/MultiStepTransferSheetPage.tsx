@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, Clock, CheckCircle, Receipt } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -11,7 +12,6 @@ import PaymentMethodList from '@/components/transfer/PaymentMethodList';
 import PayPalHostedCheckout from '@/components/transfer/PayPalHostedCheckout';
 import CompactCardSelection from '@/components/transfer/CompactCardSelection';
 import { internationalPaymentMethods } from '@/components/transfer/PaymentMethods';
-import TransferHeader from '@/components/transfer/TransferHeader';
 
 export interface TransferData {
   amount: string;
@@ -50,6 +50,14 @@ const MultiStepTransferSheetPage: React.FC = () => {
   const handlePreviousStep = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
+    }
+  };
+
+  const handleBackClick = () => {
+    if (currentStep === 1) {
+      navigate(-1);
+    } else {
+      handlePreviousStep();
     }
   };
 
@@ -133,12 +141,15 @@ const MultiStepTransferSheetPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <TransferHeader />
-      
-      {/* Page Title */}
-      <div className="flex items-center justify-center py-4 px-4 bg-white">
-        <h1 className="text-xl font-semibold text-gray-900">
+      {/* Header with step title and back button */}
+      <div className="bg-white flex items-center p-4 sticky top-0 z-50 shadow-sm">
+        <button 
+          onClick={handleBackClick}
+          className="p-2 rounded-full hover:bg-gray-100"
+        >
+          <ArrowLeft size={20} />
+        </button>
+        <h1 className="text-xl font-semibold ml-2">
           {stepTitles[currentStep - 1]}
         </h1>
       </div>
