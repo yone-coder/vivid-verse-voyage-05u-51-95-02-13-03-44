@@ -56,10 +56,7 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails = {},
                 placeholder="Enter complete legal name" 
                 value={safeReceiverDetails.fullName}
                 onChange={(e) => updateField('fullName', e.target.value)}
-                className="h-12 pl-4 pr-4 bg-white/70 dark:bg-slate-800/70 border-slate-300/60 dark:border-slate-600/60 rounded-xl 
-                         focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:focus:border-blue-400 
-                         transition-all duration-200 text-slate-800 dark:text-slate-200 placeholder:text-slate-500
-                         hover:border-slate-400 dark:hover:border-slate-500"
+                className="h-12 pl-4 pr-4 bg-white/70 dark:bg-slate-800/70 border-slate-300/60 dark:border-slate-600/60 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:focus:border-blue-400 transition-all duration-200 text-slate-800 dark:text-slate-200 placeholder:text-slate-500 hover:border-slate-400 dark:hover:border-slate-500"
                 required
               />
               <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/5 to-purple-500/5 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -79,10 +76,7 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails = {},
                 placeholder="Enter contact number with country code" 
                 value={safeReceiverDetails.phoneNumber}
                 onChange={(e) => updateField('phoneNumber', e.target.value)}
-                className="h-12 pl-4 pr-4 bg-white/70 dark:bg-slate-800/70 border-slate-300/60 dark:border-slate-600/60 rounded-xl 
-                         focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:focus:border-blue-400 
-                         transition-all duration-200 text-slate-800 dark:text-slate-200 placeholder:text-slate-500
-                         hover:border-slate-400 dark:hover:border-slate-500"
+                className="h-12 pl-4 pr-4 bg-white/70 dark:bg-slate-800/70 border-slate-300/60 dark:border-slate-600/60 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:focus:border-blue-400 transition-all duration-200 text-slate-800 dark:text-slate-200 placeholder:text-slate-500 hover:border-slate-400 dark:hover:border-slate-500"
                 required
               />
               <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-500/5 to-purple-500/5 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -100,10 +94,7 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails = {},
               <Textarea 
                 id="address" 
                 placeholder="Street address, city, state/province, postal code, country" 
-                className="min-h-[100px] p-4 bg-white/70 dark:bg-slate-800/70 border-slate-300/60 dark:border-slate-600/60 rounded-xl 
-                         focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:focus:border-blue-400 
-                         transition-all duration-200 text-slate-800 dark:text-slate-200 placeholder:text-slate-500
-                         hover:border-slate-400 dark:hover:border-slate-500 resize-none"
+                className="min-h-[100px] p-4 bg-white/70 dark:bg-slate-800/70 border-slate-300/60 dark:border-slate-600/60 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 dark:focus:border-blue-400 transition-all duration-200 text-slate-800 dark:text-slate-200 placeholder:text-slate-500 hover:border-slate-400 dark:hover:border-slate-500 resize-none"
                 value={safeReceiverDetails.address}
                 onChange={(e) => updateField('address', e.target.value)}
                 required
