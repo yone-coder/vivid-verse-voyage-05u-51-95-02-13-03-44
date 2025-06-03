@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Skeleton } from "@/components/ui/skeleton";
 
 const DynamicPayPalCheckout: React.FC = () => {
   useEffect(() => {
@@ -708,6 +709,14 @@ const DynamicPayPalCheckout: React.FC = () => {
           gap: 1.5rem;
         }
 
+        .skeleton-form {
+          width: 100%;
+          max-width: 400px;
+          display: flex;
+          flex-direction: column;
+          gap: 1.5rem;
+        }
+
         .spinner {
           width: 40px;
           height: 40px;
@@ -813,7 +822,18 @@ const DynamicPayPalCheckout: React.FC = () => {
 
           {/* Loading State */}
           <div id="loading" className="loading-container">
-            <div className="spinner"></div>
+            <div className="skeleton-form">
+              <Skeleton className="h-4 w-32 mx-auto mb-4" />
+              <Skeleton className="h-12 w-full" />
+              <div className="space-y-3">
+                <Skeleton className="h-12 w-full" />
+                <div className="flex gap-3">
+                  <Skeleton className="h-12 flex-1" />
+                  <Skeleton className="h-12 flex-1" />
+                </div>
+              </div>
+              <Skeleton className="h-12 w-full" />
+            </div>
             <div className="loading-text">Initializing secure payment...</div>
           </div>
 
