@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, Clock, CheckCircle, Receipt } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -18,7 +19,6 @@ export interface TransferData {
     lastName: string;
     phoneNumber: string;
     department: string;
-    arrondissement: string;
     commune: string;
   };
   selectedPaymentMethod?: string;
@@ -45,7 +45,6 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
       lastName: '',
       phoneNumber: '',
       department: 'Artibonite',
-      arrondissement: '',
       commune: '',
     },
     selectedPaymentMethod: 'credit-card'
@@ -166,7 +165,6 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
   const canProceedFromStep2 = transferData.receiverDetails.firstName && 
                               transferData.receiverDetails.lastName &&
                               transferData.receiverDetails.phoneNumber && 
-                              transferData.receiverDetails.arrondissement &&
                               transferData.receiverDetails.commune;
   const canProceedFromStep3 = transferData.selectedPaymentMethod;
 
@@ -374,6 +372,11 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
                   </div>
                 </div>
               </div>
+              
+              <StepThreeTransfer 
+                amount={transferData.amount}
+                onPaymentSuccess={handlePaymentSuccess}
+              />
             </div>
           )}
 
@@ -408,8 +411,6 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
                   <span className="text-lg font-bold text-green-400">${totalAmount}</span>
                 </div>
               </div>
-              
-              <StepThreeTransfer amount={transferData.amount} />
               
               <div className="flex justify-center">
                 <Button 
@@ -464,7 +465,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Location</span>
-                      <span className="font-medium text-right max-w-xs">{transferData.receiverDetails.commune}, {transferData.receiverDetails.arrondissement}, {transferData.receiverDetails.department}</span>
+                      <span className="font-medium text-right max-w-xs">{transferData.receiverDetails.commune}, {transferData.receiverDetails.department}</span>
                     </div>
                   </div>
                   
@@ -533,8 +534,8 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
         </div>
       </div>
 
-      {/* Sticky Navigation Buttons - Fixed at bottom of viewport */}
-      {currentStep < 5 && (
+      {/* Sticky Navigation Buttons - Only show for steps 1, 2, and step 4+ */}
+      {(currentStep < 3 || currentStep > 3) && (
         <div className="fixed bottom-0 left-0 right-0 border-t bg-white px-4 py-3 z-[60] shadow-lg">
           <div className="flex gap-3 max-w-md mx-auto">
             {currentStep === 1 ? (

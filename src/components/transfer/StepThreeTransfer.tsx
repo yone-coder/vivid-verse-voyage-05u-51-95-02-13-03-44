@@ -1,12 +1,14 @@
 
 import React, { useEffect, useRef } from 'react';
 import { Shield } from 'lucide-react';
+import { Button } from "@/components/ui/button";
 
 interface StepThreeTransferProps {
   amount: string;
+  onPaymentSuccess?: (details: any) => void;
 }
 
-const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount }) => {
+const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount, onPaymentSuccess }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -265,9 +267,6 @@ const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount }) => {
                 <div class="transfer-card-field" id="transfer-cvv"></div>
               </div>
             </div>
-
-            <!-- Button text will be populated dynamically -->
-            <button type="submit" class="transfer-pay-button">Loading...</button>
           </form>
 
           <!-- Security Info -->
@@ -289,25 +288,25 @@ const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount }) => {
     const script = document.createElement('script');
     script.innerHTML = `
       // Global variables to store application state
-      let transfer_current_customer_id;
-      let transfer_order_id;
-      let transfer_currentPrice = null;
-      let transfer_paypal_hosted_fields = null;
+      let transfer_step3_current_customer_id;
+      let transfer_step3_order_id;
+      let transfer_step3_currentPrice = null;
+      let transfer_step3_paypal_hosted_fields = null;
 
       // Replace this URL with your actual Render.com backend URL
-      const TRANSFER_API_BASE_URL = "https://paypal-with-nodejs.onrender.com";
+      const TRANSFER_STEP3_API_BASE_URL = "https://paypal-with-nodejs.onrender.com";
 
       // PayPal SDK configuration
-      const transfer_paypal_sdk_url = "https://www.paypal.com/sdk/js";
-      const transfer_client_id = "AU23YbLMTqxG3iSvnhcWtix6rGN14uw3axYJgrDe8VqUVng8XiQmmeiaxJWbnpbZP_f4--RTg146F1Mj";
-      const transfer_currency = "USD";
-      const transfer_intent = "capture";
-      const transferAmount = "${amount}";
+      const transfer_step3_paypal_sdk_url = "https://www.paypal.com/sdk/js";
+      const transfer_step3_client_id = "AU23YbLMTqxG3iSvnhcWtix6rGN14uw3axYJgrDe8VqUVng8XiQmmeiaxJWbnpbZP_f4--RTg146F1Mj";
+      const transfer_step3_currency = "USD";
+      const transfer_step3_intent = "capture";
+      const transferStep3Amount = "${amount}";
 
       /**
        * Helper function to dynamically load PayPal SDK script
        */
-      let transfer_script_to_head = (attributes_object) => {
+      let transfer_step3_script_to_head = (attributes_object) => {
           return new Promise((resolve, reject) => {
             const script = document.createElement('script');
             for (const name of Object.keys(attributes_object)) {
@@ -322,19 +321,14 @@ const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount }) => {
       /**
        * Fetch current price from backend for transfer
        */
-      const transfer_fetchCurrentPrice = () => {
+      const transfer_step3_fetchCurrentPrice = () => {
         const priceData = {
-          value: transferAmount,
-          display: "$" + parseFloat(transferAmount).toFixed(2),
+          value: transferStep3Amount,
+          display: "$" + parseFloat(transferStep3Amount).toFixed(2),
           currency: "USD"
         };
         
-        transfer_currentPrice = priceData;
-        
-        const submitBtn = document.querySelector('.transfer-pay-button');
-        if (submitBtn) {
-          submitBtn.textContent = \`Complete Transfer \${priceData.display}\`;
-        }
+        transfer_step3_currentPrice = priceData;
         
         return Promise.resolve(priceData);
       };
@@ -342,21 +336,16 @@ const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount }) => {
       /**
        * Reset the purchase button to its normal state
        */
-      let transfer_reset_purchase_button = () => {
-          const btn = document.querySelector("#transfer-card-form").querySelector("button[type='submit']");
-          if (btn) {
-            btn.removeAttribute("disabled");
-            const buttonText = transfer_currentPrice ? \`Complete Transfer \${transfer_currentPrice.display}\` : "Complete Transfer";
-            btn.textContent = buttonText;
-          }
+      let transfer_step3_reset_purchase_button = () => {
+          // Button is now handled externally
       }
 
       /**
        * Simulate user authentication check
        */
-      const transfer_is_user_logged_in = () => {
+      const transfer_step3_is_user_logged_in = () => {
         return new Promise((resolve) => {
-          transfer_current_customer_id = "";
+          transfer_step3_current_customer_id = "";
           resolve();
         });
       }
@@ -364,13 +353,13 @@ const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount }) => {
       /**
        * Get PayPal client token for hosted fields
        */
-      const transfer_get_client_token = () => {
+      const transfer_step3_get_client_token = () => {
         return new Promise(async (resolve, reject) => {
           try {
-            const response = await fetch(\`\${TRANSFER_API_BASE_URL}/get_client_token\`, {
+            const response = await fetch(\`\${TRANSFER_STEP3_API_BASE_URL}/get_client_token\`, {
               method: "POST", 
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ "customer_id": transfer_current_customer_id }),
+              body: JSON.stringify({ "customer_id": transfer_step3_current_customer_id }),
             });
 
             if (!response.ok) {
@@ -389,18 +378,18 @@ const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount }) => {
       /**
        * Global click handler for alert close buttons
        */
-      let transfer_handle_click = (event) => {
+      let transfer_step3_handle_click = (event) => {
           if (event.target.classList.contains("transfer-alert-close")) {
               event.target.closest(".transfer-alert").remove();
           }
       }
 
-      document.addEventListener("click", transfer_handle_click);
+      document.addEventListener("click", transfer_step3_handle_click);
 
       /**
        * Display error alert with custom message
        */
-      let transfer_display_error_alert = (message = "An error occurred. Please try again.") => {
+      let transfer_step3_display_error_alert = (message = "An error occurred. Please try again.") => {
           const alertsContainer = document.getElementById("transfer-alerts");
           if (alertsContainer) {
             alertsContainer.innerHTML = \`<div class="transfer-alert transfer-alert-error"><button class="transfer-alert-close">×</button>\${message}</div>\`;
@@ -410,41 +399,93 @@ const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount }) => {
       /**
        * Display success message after payment completion
        */
-      let transfer_display_success_message = (order_details) => {
+      let transfer_step3_display_success_message = (order_details) => {
           console.log('Transfer payment completed:', order_details);
-          let intent_object = transfer_intent === "authorize" ? "authorizations" : "captures";
-          const firstName = order_details?.payer?.name?.given_name || '';
-          const lastName = order_details?.payer?.name?.surname || '';
-          const amount = order_details.purchase_units[0].payments[intent_object][0].amount.value;
-          const currency = order_details.purchase_units[0].payments[intent_object][0].amount.currency_code;
-
           const alertsContainer = document.getElementById("transfer-alerts");
           if (alertsContainer) {
-            alertsContainer.innerHTML = \`<div class='transfer-alert transfer-alert-success'>Transfer successful! Thank you \${firstName} \${lastName}. Your money transfer to Haiti has been initiated and will be available for pickup within 24-48 hours.</div>\`;
+            alertsContainer.innerHTML = \`<div class='transfer-alert transfer-alert-success'>Transfer successful! Your money transfer has been initiated.</div>\`;
           }
 
           const cardForm = document.getElementById("transfer-card-form");
           if (cardForm) {
             cardForm.classList.add("transfer-hide");
           }
+
+          // Trigger the onPaymentSuccess callback
+          if (window.transferStep3PaymentSuccess) {
+            window.transferStep3PaymentSuccess(order_details);
+          }
       }
 
-      // Initialize the transfer payment system
-      console.log('Starting transfer payment initialization...');
+      // Process payment function
+      window.processTransferStep3Payment = () => {
+        return new Promise((resolve, reject) => {
+          if (transfer_step3_paypal_hosted_fields) {
+            transfer_step3_paypal_hosted_fields
+              .submit({
+                  cardholderName: "Transfer Customer",
+                  billingAddress: {
+                    streetAddress: "123 Main St",
+                    extendedAddress: "",
+                    region: "CA",
+                    locality: "San Jose",
+                    postalCode: "95131",
+                    countryCodeAlpha2: "US",
+                  },
+                }
+              )
+              .then(() => {
+                const emailInput = document.getElementById("transfer-email");
+                return fetch(\`\${TRANSFER_STEP3_API_BASE_URL}/complete_order\`, {
+                    method: "post", 
+                    headers: { "Content-Type": "application/json; charset=utf-8" },
+                    body: JSON.stringify({
+                        "intent": transfer_step3_intent,
+                        "order_id": transfer_step3_order_id,
+                        "email": emailInput ? emailInput.value : ""
+                    })
+                })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error(\`HTTP error! status: \${response.status}\`);
+                    }
+                    return response.json();
+                })
+                .then((order_details) => {
+                    transfer_step3_display_success_message(order_details);
+                    resolve(order_details);
+                 })
+                 .catch((error) => {
+                    transfer_step3_display_error_alert("Transfer processing failed. Please try again.");
+                    reject(error);
+                 });
+              })
+              .catch((err) => {
+                transfer_step3_display_error_alert("Card validation failed. Please check your information.");
+                reject(err);
+              });
+          } else {
+            reject(new Error('PayPal hosted fields not initialized'));
+          }
+        });
+      };
 
-      transfer_is_user_logged_in()
+      // Initialize the transfer payment system
+      console.log('Starting transfer step 3 payment initialization...');
+
+      transfer_step3_is_user_logged_in()
       .then(() => {
           console.log('User login check completed');
-          return transfer_fetchCurrentPrice();
+          return transfer_step3_fetchCurrentPrice();
       })
       .then((priceData) => {
           console.log('Price set, now getting client token...');
-          return transfer_get_client_token();
+          return transfer_step3_get_client_token();
       })
       .then((client_token) => {
           console.log('Client token received, loading PayPal SDK...');
-          return transfer_script_to_head({
-              "src": transfer_paypal_sdk_url + "?client-id=" + transfer_client_id + "&enable-funding=venmo&currency=" + transfer_currency + "&intent=" + transfer_intent + "&components=hosted-fields", 
+          return transfer_step3_script_to_head({
+              "src": transfer_step3_paypal_sdk_url + "?client-id=" + transfer_step3_client_id + "&enable-funding=venmo&currency=" + transfer_step3_currency + "&intent=" + transfer_step3_intent + "&components=hosted-fields", 
               "data-client-token": client_token
           });
       })
@@ -460,15 +501,15 @@ const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount }) => {
           if (window.paypal && window.paypal.HostedFields.isEligible()) {
               console.log('Hosted Fields are eligible, setting up...');
 
-              transfer_paypal_hosted_fields = window.paypal.HostedFields.render({
+              transfer_step3_paypal_hosted_fields = window.paypal.HostedFields.render({
                 createOrder: () => {
                   console.log('Creating order with transfer amount...');
-                  return fetch(\`\${TRANSFER_API_BASE_URL}/create_order\`, {
+                  return fetch(\`\${TRANSFER_STEP3_API_BASE_URL}/create_order\`, {
                       method: "post", 
                       headers: { "Content-Type": "application/json; charset=utf-8" },
                       body: JSON.stringify({ 
-                          "intent": transfer_intent,
-                          "amount": transferAmount
+                          "intent": transfer_step3_intent,
+                          "amount": transferStep3Amount
                       })
                   })
                   .then((response) => {
@@ -478,8 +519,8 @@ const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount }) => {
                       return response.json();
                   })
                   .then((order) => { 
-                      transfer_order_id = order.id; 
-                      console.log('Order created with ID:', transfer_order_id);
+                      transfer_step3_order_id = order.id; 
+                      console.log('Order created with ID:', transfer_step3_order_id);
                       return order.id; 
                   });
                 },
@@ -516,67 +557,7 @@ const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount }) => {
                 }
               }).then((card_fields) => {
                 console.log('Hosted Fields rendered successfully');
-
-                const cardForm = document.querySelector("#transfer-card-form");
-                if (cardForm) {
-                  cardForm.addEventListener("submit", (event) => {
-                    event.preventDefault();
-                    console.log('Form submitted, processing payment...');
-
-                    const submitBtn = cardForm.querySelector("button[type='submit']");
-                    if (submitBtn) {
-                      submitBtn.setAttribute("disabled", "");
-                      submitBtn.textContent = "Processing Transfer...";
-                    }
-
-                    card_fields
-                      .submit({
-                          cardholderName: "Transfer Customer",
-                          billingAddress: {
-                            streetAddress: "123 Main St",
-                            extendedAddress: "",
-                            region: "CA",
-                            locality: "San Jose",
-                            postalCode: "95131",
-                            countryCodeAlpha2: "US",
-                          },
-                        }
-                      )
-                      .then(() => {
-                        console.log('Card fields submitted, completing order...');
-                        const emailInput = document.getElementById("transfer-email");
-                        return fetch(\`\${TRANSFER_API_BASE_URL}/complete_order\`, {
-                            method: "post", 
-                            headers: { "Content-Type": "application/json; charset=utf-8" },
-                            body: JSON.stringify({
-                                "intent": transfer_intent,
-                                "order_id": transfer_order_id,
-                                "email": emailInput ? emailInput.value : ""
-                            })
-                        })
-                        .then((response) => {
-                            if (!response.ok) {
-                                throw new Error(\`HTTP error! status: \${response.status}\`);
-                            }
-                            return response.json();
-                        })
-                        .then((order_details) => {
-                            console.log('Order completed successfully');
-                            transfer_display_success_message(order_details);
-                         })
-                         .catch((error) => {
-                            console.error('Error completing order:', error);
-                            transfer_display_error_alert("Transfer processing failed. Please try again.");
-                            transfer_reset_purchase_button();
-                         });
-                      })
-                      .catch((err) => {
-                        console.error('Error submitting card fields:', err);
-                        transfer_reset_purchase_button();
-                        transfer_display_error_alert("Card validation failed. Please check your information.");
-                      });
-                  });
-                }
+                transfer_step3_paypal_hosted_fields = card_fields;
               });
             } else {
               console.error('Hosted Fields not eligible in this browser');
@@ -588,12 +569,18 @@ const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount }) => {
       })
       .catch((error) => {
           console.error('Application initialization failed:', error);
-          transfer_reset_purchase_button();
-          transfer_display_error_alert("Failed to initialize payment system. Please refresh the page.");
+          transfer_step3_display_error_alert("Failed to initialize payment system. Please refresh the page.");
       });
     `;
 
     document.head.appendChild(script);
+
+    // Set up the callback for payment success
+    (window as any).transferStep3PaymentSuccess = (orderDetails: any) => {
+      if (onPaymentSuccess) {
+        onPaymentSuccess(orderDetails);
+      }
+    };
 
     return () => {
       // Cleanup
@@ -603,8 +590,25 @@ const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount }) => {
       if (styleElement.parentNode) {
         styleElement.parentNode.removeChild(styleElement);
       }
+      // Clean up global function
+      delete (window as any).transferStep3PaymentSuccess;
+      delete (window as any).processTransferStep3Payment;
     };
-  }, [amount]);
+  }, [amount, onPaymentSuccess]);
+
+  const handlePayClick = async () => {
+    try {
+      if ((window as any).processTransferStep3Payment) {
+        await (window as any).processTransferStep3Payment();
+      }
+    } catch (error) {
+      console.error('Payment failed:', error);
+    }
+  };
+
+  // Calculate total amount with fee
+  const transferFee = amount ? (Math.ceil(parseFloat(amount) / 100) * 15).toFixed(2) : '0.00';
+  const totalAmount = amount ? (parseFloat(amount) + parseFloat(transferFee)).toFixed(2) : '0.00';
 
   return (
     <div className="space-y-6">
@@ -633,6 +637,31 @@ const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount }) => {
 
       {/* PayPal Checkout Container */}
       <div ref={containerRef}></div>
+
+      {/* Pay with PayPal Button */}
+      <div className="w-full">
+        <Button 
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 text-lg font-semibold"
+          onClick={() => {
+            // Handle PayPal payment
+            console.log('PayPal payment initiated');
+          }}
+        >
+          Pay with PayPal
+        </Button>
+      </div>
+
+      {/* Sticky Pay Button */}
+      <div className="fixed bottom-0 left-0 right-0 border-t bg-white px-4 py-3 z-[60] shadow-lg">
+        <div className="flex gap-3 max-w-md mx-auto">
+          <Button 
+            onClick={handlePayClick}
+            className="flex-1 bg-green-600 hover:bg-green-700 text-white transition-all duration-200"
+          >
+            Pay ${totalAmount}
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };
