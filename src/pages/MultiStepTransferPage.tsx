@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -15,7 +14,6 @@ export interface TransferData {
     lastName: string;
     phoneNumber: string;
     department: string;
-    arrondissement: string;
     commune: string;
   };
 }
@@ -30,7 +28,6 @@ const MultiStepTransferPage: React.FC = () => {
       lastName: '',
       phoneNumber: '',
       department: 'Artibonite',
-      arrondissement: '',
       commune: '',
     }
   });
@@ -57,7 +54,6 @@ const MultiStepTransferPage: React.FC = () => {
   const canProceedFromStep2 = transferData.receiverDetails.firstName && 
                               transferData.receiverDetails.lastName && 
                               transferData.receiverDetails.phoneNumber && 
-                              transferData.receiverDetails.arrondissement &&
                               transferData.receiverDetails.commune;
 
   return (

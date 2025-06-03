@@ -1,17 +1,19 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Info, MapPin, Phone, User } from "lucide-react";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { Info, MapPin, Phone, User, Check, ChevronsUpDown } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface ReceiverDetails {
   firstName: string;
   lastName: string;
   phoneNumber: string;
   department: string;
-  arrondissement: string;
   commune: string;
 }
 
@@ -20,44 +22,40 @@ interface StepTwoTransferProps {
   onDetailsChange: (details: ReceiverDetails) => void;
 }
 
-// Artibonite department administrative divisions
-const artiboniteData = {
-  "Dessalines": [
-    "Dessalines",
-    "Grande-Saline",
-    "Marchand-Dessalines"
-  ],
-  "Gonaïves": [
-    "Gonaïves",
-    "Ennery",
-    "L'Estère"
-  ],
-  "Gros-Morne": [
-    "Gros-Morne",
-    "Anse-Rouge",
-    "Terre-Neuve"
-  ],
-  "Marmelade": [
-    "Marmelade",
-    "Saint-Michel-de-l'Attalaye"
-  ],
-  "Saint-Marc": [
-    "Saint-Marc",
-    "La Chapelle",
-    "Liancourt",
-    "Montrouis",
-    "Verrettes"
-  ]
-};
+// All communes from Artibonite department (flattened list)
+const artiboniteCommunes = [
+  // From Dessalines arrondissement
+  "Dessalines",
+  "Grande-Saline", 
+  "Marchand-Dessalines",
+  // From Gonaïves arrondissement
+  "Gonaïves",
+  "Ennery",
+  "L'Estère",
+  // From Gros-Morne arrondissement
+  "Gros-Morne",
+  "Anse-Rouge",
+  "Terre-Neuve",
+  // From Marmelade arrondissement
+  "Marmelade",
+  "Saint-Michel-de-l'Attalaye",
+  // From Saint-Marc arrondissement
+  "Saint-Marc",
+  "La Chapelle",
+  "Liancourt",
+  "Montrouis",
+  "Verrettes"
+];
 
 const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDetailsChange }) => {
+  const [open, setOpen] = useState(false);
+  
   // Provide default values if receiverDetails is undefined
   const details = receiverDetails || {
     firstName: '',
     lastName: '',
     phoneNumber: '',
     department: 'Artibonite',
-    arrondissement: '',
     commune: ''
   };
 
@@ -66,16 +64,8 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
       ...details,
       [field]: value
     };
-    
-    // Reset commune when arrondissement changes
-    if (field === 'arrondissement') {
-      updatedDetails.commune = '';
-    }
-    
     onDetailsChange(updatedDetails);
   };
-
-  const availableCommunes = details.arrondissement ? artiboniteData[details.arrondissement] || [] : [];
 
   return (
     <TooltipProvider>
@@ -160,7 +150,7 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
               Address in Haiti *
             </Label>
             
-            {/* Department and Arrondissement Row */}
+            {/* Department and Commune Row */}
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div className="space-y-2">
                 <Label className="text-xs font-medium text-gray-600 uppercase tracking-wide">
@@ -180,52 +170,56 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
 
               <div className="space-y-2">
                 <Label className="text-xs font-medium text-gray-600 uppercase tracking-wide">
-                  Arrondissement
+                  Commune
                 </Label>
-                <Select value={details.arrondissement} onValueChange={(value) => updateField('arrondissement', value)}>
-                  <SelectTrigger className="h-11 border-2 border-gray-200 focus:border-purple-500 focus:ring-purple-500/20 focus:ring-4 rounded-xl bg-white text-gray-900 font-medium transition-all duration-200 hover:border-gray-300">
-                    <SelectValue placeholder="Choose arrondissement" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-white border-2 border-gray-200 rounded-xl z-50 shadow-xl">
-                    {Object.keys(artiboniteData).map((arrondissement) => (
-                      <SelectItem 
-                        key={arrondissement} 
-                        value={arrondissement} 
-                        className="hover:bg-purple-50 focus:bg-purple-50 text-gray-800 font-medium py-3 px-4 cursor-pointer transition-colors rounded-lg mx-1"
-                      >
-                        {arrondissement}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            {/* Commune */}
-            <div className="space-y-2">
-              <Label className="text-xs font-medium text-gray-600 uppercase tracking-wide">
-                Commune
-              </Label>
-              <Select 
-                value={details.commune} 
-                onValueChange={(value) => updateField('commune', value)}
-                disabled={!details.arrondissement}
-              >
-                <SelectTrigger className="h-11 border-2 border-gray-200 focus:border-purple-500 focus:ring-purple-500/20 focus:ring-4 rounded-xl bg-white text-gray-900 font-medium transition-all duration-200 hover:border-gray-300 disabled:bg-gray-50 disabled:text-gray-400">
-                  <SelectValue placeholder={details.arrondissement ? "Choose commune" : "Select arrondissement first"} />
-                </SelectTrigger>
-                <SelectContent className="bg-white border-2 border-gray-200 rounded-xl z-50 shadow-xl">
-                  {availableCommunes.map((commune) => (
-                    <SelectItem 
-                      key={commune} 
-                      value={commune} 
-                      className="hover:bg-purple-50 focus:bg-purple-50 text-gray-800 font-medium py-3 px-4 cursor-pointer transition-colors rounded-lg mx-1"
+                <Popover open={open} onOpenChange={setOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      aria-expanded={open}
+                      className="h-11 w-full justify-between border-2 border-gray-200 focus:border-purple-500 focus:ring-purple-500/20 focus:ring-4 rounded-xl bg-white text-gray-900 font-medium transition-all duration-200 hover:border-gray-300"
                     >
-                      {commune}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                      {details.commune
+                        ? artiboniteCommunes.find((commune) => commune === details.commune)
+                        : "Search commune..."}
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-full p-0 bg-white border-2 border-gray-200 rounded-xl shadow-xl z-50">
+                    <Command className="bg-white">
+                      <CommandInput 
+                        placeholder="Search commune..." 
+                        className="h-9 text-gray-900"
+                      />
+                      <CommandList>
+                        <CommandEmpty>No commune found.</CommandEmpty>
+                        <CommandGroup>
+                          {artiboniteCommunes.map((commune) => (
+                            <CommandItem
+                              key={commune}
+                              value={commune}
+                              onSelect={(currentValue) => {
+                                updateField('commune', currentValue === details.commune ? "" : currentValue);
+                                setOpen(false);
+                              }}
+                              className="hover:bg-purple-50 focus:bg-purple-50 text-gray-800 font-medium py-3 px-4 cursor-pointer transition-colors rounded-lg mx-1"
+                            >
+                              <Check
+                                className={cn(
+                                  "mr-2 h-4 w-4",
+                                  details.commune === commune ? "opacity-100" : "opacity-0"
+                                )}
+                              />
+                              {commune}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+              </div>
             </div>
           </div>
         </div>

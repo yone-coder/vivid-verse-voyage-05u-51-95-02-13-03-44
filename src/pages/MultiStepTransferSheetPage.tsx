@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, Clock, CheckCircle, Receipt, ChevronLeft, X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -19,7 +18,6 @@ export interface TransferData {
     lastName: string;
     phoneNumber: string;
     department: string;
-    arrondissement: string;
     commune: string;
   };
   selectedPaymentMethod?: string;
@@ -40,7 +38,6 @@ const MultiStepTransferSheetPage: React.FC = () => {
       lastName: '',
       phoneNumber: '',
       department: 'Artibonite',
-      arrondissement: '',
       commune: '',
     },
     selectedPaymentMethod: 'credit-card'
@@ -696,7 +693,6 @@ const MultiStepTransferSheetPage: React.FC = () => {
   const canProceedFromStep2 = transferData.receiverDetails.firstName && 
                               transferData.receiverDetails.lastName &&
                               transferData.receiverDetails.phoneNumber && 
-                              transferData.receiverDetails.arrondissement &&
                               transferData.receiverDetails.commune;
   const canProceedFromStep3 = transferData.selectedPaymentMethod;
 
@@ -897,7 +893,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
               <div ref={paypalContainerRef}></div>
             </div>
           )}
-
+          
           {currentStep === 4 && (
             <div className="space-y-4">              
               <div 
@@ -936,7 +932,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Location</span>
-                      <span className="font-medium text-right max-w-xs">{transferData.receiverDetails.commune}, {transferData.receiverDetails.arrondissement}, {transferData.receiverDetails.department}</span>
+                      <span className="font-medium text-right max-w-xs">{transferData.receiverDetails.commune}, {transferData.receiverDetails.department}</span>
                     </div>
                   </div>
                   
