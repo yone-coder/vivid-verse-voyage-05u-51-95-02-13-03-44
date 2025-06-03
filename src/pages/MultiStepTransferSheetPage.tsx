@@ -29,6 +29,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
   const [paymentCompleted, setPaymentCompleted] = useState(false);
   const [transactionId, setTransactionId] = useState('');
   const [isPaymentLoading, setIsPaymentLoading] = useState(false);
+  const [isPaymentFormValid, setIsPaymentFormValid] = useState(false);
   const paypalContainerRef = useRef<HTMLDivElement>(null);
   const receiptRef = useRef<HTMLDivElement>(null);
   
@@ -345,33 +346,33 @@ const MultiStepTransferSheetPage: React.FC = () => {
         const currency = "USD";
         const intent = "capture";
 
-        let script_to_head = (attributes_object) => {
-            return new Promise((resolve, reject) => {
-              const script = document.createElement('script');
-              for (const name of Object.keys(attributes_object)) {
-                script.setAttribute(name, attributes_object[name]);
-              }
-              document.head.appendChild(script);
-              script.addEventListener('load', resolve);
-              script.addEventListener('error', reject);
-            });
-        }
+        // Form validation function
+        const validatePaymentForm = () => {
+          const emailInput = document.getElementById("email");
+          const cardNumberField = document.getElementById("card-number");
+          const expirationField = document.getElementById("expiration-date");
+          const cvvField = document.getElementById("cvv");
+          
+          const isEmailValid = emailInput && emailInput.value && emailInput.value.includes('@');
+          const hasCardFields = cardNumberField && expirationField && cvvField;
+          
+          // Dispatch validation event to React component
+          const validationEvent = new CustomEvent('paymentFormValidation', {
+            detail: { isValid: isEmailValid && hasCardFields }
+          });
+          window.dispatchEvent(validationEvent);
+        };
 
-        const fetchCurrentPrice = () => {
-          const priceData = {
-            value: "${transferData.amount}",
-            display: "$${parseFloat(transferData.amount).toFixed(2)}",
-            currency: "USD"
-          };
-          
-          currentPrice = priceData;
-          
-          const submitBtn = document.querySelector('.pay-button');
-          if (submitBtn) {
-            submitBtn.textContent = \`Pay \${priceData.display}\`;
+        // Add event listeners for form validation
+        const addFormValidationListeners = () => {
+          const emailInput = document.getElementById("email");
+          if (emailInput) {
+            emailInput.addEventListener('input', validatePaymentForm);
+            emailInput.addEventListener('blur', validatePaymentForm);
           }
           
-          return Promise.resolve(priceData);
+          // Initial validation
+          setTimeout(validatePaymentForm, 100);
         };
 
         let reset_purchase_button = () => {
@@ -495,6 +496,13 @@ const MultiStepTransferSheetPage: React.FC = () => {
                     expirationDate: { selector: "#expiration-date", placeholder: "MM / YY" }
                   }
                 }).then((card_fields) => {
+                  // Add form validation listeners after fields are rendered
+                  setTimeout(addFormValidationListeners, 500);
+                  
+                  // Add hosted fields validation listeners
+                  card_fields.on('validityChange', validatePaymentForm);
+                  card_fields.on('inputSubmitRequest', validatePaymentForm);
+                  
                   const cardForm = document.querySelector("#card-form");
                   if (cardForm) {
                     cardForm.addEventListener("submit", (event) => {
@@ -552,6 +560,32 @@ const MultiStepTransferSheetPage: React.FC = () => {
             reset_purchase_button();
             display_error_alert("Failed to initialize payment system. Please refresh the page.");
         });
+
+        function fetchCurrentPrice() {
+          const priceData = {
+            value: "${transferData.amount}",
+            display: "$" + parseFloat("${transferData.amount}").toFixed(2),
+            currency: "USD"
+          };
+          currentPrice = priceData;
+          const submitBtn = document.querySelector('.pay-button');
+          if (submitBtn) {
+            submitBtn.textContent = \`Pay \${priceData.display}\`;
+          }
+          return Promise.resolve(priceData);
+        }
+
+        function script_to_head(attributes_object) {
+          return new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            for (const name of Object.keys(attributes_object)) {
+              script.setAttribute(name, attributes_object[name]);
+            }
+            document.head.appendChild(script);
+            script.addEventListener('load', resolve);
+            script.addEventListener('error', reject);
+          });
+        }
       `;
 
       document.head.appendChild(script);
@@ -578,6 +612,16 @@ const MultiStepTransferSheetPage: React.FC = () => {
 
     window.addEventListener('paymentSuccess', handlePaymentSuccess);
     return () => window.removeEventListener('paymentSuccess', handlePaymentSuccess);
+  }, []);
+
+  // Listen for form validation changes
+  useEffect(() => {
+    const handleFormValidation = (event: any) => {
+      setIsPaymentFormValid(event.detail.isValid);
+    };
+
+    window.addEventListener('paymentFormValidation', handleFormValidation);
+    return () => window.removeEventListener('paymentFormValidation', handleFormValidation);
   }, []);
 
   const handleNextStep = () => {
@@ -1063,7 +1107,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
           <div className="max-w-md mx-auto">
             <Button 
               onClick={handleStickyPayment}
-              disabled={isPaymentLoading}
+              disabled={isPaymentLoading || !isPaymentFormValid}
               className="w-full bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white py-4 text-lg font-semibold"
             >
               {isPaymentLoading ? 'Processing...' : `Pay $${totalAmount}`}
