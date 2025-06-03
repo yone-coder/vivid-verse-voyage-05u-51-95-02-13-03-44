@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, Clock, CheckCircle, Receipt, ChevronLeft, X, Key, Loader2 } from 'lucide-react';
+import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, Clock, CheckCircle, Receipt, ChevronLeft, X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -28,7 +28,6 @@ const MultiStepTransferSheetPage: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [paymentCompleted, setPaymentCompleted] = useState(false);
   const [transactionId, setTransactionId] = useState('');
-  const [isPaymentLoading, setIsPaymentLoading] = useState(false);
   const paypalContainerRef = useRef<HTMLDivElement>(null);
   const receiptRef = useRef<HTMLDivElement>(null);
   
@@ -170,7 +169,28 @@ const MultiStepTransferSheetPage: React.FC = () => {
         }
 
         .pay-button {
-          display: none !important;
+          width: 100%;
+          padding: 1rem 1.5rem;
+          background: var(--accent-primary);
+          color: white;
+          border: none;
+          border-radius: var(--border-radius-sm);
+          font-size: 1.1rem;
+          font-weight: 700;
+          cursor: pointer;
+          transition: var(--transition);
+          margin-top: 1rem;
+          font-family: inherit;
+          min-height: 56px;
+        }
+
+        .pay-button:hover:not(:disabled) {
+          transform: translateY(-2px);
+        }
+
+        .pay-button:disabled {
+          opacity: 0.7;
+          cursor: not-allowed;
         }
 
         .alert {
@@ -287,6 +307,12 @@ const MultiStepTransferSheetPage: React.FC = () => {
                   </div>
                 </div>
               </div>
+
+              <div class="skeleton-shimmer h-12 w-full rounded-xl mt-4"></div>
+
+              <div class="mt-8 text-center">
+                <div class="skeleton-shimmer h-8 w-32 mx-auto rounded-full"></div>
+              </div>
             </div>
           </div>
 
@@ -307,6 +333,8 @@ const MultiStepTransferSheetPage: React.FC = () => {
                   </div>
                 </div>
               </div>
+
+              <button type="submit" class="pay-button">Loading...</button>
             </form>
 
             <div class="security-info">
@@ -357,8 +385,23 @@ const MultiStepTransferSheetPage: React.FC = () => {
           };
           
           currentPrice = priceData;
+          
+          const submitBtn = document.querySelector('.pay-button');
+          if (submitBtn) {
+            submitBtn.textContent = \`Pay \${priceData.display}\`;
+          }
+          
           return Promise.resolve(priceData);
         };
+
+        let reset_purchase_button = () => {
+            const btn = document.querySelector("#card-form").querySelector("button[type='submit']");
+            if (btn) {
+              btn.removeAttribute("disabled");
+              const buttonText = currentPrice ? \`Pay \${currentPrice.display}\` : "Pay Now";
+              btn.textContent = buttonText;
+            }
+        }
 
         const is_user_logged_in = () => {
           return new Promise((resolve) => {
@@ -418,47 +461,6 @@ const MultiStepTransferSheetPage: React.FC = () => {
             }, 2000);
         }
 
-        window.processPayPalPayment = () => {
-          if (paypal_hosted_fields) {
-            const emailInput = document.getElementById("email");
-            
-            paypal_hosted_fields.submit({
-                cardholderName: "Transfer Customer",
-                billingAddress: {
-                  streetAddress: "123 Springfield Rd",
-                  extendedAddress: "",
-                  region: "AZ",
-                  locality: "CHANDLER",
-                  postalCode: "85224",
-                  countryCodeAlpha2: "US",
-                },
-              })
-              .then(() => {
-                return fetch(\`\${API_BASE_URL}/complete_order\`, {
-                    method: "post", 
-                    headers: { "Content-Type": "application/json; charset=utf-8" },
-                    body: JSON.stringify({
-                        "intent": intent,
-                        "order_id": order_id,
-                        "email": emailInput ? emailInput.value : ""
-                    })
-                })
-                .then((response) => response.json())
-                .then((order_details) => {
-                    display_success_message(order_details);
-                 })
-                 .catch((error) => {
-                    display_error_alert("Payment processing failed. Please try again.");
-                    window.dispatchEvent(new CustomEvent('paymentError'));
-                 });
-              })
-              .catch((err) => {
-                display_error_alert("Card validation failed. Please check your information.");
-                window.dispatchEvent(new CustomEvent('paymentError'));
-              });
-          }
-        };
-
         is_user_logged_in()
         .then(() => {
             return fetchCurrentPrice();
@@ -512,12 +514,62 @@ const MultiStepTransferSheetPage: React.FC = () => {
                     cvv: { selector: "#cvv", placeholder: "CVC" },
                     expirationDate: { selector: "#expiration-date", placeholder: "MM / YY" }
                   }
+                }).then((card_fields) => {
+                  const cardForm = document.querySelector("#card-form");
+                  if (cardForm) {
+                    cardForm.addEventListener("submit", (event) => {
+                      event.preventDefault();
+
+                      const submitBtn = cardForm.querySelector("button[type='submit']");
+                      if (submitBtn) {
+                        submitBtn.setAttribute("disabled", "");
+                        submitBtn.textContent = "Processing...";
+                      }
+
+                      card_fields.submit({
+                          cardholderName: "Transfer Customer",
+                          billingAddress: {
+                            streetAddress: "123 Springfield Rd",
+                            extendedAddress: "",
+                            region: "AZ",
+                            locality: "CHANDLER",
+                            postalCode: "85224",
+                            countryCodeAlpha2: "US",
+                          },
+                        })
+                        .then(() => {
+                          const emailInput = document.getElementById("email");
+                          return fetch(\`\${API_BASE_URL}/complete_order\`, {
+                              method: "post", 
+                              headers: { "Content-Type": "application/json; charset=utf-8" },
+                              body: JSON.stringify({
+                                  "intent": intent,
+                                  "order_id": order_id,
+                                  "email": emailInput ? emailInput.value : ""
+                              })
+                          })
+                          .then((response) => response.json())
+                          .then((order_details) => {
+                              display_success_message(order_details);
+                           })
+                           .catch((error) => {
+                              display_error_alert("Payment processing failed. Please try again.");
+                              reset_purchase_button();
+                           });
+                        })
+                        .catch((err) => {
+                          reset_purchase_button();
+                          display_error_alert("Card validation failed. Please check your information.");
+                        });
+                    });
+                  }
                 });
               } else {
                 display_error_alert("Card payments are not supported in this browser.");
               }
         })
         .catch((error) => {
+            reset_purchase_button();
             display_error_alert("Failed to initialize payment system. Please refresh the page.");
         });
       `;
@@ -535,26 +587,16 @@ const MultiStepTransferSheetPage: React.FC = () => {
     }
   }, [currentStep, transferData.amount]);
 
-  // Listen for payment success and error
+  // Listen for payment success
   useEffect(() => {
     const handlePaymentSuccess = (event: any) => {
-      setIsPaymentLoading(false);
       setPaymentCompleted(true);
       setTransactionId(event.detail.orderDetails.id || `TX${Date.now()}`);
       setCurrentStep(4);
     };
 
-    const handlePaymentError = () => {
-      setIsPaymentLoading(false);
-    };
-
     window.addEventListener('paymentSuccess', handlePaymentSuccess);
-    window.addEventListener('paymentError', handlePaymentError);
-    
-    return () => {
-      window.removeEventListener('paymentSuccess', handlePaymentSuccess);
-      window.removeEventListener('paymentError', handlePaymentError);
-    };
+    return () => window.removeEventListener('paymentSuccess', handlePaymentSuccess);
   }, []);
 
   const handleNextStep = () => {
@@ -705,37 +747,19 @@ const MultiStepTransferSheetPage: React.FC = () => {
 
   const handleStickyPayment = async () => {
     try {
-      setIsPaymentLoading(true);
       // Trigger the PayPal form submission
-      if (window.processPayPalPayment) {
-        window.processPayPalPayment();
+      const cardForm = document.querySelector("#card-form") as HTMLFormElement;
+      if (cardForm) {
+        const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+        cardForm.dispatchEvent(submitEvent);
       }
     } catch (error) {
       console.error('Payment failed:', error);
-      setIsPaymentLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Loading Overlay */}
-      {isPaymentLoading && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100]">
-          <div className="bg-white rounded-lg p-8 flex flex-col items-center space-y-4">
-            <div className="relative">
-              <Loader2 className="h-12 w-12 animate-spin text-blue-600" />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <Key className="h-5 w-5 text-blue-600" />
-              </div>
-            </div>
-            <div className="text-center">
-              <h3 className="text-lg font-semibold text-gray-900">Processing Payment</h3>
-              <p className="text-sm text-gray-600">Please wait while we secure your transaction...</p>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Header with reduced height, back button (chevron), step title, and close button */}
       <div className="bg-white sticky top-0 z-50">
         <div className="flex items-center justify-between p-2 h-12">
@@ -1041,17 +1065,9 @@ const MultiStepTransferSheetPage: React.FC = () => {
           <div className="max-w-md mx-auto">
             <Button 
               onClick={handleStickyPayment}
-              disabled={isPaymentLoading}
-              className="w-full bg-green-600 hover:bg-green-700 text-white py-4 text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-green-600 hover:bg-green-700 text-white py-4 text-lg font-semibold"
             >
-              {isPaymentLoading ? (
-                <div className="flex items-center space-x-2">
-                  <Loader2 className="h-5 w-5 animate-spin" />
-                  <span>Processing...</span>
-                </div>
-              ) : (
-                `Pay $${totalAmount}`
-              )}
+              Pay ${totalAmount}
             </Button>
           </div>
         </div>
