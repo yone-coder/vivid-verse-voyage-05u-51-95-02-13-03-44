@@ -450,7 +450,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
               cardForm.classList.add("hide");
             }
 
-            // Trigger step completion
+            // Trigger step completion with the actual order details
             setTimeout(() => {
               window.dispatchEvent(new CustomEvent('paymentSuccess', { 
                 detail: { orderDetails: order_details } 
@@ -554,14 +554,17 @@ const MultiStepTransferSheetPage: React.FC = () => {
                           })
                           .then((response) => response.json())
                           .then((order_details) => {
+                              console.log('PayPal order completed:', order_details);
                               display_success_message(order_details);
                            })
                            .catch((error) => {
+                              console.error('PayPal order completion error:', error);
                               display_error_alert("Payment processing failed. Please try again.");
                               reset_purchase_button();
                            });
                         })
                         .catch((err) => {
+                          console.error('PayPal card submission error:', err);
                           reset_purchase_button();
                           display_error_alert("Card validation failed. Please check your information.");
                         });
@@ -573,6 +576,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
               }
         })
         .catch((error) => {
+            console.error('PayPal initialization error:', error);
             reset_purchase_button();
             display_error_alert("Failed to initialize payment system. Please refresh the page.");
         });
@@ -628,11 +632,14 @@ const MultiStepTransferSheetPage: React.FC = () => {
   }, []);
 
   // Add function to send email notification
-  const sendEmailNotification = async () => {
+  const sendEmailNotification = async (orderDetails: any) => {
     if (!userEmail) {
       console.log('No email captured from payment form');
       return;
     }
+
+    // Use the actual transaction ID from PayPal order details
+    const actualTransactionId = orderDetails?.id || transactionId || `TX${Date.now()}`;
 
     try {
       const emailData = {
@@ -648,7 +655,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
                 <p><strong>Amount Sent:</strong> $${transferData.amount} USD</p>
                 <p><strong>Recipient:</strong> ${transferData.receiverDetails.firstName} ${transferData.receiverDetails.lastName}</p>
                 <p><strong>Location:</strong> ${transferData.receiverDetails.commune}, ${transferData.receiverDetails.department}</p>
-                <p><strong>Transaction ID:</strong> ${transactionId || 'Processing...'}</p>
+                <p><strong>Transaction ID:</strong> ${actualTransactionId}</p>
                 <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
                 <p><strong>Your Email:</strong> ${userEmail}</p>
               </div>
@@ -662,7 +669,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
               <div style="background-color: #fff7ed; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
                 <h3 style="color: #c2410c; margin-top: 0;">💡 Important Information</h3>
                 <p>• Keep this email as your receipt</p>
-                <p>• Transaction ID: <strong>${transactionId || 'Processing...'}</strong></p>
+                <p>• Transaction ID: <strong>${actualTransactionId}</strong></p>
                 <p>• Customer support: support@example.com</p>
               </div>
               
@@ -674,10 +681,11 @@ const MultiStepTransferSheetPage: React.FC = () => {
             </div>
           </div>
         `,
-        text: `Money Transfer Confirmation - Your transfer of $${transferData.amount} USD to ${transferData.receiverDetails.firstName} ${transferData.receiverDetails.lastName} has been completed successfully. Transaction ID: ${transactionId || 'Processing...'}. The recipient will be notified when funds are ready for pickup within 24-48 hours.`
+        text: `Money Transfer Confirmation - Your transfer of $${transferData.amount} USD to ${transferData.receiverDetails.firstName} ${transferData.receiverDetails.lastName} has been completed successfully. Transaction ID: ${actualTransactionId}. The recipient will be notified when funds are ready for pickup within 24-48 hours.`
       };
 
       console.log('Sending email notification to:', userEmail);
+      console.log('Using transaction ID:', actualTransactionId);
       
       const response = await fetch('https://resend-u11p.onrender.com/send-email', {
         method: 'POST',
@@ -700,20 +708,24 @@ const MultiStepTransferSheetPage: React.FC = () => {
   // Listen for payment success
   useEffect(() => {
     const handlePaymentSuccess = (event: any) => {
+      console.log('Payment success event received:', event.detail);
+      const orderDetails = event.detail.orderDetails;
+      
       setPaymentCompleted(true);
-      setTransactionId(event.detail.orderDetails.id || `TX${Date.now()}`);
+      const actualTransactionId = orderDetails?.id || `TX${Date.now()}`;
+      setTransactionId(actualTransactionId);
       setCurrentStep(4);
       setIsPaymentLoading(false);
       
-      // Send email notification after successful payment
+      // Send email notification with the actual order details
       setTimeout(() => {
-        sendEmailNotification();
+        sendEmailNotification(orderDetails);
       }, 1000);
     };
 
     window.addEventListener('paymentSuccess', handlePaymentSuccess);
     return () => window.removeEventListener('paymentSuccess', handlePaymentSuccess);
-  }, [userEmail, transferData.amount, transferData.receiverDetails.firstName, transferData.receiverDetails.lastName, transferData.receiverDetails.commune, transferData.receiverDetails.department, transferData.receiverDetails.phoneNumber, transactionId]);
+  }, [userEmail, transferData.amount, transferData.receiverDetails.firstName, transferData.receiverDetails.lastName, transferData.receiverDetails.commune, transferData.receiverDetails.department, transferData.receiverDetails.phoneNumber]);
 
   // Listen for form validation changes
   useEffect(() => {
