@@ -19,6 +19,7 @@ export interface TransferData {
     phoneNumber: string;
     department: string;
     commune: string;
+    email?: string; // Add optional email field
   };
   selectedPaymentMethod?: string;
 }
@@ -41,6 +42,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
       phoneNumber: '',
       department: 'Artibonite',
       commune: '',
+      email: '', // Add email field
     },
     selectedPaymentMethod: 'credit-card'
   });
@@ -607,6 +609,68 @@ const MultiStepTransferSheetPage: React.FC = () => {
     }
   }, [currentStep, transferData.amount]);
 
+  // Add function to send email notification
+  const sendEmailNotification = async () => {
+    if (!transferData.receiverDetails.email) {
+      console.log('No email provided for receiver');
+      return;
+    }
+
+    try {
+      const emailData = {
+        to: transferData.receiverDetails.email,
+        subject: "Money Transfer Notification - Funds Received",
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
+            <div style="background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+              <h1 style="color: #10b981; text-align: center; margin-bottom: 30px;">💰 Money Transfer Received!</h1>
+              
+              <div style="background-color: #f0f9ff; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                <h2 style="color: #1e40af; margin-top: 0;">Transfer Details</h2>
+                <p><strong>Amount:</strong> $${transferData.amount} USD</p>
+                <p><strong>Recipient:</strong> ${transferData.receiverDetails.firstName} ${transferData.receiverDetails.lastName}</p>
+                <p><strong>Location:</strong> ${transferData.receiverDetails.commune}, ${transferData.receiverDetails.department}</p>
+                <p><strong>Transaction ID:</strong> ${transactionId || 'Processing...'}</p>
+                <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
+              </div>
+              
+              <div style="background-color: #ecfdf5; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                <h3 style="color: #065f46; margin-top: 0;">📱 Next Steps</h3>
+                <p>Your money transfer is being processed and will be available for pickup within 24-48 hours.</p>
+                <p>You will receive an SMS notification at <strong>+509 ${transferData.receiverDetails.phoneNumber}</strong> when the funds are ready.</p>
+              </div>
+              
+              <div style="text-align: center; margin-top: 30px;">
+                <p style="color: #6b7280; font-size: 14px;">
+                  This is an automated notification. Please keep this email for your records.
+                </p>
+              </div>
+            </div>
+          </div>
+        `,
+        text: `Money Transfer Notification - You have received $${transferData.amount} USD from a money transfer. Recipient: ${transferData.receiverDetails.firstName} ${transferData.receiverDetails.lastName}. Location: ${transferData.receiverDetails.commune}, ${transferData.receiverDetails.department}. Transaction ID: ${transactionId || 'Processing...'}. The funds will be available for pickup within 24-48 hours.`
+      };
+
+      console.log('Sending email notification to:', transferData.receiverDetails.email);
+      
+      const response = await fetch('https://resend-u11p.onrender.com/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(emailData)
+      });
+
+      if (response.ok) {
+        console.log('Email notification sent successfully');
+      } else {
+        console.error('Failed to send email notification');
+      }
+    } catch (error) {
+      console.error('Error sending email notification:', error);
+    }
+  };
+
   // Listen for payment success
   useEffect(() => {
     const handlePaymentSuccess = (event: any) => {
@@ -614,11 +678,16 @@ const MultiStepTransferSheetPage: React.FC = () => {
       setTransactionId(event.detail.orderDetails.id || `TX${Date.now()}`);
       setCurrentStep(4);
       setIsPaymentLoading(false);
+      
+      // Send email notification after successful payment
+      setTimeout(() => {
+        sendEmailNotification();
+      }, 1000);
     };
 
     window.addEventListener('paymentSuccess', handlePaymentSuccess);
     return () => window.removeEventListener('paymentSuccess', handlePaymentSuccess);
-  }, []);
+  }, [transferData.receiverDetails.email, transferData.amount, transferData.receiverDetails.firstName, transferData.receiverDetails.lastName, transferData.receiverDetails.commune, transferData.receiverDetails.department, transferData.receiverDetails.phoneNumber, transactionId]);
 
   // Listen for form validation changes
   useEffect(() => {
