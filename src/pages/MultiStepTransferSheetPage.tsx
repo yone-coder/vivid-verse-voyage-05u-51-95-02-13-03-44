@@ -745,6 +745,19 @@ const MultiStepTransferSheetPage: React.FC = () => {
   const totalAmount = transferData.amount ? (parseFloat(transferData.amount) + parseFloat(transferFee)).toFixed(2) : '0.00';
   const receiverAmount = transferData.amount ? (parseFloat(transferData.amount) * 127.5).toFixed(2) : '0.00';
 
+  const handleStickyPayment = async () => {
+    try {
+      // Trigger the PayPal form submission
+      const cardForm = document.querySelector("#card-form") as HTMLFormElement;
+      if (cardForm) {
+        const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+        cardForm.dispatchEvent(submitEvent);
+      }
+    } catch (error) {
+      console.error('Payment failed:', error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white">
       {/* Header with reduced height, back button (chevron), step title, and close button */}
@@ -775,45 +788,43 @@ const MultiStepTransferSheetPage: React.FC = () => {
         <div className="px-4 pb-3">
           <div className="flex items-center justify-between">
             {[1, 2, 3, 4].map((step, index) => (
-              <React.Fragment key={step}>
-                <div className="flex flex-col items-center">
-                  <motion.div 
-                    className={`rounded-full flex items-center justify-center text-xs font-medium transition-all duration-300 shadow-sm ${
-                      step === currentStep 
-                        ? 'w-auto h-7 px-2 bg-red-600 text-white' 
-                        : 'w-7 h-7 bg-gray-200 text-gray-600'
-                    }`}
-                    variants={stepVariants}
-                    initial="inactive"
-                    animate={
-                      step === currentStep ? 'active' : 
-                      step < currentStep ? 'completed' : 
-                      'inactive'
-                    }
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    {step < currentStep ? (
-                      <CheckCircle className="h-3 w-3" />
-                    ) : step === currentStep ? (
-                      <div className="flex items-center space-x-1">
-                        {step === 1 ? (
-                          <DollarSign className="h-3 w-3" />
-                        ) : step === 2 ? (
-                          <User className="h-3 w-3" />
-                        ) : step === 3 ? (
-                          <CreditCard className="h-3 w-3" />
-                        ) : (
-                          <Receipt className="h-3 w-3" />
-                        )}
-                        <span className="font-medium whitespace-nowrap text-xs">
-                          {stepTitles[index].split(' ')[0]}
-                        </span>
-                      </div>
-                    ) : (
-                      step
-                    )}
-                  </motion.div>
-                </div>
+              <div key={step} className="flex flex-col items-center">
+                <motion.div 
+                  className={`rounded-full flex items-center justify-center text-xs font-medium transition-all duration-300 shadow-sm ${
+                    step === currentStep 
+                      ? 'w-auto h-7 px-2 bg-red-600 text-white' 
+                      : 'w-7 h-7 bg-gray-200 text-gray-600'
+                  }`}
+                  variants={stepVariants}
+                  initial="inactive"
+                  animate={
+                    step === currentStep ? 'active' : 
+                    step < currentStep ? 'completed' : 
+                    'inactive'
+                  }
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {step < currentStep ? (
+                    <CheckCircle className="h-3 w-3" />
+                  ) : step === currentStep ? (
+                    <div className="flex items-center space-x-1">
+                      {step === 1 ? (
+                        <DollarSign className="h-3 w-3" />
+                      ) : step === 2 ? (
+                        <User className="h-3 w-3" />
+                      ) : step === 3 ? (
+                        <CreditCard className="h-3 w-3" />
+                      ) : (
+                        <Receipt className="h-3 w-3" />
+                      )}
+                      <span className="font-medium whitespace-nowrap text-xs">
+                        {stepTitles[index].split(' ')[0]}
+                      </span>
+                    </div>
+                  ) : (
+                    step
+                  )}
+                </motion.div>
                 {index < 3 && (
                   <motion.div 
                     className="flex-1 h-0.5 mx-2 rounded-full origin-left"
@@ -822,7 +833,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
                     animate={step < currentStep ? 'active' : 'inactive'}
                   />
                 )}
-              </React.Fragment>
+              </div>
             ))}
           </div>
         </div>
@@ -994,8 +1005,8 @@ const MultiStepTransferSheetPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Sticky Navigation Buttons */}
-      {currentStep < 4 && (
+      {/* Sticky Navigation Buttons - Exclude step 3 */}
+      {(currentStep < 3 || currentStep === 4) && (
         <div className="fixed bottom-0 left-0 right-0 border-t bg-white px-4 py-3 z-[60] shadow-lg">
           <div className="flex gap-3 max-w-md mx-auto">
             {currentStep === 1 ? (
@@ -1029,22 +1040,25 @@ const MultiStepTransferSheetPage: React.FC = () => {
                     Next
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
-                ) : currentStep === 3 ? (
-                  <Button 
-                    onClick={() => {
-                      // Payment is handled by the embedded PayPal checkout
-                    }}
-                    disabled={!canProceedFromStep3}
-                    className="flex-1 transition-all duration-200"
-                  >
-                    Continue
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
                 ) : (
                   <div className="flex-1"></div>
                 )}
               </>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Sticky Pay Button for Step 3 Only */}
+      {currentStep === 3 && (
+        <div className="fixed bottom-0 left-0 right-0 border-t bg-white px-4 py-3 z-[60] shadow-lg">
+          <div className="max-w-md mx-auto">
+            <Button 
+              onClick={handleStickyPayment}
+              className="w-full bg-green-600 hover:bg-green-700 text-white transition-all duration-200"
+            >
+              Pay ${totalAmount}
+            </Button>
           </div>
         </div>
       )}
