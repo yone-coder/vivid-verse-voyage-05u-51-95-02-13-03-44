@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import html2canvas from 'html2canvas';
 import StepOneTransfer from '@/components/transfer/StepOneTransfer';
 import StepTwoTransfer from '@/components/transfer/StepTwoTransfer';
+import { toast } from "sonner";
 
 export interface TransferData {
   amount: string;
@@ -667,6 +668,108 @@ const MultiStepTransferSheetDesktopPage: React.FC = () => {
     setTransferData(prev => ({ ...prev, ...data }));
   };
 
+  const downloadReceiptImage = async () => {
+    if (!receiptRef.current) {
+      toast.error("Receipt not found");
+      return;
+    }
+
+    try {
+      const canvas = await html2canvas(receiptRef.current, {
+        backgroundColor: '#ffffff',
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
+        height: receiptRef.current.scrollHeight,
+        width: receiptRef.current.scrollWidth,
+      });
+
+      // Create download link
+      const link = document.createElement('a');
+      link.download = `transfer-receipt-${transactionId || Date.now()}.png`;
+      link.href = canvas.toDataURL('image/png');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      toast.success("Receipt downloaded successfully");
+    } catch (error) {
+      console.error('Error downloading receipt:', error);
+      toast.error("Failed to download receipt");
+    }
+  };
+
+  const shareReceiptImage = async () => {
+    if (!receiptRef.current) {
+      toast.error("Receipt not found");
+      return;
+    }
+
+    try {
+      const canvas = await html2canvas(receiptRef.current, {
+        backgroundColor: '#ffffff',
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
+        height: receiptRef.current.scrollHeight,
+        width: receiptRef.current.scrollWidth,
+      });
+
+      // Convert canvas to blob
+      canvas.toBlob(async (blob) => {
+        if (!blob) {
+          toast.error("Failed to generate receipt image");
+          return;
+        }
+
+        const file = new File([blob], `transfer-receipt-${transactionId || Date.now()}.png`, { 
+          type: 'image/png' 
+        });
+
+        // Check if Web Share API is supported and can share files
+        if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share({
+              title: 'Money Transfer Receipt',
+              text: `Transfer of $${transferData.amount} to ${transferData.receiverDetails.firstName} ${transferData.receiverDetails.lastName} completed successfully.`,
+              files: [file]
+            });
+            toast.success("Receipt shared successfully");
+          } catch (shareError: any) {
+            if (shareError.name !== 'AbortError') {
+              console.error('Error sharing receipt:', shareError);
+              // Fallback to download
+              downloadReceiptImage();
+            }
+          }
+        } else {
+          // Fallback: copy transaction details to clipboard and download image
+          const receiptText = `Money Transfer Receipt
+Transaction ID: ${transactionId || 'N/A'}
+Amount: $${transferData.amount}
+Recipient: ${transferData.receiverDetails.firstName} ${transferData.receiverDetails.lastName}
+Location: ${transferData.receiverDetails.commune}, ${transferData.receiverDetails.department}
+Date: ${new Date().toLocaleDateString()}`;
+
+          try {
+            await navigator.clipboard.writeText(receiptText);
+            toast.success("Receipt details copied to clipboard");
+          } catch (clipboardError) {
+            console.error('Error copying to clipboard:', clipboardError);
+          }
+          
+          // Also download the image
+          downloadReceiptImage();
+        }
+      }, 'image/png');
+    } catch (error) {
+      console.error('Error generating receipt image:', error);
+      toast.error("Failed to share receipt");
+    }
+  };
+
   const canProceedFromStep1 = transferData.amount && parseFloat(transferData.amount) > 0;
   const canProceedFromStep2 = transferData.receiverDetails.firstName && 
                               transferData.receiverDetails.lastName &&
@@ -1057,11 +1160,11 @@ const MultiStepTransferSheetDesktopPage: React.FC = () => {
 
                     <div className="flex justify-between space-x-4 pt-6">
                       <div className="flex space-x-3">
-                        <Button variant="outline" size="lg">
+                        <Button variant="outline" size="lg" onClick={downloadReceiptImage}>
                           <Download className="mr-2 h-5 w-5" />
                           Download
                         </Button>
-                        <Button variant="outline" size="lg">
+                        <Button variant="outline" size="lg" onClick={shareReceiptImage}>
                           <Share2 className="mr-2 h-5 w-5" />
                           Share
                         </Button>
