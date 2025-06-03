@@ -10,7 +10,7 @@ const SpaceSavingCategories = () => {
   const TransferShortcut = () => (
     <div 
       className="flex flex-col items-center w-16 flex-shrink-0 active:opacity-80 transition-opacity touch-manipulation"
-      onClick={() => navigate('/transfer')}
+      onClick={() => navigate('/multi-step-transfer-page')}
     >
       <div className="relative w-14 h-14 rounded-lg overflow-hidden bg-green-100 shadow-sm flex items-center justify-center">
         <div className="bg-green-500 w-10 h-10 rounded-full flex items-center justify-center">
