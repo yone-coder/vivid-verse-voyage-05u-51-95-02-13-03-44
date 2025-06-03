@@ -784,66 +784,67 @@ const MultiStepTransferSheetPage: React.FC = () => {
           </button>
         </div>
         
-        {/* Animated Step Indicator with connecting lines */}
+        {/* Improved Step Indicator with better connecting lines */}
         <div className="px-4 pb-3">
           <div className="flex items-center justify-between relative">
+            {/* Background line */}
+            <div className="absolute top-[14px] left-0 right-0 h-0.5 bg-gray-200" />
+            
             {[1, 2, 3, 4].map((step, index) => (
-              <React.Fragment key={step}>
-                <div className="flex flex-col items-center relative z-10">
-                  <motion.div 
-                    className={`rounded-full flex items-center justify-center text-xs font-medium transition-all duration-300 shadow-sm ${
-                      step === currentStep 
-                        ? 'w-auto h-7 px-2 bg-red-600 text-white' 
-                        : step < currentStep
-                          ? 'w-7 h-7 bg-green-600 text-white'
-                          : 'w-7 h-7 bg-gray-200 text-gray-600'
-                    }`}
-                    variants={stepVariants}
-                    initial="inactive"
-                    animate={
-                      step === currentStep ? 'active' : 
-                      step < currentStep ? 'completed' : 
-                      'inactive'
-                    }
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    {step < currentStep ? (
-                      <CheckCircle className="h-3 w-3" />
-                    ) : step === currentStep ? (
-                      <div className="flex items-center space-x-1">
-                        {step === 1 ? (
-                          <DollarSign className="h-3 w-3" />
-                        ) : step === 2 ? (
-                          <User className="h-3 w-3" />
-                        ) : step === 3 ? (
-                          <CreditCard className="h-3 w-3" />
-                        ) : (
-                          <Receipt className="h-3 w-3" />
-                        )}
-                        <span className="font-medium whitespace-nowrap text-xs">
-                          {stepTitles[index].split(' ')[0]}
-                        </span>
-                      </div>
-                    ) : (
-                      step
-                    )}
-                  </motion.div>
-                </div>
+              <div key={step} className="flex flex-col items-center relative z-10">
+                <motion.div 
+                  className={`rounded-full flex items-center justify-center text-xs font-medium transition-all duration-300 shadow-sm ${
+                    step === currentStep 
+                      ? 'w-auto h-7 px-2 bg-red-600 text-white' 
+                      : step < currentStep
+                        ? 'w-7 h-7 bg-green-600 text-white'
+                        : 'w-7 h-7 bg-white border-2 border-gray-200 text-gray-600'
+                  }`}
+                  variants={stepVariants}
+                  initial="inactive"
+                  animate={
+                    step === currentStep ? 'active' : 
+                    step < currentStep ? 'completed' : 
+                    'inactive'
+                  }
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {step < currentStep ? (
+                    <CheckCircle className="h-3 w-3" />
+                  ) : step === currentStep ? (
+                    <div className="flex items-center space-x-1">
+                      {step === 1 ? (
+                        <DollarSign className="h-3 w-3" />
+                      ) : step === 2 ? (
+                        <User className="h-3 w-3" />
+                      ) : step === 3 ? (
+                        <CreditCard className="h-3 w-3" />
+                      ) : (
+                        <Receipt className="h-3 w-3" />
+                      )}
+                      <span className="font-medium whitespace-nowrap text-xs">
+                        {stepTitles[index].split(' ')[0]}
+                      </span>
+                    </div>
+                  ) : (
+                    step
+                  )}
+                </motion.div>
                 
-                {/* Connecting lines between steps */}
+                {/* Progress line segments between steps */}
                 {index < 3 && (
                   <motion.div 
-                    className="absolute top-[14px] h-0.5 bg-gray-200 z-0"
+                    className="absolute top-[14px] h-0.5 z-0"
                     style={{
-                      left: `${((index + 1) * 100) / 4 - 2}%`,
-                      width: `${100 / 4 + 4}%`,
+                      left: '14px',
+                      width: `calc(25% + 12px)`,
                     }}
                     variants={lineVariants}
                     initial="inactive"
                     animate={step < currentStep ? 'active' : 'inactive'}
                   />
                 )}
-              </React.Fragment>
+              </div>
             ))}
           </div>
         </div>
