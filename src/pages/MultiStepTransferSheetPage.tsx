@@ -79,10 +79,11 @@ const MultiStepTransferSheetPage: React.FC = () => {
 
         .checkout-container {
           width: 100%;
-          background: var(--bg-card);
-          border-radius: var(--border-radius-sm);
-          padding: 1.5rem;
-          box-shadow: var(--shadow);
+          background: transparent;
+          border: none;
+          border-radius: 0;
+          padding: 0;
+          box-shadow: none;
         }
 
         .payment-form {
@@ -107,20 +108,20 @@ const MultiStepTransferSheetPage: React.FC = () => {
           width: 100%;
           padding: 1rem 1.125rem;
           background: var(--bg-card);
-          border: 2px solid var(--border);
+          border: 1px solid var(--border);
           border-radius: var(--border-radius-sm);
           color: var(--text-primary);
           font-size: 1rem;
           font-family: inherit;
           font-weight: 500;
           transition: var(--transition);
-          box-shadow: var(--shadow-sm);
+          box-shadow: none;
         }
 
         .form-input:focus, .form-field:focus {
           outline: none;
           border-color: var(--border-focus);
-          box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1), var(--shadow);
+          box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
         .form-input::placeholder {
@@ -146,19 +147,19 @@ const MultiStepTransferSheetPage: React.FC = () => {
         .card-field {
           padding: 1rem 1.125rem;
           background: var(--bg-card);
-          border: 2px solid var(--border);
+          border: 1px solid var(--border);
           border-radius: var(--border-radius-sm);
           transition: var(--transition);
           min-height: 56px;
           display: flex;
           align-items: center;
           width: 100%;
-          box-shadow: var(--shadow-sm);
+          box-shadow: none;
         }
 
         .card-field:focus-within {
           border-color: var(--border-focus);
-          box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1), var(--shadow);
+          box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
         .card-field iframe {
@@ -199,6 +200,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
           margin-bottom: 1.5rem;
           font-size: 0.9rem;
           font-weight: 500;
+          border: none;
         }
 
         .alert-success {
