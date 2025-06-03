@@ -116,21 +116,21 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {/* Personal Information Card */}
-      <Card className="border-0 shadow-sm bg-white/80 backdrop-blur-sm">
-        <CardContent className="p-4">
-          <div className="flex items-center mb-3">
-            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-3">
-              <User className="h-4 w-4 text-blue-600" />
+      <Card className="border-0 shadow-lg bg-white rounded-2xl overflow-hidden">
+        <CardContent className="p-6">
+          <div className="flex items-center mb-6">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-red-500 to-red-600 flex items-center justify-center mr-4 shadow-lg">
+              <User className="h-5 w-5 text-white" />
             </div>
-            <h3 className="text-sm font-semibold text-gray-900">Personal Information</h3>
+            <h3 className="text-lg font-bold text-gray-900">Personal Information</h3>
           </div>
           
-          <div className="space-y-3">
-            <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="firstName" className="text-xs font-medium text-gray-700 mb-1">
+                <Label htmlFor="firstName" className="text-sm font-semibold text-gray-800 mb-2 block">
                   First Name
                 </Label>
                 <Input
@@ -139,11 +139,11 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({
                   value={receiverDetails.firstName}
                   onChange={(e) => handleInputChange('firstName', e.target.value)}
                   placeholder="Enter first name"
-                  className="h-11 border-gray-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                  className="h-12 border-2 border-gray-200 rounded-xl focus:border-red-500 focus:ring-2 focus:ring-red-100 transition-all duration-200 text-base font-medium"
                 />
               </div>
               <div>
-                <Label htmlFor="lastName" className="text-xs font-medium text-gray-700 mb-1">
+                <Label htmlFor="lastName" className="text-sm font-semibold text-gray-800 mb-2 block">
                   Last Name
                 </Label>
                 <Input
@@ -152,7 +152,7 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({
                   value={receiverDetails.lastName}
                   onChange={(e) => handleInputChange('lastName', e.target.value)}
                   placeholder="Enter last name"
-                  className="h-11 border-gray-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                  className="h-12 border-2 border-gray-200 rounded-xl focus:border-red-500 focus:ring-2 focus:ring-red-100 transition-all duration-200 text-base font-medium"
                 />
               </div>
             </div>
@@ -161,22 +161,22 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({
       </Card>
 
       {/* Contact Information Card */}
-      <Card className="border-0 shadow-sm bg-white/80 backdrop-blur-sm">
-        <CardContent className="p-4">
-          <div className="flex items-center mb-3">
-            <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center mr-3">
-              <Phone className="h-4 w-4 text-green-600" />
+      <Card className="border-0 shadow-lg bg-white rounded-2xl overflow-hidden">
+        <CardContent className="p-6">
+          <div className="flex items-center mb-6">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-green-500 to-green-600 flex items-center justify-center mr-4 shadow-lg">
+              <Phone className="h-5 w-5 text-white" />
             </div>
-            <h3 className="text-sm font-semibold text-gray-900">Contact Information</h3>
+            <h3 className="text-lg font-bold text-gray-900">Contact Information</h3>
           </div>
           
           <div>
-            <Label htmlFor="phoneNumber" className="text-xs font-medium text-gray-700 mb-1">
+            <Label htmlFor="phoneNumber" className="text-sm font-semibold text-gray-800 mb-2 block">
               Phone Number
             </Label>
-            <div className="flex">
-              <div className="flex items-center px-3 bg-gray-50 border border-r-0 border-gray-200 rounded-l-md">
-                <span className="text-sm text-gray-600">+509</span>
+            <div className="flex rounded-xl overflow-hidden border-2 border-gray-200 focus-within:border-red-500 focus-within:ring-2 focus-within:ring-red-100 transition-all duration-200">
+              <div className="flex items-center px-4 bg-gray-50 border-r border-gray-200">
+                <span className="text-base font-bold text-gray-700">+509</span>
               </div>
               <Input
                 id="phoneNumber"
@@ -184,7 +184,7 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({
                 value={receiverDetails.phoneNumber}
                 onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
                 placeholder="Enter phone number"
-                className="h-11 rounded-l-none border-gray-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                className="h-12 border-0 rounded-none focus:ring-0 focus:border-0 text-base font-medium"
               />
             </div>
           </div>
@@ -192,30 +192,30 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({
       </Card>
 
       {/* Location Information Card */}
-      <Card className="border-0 shadow-sm bg-white/80 backdrop-blur-sm">
-        <CardContent className="p-4">
-          <div className="flex items-center mb-3">
-            <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center mr-3">
-              <MapPin className="h-4 w-4 text-purple-600" />
+      <Card className="border-0 shadow-lg bg-white rounded-2xl overflow-hidden">
+        <CardContent className="p-6">
+          <div className="flex items-center mb-6">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-purple-600 flex items-center justify-center mr-4 shadow-lg">
+              <MapPin className="h-5 w-5 text-white" />
             </div>
-            <h3 className="text-sm font-semibold text-gray-900">Location Information</h3>
+            <h3 className="text-lg font-bold text-gray-900">Location Information</h3>
           </div>
           
-          <div className="space-y-3">
+          <div className="space-y-4">
             <div>
-              <Label htmlFor="department" className="text-xs font-medium text-gray-700 mb-1">
+              <Label htmlFor="department" className="text-sm font-semibold text-gray-800 mb-2 block">
                 Department
               </Label>
               <Select
                 value={receiverDetails.department}
                 onValueChange={(value) => handleInputChange('department', value)}
               >
-                <SelectTrigger className="h-11 border-gray-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                <SelectTrigger className="h-12 border-2 border-gray-200 rounded-xl focus:border-red-500 focus:ring-2 focus:ring-red-100 transition-all duration-200 text-base font-medium">
                   <SelectValue placeholder="Select department" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="rounded-xl border-2 border-gray-200 shadow-xl">
                   {Object.keys(haitiLocations).map((dept) => (
-                    <SelectItem key={dept} value={dept}>
+                    <SelectItem key={dept} value={dept} className="text-base font-medium hover:bg-red-50">
                       {dept}
                     </SelectItem>
                   ))}
@@ -224,7 +224,7 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({
             </div>
 
             <div>
-              <Label htmlFor="arrondissement" className="text-xs font-medium text-gray-700 mb-1">
+              <Label htmlFor="arrondissement" className="text-sm font-semibold text-gray-800 mb-2 block">
                 Arrondissement
               </Label>
               <Select
@@ -232,12 +232,12 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({
                 onValueChange={(value) => handleInputChange('arrondissement', value)}
                 disabled={!receiverDetails.department}
               >
-                <SelectTrigger className="h-11 border-gray-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                <SelectTrigger className="h-12 border-2 border-gray-200 rounded-xl focus:border-red-500 focus:ring-2 focus:ring-red-100 transition-all duration-200 text-base font-medium disabled:bg-gray-50 disabled:text-gray-400">
                   <SelectValue placeholder="Select arrondissement" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="rounded-xl border-2 border-gray-200 shadow-xl">
                   {getArrondissements().map((arr) => (
-                    <SelectItem key={arr} value={arr}>
+                    <SelectItem key={arr} value={arr} className="text-base font-medium hover:bg-red-50">
                       {arr}
                     </SelectItem>
                   ))}
@@ -246,7 +246,7 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({
             </div>
 
             <div>
-              <Label htmlFor="commune" className="text-xs font-medium text-gray-700 mb-1">
+              <Label htmlFor="commune" className="text-sm font-semibold text-gray-800 mb-2 block">
                 Commune
               </Label>
               <Select
@@ -254,12 +254,12 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({
                 onValueChange={(value) => handleInputChange('commune', value)}
                 disabled={!receiverDetails.arrondissement}
               >
-                <SelectTrigger className="h-11 border-gray-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                <SelectTrigger className="h-12 border-2 border-gray-200 rounded-xl focus:border-red-500 focus:ring-2 focus:ring-red-100 transition-all duration-200 text-base font-medium disabled:bg-gray-50 disabled:text-gray-400">
                   <SelectValue placeholder="Select commune" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="rounded-xl border-2 border-gray-200 shadow-xl">
                   {getCommunes().map((commune) => (
-                    <SelectItem key={commune} value={commune}>
+                    <SelectItem key={commune} value={commune} className="text-base font-medium hover:bg-red-50">
                       {commune}
                     </SelectItem>
                   ))}
