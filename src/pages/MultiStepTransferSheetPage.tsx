@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import html2canvas from 'html2canvas';
 import StepOneTransfer from '@/components/transfer/StepOneTransfer';
 import StepTwoTransfer from '@/components/transfer/StepTwoTransfer';
 import PaymentMethodList from '@/components/transfer/PaymentMethodList';
@@ -30,6 +31,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
   const [paymentCompleted, setPaymentCompleted] = useState(false);
   const [transactionId, setTransactionId] = useState('');
   const paypalContainerRef = useRef<HTMLDivElement>(null);
+  const receiptRef = useRef<HTMLDivElement>(null);
   
   const [transferData, setTransferData] = useState<TransferData>({
     amount: '100.00',
@@ -628,6 +630,68 @@ const MultiStepTransferSheetPage: React.FC = () => {
     setTransferData(prev => ({ ...prev, ...data }));
   };
 
+  const generateReceiptImage = async () => {
+    if (!receiptRef.current) return;
+
+    try {
+      const canvas = await html2canvas(receiptRef.current, {
+        backgroundColor: '#ffffff',
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        scrollX: 0,
+        scrollY: 0,
+      });
+
+      // Convert canvas to blob
+      canvas.toBlob(async (blob) => {
+        if (!blob) return;
+
+        const file = new File([blob], 'receipt.png', { type: 'image/png' });
+
+        if (navigator.share && navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share({
+              title: 'Transfer Receipt',
+              text: `Transfer of $${transferData.amount} to ${transferData.receiverDetails.firstName} ${transferData.receiverDetails.lastName} completed successfully. Transaction ID: ${transactionId}`,
+              files: [file]
+            });
+          } catch (error) {
+            console.log('Sharing cancelled or failed:', error);
+            // Fallback to downloading the image
+            downloadImage(canvas);
+          }
+        } else {
+          // Fallback to downloading the image
+          downloadImage(canvas);
+        }
+      }, 'image/png');
+    } catch (error) {
+      console.error('Error generating receipt image:', error);
+      // Fallback to text sharing
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: 'Transfer Receipt',
+            text: `Transfer of $${transferData.amount} to ${transferData.receiverDetails.firstName} ${transferData.receiverDetails.lastName} completed successfully. Transaction ID: ${transactionId}`,
+          });
+        } catch (shareError) {
+          console.log('Text sharing failed:', shareError);
+          navigator.clipboard?.writeText(`Transaction ID: ${transactionId}`);
+        }
+      } else {
+        navigator.clipboard?.writeText(`Transaction ID: ${transactionId}`);
+      }
+    }
+  };
+
+  const downloadImage = (canvas: HTMLCanvasElement) => {
+    const link = document.createElement('a');
+    link.download = `receipt-${transactionId}.png`;
+    link.href = canvas.toDataURL();
+    link.click();
+  };
+
   const canProceedFromStep1 = transferData.amount && parseFloat(transferData.amount) > 0;
   const canProceedFromStep2 = transferData.receiverDetails.firstName && 
                               transferData.receiverDetails.lastName &&
@@ -835,16 +899,11 @@ const MultiStepTransferSheetPage: React.FC = () => {
           )}
 
           {currentStep === 4 && (
-            <div className="space-y-4">
-              <div className="text-center mb-6">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <CheckCircle className="h-8 w-8 text-green-600" />
-                </div>
-                <p className="text-gray-600">Your money has been sent successfully</p>
-              </div>
-              
-              <div className="bg-white border-2 border-gray-200 rounded-lg p-6 space-y-4">
-                
+            <div className="space-y-4">              
+              <div 
+                ref={receiptRef}
+                className="bg-white border-2 border-gray-200 rounded-lg p-6 space-y-4"
+              >
                 <div className="flex items-center justify-between border-b pb-4">
                   <h3 className="text-lg font-semibold text-gray-900 flex items-center">
                     <Receipt className="h-5 w-5 mr-2" />
@@ -922,14 +981,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
               <div className="flex gap-3">
                 <Button 
                   variant="outline" 
-                  onClick={() => {
-                    navigator.share?.({
-                      title: 'Transfer Receipt',
-                      text: `Transfer of $${transferData.amount} to ${transferData.receiverDetails.firstName} ${transferData.receiverDetails.lastName} completed successfully. Transaction ID: ${transactionId}`,
-                    }).catch(() => {
-                      navigator.clipboard?.writeText(`Transaction ID: ${transactionId}`);
-                    });
-                  }}
+                  onClick={generateReceiptImage}
                   className="flex-1"
                 >
                   Share Receipt
