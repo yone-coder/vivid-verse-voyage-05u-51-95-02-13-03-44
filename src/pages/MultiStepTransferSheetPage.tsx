@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, Clock, CheckCircle, Receipt, ChevronLeft, X } from 'lucide-react';
+import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, Clock, CheckCircle, Receipt, ChevronLeft, X, Key } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -28,6 +28,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [paymentCompleted, setPaymentCompleted] = useState(false);
   const [transactionId, setTransactionId] = useState('');
+  const [isPaymentLoading, setIsPaymentLoading] = useState(false);
   const paypalContainerRef = useRef<HTMLDivElement>(null);
   const receiptRef = useRef<HTMLDivElement>(null);
   
@@ -169,28 +170,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
         }
 
         .pay-button {
-          width: 100%;
-          padding: 1rem 1.5rem;
-          background: var(--accent-primary);
-          color: white;
-          border: none;
-          border-radius: var(--border-radius-sm);
-          font-size: 1.1rem;
-          font-weight: 700;
-          cursor: pointer;
-          transition: var(--transition);
-          margin-top: 1rem;
-          font-family: inherit;
-          min-height: 56px;
-        }
-
-        .pay-button:hover:not(:disabled) {
-          transform: translateY(-2px);
-        }
-
-        .pay-button:disabled {
-          opacity: 0.7;
-          cursor: not-allowed;
+          display: none !important; /* Hide the form button since we have sticky button */
         }
 
         .alert {
@@ -334,7 +314,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
                 </div>
               </div>
 
-              <button type="submit" class="pay-button">Loading...</button>
+              <!-- Removed the pay button since it's duplicated in sticky footer -->
             </form>
 
             <div class="security-info">
@@ -593,6 +573,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
       setPaymentCompleted(true);
       setTransactionId(event.detail.orderDetails.id || `TX${Date.now()}`);
       setCurrentStep(4);
+      setIsPaymentLoading(false);
     };
 
     window.addEventListener('paymentSuccess', handlePaymentSuccess);
@@ -746,6 +727,8 @@ const MultiStepTransferSheetPage: React.FC = () => {
   const receiverAmount = transferData.amount ? (parseFloat(transferData.amount) * 127.5).toFixed(2) : '0.00';
 
   const handleStickyPayment = async () => {
+    setIsPaymentLoading(true);
+    
     try {
       // Trigger the PayPal form submission
       const cardForm = document.querySelector("#card-form") as HTMLFormElement;
@@ -755,11 +738,26 @@ const MultiStepTransferSheetPage: React.FC = () => {
       }
     } catch (error) {
       console.error('Payment failed:', error);
+      setIsPaymentLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen bg-white">
+      {/* Payment Loading Overlay */}
+      {isPaymentLoading && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-[100] flex items-center justify-center">
+          <div className="relative">
+            {/* Spinner */}
+            <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+            {/* Key Icon in the center */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Key className="w-6 h-6 text-white" />
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header with reduced height, back button (chevron), step title, and close button */}
       <div className="bg-white sticky top-0 z-50">
         <div className="flex items-center justify-between p-2 h-12">
@@ -1065,9 +1063,10 @@ const MultiStepTransferSheetPage: React.FC = () => {
           <div className="max-w-md mx-auto">
             <Button 
               onClick={handleStickyPayment}
-              className="w-full bg-green-600 hover:bg-green-700 text-white py-4 text-lg font-semibold"
+              disabled={isPaymentLoading}
+              className="w-full bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white py-4 text-lg font-semibold"
             >
-              Pay ${totalAmount}
+              {isPaymentLoading ? 'Processing...' : `Pay $${totalAmount}`}
             </Button>
           </div>
         </div>
