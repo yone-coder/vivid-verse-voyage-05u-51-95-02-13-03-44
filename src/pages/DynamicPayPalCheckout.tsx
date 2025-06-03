@@ -455,14 +455,12 @@ const DynamicPayPalCheckout: React.FC = () => {
           z-index: 1;
         }
 
-       
-       
         .checkout-card {
           background: var(--bg-glass);
           backdrop-filter: blur(20px);
           -webkit-backdrop-filter: blur(20px);
           border-radius: 0;
-          padding: 0;
+          padding: 2rem;
           box-shadow: none;
           border: none;
           position: relative;
