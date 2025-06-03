@@ -1,9 +1,15 @@
+
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, CheckCircle, Receipt, ChevronLeft, X, Key } from 'lucide-react';
+import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, CheckCircle, Receipt, ChevronLeft, X, Key, Clock, Star, TrendingUp, Users, Calculator, Eye, EyeOff, Download, Share2, Bookmark, History, Phone, Mail, MapPin, Calendar, Zap, RefreshCw, Globe, AlertCircle, Info } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { motion } from 'framer-motion';
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Progress } from "@/components/ui/progress";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import html2canvas from 'html2canvas';
 import StepOneTransfer from '@/components/transfer/StepOneTransfer';
@@ -23,6 +29,19 @@ export interface TransferData {
   selectedPaymentMethod?: string;
 }
 
+// Mock data for enhanced features
+const recentTransfers = [
+  { id: '1', name: 'Marie Dupont', amount: '150.00', date: '2024-01-15', status: 'completed' },
+  { id: '2', name: 'Jean Baptiste', amount: '200.00', date: '2024-01-12', status: 'completed' },
+  { id: '3', name: 'Rose Michel', amount: '75.00', date: '2024-01-10', status: 'completed' },
+];
+
+const favorites = [
+  { id: '1', name: 'Marie Dupont', phone: '+509 3456 7890', location: 'Port-au-Prince' },
+  { id: '2', name: 'Jean Baptiste', phone: '+509 2345 6789', location: 'Cap-Haïtien' },
+  { id: '3', name: 'Rose Michel', phone: '+509 4567 8901', location: 'Les Cayes' },
+];
+
 const MultiStepTransferSheetDesktopPage: React.FC = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
@@ -30,6 +49,8 @@ const MultiStepTransferSheetDesktopPage: React.FC = () => {
   const [transactionId, setTransactionId] = useState('');
   const [isPaymentLoading, setIsPaymentLoading] = useState(false);
   const [isPaymentFormValid, setIsPaymentFormValid] = useState(false);
+  const [showExchangeRate, setShowExchangeRate] = useState(true);
+  const [selectedTab, setSelectedTab] = useState('new');
   const paypalContainerRef = useRef<HTMLDivElement>(null);
   const receiptRef = useRef<HTMLDivElement>(null);
   
@@ -44,6 +65,15 @@ const MultiStepTransferSheetDesktopPage: React.FC = () => {
     },
     selectedPaymentMethod: 'credit-card'
   });
+
+  // Exchange rate and fees calculation
+  const exchangeRate = 127.5; // USD to HTG
+  const transferFee = transferData.amount ? (Math.ceil(parseFloat(transferData.amount) / 100) * 15).toFixed(2) : '0.00';
+  const totalAmount = transferData.amount ? (parseFloat(transferData.amount) + parseFloat(transferFee)).toFixed(2) : '0.00';
+  const receiverAmount = transferData.amount ? (parseFloat(transferData.amount) * exchangeRate).toFixed(2) : '0.00';
+
+  // Progress calculation
+  const progress = (currentStep / 4) * 100;
 
   // PayPal integration effect for step 3
   useEffect(() => {
@@ -667,6 +697,19 @@ const MultiStepTransferSheetDesktopPage: React.FC = () => {
     setTransferData(prev => ({ ...prev, ...data }));
   };
 
+  const selectFavorite = (favorite: any) => {
+    const [firstName, ...lastNameParts] = favorite.name.split(' ');
+    updateTransferData({
+      receiverDetails: {
+        ...transferData.receiverDetails,
+        firstName,
+        lastName: lastNameParts.join(' '),
+        phoneNumber: favorite.phone.replace('+509 ', ''),
+      }
+    });
+    setSelectedTab('new');
+  };
+
   const generateReceiptImage = async () => {
     if (!receiptRef.current) return;
 
@@ -777,10 +820,6 @@ const MultiStepTransferSheetDesktopPage: React.FC = () => {
     }
   };
 
-  const transferFee = transferData.amount ? (Math.ceil(parseFloat(transferData.amount) / 100) * 15).toFixed(2) : '0.00';
-  const totalAmount = transferData.amount ? (parseFloat(transferData.amount) + parseFloat(transferFee)).toFixed(2) : '0.00';
-  const receiverAmount = transferData.amount ? (parseFloat(transferData.amount) * 127.5).toFixed(2) : '0.00';
-
   const handleStickyPayment = async () => {
     setIsPaymentLoading(true);
     
@@ -797,59 +836,87 @@ const MultiStepTransferSheetDesktopPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       {/* Payment Loading Overlay */}
       {isPaymentLoading && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-[100] flex items-center justify-center">
-          <div className="relative">
-            <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <Key className="w-6 h-6 text-white" />
+          <div className="bg-white rounded-2xl p-8 flex flex-col items-center space-y-4 shadow-2xl">
+            <div className="relative">
+              <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Key className="w-6 h-6 text-blue-600" />
+              </div>
+            </div>
+            <div className="text-center">
+              <h3 className="text-lg font-semibold text-gray-900 mb-1">Processing Payment</h3>
+              <p className="text-gray-600">Please wait while we secure your transaction...</p>
             </div>
           </div>
         </div>
       )}
 
-      {/* Desktop Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-4xl mx-auto px-6 py-4">
+      {/* Enhanced Desktop Header */}
+      <div className="bg-white shadow-sm border-b sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <button 
-              onClick={handleBackClick}
-              className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
-            >
-              <ChevronLeft size={20} />
-              <span>Back</span>
-            </button>
+            <div className="flex items-center space-x-4">
+              <button 
+                onClick={handleBackClick}
+                className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors px-3 py-2 rounded-lg hover:bg-gray-100"
+              >
+                <ChevronLeft size={20} />
+                <span className="font-medium">Back</span>
+              </button>
+              
+              <div className="h-6 w-px bg-gray-300"></div>
+              
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                  <DollarSign className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-xl font-bold text-gray-900">{stepTitles[currentStep - 1]}</h1>
+                  <p className="text-sm text-gray-500">Step {currentStep} of 4</p>
+                </div>
+              </div>
+            </div>
             
-            <h1 className="text-2xl font-bold text-gray-900">
-              {stepTitles[currentStep - 1]}
-            </h1>
-            
-            <button 
-              onClick={handleCloseClick}
-              className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-            >
-              <X size={20} />
-            </button>
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2 text-sm text-gray-600">
+                <Clock className="w-4 h-4" />
+                <span>Session expires in 28:45</span>
+              </div>
+              
+              <button 
+                onClick={handleCloseClick}
+                className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+              >
+                <X size={20} />
+              </button>
+            </div>
+          </div>
+          
+          {/* Progress Bar */}
+          <div className="mt-4">
+            <Progress value={progress} className="h-2" />
           </div>
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-6 py-8">
-        {/* Desktop Step Indicator */}
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* Enhanced Step Indicator */}
         <div className="mb-8">
           <div className="flex items-center justify-center">
             {[1, 2, 3, 4].map((step, index) => (
               <React.Fragment key={step}>
                 <div className="flex flex-col items-center">
                   <motion.div 
-                    className={`rounded-full flex items-center justify-center font-medium transition-all duration-300 shadow-sm ${
+                    className={`rounded-full flex items-center justify-center font-medium transition-all duration-300 shadow-lg ${
                       step === currentStep 
-                        ? 'w-12 h-12 bg-red-600 text-white text-lg' 
+                        ? 'w-14 h-14 bg-red-600 text-white text-lg shadow-red-200' 
                         : step < currentStep
-                        ? 'w-10 h-10 bg-green-600 text-white'
-                        : 'w-10 h-10 bg-gray-200 text-gray-600'
+                        ? 'w-12 h-12 bg-green-600 text-white shadow-green-200'
+                        : 'w-12 h-12 bg-gray-200 text-gray-600'
                     }`}
                     variants={stepVariants}
                     initial="inactive"
@@ -858,25 +925,26 @@ const MultiStepTransferSheetDesktopPage: React.FC = () => {
                       step < currentStep ? 'completed' : 
                       'inactive'
                     }
+                    whileHover={{ scale: 1.1 }}
                   >
                     {step < currentStep ? (
-                      <CheckCircle className="h-5 w-5" />
+                      <CheckCircle className="h-6 w-6" />
                     ) : step === currentStep ? (
                       step === 1 ? (
-                        <DollarSign className="h-5 w-5" />
+                        <DollarSign className="h-6 w-6" />
                       ) : step === 2 ? (
-                        <User className="h-5 w-5" />
+                        <User className="h-6 w-6" />
                       ) : step === 3 ? (
-                        <CreditCard className="h-5 w-5" />
+                        <CreditCard className="h-6 w-6" />
                       ) : (
-                        <Receipt className="h-5 w-5" />
+                        <Receipt className="h-6 w-6" />
                       )
                     ) : (
                       step
                     )}
                   </motion.div>
                   <motion.span 
-                    className={`mt-2 text-sm font-medium ${
+                    className={`mt-3 text-sm font-semibold ${
                       step === currentStep ? 'text-red-600' : 
                       step < currentStep ? 'text-green-600' : 
                       'text-gray-500'
@@ -887,7 +955,7 @@ const MultiStepTransferSheetDesktopPage: React.FC = () => {
                 </div>
                 {index < 3 && (
                   <motion.div 
-                    className="w-24 h-0.5 mx-4 rounded-full origin-left"
+                    className="w-24 h-1 mx-6 rounded-full origin-left"
                     variants={lineVariants}
                     initial="inactive"
                     animate={step < currentStep ? 'active' : 'inactive'}
@@ -898,235 +966,542 @@ const MultiStepTransferSheetDesktopPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Main Content Area */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2">
-            <Card className="shadow-lg">
-              <CardContent className="p-8">
-                {currentStep === 1 && (
-                  <div className="space-y-6">
-                    <div className="text-center">
-                      <h2 className="text-xl font-semibold text-gray-900 mb-2">Enter Amount</h2>
-                      <p className="text-gray-600">How much would you like to send?</p>
-                    </div>
-                    
-                    <StepOneTransfer 
-                      amount={transferData.amount}
-                      onAmountChange={(amount) => updateTransferData({ amount })}
-                    />
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
+          {/* Left Sidebar - Enhanced for Desktop */}
+          <div className="xl:col-span-1 space-y-6">
+            {/* Quick Stats */}
+            <Card className="shadow-lg border-0 bg-gradient-to-br from-blue-50 to-indigo-50">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg flex items-center space-x-2">
+                  <TrendingUp className="w-5 h-5 text-blue-600" />
+                  <span>Quick Stats</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600">Current Rate</span>
+                  <div className="flex items-center space-x-1">
+                    <span className="font-bold text-green-600">127.5</span>
+                    <span className="text-xs text-gray-500">HTG/USD</span>
                   </div>
-                )}
-                
-                {currentStep === 2 && (
-                  <div className="space-y-6">
-                    <div className="text-center">
-                      <h2 className="text-xl font-semibold text-gray-900 mb-2">Recipient Details</h2>
-                      <p className="text-gray-600">Who are you sending ${transferData.amount} to?</p>
-                    </div>
-                    
-                    <StepTwoTransfer 
-                      receiverDetails={transferData.receiverDetails}
-                      onDetailsChange={(receiverDetails) => updateTransferData({ receiverDetails })}
-                    />
-                  </div>
-                )}
-                
-                {currentStep === 3 && (
-                  <div className="space-y-6">
-                    <div className="text-center">
-                      <h2 className="text-xl font-semibold text-gray-900 mb-2">Complete Your Payment</h2>
-                      <p className="text-gray-600">
-                        Sending <span className="font-semibold text-blue-600">${transferData.amount}</span> to{' '}
-                        <span className="font-semibold text-gray-900">
-                          {transferData.receiverDetails.firstName} {transferData.receiverDetails.lastName}
-                        </span>
-                      </p>
-                    </div>
-                    
-                    <div className="w-full">
-                      <Button 
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 text-lg font-semibold"
-                        onClick={() => {
-                          console.log('PayPal payment initiated');
-                        }}
-                      >
-                        Pay with PayPal
-                      </Button>
-                    </div>
-
-                    <div className="flex items-center justify-center space-x-4 my-6">
-                      <div className="flex-1 border-t border-gray-300"></div>
-                      <span className="text-gray-500 text-sm font-medium px-4">or continue with</span>
-                      <div className="flex-1 border-t border-gray-300"></div>
-                    </div>
-                    
-                    <div ref={paypalContainerRef}></div>
-                  </div>
-                )}
-                
-                {currentStep === 4 && (
-                  <div className="space-y-6">
-                    <div className="text-center">
-                      <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <CheckCircle className="h-8 w-8 text-green-600" />
-                      </div>
-                      <h2 className="text-xl font-semibold text-gray-900 mb-2">Transfer Complete!</h2>
-                      <p className="text-gray-600">Your money has been sent successfully</p>
-                    </div>
-                    
-                    <div 
-                      ref={receiptRef}
-                      className="bg-white border-2 border-gray-200 rounded-lg p-6 space-y-4"
-                    >
-                      <div className="flex items-center justify-between border-b pb-4">
-                        <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-                          <Receipt className="h-5 w-5 mr-2" />
-                          Receipt
-                        </h3>
-                        <span className="text-sm text-gray-500">
-                          {new Date().toLocaleDateString()}
-                        </span>
-                      </div>
-                      
-                      <div className="space-y-3">
-                        <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">Transaction ID</span>
-                          <span className="font-mono text-gray-900">{transactionId}</span>
-                        </div>
-                        
-                        <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">Status</span>
-                          <span className="text-green-600 font-medium">Completed</span>
-                        </div>
-                        
-                        <div className="border-t pt-3 space-y-2">
-                          <div className="flex justify-between text-sm">
-                            <span className="text-gray-600">Recipient</span>
-                            <span className="font-medium">{transferData.receiverDetails.firstName} {transferData.receiverDetails.lastName}</span>
-                          </div>
-                          <div className="flex justify-between text-sm">
-                            <span className="text-gray-600">Phone Number</span>
-                            <span className="font-medium">+509 {transferData.receiverDetails.phoneNumber}</span>
-                          </div>
-                          <div className="flex justify-between text-sm">
-                            <span className="text-gray-600">Location</span>
-                            <span className="font-medium text-right max-w-xs">{transferData.receiverDetails.commune}, {transferData.receiverDetails.department}</span>
-                          </div>
-                        </div>
-                        
-                        <div className="border-t pt-3 space-y-2">
-                          <div className="flex justify-between text-sm">
-                            <span className="text-gray-600">Amount Sent</span>
-                            <span className="font-medium">${transferData.amount}</span>
-                          </div>
-                          <div className="flex justify-between text-sm">
-                            <span className="text-gray-600">Transfer Fee</span>
-                            <span className="font-medium">${transferFee}</span>
-                          </div>
-                          <div className="flex justify-between text-lg font-semibold border-t pt-2">
-                            <span>Total Paid</span>
-                            <span className="text-blue-600">${totalAmount}</span>
-                          </div>
-                        </div>
-                        
-                        <div className="border-t pt-3">
-                          <div className="flex justify-between text-sm">
-                            <span className="text-gray-600">Payment Method</span>
-                            <span className="font-medium capitalize">
-                              {transferData.selectedPaymentMethod?.replace('-', ' ')}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="bg-green-50 rounded-lg p-4 mt-4">
-                        <div className="flex items-start space-x-3">
-                          <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
-                          <div>
-                            <h4 className="font-medium text-green-900">Delivery Information</h4>
-                            <p className="text-sm text-green-700 mt-1">
-                              The recipient will receive the funds within 24-48 hours. They will be notified via SMS when the money is ready for pickup.
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="flex gap-4 mt-6">
-                      <Button 
-                        variant="outline" 
-                        onClick={generateReceiptImage}
-                        className="flex-1"
-                      >
-                        Share Receipt
-                      </Button>
-                      <Button 
-                        onClick={() => navigate('/for-you')}
-                        className="flex-1"
-                      >
-                        Done
-                      </Button>
-                    </div>
-                  </div>
-                )}
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600">Transfers Today</span>
+                  <span className="font-semibold">247</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600">Avg. Delivery</span>
+                  <span className="font-semibold text-blue-600">2.4 hrs</span>
+                </div>
               </CardContent>
             </Card>
-          </div>
 
-          {/* Sidebar Summary */}
-          <div className="lg:col-span-1">
-            <Card className="shadow-lg sticky top-8">
-              <CardContent className="p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">Transfer Summary</h3>
-                
+            {/* Exchange Rate Card */}
+            <Card className="shadow-lg border-0">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <RefreshCw className="w-5 h-5 text-green-600" />
+                    <span>Exchange Rate</span>
+                  </div>
+                  <Button variant="ghost" size="sm" onClick={() => setShowExchangeRate(!showExchangeRate)}>
+                    {showExchangeRate ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </Button>
+                </CardTitle>
+              </CardHeader>
+              {showExchangeRate && (
+                <CardContent className="space-y-4">
+                  <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-lg">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium">1 USD =</span>
+                      <span className="text-lg font-bold text-green-600">127.5 HTG</span>
+                    </div>
+                    <div className="flex items-center text-xs text-green-600">
+                      <TrendingUp className="w-3 h-3 mr-1" />
+                      <span>+0.5% from yesterday</span>
+                    </div>
+                  </div>
+                  <div className="text-xs text-gray-500 text-center">
+                    Last updated: {new Date().toLocaleTimeString()}
+                  </div>
+                </CardContent>
+              )}
+            </Card>
+
+            {/* Recent Transfers */}
+            <Card className="shadow-lg border-0">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg flex items-center space-x-2">
+                  <History className="w-5 h-5 text-purple-600" />
+                  <span>Recent Transfers</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
                 <div className="space-y-3">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Amount</span>
-                    <span className="font-medium">${transferData.amount || '0.00'}</span>
-                  </div>
-                  
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Transfer Fee</span>
-                    <span className="font-medium">${transferFee}</span>
-                  </div>
-                  
-                  <Separator />
-                  
-                  <div className="flex justify-between font-semibold">
-                    <span>Total</span>
-                    <span className="text-blue-600">${totalAmount}</span>
-                  </div>
-                  
-                  {transferData.receiverDetails.firstName && (
-                    <>
-                      <Separator />
-                      <div className="space-y-2">
-                        <h4 className="font-medium text-gray-900">Recipient</h4>
-                        <p className="text-sm text-gray-600">
-                          {transferData.receiverDetails.firstName} {transferData.receiverDetails.lastName}
-                        </p>
-                        {transferData.receiverDetails.phoneNumber && (
-                          <p className="text-sm text-gray-600">
-                            +509 {transferData.receiverDetails.phoneNumber}
-                          </p>
-                        )}
+                  {recentTransfers.map((transfer) => (
+                    <div key={transfer.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <Avatar className="w-8 h-8">
+                          <AvatarFallback className="text-xs">
+                            {transfer.name.split(' ').map(n => n[0]).join('')}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <div className="font-medium text-sm">{transfer.name}</div>
+                          <div className="text-xs text-gray-500">{transfer.date}</div>
+                        </div>
                       </div>
-                    </>
-                  )}
+                      <div className="text-right">
+                        <div className="font-semibold text-sm">${transfer.amount}</div>
+                        <Badge variant="secondary" className="text-xs">
+                          {transfer.status}
+                        </Badge>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
           </div>
+
+          {/* Main Content */}
+          <div className="xl:col-span-2">
+            <Card className="shadow-xl border-0 bg-white">
+              <CardContent className="p-8">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={currentStep}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    {currentStep === 1 && (
+                      <div className="space-y-6">
+                        <div className="text-center">
+                          <h2 className="text-2xl font-bold text-gray-900 mb-2">Enter Amount</h2>
+                          <p className="text-gray-600">How much would you like to send to Haiti?</p>
+                        </div>
+                        
+                        <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full">
+                          <TabsList className="grid w-full grid-cols-2">
+                            <TabsTrigger value="new" className="flex items-center space-x-2">
+                              <DollarSign className="w-4 h-4" />
+                              <span>New Transfer</span>
+                            </TabsTrigger>
+                            <TabsTrigger value="favorites" className="flex items-center space-x-2">
+                              <Star className="w-4 h-4" />
+                              <span>Favorites</span>
+                            </TabsTrigger>
+                          </TabsList>
+                          
+                          <TabsContent value="new" className="mt-6">
+                            <StepOneTransfer 
+                              amount={transferData.amount}
+                              onAmountChange={(amount) => updateTransferData({ amount })}
+                            />
+                          </TabsContent>
+                          
+                          <TabsContent value="favorites" className="mt-6">
+                            <div className="space-y-4">
+                              <h3 className="font-semibold text-gray-900">Quick Send to Favorites</h3>
+                              {favorites.map((favorite) => (
+                                <div 
+                                  key={favorite.id}
+                                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
+                                  onClick={() => selectFavorite(favorite)}
+                                >
+                                  <div className="flex items-center space-x-3">
+                                    <Avatar className="w-10 h-10">
+                                      <AvatarFallback>
+                                        {favorite.name.split(' ').map(n => n[0]).join('')}
+                                      </AvatarFallback>
+                                    </Avatar>
+                                    <div>
+                                      <div className="font-medium">{favorite.name}</div>
+                                      <div className="text-sm text-gray-500 flex items-center space-x-4">
+                                        <span className="flex items-center space-x-1">
+                                          <Phone className="w-3 h-3" />
+                                          <span>{favorite.phone}</span>
+                                        </span>
+                                        <span className="flex items-center space-x-1">
+                                          <MapPin className="w-3 h-3" />
+                                          <span>{favorite.location}</span>
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <Button variant="outline" size="sm">
+                                    Select
+                                  </Button>
+                                </div>
+                              ))}
+                            </div>
+                          </TabsContent>
+                        </Tabs>
+                      </div>
+                    )}
+                    
+                    {currentStep === 2 && (
+                      <div className="space-y-6">
+                        <div className="text-center">
+                          <h2 className="text-2xl font-bold text-gray-900 mb-2">Recipient Details</h2>
+                          <p className="text-gray-600">
+                            Who are you sending <span className="font-semibold text-blue-600">${transferData.amount}</span> to?
+                          </p>
+                        </div>
+                        
+                        <Alert className="border-blue-200 bg-blue-50">
+                          <Info className="h-4 w-4 text-blue-600" />
+                          <AlertDescription className="text-blue-800">
+                            Make sure all recipient details are accurate to ensure successful delivery.
+                          </AlertDescription>
+                        </Alert>
+                        
+                        <StepTwoTransfer 
+                          receiverDetails={transferData.receiverDetails}
+                          onDetailsChange={(receiverDetails) => updateTransferData({ receiverDetails })}
+                        />
+                      </div>
+                    )}
+                    
+                    {currentStep === 3 && (
+                      <div className="space-y-6">
+                        <div className="text-center">
+                          <h2 className="text-2xl font-bold text-gray-900 mb-2">Complete Your Payment</h2>
+                          <p className="text-gray-600">
+                            Sending <span className="font-semibold text-blue-600">${transferData.amount}</span> to{' '}
+                            <span className="font-semibold text-gray-900">
+                              {transferData.receiverDetails.firstName} {transferData.receiverDetails.lastName}
+                            </span>
+                          </p>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                          <Alert className="border-green-200 bg-green-50">
+                            <Shield className="h-4 w-4 text-green-600" />
+                            <AlertDescription className="text-green-800">
+                              <div className="font-semibold">Secure Payment</div>
+                              <div className="text-sm">256-bit SSL encryption</div>
+                            </AlertDescription>
+                          </Alert>
+                          
+                          <Alert className="border-blue-200 bg-blue-50">
+                            <Zap className="h-4 w-4 text-blue-600" />
+                            <AlertDescription className="text-blue-800">
+                              <div className="font-semibold">Fast Delivery</div>
+                              <div className="text-sm">Usually within 2-4 hours</div>
+                            </AlertDescription>
+                          </Alert>
+                        </div>
+                        
+                        <div className="w-full">
+                          <Button 
+                            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 text-lg font-semibold mb-6"
+                            onClick={() => {
+                              console.log('PayPal payment initiated');
+                            }}
+                          >
+                            Pay with PayPal
+                          </Button>
+                        </div>
+
+                        <div className="flex items-center justify-center space-x-4 my-6">
+                          <div className="flex-1 border-t border-gray-300"></div>
+                          <span className="text-gray-500 text-sm font-medium px-4">or continue with card</span>
+                          <div className="flex-1 border-t border-gray-300"></div>
+                        </div>
+                        
+                        <div ref={paypalContainerRef}></div>
+                      </div>
+                    )}
+                    
+                    {currentStep === 4 && (
+                      <div className="space-y-6">
+                        <div className="text-center">
+                          <motion.div 
+                            className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4"
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            transition={{ type: "spring", stiffness: 260, damping: 20 }}
+                          >
+                            <CheckCircle className="h-10 w-10 text-green-600" />
+                          </motion.div>
+                          <h2 className="text-2xl font-bold text-gray-900 mb-2">Transfer Complete!</h2>
+                          <p className="text-gray-600">Your money has been sent successfully</p>
+                        </div>
+                        
+                        <div 
+                          ref={receiptRef}
+                          className="bg-white border-2 border-gray-200 rounded-xl p-6 space-y-4 shadow-lg"
+                        >
+                          <div className="flex items-center justify-between border-b pb-4">
+                            <h3 className="text-xl font-bold text-gray-900 flex items-center">
+                              <Receipt className="h-6 w-6 mr-2" />
+                              Transfer Receipt
+                            </h3>
+                            <div className="text-right">
+                              <div className="text-sm text-gray-500">
+                                {new Date().toLocaleDateString()}
+                              </div>
+                              <div className="text-xs text-gray-400">
+                                {new Date().toLocaleTimeString()}
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-3">
+                              <div>
+                                <div className="text-sm font-medium text-gray-500">Transaction ID</div>
+                                <div className="font-mono text-gray-900">{transactionId}</div>
+                              </div>
+                              
+                              <div>
+                                <div className="text-sm font-medium text-gray-500">Status</div>
+                                <Badge variant="secondary" className="bg-green-100 text-green-800">
+                                  <CheckCircle className="w-3 h-3 mr-1" />
+                                  Completed
+                                </Badge>
+                              </div>
+                              
+                              <div>
+                                <div className="text-sm font-medium text-gray-500">Payment Method</div>
+                                <div className="font-medium capitalize">
+                                  {transferData.selectedPaymentMethod?.replace('-', ' ')}
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <div className="space-y-3">
+                              <div>
+                                <div className="text-sm font-medium text-gray-500">Recipient</div>
+                                <div className="font-medium">
+                                  {transferData.receiverDetails.firstName} {transferData.receiverDetails.lastName}
+                                </div>
+                                <div className="text-sm text-gray-600">
+                                  +509 {transferData.receiverDetails.phoneNumber}
+                                </div>
+                              </div>
+                              
+                              <div>
+                                <div className="text-sm font-medium text-gray-500">Location</div>
+                                <div className="font-medium">
+                                  {transferData.receiverDetails.commune}, {transferData.receiverDetails.department}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <Separator />
+                          
+                          <div className="space-y-2">
+                            <div className="flex justify-between text-sm">
+                              <span className="text-gray-600">Amount Sent</span>
+                              <span className="font-medium">${transferData.amount}</span>
+                            </div>
+                            <div className="flex justify-between text-sm">
+                              <span className="text-gray-600">Transfer Fee</span>
+                              <span className="font-medium">${transferFee}</span>
+                            </div>
+                            <div className="flex justify-between text-sm">
+                              <span className="text-gray-600">Exchange Rate</span>
+                              <span className="font-medium">1 USD = {exchangeRate} HTG</span>
+                            </div>
+                            <div className="flex justify-between text-lg font-bold border-t pt-2">
+                              <span>Total Paid</span>
+                              <span className="text-blue-600">${totalAmount}</span>
+                            </div>
+                            <div className="flex justify-between text-sm border-t pt-2">
+                              <span className="text-gray-600">Recipient Receives</span>
+                              <span className="font-semibold text-green-600">{receiverAmount} HTG</span>
+                            </div>
+                          </div>
+                          
+                          <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-4 mt-4">
+                            <div className="flex items-start space-x-3">
+                              <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                              <div>
+                                <h4 className="font-semibold text-green-900">Delivery Information</h4>
+                                <p className="text-sm text-green-700 mt-1">
+                                  The recipient will receive the funds within 2-4 hours. They will be notified via SMS when the money is ready for pickup at their nearest agent location.
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                          <Button 
+                            variant="outline" 
+                            onClick={generateReceiptImage}
+                            className="flex items-center justify-center space-x-2"
+                          >
+                            <Share2 className="w-4 h-4" />
+                            <span>Share</span>
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            onClick={generateReceiptImage}
+                            className="flex items-center justify-center space-x-2"
+                          >
+                            <Download className="w-4 h-4" />
+                            <span>Download</span>
+                          </Button>
+                          <Button 
+                            onClick={() => navigate('/for-you')}
+                            className="flex items-center justify-center space-x-2"
+                          >
+                            <span>Done</span>
+                            <ArrowRight className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                  </motion.div>
+                </AnimatePresence>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Right Sidebar - Transfer Summary */}
+          <div className="xl:col-span-1">
+            <div className="sticky top-32 space-y-6">
+              {/* Transfer Summary */}
+              <Card className="shadow-lg border-0">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg flex items-center space-x-2">
+                    <Calculator className="w-5 h-5 text-blue-600" />
+                    <span>Transfer Summary</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-3">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">You Send</span>
+                      <span className="font-semibold">${transferData.amount || '0.00'}</span>
+                    </div>
+                    
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Transfer Fee</span>
+                      <span className="font-semibold">${transferFee}</span>
+                    </div>
+                    
+                    <Separator />
+                    
+                    <div className="flex justify-between font-bold text-lg">
+                      <span>Total Cost</span>
+                      <span className="text-blue-600">${totalAmount}</span>
+                    </div>
+                    
+                    <Separator />
+                    
+                    <div className="bg-green-50 p-3 rounded-lg">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium text-green-800">Recipient Gets</span>
+                        <span className="font-bold text-green-600">{receiverAmount} HTG</span>
+                      </div>
+                      <div className="text-xs text-green-600 mt-1">
+                        At rate: 1 USD = {exchangeRate} HTG
+                      </div>
+                    </div>
+                    
+                    {transferData.receiverDetails.firstName && (
+                      <>
+                        <Separator />
+                        <div className="space-y-2">
+                          <h4 className="font-semibold text-gray-900 flex items-center space-x-2">
+                            <User className="w-4 h-4" />
+                            <span>Recipient</span>
+                          </h4>
+                          <div className="bg-gray-50 p-3 rounded-lg">
+                            <div className="font-medium">
+                              {transferData.receiverDetails.firstName} {transferData.receiverDetails.lastName}
+                            </div>
+                            {transferData.receiverDetails.phoneNumber && (
+                              <div className="text-sm text-gray-600 flex items-center space-x-1 mt-1">
+                                <Phone className="w-3 h-3" />
+                                <span>+509 {transferData.receiverDetails.phoneNumber}</span>
+                              </div>
+                            )}
+                            {transferData.receiverDetails.commune && (
+                              <div className="text-sm text-gray-600 flex items-center space-x-1 mt-1">
+                                <MapPin className="w-3 h-3" />
+                                <span>{transferData.receiverDetails.commune}, {transferData.receiverDetails.department}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Security & Trust */}
+              <Card className="shadow-lg border-0 bg-gradient-to-br from-green-50 to-emerald-50">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg flex items-center space-x-2 text-green-800">
+                    <Shield className="w-5 h-5" />
+                    <span>Security & Trust</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex items-center space-x-2 text-sm text-green-700">
+                    <CheckCircle className="w-4 h-4" />
+                    <span>256-bit SSL encryption</span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-sm text-green-700">
+                    <CheckCircle className="w-4 h-4" />
+                    <span>Licensed money transmitter</span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-sm text-green-700">
+                    <CheckCircle className="w-4 h-4" />
+                    <span>24/7 fraud monitoring</span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-sm text-green-700">
+                    <CheckCircle className="w-4 h-4" />
+                    <span>Money-back guarantee</span>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Support */}
+              <Card className="shadow-lg border-0">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg flex items-center space-x-2">
+                    <Users className="w-5 h-5 text-purple-600" />
+                    <span>Need Help?</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <Button variant="outline" className="w-full justify-start" size="sm">
+                    <Phone className="w-4 h-4 mr-2" />
+                    Call Support
+                  </Button>
+                  <Button variant="outline" className="w-full justify-start" size="sm">
+                    <Mail className="w-4 h-4 mr-2" />
+                    Live Chat
+                  </Button>
+                  <Button variant="outline" className="w-full justify-start" size="sm">
+                    <Globe className="w-4 h-4 mr-2" />
+                    Help Center
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
         </div>
 
-        {/* Desktop Navigation */}
-        <div className="flex justify-between items-center mt-8">
+        {/* Enhanced Desktop Navigation */}
+        <div className="flex justify-between items-center mt-8 bg-white p-6 rounded-xl shadow-lg">
           {currentStep > 1 ? (
             <Button 
               variant="outline" 
               onClick={handlePreviousStep}
-              className="flex items-center space-x-2"
+              className="flex items-center space-x-2 px-6 py-3"
+              size="lg"
             >
               <ArrowLeft className="h-4 w-4" />
               <span>Previous</span>
@@ -1135,6 +1510,12 @@ const MultiStepTransferSheetDesktopPage: React.FC = () => {
             <div></div>
           )}
 
+          <div className="flex items-center space-x-4">
+            <span className="text-sm text-gray-500">
+              Step {currentStep} of 4
+            </span>
+          </div>
+
           {currentStep < 3 ? (
             <Button 
               onClick={handleNextStep}
@@ -1142,7 +1523,8 @@ const MultiStepTransferSheetDesktopPage: React.FC = () => {
                 (currentStep === 1 && !canProceedFromStep1) ||
                 (currentStep === 2 && !canProceedFromStep2)
               }
-              className="flex items-center space-x-2"
+              className="flex items-center space-x-2 px-6 py-3"
+              size="lg"
             >
               <span>Continue</span>
               <ArrowRight className="h-4 w-4" />
@@ -1151,16 +1533,25 @@ const MultiStepTransferSheetDesktopPage: React.FC = () => {
             <Button 
               onClick={handleStickyPayment}
               disabled={isPaymentLoading || !isPaymentFormValid}
-              className="bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white px-8 py-3"
+              className="bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white px-8 py-3 text-lg font-semibold"
+              size="lg"
             >
-              {isPaymentLoading ? 'Processing...' : `Pay $${totalAmount}`}
+              {isPaymentLoading ? (
+                <div className="flex items-center space-x-2">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <span>Processing...</span>
+                </div>
+              ) : (
+                `Pay $${totalAmount}`
+              )}
             </Button>
           ) : (
             <Button 
               onClick={() => navigate('/for-you')}
-              className="flex items-center space-x-2"
+              className="flex items-center space-x-2 px-6 py-3"
+              size="lg"
             >
-              <span>Done</span>
+              <span>Complete</span>
               <ArrowRight className="h-4 w-4" />
             </Button>
           )}
