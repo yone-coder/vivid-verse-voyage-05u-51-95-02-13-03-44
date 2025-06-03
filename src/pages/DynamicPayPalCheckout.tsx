@@ -715,15 +715,33 @@ const DynamicPayPalCheckout: React.FC = () => {
           display: flex;
           flex-direction: column;
           gap: 1.5rem;
+          margin: 0 auto;
         }
 
-        .spinner {
-          width: 40px;
-          height: 40px;
-          border: 3px solid rgba(102, 126, 234, 0.1);
-          border-top: 3px solid var(--accent-secondary);
-          border-radius: 50%;
-          animation: spin 1s linear infinite;
+        .skeleton-shimmer {
+          position: relative;
+          overflow: hidden;
+          background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+          background-size: 200% 100%;
+          animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+          0% {
+            background-position: -200% 0;
+          }
+          100% {
+            background-position: 200% 0;
+          }
+        }
+
+        .skeleton-card-row {
+          display: flex;
+          gap: 0.75rem;
+        }
+
+        .skeleton-card-row .skeleton-shimmer {
+          flex: 1;
         }
 
         .loading-text {
@@ -823,18 +841,34 @@ const DynamicPayPalCheckout: React.FC = () => {
           {/* Loading State */}
           <div id="loading" className="loading-container">
             <div className="skeleton-form">
-              <Skeleton className="h-4 w-32 mx-auto mb-4" />
-              <Skeleton className="h-12 w-full" />
-              <div className="space-y-3">
-                <Skeleton className="h-12 w-full" />
-                <div className="flex gap-3">
-                  <Skeleton className="h-12 flex-1" />
-                  <Skeleton className="h-12 flex-1" />
+              {/* Email field skeleton */}
+              <div className="form-group">
+                <div className="skeleton-shimmer h-4 w-24 mb-2 rounded"></div>
+                <div className="skeleton-shimmer h-12 w-full rounded-xl"></div>
+              </div>
+
+              {/* Card Information skeleton */}
+              <div className="form-group">
+                <div className="skeleton-shimmer h-4 w-32 mb-2 rounded"></div>
+                <div className="space-y-3">
+                  {/* Card number field */}
+                  <div className="skeleton-shimmer h-12 w-full rounded-xl"></div>
+                  {/* Expiry and CVC row */}
+                  <div className="skeleton-card-row">
+                    <div className="skeleton-shimmer h-12 rounded-xl"></div>
+                    <div className="skeleton-shimmer h-12 rounded-xl"></div>
+                  </div>
                 </div>
               </div>
-              <Skeleton className="h-12 w-full" />
+
+              {/* Pay button skeleton */}
+              <div className="skeleton-shimmer h-12 w-full rounded-xl mt-4"></div>
+
+              {/* Security info skeleton */}
+              <div className="mt-8 text-center">
+                <div className="skeleton-shimmer h-8 w-32 mx-auto rounded-full"></div>
+              </div>
             </div>
-            <div className="loading-text">Initializing secure payment...</div>
           </div>
 
           {/* Payment Form */}
