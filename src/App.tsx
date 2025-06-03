@@ -1,114 +1,57 @@
+
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { ThemeProvider } from "next-themes";
-import { AuthProvider } from "./context/AuthContext";
-import Index from "./pages/Index";
-import ForYou from "./pages/ForYou";
-import SearchPage from "./pages/SearchPage";
-import ProductDetail from "./pages/ProductDetail";
-import Posts from "./pages/Posts";
-import Videos from "./pages/Videos";
-import Reels from "./pages/Reels";
-import Trending from "./pages/Trending";
-import Messages from "./pages/Messages";
-import ProfilePage from "./pages/ProfilePage";
-import MoreMenu from "./pages/MoreMenu";
-import AuthPage from "./pages/AuthPage";
-import CategoriesPage from "./pages/CategoriesPage";
-import FashionPage from "./pages/FashionPage";
-import ElectronicsPage from "./pages/ElectronicsPage";
-import HomeLivingPage from "./pages/HomeLivingPage";
-import SportsOutdoorsPage from "./pages/SportsOutdoorsPage";
-import AutomotivePage from "./pages/AutomotivePage";
-import KidsHobbiesPage from "./pages/KidsHobbiesPage";
-import EntertainmentPage from "./pages/EntertainmentPage";
-import AdminPanel from "./pages/AdminPanel";
-import Checkout from "./pages/Checkout";
-import PayPalCheckout from "./pages/PayPalCheckout";
-import PayPalHostedCheckout from "./pages/PayPalHostedCheckout";
-import PayPalPayment from "./pages/PayPalPayment";
-import DynamicPayPalCheckout from "./pages/DynamicPayPalCheckout";
-import PayPalDepositPage from "./pages/PayPalDepositPage";
-import DepositPage from "./pages/DepositPage";
-import NFTPaymentPage from "./pages/NFTPaymentPage";
-import TopUpPage from "./pages/TopUpPage";
-import NetflixPage from "./pages/NetflixPage";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import IndexPage from "./pages/IndexPage";
+import AuthContainer from "./components/auth/AuthContainer";
 import TransferPage from "./pages/TransferPage";
-import TransferHomePage from "./pages/TransferHomePage";
 import MultiStepTransferPage from "./pages/MultiStepTransferPage";
 import MultiStepTransferSheetPage from "./pages/MultiStepTransferSheetPage";
-import SignupPage from "./pages/SignupPage";
-import NotFound from "./pages/NotFound";
+import MultiStepTransferSheetDesktopPage from "./pages/MultiStepTransferSheetDesktopPage";
+import ForYouPage from "./pages/ForYouPage";
+import CategoriesPage from "./pages/CategoriesPage";
+import ProductPage from "./pages/ProductPage";
+import ContactUsPage from "./pages/ContactUsPage";
+import AboutUsPage from "./pages/AboutUsPage";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
+import TermsOfServicePage from "./pages/TermsOfServicePage";
+import CartPage from "./pages/CartPage";
+import WishlistPage from "./pages/WishlistPage";
+import AdminPage from "./pages/AdminPage";
+import ShippingInfoPage from "./pages/ShippingInfoPage";
+import ReturnPolicyPage from "./pages/ReturnPolicyPage";
+import CustomerServicePage from "./pages/CustomerServicePage";
+import FAQPage from "./pages/FAQPage";
 import MainLayout from "./components/layout/MainLayout";
-import { AuthOverlayProvider } from "./context/AuthOverlayContext";
+import { Toaster } from "@/components/ui/toaster";
 import "./App.css";
-
-const queryClient = new QueryClient();
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
-        <TooltipProvider>
-          <Router>
-            <AuthProvider>
-              <AuthOverlayProvider>
-                <div className="App min-h-screen bg-background text-foreground">
-                  <Routes>
-                    <Route path="/" element={<MainLayout />}>
-                      <Route index element={<ForYou />} />
-                      <Route path="for-you" element={<ForYou />} />
-                      <Route path="index" element={<Index />} />
-                      <Route path="search" element={<SearchPage />} />
-                      <Route path="product/:id" element={<ProductDetail />} />
-                      <Route path="posts" element={<Posts />} />
-                      <Route path="videos" element={<Videos />} />
-                      <Route path="reels" element={<Reels />} />
-                      <Route path="trending" element={<Trending />} />
-                      <Route path="messages" element={<Messages />} />
-                      <Route path="profile" element={<ProfilePage />} />
-                      <Route path="more" element={<MoreMenu />} />
-                      <Route path="auth" element={<AuthPage />} />
-                      <Route path="categories" element={<CategoriesPage />} />
-                      <Route path="categories/fashion" element={<FashionPage />} />
-                      <Route path="categories/electronics" element={<ElectronicsPage />} />
-                      <Route path="categories/home-living" element={<HomeLivingPage />} />
-                      <Route path="categories/sports-outdoors" element={<SportsOutdoorsPage />} />
-                      <Route path="categories/automotive" element={<AutomotivePage />} />
-                      <Route path="categories/kids-hobbies" element={<KidsHobbiesPage />} />
-                      <Route path="categories/entertainment" element={<EntertainmentPage />} />
-                      <Route path="admin" element={<AdminPanel />} />
-                      <Route path="checkout" element={<Checkout />} />
-                      <Route path="paypal-checkout" element={<PayPalCheckout />} />
-                      <Route path="paypal-hosted-checkout" element={<PayPalHostedCheckout />} />
-                      <Route path="paypal-payment" element={<PayPalPayment />} />
-                      <Route path="dynamic-paypal-checkout" element={<DynamicPayPalCheckout />} />
-                      <Route path="paypal-deposit" element={<PayPalDepositPage />} />
-                      <Route path="deposit" element={<DepositPage />} />
-                      <Route path="nft-payment" element={<NFTPaymentPage />} />
-                      <Route path="topup" element={<TopUpPage />} />
-                      <Route path="netflix" element={<NetflixPage />} />
-                      <Route path="transfer-old" element={<TransferPage />} />
-                      <Route path="transfer" element={<TransferHomePage />} />
-                      <Route path="multi-step-transfer" element={<MultiStepTransferPage />} />
-                      <Route path="multi-step-transfer-page" element={<MultiStepTransferSheetPage />} />
-                      <Route path="signup" element={<SignupPage />} />
-                      <Route path="*" element={<NotFound />} />
-                    </Route>
-                  </Routes>
-                  <Toaster />
-                  <Sonner />
-                </div>
-              </AuthOverlayProvider>
-            </AuthProvider>
-          </Router>
-        </TooltipProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<MainLayout><IndexPage /></MainLayout>} />
+        <Route path="/auth" element={<AuthContainer />} />
+        <Route path="/transfer" element={<MainLayout><TransferPage /></MainLayout>} />
+        <Route path="/multi-step-transfer-page" element={<MultiStepTransferPage />} />
+        <Route path="/multi-step-transfer-sheet-page" element={<MultiStepTransferSheetPage />} />
+        <Route path="/multi-step-transfer-desktop" element={<MultiStepTransferSheetDesktopPage />} />
+        <Route path="/for-you" element={<MainLayout><ForYouPage /></MainLayout>} />
+        <Route path="/categories" element={<MainLayout><CategoriesPage /></MainLayout>} />
+        <Route path="/product/:id" element={<MainLayout><ProductPage /></MainLayout>} />
+        <Route path="/contact-us" element={<MainLayout><ContactUsPage /></MainLayout>} />
+        <Route path="/about-us" element={<MainLayout><AboutUsPage /></MainLayout>} />
+        <Route path="/privacy-policy" element={<MainLayout><PrivacyPolicyPage /></MainLayout>} />
+        <Route path="/terms-of-service" element={<MainLayout><TermsOfServicePage /></MainLayout>} />
+        <Route path="/cart" element={<MainLayout><CartPage /></MainLayout>} />
+        <Route path="/wishlist" element={<MainLayout><WishlistPage /></MainLayout>} />
+        <Route path="/admin" element={<AdminPage />} />
+        <Route path="/shipping-info" element={<MainLayout><ShippingInfoPage /></MainLayout>} />
+        <Route path="/return-policy" element={<MainLayout><ReturnPolicyPage /></MainLayout>} />
+        <Route path="/customer-service" element={<MainLayout><CustomerServicePage /></MainLayout>} />
+        <Route path="/faq" element={<MainLayout><FAQPage /></MainLayout>} />
+      </Routes>
+      <Toaster />
+    </BrowserRouter>
   );
 }
 

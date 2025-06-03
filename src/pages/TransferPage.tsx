@@ -1,13 +1,13 @@
+
 import React, { useState, useEffect } from 'react';
 import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Users, Lightbulb, Truck, Plus, Send } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import MultiStepTransferSheet from '@/components/transfer/MultiStepTransferSheet';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 export default function PaytmApp() {
   const navigate = useNavigate();
   const [activeSlide, setActiveSlide] = useState(0);
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const isMobile = useIsMobile();
   
   // Sample banner data - now just for images
   const bannerImages = [
@@ -26,7 +26,12 @@ export default function PaytmApp() {
   }, [bannerImages.length]);
 
   const handleSendClick = () => {
-    navigate('/multi-step-transfer-page');
+    // Navigate to different versions based on screen size
+    if (isMobile) {
+      navigate('/multi-step-transfer-page');
+    } else {
+      navigate('/multi-step-transfer-desktop');
+    }
   };
 
   return (
@@ -172,7 +177,7 @@ export default function PaytmApp() {
         </div>
       </div>
 
-      {/* Bottom Send Button - now navigates to full page */}
+      {/* Bottom Send Button - now navigates to appropriate version */}
       <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2">
         <button 
           onClick={handleSendClick}
