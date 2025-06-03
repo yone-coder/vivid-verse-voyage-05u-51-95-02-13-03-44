@@ -808,11 +808,6 @@ const DynamicPayPalCheckout: React.FC = () => {
 
       <div className="container">
         <div className="checkout-card">
-          <div className="checkout-header">
-            <h1 className="checkout-title">Secure Checkout</h1>
-            <p className="checkout-subtitle">Complete your purchase safely</p>
-          </div>
-
           {/* Alerts */}
           <div id="alerts"></div>
 
