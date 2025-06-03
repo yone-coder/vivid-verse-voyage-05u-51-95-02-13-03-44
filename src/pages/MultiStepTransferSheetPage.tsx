@@ -872,13 +872,13 @@ const MultiStepTransferSheetPage: React.FC = () => {
               {/* Pay with PayPal Button */}
               <div className="w-full">
                 <Button 
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 text-lg font-semibold h-14"
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 text-lg font-semibold"
                   onClick={() => {
-                    // The payment is handled by the embedded PayPal checkout
-                    console.log('Payment button clicked');
+                    // Handle PayPal payment
+                    console.log('PayPal payment initiated');
                   }}
                 >
-                  Pay ${transferData.amount ? parseFloat(transferData.amount).toFixed(2) : '0.00'}
+                  Pay with PayPal
                 </Button>
               </div>
 
@@ -994,22 +994,11 @@ const MultiStepTransferSheetPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Sticky Navigation Buttons - Show pay button in step 3, navigation in other steps */}
+      {/* Sticky Navigation Buttons */}
       {currentStep < 4 && (
         <div className="fixed bottom-0 left-0 right-0 border-t bg-white px-4 py-3 z-[60] shadow-lg">
           <div className="flex gap-3 max-w-md mx-auto">
-            {currentStep === 3 ? (
-              // Pay button for step 3
-              <Button 
-                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-4 text-lg font-semibold h-14"
-                onClick={() => {
-                  // The payment is handled by the embedded PayPal checkout
-                  console.log('Payment button clicked');
-                }}
-              >
-                Pay ${transferData.amount ? parseFloat(transferData.amount).toFixed(2) : '0.00'}
-              </Button>
-            ) : currentStep === 1 ? (
+            {currentStep === 1 ? (
               <Button 
                 onClick={handleNextStep}
                 disabled={!canProceedFromStep1}
@@ -1029,14 +1018,31 @@ const MultiStepTransferSheetPage: React.FC = () => {
                   Previous
                 </Button>
                 
-                <Button 
-                  onClick={handleNextStep}
-                  disabled={currentStep === 2 && !canProceedFromStep2}
-                  className="flex-1 transition-all duration-200"
-                >
-                  Next
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
+                {currentStep < 3 ? (
+                  <Button 
+                    onClick={handleNextStep}
+                    disabled={
+                      (currentStep === 2 && !canProceedFromStep2)
+                    }
+                    className="flex-1 transition-all duration-200"
+                  >
+                    Next
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                ) : currentStep === 3 ? (
+                  <Button 
+                    onClick={() => {
+                      // Payment is handled by the embedded PayPal checkout
+                    }}
+                    disabled={!canProceedFromStep3}
+                    className="flex-1 transition-all duration-200"
+                  >
+                    Continue
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                ) : (
+                  <div className="flex-1"></div>
+                )}
               </>
             )}
           </div>

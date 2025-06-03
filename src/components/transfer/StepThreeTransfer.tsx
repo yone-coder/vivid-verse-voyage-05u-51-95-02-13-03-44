@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef } from 'react';
 import { Shield } from 'lucide-react';
 
@@ -607,21 +608,30 @@ const StepThreeTransfer: React.FC<StepThreeTransferProps> = ({ amount }) => {
 
   return (
     <div className="space-y-6">
-      <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-3">Complete Your Payment</h2>
-        <p className="text-gray-600 leading-relaxed">
-          Sending <span className="font-semibold text-blue-600">${amount}</span> to your recipient
+      <div className="text-center">
+        <h2 className="text-xl font-semibold mb-2">Complete Your Transfer</h2>
+        <p className="text-gray-600 text-sm">
+          Transfer Amount: <span className="font-semibold">${parseFloat(amount).toFixed(2)} USD</span>
         </p>
       </div>
 
-      {/* Separator */}
-      <div className="flex items-center justify-center space-x-4 my-6">
-        <div className="flex-1 border-t border-gray-300"></div>
-        <span className="text-gray-500 text-sm font-medium px-4">Secure Payment</span>
-        <div className="flex-1 border-t border-gray-300"></div>
+      {/* Security Information */}
+      <div className="bg-green-50 border border-green-200 rounded-md p-4">
+        <div className="flex items-start">
+          <Shield className="h-5 w-5 text-green-600 mt-0.5 mr-3 flex-shrink-0" />
+          <div>
+            <h3 className="text-sm font-medium text-green-800 mb-1">
+              Secure Payment Processing
+            </h3>
+            <p className="text-xs text-green-600">
+              Your payment is protected by PayPal's industry-leading security measures. 
+              All transactions are encrypted and monitored for fraud.
+            </p>
+          </div>
+        </div>
       </div>
-      
-      {/* PayPal Checkout Container (Form) */}
+
+      {/* PayPal Checkout Container */}
       <div ref={containerRef}></div>
     </div>
   );
