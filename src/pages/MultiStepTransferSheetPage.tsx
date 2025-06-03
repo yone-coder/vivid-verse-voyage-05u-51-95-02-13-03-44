@@ -421,6 +421,12 @@ const MultiStepTransferSheetPage: React.FC = () => {
             if (alertsContainer) {
               alertsContainer.innerHTML = \`<div class="alert alert-error"><button class="alert-close">×</button>\${message}</div>\`;
             }
+            
+            // Dispatch error event to React component to stop loading overlay
+            const errorEvent = new CustomEvent('paymentError', {
+              detail: { message: message }
+            });
+            window.dispatchEvent(errorEvent);
         }
 
         let display_success_message = (order_details) => {
@@ -622,6 +628,17 @@ const MultiStepTransferSheetPage: React.FC = () => {
 
     window.addEventListener('paymentFormValidation', handleFormValidation);
     return () => window.removeEventListener('paymentFormValidation', handleFormValidation);
+  }, []);
+
+  // Listen for payment errors to stop loading overlay
+  useEffect(() => {
+    const handlePaymentError = (event: any) => {
+      console.log('Payment error detected:', event.detail.message);
+      setIsPaymentLoading(false);
+    };
+
+    window.addEventListener('paymentError', handlePaymentError);
+    return () => window.removeEventListener('paymentError', handlePaymentError);
   }, []);
 
   const handleNextStep = () => {
