@@ -3,11 +3,7 @@ import React, { useState } from 'react';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import { Info, MapPin, Phone, User, Check, ChevronsUpDown } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Info, MapPin, Phone, User } from "lucide-react";
 
 interface ReceiverDetails {
   firstName: string;
@@ -48,7 +44,7 @@ const artiboniteCommunes = [
 ];
 
 const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDetailsChange }) => {
-  const [open, setOpen] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   
   // Provide default values if receiverDetails is undefined
   const details = receiverDetails || {
@@ -65,6 +61,33 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
       [field]: value
     };
     onDetailsChange(updatedDetails);
+  };
+
+  // Filter communes based on user input
+  const filteredCommunes = artiboniteCommunes.filter(commune =>
+    commune.toLowerCase().includes(details.commune.toLowerCase())
+  );
+
+  const handleCommuneInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    updateField('commune', value);
+    setShowSuggestions(value.length > 0 && filteredCommunes.length > 0);
+  };
+
+  const handleCommuneSelect = (commune: string) => {
+    updateField('commune', commune);
+    setShowSuggestions(false);
+  };
+
+  const handleCommuneInputFocus = () => {
+    if (details.commune.length > 0 && filteredCommunes.length > 0) {
+      setShowSuggestions(true);
+    }
+  };
+
+  const handleCommuneInputBlur = () => {
+    // Delay hiding suggestions to allow for selection
+    setTimeout(() => setShowSuggestions(false), 150);
   };
 
   return (
@@ -168,57 +191,34 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
                 </div>
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-2 relative">
                 <Label className="text-xs font-medium text-gray-600 uppercase tracking-wide">
                   Commune
                 </Label>
-                <Popover open={open} onOpenChange={setOpen}>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      aria-expanded={open}
-                      className="h-11 w-full justify-between border-2 border-gray-200 focus:border-purple-500 focus:ring-purple-500/20 focus:ring-4 rounded-xl bg-white text-gray-900 font-medium transition-all duration-200 hover:border-gray-300"
-                    >
-                      {details.commune
-                        ? artiboniteCommunes.find((commune) => commune === details.commune)
-                        : "Search commune..."}
-                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-full p-0 bg-white border-2 border-gray-200 rounded-xl shadow-xl z-50">
-                    <Command className="bg-white">
-                      <CommandInput 
-                        placeholder="Search commune..." 
-                        className="h-9 text-gray-900"
-                      />
-                      <CommandList>
-                        <CommandEmpty>No commune found.</CommandEmpty>
-                        <CommandGroup>
-                          {artiboniteCommunes.map((commune) => (
-                            <CommandItem
-                              key={commune}
-                              value={commune}
-                              onSelect={(currentValue) => {
-                                updateField('commune', currentValue === details.commune ? "" : currentValue);
-                                setOpen(false);
-                              }}
-                              className="hover:bg-purple-50 focus:bg-purple-50 text-gray-800 font-medium py-3 px-4 cursor-pointer transition-colors rounded-lg mx-1"
-                            >
-                              <Check
-                                className={cn(
-                                  "mr-2 h-4 w-4",
-                                  details.commune === commune ? "opacity-100" : "opacity-0"
-                                )}
-                              />
-                              {commune}
-                            </CommandItem>
-                          ))}
-                        </CommandGroup>
-                      </CommandList>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
+                <Input
+                  placeholder="Type commune name..."
+                  value={details.commune}
+                  onChange={handleCommuneInputChange}
+                  onFocus={handleCommuneInputFocus}
+                  onBlur={handleCommuneInputBlur}
+                  className="h-11 border-2 border-gray-200 focus:border-purple-500 focus:ring-purple-500/20 focus:ring-4 rounded-xl bg-white text-gray-900 font-medium transition-all duration-200 hover:border-gray-300"
+                  required
+                />
+                
+                {/* Suggestions dropdown */}
+                {showSuggestions && filteredCommunes.length > 0 && (
+                  <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-white border-2 border-gray-200 rounded-xl shadow-xl max-h-48 overflow-y-auto">
+                    {filteredCommunes.slice(0, 8).map((commune) => (
+                      <div
+                        key={commune}
+                        onClick={() => handleCommuneSelect(commune)}
+                        className="px-4 py-3 hover:bg-purple-50 cursor-pointer text-gray-800 font-medium transition-colors border-b border-gray-100 last:border-b-0"
+                      >
+                        {commune}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </div>
