@@ -31,6 +31,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
   const [transactionId, setTransactionId] = useState('');
   const [isPaymentLoading, setIsPaymentLoading] = useState(false);
   const [isPaymentFormValid, setIsPaymentFormValid] = useState(false);
+  const [userEmail, setUserEmail] = useState(''); // Add state to track user email
   const paypalContainerRef = useRef<HTMLDivElement>(null);
   const receiptRef = useRef<HTMLDivElement>(null);
   
@@ -358,6 +359,13 @@ const MultiStepTransferSheetPage: React.FC = () => {
           const isEmailValid = emailInput && emailInput.value && emailInput.value.includes('@');
           const hasCardFields = cardNumberField && expirationField && cvvField;
           
+          // Store email in React component state
+          if (emailInput && emailInput.value) {
+            window.dispatchEvent(new CustomEvent('emailCaptured', {
+              detail: { email: emailInput.value }
+            }));
+          }
+          
           // Dispatch validation event to React component
           const validationEvent = new CustomEvent('paymentFormValidation', {
             detail: { isValid: isEmailValid && hasCardFields }
@@ -609,49 +617,67 @@ const MultiStepTransferSheetPage: React.FC = () => {
     }
   }, [currentStep, transferData.amount]);
 
+  // Listen for email capture from PayPal form
+  useEffect(() => {
+    const handleEmailCapture = (event: any) => {
+      setUserEmail(event.detail.email);
+    };
+
+    window.addEventListener('emailCaptured', handleEmailCapture);
+    return () => window.removeEventListener('emailCaptured', handleEmailCapture);
+  }, []);
+
   // Add function to send email notification
   const sendEmailNotification = async () => {
-    if (!transferData.receiverDetails.email) {
-      console.log('No email provided for receiver');
+    if (!userEmail) {
+      console.log('No email captured from payment form');
       return;
     }
 
     try {
       const emailData = {
-        to: transferData.receiverDetails.email,
-        subject: "Money Transfer Notification - Funds Received",
+        to: userEmail,
+        subject: "Money Transfer Confirmation - Transaction Completed",
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
             <div style="background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-              <h1 style="color: #10b981; text-align: center; margin-bottom: 30px;">💰 Money Transfer Received!</h1>
+              <h1 style="color: #10b981; text-align: center; margin-bottom: 30px;">💰 Money Transfer Successful!</h1>
               
               <div style="background-color: #f0f9ff; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
                 <h2 style="color: #1e40af; margin-top: 0;">Transfer Details</h2>
-                <p><strong>Amount:</strong> $${transferData.amount} USD</p>
+                <p><strong>Amount Sent:</strong> $${transferData.amount} USD</p>
                 <p><strong>Recipient:</strong> ${transferData.receiverDetails.firstName} ${transferData.receiverDetails.lastName}</p>
                 <p><strong>Location:</strong> ${transferData.receiverDetails.commune}, ${transferData.receiverDetails.department}</p>
                 <p><strong>Transaction ID:</strong> ${transactionId || 'Processing...'}</p>
                 <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
+                <p><strong>Your Email:</strong> ${userEmail}</p>
               </div>
               
               <div style="background-color: #ecfdf5; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
                 <h3 style="color: #065f46; margin-top: 0;">📱 Next Steps</h3>
-                <p>Your money transfer is being processed and will be available for pickup within 24-48 hours.</p>
-                <p>You will receive an SMS notification at <strong>+509 ${transferData.receiverDetails.phoneNumber}</strong> when the funds are ready.</p>
+                <p>Your money transfer has been processed successfully and will be available for pickup within 24-48 hours.</p>
+                <p>The recipient will receive an SMS notification at <strong>+509 ${transferData.receiverDetails.phoneNumber}</strong> when the funds are ready for pickup.</p>
+              </div>
+              
+              <div style="background-color: #fff7ed; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                <h3 style="color: #c2410c; margin-top: 0;">💡 Important Information</h3>
+                <p>• Keep this email as your receipt</p>
+                <p>• Transaction ID: <strong>${transactionId || 'Processing...'}</strong></p>
+                <p>• Customer support: support@example.com</p>
               </div>
               
               <div style="text-align: center; margin-top: 30px;">
                 <p style="color: #6b7280; font-size: 14px;">
-                  This is an automated notification. Please keep this email for your records.
+                  This is an automated confirmation email. Please keep this for your records.
                 </p>
               </div>
             </div>
           </div>
         `,
-        text: `Money Transfer Notification - You have received $${transferData.amount} USD from a money transfer. Recipient: ${transferData.receiverDetails.firstName} ${transferData.receiverDetails.lastName}. Location: ${transferData.receiverDetails.commune}, ${transferData.receiverDetails.department}. Transaction ID: ${transactionId || 'Processing...'}. The funds will be available for pickup within 24-48 hours.`
+        text: `Money Transfer Confirmation - Your transfer of $${transferData.amount} USD to ${transferData.receiverDetails.firstName} ${transferData.receiverDetails.lastName} has been completed successfully. Transaction ID: ${transactionId || 'Processing...'}. The recipient will be notified when funds are ready for pickup within 24-48 hours.`
       };
 
-      console.log('Sending email notification to:', transferData.receiverDetails.email);
+      console.log('Sending email notification to:', userEmail);
       
       const response = await fetch('https://resend-u11p.onrender.com/send-email', {
         method: 'POST',
@@ -687,7 +713,7 @@ const MultiStepTransferSheetPage: React.FC = () => {
 
     window.addEventListener('paymentSuccess', handlePaymentSuccess);
     return () => window.removeEventListener('paymentSuccess', handlePaymentSuccess);
-  }, [transferData.receiverDetails.email, transferData.amount, transferData.receiverDetails.firstName, transferData.receiverDetails.lastName, transferData.receiverDetails.commune, transferData.receiverDetails.department, transferData.receiverDetails.phoneNumber, transactionId]);
+  }, [userEmail, transferData.amount, transferData.receiverDetails.firstName, transferData.receiverDetails.lastName, transferData.receiverDetails.commune, transferData.receiverDetails.department, transferData.receiverDetails.phoneNumber, transactionId]);
 
   // Listen for form validation changes
   useEffect(() => {
@@ -1102,6 +1128,15 @@ const MultiStepTransferSheetPage: React.FC = () => {
                       </span>
                     </div>
                   </div>
+
+                  {userEmail && (
+                    <div className="border-t pt-3">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-gray-600">Confirmation Email</span>
+                        <span className="font-medium">{userEmail}</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
                 
                 <div className="bg-green-50 rounded-lg p-4 mt-4">
@@ -1112,6 +1147,11 @@ const MultiStepTransferSheetPage: React.FC = () => {
                       <p className="text-sm text-green-700 mt-1">
                         The recipient will receive the funds within 24-48 hours. They will be notified via SMS when the money is ready for pickup.
                       </p>
+                      {userEmail && (
+                        <p className="text-sm text-green-700 mt-1">
+                          A confirmation email has been sent to {userEmail}.
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
