@@ -42,6 +42,7 @@ import TransferHomePage from "./pages/TransferHomePage";
 import MultiStepTransferPage from "./pages/MultiStepTransferPage";
 import MultiStepTransferSheetPage from "./pages/MultiStepTransferSheetPage";
 import SignupPage from "./pages/SignupPage";
+import MultiStepTransferSheetDesktopPage from "./pages/MultiStepTransferSheetDesktopPage";
 import NotFound from "./pages/NotFound";
 import MainLayout from "./components/layout/MainLayout";
 import { AuthOverlayProvider } from "./context/AuthOverlayContext";
@@ -73,6 +74,7 @@ function App() {
                       <Route path="profile" element={<ProfilePage />} />
                       <Route path="more" element={<MoreMenu />} />
                       <Route path="auth" element={<AuthPage />} />
+        <Route path="/multi-step-transfer-desktop" element={<MultiStepTransferSheetDesktopPage />} />
                       <Route path="categories" element={<CategoriesPage />} />
                       <Route path="categories/fashion" element={<FashionPage />} />
                       <Route path="categories/electronics" element={<ElectronicsPage />} />
