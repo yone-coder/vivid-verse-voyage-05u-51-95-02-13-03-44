@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, Clock, CheckCircle, Receipt, ChevronLeft, X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -806,7 +807,27 @@ const MultiStepTransferSheetPage: React.FC = () => {
                 </p>
               </div>
               
-              {/* PayPal Checkout Container */}
+              {/* Pay with PayPal Button */}
+              <div className="w-full">
+                <Button 
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 text-lg font-semibold"
+                  onClick={() => {
+                    // Handle PayPal payment
+                    console.log('PayPal payment initiated');
+                  }}
+                >
+                  Pay with PayPal
+                </Button>
+              </div>
+
+              {/* Separator */}
+              <div className="flex items-center justify-center space-x-4 my-6">
+                <div className="flex-1 border-t border-gray-300"></div>
+                <span className="text-gray-500 text-sm font-medium px-4">or continue with</span>
+                <div className="flex-1 border-t border-gray-300"></div>
+              </div>
+              
+              {/* PayPal Checkout Container (Form) */}
               <div ref={paypalContainerRef}></div>
             </div>
           )}
