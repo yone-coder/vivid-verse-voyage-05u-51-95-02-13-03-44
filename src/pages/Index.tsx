@@ -1,6 +1,6 @@
 
-import { Navigate } from "react-router-dom";
+import PaytmHome from '@/components/paytm/PaytmHome';
 
 export default function Index() {
-  return <Navigate to="/for-you" replace />;
+  return <PaytmHome />;
 }

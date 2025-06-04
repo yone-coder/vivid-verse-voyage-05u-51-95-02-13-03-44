@@ -17,6 +17,7 @@ export default function MainLayout() {
   const pathname = location.pathname;
   const isProductPage = pathname.includes('/product/');
   const isRootHomePage = pathname === "/" || pathname === "/for-you";
+  const isPaytmHomePage = pathname === "/";
   const isForYouPage = pathname === "/" || pathname === "/for-you";
   const isMultiStepTransferPage = pathname === "/multi-step-transfer";
   const isMultiStepTransferSheetPage = pathname === "/multi-step-transfer-page";
@@ -85,8 +86,8 @@ export default function MainLayout() {
       <div className="min-h-screen flex flex-col bg-white">
         <style dangerouslySetInnerHTML={{ __html: headerHeightStyle }} />
 
-        {/* Show AliExpressHeader only on mobile For You page */}
-        {isForYouPage && isMobile && (
+        {/* Show AliExpressHeader only on mobile For You page, but not on Paytm homepage */}
+        {isForYouPage && isMobile && !isPaytmHomePage && (
           <AliExpressHeader activeTabId={isRootHomePage ? "recommendations" : ""} />
         )}
 
@@ -94,16 +95,16 @@ export default function MainLayout() {
           <Outlet />
         </main>
 
-        {/* Show Footer only on non-mobile and on specific pages */}
-        {!isMobile && !isRootHomePage && <Footer />}
+        {/* Show Footer only on non-mobile and on specific pages, but not on Paytm homepage */}
+        {!isMobile && !isRootHomePage && !isPaytmHomePage && <Footer />}
 
-        {/* Floating action button - now excludes multi-step-transfer-page */}
-        {!isMultiStepTransferPage && !isMultiStepTransferSheetPage && !isTransferOldPage && (
+        {/* Floating action button - exclude from Paytm homepage and transfer pages */}
+        {!isPaytmHomePage && !isMultiStepTransferPage && !isMultiStepTransferSheetPage && !isTransferOldPage && (
           <FloatingActionButton onClick={() => setShowProductUpload(true)} />
         )}
 
-        {/* Show IndexBottomNav on all mobile views except multi-step transfer pages and transfer-old pages */}
-        {isMobile && !isMultiStepTransferPage && !isMultiStepTransferSheetPage && !isTransferOldPage && <IndexBottomNav />}
+        {/* Show IndexBottomNav on mobile but not on Paytm homepage or transfer pages */}
+        {isMobile && !isPaytmHomePage && !isMultiStepTransferPage && !isMultiStepTransferSheetPage && !isTransferOldPage && <IndexBottomNav />}
 
         {/* Product Upload Overlay */}
         <ProductUploadOverlay
