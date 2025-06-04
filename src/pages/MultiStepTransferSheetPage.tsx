@@ -10,6 +10,7 @@ import StepOneTransfer from '@/components/transfer/StepOneTransfer';
 import StepTwoTransfer from '@/components/transfer/StepTwoTransfer';
 import PaymentMethodList from '@/components/transfer/PaymentMethodList';
 import { internationalPaymentMethods } from '@/components/transfer/PaymentMethods';
+import { emailNotificationService } from '@/components/transfer/EmailNotificationService';
 
 export interface TransferData {
   amount: string;
@@ -717,15 +718,21 @@ const MultiStepTransferSheetPage: React.FC = () => {
       setCurrentStep(4);
       setIsPaymentLoading(false);
       
-      // Send email notification with the actual order details
-      setTimeout(() => {
-        sendEmailNotification(orderDetails);
-      }, 1000);
+      // Send email notification using the service
+      if (userEmail) {
+        setTimeout(() => {
+          emailNotificationService.sendTransferConfirmation(
+            userEmail,
+            transferData,
+            actualTransactionId
+          );
+        }, 1000);
+      }
     };
 
     window.addEventListener('paymentSuccess', handlePaymentSuccess);
     return () => window.removeEventListener('paymentSuccess', handlePaymentSuccess);
-  }, [userEmail, transferData.amount, transferData.receiverDetails.firstName, transferData.receiverDetails.lastName, transferData.receiverDetails.commune, transferData.receiverDetails.department, transferData.receiverDetails.phoneNumber]);
+  }, [userEmail, transferData.amount, transferData.receiverDetails.firstName, transferData.receiverDetails.lastName, transferData.receiverDetails.commune, transferData.receiverDetails.phoneNumber]);
 
   // Listen for form validation changes
   useEffect(() => {
