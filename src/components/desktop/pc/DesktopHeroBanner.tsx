@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useQuery } from "@tanstack/react-query";
 import { fetchHeroBanners } from "@/integrations/supabase/hero";
@@ -97,7 +96,7 @@ export default function DesktopHeroBanner() {
 
   if (isLoading) {
     return (
-      <div className="relative w-full bg-gray-200 animate-pulse h-96">
+      <div className="relative w-full bg-gray-200 animate-pulse h-64">
         <div className="absolute inset-0 flex items-center justify-center">
           <span className="text-gray-400">Loading desktop banners...</span>
         </div>
@@ -107,7 +106,7 @@ export default function DesktopHeroBanner() {
 
   return (
     <>
-      <div className="relative overflow-hidden w-full h-96 rounded-lg shadow-lg">
+      <div className="relative overflow-hidden w-full h-64 rounded-lg shadow-lg">
         <DesktopBannerSlides 
           slides={slidesToShow}
           activeIndex={activeIndex}

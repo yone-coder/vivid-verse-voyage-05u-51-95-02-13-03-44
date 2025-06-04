@@ -20,12 +20,14 @@ export default function DesktopBannerControls({
 }: DesktopBannerControlsProps) {
   const handlePrevious = () => {
     setPreviousIndex(activeIndex);
-    setActiveIndex((current) => (current - 1 + slidesCount) % slidesCount);
+    const newIndex = (activeIndex - 1 + slidesCount) % slidesCount;
+    setActiveIndex(newIndex);
   };
 
   const handleNext = () => {
     setPreviousIndex(activeIndex);
-    setActiveIndex((current) => (current + 1) % slidesCount);
+    const newIndex = (activeIndex + 1) % slidesCount;
+    setActiveIndex(newIndex);
   };
 
   const handleDotClick = (index: number) => {

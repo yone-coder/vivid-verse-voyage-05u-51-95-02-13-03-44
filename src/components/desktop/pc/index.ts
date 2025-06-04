@@ -1,4 +1,5 @@
 
+export { default as DesktopHeader } from './DesktopHeader';
 export { default as DesktopHeroBanner } from './DesktopHeroBanner';
 export { default as DesktopBannerSlides } from './DesktopBannerSlides';
 export { default as DesktopBannerControls } from './DesktopBannerControls';

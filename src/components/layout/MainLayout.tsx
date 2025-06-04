@@ -85,8 +85,8 @@ export default function MainLayout() {
       <div className="min-h-screen flex flex-col bg-white">
         <style dangerouslySetInnerHTML={{ __html: headerHeightStyle }} />
 
-        {/* Show AliExpressHeader only on the For You page */}
-        {isForYouPage && (
+        {/* Show AliExpressHeader only on mobile For You page */}
+        {isForYouPage && isMobile && (
           <AliExpressHeader activeTabId={isRootHomePage ? "recommendations" : ""} />
         )}
 
