@@ -1,4 +1,3 @@
-
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -63,7 +62,7 @@ function App() {
                 <div className="App min-h-screen bg-background text-foreground">
                   <Routes>
                     <Route path="/" element={<MainLayout />}>
-                      <Route index element={<ForYou />} />
+                      <Route index element={<Index />} />
                       <Route path="for-you" element={<ForYou />} />
                       <Route path="index" element={<Index />} />
                       <Route path="search" element={<SearchPage />} />

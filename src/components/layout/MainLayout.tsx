@@ -16,9 +16,9 @@ export default function MainLayout() {
   const location = useLocation();
   const pathname = location.pathname;
   const isProductPage = pathname.includes('/product/');
-  const isRootHomePage = pathname === "/" || pathname === "/for-you";
-  const isPaytmHomePage = pathname === "/";
-  const isForYouPage = pathname === "/" || pathname === "/for-you";
+  const isRootHomePage = pathname === "/";
+  const isPaytmHomePage = pathname === "/" || pathname === "/index";
+  const isForYouPage = pathname === "/for-you";
   const isMultiStepTransferPage = pathname === "/multi-step-transfer";
   const isMultiStepTransferSheetPage = pathname === "/multi-step-transfer-page";
   const isTransferOldPage = pathname === "/transfer-old";
@@ -88,7 +88,7 @@ export default function MainLayout() {
 
         {/* Show AliExpressHeader only on mobile For You page, but not on Paytm homepage */}
         {isForYouPage && isMobile && !isPaytmHomePage && (
-          <AliExpressHeader activeTabId={isRootHomePage ? "recommendations" : ""} />
+          <AliExpressHeader activeTabId="recommendations" />
         )}
 
         <main className="flex-grow relative">
@@ -96,7 +96,7 @@ export default function MainLayout() {
         </main>
 
         {/* Show Footer only on non-mobile and on specific pages, but not on Paytm homepage */}
-        {!isMobile && !isRootHomePage && !isPaytmHomePage && <Footer />}
+        {!isMobile && !isPaytmHomePage && <Footer />}
 
         {/* Floating action button - exclude from Paytm homepage and transfer pages */}
         {!isPaytmHomePage && !isMultiStepTransferPage && !isMultiStepTransferSheetPage && !isTransferOldPage && (
