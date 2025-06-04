@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Users, Lightbulb, Truck, Plus, Send } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -26,12 +25,8 @@ export default function PaytmApp() {
   }, [bannerImages.length]);
 
   const handleSendClick = () => {
-    // Navigate to different versions based on screen size
-    if (isMobile) {
-      navigate('/multi-step-transfer-page');
-    } else {
-      navigate('/multi-step-transfer-desktop');
-    }
+    // Navigate to the responsive route that handles device detection
+    navigate('/multi-step-transfer-page');
   };
 
   return (
@@ -177,7 +172,7 @@ export default function PaytmApp() {
         </div>
       </div>
 
-      {/* Bottom Send Button - now navigates to appropriate version */}
+      {/* Bottom Send Button - now navigates to responsive route */}
       <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2">
         <button 
           onClick={handleSendClick}

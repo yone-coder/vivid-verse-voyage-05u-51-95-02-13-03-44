@@ -1,3 +1,4 @@
+
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -41,6 +42,7 @@ import TransferPage from "./pages/TransferPage";
 import TransferHomePage from "./pages/TransferHomePage";
 import MultiStepTransferPage from "./pages/MultiStepTransferPage";
 import MultiStepTransferSheetPage from "./pages/MultiStepTransferSheetPage";
+import ResponsiveMultiStepTransferPage from "./pages/ResponsiveMultiStepTransferPage";
 import SignupPage from "./pages/SignupPage";
 import MultiStepTransferSheetDesktopPage from "./pages/MultiStepTransferSheetDesktopPage";
 import NotFound from "./pages/NotFound";
@@ -74,7 +76,7 @@ function App() {
                       <Route path="profile" element={<ProfilePage />} />
                       <Route path="more" element={<MoreMenu />} />
                       <Route path="auth" element={<AuthPage />} />
-        <Route path="/multi-step-transfer-desktop" element={<MultiStepTransferSheetDesktopPage />} />
+                      <Route path="/multi-step-transfer-desktop" element={<MultiStepTransferSheetDesktopPage />} />
                       <Route path="categories" element={<CategoriesPage />} />
                       <Route path="categories/fashion" element={<FashionPage />} />
                       <Route path="categories/electronics" element={<ElectronicsPage />} />
@@ -97,7 +99,7 @@ function App() {
                       <Route path="transfer-old" element={<TransferPage />} />
                       <Route path="transfer" element={<TransferHomePage />} />
                       <Route path="multi-step-transfer" element={<MultiStepTransferPage />} />
-                      <Route path="multi-step-transfer-page" element={<MultiStepTransferSheetPage />} />
+                      <Route path="multi-step-transfer-page" element={<ResponsiveMultiStepTransferPage />} />
                       <Route path="signup" element={<SignupPage />} />
                       <Route path="*" element={<NotFound />} />
                     </Route>
