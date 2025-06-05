@@ -32,7 +32,7 @@ export default function PaytmMobileHome() {
   };
 
   const handleLocalTransferClick = () => {
-    navigate('/multi-step-transfer-page');
+    navigate('/local-transfer');
   };
 
   return (
