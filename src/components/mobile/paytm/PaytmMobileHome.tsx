@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { 
   Send, 
@@ -59,19 +58,19 @@ export default function PaytmMobileHome() {
           <div className="flex justify-between items-start">
             <div className="flex items-center space-x-3">
               <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                <Logo width={28} height={28} />
+                <span className="text-blue-600 font-bold text-lg">MJ</span>
               </div>
               <div>
-                <p className="font-semibold text-lg text-gray-800">Global Transfer</p>
-                <p className="text-sm text-gray-600">Secure Money Transfer</p>
-                <p className="text-xs text-gray-500">Trusted since 2023</p>
+                <p className="font-semibold text-lg text-gray-800">Marie Joseph</p>
+                <p className="text-sm text-gray-600">Verified Account</p>
+                <p className="text-xs text-gray-500">Member since 2023</p>
               </div>
             </div>
             <div className="text-right">
               <div className="bg-green-500 text-white px-2 py-1 rounded-full text-xs mb-1">
-                ✓ Secure
+                ✓ Verified
               </div>
-              <p className="text-xs text-gray-500">Fast & Reliable</p>
+              <p className="text-xs text-gray-500">ID Confirmed</p>
             </div>
           </div>
           <div className="mt-4 flex space-x-2">
