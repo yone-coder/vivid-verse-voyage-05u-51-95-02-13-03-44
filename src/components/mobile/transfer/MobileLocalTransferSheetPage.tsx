@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, CheckCircle, Receipt, ChevronLeft, X, Key, Smartphone } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -36,7 +37,6 @@ const MobileLocalTransferSheetPage: React.FC = () => {
   const [transactionId, setTransactionId] = useState('');
   const [isPaymentLoading, setIsPaymentLoading] = useState(false);
   const [userEmail, setUserEmail] = useState('');
-  const [paymentError, setPaymentError] = useState('');
   const receiptRef = useRef<HTMLDivElement>(null);
   
   const [transferData, setTransferData] = useState<LocalTransferData>({
@@ -83,7 +83,6 @@ const MobileLocalTransferSheetPage: React.FC = () => {
   // MonCash payment handler
   const handleMonCashPayment = async () => {
     setIsPaymentLoading(true);
-    setPaymentError('');
 
     try {
       console.log('Creating MonCash payment...');
@@ -132,24 +131,9 @@ const MobileLocalTransferSheetPage: React.FC = () => {
 
     } catch (error) {
       console.error('MonCash payment error:', error);
-      
-      let errorMessage = "Failed to process MonCash payment. ";
-      
-      if (error instanceof Error) {
-        if (error.message.includes('EHOSTUNREACH') || error.message.includes('Internal server error')) {
-          errorMessage += "MonCash service is temporarily unavailable. Please try again later or use the demo option below.";
-        } else {
-          errorMessage += error.message;
-        }
-      } else {
-        errorMessage += "Please try again.";
-      }
-      
-      setPaymentError(errorMessage);
-      
       toast({
         title: "Payment Failed",
-        description: errorMessage,
+        description: error instanceof Error ? error.message : "Failed to process MonCash payment. Please try again.",
         variant: "destructive",
       });
       setIsPaymentLoading(false);
@@ -299,17 +283,13 @@ const MobileLocalTransferSheetPage: React.FC = () => {
       {/* Payment Loading Overlay */}
       {isPaymentLoading && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-[100] flex items-center justify-center">
-          <div className="bg-white rounded-lg p-6 mx-4 max-w-sm w-full text-center">
-            <div className="relative mb-4">
-              {/* Spinner */}
-              <div className="w-16 h-16 border-4 border-red-200 border-t-red-600 rounded-full animate-spin mx-auto"></div>
-              {/* MonCash Icon in the center */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <Smartphone className="w-6 h-6 text-red-600" />
-              </div>
+          <div className="relative">
+            {/* Spinner */}
+            <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+            {/* Smartphone Icon in the center */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Smartphone className="w-6 h-6 text-white" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Processing Payment</h3>
-            <p className="text-sm text-gray-600">Connecting to MonCash...</p>
           </div>
         </div>
       )}
@@ -436,19 +416,6 @@ const MobileLocalTransferSheetPage: React.FC = () => {
                 </p>
               </div>
               
-              {/* Error Display */}
-              {paymentError && (
-                <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-4">
-                  <div className="flex items-start space-x-3">
-                    <div className="w-5 h-5 text-red-600 mt-0.5">⚠️</div>
-                    <div>
-                      <h4 className="font-medium text-red-900 mb-1">Payment Error</h4>
-                      <p className="text-sm text-red-700">{paymentError}</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-              
               {/* MonCash Payment Section */}
               <div className="bg-red-50 border border-red-200 rounded-xl p-6">
                 <div className="flex items-center mb-4">
@@ -488,30 +455,24 @@ const MobileLocalTransferSheetPage: React.FC = () => {
                 </div>
               </div>
 
-              {/* Payment Buttons */}
+              {/* Demo Payment Button */}
               <div className="space-y-3">
                 <Button 
                   onClick={handleMonCashPayment}
                   disabled={isPaymentLoading}
-                  className="w-full bg-red-600 hover:bg-red-700 text-white py-4 text-lg font-semibold disabled:opacity-50"
+                  className="w-full bg-red-600 hover:bg-red-700 text-white py-4 text-lg font-semibold"
                 >
                   {isPaymentLoading ? 'Processing...' : `Pay ${totalAmount} HTG with MonCash`}
                 </Button>
                 
-                {/* Demo/Testing Button - Show more prominently if there's an error */}
+                {/* Demo/Testing Button */}
                 <Button 
                   onClick={simulatePaymentCompletion}
-                  variant={paymentError ? "default" : "outline"}
-                  className={`w-full text-sm ${paymentError ? 'bg-green-600 hover:bg-green-700 text-white' : ''}`}
+                  variant="outline"
+                  className="w-full text-sm"
                 >
-                  {paymentError ? 'Complete Payment (Demo Mode)' : 'Demo: Complete Payment (Testing)'}
+                  Demo: Complete Payment (Testing)
                 </Button>
-                
-                {paymentError && (
-                  <p className="text-xs text-gray-500 text-center mt-2">
-                    Use demo mode while MonCash service is unavailable
-                  </p>
-                )}
               </div>
             </div>
           )}
