@@ -31,10 +31,10 @@ export default function PaytmMobileHome() {
 
   return (
     <div className="max-w-sm mx-auto bg-white min-h-screen">
-      {/* Extended Header with overlap */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-500 text-white pb-16">
+      {/* Reduced Header with overlap */}
+      <div className="bg-gradient-to-r from-blue-600 to-blue-500 text-white pb-8">
         <div className="p-4">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-2">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
                 <span className="text-blue-600 font-bold text-sm">HT</span>
@@ -52,35 +52,35 @@ export default function PaytmMobileHome() {
         </div>
       </div>
 
-      {/* User Profile Card - Overlapping the header */}
-      <div className="mx-4 -mt-12 mb-4 relative z-10">
-        <div className="bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg p-4 text-white shadow-lg">
+      {/* White Profile Card - Overlapping the header */}
+      <div className="mx-4 -mt-6 mb-4 relative z-10">
+        <div className="bg-white rounded-lg p-4 shadow-lg border border-gray-100">
           <div className="flex justify-between items-start">
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
+              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
                 <span className="text-blue-600 font-bold text-lg">MJ</span>
               </div>
               <div>
-                <p className="font-semibold text-lg">Marie Joseph</p>
-                <p className="text-sm opacity-90">Verified Account</p>
-                <p className="text-xs opacity-80">Member since 2023</p>
+                <p className="font-semibold text-lg text-gray-800">Marie Joseph</p>
+                <p className="text-sm text-gray-600">Verified Account</p>
+                <p className="text-xs text-gray-500">Member since 2023</p>
               </div>
             </div>
             <div className="text-right">
               <div className="bg-green-500 text-white px-2 py-1 rounded-full text-xs mb-1">
                 ✓ Verified
               </div>
-              <p className="text-xs opacity-80">ID Confirmed</p>
+              <p className="text-xs text-gray-500">ID Confirmed</p>
             </div>
           </div>
           <div className="mt-4 flex space-x-2">
             <button 
               onClick={handleSendClick}
-              className="bg-white text-blue-600 px-4 py-2 rounded-full text-sm font-medium flex-1"
+              className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium flex-1"
             >
               Send Money
             </button>
-            <button className="border border-white/50 text-white px-4 py-2 rounded-full text-sm flex-1">
+            <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-full text-sm flex-1">
               View Profile
             </button>
           </div>
