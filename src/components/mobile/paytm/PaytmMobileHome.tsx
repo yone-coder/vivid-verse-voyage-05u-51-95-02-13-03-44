@@ -30,8 +30,8 @@ export default function PaytmMobileHome() {
 
   return (
     <div className="max-w-sm mx-auto bg-white min-h-screen">
-      {/* Further Reduced Header with overlap */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-500 text-white pb-4">
+      {/* Minimal Header with overlap */}
+      <div className="bg-gradient-to-r from-blue-600 to-blue-500 text-white pb-2">
         <div className="p-4">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center space-x-3">
@@ -52,7 +52,7 @@ export default function PaytmMobileHome() {
       </div>
 
       {/* White Profile Card - Overlapping the header */}
-      <div className="mx-4 -mt-4 mb-4 relative z-10">
+      <div className="mx-4 -mt-2 mb-4 relative z-10">
         <div className="bg-white rounded-lg p-4 shadow-lg border border-gray-100">
           <div className="flex justify-between items-start">
             <div className="flex items-center space-x-3">
