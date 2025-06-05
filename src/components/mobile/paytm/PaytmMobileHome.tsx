@@ -48,9 +48,11 @@ export default function PaytmMobileHome() {
             <User className="w-6 h-6" />
           </div>
         </div>
-        
-        {/* User Profile Card */}
-        <div className="bg-white/20 rounded-lg p-4 backdrop-blur-sm">
+      </div>
+
+      {/* User Profile Card Banner */}
+      <div className="mx-4 mt-4 mb-4">
+        <div className="bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg p-4 text-white">
           <div className="flex justify-between items-start">
             <div className="flex items-center space-x-3">
               <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
@@ -84,7 +86,7 @@ export default function PaytmMobileHome() {
       </div>
 
       {/* Exchange Rate Banner */}
-      <div className="mx-4 mt-4 mb-4">
+      <div className="mx-4 mb-4">
         <div className="bg-gradient-to-r from-green-100 to-blue-100 rounded-lg p-3">
           <div className="flex items-center justify-between">
             <div>

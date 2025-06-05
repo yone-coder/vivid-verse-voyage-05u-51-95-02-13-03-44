@@ -1,24 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Users, Lightbulb, Truck, Plus, Send, CreditCard, Gift, Zap, MapPin, Globe, DollarSign, History, Phone, Wallet, ArrowUpDown, ChevronRight, Building } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export default function PaytmDesktopHome() {
   const navigate = useNavigate();
-  const [activeSlide, setActiveSlide] = useState(0);
-  
-  const bannerImages = [
-    "/lovable-uploads/2102d3a1-ec6e-4c76-8ee0-549c3ae3d54e.png",
-    "/lovable-uploads/4dbaee7c-2ac5-4a1b-9f9b-121275273e79.png",
-    "/lovable-uploads/dd1cad7b-c3b6-43a6-9bc6-deb38a120604.png"
-  ];
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveSlide((prev) => (prev + 1) % bannerImages.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, [bannerImages.length]);
 
   const handleSendClick = () => {
     navigate('/multi-step-transfer-desktop');
@@ -71,23 +56,6 @@ export default function PaytmDesktopHome() {
             </div>
 
             <div className="flex items-center space-x-6">
-              {/* User Profile Card */}
-              <div className="bg-gradient-to-r from-blue-600 to-blue-500 text-white p-4 rounded-xl">
-                <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
-                    <span className="text-blue-600 font-bold text-lg">MJ</span>
-                  </div>
-                  <div>
-                    <p className="text-sm opacity-90">Bonjou</p>
-                    <p className="font-semibold">Marie Joseph</p>
-                    <p className="text-xs opacity-80">Verified Account • Member since 2023</p>
-                  </div>
-                  <div className="bg-green-500 text-white px-2 py-1 rounded-full text-xs">
-                    ✓ Verified
-                  </div>
-                </div>
-              </div>
-              
               <button className="flex items-center text-gray-700 hover:text-blue-600 transition-colors relative">
                 <Bell className="h-6 w-6 mr-2" />
                 <span>Notifications</span>
@@ -167,46 +135,37 @@ export default function PaytmDesktopHome() {
 
           {/* Main Content */}
           <div className="col-span-6">
-            {/* Hero Banner */}
+            {/* User Profile Card Banner */}
             <div className="bg-white rounded-2xl shadow-lg overflow-hidden mb-8">
-              <div className="relative h-80">
-                {bannerImages.map((image, index) => (
-                  <div
-                    key={index}
-                    className={`absolute inset-0 transition-all duration-700 ease-in-out ${
-                      index === activeSlide ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
-                    }`}
-                  >
-                    <img
-                      src={image}
-                      alt={`Banner ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent"></div>
-                    <div className="absolute bottom-8 left-8 text-white">
-                      <h2 className="text-3xl font-bold mb-2">Send Money to Haiti</h2>
-                      <p className="text-lg mb-4">Fast, secure, and affordable transfers</p>
-                      <button 
-                        onClick={handleSendClick}
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
-                      >
-                        Start Transfer
-                      </button>
+              <div className="bg-gradient-to-r from-blue-600 to-blue-500 text-white p-8">
+                <div className="flex justify-between items-start">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center">
+                      <span className="text-blue-600 font-bold text-2xl">MJ</span>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-2xl">Marie Joseph</p>
+                      <p className="text-lg opacity-90">Verified Account</p>
+                      <p className="text-sm opacity-80">Member since 2023</p>
                     </div>
                   </div>
-                ))}
-                
-                {/* Banner Controls */}
-                <div className="absolute bottom-4 right-8 flex gap-2">
-                  {bannerImages.map((_, index) => (
-                    <button
-                      key={index}
-                      className={`w-3 h-3 rounded-full transition-colors ${
-                        index === activeSlide ? 'bg-white' : 'bg-white/50'
-                      }`}
-                      onClick={() => setActiveSlide(index)}
-                    />
-                  ))}
+                  <div className="text-right">
+                    <div className="bg-green-500 text-white px-3 py-2 rounded-full text-sm mb-2">
+                      ✓ Verified
+                    </div>
+                    <p className="text-sm opacity-80">ID Confirmed</p>
+                  </div>
+                </div>
+                <div className="mt-6 flex space-x-4">
+                  <button 
+                    onClick={handleSendClick}
+                    className="bg-white text-blue-600 px-6 py-3 rounded-xl font-medium hover:bg-gray-100 transition-colors flex-1"
+                  >
+                    Send Money
+                  </button>
+                  <button className="border border-white/50 text-white px-6 py-3 rounded-xl font-medium hover:bg-white/10 transition-colors flex-1">
+                    View Profile
+                  </button>
                 </div>
               </div>
             </div>
