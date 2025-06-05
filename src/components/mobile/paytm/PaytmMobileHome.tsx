@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { 
   Send, 
@@ -20,6 +21,7 @@ import {
   Zap
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import Logo from '../../home/Logo';
 
 export default function PaytmMobileHome() {
   const navigate = useNavigate();
@@ -36,11 +38,11 @@ export default function PaytmMobileHome() {
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-                <span className="text-blue-600 font-bold text-sm">HT</span>
+                <Logo width={20} height={20} />
               </div>
               <div>
-                <p className="text-sm opacity-90">Bonjou</p>
-                <p className="font-semibold">Marie Joseph</p>
+                <p className="text-sm opacity-90">Welcome to</p>
+                <p className="font-semibold">Global Transfer</p>
               </div>
             </div>
             <div className="flex space-x-3">
@@ -57,19 +59,19 @@ export default function PaytmMobileHome() {
           <div className="flex justify-between items-start">
             <div className="flex items-center space-x-3">
               <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                <span className="text-blue-600 font-bold text-lg">MJ</span>
+                <Logo width={28} height={28} />
               </div>
               <div>
-                <p className="font-semibold text-lg text-gray-800">Marie Joseph</p>
-                <p className="text-sm text-gray-600">Verified Account</p>
-                <p className="text-xs text-gray-500">Member since 2023</p>
+                <p className="font-semibold text-lg text-gray-800">Global Transfer</p>
+                <p className="text-sm text-gray-600">Secure Money Transfer</p>
+                <p className="text-xs text-gray-500">Trusted since 2023</p>
               </div>
             </div>
             <div className="text-right">
               <div className="bg-green-500 text-white px-2 py-1 rounded-full text-xs mb-1">
-                ✓ Verified
+                ✓ Secure
               </div>
-              <p className="text-xs text-gray-500">ID Confirmed</p>
+              <p className="text-xs text-gray-500">Fast & Reliable</p>
             </div>
           </div>
           <div className="mt-4 flex space-x-2">
