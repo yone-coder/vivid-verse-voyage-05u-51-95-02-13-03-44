@@ -1,3 +1,4 @@
+
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -42,6 +43,7 @@ import TransferHomePage from "./pages/TransferHomePage";
 import MultiStepTransferPage from "./pages/MultiStepTransferPage";
 import MultiStepTransferSheetPage from "./pages/MultiStepTransferSheetPage";
 import ResponsiveMultiStepTransferPage from "./pages/ResponsiveMultiStepTransferPage";
+import LocalTransferPage from "./pages/LocalTransferPage";
 import SignupPage from "./pages/SignupPage";
 import MultiStepTransferSheetDesktopPage from "./pages/MultiStepTransferSheetDesktopPage";
 import NotFound from "./pages/NotFound";
@@ -99,6 +101,7 @@ function App() {
                       <Route path="transfer" element={<TransferHomePage />} />
                       <Route path="multi-step-transfer" element={<MultiStepTransferPage />} />
                       <Route path="multi-step-transfer-page" element={<ResponsiveMultiStepTransferPage />} />
+                      <Route path="local-transfer" element={<LocalTransferPage />} />
                       <Route path="signup" element={<SignupPage />} />
                       <Route path="*" element={<NotFound />} />
                     </Route>
