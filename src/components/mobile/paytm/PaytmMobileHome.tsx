@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Logo from '../../home/Logo';
-import StepOneTransfer from '../../transfer/StepOneTransfer';
+import MobileTransferInput from './MobileTransferInput';
 
 export default function PaytmMobileHome() {
   const navigate = useNavigate();
@@ -137,10 +137,10 @@ export default function PaytmMobileHome() {
           </div>
         </div>
 
-        {/* Transfer Amount Input - Replacing Transfer Methods Card */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
+        {/* Transfer Amount Input - No Card Wrapper */}
+        <div>
           <h3 className="font-semibold text-gray-800 mb-3">Send Money</h3>
-          <StepOneTransfer 
+          <MobileTransferInput 
             amount={amount}
             onAmountChange={setAmount}
           />
