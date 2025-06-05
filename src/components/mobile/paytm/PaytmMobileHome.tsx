@@ -31,28 +31,30 @@ export default function PaytmMobileHome() {
 
   return (
     <div className="max-w-sm mx-auto bg-white min-h-screen">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-500 text-white p-4">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-              <span className="text-blue-600 font-bold text-sm">HT</span>
+      {/* Extended Header with overlap */}
+      <div className="bg-gradient-to-r from-blue-600 to-blue-500 text-white pb-16">
+        <div className="p-4">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+                <span className="text-blue-600 font-bold text-sm">HT</span>
+              </div>
+              <div>
+                <p className="text-sm opacity-90">Bonjou</p>
+                <p className="font-semibold">Marie Joseph</p>
+              </div>
             </div>
-            <div>
-              <p className="text-sm opacity-90">Bonjou</p>
-              <p className="font-semibold">Marie Joseph</p>
+            <div className="flex space-x-3">
+              <Bell className="w-6 h-6" />
+              <User className="w-6 h-6" />
             </div>
-          </div>
-          <div className="flex space-x-3">
-            <Bell className="w-6 h-6" />
-            <User className="w-6 h-6" />
           </div>
         </div>
       </div>
 
-      {/* User Profile Card Banner */}
-      <div className="mx-4 mt-4 mb-4">
-        <div className="bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg p-4 text-white">
+      {/* User Profile Card - Overlapping the header */}
+      <div className="mx-4 -mt-12 mb-4 relative z-10">
+        <div className="bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg p-4 text-white shadow-lg">
           <div className="flex justify-between items-start">
             <div className="flex items-center space-x-3">
               <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
