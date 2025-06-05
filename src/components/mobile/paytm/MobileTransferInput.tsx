@@ -3,8 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { Loader2, TrendingUp } from 'lucide-react';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useNavigate } from 'react-router-dom';
 
 // Mock exchange rate function since we don't have the actual utility
 const getExchangeRate = async () => {
@@ -22,7 +20,6 @@ interface MobileTransferInputProps {
 }
 
 const MobileTransferInput: React.FC<MobileTransferInputProps> = ({ amount, onAmountChange }) => {
-  const navigate = useNavigate();
   const [exchangeRate, setExchangeRate] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [receiverAmount, setReceiverAmount] = useState('');
@@ -68,10 +65,6 @@ const MobileTransferInput: React.FC<MobileTransferInputProps> = ({ amount, onAmo
   const handleReceiveAmountChange = (value: string) => {
     setLastEditedField('receive');
     setReceiverAmount(value);
-  };
-
-  const handleContinue = () => {
-    navigate('/multi-step-transfer-page');
   };
 
   const usdAmount = parseFloat(amount) || 0;
@@ -184,15 +177,6 @@ const MobileTransferInput: React.FC<MobileTransferInputProps> = ({ amount, onAmo
           </div>
         </div>
       </div>
-
-      {/* Continue Button */}
-      <Button 
-        onClick={handleContinue}
-        disabled={!amount || parseFloat(amount) <= 0}
-        className="w-full bg-[#ff4747] hover:bg-[#ff2727] text-white font-medium py-3 rounded-lg"
-      >
-        Continue Transfer
-      </Button>
     </div>
   );
 };
