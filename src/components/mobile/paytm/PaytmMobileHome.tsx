@@ -31,6 +31,10 @@ export default function PaytmMobileHome() {
     navigate('/multi-step-transfer-page');
   };
 
+  const handleLocalTransferClick = () => {
+    navigate('/multi-step-transfer-page');
+  };
+
   return (
     <div className="max-w-sm mx-auto bg-white min-h-screen">
       {/* Minimal Header with overlap */}
@@ -116,7 +120,7 @@ export default function PaytmMobileHome() {
               </div>
               <p className="text-xs text-gray-600 font-medium">Send to Haiti</p>
             </button>
-            <button className="text-center">
+            <button className="text-center" onClick={handleLocalTransferClick}>
               <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
                 <ArrowUpDown className="w-6 h-6 text-green-600" />
               </div>
