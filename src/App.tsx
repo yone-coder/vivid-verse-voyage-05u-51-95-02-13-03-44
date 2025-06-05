@@ -101,10 +101,11 @@ function App() {
                       <Route path="transfer" element={<TransferHomePage />} />
                       <Route path="multi-step-transfer" element={<MultiStepTransferPage />} />
                       <Route path="multi-step-transfer-page" element={<ResponsiveMultiStepTransferPage />} />
-                      <Route path="local-transfer" element={<LocalTransferPage />} />
                       <Route path="signup" element={<SignupPage />} />
                       <Route path="*" element={<NotFound />} />
                     </Route>
+                    {/* Local transfer page without MainLayout to hide bottom nav */}
+                    <Route path="local-transfer" element={<LocalTransferPage />} />
                   </Routes>
                   <Toaster />
                   <Sonner />

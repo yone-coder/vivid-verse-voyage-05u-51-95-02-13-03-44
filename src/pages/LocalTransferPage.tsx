@@ -1,15 +1,17 @@
 
 import React from 'react';
 import DeviceRouter from '@/components/common/DeviceRouter';
-import MobileMultiStepTransferSheetPage from '@/components/mobile/transfer/MobileMultiStepTransferSheetPage';
+import MobileLocalTransferSheetPage from '@/components/mobile/transfer/MobileLocalTransferSheetPage';
 import DesktopMultiStepTransferPage from '@/components/desktop/transfer/DesktopMultiStepTransferPage';
 
 const LocalTransferPage: React.FC = () => {
   return (
-    <DeviceRouter
-      mobileComponent={MobileMultiStepTransferSheetPage}
-      desktopComponent={DesktopMultiStepTransferPage}
-    />
+    <div className="min-h-screen bg-white">
+      <DeviceRouter
+        mobileComponent={MobileLocalTransferSheetPage}
+        desktopComponent={DesktopMultiStepTransferPage}
+      />
+    </div>
   );
 };
 
