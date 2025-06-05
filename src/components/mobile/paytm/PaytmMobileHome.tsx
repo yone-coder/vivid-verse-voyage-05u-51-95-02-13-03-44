@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   Send, 
   DollarSign, 
@@ -21,9 +21,11 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Logo from '../../home/Logo';
+import StepOneTransfer from '../../transfer/StepOneTransfer';
 
 export default function PaytmMobileHome() {
   const navigate = useNavigate();
+  const [amount, setAmount] = useState('');
 
   const handleSendClick = () => {
     navigate('/multi-step-transfer-page');
@@ -135,51 +137,13 @@ export default function PaytmMobileHome() {
           </div>
         </div>
 
-        {/* Transfer Methods Card */}
+        {/* Transfer Amount Input - Replacing Transfer Methods Card */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
-          <h3 className="font-semibold text-gray-800 mb-3">Transfer Methods</h3>
-          <div className="grid grid-cols-2 gap-3">
-            <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-3 border border-blue-200">
-              <div className="flex items-center mb-2">
-                <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mr-2">
-                  <Send className="w-4 h-4 text-white" />
-                </div>
-                <span className="font-medium text-blue-700">Instant Transfer</span>
-              </div>
-              <p className="text-xs text-blue-600 mb-1">Fee: $2.99</p>
-              <p className="text-xs text-gray-600">Arrives in minutes</p>
-            </div>
-            <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-3 border border-green-200">
-              <div className="flex items-center mb-2">
-                <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mr-2">
-                  <MapPin className="w-4 h-4 text-white" />
-                </div>
-                <span className="font-medium text-green-700">Cash Pickup</span>
-              </div>
-              <p className="text-xs text-green-600 mb-1">Fee: $4.99</p>
-              <p className="text-xs text-gray-600">200+ locations</p>
-            </div>
-            <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-3 border border-purple-200">
-              <div className="flex items-center mb-2">
-                <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center mr-2">
-                  <Building className="w-4 h-4 text-white" />
-                </div>
-                <span className="font-medium text-purple-700">Bank Deposit</span>
-              </div>
-              <p className="text-xs text-purple-600 mb-1">Fee: $3.99</p>
-              <p className="text-xs text-gray-600">1-2 business days</p>
-            </div>
-            <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg p-3 border border-orange-200">
-              <div className="flex items-center mb-2">
-                <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center mr-2">
-                  <Smartphone className="w-4 h-4 text-white" />
-                </div>
-                <span className="font-medium text-orange-700">Mobile Wallet</span>
-              </div>
-              <p className="text-xs text-orange-600 mb-1">Fee: $1.99</p>
-              <p className="text-xs text-gray-600">Instant to wallet</p>
-            </div>
-          </div>
+          <h3 className="font-semibold text-gray-800 mb-3">Send Money</h3>
+          <StepOneTransfer 
+            amount={amount}
+            onAmountChange={setAmount}
+          />
         </div>
 
         {/* Financial Services Card */}
