@@ -1,4 +1,3 @@
-
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -50,6 +49,7 @@ import NotFound from "./pages/NotFound";
 import MainLayout from "./components/layout/MainLayout";
 import { AuthOverlayProvider } from "./context/AuthOverlayContext";
 import "./App.css";
+import GlobalTransferPitch from "./pages/GlobalTransferPitch";
 
 const queryClient = new QueryClient();
 
@@ -102,6 +102,7 @@ function App() {
                       <Route path="multi-step-transfer" element={<MultiStepTransferPage />} />
                       <Route path="multi-step-transfer-page" element={<ResponsiveMultiStepTransferPage />} />
                       <Route path="signup" element={<SignupPage />} />
+                      <Route path="global-transfer-pitch" element={<GlobalTransferPitch />} />
                       <Route path="*" element={<NotFound />} />
                     </Route>
                     {/* Local transfer page without MainLayout to hide bottom nav */}
