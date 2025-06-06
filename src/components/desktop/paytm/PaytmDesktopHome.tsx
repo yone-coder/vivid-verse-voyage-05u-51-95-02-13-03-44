@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Users, Lightbulb, Truck, Plus, Send, CreditCard, Gift, Zap, MapPin, Globe, DollarSign, History, Phone, Wallet, ArrowUpDown, ChevronRight, Building, TrendingUp, BarChart3, PieChart, Calculator, Shield, Clock, Star, Award, Target, Briefcase, HeadphonesIcon, Download, Share2, Eye, Lock, Settings, HelpCircle, MessageSquare, Camera, Mic, Video, Play, BookOpen, CheckCircle, Package, Truck as TruckIcon, Timer, AlertCircle, Calendar, Bookmark, Heart, UserPlus, Copy } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -306,7 +307,7 @@ export default function PaytmDesktopHome() {
         <div className="grid grid-cols-2 gap-8">
           {/* Left Column - Priority Sections First */}
           <div className="space-y-6">
-            {/* User Profile Section - MOVED TO TOP */}
+            {/* User Profile Section - TOP PRIORITY */}
             <Card className="shadow-lg">
               <CardContent className="space-y-4">
                 <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
@@ -343,53 +344,7 @@ export default function PaytmDesktopHome() {
               </CardContent>
             </Card>
 
-            {/* Exchange Rate Section - MOVED TO TOP */}
-            <Card className="shadow-lg">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg font-semibold text-gray-800 flex items-center">
-                  <DollarSign className="h-5 w-5 mr-2 text-green-600" />
-                  Live Exchange Rate
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="bg-gradient-to-r from-green-100 to-blue-100 rounded-lg p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-gray-700">Today's Rate</p>
-                      <p className="text-xl font-bold text-gray-800">1 USD = 133.45 HTG</p>
-                    </div>
-                    <div className="bg-green-500 text-white px-3 py-1 rounded-full text-sm">
-                      Live
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Enhanced Financial Services - MOVED TO TOP */}
-            <Card className="shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
-                  <Briefcase className="h-6 w-6 mr-2 text-purple-600" />
-                  Financial Services
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-3 gap-3">
-                  {financialServices.map((service, index) => (
-                    <div key={index} className="text-center group cursor-pointer">
-                      <div className={`w-14 h-14 bg-${service.color}-100 rounded-xl flex items-center justify-center mb-3 mx-auto group-hover:bg-${service.color}-200 transition-colors group-hover:scale-110 transform duration-200`}>
-                        <service.icon className={`w-7 h-7 text-${service.color}-600`} />
-                      </div>
-                      <span className="text-gray-700 font-medium block text-xs leading-tight">{service.label}</span>
-                      <span className="text-xs text-gray-500 mt-1 block">{service.desc}</span>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Quick Transfer Section - MOVED TO TOP */}
+            {/* Quick Transfer Section - TOP PRIORITY */}
             <Card className="shadow-lg">
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg font-semibold text-gray-800 flex items-center">
@@ -427,7 +382,7 @@ export default function PaytmDesktopHome() {
               </CardContent>
             </Card>
 
-            {/* Transfer Amount Section - MOVED TO TOP */}
+            {/* Transfer Amount Section - TOP PRIORITY */}
             <Card className="shadow-lg">
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg font-semibold text-gray-800 flex items-center">
@@ -701,7 +656,53 @@ export default function PaytmDesktopHome() {
 
           {/* Right Column - Desktop Features with Priority Sections First */}
           <div className="space-y-6">
-            {/* Enhanced Special Offers - MOVED TO TOP */}
+            {/* Live Exchange Rate Section - MOVED TO TOP RIGHT */}
+            <Card className="shadow-lg">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg font-semibold text-gray-800 flex items-center">
+                  <DollarSign className="h-5 w-5 mr-2 text-green-600" />
+                  Live Exchange Rate
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="bg-gradient-to-r from-green-100 to-blue-100 rounded-lg p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-700">Today's Rate</p>
+                      <p className="text-xl font-bold text-gray-800">1 USD = 133.45 HTG</p>
+                    </div>
+                    <div className="bg-green-500 text-white px-3 py-1 rounded-full text-sm">
+                      Live
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Enhanced Financial Services - MOVED TO TOP RIGHT */}
+            <Card className="shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
+                  <Briefcase className="h-6 w-6 mr-2 text-purple-600" />
+                  Financial Services
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-3 gap-3">
+                  {financialServices.map((service, index) => (
+                    <div key={index} className="text-center group cursor-pointer">
+                      <div className={`w-14 h-14 bg-${service.color}-100 rounded-xl flex items-center justify-center mb-3 mx-auto group-hover:bg-${service.color}-200 transition-colors group-hover:scale-110 transform duration-200`}>
+                        <service.icon className={`w-7 h-7 text-${service.color}-600`} />
+                      </div>
+                      <span className="text-gray-700 font-medium block text-xs leading-tight">{service.label}</span>
+                      <span className="text-xs text-gray-500 mt-1 block">{service.desc}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Enhanced Special Offers */}
             <Card className="shadow-lg overflow-hidden">
               <div className="bg-gradient-to-r from-red-400 via-pink-500 to-purple-500 p-6 text-white">
                 <div className="text-center">
