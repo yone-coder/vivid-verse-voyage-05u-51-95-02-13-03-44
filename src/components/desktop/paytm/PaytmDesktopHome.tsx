@@ -157,9 +157,56 @@ export default function PaytmDesktopHome() {
 
       {/* Main Content */}
       <div className="container mx-auto px-6 py-8">
+        {/* Enhanced User Profile Card Banner */}
+        <Card className="shadow-lg overflow-hidden mb-8">
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-500 text-white p-8">
+            <div className="flex justify-between items-start">
+              <div className="flex items-center space-x-4">
+                <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-lg">
+                  <span className="text-blue-600 font-bold text-3xl">MJ</span>
+                </div>
+                <div>
+                  <p className="font-semibold text-2xl">Marie Joseph</p>
+                  <div className="flex items-center space-x-3 mt-1">
+                    <div className="flex items-center">
+                      <Shield className="h-4 w-4 mr-1" />
+                      <span className="text-lg">Verified Account</span>
+                    </div>
+                    <div className="flex items-center">
+                      <Star className="h-4 w-4 mr-1 text-yellow-300" />
+                      <span className="text-sm">Premium Member</span>
+                    </div>
+                  </div>
+                  <p className="text-sm opacity-80 mt-1">Member since 2023 • 127 transfers completed</p>
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="bg-green-500 text-white px-4 py-2 rounded-full text-sm mb-2 flex items-center">
+                  <Shield className="h-4 w-4 mr-1" />
+                  ✓ Verified
+                </div>
+                <p className="text-sm opacity-80">ID • Address • Phone</p>
+              </div>
+            </div>
+            <div className="mt-6 flex space-x-4">
+              <button 
+                onClick={handleSendClick}
+                className="bg-white text-blue-600 px-8 py-3 rounded-xl font-medium hover:bg-gray-100 transition-colors flex-1 flex items-center justify-center"
+              >
+                <Send className="h-5 w-5 mr-2" />
+                Send Money
+              </button>
+              <button className="border border-white/50 text-white px-8 py-3 rounded-xl font-medium hover:bg-white/10 transition-colors flex-1">
+                View Profile
+              </button>
+            </div>
+          </div>
+        </Card>
+
+        {/* Horizontal Card Layout */}
         <div className="grid grid-cols-12 gap-8">
-          {/* Enhanced Left Sidebar */}
-          <div className="col-span-3 space-y-6">
+          {/* Left Column - Quick Actions and Balance */}
+          <div className="col-span-4 space-y-6">
             {/* Quick Actions */}
             <Card className="shadow-lg">
               <CardHeader>
@@ -168,19 +215,21 @@ export default function PaytmDesktopHome() {
                   Quick Actions
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
-                {quickActions.map((action, index) => (
-                  <button 
-                    key={index}
-                    onClick={action.label === 'Send to Haiti' ? handleSendClick : undefined}
-                    className="w-full flex items-center p-3 rounded-xl hover:bg-gray-50 transition-colors border border-gray-100 group"
-                  >
-                    <div className={`bg-${action.color}-600 p-2 rounded-lg mr-3 group-hover:scale-110 transition-transform`}>
-                      <action.icon className="h-5 w-5 text-white" />
-                    </div>
-                    <span className="font-medium text-gray-700">{action.label}</span>
-                  </button>
-                ))}
+              <CardContent>
+                <div className="grid grid-cols-2 gap-3">
+                  {quickActions.map((action, index) => (
+                    <button 
+                      key={index}
+                      onClick={action.label === 'Send to Haiti' ? handleSendClick : undefined}
+                      className="flex flex-col items-center p-3 rounded-xl hover:bg-gray-50 transition-colors border border-gray-100 group"
+                    >
+                      <div className={`bg-${action.color}-600 p-3 rounded-lg mb-2 group-hover:scale-110 transition-transform`}>
+                        <action.icon className="h-5 w-5 text-white" />
+                      </div>
+                      <span className="font-medium text-gray-700 text-sm text-center">{action.label}</span>
+                    </button>
+                  ))}
+                </div>
               </CardContent>
             </Card>
 
@@ -221,7 +270,117 @@ export default function PaytmDesktopHome() {
                 </div>
               </CardContent>
             </Card>
+          </div>
 
+          {/* Middle Column - Transfer Methods and Financial Services */}
+          <div className="col-span-5 space-y-8">
+            {/* Enhanced Transfer Methods Section */}
+            <Card className="shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-2xl font-bold text-gray-900 flex items-center">
+                  <Send className="h-6 w-6 mr-3 text-blue-600" />
+                  Transfer Methods
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-4 border border-blue-200 hover:shadow-lg transition-all cursor-pointer group">
+                    <div className="flex items-center mb-3">
+                      <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+                        <Zap className="w-6 h-6 text-white" />
+                      </div>
+                      <div>
+                        <span className="font-bold text-blue-700 text-lg">Instant Transfer</span>
+                        <p className="text-blue-600 text-xs">Fee: $2.99 • Under 5 mins</p>
+                      </div>
+                    </div>
+                    <p className="text-gray-600 text-sm mb-2">Arrives in minutes to mobile wallets</p>
+                    <div className="flex items-center text-xs text-blue-600">
+                      <Clock className="h-3 w-3 mr-1" />
+                      <span>Average: 2 minutes</span>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-4 border border-green-200 hover:shadow-lg transition-all cursor-pointer group">
+                    <div className="flex items-center mb-3">
+                      <div className="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+                        <MapPin className="w-6 h-6 text-white" />
+                      </div>
+                      <div>
+                        <span className="font-bold text-green-700 text-lg">Cash Pickup</span>
+                        <p className="text-green-600 text-xs">Fee: $4.99 • Same day</p>
+                      </div>
+                    </div>
+                    <p className="text-gray-600 text-sm mb-2">200+ pickup locations across Haiti</p>
+                    <div className="flex items-center text-xs text-green-600">
+                      <MapPin className="h-3 w-3 mr-1" />
+                      <span>Find nearest location</span>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-4 border border-purple-200 hover:shadow-lg transition-all cursor-pointer group">
+                    <div className="flex items-center mb-3">
+                      <div className="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+                        <Building className="w-6 h-6 text-white" />
+                      </div>
+                      <div>
+                        <span className="font-bold text-purple-700 text-lg">Bank Deposit</span>
+                        <p className="text-purple-600 text-xs">Fee: $3.99 • 1-2 days</p>
+                      </div>
+                    </div>
+                    <p className="text-gray-600 text-sm mb-2">Direct to bank account</p>
+                    <div className="flex items-center text-xs text-purple-600">
+                      <Building className="h-3 w-3 mr-1" />
+                      <span>All major banks supported</span>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl p-4 border border-orange-200 hover:shadow-lg transition-all cursor-pointer group">
+                    <div className="flex items-center mb-3">
+                      <div className="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+                        <Smartphone className="w-6 h-6 text-white" />
+                      </div>
+                      <div>
+                        <span className="font-bold text-orange-700 text-lg">Mobile Wallet</span>
+                        <p className="text-orange-600 text-xs">Fee: $1.99 • Instant</p>
+                      </div>
+                    </div>
+                    <p className="text-gray-600 text-sm mb-2">Instant to Moncash & other wallets</p>
+                    <div className="flex items-center text-xs text-orange-600">
+                      <Smartphone className="h-3 w-3 mr-1" />
+                      <span>Moncash, Natcash & more</span>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Enhanced Financial Services */}
+            <Card className="shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-2xl font-bold text-gray-900 flex items-center">
+                  <Briefcase className="h-6 w-6 mr-3 text-purple-600" />
+                  Financial Services
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-3 gap-4">
+                  {financialServices.map((service, index) => (
+                    <div key={index} className="text-center group cursor-pointer">
+                      <div className={`w-16 h-16 bg-${service.color}-100 rounded-2xl flex items-center justify-center mb-3 mx-auto group-hover:bg-${service.color}-200 transition-colors group-hover:scale-110 transform duration-200`}>
+                        <service.icon className={`w-8 h-8 text-${service.color}-600`} />
+                      </div>
+                      <span className="text-gray-700 font-medium block text-sm">{service.label}</span>
+                      <span className="text-xs text-gray-500 mt-1 block">{service.desc}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Right Column - Banking Features, Video Tutorials, and Other Cards */}
+          <div className="col-span-3 space-y-6">
             {/* Banking Features */}
             <Card className="shadow-lg">
               <CardHeader>
@@ -239,7 +398,7 @@ export default function PaytmDesktopHome() {
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center">
-                          <span className="font-medium text-gray-800">{feature.label}</span>
+                          <span className="font-medium text-gray-800 text-sm">{feature.label}</span>
                           {feature.isNew && <Badge className="ml-2 text-xs bg-green-500">New</Badge>}
                           {feature.isPopular && <Badge className="ml-2 text-xs bg-orange-500">Popular</Badge>}
                         </div>
@@ -250,242 +409,7 @@ export default function PaytmDesktopHome() {
                 ))}
               </CardContent>
             </Card>
-          </div>
 
-          {/* Enhanced Main Content */}
-          <div className="col-span-6 space-y-8">
-            {/* Enhanced User Profile Card Banner */}
-            <Card className="shadow-lg overflow-hidden">
-              <div className="bg-gradient-to-r from-blue-600 to-indigo-500 text-white p-8">
-                <div className="flex justify-between items-start">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-lg">
-                      <span className="text-blue-600 font-bold text-3xl">MJ</span>
-                    </div>
-                    <div>
-                      <p className="font-semibold text-2xl">Marie Joseph</p>
-                      <div className="flex items-center space-x-3 mt-1">
-                        <div className="flex items-center">
-                          <Shield className="h-4 w-4 mr-1" />
-                          <span className="text-lg">Verified Account</span>
-                        </div>
-                        <div className="flex items-center">
-                          <Star className="h-4 w-4 mr-1 text-yellow-300" />
-                          <span className="text-sm">Premium Member</span>
-                        </div>
-                      </div>
-                      <p className="text-sm opacity-80 mt-1">Member since 2023 • 127 transfers completed</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="bg-green-500 text-white px-4 py-2 rounded-full text-sm mb-2 flex items-center">
-                      <Shield className="h-4 w-4 mr-1" />
-                      ✓ Verified
-                    </div>
-                    <p className="text-sm opacity-80">ID • Address • Phone</p>
-                  </div>
-                </div>
-                <div className="mt-6 flex space-x-4">
-                  <button 
-                    onClick={handleSendClick}
-                    className="bg-white text-blue-600 px-8 py-3 rounded-xl font-medium hover:bg-gray-100 transition-colors flex-1 flex items-center justify-center"
-                  >
-                    <Send className="h-5 w-5 mr-2" />
-                    Send Money
-                  </button>
-                  <button className="border border-white/50 text-white px-8 py-3 rounded-xl font-medium hover:bg-white/10 transition-colors flex-1">
-                    View Profile
-                  </button>
-                </div>
-              </div>
-            </Card>
-
-            {/* Enhanced Transfer Methods Section */}
-            <Card className="shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-3xl font-bold text-gray-900 flex items-center">
-                  <Send className="h-8 w-8 mr-3 text-blue-600" />
-                  Transfer Methods
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 gap-6 mb-8">
-                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 border border-blue-200 hover:shadow-lg transition-all cursor-pointer group">
-                    <div className="flex items-center mb-4">
-                      <div className="w-14 h-14 bg-blue-500 rounded-xl flex items-center justify-center mr-4 group-hover:scale-110 transition-transform">
-                        <Zap className="w-7 h-7 text-white" />
-                      </div>
-                      <div>
-                        <span className="font-bold text-blue-700 text-xl">Instant Transfer</span>
-                        <p className="text-blue-600 text-sm">Fee: $2.99 • Under 5 mins</p>
-                      </div>
-                    </div>
-                    <p className="text-gray-600 mb-3">Arrives in minutes to mobile wallets</p>
-                    <div className="flex items-center text-sm text-blue-600">
-                      <Clock className="h-4 w-4 mr-1" />
-                      <span>Average: 2 minutes</span>
-                    </div>
-                  </div>
-                  
-                  <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-6 border border-green-200 hover:shadow-lg transition-all cursor-pointer group">
-                    <div className="flex items-center mb-4">
-                      <div className="w-14 h-14 bg-green-500 rounded-xl flex items-center justify-center mr-4 group-hover:scale-110 transition-transform">
-                        <MapPin className="w-7 h-7 text-white" />
-                      </div>
-                      <div>
-                        <span className="font-bold text-green-700 text-xl">Cash Pickup</span>
-                        <p className="text-green-600 text-sm">Fee: $4.99 • Same day</p>
-                      </div>
-                    </div>
-                    <p className="text-gray-600 mb-3">200+ pickup locations across Haiti</p>
-                    <div className="flex items-center text-sm text-green-600">
-                      <MapPin className="h-4 w-4 mr-1" />
-                      <span>Find nearest location</span>
-                    </div>
-                  </div>
-                  
-                  <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-6 border border-purple-200 hover:shadow-lg transition-all cursor-pointer group">
-                    <div className="flex items-center mb-4">
-                      <div className="w-14 h-14 bg-purple-500 rounded-xl flex items-center justify-center mr-4 group-hover:scale-110 transition-transform">
-                        <Building className="w-7 h-7 text-white" />
-                      </div>
-                      <div>
-                        <span className="font-bold text-purple-700 text-xl">Bank Deposit</span>
-                        <p className="text-purple-600 text-sm">Fee: $3.99 • 1-2 days</p>
-                      </div>
-                    </div>
-                    <p className="text-gray-600 mb-3">Direct to bank account</p>
-                    <div className="flex items-center text-sm text-purple-600">
-                      <Building className="h-4 w-4 mr-1" />
-                      <span>All major banks supported</span>
-                    </div>
-                  </div>
-                  
-                  <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl p-6 border border-orange-200 hover:shadow-lg transition-all cursor-pointer group">
-                    <div className="flex items-center mb-4">
-                      <div className="w-14 h-14 bg-orange-500 rounded-xl flex items-center justify-center mr-4 group-hover:scale-110 transition-transform">
-                        <Smartphone className="w-7 h-7 text-white" />
-                      </div>
-                      <div>
-                        <span className="font-bold text-orange-700 text-xl">Mobile Wallet</span>
-                        <p className="text-orange-600 text-sm">Fee: $1.99 • Instant</p>
-                      </div>
-                    </div>
-                    <p className="text-gray-600 mb-3">Instant to Moncash & other wallets</p>
-                    <div className="flex items-center text-sm text-orange-600">
-                      <Smartphone className="h-4 w-4 mr-1" />
-                      <span>Moncash, Natcash & more</span>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Enhanced Financial Services */}
-            <Card className="shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-3xl font-bold text-gray-900 flex items-center">
-                  <Briefcase className="h-8 w-8 mr-3 text-purple-600" />
-                  Financial Services
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-4 gap-6">
-                  {financialServices.map((service, index) => (
-                    <div key={index} className="text-center group cursor-pointer">
-                      <div className={`w-20 h-20 bg-${service.color}-100 rounded-2xl flex items-center justify-center mb-4 mx-auto group-hover:bg-${service.color}-200 transition-colors group-hover:scale-110 transform duration-200`}>
-                        <service.icon className={`w-10 h-10 text-${service.color}-600`} />
-                      </div>
-                      <span className="text-gray-700 font-medium block">{service.label}</span>
-                      <span className="text-xs text-gray-500 mt-1 block">{service.desc}</span>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Enhanced Video Tutorials Section */}
-            <Card className="shadow-lg">
-              <CardHeader>
-                <div className="flex justify-between items-center">
-                  <CardTitle className="text-3xl font-bold text-gray-900 flex items-center">
-                    <Eye className="h-8 w-8 mr-3 text-indigo-600" />
-                    Video Tutorials
-                  </CardTitle>
-                  <button className="text-blue-600 font-medium hover:underline flex items-center">
-                    View All
-                    <ChevronRight className="h-4 w-4 ml-1" />
-                  </button>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {[
-                  {
-                    title: "How to Send Money to Haiti",
-                    desc: "Complete step-by-step guide for beginners",
-                    duration: "3:45",
-                    views: "2.1K",
-                    rating: 5,
-                    bgColor: "from-blue-50 to-indigo-50",
-                    borderColor: "border-blue-100",
-                    playColor: "bg-blue-500"
-                  },
-                  {
-                    title: "Cash Pickup Locations Guide",
-                    desc: "Find and use pickup points effectively",
-                    duration: "2:12",
-                    views: "1.8K",
-                    rating: 4,
-                    bgColor: "from-green-50 to-emerald-50",
-                    borderColor: "border-green-100",
-                    playColor: "bg-green-500"
-                  },
-                  {
-                    title: "Mobile Money & Bill Payments",
-                    desc: "Pay bills and top-up phones in Haiti",
-                    duration: "4:30",
-                    views: "950",
-                    rating: 5,
-                    bgColor: "from-purple-50 to-violet-50",
-                    borderColor: "border-purple-100",
-                    playColor: "bg-purple-500"
-                  }
-                ].map((video, index) => (
-                  <div key={index} className={`flex items-center p-4 bg-gradient-to-r ${video.bgColor} rounded-xl border ${video.borderColor} hover:shadow-md transition-all cursor-pointer group`}>
-                    <div className={`w-28 h-20 ${video.playColor} rounded-lg flex items-center justify-center mr-4 relative group-hover:scale-105 transition-transform`}>
-                      <div className="w-0 h-0 border-l-8 border-l-white border-t-4 border-t-transparent border-b-4 border-b-transparent ml-1"></div>
-                      <div className="absolute top-1 right-1 bg-red-500 text-white text-xs px-2 py-1 rounded">{video.duration}</div>
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-semibold text-gray-800 text-lg mb-1">{video.title}</p>
-                      <p className="text-gray-600 mb-2">{video.desc}</p>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center">
-                          <div className="flex text-yellow-400 mr-3">
-                            {Array.from({length: 5}, (_, i) => (
-                              <span key={i}>{i < video.rating ? '★' : '☆'}</span>
-                            ))}
-                          </div>
-                          <span className="text-gray-500 text-sm">{video.views} views</span>
-                        </div>
-                        <div className="flex space-x-2">
-                          <button className="p-1 hover:bg-white rounded transition-colors">
-                            <Share2 className="h-4 w-4 text-gray-500" />
-                          </button>
-                          <button className="p-1 hover:bg-white rounded transition-colors">
-                            <Download className="h-4 w-4 text-gray-500" />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Enhanced Right Sidebar */}
-          <div className="col-span-3 space-y-6">
             {/* Recent Recipients */}
             <Card className="shadow-lg">
               <CardHeader>
@@ -497,30 +421,29 @@ export default function PaytmDesktopHome() {
                   <ChevronRight className="w-5 h-5 text-gray-400 cursor-pointer hover:text-gray-600" />
                 </div>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-3">
                 {[
                   { name: "Jean Pierre", location: "Port-au-Prince", amount: "$150", time: "3 days ago", initials: "JP", color: "bg-blue-100 text-blue-600" },
                   { name: "Marie Louise", location: "Cap-Haïtien", amount: "$200", time: "1 week ago", initials: "ML", color: "bg-pink-100 text-pink-600" },
                   { name: "Pierre Duval", location: "Jacmel", amount: "$75", time: "2 weeks ago", initials: "PD", color: "bg-green-100 text-green-600" }
                 ].map((recipient, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
+                  <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
                     <div className="flex items-center">
-                      <div className={`w-12 h-12 ${recipient.color} rounded-full flex items-center justify-center mr-3`}>
-                        <span className="font-semibold">{recipient.initials}</span>
+                      <div className={`w-8 h-8 ${recipient.color} rounded-full flex items-center justify-center mr-2`}>
+                        <span className="font-semibold text-xs">{recipient.initials}</span>
                       </div>
                       <div>
-                        <p className="font-medium text-gray-800">{recipient.name}</p>
-                        <p className="text-sm text-gray-500">{recipient.location} • Last: {recipient.amount}</p>
+                        <p className="font-medium text-gray-800 text-sm">{recipient.name}</p>
+                        <p className="text-xs text-gray-500">{recipient.location} • {recipient.amount}</p>
                       </div>
                     </div>
                     <div className="text-right">
                       <button 
                         onClick={handleSendClick}
-                        className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm hover:bg-blue-700 transition-colors mb-1"
+                        className="bg-blue-600 text-white px-3 py-1 rounded-full text-xs hover:bg-blue-700 transition-colors"
                       >
                         Send
                       </button>
-                      <p className="text-xs text-gray-500">{recipient.time}</p>
                     </div>
                   </div>
                 ))}
@@ -535,23 +458,23 @@ export default function PaytmDesktopHome() {
                   Live Statistics
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+              <CardContent className="space-y-3">
+                <div className="grid grid-cols-2 gap-3">
                   <div className="bg-purple-50 rounded-lg p-3 text-center">
-                    <div className="text-2xl font-bold text-purple-600">1,234</div>
-                    <div className="text-sm text-gray-600">Online Users</div>
+                    <div className="text-xl font-bold text-purple-600">1,234</div>
+                    <div className="text-xs text-gray-600">Online Users</div>
                   </div>
                   <div className="bg-green-50 rounded-lg p-3 text-center">
-                    <div className="text-2xl font-bold text-green-600">89</div>
-                    <div className="text-sm text-gray-600">Active Transfers</div>
+                    <div className="text-xl font-bold text-green-600">89</div>
+                    <div className="text-xs text-gray-600">Active Transfers</div>
                   </div>
                   <div className="bg-orange-50 rounded-lg p-3 text-center">
-                    <div className="text-2xl font-bold text-orange-600">156</div>
-                    <div className="text-sm text-gray-600">Pending Orders</div>
+                    <div className="text-xl font-bold text-orange-600">156</div>
+                    <div className="text-xs text-gray-600">Pending Orders</div>
                   </div>
                   <div className="bg-blue-50 rounded-lg p-3 text-center">
-                    <div className="text-2xl font-bold text-blue-600">$2.1M</div>
-                    <div className="text-sm text-gray-600">Daily Volume</div>
+                    <div className="text-xl font-bold text-blue-600">$2.1M</div>
+                    <div className="text-xs text-gray-600">Daily Volume</div>
                   </div>
                 </div>
               </CardContent>
@@ -559,19 +482,19 @@ export default function PaytmDesktopHome() {
 
             {/* Enhanced Special Offers */}
             <Card className="shadow-lg overflow-hidden">
-              <div className="bg-gradient-to-r from-red-400 via-pink-500 to-purple-500 p-6 text-white">
+              <div className="bg-gradient-to-r from-red-400 via-pink-500 to-purple-500 p-4 text-white">
                 <div className="text-center">
-                  <Gift className="h-8 w-8 mx-auto mb-3" />
-                  <p className="font-bold text-xl mb-2">🎉 Zero Fees Special!</p>
-                  <p className="text-sm mb-4 opacity-90">Send up to $500 with no transfer fees this month</p>
+                  <Gift className="h-6 w-6 mx-auto mb-2" />
+                  <p className="font-bold text-lg mb-2">🎉 Zero Fees Special!</p>
+                  <p className="text-xs mb-3 opacity-90">Send up to $500 with no transfer fees this month</p>
                   <button 
                     onClick={handleSendClick}
-                    className="w-full bg-white text-red-500 py-3 px-4 rounded-full text-sm font-medium hover:bg-gray-100 transition-colors mb-3 flex items-center justify-center"
+                    className="w-full bg-white text-red-500 py-2 px-3 rounded-full text-xs font-medium hover:bg-gray-100 transition-colors mb-2 flex items-center justify-center"
                   >
-                    <Gift className="h-4 w-4 mr-2" />
+                    <Gift className="h-3 w-3 mr-1" />
                     Claim Offer Now
                   </button>
-                  <p className="text-xs opacity-80">Valid until June 30, 2025 • Terms apply • Limited time</p>
+                  <p className="text-xs opacity-80">Valid until June 30, 2025</p>
                 </div>
               </div>
             </Card>
@@ -584,32 +507,113 @@ export default function PaytmDesktopHome() {
                   Help & Support
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
-                <button className="w-full flex items-center p-3 text-left hover:bg-gray-50 rounded-lg transition-colors">
-                  <MessageSquare className="h-5 w-5 mr-3 text-blue-600" />
+              <CardContent className="space-y-2">
+                <button className="w-full flex items-center p-2 text-left hover:bg-gray-50 rounded-lg transition-colors">
+                  <MessageSquare className="h-4 w-4 mr-2 text-blue-600" />
                   <div>
-                    <div className="font-medium">Live Chat</div>
-                    <div className="text-sm text-gray-500">Get instant help</div>
+                    <div className="font-medium text-sm">Live Chat</div>
+                    <div className="text-xs text-gray-500">Get instant help</div>
                   </div>
                 </button>
-                <button className="w-full flex items-center p-3 text-left hover:bg-gray-50 rounded-lg transition-colors">
-                  <Phone className="h-5 w-5 mr-3 text-green-600" />
+                <button className="w-full flex items-center p-2 text-left hover:bg-gray-50 rounded-lg transition-colors">
+                  <Phone className="h-4 w-4 mr-2 text-green-600" />
                   <div>
-                    <div className="font-medium">Call Support</div>
-                    <div className="text-sm text-gray-500">24/7 phone support</div>
+                    <div className="font-medium text-sm">Call Support</div>
+                    <div className="text-xs text-gray-500">24/7 phone support</div>
                   </div>
                 </button>
-                <button className="w-full flex items-center p-3 text-left hover:bg-gray-50 rounded-lg transition-colors">
-                  <FileText className="h-5 w-5 mr-3 text-purple-600" />
+                <button className="w-full flex items-center p-2 text-left hover:bg-gray-50 rounded-lg transition-colors">
+                  <FileText className="h-4 w-4 mr-2 text-purple-600" />
                   <div>
-                    <div className="font-medium">Help Center</div>
-                    <div className="text-sm text-gray-500">Browse FAQs</div>
+                    <div className="font-medium text-sm">Help Center</div>
+                    <div className="text-xs text-gray-500">Browse FAQs</div>
                   </div>
                 </button>
               </CardContent>
             </Card>
           </div>
         </div>
+
+        {/* Enhanced Video Tutorials Section - Full Width */}
+        <Card className="shadow-lg mt-8">
+          <CardHeader>
+            <div className="flex justify-between items-center">
+              <CardTitle className="text-2xl font-bold text-gray-900 flex items-center">
+                <Eye className="h-6 w-6 mr-3 text-indigo-600" />
+                Video Tutorials
+              </CardTitle>
+              <button className="text-blue-600 font-medium hover:underline flex items-center">
+                View All
+                <ChevronRight className="h-4 w-4 ml-1" />
+              </button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-3 gap-6">
+              {[
+                {
+                  title: "How to Send Money to Haiti",
+                  desc: "Complete step-by-step guide for beginners",
+                  duration: "3:45",
+                  views: "2.1K",
+                  rating: 5,
+                  bgColor: "from-blue-50 to-indigo-50",
+                  borderColor: "border-blue-100",
+                  playColor: "bg-blue-500"
+                },
+                {
+                  title: "Cash Pickup Locations Guide",
+                  desc: "Find and use pickup points effectively",
+                  duration: "2:12",
+                  views: "1.8K",
+                  rating: 4,
+                  bgColor: "from-green-50 to-emerald-50",
+                  borderColor: "border-green-100",
+                  playColor: "bg-green-500"
+                },
+                {
+                  title: "Mobile Money & Bill Payments",
+                  desc: "Pay bills and top-up phones in Haiti",
+                  duration: "4:30",
+                  views: "950",
+                  rating: 5,
+                  bgColor: "from-purple-50 to-violet-50",
+                  borderColor: "border-purple-100",
+                  playColor: "bg-purple-500"
+                }
+              ].map((video, index) => (
+                <div key={index} className={`p-4 bg-gradient-to-r ${video.bgColor} rounded-xl border ${video.borderColor} hover:shadow-md transition-all cursor-pointer group`}>
+                  <div className={`w-full h-32 ${video.playColor} rounded-lg flex items-center justify-center mb-3 relative group-hover:scale-105 transition-transform`}>
+                    <div className="w-0 h-0 border-l-8 border-l-white border-t-4 border-t-transparent border-b-4 border-b-transparent ml-1"></div>
+                    <div className="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded">{video.duration}</div>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-800 mb-1">{video.title}</p>
+                    <p className="text-gray-600 text-sm mb-2">{video.desc}</p>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <div className="flex text-yellow-400 mr-2">
+                          {Array.from({length: 5}, (_, i) => (
+                            <span key={i} className="text-xs">{i < video.rating ? '★' : '☆'}</span>
+                          ))}
+                        </div>
+                        <span className="text-gray-500 text-xs">{video.views} views</span>
+                      </div>
+                      <div className="flex space-x-1">
+                        <button className="p-1 hover:bg-white rounded transition-colors">
+                          <Share2 className="h-3 w-3 text-gray-500" />
+                        </button>
+                        <button className="p-1 hover:bg-white rounded transition-colors">
+                          <Download className="h-3 w-3 text-gray-500" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
