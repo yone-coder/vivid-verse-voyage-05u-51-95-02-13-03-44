@@ -236,20 +236,20 @@ export default function PaytmDesktopHome() {
                 <CardContent>
                   <div className="grid grid-cols-2 gap-3">
                     {bankingFeatures.map((feature, index) => (
-                      <div key={index} className="p-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer group relative min-h-[120px] flex flex-col">
-                        <div className="flex flex-col items-center text-center flex-1">
-                          <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center mb-2 group-hover:bg-blue-100 transition-colors">
-                            <feature.icon className="h-5 w-5 text-gray-600 group-hover:text-blue-600" />
+                      <div key={index} className="p-4 border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer group h-36 flex flex-col justify-between">
+                        <div className="flex flex-col items-center text-center">
+                          <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mb-3 group-hover:bg-blue-100 transition-colors">
+                            <feature.icon className="h-6 w-6 text-gray-600 group-hover:text-blue-600" />
                           </div>
-                          <div className="flex-1">
+                          <div className="mb-2">
                             <div className="flex items-center justify-center mb-1">
-                              <span className="font-medium text-gray-800 text-sm">{feature.label}</span>
+                              <span className="font-medium text-gray-800 text-sm text-center leading-tight">{feature.label}</span>
                             </div>
-                            {feature.isNew && <Badge className="mb-2 text-xs bg-green-500">New</Badge>}
-                            {feature.isPopular && <Badge className="mb-2 text-xs bg-orange-500">Popular</Badge>}
-                            <p className="text-xs text-gray-500">{feature.desc}</p>
+                            {feature.isNew && <Badge className="mb-1 text-xs bg-green-500">New</Badge>}
+                            {feature.isPopular && <Badge className="mb-1 text-xs bg-orange-500">Popular</Badge>}
                           </div>
                         </div>
+                        <p className="text-xs text-gray-500 text-center mt-auto">{feature.desc}</p>
                       </div>
                     ))}
                   </div>
