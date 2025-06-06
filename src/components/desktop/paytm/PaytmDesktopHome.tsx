@@ -1,9 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Users, Lightbulb, Truck, Plus, Send, CreditCard, Gift, Zap, MapPin, Globe, DollarSign, History, Phone, Wallet, ArrowUpDown, ChevronRight, Building, TrendingUp, BarChart3, PieChart, Calculator, Shield, Clock, Star, Award, Target, Briefcase, HeadphonesIcon, Download, Share2, Eye, Lock, Settings, HelpCircle, MessageSquare, Camera, Mic } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import PaytmMobileHome from '@/components/mobile/paytm/PaytmMobileHome';
 
 export default function PaytmDesktopHome() {
   const navigate = useNavigate();
@@ -169,148 +169,9 @@ export default function PaytmDesktopHome() {
             
             {/* Mobile Container */}
             <div className="max-w-sm mx-auto bg-gradient-to-b from-blue-100 to-blue-50 rounded-3xl overflow-hidden shadow-lg border-8 border-gray-800">
-              {/* Mobile Header */}
-              <div className="sticky top-0 z-50 bg-gradient-to-b from-blue-100 to-blue-50 px-4 py-3 shadow-sm">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-                      <User className="w-5 h-5 text-gray-400" />
-                    </div>
-                    <div className="flex items-center">
-                      <span className="text-xl font-bold text-blue-900">Paytm</span>
-                      <span className="text-red-500 text-lg ml-1">❤</span>
-                      <span className="text-xl font-bold text-blue-600 ml-1">UPI</span>
-                      <span className="text-yellow-500 text-lg">⚡</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Search className="w-5 h-5 text-blue-600" />
-                    <Bell className="w-5 h-5 text-blue-600" />
-                  </div>
-                </div>
-              </div>
-
-              {/* Mobile Content */}
-              <div className="px-4 space-y-4 pb-20">
-                {/* Image Carousel */}
-                <div className="mt-4 bg-white rounded-xl relative overflow-hidden">
-                  <div className="relative h-32">
-                    {bannerImages.map((image, index) => (
-                      <div
-                        key={index}
-                        className={`absolute inset-0 transition-transform duration-500 ease-in-out ${
-                          index === activeSlide ? 'translate-x-0' : 
-                          index < activeSlide ? '-translate-x-full' : 'translate-x-full'
-                        }`}
-                      >
-                        <img
-                          src={image}
-                          alt={`Banner ${index + 1}`}
-                          className="w-full h-full object-cover rounded-xl"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Money Transfer */}
-                <div className="bg-white rounded-xl p-4">
-                  <h3 className="text-lg font-bold text-gray-900 mb-3">Money Transfer</h3>
-                  <div className="grid grid-cols-4 gap-3 mb-3">
-                    <div className="flex flex-col items-center">
-                      <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center mb-1">
-                        <QrCode className="w-5 h-5 text-white" />
-                      </div>
-                      <span className="text-xs text-gray-700 text-center">Scan & Pay</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center mb-1">
-                        <Upload className="w-5 h-5 text-white" />
-                      </div>
-                      <span className="text-xs text-gray-700 text-center">To Mobile</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center mb-1">
-                        <Building2 className="w-5 h-5 text-white" />
-                      </div>
-                      <span className="text-xs text-gray-700 text-center">To Bank A/C</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center mb-1">
-                        <User className="w-5 h-5 text-white" />
-                      </div>
-                      <span className="text-xs text-gray-700 text-center">To Self A/c</span>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-4 gap-3">
-                    <div className="flex flex-col items-center">
-                      <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center mb-1">
-                        <FileText className="w-5 h-5 text-blue-600" />
-                      </div>
-                      <span className="text-xs text-gray-700 text-center">Balance</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center mb-1">
-                        <QrCode className="w-5 h-5 text-blue-600" />
-                      </div>
-                      <span className="text-xs text-gray-700 text-center">Receive</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center mb-1">
-                        <Users className="w-5 h-5 text-blue-600" />
-                      </div>
-                      <span className="text-xs text-gray-700 text-center">Refer</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center mb-1">
-                        <span className="text-blue-600 font-bold text-lg">⚡</span>
-                      </div>
-                      <span className="text-xs text-gray-700 text-center">UPI</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Recharge & Bill Payments */}
-                <div className="bg-white rounded-xl p-4">
-                  <h3 className="text-lg font-bold text-gray-900 mb-3">Recharge & Bills</h3>
-                  <div className="grid grid-cols-4 gap-3">
-                    <div className="flex flex-col items-center">
-                      <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center mb-1">
-                        <Smartphone className="w-5 h-5 text-blue-600" />
-                      </div>
-                      <span className="text-xs text-gray-700 text-center">Mobile</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center mb-1">
-                        <Truck className="w-5 h-5 text-green-600" />
-                      </div>
-                      <span className="text-xs text-gray-700 text-center">FASTag</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <div className="w-10 h-10 bg-yellow-100 rounded-xl flex items-center justify-center mb-1">
-                        <Lightbulb className="w-5 h-5 text-yellow-600" />
-                      </div>
-                      <span className="text-xs text-gray-700 text-center">Electric</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <div className="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center mb-1">
-                        <span className="text-red-600 font-bold text-sm">Lo</span>
-                      </div>
-                      <span className="text-xs text-gray-700 text-center">Loans</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Mobile Bottom Send Button */}
-              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
-                <button 
-                  onClick={handleSendClick}
-                  className="bg-blue-600 text-white px-6 py-3 rounded-full flex items-center gap-2 shadow-lg"
-                >
-                  <Send className="w-5 h-5" />
-                  <span className="font-semibold">Send</span>
-                </button>
+              {/* Render the actual mobile component */}
+              <div className="transform scale-100">
+                <PaytmMobileHome />
               </div>
             </div>
           </div>
