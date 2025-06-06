@@ -1,788 +1,619 @@
 
-import React, { useState } from 'react';
-import { 
-  Send, 
-  DollarSign, 
-  MapPin, 
-  Bell, 
-  User, 
-  Smartphone, 
-  ChevronRight,
-  Plus,
-  History,
-  Users,
-  FileText,
-  Phone,
-  Wallet,
-  Globe,
-  Building,
-  ArrowUpDown,
-  CreditCard,
-  Zap,
-  Shield,
-  Clock,
-  TrendingUp,
-  AlertCircle,
-  Star,
-  MessageCircle,
-  BookOpen,
-  Camera,
-  Heart,
-  Gift,
-  Settings,
-  Search,
-  Filter,
-  Calendar,
-  Target,
-  Award,
-  Briefcase,
-  Home,
-  Car,
-  GraduationCap,
-  ShoppingCart,
-  Plane,
-  Activity,
-  BarChart3,
-  LineChart,
-  PieChart,
-  Eye,
-  Lock,
-  UserCheck,
-  Headphones,
-  Mail,
-  Download,
-  Upload,
-  RefreshCw,
-  CheckCircle,
-  XCircle,
-  AlertTriangle,
-  Info,
-  Thermometer,
-  Wifi,
-  Signal,
-  Battery,
-  Volume2,
-  Monitor,
-  Truck,
-  Package,
-  MapPinned,
-  Navigation,
-  Compass,
-  Route,
-  Timer,
-  Stopwatch,
-  Hourglass,
-  Calendar as CalendarIcon,
-  Clock4,
-  Sunrise,
-  Sunset,
-  Moon,
-  Sun,
-  Cloud,
-  CloudRain,
-  CloudSnow,
-  Umbrella,
-  Wind,
-  Thermometer as Temperature,
-  Gauge,
-  Speedometer,
-  Fuel,
-  Battery as BatteryIcon,
-  Zap as Lightning,
-  Power,
-  PlugZap,
-  Cpu,
-  HardDrive,
-  MemoryStick,
-  Router,
-  Server,
-  Database,
-  Code,
-  Terminal,
-  FileCode,
-  Folder,
-  File,
-  Image,
-  Video,
-  Music,
-  Mic,
-  Camera as CameraIcon,
-  Video as VideoIcon,
-  Play,
-  Pause,
-  Square,
-  SkipBack,
-  SkipForward,
-  Volume,
-  VolumeX,
-  Volume1,
-  Repeat,
-  Shuffle,
-  Radio,
-  Tv,
-  Monitor as MonitorIcon,
-  Laptop,
-  Tablet,
-  Mouse,
-  Keyboard,
-  Printer,
-  Scanner,
-  Webcam,
-  Gamepad2,
-  Joystick,
-  Dice1,
-  Dice2,
-  Dice3,
-  Dice4,
-  Dice5,
-  Dice6,
-  Spade,
-  Club,
-  Diamond,
-  Heart as HeartIcon,
-  Crown,
-  Trophy,
-  Medal,
-  Ribbon,
-  Flag,
-  Bookmark,
-  Tag,
-  Hash,
-  AtSign,
-  Percent,
-  Currency
-} from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Users, Lightbulb, Truck, Plus, Send, CreditCard, Gift, Zap, MapPin, Globe, DollarSign, History, Phone, Wallet, ArrowUpDown, ChevronRight, Building, TrendingUp, BarChart3, PieChart, Calculator, Shield, Clock, Star, Award, Target, Briefcase, HeadphonesIcon, Download, Share2, Eye, Lock, Settings, HelpCircle, MessageSquare, Camera, Mic } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 export default function PaytmDesktopHome() {
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState('');
+  const [activeBalance, setActiveBalance] = useState('2,547.00');
+  const [todayStats, setTodayStats] = useState({
+    sent: '450.00',
+    received: '750.00',
+    transactions: 12
+  });
 
   const handleSendClick = () => {
-    navigate('/multi-step-transfer-page');
+    navigate('/multi-step-transfer-desktop');
   };
 
-  const handleLocalTransferClick = () => {
-    navigate('/local-transfer');
-  };
+  const financialServices = [
+    { icon: History, label: 'Transfer History', color: 'red', desc: 'View all transfers' },
+    { icon: Users, label: 'Recipients', color: 'pink', desc: 'Manage contacts' },
+    { icon: FileText, label: 'Track Money', color: 'indigo', desc: 'Real-time tracking' },
+    { icon: Phone, label: 'Mobile Top-Up', color: 'teal', desc: 'Recharge phones' },
+    { icon: Plus, label: 'Add Funds', color: 'yellow', desc: 'Deposit money' },
+    { icon: Wallet, label: 'Bill Payment', color: 'cyan', desc: 'Pay utilities' },
+    { icon: Globe, label: 'Agent Locator', color: 'gray', desc: 'Find locations' },
+    { icon: Calculator, label: 'Rate Calculator', color: 'emerald', desc: 'Exchange rates' },
+    { icon: Shield, label: 'Insurance', color: 'blue', desc: 'Protect transfers' },
+    { icon: BarChart3, label: 'Analytics', color: 'purple', desc: 'Spending insights' },
+    { icon: Award, label: 'Rewards', color: 'orange', desc: 'Earn points' },
+    { icon: Target, label: 'Goals', color: 'green', desc: 'Save for goals' }
+  ];
+
+  const quickActions = [
+    { icon: Send, label: 'Send to Haiti', color: 'red' },
+    { icon: ArrowUpDown, label: 'Local Transfer', color: 'green' },
+    { icon: Zap, label: 'Express Send', color: 'purple' },
+    { icon: CreditCard, label: 'Bill Payment', color: 'orange' },
+    { icon: QrCode, label: 'QR Payment', color: 'blue' },
+    { icon: Smartphone, label: 'Mobile Money', color: 'pink' }
+  ];
+
+  const bankingFeatures = [
+    { icon: Building, label: 'Virtual Account', desc: 'Get your virtual bank account', isNew: true },
+    { icon: CreditCard, label: 'Debit Card', desc: 'Order your Haiti Transfer card', isPopular: true },
+    { icon: TrendingUp, label: 'Investments', desc: 'Grow your money with investments' },
+    { icon: Shield, label: 'Savings Account', desc: 'High-yield savings account' },
+    { icon: Calculator, label: 'Loans', desc: 'Quick personal loans' },
+    { icon: PieChart, label: 'Budget Tracker', desc: 'Track your spending habits' }
+  ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Desktop Header - Simplified without exchange rate */}
-      <div className="bg-white shadow-sm border-b sticky top-0 z-50">
-        <div className="container mx-auto px-6">
-          <div className="flex items-center justify-between h-16">
-            {/* Left: Logo and Nav */}
-            <div className="flex items-center space-x-8">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">GT</span>
-                </div>
-                <div>
-                  <div className="text-xl font-bold text-gray-900">Global Transfer</div>
-                  <div className="text-xs text-gray-500">Haiti Money Transfer</div>
-                </div>
-              </div>
-              
-              <nav className="hidden lg:flex space-x-6">
-                <a href="#" className="text-gray-700 hover:text-blue-600 font-medium">Send Money</a>
-                <a href="#" className="text-gray-700 hover:text-blue-600 font-medium">Track Transfer</a>
-                <a href="#" className="text-gray-700 hover:text-blue-600 font-medium">Locations</a>
-                <a href="#" className="text-gray-700 hover:text-blue-600 font-medium">Help</a>
-              </nav>
-            </div>
-
-            {/* Center: Search */}
-            <div className="flex-1 max-w-md mx-8">
-              <div className="relative">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search transfers, recipients, locations..."
-                  className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      {/* Enhanced Header */}
+      <header className="bg-white shadow-lg border-b border-gray-200">
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-2">
+          <div className="container mx-auto px-6 flex justify-between items-center text-sm">
+            <div className="flex items-center space-x-6">
+              <span className="font-medium">🎉 Welcome to Haiti Transfer - Zero Fees This Month!</span>
+              <div className="flex items-center">
+                <MapPin className="h-4 w-4 mr-1" />
+                <span>Haiti • 24/7 Support</span>
               </div>
             </div>
-
-            {/* Right: User Actions */}
             <div className="flex items-center space-x-4">
-              <Button variant="outline" size="sm">
-                <Globe className="w-4 h-4 mr-2" />
-                English
-              </Button>
-              <div className="relative">
-                <Bell className="w-6 h-6 text-gray-600 cursor-pointer" />
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
+              <div className="flex items-center">
+                <Globe className="h-4 w-4 mr-1" />
+                <span>EN / USD</span>
               </div>
-              <Button onClick={handleSendClick} className="bg-blue-600 hover:bg-blue-700">
-                <Send className="w-4 h-4 mr-2" />
-                Send Money
-              </Button>
-              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center cursor-pointer">
-                <User className="w-5 h-5 text-blue-600" />
+              <div className="flex items-center">
+                <Clock className="h-4 w-4 mr-1" />
+                <span>Live Support</span>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
+        <div className="container mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full flex items-center justify-center shadow-lg">
+                <span className="text-white font-bold text-lg">HT</span>
+              </div>
+              <div>
+                <div className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Haiti Transfer</div>
+                <span className="text-gray-600 text-sm flex items-center">
+                  <Shield className="h-4 w-4 mr-1" />
+                  Secure • Fast • Reliable
+                </span>
+              </div>
+            </div>
+
+            <div className="flex-1 max-w-2xl mx-8">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search recipients, rates, locations, or help..."
+                  className="w-full px-6 py-3 pl-14 pr-20 border-2 border-blue-200 rounded-full focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 shadow-sm"
+                />
+                <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-6 w-6 text-gray-400" />
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 flex space-x-2">
+                  <button className="p-1 hover:bg-gray-100 rounded">
+                    <Mic className="h-4 w-4 text-gray-400" />
+                  </button>
+                  <button className="p-1 hover:bg-gray-100 rounded">
+                    <Camera className="h-4 w-4 text-gray-400" />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center space-x-6">
+              <button className="flex items-center text-gray-700 hover:text-blue-600 transition-colors relative group">
+                <Bell className="h-6 w-6 mr-2" />
+                <span>Notifications</span>
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center animate-pulse">
+                  5
+                </span>
+              </button>
+              <button className="flex items-center text-gray-700 hover:text-blue-600 transition-colors">
+                <HeadphonesIcon className="h-6 w-6 mr-2" />
+                <span>Support</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Enhanced Exchange Rate Banner */}
+        <div className="container mx-auto px-6 pb-4">
+          <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-6">
+                <div>
+                  <p className="text-sm font-medium text-gray-700">Today's Rate</p>
+                  <p className="text-2xl font-bold text-gray-800">1 USD = 133.45 HTG</p>
+                </div>
+                <div className="text-sm text-green-600">
+                  <p className="font-medium">↗ +0.75 HTG</p>
+                  <p>vs yesterday</p>
+                </div>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className="bg-green-500 text-white px-3 py-1 rounded-full text-sm flex items-center">
+                  <div className="w-2 h-2 bg-white rounded-full animate-pulse mr-2"></div>
+                  Live
+                </div>
+                <button className="text-blue-600 hover:text-blue-700 font-medium text-sm">
+                  Rate History
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content - Two Column Layout */}
       <div className="container mx-auto px-6 py-8">
-        {/* Main Grid Layout */}
-        <div className="grid grid-cols-12 gap-6">
-          {/* Left Column - Profile Card (Expanded) */}
-          <div className="col-span-5">
-            <Card className="bg-gradient-to-br from-blue-600 via-blue-700 to-purple-700 text-white">
-              <CardContent className="p-6">
-                <div className="flex items-start justify-between mb-6">
+        <div className="grid grid-cols-2 gap-8">
+          {/* Left Column */}
+          <div className="space-y-6">
+            {/* Enhanced User Profile Card Banner */}
+            <Card className="shadow-lg overflow-hidden">
+              <div className="bg-gradient-to-r from-blue-600 to-indigo-500 text-white p-8">
+                <div className="flex justify-between items-start">
                   <div className="flex items-center space-x-4">
-                    <div className="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center backdrop-blur-sm">
-                      <span className="text-white font-bold text-xl">MJ</span>
+                    <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-lg">
+                      <span className="text-blue-600 font-bold text-3xl">MJ</span>
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold">Marie Joseph</h2>
-                      <p className="text-blue-100">Premium Member</p>
-                      <div className="flex items-center mt-1">
-                        <CheckCircle className="w-4 h-4 text-green-400 mr-1" />
-                        <span className="text-sm text-blue-100">Verified Account</span>
+                      <p className="font-semibold text-2xl">Marie Joseph</p>
+                      <div className="flex items-center space-x-3 mt-1">
+                        <div className="flex items-center">
+                          <Shield className="h-4 w-4 mr-1" />
+                          <span className="text-lg">Verified Account</span>
+                        </div>
+                        <div className="flex items-center">
+                          <Star className="h-4 w-4 mr-1 text-yellow-300" />
+                          <span className="text-sm">Premium Member</span>
+                        </div>
                       </div>
+                      <p className="text-sm opacity-80 mt-1">Member since 2023 • 127 transfers completed</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="bg-green-500 bg-opacity-20 backdrop-blur-sm px-3 py-1 rounded-full mb-2">
-                      <span className="text-green-200 text-sm font-medium">✓ KYC Verified</span>
+                    <div className="bg-green-500 text-white px-4 py-2 rounded-full text-sm mb-2 flex items-center">
+                      <Shield className="h-4 w-4 mr-1" />
+                      ✓ Verified
                     </div>
-                    <p className="text-xs text-blue-200">Member since 2023</p>
+                    <p className="text-sm opacity-80">ID • Address • Phone</p>
                   </div>
                 </div>
-
-                <div className="grid grid-cols-2 gap-4 mb-6">
-                  <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-blue-200 text-sm">Total Sent</span>
-                      <TrendingUp className="w-4 h-4 text-green-400" />
-                    </div>
-                    <div className="text-2xl font-bold">$12,450</div>
-                    <div className="text-xs text-blue-200">This year</div>
-                  </div>
-                  <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-blue-200 text-sm">Transfers</span>
-                      <Send className="w-4 h-4 text-blue-300" />
-                    </div>
-                    <div className="text-2xl font-bold">47</div>
-                    <div className="text-xs text-blue-200">Completed</div>
-                  </div>
-                </div>
-
-                <div className="space-y-3 mb-6">
-                  <div className="flex items-center justify-between">
-                    <span className="text-blue-200 text-sm">Transfer Limit</span>
-                    <span className="text-white font-medium">$2,500/day</span>
-                  </div>
-                  <div className="w-full bg-white bg-opacity-20 rounded-full h-2">
-                    <div className="bg-green-400 h-2 rounded-full" style={{ width: '60%' }}></div>
-                  </div>
-                  <div className="text-xs text-blue-200">$1,500 remaining today</div>
-                </div>
-
-                <div className="flex space-x-3">
-                  <Button 
+                <div className="mt-6 flex space-x-4">
+                  <button 
                     onClick={handleSendClick}
-                    className="flex-1 bg-white text-blue-600 hover:bg-blue-50"
+                    className="bg-white text-blue-600 px-8 py-3 rounded-xl font-medium hover:bg-gray-100 transition-colors flex-1 flex items-center justify-center"
                   >
-                    <Send className="w-4 h-4 mr-2" />
-                    Send to Haiti
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    className="flex-1 border-white text-white hover:bg-white hover:text-blue-600"
-                  >
-                    <User className="w-4 h-4 mr-2" />
+                    <Send className="h-5 w-5 mr-2" />
+                    Send Money
+                  </button>
+                  <button className="border border-white/50 text-white px-8 py-3 rounded-xl font-medium hover:bg-white/10 transition-colors flex-1">
                     View Profile
-                  </Button>
+                  </button>
                 </div>
-              </CardContent>
+              </div>
             </Card>
-          </div>
 
-          {/* Center Column - Today's Exchange Rate */}
-          <div className="col-span-4">
-            <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
-              <CardHeader className="pb-3">
-                <CardTitle className="flex items-center text-green-800">
-                  <DollarSign className="w-5 h-5 mr-2" />
-                  Today's Exchange Rate
+            {/* Quick Actions */}
+            <Card className="shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-lg font-bold text-gray-800 flex items-center">
+                  <Zap className="h-5 w-5 mr-2 text-blue-600" />
+                  Quick Actions
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-center mb-4">
-                  <div className="text-3xl font-bold text-green-800 mb-1">133.45 HTG</div>
-                  <div className="text-lg text-green-600">per 1 USD</div>
-                  <div className="flex items-center justify-center mt-2">
-                    <TrendingUp className="w-4 h-4 text-green-500 mr-1" />
-                    <span className="text-sm text-green-600">+0.25% today</span>
-                  </div>
+                <div className="grid grid-cols-3 gap-3">
+                  {quickActions.map((action, index) => (
+                    <button 
+                      key={index}
+                      onClick={action.label === 'Send to Haiti' ? handleSendClick : undefined}
+                      className="flex flex-col items-center p-3 rounded-xl hover:bg-gray-50 transition-colors border border-gray-100 group min-h-[100px]"
+                    >
+                      <div className={`bg-${action.color}-600 p-2 rounded-lg mb-2 group-hover:scale-110 transition-transform`}>
+                        <action.icon className="h-5 w-5 text-white" />
+                      </div>
+                      <span className="font-medium text-gray-700 text-sm text-center">{action.label}</span>
+                    </button>
+                  ))}
                 </div>
-                
-                <div className="space-y-2 mb-4">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Best rate this week:</span>
-                    <span className="font-medium text-green-700">133.89 HTG</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Average this month:</span>
-                    <span className="font-medium text-gray-700">132.15 HTG</span>
-                  </div>
-                </div>
+              </CardContent>
+            </Card>
 
-                <div className="bg-green-100 rounded-lg p-3 mb-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="text-sm text-green-800 font-medium">Rate Alert</div>
-                      <div className="text-xs text-green-600">Great time to send!</div>
+            {/* Enhanced Account Balance */}
+            <Card className="shadow-lg bg-gradient-to-br from-blue-600 to-indigo-600 text-white">
+              <CardContent className="p-6">
+                <div className="text-center">
+                  <div className="flex items-center justify-center mb-2">
+                    <Wallet className="h-6 w-6 mr-2" />
+                    <span className="text-lg font-medium">Account Balance</span>
+                  </div>
+                  <div className="text-4xl font-bold mb-2">${activeBalance}</div>
+                  <p className="text-blue-100 mb-4">Available Balance</p>
+                  
+                  <div className="grid grid-cols-3 gap-2 mb-4 text-sm">
+                    <div className="bg-white/20 rounded-lg p-2">
+                      <p className="text-xs text-blue-100">Today Sent</p>
+                      <p className="font-bold">${todayStats.sent}</p>
                     </div>
-                    <div className="bg-green-500 text-white px-2 py-1 rounded-full text-xs">
-                      Live
+                    <div className="bg-white/20 rounded-lg p-2">
+                      <p className="text-xs text-blue-100">Received</p>
+                      <p className="font-bold">${todayStats.received}</p>
+                    </div>
+                    <div className="bg-white/20 rounded-lg p-2">
+                      <p className="text-xs text-blue-100">Transactions</p>
+                      <p className="font-bold">{todayStats.transactions}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex space-x-2">
+                    <button className="flex-1 bg-white text-blue-600 py-3 rounded-xl font-medium hover:bg-gray-100 transition-colors">
+                      Add Funds
+                    </button>
+                    <button className="flex-1 border border-white/50 text-white py-3 rounded-xl font-medium hover:bg-white/10 transition-colors">
+                      Withdraw
+                    </button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Enhanced Transfer Methods Section */}
+            <Card className="shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
+                  <Send className="h-6 w-6 mr-2 text-blue-600" />
+                  Transfer Methods
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 gap-4">
+                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200 hover:shadow-lg transition-all cursor-pointer group">
+                    <div className="flex items-center mb-3">
+                      <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+                        <Zap className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <span className="font-bold text-blue-700 text-sm">Instant Transfer</span>
+                        <p className="text-blue-600 text-xs">Fee: $2.99 • Under 5 mins</p>
+                      </div>
+                    </div>
+                    <p className="text-gray-600 text-xs mb-2">Arrives in minutes to mobile wallets</p>
+                    <div className="flex items-center text-xs text-blue-600">
+                      <Clock className="h-3 w-3 mr-1" />
+                      <span>Average: 2 minutes</span>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-4 border border-green-200 hover:shadow-lg transition-all cursor-pointer group">
+                    <div className="flex items-center mb-3">
+                      <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+                        <MapPin className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <span className="font-bold text-green-700 text-sm">Cash Pickup</span>
+                        <p className="text-green-600 text-xs">Fee: $4.99 • Same day</p>
+                      </div>
+                    </div>
+                    <p className="text-gray-600 text-xs mb-2">200+ pickup locations across Haiti</p>
+                    <div className="flex items-center text-xs text-green-600">
+                      <MapPin className="h-3 w-3 mr-1" />
+                      <span>Find nearest location</span>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-4 border border-purple-200 hover:shadow-lg transition-all cursor-pointer group">
+                    <div className="flex items-center mb-3">
+                      <div className="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+                        <Building className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <span className="font-bold text-purple-700 text-sm">Bank Deposit</span>
+                        <p className="text-purple-600 text-xs">Fee: $3.99 • 1-2 days</p>
+                      </div>
+                    </div>
+                    <p className="text-gray-600 text-xs mb-2">Direct to bank account</p>
+                    <div className="flex items-center text-xs text-purple-600">
+                      <Building className="h-3 w-3 mr-1" />
+                      <span>All major banks supported</span>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg p-4 border border-orange-200 hover:shadow-lg transition-all cursor-pointer group">
+                    <div className="flex items-center mb-3">
+                      <div className="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+                        <Smartphone className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <span className="font-bold text-orange-700 text-sm">Mobile Wallet</span>
+                        <p className="text-orange-600 text-xs">Fee: $1.99 • Instant</p>
+                      </div>
+                    </div>
+                    <p className="text-gray-600 text-xs mb-2">Instant to Moncash & other wallets</p>
+                    <div className="flex items-center text-xs text-orange-600">
+                      <Smartphone className="h-3 w-3 mr-1" />
+                      <span>Moncash, Natcash & more</span>
                     </div>
                   </div>
                 </div>
-
-                <Button 
-                  onClick={handleSendClick}
-                  className="w-full bg-green-600 hover:bg-green-700"
-                >
-                  <Send className="w-4 h-4 mr-2" />
-                  Send at This Rate
-                </Button>
               </CardContent>
             </Card>
           </div>
 
-          {/* Right Column - Quick Actions */}
-          <div className="col-span-3">
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-gray-800">Quick Actions</CardTitle>
+          {/* Right Column */}
+          <div className="space-y-6">
+            {/* Enhanced Financial Services */}
+            <Card className="shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
+                  <Briefcase className="h-6 w-6 mr-2 text-purple-600" />
+                  Financial Services
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-3 gap-3">
+                  {financialServices.map((service, index) => (
+                    <div key={index} className="text-center group cursor-pointer">
+                      <div className={`w-14 h-14 bg-${service.color}-100 rounded-xl flex items-center justify-center mb-3 mx-auto group-hover:bg-${service.color}-200 transition-colors group-hover:scale-110 transform duration-200`}>
+                        <service.icon className={`w-7 h-7 text-${service.color}-600`} />
+                      </div>
+                      <span className="text-gray-700 font-medium block text-xs leading-tight">{service.label}</span>
+                      <span className="text-xs text-gray-500 mt-1 block">{service.desc}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Banking Features */}
+            <Card className="shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-lg font-bold text-gray-800 flex items-center">
+                  <Building className="h-5 w-5 mr-2 text-green-600" />
+                  Banking Features
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 gap-3">
+                  {bankingFeatures.map((feature, index) => (
+                    <div key={index} className="p-4 border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer group h-36 flex flex-col justify-between">
+                      <div className="flex flex-col items-center text-center">
+                        <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mb-3 group-hover:bg-blue-100 transition-colors">
+                          <feature.icon className="h-6 w-6 text-gray-600 group-hover:text-blue-600" />
+                        </div>
+                        <div className="mb-2">
+                          <div className="flex items-center justify-center mb-1">
+                            <span className="font-medium text-gray-800 text-sm text-center leading-tight">{feature.label}</span>
+                          </div>
+                          {feature.isNew && <Badge className="mb-1 text-xs bg-green-500">New</Badge>}
+                          {feature.isPopular && <Badge className="mb-1 text-xs bg-orange-500">Popular</Badge>}
+                        </div>
+                      </div>
+                      <p className="text-xs text-gray-500 text-center mt-auto">{feature.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Recent Recipients */}
+            <Card className="shadow-lg">
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <CardTitle className="text-lg font-bold text-gray-800 flex items-center">
+                    <Users className="h-5 w-5 mr-2 text-blue-600" />
+                    Recent Recipients
+                  </CardTitle>
+                  <ChevronRight className="w-5 h-5 text-gray-400 cursor-pointer hover:text-gray-600" />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 gap-4">
+                  {[
+                    { name: "Jean Pierre", location: "Port-au-Prince", amount: "$150", time: "3 days ago", initials: "JP", color: "bg-blue-100 text-blue-600" },
+                    { name: "Marie Louise", location: "Cap-Haïtien", amount: "$200", time: "1 week ago", initials: "ML", color: "bg-pink-100 text-pink-600" },
+                    { name: "Pierre Duval", location: "Jacmel", amount: "$75", time: "2 weeks ago", initials: "PD", color: "bg-green-100 text-green-600" }
+                  ].map((recipient, index) => (
+                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
+                      <div className="flex items-center">
+                        <div className={`w-12 h-12 ${recipient.color} rounded-full flex items-center justify-center mr-3`}>
+                          <span className="font-semibold">{recipient.initials}</span>
+                        </div>
+                        <div>
+                          <p className="font-medium text-gray-800">{recipient.name}</p>
+                          <p className="text-sm text-gray-500">{recipient.location} • Last: {recipient.amount}</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <button 
+                          onClick={handleSendClick}
+                          className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm hover:bg-blue-700 transition-colors mb-1"
+                        >
+                          Send
+                        </button>
+                        <p className="text-xs text-gray-500">{recipient.time}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Live Stats */}
+            <Card className="shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-lg font-bold text-gray-800 flex items-center">
+                  <BarChart3 className="h-5 w-5 mr-2 text-purple-600" />
+                  Live Statistics
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-purple-50 rounded-lg p-3 text-center">
+                    <div className="text-2xl font-bold text-purple-600">1,234</div>
+                    <div className="text-sm text-gray-600">Online Users</div>
+                  </div>
+                  <div className="bg-green-50 rounded-lg p-3 text-center">
+                    <div className="text-2xl font-bold text-green-600">89</div>
+                    <div className="text-sm text-gray-600">Active Transfers</div>
+                  </div>
+                  <div className="bg-orange-50 rounded-lg p-3 text-center">
+                    <div className="text-2xl font-bold text-orange-600">156</div>
+                    <div className="text-sm text-gray-600">Pending Orders</div>
+                  </div>
+                  <div className="bg-blue-50 rounded-lg p-3 text-center">
+                    <div className="text-2xl font-bold text-blue-600">$2.1M</div>
+                    <div className="text-sm text-gray-600">Daily Volume</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Enhanced Special Offers */}
+            <Card className="shadow-lg overflow-hidden">
+              <div className="bg-gradient-to-r from-red-400 via-pink-500 to-purple-500 p-6 text-white">
+                <div className="text-center">
+                  <Gift className="h-8 w-8 mx-auto mb-3" />
+                  <p className="font-bold text-xl mb-2">🎉 Zero Fees Special!</p>
+                  <p className="text-sm mb-4 opacity-90">Send up to $500 with no transfer fees this month</p>
                   <button 
                     onClick={handleSendClick}
-                    className="flex flex-col items-center p-3 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
+                    className="w-full bg-white text-red-500 py-3 px-4 rounded-full text-sm font-medium hover:bg-gray-100 transition-colors mb-3 flex items-center justify-center"
                   >
-                    <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center mb-2">
-                      <Send className="w-5 h-5 text-red-600" />
-                    </div>
-                    <span className="text-xs font-medium text-gray-700">Send Money</span>
+                    <Gift className="h-4 w-4 mr-2" />
+                    Claim Offer Now
                   </button>
-                  
-                  <button 
-                    onClick={handleLocalTransferClick}
-                    className="flex flex-col items-center p-3 bg-green-50 hover:bg-green-100 rounded-lg transition-colors"
-                  >
-                    <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mb-2">
-                      <ArrowUpDown className="w-5 h-5 text-green-600" />
+                  <p className="text-xs opacity-80">Valid until June 30, 2025 • Terms apply • Limited time</p>
+                </div>
+              </div>
+            </Card>
+
+            {/* Help & Support */}
+            <Card className="shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-lg font-bold text-gray-800 flex items-center">
+                  <HelpCircle className="h-5 w-5 mr-2 text-green-600" />
+                  Help & Support
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 gap-3">
+                  <button className="w-full flex items-center p-3 text-left hover:bg-gray-50 rounded-lg transition-colors">
+                    <MessageSquare className="h-5 w-5 mr-3 text-blue-600" />
+                    <div>
+                      <div className="font-medium">Live Chat</div>
+                      <div className="text-sm text-gray-500">Get instant help</div>
                     </div>
-                    <span className="text-xs font-medium text-gray-700">Local Transfer</span>
                   </button>
-                  
-                  <button className="flex flex-col items-center p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
-                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mb-2">
-                      <History className="w-5 h-5 text-blue-600" />
+                  <button className="w-full flex items-center p-3 text-left hover:bg-gray-50 rounded-lg transition-colors">
+                    <Phone className="h-5 w-5 mr-3 text-green-600" />
+                    <div>
+                      <div className="font-medium">Call Support</div>
+                      <div className="text-sm text-gray-500">24/7 phone support</div>
                     </div>
-                    <span className="text-xs font-medium text-gray-700">History</span>
                   </button>
-                  
-                  <button className="flex flex-col items-center p-3 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors">
-                    <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mb-2">
-                      <Users className="w-5 h-5 text-purple-600" />
+                  <button className="w-full flex items-center p-3 text-left hover:bg-gray-50 rounded-lg transition-colors">
+                    <FileText className="h-5 w-5 mr-3 text-purple-600" />
+                    <div>
+                      <div className="font-medium">Help Center</div>
+                      <div className="text-sm text-gray-500">Browse FAQs</div>
                     </div>
-                    <span className="text-xs font-medium text-gray-700">Recipients</span>
                   </button>
                 </div>
               </CardContent>
             </Card>
+
+            {/* Enhanced Video Tutorials Section */}
+            <Card className="shadow-lg">
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
+                    <Eye className="h-6 w-6 mr-2 text-indigo-600" />
+                    Video Tutorials
+                  </CardTitle>
+                  <button className="text-blue-600 font-medium hover:underline flex items-center">
+                    View All
+                    <ChevronRight className="h-4 w-4 ml-1" />
+                  </button>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {[
+                  {
+                    title: "How to Send Money to Haiti",
+                    desc: "Complete step-by-step guide for beginners",
+                    duration: "3:45",
+                    views: "2.1K",
+                    rating: 5,
+                    bgColor: "from-blue-50 to-indigo-50",
+                    borderColor: "border-blue-100",
+                    playColor: "bg-blue-500"
+                  },
+                  {
+                    title: "Cash Pickup Locations Guide",
+                    desc: "Find and use pickup points effectively",
+                    duration: "2:12",
+                    views: "1.8K",
+                    rating: 4,
+                    bgColor: "from-green-50 to-emerald-50",
+                    borderColor: "border-green-100",
+                    playColor: "bg-green-500"
+                  },
+                  {
+                    title: "Mobile Money & Bill Payments",
+                    desc: "Pay bills and top-up phones in Haiti",
+                    duration: "4:30",
+                    views: "950",
+                    rating: 5,
+                    bgColor: "from-purple-50 to-violet-50",
+                    borderColor: "border-purple-100",
+                    playColor: "bg-purple-500"
+                  }
+                ].map((video, index) => (
+                  <div key={index} className={`flex items-center p-4 bg-gradient-to-r ${video.bgColor} rounded-xl border ${video.borderColor} hover:shadow-md transition-all cursor-pointer group`}>
+                    <div className={`w-20 h-14 ${video.playColor} rounded-lg flex items-center justify-center mr-4 relative group-hover:scale-105 transition-transform`}>
+                      <div className="w-0 h-0 border-l-6 border-l-white border-t-3 border-t-transparent border-b-3 border-b-transparent ml-1"></div>
+                      <div className="absolute top-1 right-1 bg-red-500 text-white text-xs px-1 py-0.5 rounded">{video.duration}</div>
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-semibold text-gray-800 text-sm mb-1">{video.title}</p>
+                      <p className="text-gray-600 text-xs mb-2">{video.desc}</p>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center">
+                          <div className="flex text-yellow-400 mr-3 text-xs">
+                            {Array.from({length: 5}, (_, i) => (
+                              <span key={i}>{i < video.rating ? '★' : '☆'}</span>
+                            ))}
+                          </div>
+                          <span className="text-gray-500 text-xs">{video.views} views</span>
+                        </div>
+                        <div className="flex space-x-2">
+                          <button className="p-1 hover:bg-white rounded transition-colors">
+                            <Share2 className="h-3 w-3 text-gray-500" />
+                          </button>
+                          <button className="p-1 hover:bg-white rounded transition-colors">
+                            <Download className="h-3 w-3 text-gray-500" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
           </div>
-        </div>
-
-        {/* Live Transfer Tracker */}
-        <div className="mt-8">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Activity className="w-5 h-5 mr-2 text-blue-600" />
-                Live Transfer Tracker
-                <div className="ml-2 w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-3 gap-6">
-                <div className="bg-blue-50 rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-blue-800 font-medium">In Progress</span>
-                    <Clock className="w-5 h-5 text-blue-600" />
-                  </div>
-                  <div className="text-2xl font-bold text-blue-900 mb-1">3</div>
-                  <div className="text-sm text-blue-700">Active transfers</div>
-                </div>
-                <div className="bg-green-50 rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-green-800 font-medium">Delivered Today</span>
-                    <CheckCircle className="w-5 h-5 text-green-600" />
-                  </div>
-                  <div className="text-2xl font-bold text-green-900 mb-1">127</div>
-                  <div className="text-sm text-green-700">Successful deliveries</div>
-                </div>
-                <div className="bg-yellow-50 rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-yellow-800 font-medium">Avg. Time</span>
-                    <Timer className="w-5 h-5 text-yellow-600" />
-                  </div>
-                  <div className="text-2xl font-bold text-yellow-900 mb-1">18 min</div>
-                  <div className="text-sm text-yellow-700">To cash pickup</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Haiti Economic Dashboard */}
-        <div className="mt-8">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <BarChart3 className="w-5 h-5 mr-2 text-purple-600" />
-                Haiti Economic Dashboard
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-4 gap-4">
-                <div className="text-center p-4 bg-gray-50 rounded-lg">
-                  <div className="text-lg font-bold text-gray-800">$2.1B</div>
-                  <div className="text-sm text-gray-600">Annual Remittances</div>
-                  <div className="text-xs text-green-600 mt-1">+12% YoY</div>
-                </div>
-                <div className="text-center p-4 bg-gray-50 rounded-lg">
-                  <div className="text-lg font-bold text-gray-800">11.2M</div>
-                  <div className="text-sm text-gray-600">Population</div>
-                  <div className="text-xs text-blue-600 mt-1">2024 Est.</div>
-                </div>
-                <div className="text-center p-4 bg-gray-50 rounded-lg">
-                  <div className="text-lg font-bold text-gray-800">2.8M</div>
-                  <div className="text-sm text-gray-600">Diaspora</div>
-                  <div className="text-xs text-purple-600 mt-1">Worldwide</div>
-                </div>
-                <div className="text-center p-4 bg-gray-50 rounded-lg">
-                  <div className="text-lg font-bold text-gray-800">32%</div>
-                  <div className="text-sm text-gray-600">GDP from Remittances</div>
-                  <div className="text-xs text-orange-600 mt-1">Critical support</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Transfer Analytics & Insights */}
-        <div className="mt-8 grid grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <LineChart className="w-5 h-5 mr-2 text-indigo-600" />
-                Your Transfer Analytics
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-3 bg-indigo-50 rounded-lg">
-                  <div>
-                    <div className="font-medium text-indigo-900">Most Frequent Recipient</div>
-                    <div className="text-sm text-indigo-700">Jean Pierre - Port-au-Prince</div>
-                  </div>
-                  <div className="text-right">
-                    <div className="font-bold text-indigo-900">$150</div>
-                    <div className="text-xs text-indigo-600">Avg. amount</div>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-                  <div>
-                    <div className="font-medium text-green-900">Peak Transfer Day</div>
-                    <div className="text-sm text-green-700">Friday afternoons</div>
-                  </div>
-                  <div className="text-right">
-                    <div className="font-bold text-green-900">3.2x</div>
-                    <div className="text-xs text-green-600">Higher activity</div>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-                  <div>
-                    <div className="font-medium text-blue-900">Preferred Pickup</div>
-                    <div className="text-sm text-blue-700">CAM Transfer - Delmas</div>
-                  </div>
-                  <div className="text-right">
-                    <div className="font-bold text-blue-900">65%</div>
-                    <div className="text-xs text-blue-600">Of your transfers</div>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Target className="w-5 h-5 mr-2 text-red-600" />
-                Smart Recommendations
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="p-3 border border-yellow-200 bg-yellow-50 rounded-lg">
-                  <div className="flex items-start">
-                    <AlertCircle className="w-4 h-4 text-yellow-600 mt-0.5 mr-2" />
-                    <div>
-                      <div className="text-sm font-medium text-yellow-800">Rate Alert</div>
-                      <div className="text-xs text-yellow-700">HTG strengthened 2.1% this week. Good time to send larger amounts.</div>
-                    </div>
-                  </div>
-                </div>
-                <div className="p-3 border border-blue-200 bg-blue-50 rounded-lg">
-                  <div className="flex items-start">
-                    <Info className="w-4 h-4 text-blue-600 mt-0.5 mr-2" />
-                    <div>
-                      <div className="text-sm font-medium text-blue-800">New Location</div>
-                      <div className="text-xs text-blue-700">CAM Transfer opened a new branch near Jean Pierre. Faster pickup!</div>
-                    </div>
-                  </div>
-                </div>
-                <div className="p-3 border border-green-200 bg-green-50 rounded-lg">
-                  <div className="flex items-start">
-                    <Gift className="w-4 h-4 text-green-600 mt-0.5 mr-2" />
-                    <div>
-                      <div className="text-sm font-medium text-green-800">Loyalty Bonus</div>
-                      <div className="text-xs text-green-700">Send $200+ this month for 50% off your next transfer fee.</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Haiti Local Services */}
-        <div className="mt-8">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <MapPin className="w-5 h-5 mr-2 text-green-600" />
-                Haiti Local Services
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-4 gap-4">
-                <button className="p-4 text-center bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
-                  <Phone className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-                  <div className="font-medium text-blue-900">Mobile Top-up</div>
-                  <div className="text-xs text-blue-700">Digicel, Natcom</div>
-                </button>
-                <button className="p-4 text-center bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors">
-                  <Zap className="w-8 h-8 text-purple-600 mx-auto mb-2" />
-                  <div className="font-medium text-purple-900">Utility Bills</div>
-                  <div className="text-xs text-purple-700">EDH, DINEPA</div>
-                </button>
-                <button className="p-4 text-center bg-green-50 hover:bg-green-100 rounded-lg transition-colors">
-                  <GraduationCap className="w-8 h-8 text-green-600 mx-auto mb-2" />
-                  <div className="font-medium text-green-900">School Fees</div>
-                  <div className="text-xs text-green-700">Direct payments</div>
-                </button>
-                <button className="p-4 text-center bg-red-50 hover:bg-red-100 rounded-lg transition-colors">
-                  <Heart className="w-8 h-8 text-red-600 mx-auto mb-2" />
-                  <div className="font-medium text-red-900">Healthcare</div>
-                  <div className="text-xs text-red-700">Hospital bills</div>
-                </button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Emergency Transfer */}
-        <div className="mt-8">
-          <Card className="border-red-200 bg-red-50">
-            <CardHeader>
-              <CardTitle className="flex items-center text-red-800">
-                <AlertTriangle className="w-5 h-5 mr-2" />
-                Emergency Transfer Services
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-3 gap-4">
-                <div className="text-center p-4 bg-white rounded-lg">
-                  <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <Zap className="w-6 h-6 text-red-600" />
-                  </div>
-                  <div className="font-medium text-red-900 mb-1">Express Transfer</div>
-                  <div className="text-sm text-red-700 mb-2">15-minute delivery</div>
-                  <Button size="sm" className="bg-red-600 hover:bg-red-700 text-white">
-                    Send Now
-                  </Button>
-                </div>
-                <div className="text-center p-4 bg-white rounded-lg">
-                  <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <Phone className="w-6 h-6 text-orange-600" />
-                  </div>
-                  <div className="font-medium text-orange-900 mb-1">24/7 Support</div>
-                  <div className="text-sm text-orange-700 mb-2">Emergency hotline</div>
-                  <Button size="sm" variant="outline" className="border-orange-600 text-orange-600">
-                    Call Now
-                  </Button>
-                </div>
-                <div className="text-center p-4 bg-white rounded-lg">
-                  <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <Shield className="w-6 h-6 text-yellow-600" />
-                  </div>
-                  <div className="font-medium text-yellow-900 mb-1">Disaster Relief</div>
-                  <div className="text-sm text-yellow-700 mb-2">Special rates</div>
-                  <Button size="sm" variant="outline" className="border-yellow-600 text-yellow-600">
-                    Learn More
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Transfer Education Hub */}
-        <div className="mt-8 grid grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <BookOpen className="w-5 h-5 mr-2 text-indigo-600" />
-                Transfer Education Hub
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <div className="flex items-center p-3 bg-indigo-50 rounded-lg cursor-pointer hover:bg-indigo-100">
-                  <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center mr-3">
-                    <Play className="w-5 h-5 text-indigo-600" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="font-medium text-indigo-900">How to Send Money to Haiti</div>
-                    <div className="text-sm text-indigo-700">Step-by-step video guide • 5 min</div>
-                  </div>
-                  <ChevronRight className="w-4 h-4 text-indigo-600" />
-                </div>
-                <div className="flex items-center p-3 bg-green-50 rounded-lg cursor-pointer hover:bg-green-100">
-                  <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
-                    <MapPin className="w-5 h-5 text-green-600" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="font-medium text-green-900">Pickup Locations Guide</div>
-                    <div className="text-sm text-green-700">Find the nearest agent • 3 min read</div>
-                  </div>
-                  <ChevronRight className="w-4 h-4 text-green-600" />
-                </div>
-                <div className="flex items-center p-3 bg-blue-50 rounded-lg cursor-pointer hover:bg-blue-100">
-                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
-                    <Shield className="w-5 h-5 text-blue-600" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="font-medium text-blue-900">Security Best Practices</div>
-                    <div className="text-sm text-blue-700">Protect your transfers • 4 min read</div>
-                  </div>
-                  <ChevronRight className="w-4 h-4 text-blue-600" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <MessageCircle className="w-5 h-5 mr-2 text-green-600" />
-                Haiti Community Feed
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                <div className="p-3 bg-green-50 rounded-lg">
-                  <div className="flex items-start">
-                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3 mt-1">
-                      <span className="text-green-600 font-bold text-sm">MJ</span>
-                    </div>
-                    <div className="flex-1">
-                      <div className="text-sm font-medium text-green-900">Marie Joseph</div>
-                      <div className="text-xs text-green-700 mb-1">Just sent $200 to Port-au-Prince</div>
-                      <div className="text-xs text-green-600">2 hours ago</div>
-                    </div>
-                  </div>
-                </div>
-                <div className="p-3 bg-blue-50 rounded-lg">
-                  <div className="flex items-start">
-                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3 mt-1">
-                      <span className="text-blue-600 font-bold text-sm">PL</span>
-                    </div>
-                    <div className="flex-1">
-                      <div className="text-sm font-medium text-blue-900">Pierre Louis</div>
-                      <div className="text-xs text-blue-700 mb-1">New CAM Transfer location in Carrefour!</div>
-                      <div className="text-xs text-blue-600">4 hours ago</div>
-                    </div>
-                  </div>
-                </div>
-                <div className="p-3 bg-purple-50 rounded-lg">
-                  <div className="flex items-start">
-                    <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-3 mt-1">
-                      <span className="text-purple-600 font-bold text-sm">RC</span>
-                    </div>
-                    <div className="flex-1">
-                      <div className="text-sm font-medium text-purple-900">Rose Charles</div>
-                      <div className="text-xs text-purple-700 mb-1">Great rates today! Perfect for school fees</div>
-                      <div className="text-xs text-purple-600">6 hours ago</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Transfer Security Center */}
-        <div className="mt-8 mb-8">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Lock className="w-5 h-5 mr-2 text-gray-700" />
-                Transfer Security Center
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-4 gap-4">
-                <div className="text-center p-4 bg-gray-50 rounded-lg">
-                  <UserCheck className="w-8 h-8 text-green-600 mx-auto mb-2" />
-                  <div className="font-medium text-gray-900">Identity Verified</div>
-                  <div className="text-xs text-green-600 mt-1">✓ Completed</div>
-                </div>
-                <div className="text-center p-4 bg-gray-50 rounded-lg">
-                  <Shield className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-                  <div className="font-medium text-gray-900">2FA Enabled</div>
-                  <div className="text-xs text-blue-600 mt-1">✓ Active</div>
-                </div>
-                <div className="text-center p-4 bg-gray-50 rounded-lg">
-                  <Lock className="w-8 h-8 text-purple-600 mx-auto mb-2" />
-                  <div className="font-medium text-gray-900">SSL Encrypted</div>
-                  <div className="text-xs text-purple-600 mt-1">✓ Protected</div>
-                </div>
-                <div className="text-center p-4 bg-gray-50 rounded-lg">
-                  <Eye className="w-8 h-8 text-orange-600 mx-auto mb-2" />
-                  <div className="font-medium text-gray-900">Fraud Monitoring</div>
-                  <div className="text-xs text-orange-600 mt-1">✓ 24/7 Active</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </div>
     </div>
