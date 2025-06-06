@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Users, Lightbulb, Truck, Plus, Send, CreditCard, Gift, Zap, MapPin, Globe, DollarSign, History, Phone, Wallet, ArrowUpDown, ChevronRight, Building, TrendingUp, BarChart3, PieChart, Calculator, Shield, Clock, Star, Award, Target, Briefcase, HeadphonesIcon, Download, Share2, Eye, Lock, Settings, HelpCircle, MessageSquare, Camera, Mic } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -38,17 +37,13 @@ export default function PaytmDesktopHome() {
 
   const financialServices = [
     { icon: History, label: 'Transfer History', color: 'red', desc: 'View all transfers' },
-    { icon: Users, label: 'Recipients', color: 'pink', desc: 'Manage contacts' },
     { icon: FileText, label: 'Track Money', color: 'indigo', desc: 'Real-time tracking' },
     { icon: Phone, label: 'Mobile Top-Up', color: 'teal', desc: 'Recharge phones' },
-    { icon: Plus, label: 'Add Funds', color: 'yellow', desc: 'Deposit money' },
     { icon: Wallet, label: 'Bill Payment', color: 'cyan', desc: 'Pay utilities' },
     { icon: Globe, label: 'Agent Locator', color: 'gray', desc: 'Find locations' },
     { icon: Calculator, label: 'Rate Calculator', color: 'emerald', desc: 'Exchange rates' },
-    { icon: Shield, label: 'Insurance', color: 'blue', desc: 'Protect transfers' },
     { icon: BarChart3, label: 'Analytics', color: 'purple', desc: 'Spending insights' },
-    { icon: Award, label: 'Rewards', color: 'orange', desc: 'Earn points' },
-    { icon: Target, label: 'Goals', color: 'green', desc: 'Save for goals' }
+    { icon: Award, label: 'Rewards', color: 'orange', desc: 'Earn points' }
   ];
 
   const bankingFeatures = [
