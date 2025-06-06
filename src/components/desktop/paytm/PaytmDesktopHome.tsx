@@ -1,6 +1,5 @@
-
 import React, { useState, useEffect } from 'react';
-import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Users, Lightbulb, Truck, Plus, Send, CreditCard, Gift, Zap, MapPin, Globe, DollarSign, History, Phone, Wallet, ArrowUpDown, ChevronRight, Building, TrendingUp, BarChart3, PieChart, Calculator, Shield, Clock, Star, Award, Target, Briefcase, HeadphonesIcon, Download, Share2, Eye, Lock, Settings, HelpCircle, MessageSquare, Camera, Mic } from 'lucide-react';
+import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Users, Lightbulb, Truck, Plus, Send, CreditCard, Gift, Zap, MapPin, Globe, DollarSign, History, Phone, Wallet, ArrowUpDown, ChevronRight, Building, TrendingUp, BarChart3, PieChart, Calculator, Shield, Clock, Star, Award, Target, Briefcase, HeadphonesIcon, Download, Share2, Eye, Lock, Settings, HelpCircle, MessageSquare, Camera, Mic, Activity, Banknote, Receipt, AlertTriangle, CheckCircle, Info, XCircle, ArrowRight, ArrowLeft, RefreshCw, TrendingDown, Flame, Sparkles, Crown, Bot, Heart, AlertCircle, Wifi, Signal, Battery, Volume2, Play, Pause, RotateCcw, Repeat, Home, ShoppingCart, Coffee, Car, Plane, Music, BookOpen, Tv, Gamepad2, Headphones, Radio, Monitor } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -49,6 +48,64 @@ export default function PaytmDesktopHome() {
     { icon: Shield, label: 'Savings Account', desc: 'High-yield savings account' },
     { icon: Calculator, label: 'Loans', desc: 'Quick personal loans' },
     { icon: PieChart, label: 'Budget Tracker', desc: 'Track your spending habits' }
+  ];
+
+  // New Ultra Features Data
+  const liveTransfers = [
+    { id: 'TX12345', recipient: 'Jean Baptiste', location: 'Port-au-Prince', amount: '$250', status: 'In Transit', progress: 75, eta: '2 hours' },
+    { id: 'TX12346', recipient: 'Marie Claire', location: 'Cap-Haïtien', amount: '$150', status: 'Ready for Pickup', progress: 100, eta: 'Now' },
+    { id: 'TX12347', recipient: 'Pierre Louis', location: 'Gonaïves', amount: '$300', status: 'Processing', progress: 25, eta: '4 hours' },
+    { id: 'TX12348', recipient: 'Anne Rose', location: 'Les Cayes', amount: '$100', status: 'Delivered', progress: 100, eta: 'Completed' }
+  ];
+
+  const haitiEconomicData = {
+    gdp: { value: '20.25B', change: '+2.3%', trend: 'up' },
+    inflation: { value: '19.2%', change: '-1.2%', trend: 'down' },
+    exchangeRate: { value: '133.45', change: '+0.75', trend: 'up' },
+    remittances: { value: '4.2B', change: '+8.1%', trend: 'up' }
+  };
+
+  const transferInsights = [
+    { metric: 'Peak Hours', value: '2-6 PM EST', icon: Clock, color: 'blue' },
+    { metric: 'Best Rates', value: 'Weekdays', icon: TrendingUp, color: 'green' },
+    { metric: 'Avg. Delivery', value: '45 minutes', icon: Zap, color: 'purple' },
+    { metric: 'Success Rate', value: '99.8%', icon: CheckCircle, color: 'emerald' }
+  ];
+
+  const haitiServices = [
+    { icon: Phone, label: 'Mobile Recharge', desc: 'Digicel, Natcom top-ups', price: 'From $5' },
+    { icon: Zap, label: 'Electricity Bills', desc: 'EDH bill payments', price: 'No fees' },
+    { icon: Car, label: 'Transport Cards', desc: 'Tap-tap & bus cards', price: 'From $10' },
+    { icon: ShoppingCart, label: 'Grocery Vouchers', desc: 'Major supermarkets', price: 'From $25' },
+    { icon: Heart, label: 'Medical Bills', desc: 'Hospital payments', price: '2% fee' },
+    { icon: BookOpen, label: 'School Fees', desc: 'Education payments', price: '1% fee' }
+  ];
+
+  const emergencyContacts = [
+    { name: 'Police National', number: '114', type: 'Emergency' },
+    { name: 'Ambulance', number: '116', type: 'Medical' },
+    { name: 'Fire Department', number: '115', type: 'Fire' },
+    { name: 'Haiti Transfer Support', number: '+1-800-HAITI', type: 'Support' }
+  ];
+
+  const educationContent = [
+    { title: 'Understanding Exchange Rates', duration: '5 min read', category: 'Finance', level: 'Beginner' },
+    { title: 'Haiti Banking System Guide', duration: '8 min read', category: 'Banking', level: 'Intermediate' },
+    { title: 'Mobile Money in Haiti', duration: '6 min read', category: 'Technology', level: 'Beginner' },
+    { title: 'Tax Implications of Remittances', duration: '12 min read', category: 'Legal', level: 'Advanced' }
+  ];
+
+  const communityPosts = [
+    { user: 'Marie D.', location: 'Miami → Port-au-Prince', message: 'Just sent $200 to my family. Money arrived in 20 minutes! Amazing service.', time: '2 hours ago', likes: 24 },
+    { user: 'Jean P.', location: 'New York → Cap-Haïtien', message: 'Exchange rate was excellent today. Perfect timing for my monthly transfer.', time: '4 hours ago', likes: 18 },
+    { user: 'Rose M.', location: 'Boston → Jacmel', message: 'Love the new mobile app features. So much easier to track transfers now.', time: '6 hours ago', likes: 31 }
+  ];
+
+  const securityFeatures = [
+    { icon: Shield, label: 'Biometric Auth', status: 'Active', color: 'green' },
+    { icon: Lock, label: '256-bit Encryption', status: 'Secured', color: 'blue' },
+    { icon: Eye, label: 'Transaction Monitor', status: 'Monitoring', color: 'purple' },
+    { icon: AlertTriangle, label: 'Fraud Detection', status: 'Protected', color: 'orange' }
   ];
 
   return (
@@ -127,7 +184,6 @@ export default function PaytmDesktopHome() {
           </div>
         </div>
 
-        {/* Enhanced Exchange Rate Banner */}
         <div className="container mx-auto px-6 pb-4">
           <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg p-4">
             <div className="flex items-center justify-between">
@@ -155,9 +211,9 @@ export default function PaytmDesktopHome() {
         </div>
       </header>
 
-      {/* Main Content - Two Column Layout */}
+      {/* Main Content - Multi Column Layout */}
       <div className="container mx-auto px-6 py-8">
-        <div className="grid grid-cols-2 gap-8">
+        <div className="grid grid-cols-3 gap-6">
           {/* Left Column */}
           <div className="space-y-6">
             {/* Enhanced User Profile Card Banner */}
@@ -350,9 +406,98 @@ export default function PaytmDesktopHome() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* NEW: Live Transfer Tracker */}
+            <Card className="shadow-lg">
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
+                    <Activity className="h-6 w-6 mr-2 text-green-500" />
+                    Live Transfer Tracker
+                  </CardTitle>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <span className="text-sm text-green-600 font-medium">Live</span>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {liveTransfers.map((transfer, index) => (
+                    <div key={index} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                      <div className="flex justify-between items-start mb-2">
+                        <div>
+                          <p className="font-medium text-gray-900">{transfer.recipient}</p>
+                          <p className="text-sm text-gray-500">{transfer.location}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-bold text-green-600">{transfer.amount}</p>
+                          <p className="text-xs text-gray-500">ID: {transfer.id}</p>
+                        </div>
+                      </div>
+                      <div className="mb-2">
+                        <div className="flex justify-between text-sm mb-1">
+                          <span className={`font-medium ${
+                            transfer.status === 'Delivered' ? 'text-green-600' :
+                            transfer.status === 'Ready for Pickup' ? 'text-blue-600' :
+                            transfer.status === 'In Transit' ? 'text-orange-600' : 'text-gray-600'
+                          }`}>{transfer.status}</span>
+                          <span className="text-gray-500">ETA: {transfer.eta}</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div 
+                            className={`h-2 rounded-full transition-all duration-500 ${
+                              transfer.progress === 100 ? 'bg-green-500' : 'bg-blue-500'
+                            }`}
+                            style={{ width: `${transfer.progress}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <button className="w-full mt-4 text-blue-600 font-medium hover:text-blue-700 transition-colors">
+                  View All Transfers
+                </button>
+              </CardContent>
+            </Card>
+
+            {/* NEW: Emergency Transfer */}
+            <Card className="shadow-lg border-red-200 bg-red-50">
+              <CardHeader>
+                <CardTitle className="text-xl font-bold text-red-800 flex items-center">
+                  <AlertTriangle className="h-6 w-6 mr-2 text-red-600" />
+                  Emergency Transfer
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-red-700 mb-4">Send money urgently in case of emergencies in Haiti</p>
+                <div className="grid grid-cols-2 gap-3 mb-4">
+                  <button 
+                    onClick={handleSendClick}
+                    className="bg-red-600 text-white px-4 py-3 rounded-lg font-medium hover:bg-red-700 transition-colors"
+                  >
+                    <Zap className="h-4 w-4 mr-2 inline" />
+                    Express Send
+                  </button>
+                  <button className="border border-red-300 text-red-700 px-4 py-3 rounded-lg font-medium hover:bg-red-100 transition-colors">
+                    <Phone className="h-4 w-4 mr-2 inline" />
+                    Emergency Line
+                  </button>
+                </div>
+                <div className="space-y-2">
+                  {emergencyContacts.map((contact, index) => (
+                    <div key={index} className="flex justify-between items-center text-sm">
+                      <span className="text-red-700">{contact.name}</span>
+                      <span className="font-mono text-red-800">{contact.number}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
-          {/* Right Column */}
+          {/* Middle Column */}
           <div className="space-y-6">
             {/* Enhanced Financial Services */}
             <Card className="shadow-lg">
@@ -498,6 +643,230 @@ export default function PaytmDesktopHome() {
                   <p className="text-xs opacity-80">Valid until June 30, 2025 • Terms apply • Limited time</p>
                 </div>
               </div>
+            </Card>
+
+            {/* NEW: Haiti Economic Dashboard */}
+            <Card className="shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
+                  <BarChart3 className="h-6 w-6 mr-2 text-indigo-600" />
+                  Haiti Economic Dashboard
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="bg-blue-50 rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium text-gray-600">GDP</span>
+                      <span className={`text-xs ${haitiEconomicData.gdp.trend === 'up' ? 'text-green-600' : 'text-red-600'}`}>
+                        {haitiEconomicData.gdp.change}
+                      </span>
+                    </div>
+                    <p className="text-2xl font-bold text-blue-600">${haitiEconomicData.gdp.value}</p>
+                  </div>
+                  <div className="bg-red-50 rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium text-gray-600">Inflation</span>
+                      <span className={`text-xs ${haitiEconomicData.inflation.trend === 'down' ? 'text-green-600' : 'text-red-600'}`}>
+                        {haitiEconomicData.inflation.change}
+                      </span>
+                    </div>
+                    <p className="text-2xl font-bold text-red-600">{haitiEconomicData.inflation.value}</p>
+                  </div>
+                  <div className="bg-green-50 rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium text-gray-600">USD/HTG</span>
+                      <span className={`text-xs ${haitiEconomicData.exchangeRate.trend === 'up' ? 'text-green-600' : 'text-red-600'}`}>
+                        +{haitiEconomicData.exchangeRate.change}
+                      </span>
+                    </div>
+                    <p className="text-2xl font-bold text-green-600">{haitiEconomicData.exchangeRate.value}</p>
+                  </div>
+                  <div className="bg-purple-50 rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium text-gray-600">Remittances</span>
+                      <span className={`text-xs ${haitiEconomicData.remittances.trend === 'up' ? 'text-green-600' : 'text-red-600'}`}>
+                        {haitiEconomicData.remittances.change}
+                      </span>
+                    </div>
+                    <p className="text-2xl font-bold text-purple-600">${haitiEconomicData.remittances.value}</p>
+                  </div>
+                </div>
+                <button className="w-full mt-4 text-indigo-600 font-medium hover:text-indigo-700 transition-colors">
+                  View Full Economic Report
+                </button>
+              </CardContent>
+            </Card>
+
+            {/* NEW: Haiti Local Services */}
+            <Card className="shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
+                  <Home className="h-6 w-6 mr-2 text-orange-600" />
+                  Haiti Local Services
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 gap-3">
+                  {haitiServices.map((service, index) => (
+                    <div key={index} className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 transition-colors">
+                      <div className="flex items-center">
+                        <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center mr-3">
+                          <service.icon className="h-5 w-5 text-orange-600" />
+                        </div>
+                        <div>
+                          <p className="font-medium text-gray-800">{service.label}</p>
+                          <p className="text-sm text-gray-500">{service.desc}</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-medium text-orange-600">{service.price}</p>
+                        <button className="text-xs text-blue-600 hover:text-blue-700">Pay Now</button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Right Column */}
+          <div className="space-y-6">
+            {/* NEW: Transfer Analytics & Insights */}
+            <Card className="shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
+                  <TrendingUp className="h-6 w-6 mr-2 text-green-600" />
+                  Transfer Insights
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-4">
+                  {transferInsights.map((insight, index) => (
+                    <div key={index} className={`bg-${insight.color}-50 rounded-lg p-4 text-center`}>
+                      <insight.icon className={`h-8 w-8 text-${insight.color}-600 mx-auto mb-2`} />
+                      <p className="text-sm font-medium text-gray-600">{insight.metric}</p>
+                      <p className={`text-lg font-bold text-${insight.color}-600`}>{insight.value}</p>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4">
+                  <h4 className="font-medium text-gray-800 mb-2">💡 Smart Tip</h4>
+                  <p className="text-sm text-gray-600">Send between 2-6 PM EST for the fastest delivery times to Haiti. Avoid weekends for bank deposits.</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* NEW: Transfer Education Hub */}
+            <Card className="shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
+                  <BookOpen className="h-6 w-6 mr-2 text-blue-600" />
+                  Education Hub
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {educationContent.map((content, index) => (
+                    <div key={index} className="border rounded-lg p-3 hover:bg-gray-50 transition-colors cursor-pointer">
+                      <div className="flex justify-between items-start mb-2">
+                        <h4 className="font-medium text-gray-800 text-sm">{content.title}</h4>
+                        <Badge className={`text-xs ${
+                          content.level === 'Beginner' ? 'bg-green-100 text-green-700' :
+                          content.level === 'Intermediate' ? 'bg-yellow-100 text-yellow-700' :
+                          'bg-red-100 text-red-700'
+                        }`}>
+                          {content.level}
+                        </Badge>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs text-gray-500">{content.category}</span>
+                        <span className="text-xs text-blue-600">{content.duration}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <button className="w-full mt-4 text-blue-600 font-medium hover:text-blue-700 transition-colors">
+                  View All Articles
+                </button>
+              </CardContent>
+            </Card>
+
+            {/* NEW: Haiti Community Feed */}
+            <Card className="shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
+                  <Users className="h-6 w-6 mr-2 text-purple-600" />
+                  Community Feed
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {communityPosts.map((post, index) => (
+                    <div key={index} className="border rounded-lg p-3">
+                      <div className="flex items-start space-x-3">
+                        <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                          <User className="h-4 w-4 text-purple-600" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-2 mb-1">
+                            <span className="font-medium text-gray-800 text-sm">{post.user}</span>
+                            <span className="text-xs text-gray-500">{post.location}</span>
+                          </div>
+                          <p className="text-sm text-gray-700 mb-2">{post.message}</p>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-2">
+                              <button className="flex items-center text-xs text-gray-500 hover:text-red-500">
+                                <Heart className="h-3 w-3 mr-1" />
+                                {post.likes}
+                              </button>
+                              <button className="text-xs text-gray-500 hover:text-blue-500">
+                                Reply
+                              </button>
+                            </div>
+                            <span className="text-xs text-gray-400">{post.time}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <button className="w-full mt-4 text-purple-600 font-medium hover:text-purple-700 transition-colors">
+                  Join Community
+                </button>
+              </CardContent>
+            </Card>
+
+            {/* NEW: Transfer Security Center */}
+            <Card className="shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
+                  <Shield className="h-6 w-6 mr-2 text-green-600" />
+                  Security Center
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {securityFeatures.map((feature, index) => (
+                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div className="flex items-center">
+                        <feature.icon className={`h-5 w-5 text-${feature.color}-600 mr-3`} />
+                        <span className="font-medium text-gray-800">{feature.label}</span>
+                      </div>
+                      <Badge className={`bg-${feature.color}-100 text-${feature.color}-700 text-xs`}>
+                        {feature.status}
+                      </Badge>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-4 bg-green-50 rounded-lg p-3">
+                  <div className="flex items-center text-green-700">
+                    <CheckCircle className="h-4 w-4 mr-2" />
+                    <span className="text-sm font-medium">Your account is fully secured</span>
+                  </div>
+                  <p className="text-xs text-green-600 mt-1">Last security scan: Today at 3:42 PM</p>
+                </div>
+              </CardContent>
             </Card>
 
             {/* Help & Support */}
