@@ -1,7 +1,7 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ChevronLeft, ChevronRight, BookOpen } from 'lucide-react';
-import Logo from '@/components/home/Logo';
 
 // Import chapter components
 import ProjectOverviewChapter from './chapters/ProjectOverviewChapter';
@@ -94,7 +94,11 @@ export default function GlobalTransferPitchChapters() {
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
-            <Logo width={48} height={48} className="mr-4 rounded-lg shadow-md" />
+            <img 
+              src="https://3b76ccfb-2ab0-403f-93bf-2c691d2456e0.lovableproject.com/lovable-uploads/45eddf56-11aa-4191-b09a-dc6ebfe3e7cc.png" 
+              alt="Global Transfer Logo" 
+              className="w-12 h-12 mr-4 rounded-lg shadow-md"
+            />
             <BookOpen className="w-8 h-8 text-blue-600 mr-3" />
             <h1 className="text-5xl font-bold text-blue-600">Global Transfer</h1>
           </div>
