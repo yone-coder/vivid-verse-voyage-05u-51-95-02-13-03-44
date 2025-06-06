@@ -95,7 +95,7 @@ export default function GlobalTransferPitchChapters() {
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
             <img 
-              src="/lovable-uploads/2102d3a1-ec6e-4c76-8ee0-549c3ae3d54e.png" 
+              src="/lovable-uploads/f3efe2eb-c3db-48bd-abc7-c65456fdc028.png" 
               alt="Global Transfer Logo" 
               className="w-12 h-12 mr-4 rounded-lg shadow-md"
             />
