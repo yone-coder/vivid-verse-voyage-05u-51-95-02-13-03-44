@@ -1,9 +1,24 @@
+
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Clock, AlertTriangle, Calendar, TrendingUp } from 'lucide-react';
+import { Clock, AlertTriangle, Calendar, TrendingUp, Users, Gift } from 'lucide-react';
 
 const DesktopRightSidebar = () => {
+  const trendingItems = [
+    { name: "Wireless Earbuds", trend: "+15%" },
+    { name: "Smart Watch", trend: "+12%" },
+    { name: "Laptop Stand", trend: "+8%" },
+    { name: "USB-C Hub", trend: "+5%" }
+  ];
+
+  const recentActivity = [
+    { user: "John D.", action: "purchased iPhone Case", time: "2m ago" },
+    { user: "Sarah M.", action: "added Wireless Charger", time: "5m ago" },
+    { user: "Mike R.", action: "reviewed Smart Watch", time: "8m ago" },
+    { user: "Lisa K.", action: "wishlist Laptop", time: "12m ago" }
+  ];
+
   return (
     <div className="space-y-6">
       {/* Haiti News & Updates Card */}
