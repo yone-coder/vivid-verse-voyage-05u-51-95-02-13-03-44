@@ -130,33 +130,6 @@ export default function PaytmDesktopHome() {
             </div>
           </div>
         </div>
-
-        {/* Enhanced Exchange Rate Banner */}
-        <div className="container mx-auto px-6 pb-4">
-          <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-6">
-                <div>
-                  <p className="text-sm font-medium text-gray-700">Today's Rate</p>
-                  <p className="text-2xl font-bold text-gray-800">1 USD = 133.45 HTG</p>
-                </div>
-                <div className="text-sm text-green-600">
-                  <p className="font-medium">↗ +0.75 HTG</p>
-                  <p>vs yesterday</p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-3">
-                <div className="bg-green-500 text-white px-3 py-1 rounded-full text-sm flex items-center">
-                  <div className="w-2 h-2 bg-white rounded-full animate-pulse mr-2"></div>
-                  Live
-                </div>
-                <button className="text-blue-600 hover:text-blue-700 font-medium text-sm">
-                  Rate History
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
       </header>
 
       {/* Main Content - Two Column Layout */}
