@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
+import { Input } from "@/components/ui/input";
 import Logo from '../../home/Logo';
 import MobileTransferInput from '@/components/mobile/paytm/MobileTransferInput';
 
@@ -12,6 +13,8 @@ export default function PaytmDesktopHome() {
   const navigate = useNavigate();
   const [activeSlide, setActiveSlide] = useState(0);
   const [amount, setAmount] = useState('');
+  const [trackingNumber, setTrackingNumber] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
   
   // Sample banner data - now just for images
   const bannerImages = [
@@ -246,6 +249,25 @@ export default function PaytmDesktopHome() {
     }
   };
 
+  const handleTrackTransaction = () => {
+    if (!trackingNumber.trim()) return;
+    
+    setIsSearching(true);
+    
+    // Simulate API call
+    setTimeout(() => {
+      setIsSearching(false);
+      // Here you would normally make an API call to track the transaction
+      console.log(`Tracking transaction: ${trackingNumber}`);
+    }, 1500);
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleTrackTransaction();
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Enhanced Header */}
@@ -466,6 +488,44 @@ export default function PaytmDesktopHome() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
+                {/* Transaction Number Search */}
+                <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                  <h4 className="font-medium text-gray-800 mb-3 flex items-center">
+                    <Search className="h-4 w-4 mr-2 text-blue-600" />
+                    Track a Transaction
+                  </h4>
+                  <div className="flex space-x-3">
+                    <Input
+                      type="text"
+                      placeholder="Enter transaction number (e.g., TX001234)"
+                      value={trackingNumber}
+                      onChange={(e) => setTrackingNumber(e.target.value)}
+                      onKeyPress={handleKeyPress}
+                      className="flex-1"
+                    />
+                    <button
+                      onClick={handleTrackTransaction}
+                      disabled={!trackingNumber.trim() || isSearching}
+                      className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+                    >
+                      {isSearching ? (
+                        <>
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                          Searching...
+                        </>
+                      ) : (
+                        <>
+                          <Search className="h-4 w-4 mr-2" />
+                          Track
+                        </>
+                      )}
+                    </button>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-2">
+                    Enter your transaction number to get real-time status updates
+                  </p>
+                </div>
+
                 <div className="space-y-4">
                   {activeTransfers.map((transfer) => (
                     <div key={transfer.id} className="border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-colors">
