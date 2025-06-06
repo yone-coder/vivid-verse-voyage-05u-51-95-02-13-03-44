@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Users, Lightbulb, Truck, Plus, Send, CreditCard, Gift, Zap, MapPin, Globe, DollarSign, History, Phone, Wallet, ArrowUpDown, ChevronRight, Building, TrendingUp, BarChart3, PieChart, Calculator, Shield, Clock, Star, Award, Target, Briefcase, HeadphonesIcon, Download, Share2, Eye, Lock, Settings, HelpCircle, MessageSquare, Camera, Mic } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -118,20 +117,6 @@ export default function PaytmDesktopHome() {
             {/* User Profile Section */}
             <Card className="shadow-lg">
               <CardContent className="space-y-4">
-                <div className="bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-                        <Logo width={20} height={20} />
-                      </div>
-                    </div>
-                    <div className="flex space-x-3">
-                      <Bell className="w-6 h-6" />
-                      <User className="w-6 h-6" />
-                    </div>
-                  </div>
-                </div>
-
                 <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
                   <div className="flex justify-between items-start">
                     <div className="flex items-center space-x-3">
