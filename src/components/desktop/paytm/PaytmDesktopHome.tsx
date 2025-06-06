@@ -137,20 +137,8 @@ export default function PaytmDesktopHome() {
         <div className="grid grid-cols-2 gap-8">
           {/* Left Column - Mobile Content with Separated Sections */}
           <div className="space-y-6">
-            {/* Section Header */}
-            <div className="text-center">
-              <h2 className="text-2xl font-bold text-gray-800 mb-2">Mobile Features</h2>
-              <p className="text-gray-600">Core functionality and quick actions</p>
-            </div>
-            
             {/* User Profile Section */}
             <Card className="shadow-lg">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg font-semibold text-gray-800 flex items-center">
-                  <User className="h-5 w-5 mr-2 text-blue-600" />
-                  User Profile
-                </CardTitle>
-              </CardHeader>
               <CardContent className="space-y-4">
                 <div className="bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-lg p-4">
                   <div className="flex items-center justify-between mb-3">
