@@ -39,11 +39,9 @@ export default function PaytmDesktopHome() {
     { icon: History, label: 'Transfer History', color: 'red', desc: 'View all transfers' },
     { icon: FileText, label: 'Track Money', color: 'indigo', desc: 'Real-time tracking' },
     { icon: Phone, label: 'Mobile Top-Up', color: 'teal', desc: 'Recharge phones' },
-    { icon: Wallet, label: 'Bill Payment', color: 'cyan', desc: 'Pay utilities' },
     { icon: Globe, label: 'Agent Locator', color: 'gray', desc: 'Find locations' },
     { icon: Calculator, label: 'Rate Calculator', color: 'emerald', desc: 'Exchange rates' },
-    { icon: BarChart3, label: 'Analytics', color: 'purple', desc: 'Spending insights' },
-    { icon: Award, label: 'Rewards', color: 'orange', desc: 'Earn points' }
+    { icon: BarChart3, label: 'Analytics', color: 'purple', desc: 'Spending insights' }
   ];
 
   const bankingFeatures = [
