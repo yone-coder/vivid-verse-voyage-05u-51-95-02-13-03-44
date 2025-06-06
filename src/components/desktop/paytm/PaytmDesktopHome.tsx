@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Users, Lightbulb, Truck, Plus, Send, CreditCard, Gift, Zap, MapPin, Globe, DollarSign, History, Phone, Wallet, ArrowUpDown, ChevronRight, Building, TrendingUp, BarChart3, PieChart, Calculator, Shield, Clock, Star, Award, Target, Briefcase, HeadphonesIcon, Download, Share2, Eye, Lock, Settings, HelpCircle, MessageSquare, Camera, Mic } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -305,8 +306,8 @@ export default function PaytmDesktopHome() {
               </div>
             </Card>
 
-            {/* Main Content Sections - Now Horizontal Layout */}
-            <div className="grid grid-cols-2 gap-6">
+            {/* Main Content Sections - Now 2 Columns Grid Layout */}
+            <div className="grid grid-cols-2 gap-6 mb-6">
               {/* Enhanced Transfer Methods Section */}
               <Card className="shadow-lg">
                 <CardHeader>
@@ -316,7 +317,7 @@ export default function PaytmDesktopHome() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 gap-4 mb-6">
+                  <div className="grid grid-cols-1 gap-4">
                     <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200 hover:shadow-lg transition-all cursor-pointer group">
                       <div className="flex items-center mb-3">
                         <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
@@ -413,7 +414,7 @@ export default function PaytmDesktopHome() {
             </div>
 
             {/* Enhanced Video Tutorials Section - Full Width */}
-            <Card className="shadow-lg mt-6">
+            <Card className="shadow-lg">
               <CardHeader>
                 <div className="flex justify-between items-center">
                   <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
