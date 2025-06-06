@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Users, Lightbulb, Truck, Plus, Send, CreditCard, Gift, Zap, MapPin, Globe, DollarSign, History, Phone, Wallet, ArrowUpDown, ChevronRight, Building, TrendingUp, BarChart3, PieChart, Calculator, Shield, Clock, Star, Award, Target, Briefcase, HeadphonesIcon, Download, Share2, Eye, Lock, Settings, HelpCircle, MessageSquare, Camera, Mic } from 'lucide-react';
+import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Users, Lightbulb, Truck, Plus, Send, CreditCard, Gift, Zap, MapPin, Globe, DollarSign, History, Phone, Wallet, ArrowUpDown, ChevronRight, Building, TrendingUp, BarChart3, PieChart, Calculator, Shield, Clock, Star, Award, Target, Briefcase, HeadphonesIcon, Download, Share2, Eye, Lock, Settings, HelpCircle, MessageSquare, Camera, Mic, Video, Play, BookOpen } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -19,6 +19,46 @@ export default function PaytmDesktopHome() {
     "/lovable-uploads/dd1cad7b-c3b6-43a6-9bc6-deb38a120604.png"
   ];
 
+  // Video tutorials data
+  const videoTutorials = [
+    {
+      id: 1,
+      title: "How to Send Money to Haiti",
+      description: "Step-by-step guide to sending money securely",
+      thumbnail: "https://picsum.photos/seed/tutorial1/300/200",
+      duration: "3:45",
+      views: "12.5K",
+      category: "Basics"
+    },
+    {
+      id: 2,
+      title: "Understanding Exchange Rates",
+      description: "Learn how rates work and when to send",
+      thumbnail: "https://picsum.photos/seed/tutorial2/300/200",
+      duration: "2:30",
+      views: "8.2K",
+      category: "Tips"
+    },
+    {
+      id: 3,
+      title: "Tracking Your Transfer",
+      description: "Monitor your transfer in real-time",
+      thumbnail: "https://picsum.photos/seed/tutorial3/300/200",
+      duration: "1:55",
+      views: "15.1K",
+      category: "Support"
+    },
+    {
+      id: 4,
+      title: "Mobile App Features",
+      description: "Get the most out of our mobile app",
+      thumbnail: "https://picsum.photos/seed/tutorial4/300/200",
+      duration: "4:12",
+      views: "6.8K",
+      category: "Mobile"
+    }
+  ];
+
   // Auto-slide functionality
   useEffect(() => {
     const interval = setInterval(() => {
@@ -36,6 +76,7 @@ export default function PaytmDesktopHome() {
     navigate('/local-transfer');
   };
 
+  // Financial services
   const financialServices = [
     { icon: History, label: 'Transfer History', color: 'red', desc: 'View all transfers' },
     { icon: FileText, label: 'Track Money', color: 'indigo', desc: 'Real-time tracking' },
@@ -45,6 +86,7 @@ export default function PaytmDesktopHome() {
     { icon: BarChart3, label: 'Analytics', color: 'purple', desc: 'Spending insights' }
   ];
 
+  // Banking features
   const bankingFeatures = [
     { icon: Building, label: 'Virtual Account', desc: 'Get your virtual bank account', isNew: true },
     { icon: CreditCard, label: 'Debit Card', desc: 'Order your Haiti Transfer card', isPopular: true },
@@ -288,6 +330,61 @@ export default function PaytmDesktopHome() {
 
           {/* Right Column - Desktop Features */}
           <div className="space-y-6">
+            {/* Video Tutorials Section */}
+            <Card className="shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-xl font-bold text-gray-900 flex items-center justify-between">
+                  <div className="flex items-center">
+                    <Video className="h-6 w-6 mr-2 text-red-600" />
+                    Video Tutorials
+                  </div>
+                  <button className="text-sm text-blue-600 hover:text-blue-800 flex items-center">
+                    <BookOpen className="h-4 w-4 mr-1" />
+                    View All
+                  </button>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-4">
+                  {videoTutorials.map((tutorial) => (
+                    <div key={tutorial.id} className="group cursor-pointer">
+                      <div className="relative rounded-lg overflow-hidden mb-3">
+                        <img 
+                          src={tutorial.thumbnail} 
+                          alt={tutorial.title}
+                          className="w-full h-32 object-cover group-hover:scale-105 transition-transform duration-200"
+                        />
+                        <div className="absolute inset-0 bg-black bg-opacity-30 group-hover:bg-opacity-20 transition-opacity flex items-center justify-center">
+                          <div className="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center shadow-lg">
+                            <Play className="h-6 w-6 text-white ml-1" />
+                          </div>
+                        </div>
+                        <div className="absolute bottom-2 right-2 bg-black bg-opacity-75 text-white text-xs px-2 py-1 rounded">
+                          {tutorial.duration}
+                        </div>
+                        <div className="absolute top-2 left-2">
+                          <Badge className="text-xs bg-blue-600">{tutorial.category}</Badge>
+                        </div>
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-gray-800 text-sm mb-1 group-hover:text-blue-600 transition-colors">
+                          {tutorial.title}
+                        </h4>
+                        <p className="text-xs text-gray-500 mb-1">{tutorial.description}</p>
+                        <p className="text-xs text-gray-400">{tutorial.views} views</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-4 text-center">
+                  <button className="w-full bg-red-50 text-red-600 py-2 px-4 rounded-lg text-sm font-medium hover:bg-red-100 transition-colors flex items-center justify-center">
+                    <Video className="h-4 w-4 mr-2" />
+                    Watch Getting Started Tutorial
+                  </button>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Enhanced Financial Services */}
             <Card className="shadow-lg">
               <CardHeader>
