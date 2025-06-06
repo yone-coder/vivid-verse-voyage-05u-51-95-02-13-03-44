@@ -1,13 +1,16 @@
+
 import React, { useState, useEffect } from 'react';
 import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Users, Lightbulb, Truck, Plus, Send, CreditCard, Gift, Zap, MapPin, Globe, DollarSign, History, Phone, Wallet, ArrowUpDown, ChevronRight, Building, TrendingUp, BarChart3, PieChart, Calculator, Shield, Clock, Star, Award, Target, Briefcase, HeadphonesIcon, Download, Share2, Eye, Lock, Settings, HelpCircle, MessageSquare, Camera, Mic } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import PaytmMobileHome from '@/components/mobile/paytm/PaytmMobileHome';
+import Logo from '../../home/Logo';
+import MobileTransferInput from '@/components/mobile/paytm/MobileTransferInput';
 
 export default function PaytmDesktopHome() {
   const navigate = useNavigate();
   const [activeSlide, setActiveSlide] = useState(0);
+  const [amount, setAmount] = useState('');
   
   // Sample banner data - now just for images
   const bannerImages = [
@@ -27,6 +30,10 @@ export default function PaytmDesktopHome() {
 
   const handleSendClick = () => {
     navigate('/multi-step-transfer-desktop');
+  };
+
+  const handleLocalTransferClick = () => {
+    navigate('/local-transfer');
   };
 
   const financialServices = [
@@ -160,18 +167,168 @@ export default function PaytmDesktopHome() {
       {/* Main Content - Two Column Layout */}
       <div className="container mx-auto px-6 py-8">
         <div className="grid grid-cols-2 gap-8">
-          {/* Left Column - Mobile Version */}
+          {/* Left Column - Mobile Content */}
           <div className="bg-white rounded-3xl shadow-2xl p-6">
             <div className="text-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-800 mb-2">Mobile Experience</h2>
-              <p className="text-gray-600">Experience our mobile app interface</p>
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">Mobile Features</h2>
+              <p className="text-gray-600">Core functionality and quick actions</p>
             </div>
             
-            {/* Mobile Container */}
-            <div className="max-w-sm mx-auto bg-gradient-to-b from-blue-100 to-blue-50 rounded-3xl overflow-hidden shadow-lg border-8 border-gray-800">
-              {/* Render the actual mobile component */}
-              <div className="transform scale-100">
-                <PaytmMobileHome />
+            {/* Mobile Content Container */}
+            <div className="space-y-6">
+              {/* User Profile Card */}
+              <div className="bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-lg p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+                      <Logo width={20} height={20} />
+                    </div>
+                    <div>
+                      <p className="text-sm opacity-90">Welcome to</p>
+                      <p className="font-semibold">Global Transfer</p>
+                    </div>
+                  </div>
+                  <div className="flex space-x-3">
+                    <Bell className="w-6 h-6" />
+                    <User className="w-6 h-6" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Profile Details */}
+              <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
+                <div className="flex justify-between items-start">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                      <span className="text-blue-600 font-bold text-lg">MJ</span>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-lg text-gray-800">Marie Joseph</p>
+                      <p className="text-sm text-gray-600">Verified Account</p>
+                      <p className="text-xs text-gray-500">Member since 2023</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="bg-green-500 text-white px-2 py-1 rounded-full text-xs mb-1">
+                      ✓ Verified
+                    </div>
+                    <p className="text-xs text-gray-500">ID Confirmed</p>
+                  </div>
+                </div>
+                <div className="mt-4 flex space-x-2">
+                  <button 
+                    onClick={handleSendClick}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium flex-1"
+                  >
+                    Send Money
+                  </button>
+                  <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-full text-sm flex-1">
+                    View Profile
+                  </button>
+                </div>
+              </div>
+
+              {/* Exchange Rate */}
+              <div className="bg-gradient-to-r from-green-100 to-blue-100 rounded-lg p-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-gray-700">Today's Rate</p>
+                    <p className="text-lg font-bold text-gray-800">1 USD = 133.45 HTG</p>
+                  </div>
+                  <div className="bg-green-500 text-white px-2 py-1 rounded-full text-xs">
+                    Live
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Transfer Options */}
+              <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
+                <h3 className="font-semibold text-gray-800 mb-3">Quick Transfer</h3>
+                <div className="grid grid-cols-4 gap-3">
+                  <button className="text-center" onClick={handleSendClick}>
+                    <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <Send className="w-6 h-6 text-red-600" />
+                    </div>
+                    <p className="text-xs text-gray-600 font-medium">Send to Haiti</p>
+                  </button>
+                  <button className="text-center" onClick={handleLocalTransferClick}>
+                    <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <ArrowUpDown className="w-6 h-6 text-green-600" />
+                    </div>
+                    <p className="text-xs text-gray-600 font-medium">Local Transfer</p>
+                  </button>
+                  <button className="text-center">
+                    <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <Zap className="w-6 h-6 text-purple-600" />
+                    </div>
+                    <p className="text-xs text-gray-600 font-medium">Express Send</p>
+                  </button>
+                  <button className="text-center">
+                    <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <CreditCard className="w-6 h-6 text-orange-600" />
+                    </div>
+                    <p className="text-xs text-gray-600 font-medium">Bill Payment</p>
+                  </button>
+                </div>
+              </div>
+
+              {/* Transfer Amount Input */}
+              <div>
+                <h3 className="font-semibold text-gray-800 mb-3">Send Money</h3>
+                <MobileTransferInput 
+                  amount={amount}
+                  onAmountChange={setAmount}
+                />
+              </div>
+
+              {/* Recent Recipients */}
+              <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
+                <div className="flex justify-between items-center mb-3">
+                  <h3 className="font-semibold text-gray-800">Recent Recipients</h3>
+                  <ChevronRight className="w-5 h-5 text-gray-400" />
+                </div>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
+                    <div className="flex items-center">
+                      <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                        <span className="text-blue-600 font-semibold text-sm">JP</span>
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-800">Jean Pierre</p>
+                        <p className="text-sm text-gray-500">Port-au-Prince • Last: $150</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <button 
+                        onClick={handleSendClick}
+                        className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm mb-1"
+                      >
+                        Send
+                      </button>
+                      <p className="text-xs text-gray-500">3 days ago</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
+                    <div className="flex items-center">
+                      <div className="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center mr-3">
+                        <span className="text-pink-600 font-semibold text-sm">ML</span>
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-800">Marie Louise</p>
+                        <p className="text-sm text-gray-500">Cap-Haïtien • Last: $200</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <button 
+                        onClick={handleSendClick}
+                        className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm mb-1"
+                      >
+                        Send
+                      </button>
+                      <p className="text-xs text-gray-500">1 week ago</p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
