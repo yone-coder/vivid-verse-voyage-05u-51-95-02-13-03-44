@@ -1,9 +1,11 @@
+
 import React, { useState, useEffect } from 'react';
-import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Users, Lightbulb, Truck, Plus, Send, CreditCard, Gift, Zap, MapPin, Globe, DollarSign, History, Phone, Wallet, ArrowUpDown, ChevronRight, Building, TrendingUp, BarChart3, PieChart, Calculator, Shield, Clock, Star, Award, Target, Briefcase, HeadphonesIcon, Download, Share2, Eye, Lock, Settings, HelpCircle, MessageSquare, Camera, Mic, Video, Play, BookOpen } from 'lucide-react';
+import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Users, Lightbulb, Truck, Plus, Send, CreditCard, Gift, Zap, MapPin, Globe, DollarSign, History, Phone, Wallet, ArrowUpDown, ChevronRight, Building, TrendingUp, BarChart3, PieChart, Calculator, Shield, Clock, Star, Award, Target, Briefcase, HeadphonesIcon, Download, Share2, Eye, Lock, Settings, HelpCircle, MessageSquare, Camera, Mic, Video, Play, BookOpen, CheckCircle, Package, Truck as TruckIcon, Timer, AlertCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Progress } from "@/components/ui/progress";
 import Logo from '../../home/Logo';
 import MobileTransferInput from '@/components/mobile/paytm/MobileTransferInput';
 
@@ -59,6 +61,58 @@ export default function PaytmDesktopHome() {
     }
   ];
 
+  // Transaction tracking data
+  const activeTransfers = [
+    {
+      id: "TX001234",
+      recipient: "Jean Pierre",
+      amount: "$150.00",
+      status: "processing",
+      progress: 65,
+      estimatedTime: "2-4 hours",
+      destination: "Port-au-Prince",
+      sentDate: "Today, 2:30 PM",
+      steps: [
+        { label: "Payment Confirmed", completed: true, time: "2:30 PM" },
+        { label: "Transfer Processing", completed: true, time: "2:32 PM", active: true },
+        { label: "Funds Available", completed: false, time: "Est. 6:30 PM" },
+        { label: "Pickup Ready", completed: false, time: "Est. 6:45 PM" }
+      ]
+    },
+    {
+      id: "TX001235",
+      recipient: "Marie Louise",
+      amount: "$200.00",
+      status: "available",
+      progress: 100,
+      estimatedTime: "Ready now",
+      destination: "Cap-Haïtien",
+      sentDate: "Yesterday, 10:15 AM",
+      steps: [
+        { label: "Payment Confirmed", completed: true, time: "10:15 AM" },
+        { label: "Transfer Processing", completed: true, time: "10:17 AM" },
+        { label: "Funds Available", completed: true, time: "2:45 PM" },
+        { label: "Pickup Ready", completed: true, time: "2:50 PM", active: true }
+      ]
+    },
+    {
+      id: "TX001236",
+      recipient: "Claude Joseph",
+      amount: "$75.00",
+      status: "sent",
+      progress: 25,
+      estimatedTime: "24-48 hours",
+      destination: "Gonaïves",
+      sentDate: "Today, 4:15 PM",
+      steps: [
+        { label: "Payment Confirmed", completed: true, time: "4:15 PM", active: true },
+        { label: "Transfer Processing", completed: false, time: "Est. 4:20 PM" },
+        { label: "Funds Available", completed: false, time: "Est. Tomorrow 2:00 PM" },
+        { label: "Pickup Ready", completed: false, time: "Est. Tomorrow 2:15 PM" }
+      ]
+    }
+  ];
+
   // Auto-slide functionality
   useEffect(() => {
     const interval = setInterval(() => {
@@ -95,6 +149,45 @@ export default function PaytmDesktopHome() {
     { icon: Calculator, label: 'Loans', desc: 'Quick personal loans' },
     { icon: PieChart, label: 'Budget Tracker', desc: 'Track your spending habits' }
   ];
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'sent':
+        return <Timer className="h-4 w-4 text-blue-600" />;
+      case 'processing':
+        return <Package className="h-4 w-4 text-orange-600" />;
+      case 'available':
+        return <CheckCircle className="h-4 w-4 text-green-600" />;
+      default:
+        return <Clock className="h-4 w-4 text-gray-600" />;
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'sent':
+        return 'bg-blue-100 text-blue-800';
+      case 'processing':
+        return 'bg-orange-100 text-orange-800';
+      case 'available':
+        return 'bg-green-100 text-green-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getProgressColor = (status: string) => {
+    switch (status) {
+      case 'sent':
+        return 'bg-blue-600';
+      case 'processing':
+        return 'bg-orange-600';
+      case 'available':
+        return 'bg-green-600';
+      default:
+        return 'bg-gray-600';
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -189,6 +282,103 @@ export default function PaytmDesktopHome() {
                       View Profile
                     </button>
                   </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Transaction Status Tracker */}
+            <Card className="shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-xl font-bold text-gray-900 flex items-center justify-between">
+                  <div className="flex items-center">
+                    <TruckIcon className="h-6 w-6 mr-2 text-blue-600" />
+                    Transaction Status Tracker
+                  </div>
+                  <Badge className="bg-blue-100 text-blue-800">
+                    {activeTransfers.length} Active
+                  </Badge>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {activeTransfers.map((transfer) => (
+                    <div key={transfer.id} className="border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-colors">
+                      {/* Transfer Header */}
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center space-x-3">
+                          <div className="flex items-center space-x-2">
+                            {getStatusIcon(transfer.status)}
+                            <span className="font-medium text-gray-900">{transfer.recipient}</span>
+                          </div>
+                          <Badge className={`text-xs ${getStatusColor(transfer.status)}`}>
+                            {transfer.status === 'sent' ? 'Sent' : 
+                             transfer.status === 'processing' ? 'Processing' : 'Available'}
+                          </Badge>
+                        </div>
+                        <div className="text-right">
+                          <div className="font-bold text-lg text-gray-900">{transfer.amount}</div>
+                          <div className="text-xs text-gray-500">{transfer.id}</div>
+                        </div>
+                      </div>
+
+                      {/* Progress Bar */}
+                      <div className="mb-3">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-sm text-gray-600">Progress</span>
+                          <span className="text-sm font-medium text-gray-900">{transfer.progress}%</span>
+                        </div>
+                        <Progress 
+                          value={transfer.progress} 
+                          className="h-2"
+                          indicatorClassName={getProgressColor(transfer.status)}
+                        />
+                      </div>
+
+                      {/* Status Steps */}
+                      <div className="grid grid-cols-4 gap-2 mb-3">
+                        {transfer.steps.map((step, index) => (
+                          <div key={index} className="text-center">
+                            <div className={`w-6 h-6 rounded-full mx-auto mb-1 flex items-center justify-center ${
+                              step.completed 
+                                ? 'bg-green-500 text-white' 
+                                : step.active 
+                                  ? 'bg-blue-500 text-white' 
+                                  : 'bg-gray-200 text-gray-500'
+                            }`}>
+                              {step.completed ? (
+                                <CheckCircle className="h-3 w-3" />
+                              ) : (
+                                <span className="text-xs font-bold">{index + 1}</span>
+                              )}
+                            </div>
+                            <div className={`text-xs ${step.active ? 'font-medium text-blue-600' : 'text-gray-500'}`}>
+                              {step.label}
+                            </div>
+                            <div className="text-xs text-gray-400">{step.time}</div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Transfer Details */}
+                      <div className="flex justify-between items-center text-sm border-t pt-3">
+                        <div className="flex items-center space-x-4">
+                          <span className="text-gray-600">To: {transfer.destination}</span>
+                          <span className="text-gray-600">Sent: {transfer.sentDate}</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Clock className="h-4 w-4 text-gray-500" />
+                          <span className="text-gray-600">{transfer.estimatedTime}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                
+                <div className="mt-4 text-center">
+                  <button className="w-full bg-blue-50 text-blue-600 py-2 px-4 rounded-lg text-sm font-medium hover:bg-blue-100 transition-colors flex items-center justify-center">
+                    <History className="h-4 w-4 mr-2" />
+                    View All Transactions
+                  </button>
                 </div>
               </CardContent>
             </Card>
