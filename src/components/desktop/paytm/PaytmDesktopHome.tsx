@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect } from 'react';
 import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Users, Lightbulb, Truck, Plus, Send, CreditCard, Gift, Zap, MapPin, Globe, DollarSign, History, Phone, Wallet, ArrowUpDown, ChevronRight, Building, TrendingUp, BarChart3, PieChart, Calculator, Shield, Clock, Star, Award, Target, Briefcase, HeadphonesIcon, Download, Share2, Eye, Lock, Settings, HelpCircle, MessageSquare, Camera, Mic, Video, Play, BookOpen, CheckCircle, Package, Truck as TruckIcon, Timer, AlertCircle, Calendar, Bookmark, Heart, UserPlus, Copy } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -276,7 +277,7 @@ export default function PaytmDesktopHome() {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 rounded-full overflow-hidden shadow-lg">
+              <div className="w-12 h-12 rounded-full overflow-hidden shadow-lg border-2 border-black">
                 <img 
                   src="/lovable-uploads/45eddf56-11aa-4191-b09a-dc6ebfe3e7cc.png" 
                   alt="Global Transfer Logo" 
@@ -991,3 +992,4 @@ export default function PaytmDesktopHome() {
     </div>
   );
 }
+
