@@ -159,97 +159,103 @@ export default function PaytmDesktopHome() {
       <div className="container mx-auto px-6 py-8">
         <div className="grid grid-cols-12 gap-8">
           {/* Enhanced Left Sidebar */}
-          <div className="col-span-3 space-y-6">
-            {/* Quick Actions */}
-            <Card className="shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-lg font-bold text-gray-800 flex items-center">
-                  <Zap className="h-5 w-5 mr-2 text-blue-600" />
-                  Quick Actions
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {quickActions.map((action, index) => (
-                  <button 
-                    key={index}
-                    onClick={action.label === 'Send to Haiti' ? handleSendClick : undefined}
-                    className="w-full flex items-center p-3 rounded-xl hover:bg-gray-50 transition-colors border border-gray-100 group"
-                  >
-                    <div className={`bg-${action.color}-600 p-2 rounded-lg mr-3 group-hover:scale-110 transition-transform`}>
-                      <action.icon className="h-5 w-5 text-white" />
-                    </div>
-                    <span className="font-medium text-gray-700">{action.label}</span>
-                  </button>
-                ))}
-              </CardContent>
-            </Card>
-
-            {/* Enhanced Account Balance */}
-            <Card className="shadow-lg bg-gradient-to-br from-blue-600 to-indigo-600 text-white">
-              <CardContent className="p-6">
-                <div className="text-center">
-                  <div className="flex items-center justify-center mb-2">
-                    <Wallet className="h-6 w-6 mr-2" />
-                    <span className="text-lg font-medium">Account Balance</span>
-                  </div>
-                  <div className="text-4xl font-bold mb-2">${activeBalance}</div>
-                  <p className="text-blue-100 mb-4">Available Balance</p>
-                  
-                  <div className="grid grid-cols-3 gap-2 mb-4 text-sm">
-                    <div className="bg-white/20 rounded-lg p-2">
-                      <p className="text-xs text-blue-100">Today Sent</p>
-                      <p className="font-bold">${todayStats.sent}</p>
-                    </div>
-                    <div className="bg-white/20 rounded-lg p-2">
-                      <p className="text-xs text-blue-100">Received</p>
-                      <p className="font-bold">${todayStats.received}</p>
-                    </div>
-                    <div className="bg-white/20 rounded-lg p-2">
-                      <p className="text-xs text-blue-100">Transactions</p>
-                      <p className="font-bold">{todayStats.transactions}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex space-x-2">
-                    <button className="flex-1 bg-white text-blue-600 py-3 rounded-xl font-medium hover:bg-gray-100 transition-colors">
-                      Add Funds
-                    </button>
-                    <button className="flex-1 border border-white/50 text-white py-3 rounded-xl font-medium hover:bg-white/10 transition-colors">
-                      Withdraw
-                    </button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Banking Features */}
-            <Card className="shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-lg font-bold text-gray-800 flex items-center">
-                  <Building className="h-5 w-5 mr-2 text-green-600" />
-                  Banking Features
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {bankingFeatures.map((feature, index) => (
-                  <div key={index} className="p-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer group relative">
-                    <div className="flex items-start">
-                      <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center mr-3 group-hover:bg-blue-100 transition-colors">
-                        <feature.icon className="h-5 w-5 text-gray-600 group-hover:text-blue-600" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center">
-                          <span className="font-medium text-gray-800">{feature.label}</span>
-                          {feature.isNew && <Badge className="ml-2 text-xs bg-green-500">New</Badge>}
-                          {feature.isPopular && <Badge className="ml-2 text-xs bg-orange-500">Popular</Badge>}
+          <div className="col-span-3">
+            <div className="grid grid-cols-1 gap-6">
+              {/* Quick Actions */}
+              <Card className="shadow-lg">
+                <CardHeader>
+                  <CardTitle className="text-lg font-bold text-gray-800 flex items-center">
+                    <Zap className="h-5 w-5 mr-2 text-blue-600" />
+                    Quick Actions
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-3">
+                    {quickActions.map((action, index) => (
+                      <button 
+                        key={index}
+                        onClick={action.label === 'Send to Haiti' ? handleSendClick : undefined}
+                        className="flex flex-col items-center p-3 rounded-xl hover:bg-gray-50 transition-colors border border-gray-100 group min-h-[100px]"
+                      >
+                        <div className={`bg-${action.color}-600 p-2 rounded-lg mb-2 group-hover:scale-110 transition-transform`}>
+                          <action.icon className="h-5 w-5 text-white" />
                         </div>
-                        <p className="text-xs text-gray-500 mt-1">{feature.desc}</p>
+                        <span className="font-medium text-gray-700 text-sm text-center">{action.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Enhanced Account Balance */}
+              <Card className="shadow-lg bg-gradient-to-br from-blue-600 to-indigo-600 text-white">
+                <CardContent className="p-6">
+                  <div className="text-center">
+                    <div className="flex items-center justify-center mb-2">
+                      <Wallet className="h-6 w-6 mr-2" />
+                      <span className="text-lg font-medium">Account Balance</span>
+                    </div>
+                    <div className="text-4xl font-bold mb-2">${activeBalance}</div>
+                    <p className="text-blue-100 mb-4">Available Balance</p>
+                    
+                    <div className="grid grid-cols-3 gap-2 mb-4 text-sm">
+                      <div className="bg-white/20 rounded-lg p-2">
+                        <p className="text-xs text-blue-100">Today Sent</p>
+                        <p className="font-bold">${todayStats.sent}</p>
+                      </div>
+                      <div className="bg-white/20 rounded-lg p-2">
+                        <p className="text-xs text-blue-100">Received</p>
+                        <p className="font-bold">${todayStats.received}</p>
+                      </div>
+                      <div className="bg-white/20 rounded-lg p-2">
+                        <p className="text-xs text-blue-100">Transactions</p>
+                        <p className="font-bold">{todayStats.transactions}</p>
                       </div>
                     </div>
+                    
+                    <div className="flex space-x-2">
+                      <button className="flex-1 bg-white text-blue-600 py-3 rounded-xl font-medium hover:bg-gray-100 transition-colors">
+                        Add Funds
+                      </button>
+                      <button className="flex-1 border border-white/50 text-white py-3 rounded-xl font-medium hover:bg-white/10 transition-colors">
+                        Withdraw
+                      </button>
+                    </div>
                   </div>
-                ))}
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+
+              {/* Banking Features */}
+              <Card className="shadow-lg">
+                <CardHeader>
+                  <CardTitle className="text-lg font-bold text-gray-800 flex items-center">
+                    <Building className="h-5 w-5 mr-2 text-green-600" />
+                    Banking Features
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-3">
+                    {bankingFeatures.map((feature, index) => (
+                      <div key={index} className="p-3 border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer group relative min-h-[120px] flex flex-col">
+                        <div className="flex flex-col items-center text-center flex-1">
+                          <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center mb-2 group-hover:bg-blue-100 transition-colors">
+                            <feature.icon className="h-5 w-5 text-gray-600 group-hover:text-blue-600" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-center justify-center mb-1">
+                              <span className="font-medium text-gray-800 text-sm">{feature.label}</span>
+                            </div>
+                            {feature.isNew && <Badge className="mb-2 text-xs bg-green-500">New</Badge>}
+                            {feature.isPopular && <Badge className="mb-2 text-xs bg-orange-500">Popular</Badge>}
+                            <p className="text-xs text-gray-500">{feature.desc}</p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </div>
 
           {/* Enhanced Main Content */}
@@ -485,129 +491,135 @@ export default function PaytmDesktopHome() {
           </div>
 
           {/* Enhanced Right Sidebar */}
-          <div className="col-span-3 space-y-6">
-            {/* Recent Recipients */}
-            <Card className="shadow-lg">
-              <CardHeader>
-                <div className="flex justify-between items-center">
+          <div className="col-span-3">
+            <div className="grid grid-cols-1 gap-6">
+              {/* Recent Recipients */}
+              <Card className="shadow-lg">
+                <CardHeader>
+                  <div className="flex justify-between items-center">
+                    <CardTitle className="text-lg font-bold text-gray-800 flex items-center">
+                      <Users className="h-5 w-5 mr-2 text-blue-600" />
+                      Recent Recipients
+                    </CardTitle>
+                    <ChevronRight className="w-5 h-5 text-gray-400 cursor-pointer hover:text-gray-600" />
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 gap-4">
+                    {[
+                      { name: "Jean Pierre", location: "Port-au-Prince", amount: "$150", time: "3 days ago", initials: "JP", color: "bg-blue-100 text-blue-600" },
+                      { name: "Marie Louise", location: "Cap-Haïtien", amount: "$200", time: "1 week ago", initials: "ML", color: "bg-pink-100 text-pink-600" },
+                      { name: "Pierre Duval", location: "Jacmel", amount: "$75", time: "2 weeks ago", initials: "PD", color: "bg-green-100 text-green-600" }
+                    ].map((recipient, index) => (
+                      <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
+                        <div className="flex items-center">
+                          <div className={`w-12 h-12 ${recipient.color} rounded-full flex items-center justify-center mr-3`}>
+                            <span className="font-semibold">{recipient.initials}</span>
+                          </div>
+                          <div>
+                            <p className="font-medium text-gray-800">{recipient.name}</p>
+                            <p className="text-sm text-gray-500">{recipient.location} • Last: {recipient.amount}</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <button 
+                            onClick={handleSendClick}
+                            className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm hover:bg-blue-700 transition-colors mb-1"
+                          >
+                            Send
+                          </button>
+                          <p className="text-xs text-gray-500">{recipient.time}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Live Stats */}
+              <Card className="shadow-lg">
+                <CardHeader>
                   <CardTitle className="text-lg font-bold text-gray-800 flex items-center">
-                    <Users className="h-5 w-5 mr-2 text-blue-600" />
-                    Recent Recipients
+                    <BarChart3 className="h-5 w-5 mr-2 text-purple-600" />
+                    Live Statistics
                   </CardTitle>
-                  <ChevronRight className="w-5 h-5 text-gray-400 cursor-pointer hover:text-gray-600" />
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-purple-50 rounded-lg p-3 text-center">
+                      <div className="text-2xl font-bold text-purple-600">1,234</div>
+                      <div className="text-sm text-gray-600">Online Users</div>
+                    </div>
+                    <div className="bg-green-50 rounded-lg p-3 text-center">
+                      <div className="text-2xl font-bold text-green-600">89</div>
+                      <div className="text-sm text-gray-600">Active Transfers</div>
+                    </div>
+                    <div className="bg-orange-50 rounded-lg p-3 text-center">
+                      <div className="text-2xl font-bold text-orange-600">156</div>
+                      <div className="text-sm text-gray-600">Pending Orders</div>
+                    </div>
+                    <div className="bg-blue-50 rounded-lg p-3 text-center">
+                      <div className="text-2xl font-bold text-blue-600">$2.1M</div>
+                      <div className="text-sm text-gray-600">Daily Volume</div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Enhanced Special Offers */}
+              <Card className="shadow-lg overflow-hidden">
+                <div className="bg-gradient-to-r from-red-400 via-pink-500 to-purple-500 p-6 text-white">
+                  <div className="text-center">
+                    <Gift className="h-8 w-8 mx-auto mb-3" />
+                    <p className="font-bold text-xl mb-2">🎉 Zero Fees Special!</p>
+                    <p className="text-sm mb-4 opacity-90">Send up to $500 with no transfer fees this month</p>
+                    <button 
+                      onClick={handleSendClick}
+                      className="w-full bg-white text-red-500 py-3 px-4 rounded-full text-sm font-medium hover:bg-gray-100 transition-colors mb-3 flex items-center justify-center"
+                    >
+                      <Gift className="h-4 w-4 mr-2" />
+                      Claim Offer Now
+                    </button>
+                    <p className="text-xs opacity-80">Valid until June 30, 2025 • Terms apply • Limited time</p>
+                  </div>
                 </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {[
-                  { name: "Jean Pierre", location: "Port-au-Prince", amount: "$150", time: "3 days ago", initials: "JP", color: "bg-blue-100 text-blue-600" },
-                  { name: "Marie Louise", location: "Cap-Haïtien", amount: "$200", time: "1 week ago", initials: "ML", color: "bg-pink-100 text-pink-600" },
-                  { name: "Pierre Duval", location: "Jacmel", amount: "$75", time: "2 weeks ago", initials: "PD", color: "bg-green-100 text-green-600" }
-                ].map((recipient, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
-                    <div className="flex items-center">
-                      <div className={`w-12 h-12 ${recipient.color} rounded-full flex items-center justify-center mr-3`}>
-                        <span className="font-semibold">{recipient.initials}</span>
-                      </div>
+              </Card>
+
+              {/* Help & Support */}
+              <Card className="shadow-lg">
+                <CardHeader>
+                  <CardTitle className="text-lg font-bold text-gray-800 flex items-center">
+                    <HelpCircle className="h-5 w-5 mr-2 text-green-600" />
+                    Help & Support
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 gap-3">
+                    <button className="w-full flex items-center p-3 text-left hover:bg-gray-50 rounded-lg transition-colors">
+                      <MessageSquare className="h-5 w-5 mr-3 text-blue-600" />
                       <div>
-                        <p className="font-medium text-gray-800">{recipient.name}</p>
-                        <p className="text-sm text-gray-500">{recipient.location} • Last: {recipient.amount}</p>
+                        <div className="font-medium">Live Chat</div>
+                        <div className="text-sm text-gray-500">Get instant help</div>
                       </div>
-                    </div>
-                    <div className="text-right">
-                      <button 
-                        onClick={handleSendClick}
-                        className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm hover:bg-blue-700 transition-colors mb-1"
-                      >
-                        Send
-                      </button>
-                      <p className="text-xs text-gray-500">{recipient.time}</p>
-                    </div>
+                    </button>
+                    <button className="w-full flex items-center p-3 text-left hover:bg-gray-50 rounded-lg transition-colors">
+                      <Phone className="h-5 w-5 mr-3 text-green-600" />
+                      <div>
+                        <div className="font-medium">Call Support</div>
+                        <div className="text-sm text-gray-500">24/7 phone support</div>
+                      </div>
+                    </button>
+                    <button className="w-full flex items-center p-3 text-left hover:bg-gray-50 rounded-lg transition-colors">
+                      <FileText className="h-5 w-5 mr-3 text-purple-600" />
+                      <div>
+                        <div className="font-medium">Help Center</div>
+                        <div className="text-sm text-gray-500">Browse FAQs</div>
+                      </div>
+                    </button>
                   </div>
-                ))}
-              </CardContent>
-            </Card>
-
-            {/* Live Stats */}
-            <Card className="shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-lg font-bold text-gray-800 flex items-center">
-                  <BarChart3 className="h-5 w-5 mr-2 text-purple-600" />
-                  Live Statistics
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-purple-50 rounded-lg p-3 text-center">
-                    <div className="text-2xl font-bold text-purple-600">1,234</div>
-                    <div className="text-sm text-gray-600">Online Users</div>
-                  </div>
-                  <div className="bg-green-50 rounded-lg p-3 text-center">
-                    <div className="text-2xl font-bold text-green-600">89</div>
-                    <div className="text-sm text-gray-600">Active Transfers</div>
-                  </div>
-                  <div className="bg-orange-50 rounded-lg p-3 text-center">
-                    <div className="text-2xl font-bold text-orange-600">156</div>
-                    <div className="text-sm text-gray-600">Pending Orders</div>
-                  </div>
-                  <div className="bg-blue-50 rounded-lg p-3 text-center">
-                    <div className="text-2xl font-bold text-blue-600">$2.1M</div>
-                    <div className="text-sm text-gray-600">Daily Volume</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Enhanced Special Offers */}
-            <Card className="shadow-lg overflow-hidden">
-              <div className="bg-gradient-to-r from-red-400 via-pink-500 to-purple-500 p-6 text-white">
-                <div className="text-center">
-                  <Gift className="h-8 w-8 mx-auto mb-3" />
-                  <p className="font-bold text-xl mb-2">🎉 Zero Fees Special!</p>
-                  <p className="text-sm mb-4 opacity-90">Send up to $500 with no transfer fees this month</p>
-                  <button 
-                    onClick={handleSendClick}
-                    className="w-full bg-white text-red-500 py-3 px-4 rounded-full text-sm font-medium hover:bg-gray-100 transition-colors mb-3 flex items-center justify-center"
-                  >
-                    <Gift className="h-4 w-4 mr-2" />
-                    Claim Offer Now
-                  </button>
-                  <p className="text-xs opacity-80">Valid until June 30, 2025 • Terms apply • Limited time</p>
-                </div>
-              </div>
-            </Card>
-
-            {/* Help & Support */}
-            <Card className="shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-lg font-bold text-gray-800 flex items-center">
-                  <HelpCircle className="h-5 w-5 mr-2 text-green-600" />
-                  Help & Support
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <button className="w-full flex items-center p-3 text-left hover:bg-gray-50 rounded-lg transition-colors">
-                  <MessageSquare className="h-5 w-5 mr-3 text-blue-600" />
-                  <div>
-                    <div className="font-medium">Live Chat</div>
-                    <div className="text-sm text-gray-500">Get instant help</div>
-                  </div>
-                </button>
-                <button className="w-full flex items-center p-3 text-left hover:bg-gray-50 rounded-lg transition-colors">
-                  <Phone className="h-5 w-5 mr-3 text-green-600" />
-                  <div>
-                    <div className="font-medium">Call Support</div>
-                    <div className="text-sm text-gray-500">24/7 phone support</div>
-                  </div>
-                </button>
-                <button className="w-full flex items-center p-3 text-left hover:bg-gray-50 rounded-lg transition-colors">
-                  <FileText className="h-5 w-5 mr-3 text-purple-600" />
-                  <div>
-                    <div className="font-medium">Help Center</div>
-                    <div className="text-sm text-gray-500">Browse FAQs</div>
-                  </div>
-                </button>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       </div>
