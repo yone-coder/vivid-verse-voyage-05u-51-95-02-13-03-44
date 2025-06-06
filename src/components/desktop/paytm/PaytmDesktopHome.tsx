@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Users, Lightbulb, Truck, Plus, Send, CreditCard, Gift, Zap, MapPin, Globe, DollarSign, History, Phone, Wallet, ArrowUpDown, ChevronRight, Building, TrendingUp, BarChart3, PieChart, Calculator, Shield, Clock, Star, Award, Target, Briefcase, HeadphonesIcon, Download, Share2, Eye, Lock, Settings, HelpCircle, MessageSquare, Camera, Mic, Video, Play, BookOpen, CheckCircle, Package, Truck as TruckIcon, Timer, AlertCircle, Calendar, Bookmark, Heart, UserPlus, Copy } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -306,6 +307,106 @@ export default function PaytmDesktopHome() {
         <div className="grid grid-cols-2 gap-8">
           {/* Left Column - Mobile Content with Separated Sections */}
           <div className="space-y-6">
+            {/* Exchange Rate Section - MOVED TO TOP */}
+            <Card className="shadow-lg">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg font-semibold text-gray-800 flex items-center">
+                  <DollarSign className="h-5 w-5 mr-2 text-green-600" />
+                  Live Exchange Rate
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="bg-gradient-to-r from-green-100 to-blue-100 rounded-lg p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-700">Today's Rate</p>
+                      <p className="text-xl font-bold text-gray-800">1 USD = 133.45 HTG</p>
+                    </div>
+                    <div className="bg-green-500 text-white px-3 py-1 rounded-full text-sm">
+                      Live
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Enhanced Financial Services - MOVED TO TOP */}
+            <Card className="shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
+                  <Briefcase className="h-6 w-6 mr-2 text-purple-600" />
+                  Financial Services
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-3 gap-3">
+                  {financialServices.map((service, index) => (
+                    <div key={index} className="text-center group cursor-pointer">
+                      <div className={`w-14 h-14 bg-${service.color}-100 rounded-xl flex items-center justify-center mb-3 mx-auto group-hover:bg-${service.color}-200 transition-colors group-hover:scale-110 transform duration-200`}>
+                        <service.icon className={`w-7 h-7 text-${service.color}-600`} />
+                      </div>
+                      <span className="text-gray-700 font-medium block text-xs leading-tight">{service.label}</span>
+                      <span className="text-xs text-gray-500 mt-1 block">{service.desc}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Quick Transfer Section - MOVED TO TOP */}
+            <Card className="shadow-lg">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg font-semibold text-gray-800 flex items-center">
+                  <Send className="h-5 w-5 mr-2 text-purple-600" />
+                  Quick Transfer Options
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-4 gap-3">
+                  <button className="text-center" onClick={handleSendClick}>
+                    <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <Send className="w-6 h-6 text-red-600" />
+                    </div>
+                    <p className="text-xs text-gray-600 font-medium">Send to Haiti</p>
+                  </button>
+                  <button className="text-center" onClick={handleLocalTransferClick}>
+                    <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <ArrowUpDown className="w-6 h-6 text-green-600" />
+                    </div>
+                    <p className="text-xs text-gray-600 font-medium">Local Transfer</p>
+                  </button>
+                  <button className="text-center">
+                    <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <Zap className="w-6 h-6 text-purple-600" />
+                    </div>
+                    <p className="text-xs text-gray-600 font-medium">Express Send</p>
+                  </button>
+                  <button className="text-center">
+                    <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                      <CreditCard className="w-6 h-6 text-orange-600" />
+                    </div>
+                    <p className="text-xs text-gray-600 font-medium">Bill Payment</p>
+                  </button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Transfer Amount Section - MOVED TO TOP */}
+            <Card className="shadow-lg">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg font-semibold text-gray-800 flex items-center">
+                  <Calculator className="h-5 w-5 mr-2 text-orange-600" />
+                  Send Money
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <MobileTransferInput 
+                  amount={amount}
+                  onAmountChange={setAmount}
+                />
+              </CardContent>
+            </Card>
+
             {/* User Profile Section */}
             <Card className="shadow-lg">
               <CardContent className="space-y-4">
@@ -437,83 +538,6 @@ export default function PaytmDesktopHome() {
                     View All Transactions
                   </button>
                 </div>
-              </CardContent>
-            </Card>
-
-            {/* Exchange Rate Section */}
-            <Card className="shadow-lg">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg font-semibold text-gray-800 flex items-center">
-                  <DollarSign className="h-5 w-5 mr-2 text-green-600" />
-                  Live Exchange Rate
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="bg-gradient-to-r from-green-100 to-blue-100 rounded-lg p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-gray-700">Today's Rate</p>
-                      <p className="text-xl font-bold text-gray-800">1 USD = 133.45 HTG</p>
-                    </div>
-                    <div className="bg-green-500 text-white px-3 py-1 rounded-full text-sm">
-                      Live
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Quick Transfer Section */}
-            <Card className="shadow-lg">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg font-semibold text-gray-800 flex items-center">
-                  <Send className="h-5 w-5 mr-2 text-purple-600" />
-                  Quick Transfer Options
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-4 gap-3">
-                  <button className="text-center" onClick={handleSendClick}>
-                    <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                      <Send className="w-6 h-6 text-red-600" />
-                    </div>
-                    <p className="text-xs text-gray-600 font-medium">Send to Haiti</p>
-                  </button>
-                  <button className="text-center" onClick={handleLocalTransferClick}>
-                    <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                      <ArrowUpDown className="w-6 h-6 text-green-600" />
-                    </div>
-                    <p className="text-xs text-gray-600 font-medium">Local Transfer</p>
-                  </button>
-                  <button className="text-center">
-                    <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                      <Zap className="w-6 h-6 text-purple-600" />
-                    </div>
-                    <p className="text-xs text-gray-600 font-medium">Express Send</p>
-                  </button>
-                  <button className="text-center">
-                    <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                      <CreditCard className="w-6 h-6 text-orange-600" />
-                    </div>
-                    <p className="text-xs text-gray-600 font-medium">Bill Payment</p>
-                  </button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Transfer Amount Section */}
-            <Card className="shadow-lg">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg font-semibold text-gray-800 flex items-center">
-                  <Calculator className="h-5 w-5 mr-2 text-orange-600" />
-                  Send Money
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <MobileTransferInput 
-                  amount={amount}
-                  onAmountChange={setAmount}
-                />
               </CardContent>
             </Card>
 
@@ -781,29 +805,6 @@ export default function PaytmDesktopHome() {
                     <Video className="h-4 w-4 mr-2" />
                     Watch Getting Started Tutorial
                   </button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Enhanced Financial Services */}
-            <Card className="shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
-                  <Briefcase className="h-6 w-6 mr-2 text-purple-600" />
-                  Financial Services
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-3 gap-3">
-                  {financialServices.map((service, index) => (
-                    <div key={index} className="text-center group cursor-pointer">
-                      <div className={`w-14 h-14 bg-${service.color}-100 rounded-xl flex items-center justify-center mb-3 mx-auto group-hover:bg-${service.color}-200 transition-colors group-hover:scale-110 transform duration-200`}>
-                        <service.icon className={`w-7 h-7 text-${service.color}-600`} />
-                      </div>
-                      <span className="text-gray-700 font-medium block text-xs leading-tight">{service.label}</span>
-                      <span className="text-xs text-gray-500 mt-1 block">{service.desc}</span>
-                    </div>
-                  ))}
                 </div>
               </CardContent>
             </Card>
