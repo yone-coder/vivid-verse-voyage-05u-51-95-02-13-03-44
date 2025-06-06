@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Users, Lightbulb, Truck, Plus, Send, CreditCard, Gift, Zap, MapPin, Globe, DollarSign, History, Phone, Wallet, ArrowUpDown, ChevronRight, Building, TrendingUp, BarChart3, PieChart, Calculator, Shield, Clock, Star, Award, Target, Briefcase, HeadphonesIcon, Download, Share2, Eye, Lock, Settings, HelpCircle, MessageSquare, Camera, Mic, Video, Play, BookOpen, CheckCircle, Package, Truck as TruckIcon, Timer, AlertCircle, Calendar, Bookmark, Heart, UserPlus, Copy } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -309,37 +308,35 @@ export default function PaytmDesktopHome() {
           <div className="space-y-6">
             {/* User Profile Section - TOP PRIORITY */}
             <Card className="shadow-lg">
-              <CardContent className="space-y-4">
-                <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
-                  <div className="flex justify-between items-start">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                        <span className="text-blue-600 font-bold text-lg">MJ</span>
-                      </div>
-                      <div>
-                        <p className="font-semibold text-lg text-gray-800">Marie Joseph</p>
-                        <p className="text-sm text-gray-600">Verified Account</p>
-                        <p className="text-xs text-gray-500">Member since 2023</p>
-                      </div>
+              <CardContent className="p-4">
+                <div className="flex justify-between items-start">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                      <span className="text-blue-600 font-bold text-lg">MJ</span>
                     </div>
-                    <div className="text-right">
-                      <div className="bg-green-500 text-white px-2 py-1 rounded-full text-xs mb-1">
-                        ✓ Verified
-                      </div>
-                      <p className="text-xs text-gray-500">ID Confirmed</p>
+                    <div>
+                      <p className="font-semibold text-lg text-gray-800">Marie Joseph</p>
+                      <p className="text-sm text-gray-600">Verified Account</p>
+                      <p className="text-xs text-gray-500">Member since 2023</p>
                     </div>
                   </div>
-                  <div className="mt-4 flex space-x-2">
-                    <button 
-                      onClick={handleSendClick}
-                      className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium flex-1"
-                    >
-                      Send Money
-                    </button>
-                    <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-full text-sm flex-1">
-                      View Profile
-                    </button>
+                  <div className="text-right">
+                    <div className="bg-green-500 text-white px-2 py-1 rounded-full text-xs mb-1">
+                      ✓ Verified
+                    </div>
+                    <p className="text-xs text-gray-500">ID Confirmed</p>
                   </div>
+                </div>
+                <div className="mt-4 flex space-x-2">
+                  <button 
+                    onClick={handleSendClick}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium flex-1"
+                  >
+                    Send Money
+                  </button>
+                  <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-full text-sm flex-1">
+                    View Profile
+                  </button>
                 </div>
               </CardContent>
             </Card>
@@ -395,6 +392,63 @@ export default function PaytmDesktopHome() {
                   amount={amount}
                   onAmountChange={setAmount}
                 />
+              </CardContent>
+            </Card>
+
+            {/* Recent Recipients Section - TOP PRIORITY */}
+            <Card className="shadow-lg">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg font-semibold text-gray-800 flex items-center justify-between">
+                  <div className="flex items-center">
+                    <Users className="h-5 w-5 mr-2 text-indigo-600" />
+                    Recent Recipients
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-gray-400" />
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div className="flex items-center">
+                      <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                        <span className="text-blue-600 font-semibold text-sm">JP</span>
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-800">Jean Pierre</p>
+                        <p className="text-sm text-gray-500">Port-au-Prince • Last: $150</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <button 
+                        onClick={handleSendClick}
+                        className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm mb-1"
+                      >
+                        Send
+                      </button>
+                      <p className="text-xs text-gray-500">3 days ago</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div className="flex items-center">
+                      <div className="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center mr-3">
+                        <span className="text-pink-600 font-semibold text-sm">ML</span>
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-800">Marie Louise</p>
+                        <p className="text-sm text-gray-500">Cap-Haïtien • Last: $200</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <button 
+                        onClick={handleSendClick}
+                        className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm mb-1"
+                      >
+                        Send
+                      </button>
+                      <p className="text-xs text-gray-500">1 week ago</p>
+                    </div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
 
@@ -491,63 +545,6 @@ export default function PaytmDesktopHome() {
                     <History className="h-4 w-4 mr-2" />
                     View All Transactions
                   </button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Recent Recipients Section */}
-            <Card className="shadow-lg">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg font-semibold text-gray-800 flex items-center justify-between">
-                  <div className="flex items-center">
-                    <Users className="h-5 w-5 mr-2 text-indigo-600" />
-                    Recent Recipients
-                  </div>
-                  <ChevronRight className="w-5 h-5 text-gray-400" />
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <div className="flex items-center">
-                      <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                        <span className="text-blue-600 font-semibold text-sm">JP</span>
-                      </div>
-                      <div>
-                        <p className="font-medium text-gray-800">Jean Pierre</p>
-                        <p className="text-sm text-gray-500">Port-au-Prince • Last: $150</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <button 
-                        onClick={handleSendClick}
-                        className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm mb-1"
-                      >
-                        Send
-                      </button>
-                      <p className="text-xs text-gray-500">3 days ago</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <div className="flex items-center">
-                      <div className="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center mr-3">
-                        <span className="text-pink-600 font-semibold text-sm">ML</span>
-                      </div>
-                      <div>
-                        <p className="font-medium text-gray-800">Marie Louise</p>
-                        <p className="text-sm text-gray-500">Cap-Haïtien • Last: $200</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <button 
-                        onClick={handleSendClick}
-                        className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm mb-1"
-                      >
-                        Send
-                      </button>
-                      <p className="text-xs text-gray-500">1 week ago</p>
-                    </div>
-                  </div>
                 </div>
               </CardContent>
             </Card>
