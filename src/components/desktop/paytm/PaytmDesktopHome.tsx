@@ -59,28 +59,6 @@ export default function PaytmDesktopHome() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Enhanced Header */}
       <header className="bg-white shadow-lg border-b border-gray-200">
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-2">
-          <div className="container mx-auto px-6 flex justify-between items-center text-sm">
-            <div className="flex items-center space-x-6">
-              <span className="font-medium">🎉 Welcome to Haiti Transfer - Zero Fees This Month!</span>
-              <div className="flex items-center">
-                <MapPin className="h-4 w-4 mr-1" />
-                <span>Haiti • 24/7 Support</span>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center">
-                <Globe className="h-4 w-4 mr-1" />
-                <span>EN / USD</span>
-              </div>
-              <div className="flex items-center">
-                <Clock className="h-4 w-4 mr-1" />
-                <span>Live Support</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
@@ -145,10 +123,6 @@ export default function PaytmDesktopHome() {
                     <div className="flex items-center space-x-3">
                       <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
                         <Logo width={20} height={20} />
-                      </div>
-                      <div>
-                        <p className="text-sm opacity-90">Welcome to</p>
-                        <p className="font-semibold">Global Transfer</p>
                       </div>
                     </div>
                     <div className="flex space-x-3">
