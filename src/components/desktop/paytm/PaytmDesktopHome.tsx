@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Users, Lightbulb, Truck, Plus, Send, CreditCard, Gift, Zap, MapPin, Globe, DollarSign, History, Phone, Wallet, ArrowUpDown, ChevronRight, Building, TrendingUp, BarChart3, PieChart, Calculator, Shield, Clock, Star, Award, Target, Briefcase, HeadphonesIcon, Download, Share2, Eye, Lock, Settings, HelpCircle, MessageSquare, Camera, Mic, Video, Play, BookOpen, CheckCircle, Package, Truck as TruckIcon, Timer, AlertCircle, Calendar } from 'lucide-react';
+import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Users, Lightbulb, Truck, Plus, Send, CreditCard, Gift, Zap, MapPin, Globe, DollarSign, History, Phone, Wallet, ArrowUpDown, ChevronRight, Building, TrendingUp, BarChart3, PieChart, Calculator, Shield, Clock, Star, Award, Target, Briefcase, HeadphonesIcon, Download, Share2, Eye, Lock, Settings, HelpCircle, MessageSquare, Camera, Mic, Video, Play, BookOpen, CheckCircle, Package, Truck as TruckIcon, Timer, AlertCircle, Calendar, Bookmark, Heart, UserPlus, Copy } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -109,6 +109,64 @@ export default function PaytmDesktopHome() {
         { label: "Funds Available", completed: false, time: "Est. Tomorrow 2:00 PM" },
         { label: "Pickup Ready", completed: false, time: "Est. Tomorrow 2:15 PM" }
       ]
+    }
+  ];
+
+  // Transfer templates data
+  const transferTemplates = [
+    {
+      id: 1,
+      name: "Monthly Family Support",
+      recipient: "Jean Pierre",
+      amount: "$200.00",
+      frequency: "Monthly",
+      destination: "Port-au-Prince",
+      isShared: true,
+      lastUsed: "5 days ago",
+      category: "Family",
+      isFavorite: true
+    },
+    {
+      id: 2,
+      name: "Emergency Fund",
+      recipient: "Marie Louise",
+      amount: "$500.00",
+      frequency: "As needed",
+      destination: "Cap-Haïtien",
+      isShared: false,
+      lastUsed: "2 weeks ago",
+      category: "Emergency",
+      isFavorite: false
+    },
+    {
+      id: 3,
+      name: "School Fees",
+      recipient: "Claude Joseph",
+      amount: "$150.00",
+      frequency: "Quarterly",
+      destination: "Gonaïves",
+      isShared: true,
+      lastUsed: "1 month ago",
+      category: "Education",
+      isFavorite: true
+    }
+  ];
+
+  // Favorite recipient groups
+  const recipientGroups = [
+    {
+      id: 1,
+      name: "Immediate Family",
+      members: ["Jean Pierre", "Marie Louise", "Rose Joseph"],
+      totalSent: "$1,200",
+      lastActive: "Today"
+    },
+    {
+      id: 2,
+      name: "Extended Family",
+      members: ["Claude Joseph", "Anne Marie", "Paul Duval"],
+      totalSent: "$850",
+      lastActive: "3 days ago"
     }
   ];
 
@@ -512,6 +570,107 @@ export default function PaytmDesktopHome() {
                       <p className="text-xs text-gray-500">1 week ago</p>
                     </div>
                   </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Transfer Templates Section */}
+            <Card className="shadow-lg">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg font-semibold text-gray-800 flex items-center justify-between">
+                  <div className="flex items-center">
+                    <Bookmark className="h-5 w-5 mr-2 text-purple-600" />
+                    Transfer Templates
+                  </div>
+                  <button className="text-sm text-blue-600 hover:text-blue-800 flex items-center">
+                    <Plus className="h-4 w-4 mr-1" />
+                    New Template
+                  </button>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {transferTemplates.map((template) => (
+                    <div key={template.id} className="border border-gray-200 rounded-lg p-3 hover:border-blue-300 transition-colors">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center space-x-2">
+                          <div className="flex items-center">
+                            <span className="font-medium text-gray-900 text-sm">{template.name}</span>
+                            {template.isFavorite && (
+                              <Heart className="h-3 w-3 text-red-500 ml-1 fill-current" />
+                            )}
+                          </div>
+                          {template.isShared && (
+                            <Badge className="text-xs bg-green-100 text-green-800">Shared</Badge>
+                          )}
+                        </div>
+                        <div className="text-right">
+                          <span className="font-bold text-blue-600">{template.amount}</span>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center justify-between text-xs text-gray-500 mb-2">
+                        <span>To: {template.recipient}</span>
+                        <span>{template.frequency}</span>
+                      </div>
+                      
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <Badge variant="secondary" className="text-xs">
+                            {template.category}
+                          </Badge>
+                          <span className="text-xs text-gray-500">Used {template.lastUsed}</span>
+                        </div>
+                        <div className="flex space-x-1">
+                          <button 
+                            onClick={handleSendClick}
+                            className="bg-blue-600 text-white px-2 py-1 rounded text-xs hover:bg-blue-700"
+                          >
+                            Use Template
+                          </button>
+                          <button className="text-gray-400 hover:text-gray-600">
+                            <Copy className="h-3 w-3" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                
+                <Separator className="my-4" />
+                
+                {/* Recipient Groups */}
+                <div className="space-y-3">
+                  <h4 className="font-medium text-gray-800 text-sm flex items-center">
+                    <UserPlus className="h-4 w-4 mr-2 text-indigo-600" />
+                    Favorite Recipient Groups
+                  </h4>
+                  {recipientGroups.map((group) => (
+                    <div key={group.id} className="bg-gray-50 rounded-lg p-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-medium text-gray-800 text-sm">{group.name}</span>
+                        <span className="text-xs text-gray-500">Active {group.lastActive}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="text-xs text-gray-600">
+                          {group.members.length} members • Total sent: {group.totalSent}
+                        </div>
+                        <button 
+                          onClick={handleSendClick}
+                          className="bg-purple-600 text-white px-2 py-1 rounded text-xs hover:bg-purple-700"
+                        >
+                          Quick Send
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                
+                <div className="mt-4 text-center">
+                  <button className="w-full bg-purple-50 text-purple-600 py-2 px-4 rounded-lg text-sm font-medium hover:bg-purple-100 transition-colors flex items-center justify-center">
+                    <Share2 className="h-4 w-4 mr-2" />
+                    Share Templates with Family
+                  </button>
                 </div>
               </CardContent>
             </Card>
