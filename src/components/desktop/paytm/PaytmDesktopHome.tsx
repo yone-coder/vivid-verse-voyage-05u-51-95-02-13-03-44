@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Users, Lightbulb, Truck, Plus, Send, CreditCard, Gift, Zap, MapPin, Globe, DollarSign, History, Phone, Wallet, ArrowUpDown, ChevronRight, Building, TrendingUp, BarChart3, PieChart, Calculator, Shield, Clock, Star, Award, Target, Briefcase, HeadphonesIcon, Download, Share2, Eye, Lock, Settings, HelpCircle, MessageSquare, Camera, Mic } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -259,9 +258,9 @@ export default function PaytmDesktopHome() {
           </div>
 
           {/* Enhanced Main Content */}
-          <div className="col-span-6 space-y-8">
+          <div className="col-span-6">
             {/* Enhanced User Profile Card Banner */}
-            <Card className="shadow-lg overflow-hidden">
+            <Card className="shadow-lg overflow-hidden mb-8">
               <div className="bg-gradient-to-r from-blue-600 to-indigo-500 text-white p-8">
                 <div className="flex justify-between items-start">
                   <div className="flex items-center space-x-4">
@@ -306,116 +305,119 @@ export default function PaytmDesktopHome() {
               </div>
             </Card>
 
-            {/* Enhanced Transfer Methods Section */}
-            <Card className="shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-3xl font-bold text-gray-900 flex items-center">
-                  <Send className="h-8 w-8 mr-3 text-blue-600" />
-                  Transfer Methods
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 gap-6 mb-8">
-                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 border border-blue-200 hover:shadow-lg transition-all cursor-pointer group">
-                    <div className="flex items-center mb-4">
-                      <div className="w-14 h-14 bg-blue-500 rounded-xl flex items-center justify-center mr-4 group-hover:scale-110 transition-transform">
-                        <Zap className="w-7 h-7 text-white" />
+            {/* Main Content Sections - Now Horizontal Layout */}
+            <div className="grid grid-cols-2 gap-6">
+              {/* Enhanced Transfer Methods Section */}
+              <Card className="shadow-lg">
+                <CardHeader>
+                  <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
+                    <Send className="h-6 w-6 mr-2 text-blue-600" />
+                    Transfer Methods
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 gap-4 mb-6">
+                    <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200 hover:shadow-lg transition-all cursor-pointer group">
+                      <div className="flex items-center mb-3">
+                        <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+                          <Zap className="w-5 h-5 text-white" />
+                        </div>
+                        <div>
+                          <span className="font-bold text-blue-700 text-sm">Instant Transfer</span>
+                          <p className="text-blue-600 text-xs">Fee: $2.99 • Under 5 mins</p>
+                        </div>
                       </div>
-                      <div>
-                        <span className="font-bold text-blue-700 text-xl">Instant Transfer</span>
-                        <p className="text-blue-600 text-sm">Fee: $2.99 • Under 5 mins</p>
+                      <p className="text-gray-600 text-xs mb-2">Arrives in minutes to mobile wallets</p>
+                      <div className="flex items-center text-xs text-blue-600">
+                        <Clock className="h-3 w-3 mr-1" />
+                        <span>Average: 2 minutes</span>
                       </div>
                     </div>
-                    <p className="text-gray-600 mb-3">Arrives in minutes to mobile wallets</p>
-                    <div className="flex items-center text-sm text-blue-600">
-                      <Clock className="h-4 w-4 mr-1" />
-                      <span>Average: 2 minutes</span>
+                    
+                    <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-4 border border-green-200 hover:shadow-lg transition-all cursor-pointer group">
+                      <div className="flex items-center mb-3">
+                        <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+                          <MapPin className="w-5 h-5 text-white" />
+                        </div>
+                        <div>
+                          <span className="font-bold text-green-700 text-sm">Cash Pickup</span>
+                          <p className="text-green-600 text-xs">Fee: $4.99 • Same day</p>
+                        </div>
+                      </div>
+                      <p className="text-gray-600 text-xs mb-2">200+ pickup locations across Haiti</p>
+                      <div className="flex items-center text-xs text-green-600">
+                        <MapPin className="h-3 w-3 mr-1" />
+                        <span>Find nearest location</span>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-4 border border-purple-200 hover:shadow-lg transition-all cursor-pointer group">
+                      <div className="flex items-center mb-3">
+                        <div className="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+                          <Building className="w-5 h-5 text-white" />
+                        </div>
+                        <div>
+                          <span className="font-bold text-purple-700 text-sm">Bank Deposit</span>
+                          <p className="text-purple-600 text-xs">Fee: $3.99 • 1-2 days</p>
+                        </div>
+                      </div>
+                      <p className="text-gray-600 text-xs mb-2">Direct to bank account</p>
+                      <div className="flex items-center text-xs text-purple-600">
+                        <Building className="h-3 w-3 mr-1" />
+                        <span>All major banks supported</span>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg p-4 border border-orange-200 hover:shadow-lg transition-all cursor-pointer group">
+                      <div className="flex items-center mb-3">
+                        <div className="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
+                          <Smartphone className="w-5 h-5 text-white" />
+                        </div>
+                        <div>
+                          <span className="font-bold text-orange-700 text-sm">Mobile Wallet</span>
+                          <p className="text-orange-600 text-xs">Fee: $1.99 • Instant</p>
+                        </div>
+                      </div>
+                      <p className="text-gray-600 text-xs mb-2">Instant to Moncash & other wallets</p>
+                      <div className="flex items-center text-xs text-orange-600">
+                        <Smartphone className="h-3 w-3 mr-1" />
+                        <span>Moncash, Natcash & more</span>
+                      </div>
                     </div>
                   </div>
-                  
-                  <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-6 border border-green-200 hover:shadow-lg transition-all cursor-pointer group">
-                    <div className="flex items-center mb-4">
-                      <div className="w-14 h-14 bg-green-500 rounded-xl flex items-center justify-center mr-4 group-hover:scale-110 transition-transform">
-                        <MapPin className="w-7 h-7 text-white" />
-                      </div>
-                      <div>
-                        <span className="font-bold text-green-700 text-xl">Cash Pickup</span>
-                        <p className="text-green-600 text-sm">Fee: $4.99 • Same day</p>
-                      </div>
-                    </div>
-                    <p className="text-gray-600 mb-3">200+ pickup locations across Haiti</p>
-                    <div className="flex items-center text-sm text-green-600">
-                      <MapPin className="h-4 w-4 mr-1" />
-                      <span>Find nearest location</span>
-                    </div>
-                  </div>
-                  
-                  <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-6 border border-purple-200 hover:shadow-lg transition-all cursor-pointer group">
-                    <div className="flex items-center mb-4">
-                      <div className="w-14 h-14 bg-purple-500 rounded-xl flex items-center justify-center mr-4 group-hover:scale-110 transition-transform">
-                        <Building className="w-7 h-7 text-white" />
-                      </div>
-                      <div>
-                        <span className="font-bold text-purple-700 text-xl">Bank Deposit</span>
-                        <p className="text-purple-600 text-sm">Fee: $3.99 • 1-2 days</p>
-                      </div>
-                    </div>
-                    <p className="text-gray-600 mb-3">Direct to bank account</p>
-                    <div className="flex items-center text-sm text-purple-600">
-                      <Building className="h-4 w-4 mr-1" />
-                      <span>All major banks supported</span>
-                    </div>
-                  </div>
-                  
-                  <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl p-6 border border-orange-200 hover:shadow-lg transition-all cursor-pointer group">
-                    <div className="flex items-center mb-4">
-                      <div className="w-14 h-14 bg-orange-500 rounded-xl flex items-center justify-center mr-4 group-hover:scale-110 transition-transform">
-                        <Smartphone className="w-7 h-7 text-white" />
-                      </div>
-                      <div>
-                        <span className="font-bold text-orange-700 text-xl">Mobile Wallet</span>
-                        <p className="text-orange-600 text-sm">Fee: $1.99 • Instant</p>
-                      </div>
-                    </div>
-                    <p className="text-gray-600 mb-3">Instant to Moncash & other wallets</p>
-                    <div className="flex items-center text-sm text-orange-600">
-                      <Smartphone className="h-4 w-4 mr-1" />
-                      <span>Moncash, Natcash & more</span>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
 
-            {/* Enhanced Financial Services */}
-            <Card className="shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-3xl font-bold text-gray-900 flex items-center">
-                  <Briefcase className="h-8 w-8 mr-3 text-purple-600" />
-                  Financial Services
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-4 gap-6">
-                  {financialServices.map((service, index) => (
-                    <div key={index} className="text-center group cursor-pointer">
-                      <div className={`w-20 h-20 bg-${service.color}-100 rounded-2xl flex items-center justify-center mb-4 mx-auto group-hover:bg-${service.color}-200 transition-colors group-hover:scale-110 transform duration-200`}>
-                        <service.icon className={`w-10 h-10 text-${service.color}-600`} />
+              {/* Enhanced Financial Services */}
+              <Card className="shadow-lg">
+                <CardHeader>
+                  <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
+                    <Briefcase className="h-6 w-6 mr-2 text-purple-600" />
+                    Financial Services
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-3 gap-3">
+                    {financialServices.map((service, index) => (
+                      <div key={index} className="text-center group cursor-pointer">
+                        <div className={`w-14 h-14 bg-${service.color}-100 rounded-xl flex items-center justify-center mb-3 mx-auto group-hover:bg-${service.color}-200 transition-colors group-hover:scale-110 transform duration-200`}>
+                          <service.icon className={`w-7 h-7 text-${service.color}-600`} />
+                        </div>
+                        <span className="text-gray-700 font-medium block text-xs leading-tight">{service.label}</span>
+                        <span className="text-xs text-gray-500 mt-1 block">{service.desc}</span>
                       </div>
-                      <span className="text-gray-700 font-medium block">{service.label}</span>
-                      <span className="text-xs text-gray-500 mt-1 block">{service.desc}</span>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
 
-            {/* Enhanced Video Tutorials Section */}
-            <Card className="shadow-lg">
+            {/* Enhanced Video Tutorials Section - Full Width */}
+            <Card className="shadow-lg mt-6">
               <CardHeader>
                 <div className="flex justify-between items-center">
-                  <CardTitle className="text-3xl font-bold text-gray-900 flex items-center">
-                    <Eye className="h-8 w-8 mr-3 text-indigo-600" />
+                  <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
+                    <Eye className="h-6 w-6 mr-2 text-indigo-600" />
                     Video Tutorials
                   </CardTitle>
                   <button className="text-blue-600 font-medium hover:underline flex items-center">
