@@ -94,6 +94,11 @@ export default function GlobalTransferPitchChapters() {
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
+            <img 
+              src="/lovable-uploads/2102d3a1-ec6e-4c76-8ee0-549c3ae3d54e.png" 
+              alt="Global Transfer Logo" 
+              className="w-12 h-12 mr-4 rounded-lg shadow-md"
+            />
             <BookOpen className="w-8 h-8 text-blue-600 mr-3" />
             <h1 className="text-5xl font-bold text-blue-600">Global Transfer</h1>
           </div>
