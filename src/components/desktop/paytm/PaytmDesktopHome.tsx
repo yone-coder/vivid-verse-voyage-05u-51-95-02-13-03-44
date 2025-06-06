@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Users, Lightbulb, Truck, Plus, Send, CreditCard, Gift, Zap, MapPin, Globe, DollarSign, History, Phone, Wallet, ArrowUpDown, ChevronRight, Building, TrendingUp, BarChart3, PieChart, Calculator, Shield, Clock, Star, Award, Target, Briefcase, HeadphonesIcon, Download, Share2, Eye, Lock, Settings, HelpCircle, MessageSquare, Camera, Mic, Video, Play, BookOpen, CheckCircle, Package, Truck as TruckIcon, Timer, AlertCircle, Calendar, Bookmark, Heart, UserPlus, Copy } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -305,8 +304,45 @@ export default function PaytmDesktopHome() {
       {/* Main Content - Two Column Layout */}
       <div className="container mx-auto px-6 py-8">
         <div className="grid grid-cols-2 gap-8">
-          {/* Left Column - Mobile Content with Separated Sections */}
+          {/* Left Column - Priority Sections First */}
           <div className="space-y-6">
+            {/* User Profile Section - MOVED TO TOP */}
+            <Card className="shadow-lg">
+              <CardContent className="space-y-4">
+                <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
+                  <div className="flex justify-between items-start">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                        <span className="text-blue-600 font-bold text-lg">MJ</span>
+                      </div>
+                      <div>
+                        <p className="font-semibold text-lg text-gray-800">Marie Joseph</p>
+                        <p className="text-sm text-gray-600">Verified Account</p>
+                        <p className="text-xs text-gray-500">Member since 2023</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="bg-green-500 text-white px-2 py-1 rounded-full text-xs mb-1">
+                        ✓ Verified
+                      </div>
+                      <p className="text-xs text-gray-500">ID Confirmed</p>
+                    </div>
+                  </div>
+                  <div className="mt-4 flex space-x-2">
+                    <button 
+                      onClick={handleSendClick}
+                      className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium flex-1"
+                    >
+                      Send Money
+                    </button>
+                    <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-full text-sm flex-1">
+                      View Profile
+                    </button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Exchange Rate Section - MOVED TO TOP */}
             <Card className="shadow-lg">
               <CardHeader className="pb-3">
@@ -404,43 +440,6 @@ export default function PaytmDesktopHome() {
                   amount={amount}
                   onAmountChange={setAmount}
                 />
-              </CardContent>
-            </Card>
-
-            {/* User Profile Section */}
-            <Card className="shadow-lg">
-              <CardContent className="space-y-4">
-                <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
-                  <div className="flex justify-between items-start">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                        <span className="text-blue-600 font-bold text-lg">MJ</span>
-                      </div>
-                      <div>
-                        <p className="font-semibold text-lg text-gray-800">Marie Joseph</p>
-                        <p className="text-sm text-gray-600">Verified Account</p>
-                        <p className="text-xs text-gray-500">Member since 2023</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="bg-green-500 text-white px-2 py-1 rounded-full text-xs mb-1">
-                        ✓ Verified
-                      </div>
-                      <p className="text-xs text-gray-500">ID Confirmed</p>
-                    </div>
-                  </div>
-                  <div className="mt-4 flex space-x-2">
-                    <button 
-                      onClick={handleSendClick}
-                      className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium flex-1"
-                    >
-                      Send Money
-                    </button>
-                    <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-full text-sm flex-1">
-                      View Profile
-                    </button>
-                  </div>
-                </div>
               </CardContent>
             </Card>
 
@@ -700,8 +699,27 @@ export default function PaytmDesktopHome() {
             </Card>
           </div>
 
-          {/* Right Column - Desktop Features */}
+          {/* Right Column - Desktop Features with Priority Sections First */}
           <div className="space-y-6">
+            {/* Enhanced Special Offers - MOVED TO TOP */}
+            <Card className="shadow-lg overflow-hidden">
+              <div className="bg-gradient-to-r from-red-400 via-pink-500 to-purple-500 p-6 text-white">
+                <div className="text-center">
+                  <Gift className="h-8 w-8 mx-auto mb-3" />
+                  <p className="font-bold text-xl mb-2">🎉 Zero Fees Special!</p>
+                  <p className="text-sm mb-4 opacity-90">Send up to $500 with no transfer fees this month</p>
+                  <button 
+                    onClick={handleSendClick}
+                    className="w-full bg-white text-red-500 py-3 px-4 rounded-full text-sm font-medium hover:bg-gray-100 transition-colors mb-3 flex items-center justify-center"
+                  >
+                    <Gift className="h-4 w-4 mr-2" />
+                    Claim Offer Now
+                  </button>
+                  <p className="text-xs opacity-80">Valid until June 30, 2025 • Terms apply • Limited time</p>
+                </div>
+              </div>
+            </Card>
+
             {/* Haiti News & Updates Card */}
             <Card className="shadow-lg border-blue-200 bg-blue-50">
               <CardHeader>
@@ -868,25 +886,6 @@ export default function PaytmDesktopHome() {
                   </div>
                 </div>
               </CardContent>
-            </Card>
-
-            {/* Enhanced Special Offers */}
-            <Card className="shadow-lg overflow-hidden">
-              <div className="bg-gradient-to-r from-red-400 via-pink-500 to-purple-500 p-6 text-white">
-                <div className="text-center">
-                  <Gift className="h-8 w-8 mx-auto mb-3" />
-                  <p className="font-bold text-xl mb-2">🎉 Zero Fees Special!</p>
-                  <p className="text-sm mb-4 opacity-90">Send up to $500 with no transfer fees this month</p>
-                  <button 
-                    onClick={handleSendClick}
-                    className="w-full bg-white text-red-500 py-3 px-4 rounded-full text-sm font-medium hover:bg-gray-100 transition-colors mb-3 flex items-center justify-center"
-                  >
-                    <Gift className="h-4 w-4 mr-2" />
-                    Claim Offer Now
-                  </button>
-                  <p className="text-xs opacity-80">Valid until June 30, 2025 • Terms apply • Limited time</p>
-                </div>
-              </div>
             </Card>
 
             {/* Help & Support */}
