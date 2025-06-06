@@ -1,77 +1,174 @@
 
 import React, { useState, useEffect } from 'react';
-import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Users, Lightbulb, Truck, Plus, Send, CreditCard, Gift, Zap, MapPin, Globe, DollarSign, History, Phone, Wallet, ArrowUpDown, ChevronRight, Building, TrendingUp, BarChart3, PieChart, Calculator, Shield, Clock, Star, Award, Target, Briefcase, HeadphonesIcon, Download, Share2, Eye, Lock, Settings, HelpCircle, MessageSquare, Camera, Mic } from 'lucide-react';
+import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Users, Lightbulb, Truck, Plus, Send, CreditCard, Gift, Zap, MapPin, Globe, DollarSign, History, Phone, Wallet, ArrowUpDown, ChevronRight, Building, TrendingUp, BarChart3, PieChart, Calculator, Shield, Clock, Star, Award, Target, Briefcase, HeadphonesIcon, Download, Share2, Eye, Lock, Settings, HelpCircle, MessageSquare, Camera, Mic, Activity, Bot, Crown, Flame, Rocket, Diamond, CheckCircle, AlertTriangle, Info, X, ChevronDown, ChevronUp, Play, Pause, Volume2, VolumeX, Maximize2, ThumbsUp, ThumbsDown, Bookmark, Percent, Timer, Fingerprint, Wifi, Bluetooth, Battery, Signal, ScanLine, Banknote, Receipt, Palette, Megaphone, PartyPopper, Newspaper, Trophy, Medal, Handshake, Users2, UserCheck, UserPlus, Repeat, RotateCcw, Archive, Trash2, Edit3, Copy, ExternalLink, Link, Scan, Brain, Database, Server, Cloud, HardDrive, Cpu, Monitor, Keyboard, Mouse, Printer, Speaker, Radio, Tv, Tablet, Watch, Headphones, Joystick, Coffee, Plane, Car, Home, ShoppingBag, Music, BookOpen, Heart, Filter, Calendar, Map, Coins, Bitcoin, TrendingDown, RefreshCw, Sparkles, Package, ShipIcon, MailIcon, CreditCardIcon, BanknotesIcon, PhoneCallIcon, MessageSquareIcon, NavigationIcon, CompassIcon, RadarIcon, SatelliteIcon, GpsIcon, AlertCircleIcon, ShieldCheckIcon, LockIcon, KeyIcon, FingerprintIcon, EyeIcon, ScanEyeIcon, UserShieldIcon, ShieldAlertIcon, CircleDollarSignIcon, WalletIcon, CurrencyIcon, ExchangeIcon, TrendingUpIcon, ChartBarIcon, GraphIcon, AnalyticsIcon, InsightIcon, ReportIcon, DocumentIcon, PrinterIcon, DownloadIcon, ShareIcon, SaveIcon, CloudDownloadIcon, ImportIcon, ExportIcon, BackupIcon, RestoreIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import { Button } from "@/components/ui/button";
 
 export default function PaytmDesktopHome() {
   const navigate = useNavigate();
-  const [activeBalance, setActiveBalance] = useState('2,547.00');
-  const [todayStats, setTodayStats] = useState({
-    sent: '450.00',
-    received: '750.00',
-    transactions: 12
+  const [activeBalance, setActiveBalance] = useState('12,847.50');
+  const [notifications, setNotifications] = useState(8);
+  const [isLiveChatOpen, setIsLiveChatOpen] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
+  const [voiceAssistant, setVoiceAssistant] = useState(false);
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const [selectedWallet, setSelectedWallet] = useState('USD');
+  const [trackingId, setTrackingId] = useState('');
+  const [isTrackingOpen, setIsTrackingOpen] = useState(false);
+
+  // Ultra-specific Haiti transfer data
+  const [transferStats, setTransferStats] = useState({
+    totalSent: '125,430.00',
+    monthlyVolume: '15,200.00',
+    averageAmount: '350.00',
+    successRate: '99.8%',
+    recipients: 23,
+    locations: 8
   });
+
+  const [haitiMarketData, setHaitiMarketData] = useState({
+    usdToHtg: 133.45,
+    trend: '+0.75',
+    volatility: 'Low',
+    prediction: '↗ Favorable',
+    bestRate: 134.20,
+    bankRate: 132.80,
+    mobileRate: 133.45,
+    cashRate: 133.10
+  });
+
+  const [deliveryMethods, setDeliveryMethods] = useState([
+    { id: 'mobile', name: 'Mobile Money', time: '2-5 mins', fee: '$1.99', availability: '24/7', locations: 'All Haiti', icon: Smartphone, color: 'green' },
+    { id: 'cash', name: 'Cash Pickup', time: '15-30 mins', fee: '$4.99', availability: '6AM-8PM', locations: '200+ locations', icon: MapPin, color: 'blue' },
+    { id: 'bank', name: 'Bank Deposit', time: '1-2 hours', fee: '$3.99', availability: 'Banking hours', locations: 'All major banks', icon: Building, color: 'purple' },
+    { id: 'door', name: 'Door Delivery', time: '2-4 hours', fee: '$12.99', availability: 'Port-au-Prince only', locations: 'Metro area', icon: Truck, color: 'orange' },
+    { id: 'airtime', name: 'Mobile Credit', time: 'Instant', fee: '$0.99', availability: '24/7', locations: 'All networks', icon: Phone, color: 'pink' },
+    { id: 'card', name: 'Prepaid Card', time: '5-10 mins', fee: '$2.99', availability: '24/7', locations: 'ATMs nationwide', icon: CreditCard, color: 'indigo' }
+  ]);
+
+  const [recentTransfers, setRecentTransfers] = useState([
+    { id: 'TX001', recipient: 'Jean Pierre', amount: '250.00', status: 'Delivered', time: '2 hours ago', location: 'Port-au-Prince', method: 'Mobile Money', tracking: 'HT-MP-001234' },
+    { id: 'TX002', recipient: 'Marie Louise', amount: '180.00', status: 'In Transit', time: '1 day ago', location: 'Cap-Haïtien', method: 'Cash Pickup', tracking: 'HT-CP-005678' },
+    { id: 'TX003', recipient: 'Pierre Duval', amount: '320.00', status: 'Processing', time: '2 days ago', location: 'Jacmel', method: 'Bank Deposit', tracking: 'HT-BD-009876' },
+    { id: 'TX004', recipient: 'Rose Michel', amount: '150.00', status: 'Delivered', time: '3 days ago', location: 'Gonaïves', method: 'Mobile Money', tracking: 'HT-MM-112233' }
+  ]);
+
+  const [haitiLocations, setHaitiLocations] = useState([
+    { name: 'Port-au-Prince', agents: 45, banks: 12, mobile: true, popular: true },
+    { name: 'Cap-Haïtien', agents: 18, banks: 5, mobile: true, popular: true },
+    { name: 'Jacmel', agents: 8, banks: 3, mobile: true, popular: false },
+    { name: 'Gonaïves', agents: 12, banks: 4, mobile: true, popular: false },
+    { name: 'Saint-Marc', agents: 6, banks: 2, mobile: true, popular: false },
+    { name: 'Fort-de-France', agents: 4, banks: 1, mobile: true, popular: false },
+    { name: 'Les Cayes', agents: 9, banks: 3, mobile: true, popular: false },
+    { name: 'Hinche', agents: 5, banks: 2, mobile: true, popular: false }
+  ]);
+
+  const [aiInsights, setAiInsights] = useState([
+    { type: 'rate', message: 'HTG rate is 2.3% higher than last week - good time to send!', priority: 'high' },
+    { type: 'recipient', message: 'Jean Pierre usually receives transfers on Fridays', priority: 'medium' },
+    { type: 'method', message: 'Mobile Money is 40% faster in Port-au-Prince today', priority: 'medium' },
+    { type: 'saving', message: 'You could save $3.50 by using bank deposit for amounts over $300', priority: 'low' }
+  ]);
+
+  const [compliance, setCompliance] = useState({
+    kycStatus: 'Verified',
+    amlScore: 'Low Risk',
+    sanctionsCheck: 'Clear',
+    documentsValid: true,
+    lastUpdate: '2024-01-15',
+    nextReview: '2024-07-15'
+  });
+
+  useEffect(() => {
+    const interval = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleSendClick = () => {
     navigate('/multi-step-transfer-desktop');
   };
 
-  const financialServices = [
-    { icon: History, label: 'Transfer History', color: 'red', desc: 'View all transfers' },
-    { icon: Users, label: 'Recipients', color: 'pink', desc: 'Manage contacts' },
-    { icon: FileText, label: 'Track Money', color: 'indigo', desc: 'Real-time tracking' },
-    { icon: Phone, label: 'Mobile Top-Up', color: 'teal', desc: 'Recharge phones' },
-    { icon: Plus, label: 'Add Funds', color: 'yellow', desc: 'Deposit money' },
-    { icon: Wallet, label: 'Bill Payment', color: 'cyan', desc: 'Pay utilities' },
-    { icon: Globe, label: 'Agent Locator', color: 'gray', desc: 'Find locations' },
-    { icon: Calculator, label: 'Rate Calculator', color: 'emerald', desc: 'Exchange rates' },
-    { icon: Shield, label: 'Insurance', color: 'blue', desc: 'Protect transfers' },
-    { icon: BarChart3, label: 'Analytics', color: 'purple', desc: 'Spending insights' },
-    { icon: Award, label: 'Rewards', color: 'orange', desc: 'Earn points' },
-    { icon: Target, label: 'Goals', color: 'green', desc: 'Save for goals' }
+  const handleTrackTransfer = () => {
+    if (trackingId) {
+      setIsTrackingOpen(true);
+    }
+  };
+
+  const ultraFinancialServices = [
+    { icon: Send, label: 'Quick Send', color: 'red', desc: 'Send in seconds', isNew: false },
+    { icon: History, label: 'Transfer History', color: 'blue', desc: 'All transactions', isNew: false },
+    { icon: MapPin, label: 'Track Transfer', color: 'green', desc: 'Real-time tracking', isNew: false },
+    { icon: Calculator, label: 'Rate Calculator', color: 'purple', desc: 'Best rates finder', isNew: false },
+    { icon: Users, label: 'Recipients', color: 'pink', desc: 'Manage contacts', isNew: false },
+    { icon: Bell, label: 'Rate Alerts', color: 'orange', desc: 'Get notified', isNew: true },
+    { icon: Bot, label: 'AI Assistant', color: 'indigo', desc: 'Smart help', isNew: true },
+    { icon: Shield, label: 'Transfer Insurance', color: 'teal', desc: 'Protect transfers', isNew: true },
+    { icon: Smartphone, label: 'Mobile Top-up', color: 'cyan', desc: 'Digicel, Natcom', isNew: false },
+    { icon: Receipt, label: 'Bill Pay Haiti', color: 'yellow', desc: 'EDH, utilities', isNew: false },
+    { icon: Gift, label: 'Gift Cards', color: 'rose', desc: 'Send gift cards', isNew: true },
+    { icon: CreditCard, label: 'Prepaid Cards', color: 'violet', desc: 'Visa prepaid', isNew: true },
+    { icon: Building, label: 'Business Transfers', color: 'slate', desc: 'Bulk payments', isNew: true },
+    { icon: Coins, label: 'Micro Loans', color: 'amber', desc: 'Quick credit', isNew: true },
+    { icon: TrendingUp, label: 'Investment Hub', color: 'emerald', desc: 'Grow money', isNew: true },
+    { icon: Globe, label: 'Multi-Country', color: 'sky', desc: 'DR, Jamaica', isNew: true },
+    { icon: Zap, label: 'Express Send', color: 'red', desc: 'Under 1 minute', isNew: true },
+    { icon: Eye, label: 'Live Tracking', color: 'blue', desc: 'GPS tracking', isNew: true },
+    { icon: Award, label: 'Loyalty Program', color: 'gold', desc: 'Earn rewards', isNew: false },
+    { icon: Settings, label: 'Auto-Send', color: 'gray', desc: 'Scheduled transfers', isNew: true },
+    { icon: Lock, label: 'Secure Vault', color: 'red', desc: 'Store money', isNew: true },
+    { icon: Fingerprint, label: 'Biometric Auth', color: 'green', desc: 'Face/finger', isNew: true },
+    { icon: Brain, label: 'Smart Budgeting', color: 'purple', desc: 'AI insights', isNew: true },
+    { icon: Rocket, label: 'Priority Service', color: 'orange', desc: 'VIP treatment', isNew: true }
   ];
 
   const quickActions = [
-    { icon: Send, label: 'Send to Haiti', color: 'red' },
-    { icon: ArrowUpDown, label: 'Local Transfer', color: 'green' },
-    { icon: Zap, label: 'Express Send', color: 'purple' },
-    { icon: CreditCard, label: 'Bill Payment', color: 'orange' },
-    { icon: QrCode, label: 'QR Payment', color: 'blue' },
-    { icon: Smartphone, label: 'Mobile Money', color: 'pink' }
+    { icon: Send, label: 'Send to Haiti', color: 'red', amount: null },
+    { icon: Zap, label: 'Express Send', color: 'orange', amount: null },
+    { icon: ArrowUpDown, label: 'Repeat Last', color: 'green', amount: '$250' },
+    { icon: Phone, label: 'Mobile Top-up', color: 'blue', amount: null },
+    { icon: MapPin, label: 'Track Transfer', color: 'purple', amount: null },
+    { icon: Calculator, label: 'Rate Check', color: 'teal', amount: null }
   ];
 
-  const bankingFeatures = [
-    { icon: Building, label: 'Virtual Account', desc: 'Get your virtual bank account', isNew: true },
-    { icon: CreditCard, label: 'Debit Card', desc: 'Order your Haiti Transfer card', isPopular: true },
-    { icon: TrendingUp, label: 'Investments', desc: 'Grow your money with investments' },
-    { icon: Shield, label: 'Savings Account', desc: 'High-yield savings account' },
-    { icon: Calculator, label: 'Loans', desc: 'Quick personal loans' },
-    { icon: PieChart, label: 'Budget Tracker', desc: 'Track your spending habits' }
+  const multiWalletBalances = [
+    { currency: 'USD', balance: '12,847.50', symbol: '$', flag: '🇺🇸', change: '+2.3%' },
+    { currency: 'HTG', balance: '1,705,234.75', symbol: 'G', flag: '🇭🇹', change: '+0.8%' },
+    { currency: 'EUR', balance: '8,420.30', symbol: '€', flag: '🇪🇺', change: '-1.2%' },
+    { currency: 'CAD', balance: '15,630.80', symbol: 'C$', flag: '🇨🇦', change: '+1.5%' }
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* Enhanced Header */}
-      <header className="bg-white shadow-lg border-b border-gray-200">
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-2">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+      {/* Ultra Enhanced Header for Haiti Transfers */}
+      <header className="bg-white shadow-xl border-b border-gray-200 sticky top-0 z-50">
+        <div className="bg-gradient-to-r from-red-600 via-blue-600 to-red-600 text-white py-3">
           <div className="container mx-auto px-6 flex justify-between items-center text-sm">
-            <div className="flex items-center space-x-6">
-              <span className="font-medium">🎉 Welcome to Haiti Transfer - Zero Fees This Month!</span>
-              <div className="flex items-center">
-                <MapPin className="h-4 w-4 mr-1" />
-                <span>Haiti • 24/7 Support</span>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-8">
+              <span className="font-bold flex items-center">
+                🇭🇹 <PartyPopper className="h-4 w-4 mx-2" />
+                Haiti Transfer Ultra - Send Money Home with Zero Fees This Month!
+              </span>
               <div className="flex items-center">
                 <Globe className="h-4 w-4 mr-1" />
-                <span>EN / USD</span>
+                <span>24/7 Service • All Haiti Locations</span>
               </div>
               <div className="flex items-center">
                 <Clock className="h-4 w-4 mr-1" />
-                <span>Live Support</span>
+                <span>Port-au-Prince: {currentTime.toLocaleTimeString()}</span>
+              </div>
+            </div>
+            <div className="flex items-center space-x-6">
+              <div className="flex items-center">
+                <TrendingUp className="h-4 w-4 mr-1 text-green-300" />
+                <span>Best Rate: 1 USD = {haitiMarketData.bestRate} HTG</span>
+              </div>
+              <div className="flex items-center">
+                <Shield className="h-4 w-4 mr-1 text-blue-300" />
+                <span>100% Secure • Licensed MSB</span>
               </div>
             </div>
           </div>
@@ -79,75 +176,120 @@ export default function PaytmDesktopHome() {
 
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold text-lg">HT</span>
+            <div className="flex items-center space-x-4">
+              <div className="w-16 h-16 bg-gradient-to-r from-red-600 via-blue-600 to-red-600 rounded-full flex items-center justify-center shadow-xl relative">
+                <span className="text-white font-bold text-2xl">HT</span>
+                <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                  <CheckCircle className="h-4 w-4 text-white" />
+                </div>
               </div>
               <div>
-                <div className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Haiti Transfer</div>
-                <span className="text-gray-600 text-sm flex items-center">
-                  <Shield className="h-4 w-4 mr-1" />
-                  Secure • Fast • Reliable
-                </span>
+                <div className="text-4xl font-bold bg-gradient-to-r from-red-600 via-blue-600 to-red-600 bg-clip-text text-transparent">
+                  Haiti Transfer Ultra
+                </div>
+                <div className="flex items-center space-x-4 text-sm">
+                  <span className="text-gray-600 flex items-center">
+                    <Shield className="h-4 w-4 mr-1" />
+                    Licensed • Regulated • AI-Powered
+                  </span>
+                  <Badge className="bg-red-500 text-white">🇭🇹 Haiti Specialist</Badge>
+                  <Badge className="bg-blue-500 text-white">Ultra Fast</Badge>
+                  <Badge className="bg-green-500 text-white">24/7 Service</Badge>
+                </div>
               </div>
             </div>
 
-            <div className="flex-1 max-w-2xl mx-8">
+            <div className="flex-1 max-w-3xl mx-8">
               <div className="relative">
                 <input
                   type="text"
-                  placeholder="Search recipients, rates, locations, or help..."
-                  className="w-full px-6 py-3 pl-14 pr-20 border-2 border-blue-200 rounded-full focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 shadow-sm"
+                  placeholder="Send money to Haiti, track transfers, check rates, find locations..."
+                  className="w-full px-6 py-4 pl-16 pr-32 border-2 border-red-200 rounded-full focus:outline-none focus:border-red-500 focus:ring-4 focus:ring-red-200 shadow-lg text-lg"
                 />
-                <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-6 w-6 text-gray-400" />
+                <div className="absolute left-5 top-1/2 -translate-y-1/2 flex items-center">
+                  <span className="text-2xl mr-2">🇭🇹</span>
+                  <Search className="h-5 w-5 text-gray-400" />
+                </div>
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 flex space-x-2">
-                  <button className="p-1 hover:bg-gray-100 rounded">
-                    <Mic className="h-4 w-4 text-gray-400" />
+                  <button className="p-2 hover:bg-gray-100 rounded-full">
+                    <Mic className="h-5 w-5 text-gray-400" />
                   </button>
-                  <button className="p-1 hover:bg-gray-100 rounded">
-                    <Camera className="h-4 w-4 text-gray-400" />
+                  <button className="p-2 hover:bg-gray-100 rounded-full">
+                    <Camera className="h-5 w-5 text-gray-400" />
+                  </button>
+                  <button className="p-2 hover:bg-gray-100 rounded-full">
+                    <QrCode className="h-5 w-5 text-gray-400" />
+                  </button>
+                  <button 
+                    onClick={() => setVoiceAssistant(!voiceAssistant)}
+                    className={`p-2 rounded-full ${voiceAssistant ? 'bg-red-100 text-red-600' : 'hover:bg-gray-100 text-gray-400'}`}
+                  >
+                    <Bot className="h-5 w-5" />
                   </button>
                 </div>
               </div>
             </div>
 
             <div className="flex items-center space-x-6">
-              <button className="flex items-center text-gray-700 hover:text-blue-600 transition-colors relative group">
+              <button 
+                className="flex items-center text-gray-700 hover:text-red-600 transition-colors relative group"
+                onClick={() => setNotifications(0)}
+              >
                 <Bell className="h-6 w-6 mr-2" />
-                <span>Notifications</span>
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center animate-pulse">
-                  5
-                </span>
+                <span>Alerts</span>
+                {notifications > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center animate-bounce">
+                    {notifications}
+                  </span>
+                )}
               </button>
-              <button className="flex items-center text-gray-700 hover:text-blue-600 transition-colors">
-                <HeadphonesIcon className="h-6 w-6 mr-2" />
+              <button 
+                className="flex items-center text-gray-700 hover:text-red-600 transition-colors"
+                onClick={() => setIsLiveChatOpen(!isLiveChatOpen)}
+              >
+                <MessageSquare className="h-6 w-6 mr-2" />
                 <span>Support</span>
               </button>
             </div>
           </div>
         </div>
 
-        {/* Enhanced Exchange Rate Banner */}
+        {/* Live Haiti Exchange Rate Dashboard */}
         <div className="container mx-auto px-6 pb-4">
-          <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-6">
-                <div>
-                  <p className="text-sm font-medium text-gray-700">Today's Rate</p>
-                  <p className="text-2xl font-bold text-gray-800">1 USD = 133.45 HTG</p>
-                </div>
-                <div className="text-sm text-green-600">
-                  <p className="font-medium">↗ +0.75 HTG</p>
-                  <p>vs yesterday</p>
+          <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6 shadow-lg">
+            <div className="grid grid-cols-5 gap-6">
+              <div className="col-span-2">
+                <p className="text-sm font-medium text-gray-700">Live USD → HTG Rate</p>
+                <p className="text-4xl font-bold text-gray-900 flex items-center mb-2">
+                  1 USD = {haitiMarketData.usdToHtg} HTG
+                  <TrendingUp className="h-6 w-6 text-green-500 ml-3" />
+                </p>
+                <div className="flex items-center space-x-4 text-sm">
+                  <span className="text-green-600 font-medium">↗ {haitiMarketData.trend} HTG</span>
+                  <span className="text-gray-500">vs yesterday</span>
+                  <Badge className="bg-green-100 text-green-700">{haitiMarketData.volatility} Volatility</Badge>
                 </div>
               </div>
+              
+              <div>
+                <p className="text-sm font-medium text-gray-700">Best Rate Today</p>
+                <p className="text-2xl font-bold text-blue-600">{haitiMarketData.bestRate} HTG</p>
+                <p className="text-xs text-blue-500">Mobile Money</p>
+              </div>
+              
+              <div>
+                <p className="text-sm font-medium text-gray-700">Rate Prediction</p>
+                <p className="text-xl font-bold text-purple-600">{haitiMarketData.prediction}</p>
+                <p className="text-xs text-purple-500">Next 24 hours</p>
+              </div>
+              
               <div className="flex items-center space-x-3">
-                <div className="bg-green-500 text-white px-3 py-1 rounded-full text-sm flex items-center">
-                  <div className="w-2 h-2 bg-white rounded-full animate-pulse mr-2"></div>
-                  Live
+                <div className="bg-green-500 text-white px-4 py-2 rounded-full text-sm flex items-center animate-pulse">
+                  <Activity className="w-3 h-3 mr-2" />
+                  Live Data
                 </div>
-                <button className="text-blue-600 hover:text-blue-700 font-medium text-sm">
-                  Rate History
+                <button className="text-red-600 hover:text-red-700 font-medium text-sm bg-white px-4 py-2 rounded-full border border-red-200">
+                  Set Alert
                 </button>
               </div>
             </div>
@@ -160,192 +302,209 @@ export default function PaytmDesktopHome() {
         <div className="grid grid-cols-2 gap-8">
           {/* Left Column */}
           <div className="space-y-6">
-            {/* Enhanced User Profile Card Banner */}
-            <Card className="shadow-lg overflow-hidden">
-              <div className="bg-gradient-to-r from-blue-600 to-indigo-500 text-white p-8">
-                <div className="flex justify-between items-start">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-lg">
-                      <span className="text-blue-600 font-bold text-3xl">MJ</span>
-                    </div>
-                    <div>
-                      <p className="font-semibold text-2xl">Marie Joseph</p>
-                      <div className="flex items-center space-x-3 mt-1">
-                        <div className="flex items-center">
-                          <Shield className="h-4 w-4 mr-1" />
-                          <span className="text-lg">Verified Account</span>
-                        </div>
-                        <div className="flex items-center">
-                          <Star className="h-4 w-4 mr-1 text-yellow-300" />
-                          <span className="text-sm">Premium Member</span>
+            {/* Ultra Enhanced User Profile */}
+            <Card className="shadow-xl overflow-hidden border-2 border-red-100">
+              <div className="bg-gradient-to-r from-red-600 via-blue-600 to-red-600 text-white p-8 relative">
+                <div className="absolute inset-0 bg-black/10"></div>
+                <div className="relative z-10">
+                  <div className="flex justify-between items-start mb-6">
+                    <div className="flex items-center space-x-4">
+                      <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-2xl relative">
+                        <span className="text-red-600 font-bold text-3xl">MJ</span>
+                        <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                          <CheckCircle className="h-5 w-5 text-white" />
                         </div>
                       </div>
-                      <p className="text-sm opacity-80 mt-1">Member since 2023 • 127 transfers completed</p>
+                      <div>
+                        <p className="font-bold text-2xl mb-1">Marie Joseph</p>
+                        <div className="flex items-center space-x-3 mb-2">
+                          <Badge className="bg-yellow-500">🇭🇹 Haiti Expert</Badge>
+                          <Badge className="bg-green-500">Verified Sender</Badge>
+                        </div>
+                        <div className="text-sm opacity-90">
+                          <p>Member since 2023 • {transferStats.recipients} recipients in Haiti</p>
+                          <p>Total sent: ${transferStats.totalSent} • Success rate: {transferStats.successRate}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm mb-2">Compliance Status</p>
+                      <div className="flex flex-col space-y-1">
+                        <Badge className="bg-green-500">KYC Verified</Badge>
+                        <Badge className="bg-blue-500">AML Clear</Badge>
+                        <Badge className="bg-purple-500">Sanctions Clear</Badge>
+                      </div>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <div className="bg-green-500 text-white px-4 py-2 rounded-full text-sm mb-2 flex items-center">
-                      <Shield className="h-4 w-4 mr-1" />
-                      ✓ Verified
+                  
+                  <div className="grid grid-cols-4 gap-3 mb-6">
+                    <div className="bg-white/20 rounded-lg p-3 text-center">
+                      <Send className="h-6 w-6 mx-auto mb-1" />
+                      <p className="text-sm font-bold">${transferStats.monthlyVolume}</p>
+                      <p className="text-xs opacity-80">This Month</p>
                     </div>
-                    <p className="text-sm opacity-80">ID • Address • Phone</p>
+                    <div className="bg-white/20 rounded-lg p-3 text-center">
+                      <Users className="h-6 w-6 mx-auto mb-1" />
+                      <p className="text-sm font-bold">{transferStats.recipients}</p>
+                      <p className="text-xs opacity-80">Recipients</p>
+                    </div>
+                    <div className="bg-white/20 rounded-lg p-3 text-center">
+                      <MapPin className="h-6 w-6 mx-auto mb-1" />
+                      <p className="text-sm font-bold">{transferStats.locations}</p>
+                      <p className="text-xs opacity-80">Haiti Cities</p>
+                    </div>
+                    <div className="bg-white/20 rounded-lg p-3 text-center">
+                      <Shield className="h-6 w-6 mx-auto mb-1" />
+                      <p className="text-sm font-bold">{transferStats.successRate}</p>
+                      <p className="text-xs opacity-80">Success Rate</p>
+                    </div>
                   </div>
-                </div>
-                <div className="mt-6 flex space-x-4">
-                  <button 
-                    onClick={handleSendClick}
-                    className="bg-white text-blue-600 px-8 py-3 rounded-xl font-medium hover:bg-gray-100 transition-colors flex-1 flex items-center justify-center"
-                  >
-                    <Send className="h-5 w-5 mr-2" />
-                    Send Money
-                  </button>
-                  <button className="border border-white/50 text-white px-8 py-3 rounded-xl font-medium hover:bg-white/10 transition-colors flex-1">
-                    View Profile
-                  </button>
+                  
+                  <div className="flex space-x-3">
+                    <button 
+                      onClick={handleSendClick}
+                      className="bg-white text-red-600 px-8 py-3 rounded-xl font-bold hover:bg-gray-100 transition-all flex-1 flex items-center justify-center shadow-lg"
+                    >
+                      <Send className="h-5 w-5 mr-2" />
+                      Send to Haiti
+                    </button>
+                    <button className="border border-white/50 text-white px-8 py-3 rounded-xl font-medium hover:bg-white/10 transition-colors flex-1">
+                      <MapPin className="h-5 w-5 mr-2 inline" />
+                      Track Transfer
+                    </button>
+                  </div>
                 </div>
               </div>
+            </Card>
+
+            {/* Multi-Wallet System */}
+            <Card className="shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
+                  <Wallet className="h-6 w-6 mr-2 text-blue-600" />
+                  Multi-Currency Wallets
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-4">
+                  {multiWalletBalances.map((wallet, index) => (
+                    <div 
+                      key={wallet.currency}
+                      className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                        selectedWallet === wallet.currency 
+                          ? 'border-blue-500 bg-blue-50' 
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                      onClick={() => setSelectedWallet(wallet.currency)}
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center">
+                          <span className="text-2xl mr-2">{wallet.flag}</span>
+                          <span className="font-bold text-gray-800">{wallet.currency}</span>
+                        </div>
+                        <span className={`text-sm font-medium ${
+                          wallet.change.startsWith('+') ? 'text-green-600' : 'text-red-600'
+                        }`}>
+                          {wallet.change}
+                        </span>
+                      </div>
+                      <p className="text-2xl font-bold text-gray-900">
+                        {wallet.symbol}{wallet.balance}
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">Available Balance</p>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
             </Card>
 
             {/* Quick Actions */}
             <Card className="shadow-lg">
               <CardHeader>
                 <CardTitle className="text-lg font-bold text-gray-800 flex items-center">
-                  <Zap className="h-5 w-5 mr-2 text-blue-600" />
-                  Quick Actions
+                  <Zap className="h-5 w-5 mr-2 text-red-600" />
+                  Quick Actions for Haiti
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-2 gap-3">
                   {quickActions.map((action, index) => (
                     <button 
                       key={index}
-                      onClick={action.label === 'Send to Haiti' ? handleSendClick : undefined}
-                      className="flex flex-col items-center p-3 rounded-xl hover:bg-gray-50 transition-colors border border-gray-100 group min-h-[100px]"
+                      onClick={action.label === 'Send to Haiti' || action.label === 'Express Send' || action.label === 'Repeat Last' ? handleSendClick : undefined}
+                      className="flex flex-col items-center p-4 rounded-xl hover:bg-gray-50 transition-colors border border-gray-100 group min-h-[120px] relative"
                     >
-                      <div className={`bg-${action.color}-600 p-2 rounded-lg mb-2 group-hover:scale-110 transition-transform`}>
-                        <action.icon className="h-5 w-5 text-white" />
+                      <div className={`bg-${action.color}-600 p-3 rounded-lg mb-3 group-hover:scale-110 transition-transform`}>
+                        <action.icon className="h-6 w-6 text-white" />
                       </div>
-                      <span className="font-medium text-gray-700 text-sm text-center">{action.label}</span>
+                      <span className="font-medium text-gray-700 text-sm text-center leading-tight">{action.label}</span>
+                      {action.amount && (
+                        <span className="text-xs text-gray-500 mt-1">{action.amount}</span>
+                      )}
+                      {action.label === 'Express Send' && (
+                        <Badge className="absolute top-2 right-2 bg-orange-500 text-white text-xs">Fast</Badge>
+                      )}
                     </button>
                   ))}
                 </div>
               </CardContent>
             </Card>
 
-            {/* Enhanced Account Balance */}
-            <Card className="shadow-lg bg-gradient-to-br from-blue-600 to-indigo-600 text-white">
-              <CardContent className="p-6">
-                <div className="text-center">
-                  <div className="flex items-center justify-center mb-2">
-                    <Wallet className="h-6 w-6 mr-2" />
-                    <span className="text-lg font-medium">Account Balance</span>
-                  </div>
-                  <div className="text-4xl font-bold mb-2">${activeBalance}</div>
-                  <p className="text-blue-100 mb-4">Available Balance</p>
-                  
-                  <div className="grid grid-cols-3 gap-2 mb-4 text-sm">
-                    <div className="bg-white/20 rounded-lg p-2">
-                      <p className="text-xs text-blue-100">Today Sent</p>
-                      <p className="font-bold">${todayStats.sent}</p>
-                    </div>
-                    <div className="bg-white/20 rounded-lg p-2">
-                      <p className="text-xs text-blue-100">Received</p>
-                      <p className="font-bold">${todayStats.received}</p>
-                    </div>
-                    <div className="bg-white/20 rounded-lg p-2">
-                      <p className="text-xs text-blue-100">Transactions</p>
-                      <p className="font-bold">{todayStats.transactions}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex space-x-2">
-                    <button className="flex-1 bg-white text-blue-600 py-3 rounded-xl font-medium hover:bg-gray-100 transition-colors">
-                      Add Funds
-                    </button>
-                    <button className="flex-1 border border-white/50 text-white py-3 rounded-xl font-medium hover:bg-white/10 transition-colors">
-                      Withdraw
-                    </button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Enhanced Transfer Methods Section */}
+            {/* Transfer Tracking */}
             <Card className="shadow-lg">
               <CardHeader>
-                <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
-                  <Send className="h-6 w-6 mr-2 text-blue-600" />
-                  Transfer Methods
+                <CardTitle className="text-lg font-bold text-gray-800 flex items-center">
+                  <MapPin className="h-5 w-5 mr-2 text-purple-600" />
+                  Live Transfer Tracking
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 gap-4">
-                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200 hover:shadow-lg transition-all cursor-pointer group">
-                    <div className="flex items-center mb-3">
-                      <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-                        <Zap className="w-5 h-5 text-white" />
-                      </div>
-                      <div>
-                        <span className="font-bold text-blue-700 text-sm">Instant Transfer</span>
-                        <p className="text-blue-600 text-xs">Fee: $2.99 • Under 5 mins</p>
-                      </div>
-                    </div>
-                    <p className="text-gray-600 text-xs mb-2">Arrives in minutes to mobile wallets</p>
-                    <div className="flex items-center text-xs text-blue-600">
-                      <Clock className="h-3 w-3 mr-1" />
-                      <span>Average: 2 minutes</span>
-                    </div>
+                <div className="space-y-4">
+                  <div className="flex space-x-2">
+                    <input
+                      type="text"
+                      placeholder="Enter tracking ID (e.g., HT-MP-001234)"
+                      value={trackingId}
+                      onChange={(e) => setTrackingId(e.target.value)}
+                      className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    />
+                    <Button 
+                      onClick={handleTrackTransfer}
+                      disabled={!trackingId}
+                      className="bg-purple-600 hover:bg-purple-700"
+                    >
+                      <Search className="h-4 w-4 mr-2" />
+                      Track
+                    </Button>
                   </div>
                   
-                  <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-4 border border-green-200 hover:shadow-lg transition-all cursor-pointer group">
-                    <div className="flex items-center mb-3">
-                      <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-                        <MapPin className="w-5 h-5 text-white" />
+                  <div className="space-y-3">
+                    <h4 className="font-medium text-gray-800">Recent Transfers</h4>
+                    {recentTransfers.slice(0, 3).map((transfer) => (
+                      <div key={transfer.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div className="flex items-center">
+                          <div className={`w-3 h-3 rounded-full mr-3 ${
+                            transfer.status === 'Delivered' ? 'bg-green-500' : 
+                            transfer.status === 'In Transit' ? 'bg-yellow-500 animate-pulse' : 
+                            'bg-blue-500'
+                          }`}></div>
+                          <div>
+                            <p className="font-medium text-gray-800">{transfer.recipient}</p>
+                            <p className="text-sm text-gray-500">${transfer.amount} • {transfer.location}</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className={`text-sm font-medium ${
+                            transfer.status === 'Delivered' ? 'text-green-600' : 
+                            transfer.status === 'In Transit' ? 'text-yellow-600' : 
+                            'text-blue-600'
+                          }`}>
+                            {transfer.status}
+                          </p>
+                          <p className="text-xs text-gray-500">{transfer.time}</p>
+                        </div>
                       </div>
-                      <div>
-                        <span className="font-bold text-green-700 text-sm">Cash Pickup</span>
-                        <p className="text-green-600 text-xs">Fee: $4.99 • Same day</p>
-                      </div>
-                    </div>
-                    <p className="text-gray-600 text-xs mb-2">200+ pickup locations across Haiti</p>
-                    <div className="flex items-center text-xs text-green-600">
-                      <MapPin className="h-3 w-3 mr-1" />
-                      <span>Find nearest location</span>
-                    </div>
-                  </div>
-                  
-                  <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-4 border border-purple-200 hover:shadow-lg transition-all cursor-pointer group">
-                    <div className="flex items-center mb-3">
-                      <div className="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-                        <Building className="w-5 h-5 text-white" />
-                      </div>
-                      <div>
-                        <span className="font-bold text-purple-700 text-sm">Bank Deposit</span>
-                        <p className="text-purple-600 text-xs">Fee: $3.99 • 1-2 days</p>
-                      </div>
-                    </div>
-                    <p className="text-gray-600 text-xs mb-2">Direct to bank account</p>
-                    <div className="flex items-center text-xs text-purple-600">
-                      <Building className="h-3 w-3 mr-1" />
-                      <span>All major banks supported</span>
-                    </div>
-                  </div>
-                  
-                  <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg p-4 border border-orange-200 hover:shadow-lg transition-all cursor-pointer group">
-                    <div className="flex items-center mb-3">
-                      <div className="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform">
-                        <Smartphone className="w-5 h-5 text-white" />
-                      </div>
-                      <div>
-                        <span className="font-bold text-orange-700 text-sm">Mobile Wallet</span>
-                        <p className="text-orange-600 text-xs">Fee: $1.99 • Instant</p>
-                      </div>
-                    </div>
-                    <p className="text-gray-600 text-xs mb-2">Instant to Moncash & other wallets</p>
-                    <div className="flex items-center text-xs text-orange-600">
-                      <Smartphone className="h-3 w-3 mr-1" />
-                      <span>Moncash, Natcash & more</span>
-                    </div>
+                    ))}
                   </div>
                 </div>
               </CardContent>
@@ -354,20 +513,64 @@ export default function PaytmDesktopHome() {
 
           {/* Right Column */}
           <div className="space-y-6">
-            {/* Enhanced Financial Services */}
+            {/* Haiti Delivery Methods */}
+            <Card className="shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
+                  <Truck className="h-6 w-6 mr-2 text-orange-600" />
+                  Haiti Delivery Methods
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 gap-4">
+                  {deliveryMethods.map((method, index) => (
+                    <div key={method.id} className="p-4 border border-gray-200 rounded-xl hover:shadow-md transition-all cursor-pointer group">
+                      <div className="flex items-center mb-3">
+                        <div className={`w-12 h-12 bg-${method.color}-100 rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform`}>
+                          <method.icon className={`w-6 h-6 text-${method.color}-600`} />
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-gray-800 text-sm">{method.name}</h4>
+                          <p className="text-xs text-gray-500">{method.time}</p>
+                        </div>
+                      </div>
+                      <div className="space-y-1 text-xs">
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Fee:</span>
+                          <span className="font-medium">{method.fee}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Hours:</span>
+                          <span className="font-medium">{method.availability}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Coverage:</span>
+                          <span className="font-medium text-right">{method.locations}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Ultra Financial Services */}
             <Card className="shadow-lg">
               <CardHeader>
                 <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
                   <Briefcase className="h-6 w-6 mr-2 text-purple-600" />
-                  Financial Services
+                  Haiti Transfer Services
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-3 gap-3">
-                  {financialServices.map((service, index) => (
+                <div className="grid grid-cols-3 gap-3 max-h-80 overflow-y-auto">
+                  {ultraFinancialServices.map((service, index) => (
                     <div key={index} className="text-center group cursor-pointer">
-                      <div className={`w-14 h-14 bg-${service.color}-100 rounded-xl flex items-center justify-center mb-3 mx-auto group-hover:bg-${service.color}-200 transition-colors group-hover:scale-110 transform duration-200`}>
-                        <service.icon className={`w-7 h-7 text-${service.color}-600`} />
+                      <div className={`w-12 h-12 bg-${service.color}-100 rounded-xl flex items-center justify-center mb-2 mx-auto group-hover:bg-${service.color}-200 transition-colors group-hover:scale-110 transform duration-200 relative`}>
+                        <service.icon className={`w-5 h-5 text-${service.color}-600`} />
+                        {service.isNew && (
+                          <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
+                        )}
                       </div>
                       <span className="text-gray-700 font-medium block text-xs leading-tight">{service.label}</span>
                       <span className="text-xs text-gray-500 mt-1 block">{service.desc}</span>
@@ -377,73 +580,39 @@ export default function PaytmDesktopHome() {
               </CardContent>
             </Card>
 
-            {/* Banking Features */}
+            {/* Haiti Locations Coverage */}
             <Card className="shadow-lg">
               <CardHeader>
                 <CardTitle className="text-lg font-bold text-gray-800 flex items-center">
-                  <Building className="h-5 w-5 mr-2 text-green-600" />
-                  Banking Features
+                  <MapPin className="h-5 w-5 mr-2 text-green-600" />
+                  Haiti Coverage Map
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 gap-3">
-                  {bankingFeatures.map((feature, index) => (
-                    <div key={index} className="p-4 border border-gray-100 rounded-xl hover:bg-gray-50 transition-colors cursor-pointer group h-36 flex flex-col justify-between">
-                      <div className="flex flex-col items-center text-center">
-                        <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mb-3 group-hover:bg-blue-100 transition-colors">
-                          <feature.icon className="h-6 w-6 text-gray-600 group-hover:text-blue-600" />
-                        </div>
-                        <div className="mb-2">
-                          <div className="flex items-center justify-center mb-1">
-                            <span className="font-medium text-gray-800 text-sm text-center leading-tight">{feature.label}</span>
-                          </div>
-                          {feature.isNew && <Badge className="mb-1 text-xs bg-green-500">New</Badge>}
-                          {feature.isPopular && <Badge className="mb-1 text-xs bg-orange-500">Popular</Badge>}
-                        </div>
+                  {haitiLocations.map((location, index) => (
+                    <div key={index} className={`p-3 rounded-lg border transition-all cursor-pointer ${
+                      location.popular ? 'border-green-200 bg-green-50' : 'border-gray-200 bg-gray-50'
+                    }`}>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="font-medium text-gray-800 text-sm">{location.name}</h4>
+                        {location.popular && <Badge className="bg-green-500 text-white text-xs">Popular</Badge>}
                       </div>
-                      <p className="text-xs text-gray-500 text-center mt-auto">{feature.desc}</p>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Recent Recipients */}
-            <Card className="shadow-lg">
-              <CardHeader>
-                <div className="flex justify-between items-center">
-                  <CardTitle className="text-lg font-bold text-gray-800 flex items-center">
-                    <Users className="h-5 w-5 mr-2 text-blue-600" />
-                    Recent Recipients
-                  </CardTitle>
-                  <ChevronRight className="w-5 h-5 text-gray-400 cursor-pointer hover:text-gray-600" />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 gap-4">
-                  {[
-                    { name: "Jean Pierre", location: "Port-au-Prince", amount: "$150", time: "3 days ago", initials: "JP", color: "bg-blue-100 text-blue-600" },
-                    { name: "Marie Louise", location: "Cap-Haïtien", amount: "$200", time: "1 week ago", initials: "ML", color: "bg-pink-100 text-pink-600" },
-                    { name: "Pierre Duval", location: "Jacmel", amount: "$75", time: "2 weeks ago", initials: "PD", color: "bg-green-100 text-green-600" }
-                  ].map((recipient, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
-                      <div className="flex items-center">
-                        <div className={`w-12 h-12 ${recipient.color} rounded-full flex items-center justify-center mr-3`}>
-                          <span className="font-semibold">{recipient.initials}</span>
+                      <div className="text-xs space-y-1">
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Agents:</span>
+                          <span className="font-medium">{location.agents}</span>
                         </div>
-                        <div>
-                          <p className="font-medium text-gray-800">{recipient.name}</p>
-                          <p className="text-sm text-gray-500">{recipient.location} • Last: {recipient.amount}</p>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Banks:</span>
+                          <span className="font-medium">{location.banks}</span>
                         </div>
-                      </div>
-                      <div className="text-right">
-                        <button 
-                          onClick={handleSendClick}
-                          className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm hover:bg-blue-700 transition-colors mb-1"
-                        >
-                          Send
-                        </button>
-                        <p className="text-xs text-gray-500">{recipient.time}</p>
+                        <div className="flex items-center justify-between">
+                          <span className="text-gray-600">Mobile:</span>
+                          <span className={`text-xs ${location.mobile ? 'text-green-600' : 'text-red-600'}`}>
+                            {location.mobile ? '✓ Available' : '✗ Not Available'}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -451,171 +620,107 @@ export default function PaytmDesktopHome() {
               </CardContent>
             </Card>
 
-            {/* Live Stats */}
+            {/* AI Insights for Haiti Transfers */}
             <Card className="shadow-lg">
               <CardHeader>
                 <CardTitle className="text-lg font-bold text-gray-800 flex items-center">
-                  <BarChart3 className="h-5 w-5 mr-2 text-purple-600" />
-                  Live Statistics
+                  <Brain className="h-5 w-5 mr-2 text-indigo-600" />
+                  AI Transfer Insights
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-purple-50 rounded-lg p-3 text-center">
-                    <div className="text-2xl font-bold text-purple-600">1,234</div>
-                    <div className="text-sm text-gray-600">Online Users</div>
-                  </div>
-                  <div className="bg-green-50 rounded-lg p-3 text-center">
-                    <div className="text-2xl font-bold text-green-600">89</div>
-                    <div className="text-sm text-gray-600">Active Transfers</div>
-                  </div>
-                  <div className="bg-orange-50 rounded-lg p-3 text-center">
-                    <div className="text-2xl font-bold text-orange-600">156</div>
-                    <div className="text-sm text-gray-600">Pending Orders</div>
-                  </div>
-                  <div className="bg-blue-50 rounded-lg p-3 text-center">
-                    <div className="text-2xl font-bold text-blue-600">$2.1M</div>
-                    <div className="text-sm text-gray-600">Daily Volume</div>
-                  </div>
+                <div className="space-y-3">
+                  {aiInsights.map((insight, index) => (
+                    <div key={index} className={`p-3 rounded-lg border-l-4 ${
+                      insight.priority === 'high' ? 'border-red-500 bg-red-50' :
+                      insight.priority === 'medium' ? 'border-yellow-500 bg-yellow-50' :
+                      'border-blue-500 bg-blue-50'
+                    }`}>
+                      <div className="flex items-start">
+                        <div className={`w-6 h-6 rounded-full flex items-center justify-center mr-3 ${
+                          insight.priority === 'high' ? 'bg-red-500' :
+                          insight.priority === 'medium' ? 'bg-yellow-500' :
+                          'bg-blue-500'
+                        }`}>
+                          {insight.type === 'rate' ? <TrendingUp className="h-3 w-3 text-white" /> :
+                           insight.type === 'recipient' ? <Users className="h-3 w-3 text-white" /> :
+                           insight.type === 'method' ? <Zap className="h-3 w-3 text-white" /> :
+                           <DollarSign className="h-3 w-3 text-white" />}
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm text-gray-800">{insight.message}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
 
-            {/* Enhanced Special Offers */}
+            {/* Special Offers for Haiti */}
             <Card className="shadow-lg overflow-hidden">
-              <div className="bg-gradient-to-r from-red-400 via-pink-500 to-purple-500 p-6 text-white">
+              <div className="bg-gradient-to-r from-red-400 via-blue-500 to-red-400 p-6 text-white">
                 <div className="text-center">
                   <Gift className="h-8 w-8 mx-auto mb-3" />
-                  <p className="font-bold text-xl mb-2">🎉 Zero Fees Special!</p>
-                  <p className="text-sm mb-4 opacity-90">Send up to $500 with no transfer fees this month</p>
+                  <p className="font-bold text-xl mb-2">🇭🇹 Haiti Special - Zero Fees!</p>
+                  <p className="text-sm mb-4 opacity-90">Send up to $500 to Haiti with no transfer fees this month</p>
+                  <p className="text-sm mb-4 opacity-90">Perfect for family support, emergencies, or business payments</p>
                   <button 
                     onClick={handleSendClick}
                     className="w-full bg-white text-red-500 py-3 px-4 rounded-full text-sm font-medium hover:bg-gray-100 transition-colors mb-3 flex items-center justify-center"
                   >
-                    <Gift className="h-4 w-4 mr-2" />
-                    Claim Offer Now
+                    <Send className="h-4 w-4 mr-2" />
+                    Send to Haiti Now
                   </button>
-                  <p className="text-xs opacity-80">Valid until June 30, 2025 • Terms apply • Limited time</p>
+                  <p className="text-xs opacity-80">Valid until June 30, 2025 • T&C apply • All Haiti locations</p>
                 </div>
               </div>
-            </Card>
-
-            {/* Help & Support */}
-            <Card className="shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-lg font-bold text-gray-800 flex items-center">
-                  <HelpCircle className="h-5 w-5 mr-2 text-green-600" />
-                  Help & Support
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 gap-3">
-                  <button className="w-full flex items-center p-3 text-left hover:bg-gray-50 rounded-lg transition-colors">
-                    <MessageSquare className="h-5 w-5 mr-3 text-blue-600" />
-                    <div>
-                      <div className="font-medium">Live Chat</div>
-                      <div className="text-sm text-gray-500">Get instant help</div>
-                    </div>
-                  </button>
-                  <button className="w-full flex items-center p-3 text-left hover:bg-gray-50 rounded-lg transition-colors">
-                    <Phone className="h-5 w-5 mr-3 text-green-600" />
-                    <div>
-                      <div className="font-medium">Call Support</div>
-                      <div className="text-sm text-gray-500">24/7 phone support</div>
-                    </div>
-                  </button>
-                  <button className="w-full flex items-center p-3 text-left hover:bg-gray-50 rounded-lg transition-colors">
-                    <FileText className="h-5 w-5 mr-3 text-purple-600" />
-                    <div>
-                      <div className="font-medium">Help Center</div>
-                      <div className="text-sm text-gray-500">Browse FAQs</div>
-                    </div>
-                  </button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Enhanced Video Tutorials Section */}
-            <Card className="shadow-lg">
-              <CardHeader>
-                <div className="flex justify-between items-center">
-                  <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
-                    <Eye className="h-6 w-6 mr-2 text-indigo-600" />
-                    Video Tutorials
-                  </CardTitle>
-                  <button className="text-blue-600 font-medium hover:underline flex items-center">
-                    View All
-                    <ChevronRight className="h-4 w-4 ml-1" />
-                  </button>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {[
-                  {
-                    title: "How to Send Money to Haiti",
-                    desc: "Complete step-by-step guide for beginners",
-                    duration: "3:45",
-                    views: "2.1K",
-                    rating: 5,
-                    bgColor: "from-blue-50 to-indigo-50",
-                    borderColor: "border-blue-100",
-                    playColor: "bg-blue-500"
-                  },
-                  {
-                    title: "Cash Pickup Locations Guide",
-                    desc: "Find and use pickup points effectively",
-                    duration: "2:12",
-                    views: "1.8K",
-                    rating: 4,
-                    bgColor: "from-green-50 to-emerald-50",
-                    borderColor: "border-green-100",
-                    playColor: "bg-green-500"
-                  },
-                  {
-                    title: "Mobile Money & Bill Payments",
-                    desc: "Pay bills and top-up phones in Haiti",
-                    duration: "4:30",
-                    views: "950",
-                    rating: 5,
-                    bgColor: "from-purple-50 to-violet-50",
-                    borderColor: "border-purple-100",
-                    playColor: "bg-purple-500"
-                  }
-                ].map((video, index) => (
-                  <div key={index} className={`flex items-center p-4 bg-gradient-to-r ${video.bgColor} rounded-xl border ${video.borderColor} hover:shadow-md transition-all cursor-pointer group`}>
-                    <div className={`w-20 h-14 ${video.playColor} rounded-lg flex items-center justify-center mr-4 relative group-hover:scale-105 transition-transform`}>
-                      <div className="w-0 h-0 border-l-6 border-l-white border-t-3 border-t-transparent border-b-3 border-b-transparent ml-1"></div>
-                      <div className="absolute top-1 right-1 bg-red-500 text-white text-xs px-1 py-0.5 rounded">{video.duration}</div>
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-semibold text-gray-800 text-sm mb-1">{video.title}</p>
-                      <p className="text-gray-600 text-xs mb-2">{video.desc}</p>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center">
-                          <div className="flex text-yellow-400 mr-3 text-xs">
-                            {Array.from({length: 5}, (_, i) => (
-                              <span key={i}>{i < video.rating ? '★' : '☆'}</span>
-                            ))}
-                          </div>
-                          <span className="text-gray-500 text-xs">{video.views} views</span>
-                        </div>
-                        <div className="flex space-x-2">
-                          <button className="p-1 hover:bg-white rounded transition-colors">
-                            <Share2 className="h-3 w-3 text-gray-500" />
-                          </button>
-                          <button className="p-1 hover:bg-white rounded transition-colors">
-                            <Download className="h-3 w-3 text-gray-500" />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </CardContent>
             </Card>
           </div>
         </div>
       </div>
+
+      {/* AI Chat Assistant Overlay */}
+      {isLiveChatOpen && (
+        <div className="fixed bottom-6 right-6 w-80 h-96 bg-white rounded-xl shadow-2xl border border-gray-200 z-50">
+          <div className="bg-gradient-to-r from-red-600 to-blue-600 text-white p-4 rounded-t-xl">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <Bot className="h-5 w-5 mr-2" />
+                <span className="font-medium">Haiti Transfer AI</span>
+              </div>
+              <button onClick={() => setIsLiveChatOpen(false)}>
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+          </div>
+          <div className="p-4 flex-1">
+            <div className="space-y-3">
+              <div className="bg-gray-100 rounded-lg p-3">
+                <p className="text-sm">👋 Hi! I'm your Haiti transfer assistant. I can help you with:</p>
+                <ul className="text-xs mt-2 space-y-1">
+                  <li>• Best rates to Haiti</li>
+                  <li>• Transfer tracking</li>
+                  <li>• Delivery methods</li>
+                  <li>• Recipient locations</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div className="p-4 border-t">
+            <div className="flex space-x-2">
+              <input
+                type="text"
+                placeholder="Ask about Haiti transfers..."
+                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm"
+              />
+              <button className="bg-red-600 text-white px-4 py-2 rounded-lg">
+                <Send className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
