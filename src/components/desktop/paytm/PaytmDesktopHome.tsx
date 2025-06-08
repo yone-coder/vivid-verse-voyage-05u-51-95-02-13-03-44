@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Users, Lightbulb, Truck, Plus, Send, CreditCard, Gift, Zap, MapPin, Globe, DollarSign, History, Phone, Wallet, ArrowUpDown, ChevronRight, Building, TrendingUp, BarChart3, PieChart, Calculator, Shield, Clock, Star, Award, Target, Briefcase, HeadphonesIcon, Download, Share2, Eye, Lock, Settings, HelpCircle, MessageSquare, Camera, Mic, Video, Play, BookOpen, CheckCircle, Package, Truck as TruckIcon, Timer, AlertCircle, Calendar, Bookmark, Heart, UserPlus, Copy } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -266,6 +267,70 @@ export default function PaytmDesktopHome() {
     }
   };
 
+  // Header action buttons
+  const headerButtons = [
+    { 
+      icon: Send, 
+      label: 'Send Money', 
+      color: 'blue',
+      action: handleSendClick
+    },
+    { 
+      icon: Search, 
+      label: 'Track Transfer', 
+      color: 'green',
+      action: () => console.log('Track transfer')
+    },
+    { 
+      icon: Calculator, 
+      label: 'Exchange Rate', 
+      color: 'purple',
+      action: () => console.log('Exchange rate')
+    },
+    { 
+      icon: QrCode, 
+      label: 'QR Pay', 
+      color: 'orange',
+      action: () => console.log('QR payment')
+    },
+    { 
+      icon: History, 
+      label: 'History', 
+      color: 'indigo',
+      action: () => console.log('Transaction history')
+    },
+    { 
+      icon: Users, 
+      label: 'Recipients', 
+      color: 'pink',
+      action: () => console.log('Manage recipients')
+    },
+    { 
+      icon: Globe, 
+      label: 'Locations', 
+      color: 'teal',
+      action: () => console.log('Find locations')
+    },
+    { 
+      icon: Shield, 
+      label: 'Security', 
+      color: 'red',
+      action: () => console.log('Security settings')
+    },
+    { 
+      icon: Settings, 
+      label: 'Settings', 
+      color: 'gray',
+      action: () => console.log('App settings')
+    },
+    { 
+      icon: HeadphonesIcon, 
+      label: 'Support', 
+      color: 'emerald',
+      action: () => console.log('Customer support')
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-white w-full">
       {/* Enhanced Header - Made Sticky */}
@@ -289,22 +354,23 @@ export default function PaytmDesktopHome() {
               </div>
             </div>
 
-            <div className="flex-1 max-w-2xl mx-8">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search recipients, rates, locations, or help..."
-                  className="w-full px-6 py-3 pl-14 pr-20 border-2 border-blue-200 rounded-full focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 shadow-sm"
-                />
-                <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-6 w-6 text-gray-400" />
-                <div className="absolute right-3 top-1/2 -translate-y-1/2 flex space-x-2">
-                  <button className="p-1 hover:bg-gray-100 rounded">
-                    <Mic className="h-4 w-4 text-gray-400" />
+            {/* Header Action Buttons - Replacing Search Bar */}
+            <div className="flex-1 max-w-4xl mx-8">
+              <div className="grid grid-cols-5 gap-3">
+                {headerButtons.map((button, index) => (
+                  <button
+                    key={index}
+                    onClick={button.action}
+                    className={`flex flex-col items-center p-3 rounded-xl transition-all duration-200 hover:scale-105 hover:shadow-md border border-gray-200 hover:border-${button.color}-300 bg-gradient-to-br from-white to-gray-50 hover:from-${button.color}-50 hover:to-${button.color}-100 group`}
+                  >
+                    <div className={`w-8 h-8 rounded-lg bg-${button.color}-100 flex items-center justify-center mb-2 group-hover:bg-${button.color}-200 transition-colors`}>
+                      <button.icon className={`h-4 w-4 text-${button.color}-600`} />
+                    </div>
+                    <span className="text-xs font-medium text-gray-700 group-hover:text-gray-900 text-center leading-tight">
+                      {button.label}
+                    </span>
                   </button>
-                  <button className="p-1 hover:bg-gray-100 rounded">
-                    <Camera className="h-4 w-4 text-gray-400" />
-                  </button>
-                </div>
+                ))}
               </div>
             </div>
 
@@ -317,8 +383,8 @@ export default function PaytmDesktopHome() {
                 </span>
               </button>
               <button className="flex items-center text-gray-700 hover:text-blue-600 transition-colors">
-                <HeadphonesIcon className="h-6 w-6 mr-2" />
-                <span>Support</span>
+                <User className="h-6 w-6 mr-2" />
+                <span>Profile</span>
               </button>
             </div>
           </div>
