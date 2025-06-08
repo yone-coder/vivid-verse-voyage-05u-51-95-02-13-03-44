@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Users, Lightbulb, Truck, Plus, Send, CreditCard, Gift, Zap, MapPin, Globe, DollarSign, History, Phone, Wallet, ArrowUpDown, ChevronRight, Building, TrendingUp, BarChart3, PieChart, Calculator, Shield, Clock, Star, Award, Target, Briefcase, HeadphonesIcon, Download, Share2, Eye, Lock, Settings, HelpCircle, MessageSquare, Camera, Mic, Video, Play, BookOpen, CheckCircle, Package, Truck as TruckIcon, Timer, AlertCircle, Calendar, Bookmark, Heart, UserPlus, Copy } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -354,24 +353,35 @@ export default function PaytmDesktopHome() {
               </div>
             </div>
 
-            {/* Header Action Buttons - Replacing Search Bar */}
-            <div className="flex-1 max-w-4xl mx-8">
-              <div className="grid grid-cols-5 gap-3">
-                {headerButtons.map((button, index) => (
-                  <button
-                    key={index}
-                    onClick={button.action}
-                    className={`flex flex-col items-center p-3 rounded-xl transition-all duration-200 hover:scale-105 hover:shadow-md border border-gray-200 hover:border-${button.color}-300 bg-gradient-to-br from-white to-gray-50 hover:from-${button.color}-50 hover:to-${button.color}-100 group`}
-                  >
-                    <div className={`w-8 h-8 rounded-lg bg-${button.color}-100 flex items-center justify-center mb-2 group-hover:bg-${button.color}-200 transition-colors`}>
-                      <button.icon className={`h-4 w-4 text-${button.color}-600`} />
-                    </div>
-                    <span className="text-xs font-medium text-gray-700 group-hover:text-gray-900 text-center leading-tight">
-                      {button.label}
-                    </span>
-                  </button>
-                ))}
-              </div>
+            {/* Desktop Header Navigation - Horizontal Layout */}
+            <div className="flex items-center space-x-8">
+              <button 
+                onClick={handleSendClick}
+                className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+              >
+                <Send className="h-4 w-4 mr-2" />
+                Send Money
+              </button>
+              
+              <button className="flex items-center text-gray-700 hover:text-blue-600 transition-colors">
+                <Search className="h-5 w-5 mr-2" />
+                Track Transfer
+              </button>
+              
+              <button className="flex items-center text-gray-700 hover:text-blue-600 transition-colors">
+                <Calculator className="h-5 w-5 mr-2" />
+                Exchange Rate
+              </button>
+              
+              <button className="flex items-center text-gray-700 hover:text-blue-600 transition-colors">
+                <History className="h-5 w-5 mr-2" />
+                History
+              </button>
+              
+              <button className="flex items-center text-gray-700 hover:text-blue-600 transition-colors">
+                <Globe className="h-5 w-5 mr-2" />
+                Locations
+              </button>
             </div>
 
             <div className="flex items-center space-x-6">
