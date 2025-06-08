@@ -353,48 +353,39 @@ export default function PaytmDesktopHome() {
               </div>
             </div>
 
-            {/* Desktop Header Navigation - Horizontal Layout */}
-            <div className="flex items-center space-x-8">
+            {/* Simplified Desktop Navigation */}
+            <nav className="flex items-center space-x-12">
               <button 
                 onClick={handleSendClick}
-                className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                className="flex items-center px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-sm"
               >
                 <Send className="h-4 w-4 mr-2" />
                 Send Money
               </button>
               
-              <button className="flex items-center text-gray-700 hover:text-blue-600 transition-colors">
-                <Search className="h-5 w-5 mr-2" />
+              <button className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
                 Track Transfer
               </button>
               
-              <button className="flex items-center text-gray-700 hover:text-blue-600 transition-colors">
-                <Calculator className="h-5 w-5 mr-2" />
-                Exchange Rate
+              <button className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
+                Exchange Rates
               </button>
               
-              <button className="flex items-center text-gray-700 hover:text-blue-600 transition-colors">
-                <History className="h-5 w-5 mr-2" />
-                History
-              </button>
-              
-              <button className="flex items-center text-gray-700 hover:text-blue-600 transition-colors">
-                <Globe className="h-5 w-5 mr-2" />
+              <button className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
                 Locations
               </button>
-            </div>
+            </nav>
 
             <div className="flex items-center space-x-6">
-              <button className="flex items-center text-gray-700 hover:text-blue-600 transition-colors relative group">
-                <Bell className="h-6 w-6 mr-2" />
-                <span>Notifications</span>
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center animate-pulse">
-                  5
+              <button className="relative p-2 text-gray-700 hover:text-blue-600 transition-colors">
+                <Bell className="h-6 w-6" />
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  3
                 </span>
               </button>
-              <button className="flex items-center text-gray-700 hover:text-blue-600 transition-colors">
-                <User className="h-6 w-6 mr-2" />
-                <span>Profile</span>
+              <button className="flex items-center space-x-2 p-2 text-gray-700 hover:text-blue-600 transition-colors">
+                <User className="h-6 w-6" />
+                <span className="font-medium">Profile</span>
               </button>
             </div>
           </div>
