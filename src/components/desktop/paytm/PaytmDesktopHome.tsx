@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Users, Lightbulb, Truck, Plus, Send, CreditCard, Gift, Zap, MapPin, Globe, DollarSign, History, Phone, Wallet, ArrowUpDown, ChevronRight, Building, TrendingUp, BarChart3, PieChart, Calculator, Shield, Clock, Star, Award, Target, Briefcase, HeadphonesIcon, Download, Share2, Eye, Lock, Settings, HelpCircle, MessageSquare, Camera, Mic, Video, Play, BookOpen, CheckCircle, Package, Truck as TruckIcon, Timer, AlertCircle, Calendar, Bookmark, Heart, UserPlus, Copy } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -266,78 +267,15 @@ export default function PaytmDesktopHome() {
     }
   };
 
-  // Header action buttons
-  const headerButtons = [
-    { 
-      icon: Send, 
-      label: 'Send Money', 
-      color: 'blue',
-      action: handleSendClick
-    },
-    { 
-      icon: Search, 
-      label: 'Track Transfer', 
-      color: 'green',
-      action: () => console.log('Track transfer')
-    },
-    { 
-      icon: Calculator, 
-      label: 'Exchange Rate', 
-      color: 'purple',
-      action: () => console.log('Exchange rate')
-    },
-    { 
-      icon: QrCode, 
-      label: 'QR Pay', 
-      color: 'orange',
-      action: () => console.log('QR payment')
-    },
-    { 
-      icon: History, 
-      label: 'History', 
-      color: 'indigo',
-      action: () => console.log('Transaction history')
-    },
-    { 
-      icon: Users, 
-      label: 'Recipients', 
-      color: 'pink',
-      action: () => console.log('Manage recipients')
-    },
-    { 
-      icon: Globe, 
-      label: 'Locations', 
-      color: 'teal',
-      action: () => console.log('Find locations')
-    },
-    { 
-      icon: Shield, 
-      label: 'Security', 
-      color: 'red',
-      action: () => console.log('Security settings')
-    },
-    { 
-      icon: Settings, 
-      label: 'Settings', 
-      color: 'gray',
-      action: () => console.log('App settings')
-    },
-    { 
-      icon: HeadphonesIcon, 
-      label: 'Support', 
-      color: 'emerald',
-      action: () => console.log('Customer support')
-    }
-  ];
-
   return (
-    <div className="min-h-screen bg-white w-full">
-      {/* Enhanced Header - Made Sticky */}
-      <header className="fixed top-0 left-0 right-0 bg-white shadow-lg border-b border-gray-200 w-full z-50">
-        <div className="w-full px-6 py-4">
+    <div className="min-h-screen bg-gray-50 w-full">
+      {/* Professional Header */}
+      <header className="fixed top-0 left-0 right-0 bg-white shadow-sm border-b border-gray-200 w-full z-50">
+        <div className="w-full px-8 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 rounded-full overflow-hidden shadow-lg border-2 border-black">
+            {/* Logo Section */}
+            <div className="flex items-center space-x-4">
+              <div className="w-10 h-10 rounded-full overflow-hidden shadow-md">
                 <img 
                   src="/lovable-uploads/45eddf56-11aa-4191-b09a-dc6ebfe3e7cc.png" 
                   alt="Global Transfer Logo" 
@@ -345,47 +283,56 @@ export default function PaytmDesktopHome() {
                 />
               </div>
               <div>
-                <div className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">Global Transfer</div>
-                <span className="text-gray-600 text-sm flex items-center">
-                  <Shield className="h-4 w-4 mr-1" />
+                <h1 className="text-2xl font-bold text-gray-900">Global Transfer</h1>
+                <p className="text-sm text-gray-500 flex items-center">
+                  <Shield className="h-3 w-3 mr-1" />
                   Secure • Fast • Reliable
-                </span>
+                </p>
               </div>
             </div>
 
-            {/* Simplified Desktop Navigation */}
-            <nav className="flex items-center space-x-12">
+            {/* Navigation */}
+            <nav className="hidden lg:flex items-center space-x-8">
               <button 
                 onClick={handleSendClick}
-                className="flex items-center px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-sm"
+                className="bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-sm text-sm"
               >
-                <Send className="h-4 w-4 mr-2" />
                 Send Money
               </button>
               
-              <button className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
+              <button className="text-gray-600 hover:text-blue-600 transition-colors font-medium text-sm">
                 Track Transfer
               </button>
               
-              <button className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
+              <button className="text-gray-600 hover:text-blue-600 transition-colors font-medium text-sm">
                 Exchange Rates
               </button>
               
-              <button className="text-gray-700 hover:text-blue-600 transition-colors font-medium">
-                Locations
+              <button className="text-gray-600 hover:text-blue-600 transition-colors font-medium text-sm">
+                Find Locations
+              </button>
+              
+              <button className="text-gray-600 hover:text-blue-600 transition-colors font-medium text-sm">
+                Support
               </button>
             </nav>
 
-            <div className="flex items-center space-x-6">
-              <button className="relative p-2 text-gray-700 hover:text-blue-600 transition-colors">
-                <Bell className="h-6 w-6" />
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+            {/* User Actions */}
+            <div className="flex items-center space-x-4">
+              <button className="relative p-2 text-gray-500 hover:text-gray-700 transition-colors">
+                <Bell className="h-5 w-5" />
+                <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
                   3
                 </span>
               </button>
-              <button className="flex items-center space-x-2 p-2 text-gray-700 hover:text-blue-600 transition-colors">
-                <User className="h-6 w-6" />
-                <span className="font-medium">Profile</span>
+              
+              <div className="h-6 w-px bg-gray-200"></div>
+              
+              <button className="flex items-center space-x-2 px-3 py-2 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                  <User className="h-4 w-4 text-blue-600" />
+                </div>
+                <span className="font-medium text-sm">Marie Joseph</span>
               </button>
             </div>
           </div>
@@ -393,7 +340,7 @@ export default function PaytmDesktopHome() {
       </header>
 
       {/* Main Content - Add top padding to account for sticky header */}
-      <div className="w-full px-6 py-8 pt-32">
+      <div className="w-full px-8 py-8 pt-32">
         <div className="grid grid-cols-2 gap-8">
           {/* Left Column - Priority Sections First */}
           <div className="space-y-6">
