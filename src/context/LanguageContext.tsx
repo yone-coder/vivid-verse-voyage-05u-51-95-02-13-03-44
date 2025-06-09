@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { Language, Location, LanguageContextType } from '@/types/language';
 import { translations } from '@/translations';
@@ -48,6 +47,34 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     return supportedLocations[0];
   });
   
+  // Load custom Kreyol translations from localStorage
+  const [customKreyolTranslations, setCustomKreyolTranslations] = useState<any>({});
+  
+  useEffect(() => {
+    const loadCustomTranslations = () => {
+      const saved = localStorage.getItem('customKreyolTranslations');
+      if (saved) {
+        try {
+          setCustomKreyolTranslations(JSON.parse(saved));
+        } catch (error) {
+          console.error('Error loading custom Kreyol translations:', error);
+        }
+      }
+    };
+    
+    loadCustomTranslations();
+    
+    // Listen for storage changes to update translations in real-time
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'customKreyolTranslations') {
+        loadCustomTranslations();
+      }
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+  
   // Save preferences to localStorage when they change
   useEffect(() => {
     localStorage.setItem('preferredLanguage', JSON.stringify(currentLanguage));
@@ -72,10 +99,23 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setCurrentLocation(location);
   };
 
-  // Translation function
+  // Translation function with custom Kreyol support
   const t = (key: string, params?: Record<string, string>) => {
     // Get translations for current language
-    const currentTranslations = translations[currentLanguage.code] || translations.ht;
+    let currentTranslations = translations[currentLanguage.code] || translations.ht;
+    
+    // If using Kreyol and we have custom translations, merge them
+    if (currentLanguage.code === 'ht' && Object.keys(customKreyolTranslations).length > 0) {
+      currentTranslations = { ...currentTranslations };
+      Object.keys(customKreyolTranslations).forEach(section => {
+        if (currentTranslations[section]) {
+          currentTranslations[section] = {
+            ...currentTranslations[section],
+            ...customKreyolTranslations[section]
+          };
+        }
+      });
+    }
     
     // Get the translation string
     let parts = key.split('.');
