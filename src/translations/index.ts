@@ -1,4 +1,5 @@
 
+
 // English translations (default)
 const en = {
   home: {
@@ -77,7 +78,7 @@ const en = {
     quickTransferOptions: "Quick Transfer Options",
     sendToHaiti: "Send to Haiti",
     localTransfer: "Local Transfer",
-    expressS:end: "Express Send",
+    expressSend: "Express Send",
     billPayment: "Bill Payment",
     recentRecipients: "Recent Recipients",
     send: "Send",
@@ -281,7 +282,7 @@ const es = {
     quickTransferOptions: "Opciones de Transferencia Rápida",
     sendToHaiti: "Enviar a Haití",
     localTransfer: "Transferencia Local",
-    expressS:end: "Envío Express",
+    expressSend: "Envío Express",
     billPayment: "Pago de Facturas",
     recentRecipients: "Destinatarios Recientes",
     send: "Enviar",
@@ -485,7 +486,7 @@ const fr = {
     quickTransferOptions: "Options de Transfert Rapide",
     sendToHaiti: "Envoyer en Haïti",
     localTransfer: "Transfert Local",
-    expressS:end: "Envoi Express",
+    expressSend: "Envoi Express",
     billPayment: "Paiement de Factures",
     recentRecipients: "Destinataires Récents",
     send: "Envoyer",
@@ -689,7 +690,7 @@ const ht = {
     quickTransferOptions: "Opsyon Transfè Rapid",
     sendToHaiti: "Voye nan Ayiti",
     localTransfer: "Transfè Lokal",
-    expressS:end: "Voye Rapid",
+    expressSend: "Voye Rapid",
     billPayment: "Peye Facture",
     recentRecipients: "Moun ki Resevwa Dènyèman",
     send: "Voye",
@@ -821,3 +822,4 @@ export const translations = {
   es,
   fr
 };
+
