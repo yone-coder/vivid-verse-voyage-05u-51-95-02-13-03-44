@@ -7,11 +7,14 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
+import { useLanguage } from '@/context/LanguageContext';
+import HeaderLanguage from '@/components/home/header/HeaderLanguage';
 import Logo from '../../home/Logo';
 import MobileTransferInput from '@/components/mobile/paytm/MobileTransferInput';
 
 export default function PaytmDesktopHome() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [activeSlide, setActiveSlide] = useState(0);
   const [amount, setAmount] = useState('');
   const [trackingNumber, setTrackingNumber] = useState('');
@@ -28,39 +31,39 @@ export default function PaytmDesktopHome() {
   const videoTutorials = [
     {
       id: 1,
-      title: "How to Send Money to Haiti",
-      description: "Step-by-step guide to sending money securely",
+      title: t('transfer.howToSendMoney'),
+      description: t('transfer.stepByStepGuide'),
       thumbnail: "https://picsum.photos/seed/tutorial1/300/200",
-      duration: "3:45",
+      duration: t('transfer.duration'),
       views: "12.5K",
-      category: "Basics"
+      category: t('transfer.basics')
     },
     {
       id: 2,
-      title: "Understanding Exchange Rates",
-      description: "Learn how rates work and when to send",
+      title: t('transfer.understandingRates'),
+      description: t('transfer.learnRates'),
       thumbnail: "https://picsum.photos/seed/tutorial2/300/200",
       duration: "2:30",
       views: "8.2K",
-      category: "Tips"
+      category: t('transfer.tips')
     },
     {
       id: 3,
-      title: "Tracking Your Transfer",
-      description: "Monitor your transfer in real-time",
+      title: t('transfer.trackingTransfer'),
+      description: t('transfer.monitorRealTime'),
       thumbnail: "https://picsum.photos/seed/tutorial3/300/200",
       duration: "1:55",
       views: "15.1K",
-      category: "Support"
+      category: t('header.helpSupport')
     },
     {
       id: 4,
-      title: "Mobile App Features",
-      description: "Get the most out of our mobile app",
+      title: t('transfer.mobileAppFeatures'),
+      description: t('transfer.getMostOut'),
       thumbnail: "https://picsum.photos/seed/tutorial4/300/200",
       duration: "4:12",
       views: "6.8K",
-      category: "Mobile"
+      category: t('transfer.mobile')
     }
   ];
 
@@ -72,14 +75,14 @@ export default function PaytmDesktopHome() {
       amount: "$150.00",
       status: "processing",
       progress: 65,
-      estimatedTime: "2-4 hours",
+      estimatedTime: "2-4 " + t('transfer.hours'),
       destination: "Port-au-Prince",
-      sentDate: "Today, 2:30 PM",
+      sentDate: t('transfer.today') + ", 2:30 PM",
       steps: [
-        { label: "Payment Confirmed", completed: true, time: "2:30 PM" },
-        { label: "Transfer Processing", completed: true, time: "2:32 PM", active: true },
-        { label: "Funds Available", completed: false, time: "Est. 6:30 PM" },
-        { label: "Pickup Ready", completed: false, time: "Est. 6:45 PM" }
+        { label: t('transfer.paymentConfirmed'), completed: true, time: "2:30 PM" },
+        { label: t('transfer.transferProcessing'), completed: true, time: "2:32 PM", active: true },
+        { label: t('transfer.fundsAvailable'), completed: false, time: t('transfer.estimatedTime') + " 6:30 PM" },
+        { label: t('transfer.pickupReady'), completed: false, time: t('transfer.estimatedTime') + " 6:45 PM" }
       ]
     },
     {
@@ -88,14 +91,14 @@ export default function PaytmDesktopHome() {
       amount: "$200.00",
       status: "available",
       progress: 100,
-      estimatedTime: "Ready now",
+      estimatedTime: t('transfer.readyNow'),
       destination: "Cap-Haïtien",
-      sentDate: "Yesterday, 10:15 AM",
+      sentDate: t('transfer.yesterday') + ", 10:15 AM",
       steps: [
-        { label: "Payment Confirmed", completed: true, time: "10:15 AM" },
-        { label: "Transfer Processing", completed: true, time: "10:17 AM" },
-        { label: "Funds Available", completed: true, time: "2:45 PM" },
-        { label: "Pickup Ready", completed: true, time: "2:50 PM", active: true }
+        { label: t('transfer.paymentConfirmed'), completed: true, time: "10:15 AM" },
+        { label: t('transfer.transferProcessing'), completed: true, time: "10:17 AM" },
+        { label: t('transfer.fundsAvailable'), completed: true, time: "2:45 PM" },
+        { label: t('transfer.pickupReady'), completed: true, time: "2:50 PM", active: true }
       ]
     },
     {
@@ -104,14 +107,14 @@ export default function PaytmDesktopHome() {
       amount: "$75.00",
       status: "sent",
       progress: 25,
-      estimatedTime: "24-48 hours",
+      estimatedTime: "24-48 " + t('transfer.hours'),
       destination: "Gonaïves",
-      sentDate: "Today, 4:15 PM",
+      sentDate: t('transfer.today') + ", 4:15 PM",
       steps: [
-        { label: "Payment Confirmed", completed: true, time: "4:15 PM", active: true },
-        { label: "Transfer Processing", completed: false, time: "Est. 4:20 PM" },
-        { label: "Funds Available", completed: false, time: "Est. Tomorrow 2:00 PM" },
-        { label: "Pickup Ready", completed: false, time: "Est. Tomorrow 2:15 PM" }
+        { label: t('transfer.paymentConfirmed'), completed: true, time: "4:15 PM", active: true },
+        { label: t('transfer.transferProcessing'), completed: false, time: t('transfer.estimatedTime') + " 4:20 PM" },
+        { label: t('transfer.fundsAvailable'), completed: false, time: t('transfer.estimatedTime') + " " + t('transfer.yesterday') + " 2:00 PM" },
+        { label: t('transfer.pickupReady'), completed: false, time: t('transfer.estimatedTime') + " " + t('transfer.yesterday') + " 2:15 PM" }
       ]
     }
   ];
@@ -120,38 +123,38 @@ export default function PaytmDesktopHome() {
   const transferTemplates = [
     {
       id: 1,
-      name: "Monthly Family Support",
+      name: t('transfer.monthlyFamilySupport'),
       recipient: "Jean Pierre",
       amount: "$200.00",
-      frequency: "Monthly",
+      frequency: t('transfer.monthly'),
       destination: "Port-au-Prince",
       isShared: true,
-      lastUsed: "5 days ago",
-      category: "Family",
+      lastUsed: "5 " + t('transfer.daysAgo'),
+      category: t('transfer.family'),
       isFavorite: true
     },
     {
       id: 2,
-      name: "Emergency Fund",
+      name: t('transfer.emergencyFund'),
       recipient: "Marie Louise",
       amount: "$500.00",
-      frequency: "As needed",
+      frequency: t('transfer.asNeeded'),
       destination: "Cap-Haïtien",
       isShared: false,
-      lastUsed: "2 weeks ago",
-      category: "Emergency",
+      lastUsed: "2 " + t('transfer.weekAgo'),
+      category: t('transfer.emergency'),
       isFavorite: false
     },
     {
       id: 3,
-      name: "School Fees",
+      name: t('transfer.schoolFees'),
       recipient: "Claude Joseph",
       amount: "$150.00",
-      frequency: "Quarterly",
+      frequency: t('transfer.quarterly'),
       destination: "Gonaïves",
       isShared: true,
-      lastUsed: "1 month ago",
-      category: "Education",
+      lastUsed: "1 " + t('transfer.weekAgo'),
+      category: t('transfer.education'),
       isFavorite: true
     }
   ];
@@ -160,17 +163,17 @@ export default function PaytmDesktopHome() {
   const recipientGroups = [
     {
       id: 1,
-      name: "Immediate Family",
+      name: t('transfer.immediateFamliy'),
       members: ["Jean Pierre", "Marie Louise", "Rose Joseph"],
       totalSent: "$1,200",
-      lastActive: "Today"
+      lastActive: t('transfer.today')
     },
     {
       id: 2,
-      name: "Extended Family",
+      name: t('transfer.extendedFamily'),
       members: ["Claude Joseph", "Anne Marie", "Paul Duval"],
       totalSent: "$850",
-      lastActive: "3 days ago"
+      lastActive: "3 " + t('transfer.daysAgo')
     }
   ];
 
@@ -193,22 +196,22 @@ export default function PaytmDesktopHome() {
 
   // Financial services
   const financialServices = [
-    { icon: History, label: 'Transfer History', color: 'red', desc: 'View all transfers' },
-    { icon: FileText, label: 'Track Money', color: 'indigo', desc: 'Real-time tracking' },
-    { icon: Phone, label: 'Mobile Top-Up', color: 'teal', desc: 'Recharge phones' },
-    { icon: Globe, label: 'Agent Locator', color: 'gray', desc: 'Find locations' },
-    { icon: Calculator, label: 'Rate Calculator', color: 'emerald', desc: 'Exchange rates' },
-    { icon: BarChart3, label: 'Analytics', color: 'purple', desc: 'Spending insights' }
+    { icon: History, label: t('transfer.transferHistory'), color: 'red', desc: t('transfer.viewAllTransfers') },
+    { icon: FileText, label: t('transfer.trackMoney'), color: 'indigo', desc: t('transfer.realTimeTracking') },
+    { icon: Phone, label: t('transfer.mobileTopUp'), color: 'teal', desc: t('transfer.rechargePhones') },
+    { icon: Globe, label: t('transfer.agentLocator'), color: 'gray', desc: t('transfer.findLocations2') },
+    { icon: Calculator, label: t('transfer.rateCalculator'), color: 'emerald', desc: t('transfer.exchangeRates') },
+    { icon: BarChart3, label: t('transfer.analytics'), color: 'purple', desc: t('transfer.spendingInsights') }
   ];
 
   // Banking features
   const bankingFeatures = [
-    { icon: Building, label: 'Virtual Account', desc: 'Get your virtual bank account', isNew: true },
-    { icon: CreditCard, label: 'Debit Card', desc: 'Order your Haiti Transfer card', isPopular: true },
-    { icon: TrendingUp, label: 'Investments', desc: 'Grow your money with investments' },
-    { icon: Shield, label: 'Savings Account', desc: 'High-yield savings account' },
-    { icon: Calculator, label: 'Loans', desc: 'Quick personal loans' },
-    { icon: PieChart, label: 'Budget Tracker', desc: 'Track your spending habits' }
+    { icon: Building, label: t('transfer.virtualAccount'), desc: t('transfer.getVirtualAccount'), isNew: true },
+    { icon: CreditCard, label: t('transfer.debitCard'), desc: t('transfer.orderCard'), isPopular: true },
+    { icon: TrendingUp, label: t('transfer.investments'), desc: t('transfer.growMoney') },
+    { icon: Shield, label: t('transfer.savingsAccount'), desc: t('transfer.highYieldSavings') },
+    { icon: Calculator, label: t('transfer.loans'), desc: t('transfer.quickLoans') },
+    { icon: PieChart, label: t('transfer.budgetTracker'), desc: t('transfer.trackSpending') }
   ];
 
   const getStatusIcon = (status: string) => {
@@ -250,6 +253,19 @@ export default function PaytmDesktopHome() {
     }
   };
 
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case 'sent':
+        return t('transfer.sent');
+      case 'processing':
+        return t('transfer.processing');
+      case 'available':
+        return t('transfer.available');
+      default:
+        return status;
+    }
+  };
+
   const handleTrackTransaction = () => {
     if (!trackingNumber.trim()) return;
     
@@ -284,10 +300,10 @@ export default function PaytmDesktopHome() {
                   />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Global Transfer</h1>
+                  <h1 className="text-2xl font-bold text-gray-900 tracking-tight">{t('transfer.globalTransfer')}</h1>
                   <p className="text-sm text-gray-600 flex items-center font-medium">
                     <Shield className="h-3 w-3 mr-1.5" />
-                    Secure • Fast • Reliable
+                    {t('transfer.secureTagline')}
                   </p>
                 </div>
               </div>
@@ -300,26 +316,28 @@ export default function PaytmDesktopHome() {
                 className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-all duration-200 font-semibold shadow-sm text-sm flex items-center space-x-2"
               >
                 <Send className="h-4 w-4" />
-                <span>Send Money</span>
+                <span>{t('transfer.sendMoney')}</span>
               </button>
               
               <button className="text-gray-700 hover:text-blue-600 transition-colors font-medium text-sm px-4 py-2 rounded-lg hover:bg-blue-50">
-                Track Transfer
+                {t('transfer.trackTransfer')}
               </button>
               
               <button className="text-gray-700 hover:text-blue-600 transition-colors font-medium text-sm px-4 py-2 rounded-lg hover:bg-blue-50 flex items-center space-x-1">
                 <MapPin className="h-4 w-4" />
-                <span>Find Locations</span>
+                <span>{t('transfer.findLocations')}</span>
               </button>
               
               <button className="text-gray-700 hover:text-blue-600 transition-colors font-medium text-sm px-4 py-2 rounded-lg hover:bg-blue-50 flex items-center space-x-1">
                 <HeadphonesIcon className="h-4 w-4" />
-                <span>Support</span>
+                <span>{t('transfer.support')}</span>
               </button>
             </nav>
 
-            {/* User Actions */}
+            {/* User Actions with Language Toggle */}
             <div className="flex items-center space-x-4">
+              <HeaderLanguage />
+              
               <button className="relative p-3 text-gray-500 hover:text-gray-700 transition-colors hover:bg-gray-100 rounded-lg">
                 <Bell className="h-5 w-5" />
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium">
@@ -335,7 +353,7 @@ export default function PaytmDesktopHome() {
                 </div>
                 <div className="text-left">
                   <span className="font-semibold text-sm block">Marie Joseph</span>
-                  <span className="text-xs text-gray-500">Premium Member</span>
+                  <span className="text-xs text-gray-500">{t('transfer.premiumMember')}</span>
                 </div>
               </button>
             </div>
@@ -358,15 +376,15 @@ export default function PaytmDesktopHome() {
                     </div>
                     <div>
                       <p className="font-semibold text-lg text-gray-800">Marie Joseph</p>
-                      <p className="text-sm text-gray-600">Verified Account</p>
-                      <p className="text-xs text-gray-500">Member since 2023</p>
+                      <p className="text-sm text-gray-600">{t('transfer.verifiedAccount')}</p>
+                      <p className="text-xs text-gray-500">{t('transfer.memberSince')}</p>
                     </div>
                   </div>
                   <div className="text-right">
                     <div className="bg-green-500 text-white px-2 py-1 rounded-full text-xs mb-1">
-                      ✓ Verified
+                      ✓ {t('transfer.verified')}
                     </div>
-                    <p className="text-xs text-gray-500">ID Confirmed</p>
+                    <p className="text-xs text-gray-500">{t('transfer.idConfirmed')}</p>
                   </div>
                 </div>
                 <div className="mt-4 flex space-x-2">
@@ -374,10 +392,10 @@ export default function PaytmDesktopHome() {
                     onClick={handleSendClick}
                     className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium flex-1"
                   >
-                    Send Money
+                    {t('transfer.sendMoney')}
                   </button>
                   <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-full text-sm flex-1">
-                    View Profile
+                    {t('transfer.viewProfile')}
                   </button>
                 </div>
               </CardContent>
@@ -388,7 +406,7 @@ export default function PaytmDesktopHome() {
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg font-semibold text-gray-800 flex items-center">
                   <Send className="h-5 w-5 mr-2 text-purple-600" />
-                  Quick Transfer Options
+                  {t('transfer.quickTransferOptions')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -397,25 +415,25 @@ export default function PaytmDesktopHome() {
                     <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-2">
                       <Send className="w-6 h-6 text-red-600" />
                     </div>
-                    <p className="text-xs text-gray-600 font-medium">Send to Haiti</p>
+                    <p className="text-xs text-gray-600 font-medium">{t('transfer.sendToHaiti')}</p>
                   </button>
                   <button className="text-center" onClick={handleLocalTransferClick}>
                     <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
                       <ArrowUpDown className="w-6 h-6 text-green-600" />
                     </div>
-                    <p className="text-xs text-gray-600 font-medium">Local Transfer</p>
+                    <p className="text-xs text-gray-600 font-medium">{t('transfer.localTransfer')}</p>
                   </button>
                   <button className="text-center">
                     <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2">
                       <Zap className="w-6 h-6 text-purple-600" />
                     </div>
-                    <p className="text-xs text-gray-600 font-medium">Express Send</p>
+                    <p className="text-xs text-gray-600 font-medium">{t('transfer.expressS:end')}</p>
                   </button>
                   <button className="text-center">
                     <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-2">
                       <CreditCard className="w-6 h-6 text-orange-600" />
                     </div>
-                    <p className="text-xs text-gray-600 font-medium">Bill Payment</p>
+                    <p className="text-xs text-gray-600 font-medium">{t('transfer.billPayment')}</p>
                   </button>
                 </div>
               </CardContent>
@@ -426,7 +444,7 @@ export default function PaytmDesktopHome() {
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg font-semibold text-gray-800 flex items-center">
                   <Calculator className="h-5 w-5 mr-2 text-orange-600" />
-                  Send Money
+                  {t('transfer.sendMoney')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -443,7 +461,7 @@ export default function PaytmDesktopHome() {
                 <CardTitle className="text-lg font-semibold text-gray-800 flex items-center justify-between">
                   <div className="flex items-center">
                     <Users className="h-5 w-5 mr-2 text-indigo-600" />
-                    Recent Recipients
+                    {t('transfer.recentRecipients')}
                   </div>
                   <ChevronRight className="w-5 h-5 text-gray-400" />
                 </CardTitle>
@@ -465,9 +483,9 @@ export default function PaytmDesktopHome() {
                         onClick={handleSendClick}
                         className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm mb-1"
                       >
-                        Send
+                        {t('transfer.send')}
                       </button>
-                      <p className="text-xs text-gray-500">3 days ago</p>
+                      <p className="text-xs text-gray-500">3 {t('transfer.daysAgo')}</p>
                     </div>
                   </div>
                   <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
@@ -485,9 +503,9 @@ export default function PaytmDesktopHome() {
                         onClick={handleSendClick}
                         className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm mb-1"
                       >
-                        Send
+                        {t('transfer.send')}
                       </button>
-                      <p className="text-xs text-gray-500">1 week ago</p>
+                      <p className="text-xs text-gray-500">1 {t('transfer.weekAgo')}</p>
                     </div>
                   </div>
                 </div>
@@ -500,10 +518,10 @@ export default function PaytmDesktopHome() {
                 <CardTitle className="text-xl font-bold text-gray-900 flex items-center justify-between">
                   <div className="flex items-center">
                     <TruckIcon className="h-6 w-6 mr-2 text-blue-600" />
-                    Transaction Status Tracker
+                    {t('transfer.transactionStatusTracker')}
                   </div>
                   <Badge className="bg-blue-100 text-blue-800">
-                    {activeTransfers.length} Active
+                    {activeTransfers.length} {t('transfer.active')}
                   </Badge>
                 </CardTitle>
               </CardHeader>
@@ -512,12 +530,12 @@ export default function PaytmDesktopHome() {
                 <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
                   <h4 className="font-medium text-gray-800 mb-3 flex items-center">
                     <Search className="h-4 w-4 mr-2 text-blue-600" />
-                    Track a Transaction
+                    {t('transfer.trackTransaction')}
                   </h4>
                   <div className="flex space-x-3">
                     <Input
                       type="text"
-                      placeholder="Enter transaction number (e.g., TX001234)"
+                      placeholder={t('transfer.enterTransactionNumber')}
                       value={trackingNumber}
                       onChange={(e) => setTrackingNumber(e.target.value)}
                       onKeyPress={handleKeyPress}
@@ -531,18 +549,18 @@ export default function PaytmDesktopHome() {
                       {isSearching ? (
                         <>
                           <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                          Searching...
+                          {t('transfer.searching')}
                         </>
                       ) : (
                         <>
                           <Search className="h-4 w-4 mr-2" />
-                          Track
+                          {t('transfer.track')}
                         </>
                       )}
                     </button>
                   </div>
                   <p className="text-xs text-gray-500 mt-2">
-                    Enter your transaction number to get real-time status updates
+                    {t('transfer.trackingDescription')}
                   </p>
                 </div>
 
@@ -557,8 +575,7 @@ export default function PaytmDesktopHome() {
                             <span className="font-medium text-gray-900">{transfer.recipient}</span>
                           </div>
                           <Badge className={`text-xs ${getStatusColor(transfer.status)}`}>
-                            {transfer.status === 'sent' ? 'Sent' : 
-                             transfer.status === 'processing' ? 'Processing' : 'Available'}
+                            {getStatusText(transfer.status)}
                           </Badge>
                         </div>
                         <div className="text-right">
@@ -570,7 +587,7 @@ export default function PaytmDesktopHome() {
                       {/* Progress Bar */}
                       <div className="mb-3">
                         <div className="flex justify-between items-center mb-2">
-                          <span className="text-sm text-gray-600">Progress</span>
+                          <span className="text-sm text-gray-600">{t('transfer.progress')}</span>
                           <span className="text-sm font-medium text-gray-900">{transfer.progress}%</span>
                         </div>
                         <Progress 
@@ -623,7 +640,7 @@ export default function PaytmDesktopHome() {
                 <div className="mt-4 text-center">
                   <button className="w-full bg-blue-50 text-blue-600 py-2 px-4 rounded-lg text-sm font-medium hover:bg-blue-100 transition-colors flex items-center justify-center">
                     <History className="h-4 w-4 mr-2" />
-                    View All Transactions
+                    {t('transfer.viewAllTransfers')}
                   </button>
                 </div>
               </CardContent>
@@ -635,11 +652,11 @@ export default function PaytmDesktopHome() {
                 <CardTitle className="text-lg font-semibold text-gray-800 flex items-center justify-between">
                   <div className="flex items-center">
                     <Bookmark className="h-5 w-5 mr-2 text-purple-600" />
-                    Transfer Templates
+                    {t('transfer.transferTemplates')}
                   </div>
                   <button className="text-sm text-blue-600 hover:text-blue-800 flex items-center">
                     <Plus className="h-4 w-4 mr-1" />
-                    New Template
+                    {t('transfer.newTemplate')}
                   </button>
                 </CardTitle>
               </CardHeader>
@@ -656,7 +673,7 @@ export default function PaytmDesktopHome() {
                             )}
                           </div>
                           {template.isShared && (
-                            <Badge className="text-xs bg-green-100 text-green-800">Shared</Badge>
+                            <Badge className="text-xs bg-green-100 text-green-800">{t('transfer.shared')}</Badge>
                           )}
                         </div>
                         <div className="text-right">
@@ -674,14 +691,14 @@ export default function PaytmDesktopHome() {
                           <Badge variant="secondary" className="text-xs">
                             {template.category}
                           </Badge>
-                          <span className="text-xs text-gray-500">Used {template.lastUsed}</span>
+                          <span className="text-xs text-gray-500">{t('transfer.used')} {template.lastUsed}</span>
                         </div>
                         <div className="flex space-x-1">
                           <button 
                             onClick={handleSendClick}
                             className="bg-blue-600 text-white px-2 py-1 rounded text-xs hover:bg-blue-700"
                           >
-                            Use Template
+                            {t('transfer.useTemplate')}
                           </button>
                           <button className="text-gray-400 hover:text-gray-600">
                             <Copy className="h-3 w-3" />
@@ -698,23 +715,23 @@ export default function PaytmDesktopHome() {
                 <div className="space-y-3">
                   <h4 className="font-medium text-gray-800 text-sm flex items-center">
                     <UserPlus className="h-4 w-4 mr-2 text-indigo-600" />
-                    Favorite Recipient Groups
+                    {t('transfer.favoriteRecipientGroups')}
                   </h4>
                   {recipientGroups.map((group) => (
                     <div key={group.id} className="bg-gray-50 rounded-lg p-3">
                       <div className="flex items-center justify-between mb-2">
                         <span className="font-medium text-gray-800 text-sm">{group.name}</span>
-                        <span className="text-xs text-gray-500">Active {group.lastActive}</span>
+                        <span className="text-xs text-gray-500">{t('transfer.activeTime')} {group.lastActive}</span>
                       </div>
                       <div className="flex items-center justify-between">
                         <div className="text-xs text-gray-600">
-                          {group.members.length} members • Total sent: {group.totalSent}
+                          {group.members.length} {t('transfer.members')} • {t('transfer.totalSent')}: {group.totalSent}
                         </div>
                         <button 
                           onClick={handleSendClick}
                           className="bg-purple-600 text-white px-2 py-1 rounded text-xs hover:bg-purple-700"
                         >
-                          Quick Send
+                          {t('transfer.quickSend')}
                         </button>
                       </div>
                     </div>
@@ -724,7 +741,7 @@ export default function PaytmDesktopHome() {
                 <div className="mt-4 text-center">
                   <button className="w-full bg-purple-50 text-purple-600 py-2 px-4 rounded-lg text-sm font-medium hover:bg-purple-100 transition-colors flex items-center justify-center">
                     <Share2 className="h-4 w-4 mr-2" />
-                    Share Templates with Family
+                    {t('transfer.shareTemplates')}
                   </button>
                 </div>
               </CardContent>
@@ -738,18 +755,18 @@ export default function PaytmDesktopHome() {
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg font-semibold text-gray-800 flex items-center">
                   <DollarSign className="h-5 w-5 mr-2 text-green-600" />
-                  Live Exchange Rate
+                  {t('transfer.liveExchangeRate')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="bg-gradient-to-r from-green-100 to-blue-100 rounded-lg p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-gray-700">Today's Rate</p>
+                      <p className="text-sm font-medium text-gray-700">{t('transfer.todaysRate')}</p>
                       <p className="text-xl font-bold text-gray-800">1 USD = 133.45 HTG</p>
                     </div>
                     <div className="bg-green-500 text-white px-3 py-1 rounded-full text-sm">
-                      Live
+                      {t('transfer.live')}
                     </div>
                   </div>
                 </div>
@@ -761,7 +778,7 @@ export default function PaytmDesktopHome() {
               <CardHeader>
                 <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
                   <Briefcase className="h-6 w-6 mr-2 text-purple-600" />
-                  Financial Services
+                  {t('transfer.financialServices')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -784,16 +801,16 @@ export default function PaytmDesktopHome() {
               <div className="bg-gradient-to-r from-red-400 via-pink-500 to-purple-500 p-6 text-white">
                 <div className="text-center">
                   <Gift className="h-8 w-8 mx-auto mb-3" />
-                  <p className="font-bold text-xl mb-2">🎉 Zero Fees Special!</p>
-                  <p className="text-sm mb-4 opacity-90">Send up to $500 with no transfer fees this month</p>
+                  <p className="font-bold text-xl mb-2">{t('transfer.zeroFeesSpecial')}</p>
+                  <p className="text-sm mb-4 opacity-90">{t('transfer.zeroFeesDescription')}</p>
                   <button 
                     onClick={handleSendClick}
                     className="w-full bg-white text-red-500 py-3 px-4 rounded-full text-sm font-medium hover:bg-gray-100 transition-colors mb-3 flex items-center justify-center"
                   >
                     <Gift className="h-4 w-4 mr-2" />
-                    Claim Offer Now
+                    {t('transfer.claimOfferNow')}
                   </button>
-                  <p className="text-xs opacity-80">Valid until June 30, 2025 • Terms apply • Limited time</p>
+                  <p className="text-xs opacity-80">{t('transfer.validUntil')}</p>
                 </div>
               </div>
             </Card>
@@ -804,10 +821,10 @@ export default function PaytmDesktopHome() {
                 <CardTitle className="text-xl font-bold text-blue-900 flex items-center justify-between">
                   <div className="flex items-center">
                     <TrendingUp className="h-6 w-6 mr-2" />
-                    Haiti News & Updates
+                    {t('transfer.haitiNewsUpdates')}
                   </div>
                   <Badge className="bg-blue-600 text-white">
-                    Live Updates
+                    {t('transfer.liveUpdates')}
                   </Badge>
                 </CardTitle>
               </CardHeader>
@@ -816,27 +833,27 @@ export default function PaytmDesktopHome() {
                   <div className="flex items-start space-x-3 p-3 bg-white rounded-lg border border-blue-200">
                     <TrendingUp className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
                     <div className="flex-1">
-                      <h4 className="font-medium text-gray-900 text-sm mb-1">Economic updates affecting transfers</h4>
-                      <p className="text-xs text-gray-600">USD/HTG exchange rate remains stable at 127.5. Transfer fees unchanged for December.</p>
-                      <Badge variant="secondary" className="mt-2 text-xs">Economic</Badge>
+                      <h4 className="font-medium text-gray-900 text-sm mb-1">{t('transfer.economicUpdates')}</h4>
+                      <p className="text-xs text-gray-600">{t('transfer.economicDescription')}</p>
+                      <Badge variant="secondary" className="mt-2 text-xs">{t('transfer.economic')}</Badge>
                     </div>
                   </div>
                   
                   <div className="flex items-start space-x-3 p-3 bg-white rounded-lg border border-blue-200">
                     <Calendar className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
                     <div className="flex-1">
-                      <h4 className="font-medium text-gray-900 text-sm mb-1">Holiday schedules for pickup locations</h4>
-                      <p className="text-xs text-gray-600">Extended hours during New Year week. Most locations open until 8 PM Dec 28-30.</p>
-                      <Badge variant="secondary" className="mt-2 text-xs bg-green-100 text-green-800">Holiday Schedule</Badge>
+                      <h4 className="font-medium text-gray-900 text-sm mb-1">{t('transfer.holidaySchedules')}</h4>
+                      <p className="text-xs text-gray-600">{t('transfer.holidayDescription')}</p>
+                      <Badge variant="secondary" className="mt-2 text-xs bg-green-100 text-green-800">{t('transfer.holidaySchedule')}</Badge>
                     </div>
                   </div>
                   
                   <div className="flex items-start space-x-3 p-3 bg-white rounded-lg border border-orange-200">
                     <AlertCircle className="h-4 w-4 text-orange-600 mt-0.5 flex-shrink-0" />
                     <div className="flex-1">
-                      <h4 className="font-medium text-gray-900 text-sm mb-1">Service disruption notifications</h4>
-                      <p className="text-xs text-gray-600">Temporary delays in Port-au-Prince area due to infrastructure maintenance. Allow extra 24-48 hours.</p>
-                      <Badge variant="secondary" className="mt-2 text-xs bg-orange-100 text-orange-800">Service Alert</Badge>
+                      <h4 className="font-medium text-gray-900 text-sm mb-1">{t('transfer.serviceDisruption')}</h4>
+                      <p className="text-xs text-gray-600">{t('transfer.serviceDescription')}</p>
+                      <Badge variant="secondary" className="mt-2 text-xs bg-orange-100 text-orange-800">{t('transfer.serviceAlert')}</Badge>
                     </div>
                   </div>
                 </div>
@@ -844,7 +861,7 @@ export default function PaytmDesktopHome() {
                 <div className="pt-3 border-t border-blue-200">
                   <p className="text-xs text-blue-700 text-center">
                     <Clock className="h-3 w-3 inline mr-1" />
-                    Last updated 2 hours ago
+                    {t('transfer.lastUpdated')}
                   </p>
                 </div>
               </CardContent>
@@ -856,11 +873,11 @@ export default function PaytmDesktopHome() {
                 <CardTitle className="text-xl font-bold text-gray-900 flex items-center justify-between">
                   <div className="flex items-center">
                     <Video className="h-6 w-6 mr-2 text-red-600" />
-                    Video Tutorials
+                    {t('transfer.videoTutorials')}
                   </div>
                   <button className="text-sm text-blue-600 hover:text-blue-800 flex items-center">
                     <BookOpen className="h-4 w-4 mr-1" />
-                    View All
+                    {t('transfer.viewAll')}
                   </button>
                 </CardTitle>
               </CardHeader>
@@ -891,7 +908,7 @@ export default function PaytmDesktopHome() {
                           {tutorial.title}
                         </h4>
                         <p className="text-xs text-gray-500 mb-1">{tutorial.description}</p>
-                        <p className="text-xs text-gray-400">{tutorial.views} views</p>
+                        <p className="text-xs text-gray-400">{tutorial.views} {t('transfer.views')}</p>
                       </div>
                     </div>
                   ))}
@@ -899,7 +916,7 @@ export default function PaytmDesktopHome() {
                 <div className="mt-4 text-center">
                   <button className="w-full bg-red-50 text-red-600 py-2 px-4 rounded-lg text-sm font-medium hover:bg-red-100 transition-colors flex items-center justify-center">
                     <Video className="h-4 w-4 mr-2" />
-                    Watch Getting Started Tutorial
+                    {t('transfer.watchGettingStarted')}
                   </button>
                 </div>
               </CardContent>
@@ -910,7 +927,7 @@ export default function PaytmDesktopHome() {
               <CardHeader>
                 <CardTitle className="text-lg font-bold text-gray-800 flex items-center">
                   <Building className="h-5 w-5 mr-2 text-green-600" />
-                  Banking Features
+                  {t('transfer.bankingFeatures')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -925,8 +942,8 @@ export default function PaytmDesktopHome() {
                           <div className="flex items-center justify-center mb-1">
                             <span className="font-medium text-gray-800 text-sm text-center leading-tight">{feature.label}</span>
                           </div>
-                          {feature.isNew && <Badge className="mb-1 text-xs bg-green-500">New</Badge>}
-                          {feature.isPopular && <Badge className="mb-1 text-xs bg-orange-500">Popular</Badge>}
+                          {feature.isNew && <Badge className="mb-1 text-xs bg-green-500">{t('transfer.new')}</Badge>}
+                          {feature.isPopular && <Badge className="mb-1 text-xs bg-orange-500">{t('transfer.popular')}</Badge>}
                         </div>
                       </div>
                       <p className="text-xs text-gray-500 text-center mt-auto">{feature.desc}</p>
@@ -941,26 +958,26 @@ export default function PaytmDesktopHome() {
               <CardHeader>
                 <CardTitle className="text-lg font-bold text-gray-800 flex items-center">
                   <BarChart3 className="h-5 w-5 mr-2 text-purple-600" />
-                  Live Statistics
+                  {t('transfer.liveStatistics')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="bg-purple-50 rounded-lg p-3 text-center">
                     <div className="text-2xl font-bold text-purple-600">1,234</div>
-                    <div className="text-sm text-gray-600">Online Users</div>
+                    <div className="text-sm text-gray-600">{t('transfer.onlineUsers')}</div>
                   </div>
                   <div className="bg-green-50 rounded-lg p-3 text-center">
                     <div className="text-2xl font-bold text-green-600">89</div>
-                    <div className="text-sm text-gray-600">Active Transfers</div>
+                    <div className="text-sm text-gray-600">{t('transfer.activeTransfers')}</div>
                   </div>
                   <div className="bg-orange-50 rounded-lg p-3 text-center">
                     <div className="text-2xl font-bold text-orange-600">156</div>
-                    <div className="text-sm text-gray-600">Pending Orders</div>
+                    <div className="text-sm text-gray-600">{t('transfer.pendingOrders')}</div>
                   </div>
                   <div className="bg-blue-50 rounded-lg p-3 text-center">
                     <div className="text-2xl font-bold text-blue-600">$2.1M</div>
-                    <div className="text-sm text-gray-600">Daily Volume</div>
+                    <div className="text-sm text-gray-600">{t('transfer.dailyVolume')}</div>
                   </div>
                 </div>
               </CardContent>
@@ -971,7 +988,7 @@ export default function PaytmDesktopHome() {
               <CardHeader>
                 <CardTitle className="text-lg font-bold text-gray-800 flex items-center">
                   <HelpCircle className="h-5 w-5 mr-2 text-green-600" />
-                  Help & Support
+                  {t('transfer.helpSupport')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -979,22 +996,22 @@ export default function PaytmDesktopHome() {
                   <button className="w-full flex items-center p-3 text-left hover:bg-gray-50 rounded-lg transition-colors">
                     <MessageSquare className="h-5 w-5 mr-3 text-blue-600" />
                     <div>
-                      <div className="font-medium">Live Chat</div>
-                      <div className="text-sm text-gray-500">Get instant help</div>
+                      <div className="font-medium">{t('transfer.liveChat')}</div>
+                      <div className="text-sm text-gray-500">{t('transfer.getInstantHelp')}</div>
                     </div>
                   </button>
                   <button className="w-full flex items-center p-3 text-left hover:bg-gray-50 rounded-lg transition-colors">
                     <Phone className="h-5 w-5 mr-3 text-green-600" />
                     <div>
-                      <div className="font-medium">Call Support</div>
-                      <div className="text-sm text-gray-500">24/7 phone support</div>
+                      <div className="font-medium">{t('transfer.callSupport')}</div>
+                      <div className="text-sm text-gray-500">{t('transfer.phoneSupport')}</div>
                     </div>
                   </button>
                   <button className="w-full flex items-center p-3 text-left hover:bg-gray-50 rounded-lg transition-colors">
                     <FileText className="h-5 w-5 mr-3 text-purple-600" />
                     <div>
-                      <div className="font-medium">Help Center</div>
-                      <div className="text-sm text-gray-500">Browse FAQs</div>
+                      <div className="font-medium">{t('transfer.helpCenter')}</div>
+                      <div className="text-sm text-gray-500">{t('transfer.browseFAQs')}</div>
                     </div>
                   </button>
                 </div>
