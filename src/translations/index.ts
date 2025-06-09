@@ -15,6 +15,9 @@ const en = {
     selectLocation: "Select your location",
     language: "Language",
     location: "Location",
+    welcome: "Welcome to our store",
+    deliverTo: "Deliver to",
+    helpSupport: "Help & Support",
   },
   product: {
     addToCart: "Add to cart",
@@ -48,6 +51,15 @@ const en = {
     login: "Login",
     signup: "Sign up",
     logout: "Logout",
+  },
+  navigation: {
+    electronics: "Electronics",
+    fashion: "Fashion",
+    homeLiving: "Home & Living",
+    sports: "Sports",
+    automotive: "Automotive",
+    flashSale: "Flash Sale",
+    freeShipping: "Free Shipping",
   }
 };
 
@@ -67,6 +79,9 @@ const es = {
     selectLocation: "Selecciona tu ubicación",
     language: "Idioma",
     location: "Ubicación",
+    welcome: "Bienvenido a nuestra tienda",
+    deliverTo: "Entregar a",
+    helpSupport: "Ayuda y Soporte",
   },
   product: {
     addToCart: "Añadir al carrito",
@@ -100,6 +115,15 @@ const es = {
     login: "Iniciar sesión",
     signup: "Registrarse",
     logout: "Cerrar sesión",
+  },
+  navigation: {
+    electronics: "Electrónica",
+    fashion: "Moda",
+    homeLiving: "Hogar y Vida",
+    sports: "Deportes",
+    automotive: "Automotriz",
+    flashSale: "Venta Flash",
+    freeShipping: "Envío Gratis",
   }
 };
 
@@ -119,6 +143,9 @@ const fr = {
     selectLocation: "Sélectionnez votre emplacement",
     language: "Langue",
     location: "Emplacement",
+    welcome: "Bienvenue dans notre magasin",
+    deliverTo: "Livrer à",
+    helpSupport: "Aide et Support",
   },
   product: {
     addToCart: "Ajouter au panier",
@@ -152,6 +179,15 @@ const fr = {
     login: "Connexion",
     signup: "S'inscrire",
     logout: "Déconnexion",
+  },
+  navigation: {
+    electronics: "Électronique",
+    fashion: "Mode",
+    homeLiving: "Maison et Vie",
+    sports: "Sports",
+    automotive: "Automobile",
+    flashSale: "Vente Flash",
+    freeShipping: "Livraison Gratuite",
   }
 };
 
@@ -171,6 +207,9 @@ const ht = {
     selectLocation: "Chwazi lokasyon ou",
     language: "Lang",
     location: "Lokasyon",
+    welcome: "Byenvini nan boutik nou an",
+    deliverTo: "Livrezon nan",
+    helpSupport: "Èd ak Sipò",
   },
   product: {
     addToCart: "Ajoute nan panye",
@@ -204,12 +243,21 @@ const ht = {
     login: "Konekte",
     signup: "Enskri",
     logout: "Dekonekte",
+  },
+  navigation: {
+    electronics: "Elektwonik",
+    fashion: "Mòd",
+    homeLiving: "Kay ak Lavi",
+    sports: "Espò",
+    automotive: "Otomobil",
+    flashSale: "Vant Rapid",
+    freeShipping: "Livrezon Gratis",
   }
 };
 
 export const translations = {
+  ht, // Haitian Kreyol as primary
   en,
   es,
-  fr,
-  ht
+  fr
 };
