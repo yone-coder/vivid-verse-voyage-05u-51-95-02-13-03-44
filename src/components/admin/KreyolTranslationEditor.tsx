@@ -87,7 +87,7 @@ const KreyolTranslationEditor: React.FC<KreyolTranslationEditorProps> = ({ isOpe
       const value = section[key];
       if (
         key.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        value.toLowerCase().includes(searchTerm.toLowerCase())
+        String(value).toLowerCase().includes(searchTerm.toLowerCase())
       ) {
         filtered[key] = value;
       }
@@ -170,7 +170,7 @@ const KreyolTranslationEditor: React.FC<KreyolTranslationEditorProps> = ({ isOpe
                         <div className="grid grid-cols-1 gap-2">
                           <div>
                             <Label className="text-xs text-gray-500">Default (Original):</Label>
-                            <div className="p-2 bg-gray-50 rounded text-sm">{defaultValue}</div>
+                            <div className="p-2 bg-gray-50 rounded text-sm">{String(defaultValue)}</div>
                           </div>
                           <div>
                             <Label className="text-xs text-gray-500">Your Translation:</Label>
