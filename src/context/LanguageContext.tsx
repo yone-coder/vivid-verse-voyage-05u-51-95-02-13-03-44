@@ -1,3 +1,4 @@
+
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { Language, Location, LanguageContextType } from '@/types/language';
 import { translations } from '@/translations';
@@ -50,18 +51,20 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   // Load custom Kreyol translations from localStorage
   const [customKreyolTranslations, setCustomKreyolTranslations] = useState<any>({});
   
-  useEffect(() => {
-    const loadCustomTranslations = () => {
-      const saved = localStorage.getItem('customKreyolTranslations');
-      if (saved) {
-        try {
-          setCustomKreyolTranslations(JSON.parse(saved));
-        } catch (error) {
-          console.error('Error loading custom Kreyol translations:', error);
-        }
+  const loadCustomTranslations = () => {
+    const saved = localStorage.getItem('customKreyolTranslations');
+    if (saved) {
+      try {
+        setCustomKreyolTranslations(JSON.parse(saved));
+      } catch (error) {
+        console.error('Error loading custom Kreyol translations:', error);
       }
-    };
-    
+    } else {
+      setCustomKreyolTranslations({});
+    }
+  };
+  
+  useEffect(() => {
     loadCustomTranslations();
     
     // Listen for storage changes to update translations in real-time
@@ -71,8 +74,18 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       }
     };
     
+    // Listen for custom translations update events (for same-tab updates)
+    const handleTranslationsUpdated = () => {
+      loadCustomTranslations();
+    };
+    
     window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
+    window.addEventListener('translationsUpdated', handleTranslationsUpdated);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('translationsUpdated', handleTranslationsUpdated);
+    };
   }, []);
   
   // Save preferences to localStorage when they change

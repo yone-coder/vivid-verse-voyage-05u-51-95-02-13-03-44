@@ -55,6 +55,10 @@ const KreyolTranslationEditor: React.FC<KreyolTranslationEditorProps> = ({ isOpe
   const saveTranslations = () => {
     try {
       localStorage.setItem('customKreyolTranslations', JSON.stringify(customTranslations));
+      
+      // Dispatch a custom event to notify the LanguageContext to reload translations
+      window.dispatchEvent(new CustomEvent('translationsUpdated'));
+      
       toast({
         title: "Translations Saved",
         description: "Your Kreyol translations have been saved successfully!",
@@ -72,6 +76,10 @@ const KreyolTranslationEditor: React.FC<KreyolTranslationEditorProps> = ({ isOpe
   const resetTranslations = () => {
     setCustomTranslations({});
     localStorage.removeItem('customKreyolTranslations');
+    
+    // Dispatch a custom event to notify the LanguageContext to reload translations
+    window.dispatchEvent(new CustomEvent('translationsUpdated'));
+    
     toast({
       title: "Translations Reset",
       description: "All custom translations have been reset to defaults.",
