@@ -48,29 +48,6 @@ const en = {
     login: "Login",
     signup: "Sign up",
     logout: "Logout",
-  },
-  paytm: {
-    title: "Paytm",
-    subtitle: "UPI",
-    welcome: "Welcome to our store",
-    deliverTo: "Deliver to: New York 10001",
-    help: "Help & Support",
-    moneyTransfer: "Money Transfer",
-    scanPay: "Scan & Pay",
-    toMobile: "To Mobile",
-    toBankAccount: "To Bank A/C",
-    toSelfAccount: "To Self A/c",
-    balanceHistory: "Balance & History",
-    receiveMoney: "Receive Money",
-    referWin: "Refer & Win",
-    allUpiServices: "All UPI Services",
-    rechargePayments: "Recharge & Bill Payments",
-    mobileRecharge: "Mobile Recharge",
-    fastagRecharge: "FASTag Recharge",
-    electricityBill: "Electricity Bill",
-    loanPayments: "Loan Payments",
-    addNewBills: "Add New or View existing Bills",
-    send: "Send"
   }
 };
 
@@ -123,29 +100,6 @@ const es = {
     login: "Iniciar sesión",
     signup: "Registrarse",
     logout: "Cerrar sesión",
-  },
-  paytm: {
-    title: "Paytm",
-    subtitle: "UPI",
-    welcome: "Bienvenido a nuestra tienda",
-    deliverTo: "Entregar a: New York 10001",
-    help: "Ayuda y Soporte",
-    moneyTransfer: "Transferencia de Dinero",
-    scanPay: "Escanear y Pagar",
-    toMobile: "A Móvil",
-    toBankAccount: "A Cuenta Bancaria",
-    toSelfAccount: "A Cuenta Propia",
-    balanceHistory: "Saldo e Historial",
-    receiveMoney: "Recibir Dinero",
-    referWin: "Referir y Ganar",
-    allUpiServices: "Todos los Servicios UPI",
-    rechargePayments: "Recargas y Pagos de Facturas",
-    mobileRecharge: "Recarga Móvil",
-    fastagRecharge: "Recarga FASTag",
-    electricityBill: "Factura de Electricidad",
-    loanPayments: "Pagos de Préstamos",
-    addNewBills: "Agregar o Ver Facturas Existentes",
-    send: "Enviar"
   }
 };
 
@@ -198,33 +152,10 @@ const fr = {
     login: "Connexion",
     signup: "S'inscrire",
     logout: "Déconnexion",
-  },
-  paytm: {
-    title: "Paytm",
-    subtitle: "UPI",
-    welcome: "Bienvenue dans notre magasin",
-    deliverTo: "Livrer à: New York 10001",
-    help: "Aide et Support",
-    moneyTransfer: "Transfert d'Argent",
-    scanPay: "Scanner et Payer",
-    toMobile: "Vers Mobile",
-    toBankAccount: "Vers Compte Bancaire",
-    toSelfAccount: "Vers Compte Personnel",
-    balanceHistory: "Solde et Historique",
-    receiveMoney: "Recevoir de l'Argent",
-    referWin: "Parrainer et Gagner",
-    allUpiServices: "Tous les Services UPI",
-    rechargePayments: "Recharges et Paiements de Factures",
-    mobileRecharge: "Recharge Mobile",
-    fastagRecharge: "Recharge FASTag",
-    electricityBill: "Facture d'Électricité",
-    loanPayments: "Paiements de Prêts",
-    addNewBills: "Ajouter ou Voir les Factures Existantes",
-    send: "Envoyer"
   }
 };
 
-// Haitian Creole translations (Primary language)
+// Haitian Creole translations
 const ht = {
   home: {
     forYou: "Pou Ou",
@@ -273,29 +204,6 @@ const ht = {
     login: "Konekte",
     signup: "Enskri",
     logout: "Dekonekte",
-  },
-  paytm: {
-    title: "Paytm",
-    subtitle: "UPI",
-    welcome: "Byenvini nan boutik nou an",
-    deliverTo: "Livre nan: New York 10001",
-    help: "Èd ak Sipò",
-    moneyTransfer: "Transfè Lajan",
-    scanPay: "Eskane ak Peye",
-    toMobile: "Bay Telefòn",
-    toBankAccount: "Bay Kont Bank",
-    toSelfAccount: "Bay Kont Pwòp Ou",
-    balanceHistory: "Balans ak Istwa",
-    receiveMoney: "Resevwa Lajan",
-    referWin: "Refere ak Genyen",
-    allUpiServices: "Tout Sèvis UPI",
-    rechargePayments: "Rechaj ak Peman Bòdwo",
-    mobileRecharge: "Rechaj Telefòn",
-    fastagRecharge: "Rechaj FASTag",
-    electricityBill: "Bòdwo Kouran",
-    loanPayments: "Peman Prè",
-    addNewBills: "Ajoute oswa Gade Bòdwo ki Egziste",
-    send: "Voye"
   }
 };
 

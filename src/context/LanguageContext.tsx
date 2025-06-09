@@ -3,18 +3,18 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import { Language, Location, LanguageContextType } from '@/types/language';
 import { translations } from '@/translations';
 
-// Supported languages (Haitian Creole as primary, then English, Spanish, French)
+// Supported languages (English, Spanish, French, Haitian Creole)
 export const supportedLanguages: Language[] = [
-  { code: 'ht', name: 'Haitian Creole', nativeName: 'Kreyòl Ayisyen', flag: 'ht' },
   { code: 'en', name: 'English', nativeName: 'English', flag: 'us' },
   { code: 'es', name: 'Spanish', nativeName: 'Español', flag: 'es' },
   { code: 'fr', name: 'French', nativeName: 'Français', flag: 'fr' },
+  { code: 'ht', name: 'Haitian Creole', nativeName: 'Kreyòl Ayisyen', flag: 'ht' },
 ];
 
 // Supported locations (United States, Haiti, Canada, France, Spain)
 export const supportedLocations: Location[] = [
-  { code: 'HT', name: 'Haiti', flag: 'ht' },
   { code: 'US', name: 'United States', flag: 'us' },
+  { code: 'HT', name: 'Haiti', flag: 'ht' },
   { code: 'CA', name: 'Canada', flag: 'ca' },
   { code: 'FR', name: 'France', flag: 'fr' },
   { code: 'ES', name: 'Spain', flag: 'es' },
@@ -24,7 +24,7 @@ export const supportedLocations: Location[] = [
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Try to get stored preferences or use defaults (Haitian Creole as default)
+  // Try to get stored preferences or use defaults
   const [currentLanguage, setCurrentLanguage] = useState<Language>(() => {
     const storedLanguage = localStorage.getItem('preferredLanguage');
     if (storedLanguage) {
@@ -35,8 +35,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     const browserLang = navigator.language.split('-')[0];
     const detectedLang = supportedLanguages.find(lang => lang.code === browserLang);
     
-    // Default to Haitian Creole instead of English
-    return detectedLang || supportedLanguages[0]; // supportedLanguages[0] is now Haitian Creole
+    return detectedLang || supportedLanguages[0];
   });
   
   const [currentLocation, setCurrentLocation] = useState<Location>(() => {
@@ -45,8 +44,8 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       return JSON.parse(storedLocation) as Location;
     }
     
-    // Default to Haiti if no preference
-    return supportedLocations[0]; // supportedLocations[0] is now Haiti
+    // Default to US if no preference
+    return supportedLocations[0];
   });
   
   // Save preferences to localStorage when they change
@@ -76,7 +75,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   // Translation function
   const t = (key: string, params?: Record<string, string>) => {
     // Get translations for current language
-    const currentTranslations = translations[currentLanguage.code] || translations.ht; // Fallback to Haitian Creole
+    const currentTranslations = translations[currentLanguage.code] || translations.en;
     
     // Get the translation string
     let parts = key.split('.');
@@ -87,9 +86,9 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       if (translatedText && typeof translatedText === 'object' && part in translatedText) {
         translatedText = translatedText[part];
       } else {
-        // If key doesn't exist in current language, try Haitian Creole as fallback first, then English
-        if (currentLanguage.code !== 'ht') {
-          let fallback = translations.ht;
+        // If key doesn't exist in current language, try English as fallback
+        if (currentLanguage.code !== 'en') {
+          let fallback = translations.en;
           for (let p of parts) {
             if (fallback && typeof fallback === 'object' && p in fallback) {
               fallback = fallback[p];
@@ -98,23 +97,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
               break;
             }
           }
-          if (fallback) {
-            translatedText = fallback;
-          } else if (currentLanguage.code !== 'en') {
-            // If not found in Haitian Creole, try English
-            let englishFallback = translations.en;
-            for (let p of parts) {
-              if (englishFallback && typeof englishFallback === 'object' && p in englishFallback) {
-                englishFallback = englishFallback[p];
-              } else {
-                englishFallback = null;
-                break;
-              }
-            }
-            translatedText = englishFallback || key;
-          } else {
-            translatedText = key;
-          }
+          translatedText = fallback || key;
         } else {
           translatedText = key;
         }
