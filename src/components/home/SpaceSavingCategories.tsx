@@ -24,9 +24,11 @@ const SpaceSavingCategories = () => {
         onClick={handleTransferClick}
       >
         <div className="relative w-14 h-14 rounded-lg overflow-hidden bg-green-100 shadow-sm flex items-center justify-center">
-          <div className="bg-green-500 w-10 h-10 rounded-full flex items-center justify-center">
-            <ArrowRight className="h-6 w-6 text-white" />
-          </div>
+          <img 
+            src="/lovable-uploads/45eddf56-11aa-4191-b09a-dc6ebfe3e7cc.png"
+            alt="Global Transfer"
+            className="w-10 h-10 rounded-full object-cover"
+          />
           <div className="absolute bottom-0 left-0 right-0 flex justify-center w-full">
             <div className="flex items-center justify-center w-full px-1 py-0.5 text-[7px] font-bold bg-green-600/90 text-white">
               TRANSFER

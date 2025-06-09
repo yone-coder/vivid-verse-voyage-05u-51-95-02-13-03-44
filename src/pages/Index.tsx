@@ -1,6 +1,6 @@
 
-import PaytmHome from '@/components/paytm/PaytmHome';
+import ForYou from './ForYou';
 
 export default function Index() {
-  return <PaytmHome />;
+  return <ForYou />;
 }
