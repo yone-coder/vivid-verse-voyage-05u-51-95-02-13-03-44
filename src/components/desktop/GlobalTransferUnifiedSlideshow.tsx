@@ -164,25 +164,6 @@ export default function GlobalTransferUnifiedSlideshow() {
             <ChevronRight className="w-5 h-5" />
           </Button>
         </div>
-
-        {/* Progress Overview */}
-        <div className="mt-8 bg-white/90 backdrop-blur-xl rounded-2xl shadow-xl p-6 border border-white/30">
-          <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">Presentation Progress</h3>
-          <div className="w-full bg-gray-200 rounded-full h-3 mb-4">
-            <div 
-              className={`h-3 rounded-full bg-gradient-to-r ${getChapterColorClasses(currentSlideData.chapterColor)} transition-all duration-500`}
-              style={{ width: `${((currentSlide + 1) / allSlides.length) * 100}%` }}
-            ></div>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2 text-center text-sm">
-            <div className="text-blue-600 font-semibold">Overview (6)</div>
-            <div className="text-red-600 font-semibold">Problems (4)</div>
-            <div className="text-green-600 font-semibold">Revenue (3)</div>
-            <div className="text-purple-600 font-semibold">Strategy (1)</div>
-            <div className="text-indigo-600 font-semibold">Marketing (1)</div>
-            <div className="text-teal-600 font-semibold">Operations (1)</div>
-          </div>
-        </div>
       </div>
     </div>
   );
