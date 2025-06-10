@@ -22,7 +22,8 @@ import {
   ChevronDown,
   Search,
   Shield,
-  ChevronLeft
+  ChevronLeft,
+  Play
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Logo from '../../home/Logo';
@@ -63,44 +64,42 @@ export default function PaytmMobileHome() {
       title: t('mobile.howToSendMoney'),
       description: t('mobile.stepByStepGuide'),
       duration: '3:45',
-      rating: '★★★★★',
-      views: '2.1K',
-      bgColor: 'from-blue-100 to-indigo-100',
-      borderColor: 'border-blue-100',
-      iconBg: 'bg-blue-500'
+      thumbnail: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=300&h=200&fit=crop'
     },
     {
       id: 2,
       title: t('mobile.cashPickupLocations'),
       description: t('mobile.findNearestPickup'),
       duration: '2:12',
-      rating: '★★★★☆',
-      views: '1.8K',
-      bgColor: 'from-green-100 to-emerald-100',
-      borderColor: 'border-green-100',
-      iconBg: 'bg-green-500'
+      thumbnail: 'https://images.unsplash.com/photo-1556740738-b6a63e27c4df?w=300&h=200&fit=crop'
     },
     {
       id: 3,
       title: t('mobile.mobileMoney'),
       description: t('mobile.payBillsAndTopUp'),
       duration: '4:30',
-      rating: '★★★★★',
-      views: '950',
-      bgColor: 'from-purple-100 to-violet-100',
-      borderColor: 'border-purple-100',
-      iconBg: 'bg-purple-500'
+      thumbnail: 'https://images.unsplash.com/photo-1556740758-90de374c12ad?w=300&h=200&fit=crop'
     },
     {
       id: 4,
       title: 'Account Security Tips',
       description: 'Keep your transfers safe',
       duration: '2:45',
-      rating: '★★★★★',
-      views: '1.2K',
-      bgColor: 'from-orange-100 to-red-100',
-      borderColor: 'border-orange-100',
-      iconBg: 'bg-orange-500'
+      thumbnail: 'https://images.unsplash.com/photo-1556745757-8d76bdb6984b?w=300&h=200&fit=crop'
+    },
+    {
+      id: 5,
+      title: 'How to Track Transfers',
+      description: 'Monitor your money transfers',
+      duration: '3:15',
+      thumbnail: 'https://images.unsplash.com/photo-1556745753-b2904692b3cd?w=300&h=200&fit=crop'
+    },
+    {
+      id: 6,
+      title: 'Exchange Rate Guide',
+      description: 'Understanding rates',
+      duration: '4:02',
+      thumbnail: 'https://images.unsplash.com/photo-1556745757-8d76bdb6984b?w=300&h=200&fit=crop'
     }
   ];
 
@@ -132,23 +131,23 @@ export default function PaytmMobileHome() {
             </div>
           </form>
           
-          {/* Language Selector */}
+          {/* Circular Flag Button */}
           <MobileLanguageBottomSheet 
             isOpen={isLanguageSheetOpen}
             onOpenChange={setIsLanguageSheetOpen}
           >
-            <button className="flex items-center bg-white px-3 py-2.5 rounded-xl space-x-2 hover:bg-gray-100 transition-colors border border-gray-200 shadow-sm">
+            <button className="w-10 h-10 rounded-full border-2 border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
               {currentLocation.flag ? (
                 <img
                   src={`https://flagcdn.com/${currentLocation.flag.toLowerCase()}.svg`}
                   alt={currentLocation.name}
-                  className="h-4 w-4 rounded-full object-cover"
+                  className="w-full h-full object-cover"
                 />
               ) : (
-                <Globe className="h-4 w-4 text-gray-600" />
+                <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+                  <Globe className="h-5 w-5 text-gray-600" />
+                </div>
               )}
-              <span className="text-gray-700 text-sm font-medium">{currentLanguage.code.toUpperCase()}</span>
-              <ChevronDown className="h-3 w-3 text-gray-500" />
             </button>
           </MobileLanguageBottomSheet>
         </div>
@@ -210,41 +209,43 @@ export default function PaytmMobileHome() {
             onAmountChange={setAmount}
           />
         </div>
+      </div>
 
-        {/* Video Tutorials Carousel */}
-        <div className="bg-white rounded-xl border border-gray-200 p-4">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="font-semibold text-gray-800">{t('mobile.videoTutorials')}</h3>
-            <span className="text-xs text-blue-600 font-medium">{t('mobile.viewAll')}</span>
-          </div>
-          
-          <Carousel className="w-full">
-            <CarouselContent className="-ml-2 md:-ml-4">
-              {videoTutorials.map((video) => (
-                <CarouselItem key={video.id} className="pl-2 md:pl-4 basis-4/5">
-                  <div className={`flex items-center p-3 bg-gradient-to-r ${video.bgColor} rounded-lg border ${video.borderColor}`}>
-                    <div className={`w-16 h-12 ${video.iconBg} rounded-lg flex items-center justify-center mr-3 relative flex-shrink-0`}>
-                      <div className="w-0 h-0 border-l-4 border-l-white border-t-2 border-t-transparent border-b-2 border-b-transparent ml-1"></div>
-                      <div className="absolute top-1 right-1 bg-red-500 text-white text-xs px-1 rounded">{video.duration}</div>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-gray-800 text-sm truncate">{video.title}</p>
-                      <p className="text-xs text-gray-500 truncate">{video.description}</p>
-                      <div className="flex items-center mt-1">
-                        <div className="flex text-yellow-400 text-xs mr-2">{video.rating}</div>
-                        <span className="text-xs text-gray-500">{video.views} {t('mobile.views')}</span>
-                      </div>
+      {/* YouTube-style Video Thumbnails Section - Edge to Edge */}
+      <div className="mb-4">
+        <div className="px-4 mb-3">
+          <h3 className="font-semibold text-gray-800">{t('mobile.videoTutorials')}</h3>
+        </div>
+        
+        <div className="overflow-x-auto scrollbar-hide">
+          <div className="flex gap-3 px-4 pb-2">
+            {videoTutorials.map((video) => (
+              <div key={video.id} className="flex-shrink-0 w-40">
+                <div className="relative">
+                  <img
+                    src={video.thumbnail}
+                    alt={video.title}
+                    className="w-full h-24 object-cover rounded-lg"
+                  />
+                  {/* Play button overlay */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-8 h-8 bg-black bg-opacity-70 rounded-full flex items-center justify-center">
+                      <Play className="w-4 h-4 text-white ml-0.5" fill="white" />
                     </div>
                   </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="left-2" />
-            <CarouselNext className="right-2" />
-          </Carousel>
+                  {/* Duration indicator */}
+                  <div className="absolute bottom-1 right-1 bg-black bg-opacity-80 text-white text-xs px-1 py-0.5 rounded">
+                    {video.duration}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
+      </div>
 
-        {/* Financial Services Card */}
+      {/* Financial Services Card */}
+      <div className="mx-4 mb-4">
         <div className="bg-white rounded-xl border border-gray-200 p-4">
           <h3 className="font-semibold text-gray-800 mb-3">{t('mobile.financialServices')}</h3>
           <div className="grid grid-cols-4 gap-3">
