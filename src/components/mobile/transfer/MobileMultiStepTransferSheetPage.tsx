@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, CheckCircle, Receipt, ChevronLeft, X, Key } from 'lucide-react';
+import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, CheckCircle, Receipt, ChevronLeft, X, Key, Globe } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import html2canvas from 'html2canvas';
+import TransferTypeSelector from '@/components/transfer/TransferTypeSelector';
 import StepOneTransfer from '@/components/transfer/StepOneTransfer';
 import StepTwoTransfer from '@/components/transfer/StepTwoTransfer';
 import PaymentMethodList from '@/components/transfer/PaymentMethodList';
@@ -13,6 +14,7 @@ import { internationalPaymentMethods } from '@/components/transfer/PaymentMethod
 import { emailNotificationService } from '@/components/transfer/EmailNotificationService';
 
 export interface TransferData {
+  transferType?: 'international' | 'national';
   amount: string;
   receiverDetails: {
     firstName: string;
@@ -37,6 +39,7 @@ const MobileMultiStepTransferSheetPage: React.FC = () => {
   const receiptRef = useRef<HTMLDivElement>(null);
   
   const [transferData, setTransferData] = useState<TransferData>({
+    transferType: undefined,
     amount: '100.00',
     receiverDetails: {
       firstName: '',
@@ -49,9 +52,9 @@ const MobileMultiStepTransferSheetPage: React.FC = () => {
     selectedPaymentMethod: 'credit-card'
   });
 
-  // PayPal integration effect for step 3
+  // PayPal integration effect for step 4
   useEffect(() => {
-    if (currentStep === 3 && paypalContainerRef.current) {
+    if (currentStep === 4 && paypalContainerRef.current) {
       const container = paypalContainerRef.current;
       
       // Clear any existing content
@@ -715,7 +718,7 @@ const MobileMultiStepTransferSheetPage: React.FC = () => {
       setPaymentCompleted(true);
       const actualTransactionId = orderDetails?.id || `TX${Date.now()}`;
       setTransactionId(actualTransactionId);
-      setCurrentStep(4);
+      setCurrentStep(5);
       setIsPaymentLoading(false);
       
       // Send email notification using the service
@@ -756,7 +759,7 @@ const MobileMultiStepTransferSheetPage: React.FC = () => {
   }, []);
 
   const handleNextStep = () => {
-    if (currentStep < 4) {
+    if (currentStep < 5) {
       setCurrentStep(currentStep + 1);
     }
   };
@@ -845,14 +848,15 @@ const MobileMultiStepTransferSheetPage: React.FC = () => {
     link.click();
   };
 
-  const canProceedFromStep1 = transferData.amount && parseFloat(transferData.amount) > 0;
-  const canProceedFromStep2 = transferData.receiverDetails.firstName && 
+  const canProceedFromStep1 = transferData.transferType !== undefined;
+  const canProceedFromStep2 = transferData.amount && parseFloat(transferData.amount) > 0;
+  const canProceedFromStep3 = transferData.receiverDetails.firstName && 
                               transferData.receiverDetails.lastName &&
                               transferData.receiverDetails.phoneNumber && 
                               transferData.receiverDetails.commune;
-  const canProceedFromStep3 = transferData.selectedPaymentMethod;
+  const canProceedFromStep4 = transferData.selectedPaymentMethod;
 
-  const stepTitles = ['Send Money', 'Recipient Details', 'Payment Method', 'Transfer Complete'];
+  const stepTitles = ['Transfer Type', 'Send Money', 'Recipient Details', 'Payment Method', 'Transfer Complete'];
 
   const stepVariants = {
     inactive: { 
@@ -983,13 +987,13 @@ const MobileMultiStepTransferSheetPage: React.FC = () => {
                     ) : step === currentStep ? (
                       <div className="flex items-center space-x-1">
                         {step === 1 ? (
-                          <DollarSign className="h-3 w-3" />
+                          <Globe className="h-3 w-3" />
                         ) : step === 2 ? (
-                          <User className="h-3 w-3" />
+                          <DollarSign className="h-3 w-3" />
                         ) : step === 3 ? (
-                          <CreditCard className="h-3 w-3" />
+                          <User className="h-3 w-3" />
                         ) : step === 4 ? (
-                          <Shield className="h-3 w-3" />
+                          <CreditCard className="h-3 w-3" />
                         ) : (
                           <Receipt className="h-3 w-3" />
                         )}
@@ -1022,6 +1026,19 @@ const MobileMultiStepTransferSheetPage: React.FC = () => {
           {currentStep === 1 && (
             <div className="space-y-4">
               <div className="text-center mb-4">
+                <p className="text-gray-600">Choose your transfer type</p>
+              </div>
+              
+              <TransferTypeSelector 
+                transferType={transferData.transferType || 'international'}
+                onTransferTypeChange={(type) => updateTransferData({ transferType: type })}
+              />
+            </div>
+          )}
+
+          {currentStep === 2 && (
+            <div className="space-y-4">
+              <div className="text-center mb-4">
                 <p className="text-gray-600">Enter the amount you want to send</p>
               </div>
               
@@ -1032,7 +1049,7 @@ const MobileMultiStepTransferSheetPage: React.FC = () => {
             </div>
           )}
           
-          {currentStep === 2 && (
+          {currentStep === 3 && (
             <div className="space-y-4">
               <div className="text-center mb-4">
                 <p className="text-gray-600">Who are you sending ${transferData.amount} to?</p>
@@ -1045,7 +1062,7 @@ const MobileMultiStepTransferSheetPage: React.FC = () => {
             </div>
           )}
           
-          {currentStep === 3 && (
+          {currentStep === 4 && (
             <div className="space-y-6">
               <div className="text-center mb-6">
                 <h2 className="text-2xl font-bold text-gray-900 mb-3">Complete Your Payment</h2>
@@ -1082,7 +1099,7 @@ const MobileMultiStepTransferSheetPage: React.FC = () => {
             </div>
           )}
           
-          {currentStep === 4 && (
+          {currentStep === 5 && (
             <div className="space-y-4">              
               <div 
                 ref={receiptRef}
@@ -1196,8 +1213,8 @@ const MobileMultiStepTransferSheetPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Sticky Navigation Buttons - Exclude step 3 */}
-      {(currentStep < 3 || currentStep === 4) && (
+      {/* Sticky Navigation Buttons - Exclude step 4 */}
+      {(currentStep < 4 || currentStep === 5) && (
         <div className="fixed bottom-0 left-0 right-0 border-t bg-white px-4 py-3 z-50 shadow-lg">
           <div className="flex gap-3 max-w-md mx-auto">
             {currentStep === 1 ? (
@@ -1220,12 +1237,13 @@ const MobileMultiStepTransferSheetPage: React.FC = () => {
                   Previous
                 </Button>
                 
-                {currentStep < 4 ? (
+                {currentStep < 5 ? (
                   <Button 
                     onClick={handleNextStep}
                     disabled={
                       (currentStep === 2 && !canProceedFromStep2) ||
-                      (currentStep === 3 && !canProceedFromStep3)
+                      (currentStep === 3 && !canProceedFromStep3) ||
+                      (currentStep === 4 && !canProceedFromStep4)
                     }
                     className="flex-1 transition-all duration-200"
                   >
@@ -1246,8 +1264,8 @@ const MobileMultiStepTransferSheetPage: React.FC = () => {
         </div>
       )}
 
-      {/* Sticky Pay Button for Step 3 Only */}
-      {currentStep === 3 && (
+      {/* Sticky Pay Button for Step 4 Only */}
+      {currentStep === 4 && (
         <div className="fixed bottom-0 left-0 right-0 border-t bg-white px-4 py-3 z-50 shadow-lg">
           <div className="max-w-md mx-auto">
             <Button 
