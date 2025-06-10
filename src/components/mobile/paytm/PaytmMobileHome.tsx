@@ -176,26 +176,37 @@ export default function PaytmMobileHome() {
       <div className="mx-4 mb-4">
         <div className="bg-white rounded-xl border border-gray-200 p-4">
           <h3 className="font-semibold text-gray-800 mb-3 text-center">Choose Transfer Type</h3>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-3">
             <button 
               onClick={handleInternationalTransfer}
-              className="flex flex-col items-center p-4 bg-blue-50 border-2 border-blue-200 rounded-xl hover:bg-blue-100 transition-colors"
+              className="w-full flex items-center justify-between p-4 bg-blue-50 border-2 border-blue-200 rounded-xl hover:bg-blue-100 transition-colors"
             >
-              <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mb-2">
-                <Globe className="w-6 h-6 text-white" />
+              <div className="flex items-center">
+                <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mr-3">
+                  <Globe className="w-6 h-6 text-white" />
+                </div>
+                <div className="text-left">
+                  <p className="text-sm font-medium text-gray-800">International Transfer</p>
+                  <p className="text-xs text-gray-500">Send money abroad</p>
+                </div>
               </div>
-              <p className="text-sm font-medium text-gray-800">International</p>
-              <p className="text-xs text-gray-500 text-center mt-1">Send money abroad</p>
+              <ChevronRight className="w-5 h-5 text-gray-400" />
             </button>
+            
             <button 
               onClick={handleLocalTransferClick}
-              className="flex flex-col items-center p-4 bg-green-50 border-2 border-green-200 rounded-xl hover:bg-green-100 transition-colors"
+              className="w-full flex items-center justify-between p-4 bg-green-50 border-2 border-green-200 rounded-xl hover:bg-green-100 transition-colors"
             >
-              <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mb-2">
-                <MapPin className="w-6 h-6 text-white" />
+              <div className="flex items-center">
+                <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mr-3">
+                  <MapPin className="w-6 h-6 text-white" />
+                </div>
+                <div className="text-left">
+                  <p className="text-sm font-medium text-gray-800">Local Transfer</p>
+                  <p className="text-xs text-gray-500">Send within country</p>
+                </div>
               </div>
-              <p className="text-sm font-medium text-gray-800">Local</p>
-              <p className="text-xs text-gray-500 text-center mt-1">Send within country</p>
+              <ChevronRight className="w-5 h-5 text-gray-400" />
             </button>
           </div>
         </div>
