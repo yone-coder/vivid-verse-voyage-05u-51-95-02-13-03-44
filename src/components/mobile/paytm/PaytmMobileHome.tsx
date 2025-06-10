@@ -43,8 +43,8 @@ export default function PaytmMobileHome() {
 
   return (
     <div className="max-w-sm mx-auto bg-white min-h-screen">
-      {/* Sticky Header */}
-      <div className="sticky top-0 z-20 bg-gradient-to-r from-blue-600 to-blue-500 text-white pb-2">
+      {/* Sticky Header with Extended Background */}
+      <div className="sticky top-0 z-20 bg-gradient-to-r from-blue-600 to-blue-500 text-white pb-8">
         <div className="p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
@@ -82,7 +82,7 @@ export default function PaytmMobileHome() {
       </div>
 
       {/* White Profile Card - Overlapping the header */}
-      <div className="mx-4 -mt-6 mb-4 relative z-10">
+      <div className="mx-4 -mt-10 mb-4 relative z-10">
         <div className="bg-white rounded-lg p-4 shadow-lg border border-gray-100">
           <div className="flex justify-between items-start">
             <div className="flex items-center space-x-3">
