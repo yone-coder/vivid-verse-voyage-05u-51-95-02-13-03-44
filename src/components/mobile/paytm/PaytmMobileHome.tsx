@@ -21,13 +21,21 @@ import {
   Zap,
   ChevronDown,
   Search,
-  Shield
+  Shield,
+  ChevronLeft
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Logo from '../../home/Logo';
 import MobileTransferInput from './MobileTransferInput';
 import MobileLanguageBottomSheet from './MobileLanguageBottomSheet';
 import { useLanguage } from '@/context/LanguageContext';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 export default function PaytmMobileHome() {
   const navigate = useNavigate();
@@ -46,21 +54,67 @@ export default function PaytmMobileHome() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle search functionality
     console.log('Searching for:', searchQuery);
   };
 
+  const videoTutorials = [
+    {
+      id: 1,
+      title: t('mobile.howToSendMoney'),
+      description: t('mobile.stepByStepGuide'),
+      duration: '3:45',
+      rating: '★★★★★',
+      views: '2.1K',
+      bgColor: 'from-blue-100 to-indigo-100',
+      borderColor: 'border-blue-100',
+      iconBg: 'bg-blue-500'
+    },
+    {
+      id: 2,
+      title: t('mobile.cashPickupLocations'),
+      description: t('mobile.findNearestPickup'),
+      duration: '2:12',
+      rating: '★★★★☆',
+      views: '1.8K',
+      bgColor: 'from-green-100 to-emerald-100',
+      borderColor: 'border-green-100',
+      iconBg: 'bg-green-500'
+    },
+    {
+      id: 3,
+      title: t('mobile.mobileMoney'),
+      description: t('mobile.payBillsAndTopUp'),
+      duration: '4:30',
+      rating: '★★★★★',
+      views: '950',
+      bgColor: 'from-purple-100 to-violet-100',
+      borderColor: 'border-purple-100',
+      iconBg: 'bg-purple-500'
+    },
+    {
+      id: 4,
+      title: 'Account Security Tips',
+      description: 'Keep your transfers safe',
+      duration: '2:45',
+      rating: '★★★★★',
+      views: '1.2K',
+      bgColor: 'from-orange-100 to-red-100',
+      borderColor: 'border-orange-100',
+      iconBg: 'bg-orange-500'
+    }
+  ];
+
   return (
     <div className="max-w-sm mx-auto bg-gray-50 min-h-screen">
-      {/* Sticky Header */}
-      <div className="sticky top-0 z-50 bg-gray-50 px-4 py-3">
-        <div className="flex items-center justify-between space-x-3">
+      {/* Clean Sticky Header */}
+      <div className="sticky top-0 z-50 bg-gray-50 px-4 py-4 border-b border-gray-100">
+        <div className="flex items-center gap-3">
           {/* Logo */}
           <div className="flex-shrink-0">
             <img
               src="/lovable-uploads/45eddf56-11aa-4191-b09a-dc6ebfe3e7cc.png"
               alt="Global Transfer Logo"
-              className="w-10 h-10 rounded-full object-cover"
+              className="w-10 h-10 rounded-full object-cover shadow-sm"
             />
           </div>
           
@@ -73,7 +127,7 @@ export default function PaytmMobileHome() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={t('header.search')}
-                className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm"
               />
             </div>
           </form>
@@ -83,7 +137,7 @@ export default function PaytmMobileHome() {
             isOpen={isLanguageSheetOpen}
             onOpenChange={setIsLanguageSheetOpen}
           >
-            <button className="flex items-center bg-white px-3 py-2 rounded-full space-x-2 hover:bg-gray-100 transition-colors border border-gray-200">
+            <button className="flex items-center bg-white px-3 py-2.5 rounded-xl space-x-2 hover:bg-gray-100 transition-colors border border-gray-200 shadow-sm">
               {currentLocation.flag ? (
                 <img
                   src={`https://flagcdn.com/${currentLocation.flag.toLowerCase()}.svg`}
@@ -100,68 +154,8 @@ export default function PaytmMobileHome() {
         </div>
       </div>
 
-      {/* Professional Profile Card */}
-      <div className="mx-4 mt-4 mb-4">
-        <div className="bg-white rounded-2xl p-5">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-4">
-              <div className="relative">
-                <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">MJ</span>
-                </div>
-                <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
-                  <Shield className="w-2.5 h-2.5 text-white" />
-                </div>
-              </div>
-              <div className="flex-1">
-                <h2 className="font-bold text-xl text-gray-900">Marie Joseph</h2>
-                <p className="text-sm text-gray-600 font-medium">{t('mobile.verifiedAccount')}</p>
-                <p className="text-xs text-gray-500">{t('mobile.memberSince')} 2023</p>
-              </div>
-            </div>
-            <div className="text-center">
-              <div className="inline-flex items-center bg-green-50 text-green-700 px-3 py-1 rounded-full text-xs font-semibold mb-2">
-                <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                {t('mobile.verified')}
-              </div>
-            </div>
-          </div>
-          
-          {/* Account Stats */}
-          <div className="bg-gray-50 rounded-xl p-3 mb-4">
-            <div className="grid grid-cols-3 gap-4 text-center">
-              <div>
-                <p className="text-lg font-bold text-gray-900">12</p>
-                <p className="text-xs text-gray-500">Transfers</p>
-              </div>
-              <div>
-                <p className="text-lg font-bold text-gray-900">$2,450</p>
-                <p className="text-xs text-gray-500">Total Sent</p>
-              </div>
-              <div>
-                <p className="text-lg font-bold text-gray-900">5★</p>
-                <p className="text-xs text-gray-500">Rating</p>
-              </div>
-            </div>
-          </div>
-          
-          {/* Action Buttons */}
-          <div className="flex space-x-3">
-            <button 
-              onClick={handleSendClick}
-              className="bg-blue-600 text-white px-6 py-3 rounded-xl text-sm font-semibold flex-1 hover:bg-blue-700 transition-colors"
-            >
-              {t('mobile.sendMoney')}
-            </button>
-            <button className="bg-gray-100 text-gray-700 px-6 py-3 rounded-xl text-sm font-semibold flex-1 hover:bg-gray-200 transition-colors">
-              {t('mobile.viewProfile')}
-            </button>
-          </div>
-        </div>
-      </div>
-
       {/* Exchange Rate Banner */}
-      <div className="mx-4 mb-4">
+      <div className="mx-4 mt-4 mb-4">
         <div className="bg-gradient-to-r from-green-100 to-blue-100 rounded-xl p-3 border border-green-200">
           <div className="flex items-center justify-between">
             <div>
@@ -215,6 +209,39 @@ export default function PaytmMobileHome() {
             amount={amount}
             onAmountChange={setAmount}
           />
+        </div>
+
+        {/* Video Tutorials Carousel */}
+        <div className="bg-white rounded-xl border border-gray-200 p-4">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="font-semibold text-gray-800">{t('mobile.videoTutorials')}</h3>
+            <span className="text-xs text-blue-600 font-medium">{t('mobile.viewAll')}</span>
+          </div>
+          
+          <Carousel className="w-full">
+            <CarouselContent className="-ml-2 md:-ml-4">
+              {videoTutorials.map((video) => (
+                <CarouselItem key={video.id} className="pl-2 md:pl-4 basis-4/5">
+                  <div className={`flex items-center p-3 bg-gradient-to-r ${video.bgColor} rounded-lg border ${video.borderColor}`}>
+                    <div className={`w-16 h-12 ${video.iconBg} rounded-lg flex items-center justify-center mr-3 relative flex-shrink-0`}>
+                      <div className="w-0 h-0 border-l-4 border-l-white border-t-2 border-t-transparent border-b-2 border-b-transparent ml-1"></div>
+                      <div className="absolute top-1 right-1 bg-red-500 text-white text-xs px-1 rounded">{video.duration}</div>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-gray-800 text-sm truncate">{video.title}</p>
+                      <p className="text-xs text-gray-500 truncate">{video.description}</p>
+                      <div className="flex items-center mt-1">
+                        <div className="flex text-yellow-400 text-xs mr-2">{video.rating}</div>
+                        <span className="text-xs text-gray-500">{video.views} {t('mobile.views')}</span>
+                      </div>
+                    </div>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="left-2" />
+            <CarouselNext className="right-2" />
+          </Carousel>
         </div>
 
         {/* Financial Services Card */}
@@ -339,62 +366,6 @@ export default function PaytmMobileHome() {
                   {t('mobile.send')}
                 </button>
                 <p className="text-xs text-gray-500">{t('mobile.weeksAgo', { weeks: '2' })}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Video Tutorials Section */}
-      <div className="mx-4 mb-4">
-        <div className="bg-white rounded-xl border border-gray-200 p-4">
-          <div className="flex justify-between items-center mb-3">
-            <h3 className="font-semibold text-gray-800">{t('mobile.videoTutorials')}</h3>
-            <span className="text-xs text-blue-600 font-medium">{t('mobile.viewAll')}</span>
-          </div>
-          <div className="space-y-3">
-            <div className="flex items-center p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
-              <div className="w-16 h-12 bg-blue-500 rounded-lg flex items-center justify-center mr-3 relative">
-                <div className="w-0 h-0 border-l-4 border-l-white border-t-2 border-t-transparent border-b-2 border-b-transparent ml-1"></div>
-                <div className="absolute top-1 right-1 bg-red-500 text-white text-xs px-1 rounded">3:45</div>
-              </div>
-              <div className="flex-1">
-                <p className="font-medium text-gray-800 text-sm">{t('mobile.howToSendMoney')}</p>
-                <p className="text-xs text-gray-500">{t('mobile.stepByStepGuide')}</p>
-                <div className="flex items-center mt-1">
-                  <div className="flex text-yellow-400 text-xs mr-2">★★★★★</div>
-                  <span className="text-xs text-gray-500">2.1K {t('mobile.views')}</span>
-                </div>
-              </div>
-            </div>
-            
-            <div className="flex items-center p-3 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-100">
-              <div className="w-16 h-12 bg-green-500 rounded-lg flex items-center justify-center mr-3 relative">
-                <div className="w-0 h-0 border-l-4 border-l-white border-t-2 border-t-transparent border-b-2 border-b-transparent ml-1"></div>
-                <div className="absolute top-1 right-1 bg-red-500 text-white text-xs px-1 rounded">2:12</div>
-              </div>
-              <div className="flex-1">
-                <p className="font-medium text-gray-800 text-sm">{t('mobile.cashPickupLocations')}</p>
-                <p className="text-xs text-gray-500">{t('mobile.findNearestPickup')}</p>
-                <div className="flex items-center mt-1">
-                  <div className="flex text-yellow-400 text-xs mr-2">★★★★☆</div>
-                  <span className="text-xs text-gray-500">1.8K {t('mobile.views')}</span>
-                </div>
-              </div>
-            </div>
-            
-            <div className="flex items-center p-3 bg-gradient-to-r from-purple-50 to-violet-50 rounded-lg border border-purple-100">
-              <div className="w-16 h-12 bg-purple-500 rounded-lg flex items-center justify-center mr-3 relative">
-                <div className="w-0 h-0 border-l-4 border-l-white border-t-2 border-t-transparent border-b-2 border-b-transparent ml-1"></div>
-                <div className="absolute top-1 right-1 bg-red-500 text-white text-xs px-1 rounded">4:30</div>
-              </div>
-              <div className="flex-1">
-                <p className="font-medium text-gray-800 text-sm">{t('mobile.mobileMoney')}</p>
-                <p className="text-xs text-gray-500">{t('mobile.payBillsAndTopUp')}</p>
-                <div className="flex items-center mt-1">
-                  <div className="flex text-yellow-400 text-xs mr-2">★★★★★</div>
-                  <span className="text-xs text-gray-500">950 {t('mobile.views')}</span>
-                </div>
               </div>
             </div>
           </div>
