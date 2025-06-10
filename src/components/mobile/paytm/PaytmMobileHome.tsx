@@ -18,18 +18,20 @@ import {
   Building,
   ArrowUpDown,
   CreditCard,
-  Zap
+  Zap,
+  ChevronDown
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Logo from '../../home/Logo';
 import MobileTransferInput from './MobileTransferInput';
-import HeaderLanguage from '../../home/header/HeaderLanguage';
+import MobileLanguageBottomSheet from './MobileLanguageBottomSheet';
 import { useLanguage } from '@/context/LanguageContext';
 
 export default function PaytmMobileHome() {
   const navigate = useNavigate();
   const [amount, setAmount] = useState('');
-  const { t } = useLanguage();
+  const [isLanguageSheetOpen, setIsLanguageSheetOpen] = useState(false);
+  const { t, currentLanguage, currentLocation } = useLanguage();
 
   const handleSendClick = () => {
     navigate('/multi-step-transfer-page');
@@ -41,24 +43,40 @@ export default function PaytmMobileHome() {
 
   return (
     <div className="max-w-sm mx-auto bg-white min-h-screen">
-      {/* Minimal Header with overlap */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-500 text-white pb-2">
+      {/* Sticky Header */}
+      <div className="sticky top-0 z-20 bg-gradient-to-r from-blue-600 to-blue-500 text-white pb-2">
         <div className="p-4">
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-                <Logo width={20} height={20} />
-              </div>
+              <img
+                src="/lovable-uploads/45eddf56-11aa-4191-b09a-dc6ebfe3e7cc.png"
+                alt="Global Transfer Logo"
+                className="w-8 h-8 rounded-full object-cover"
+              />
               <div>
-                <p className="text-sm opacity-90">{t('mobile.welcomeTo')}</p>
-                <p className="font-semibold">{t('mobile.globalTransfer')}</p>
+                <p className="font-semibold text-lg">Global Transfè</p>
               </div>
             </div>
-            <div className="flex space-x-3 items-center">
-              <HeaderLanguage />
-              <Bell className="w-6 h-6" />
-              <User className="w-6 h-6" />
-            </div>
+            
+            {/* Language Toggle */}
+            <MobileLanguageBottomSheet 
+              isOpen={isLanguageSheetOpen}
+              onOpenChange={setIsLanguageSheetOpen}
+            >
+              <button className="flex items-center bg-black bg-opacity-40 px-3 py-2 rounded-full space-x-2 hover:bg-opacity-50 transition-colors">
+                {currentLocation.flag ? (
+                  <img
+                    src={`https://flagcdn.com/${currentLocation.flag.toLowerCase()}.svg`}
+                    alt={currentLocation.name}
+                    className="h-4 w-4 rounded-full object-cover"
+                  />
+                ) : (
+                  <Globe className="h-4 w-4 text-white" />
+                )}
+                <span className="text-white text-sm font-medium">{currentLanguage.code.toUpperCase()}</span>
+                <ChevronDown className="h-4 w-4 text-white" />
+              </button>
+            </MobileLanguageBottomSheet>
           </div>
         </div>
       </div>
