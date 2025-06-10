@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { 
   Send, 
@@ -42,59 +41,45 @@ export default function PaytmMobileHome() {
   };
 
   return (
-    <div className="max-w-sm mx-auto bg-gray-50 min-h-screen">
-      {/* Modern Header */}
-      <div className="bg-white shadow-sm border-b border-gray-100">
-        <div className="px-4 py-4">
-          <div className="flex items-center justify-between">
-            {/* Logo and App Name */}
-            <div className="flex items-center space-x-3">
-              <img
-                src="/lovable-uploads/45eddf56-11aa-4191-b09a-dc6ebfe3e7cc.png"
-                alt="Global Transfer Logo"
-                className="w-10 h-10 rounded-xl object-cover shadow-sm"
-              />
-              <div>
-                <h1 className="font-bold text-xl text-gray-900">Global Transfè</h1>
-                <p className="text-xs text-gray-500">Fast • Secure • Reliable</p>
-              </div>
-            </div>
-            
-            {/* Header Actions */}
-            <div className="flex items-center space-x-3">
-              {/* Notifications */}
-              <button className="relative p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors">
-                <Bell className="h-5 w-5 text-gray-600" />
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
-              </button>
-              
-              {/* Language Toggle */}
-              <MobileLanguageBottomSheet 
-                isOpen={isLanguageSheetOpen}
-                onOpenChange={setIsLanguageSheetOpen}
-              >
-                <button className="flex items-center bg-gray-100 px-3 py-2 rounded-full space-x-2 hover:bg-gray-200 transition-colors">
-                  {currentLocation.flag ? (
-                    <img
-                      src={`https://flagcdn.com/${currentLocation.flag.toLowerCase()}.svg`}
-                      alt={currentLocation.name}
-                      className="h-4 w-4 rounded-full object-cover"
-                    />
-                  ) : (
-                    <Globe className="h-4 w-4 text-gray-600" />
-                  )}
-                  <span className="text-gray-700 text-sm font-medium">{currentLanguage.code.toUpperCase()}</span>
-                  <ChevronDown className="h-3 w-3 text-gray-500" />
-                </button>
-              </MobileLanguageBottomSheet>
-            </div>
+    <div className="max-w-sm mx-auto bg-white min-h-screen">
+      {/* Simple Single Line Header */}
+      <div className="bg-white px-4 py-3">
+        <div className="flex items-center justify-between">
+          {/* Logo and App Name */}
+          <div className="flex items-center space-x-3">
+            <img
+              src="/lovable-uploads/45eddf56-11aa-4191-b09a-dc6ebfe3e7cc.png"
+              alt="Global Transfer Logo"
+              className="w-8 h-8 rounded-lg object-cover"
+            />
+            <h1 className="font-bold text-lg text-gray-900">Global Transfè</h1>
           </div>
+          
+          {/* Language Selector */}
+          <MobileLanguageBottomSheet 
+            isOpen={isLanguageSheetOpen}
+            onOpenChange={setIsLanguageSheetOpen}
+          >
+            <button className="flex items-center bg-gray-100 px-3 py-2 rounded-full space-x-2 hover:bg-gray-200 transition-colors">
+              {currentLocation.flag ? (
+                <img
+                  src={`https://flagcdn.com/${currentLocation.flag.toLowerCase()}.svg`}
+                  alt={currentLocation.name}
+                  className="h-4 w-4 rounded-full object-cover"
+                />
+              ) : (
+                <Globe className="h-4 w-4 text-gray-600" />
+              )}
+              <span className="text-gray-700 text-sm font-medium">{currentLanguage.code.toUpperCase()}</span>
+              <ChevronDown className="h-3 w-3 text-gray-500" />
+            </button>
+          </MobileLanguageBottomSheet>
         </div>
       </div>
 
       {/* Profile Card */}
       <div className="mx-4 mt-4 mb-4">
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+        <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
           <div className="flex justify-between items-start">
             <div className="flex items-center space-x-3">
               <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
@@ -145,7 +130,7 @@ export default function PaytmMobileHome() {
       {/* Quick Actions */}
       <div className="p-4 space-y-4">
         {/* Quick Transfer Options Card */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+        <div className="bg-gray-50 rounded-xl border border-gray-100 p-4">
           <h3 className="font-semibold text-gray-800 mb-3">{t('mobile.quickTransfer')}</h3>
           <div className="grid grid-cols-4 gap-3">
             <button className="text-center" onClick={handleSendClick}>
@@ -185,7 +170,7 @@ export default function PaytmMobileHome() {
         </div>
 
         {/* Financial Services Card */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+        <div className="bg-gray-50 rounded-xl border border-gray-100 p-4">
           <h3 className="font-semibold text-gray-800 mb-3">{t('mobile.financialServices')}</h3>
           <div className="grid grid-cols-4 gap-3">
             <div className="text-center">
@@ -242,7 +227,7 @@ export default function PaytmMobileHome() {
 
       {/* Recent Recipients */}
       <div className="mx-4 mb-4">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+        <div className="bg-gray-50 rounded-xl border border-gray-100 p-4">
           <div className="flex justify-between items-center mb-3">
             <h3 className="font-semibold text-gray-800">{t('mobile.recentRecipients')}</h3>
             <ChevronRight className="w-5 h-5 text-gray-400" />
@@ -290,7 +275,7 @@ export default function PaytmMobileHome() {
             </div>
             <div className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
               <div className="flex items-center">
-                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-3">
+                <div className="w-10 h-12 bg-green-100 rounded-full flex items-center justify-center mr-3">
                   <span className="text-green-600 font-semibold text-sm">PD</span>
                 </div>
                 <div>
@@ -314,7 +299,7 @@ export default function PaytmMobileHome() {
 
       {/* Video Tutorials Section */}
       <div className="mx-4 mb-4">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+        <div className="bg-gray-50 rounded-xl border border-gray-100 p-4">
           <div className="flex justify-between items-center mb-3">
             <h3 className="font-semibold text-gray-800">{t('mobile.videoTutorials')}</h3>
             <span className="text-xs text-blue-600 font-medium">{t('mobile.viewAll')}</span>
