@@ -53,6 +53,10 @@ export default function PaytmMobileHome() {
     navigate('/local-transfer');
   };
 
+  const handleInternationalTransfer = () => {
+    navigate('/multi-step-transfer-page');
+  };
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Searching for:', searchQuery);
@@ -164,6 +168,35 @@ export default function PaytmMobileHome() {
             <div className="bg-green-500 text-white px-2 py-1 rounded-full text-xs">
               {t('mobile.live')}
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Transfer Type Selection */}
+      <div className="mx-4 mb-4">
+        <div className="bg-white rounded-xl border border-gray-200 p-4">
+          <h3 className="font-semibold text-gray-800 mb-3 text-center">Choose Transfer Type</h3>
+          <div className="grid grid-cols-2 gap-3">
+            <button 
+              onClick={handleInternationalTransfer}
+              className="flex flex-col items-center p-4 bg-blue-50 border-2 border-blue-200 rounded-xl hover:bg-blue-100 transition-colors"
+            >
+              <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mb-2">
+                <Globe className="w-6 h-6 text-white" />
+              </div>
+              <p className="text-sm font-medium text-gray-800">International</p>
+              <p className="text-xs text-gray-500 text-center mt-1">Send money abroad</p>
+            </button>
+            <button 
+              onClick={handleLocalTransferClick}
+              className="flex flex-col items-center p-4 bg-green-50 border-2 border-green-200 rounded-xl hover:bg-green-100 transition-colors"
+            >
+              <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mb-2">
+                <MapPin className="w-6 h-6 text-white" />
+              </div>
+              <p className="text-sm font-medium text-gray-800">Local</p>
+              <p className="text-xs text-gray-500 text-center mt-1">Send within country</p>
+            </button>
           </div>
         </div>
       </div>
