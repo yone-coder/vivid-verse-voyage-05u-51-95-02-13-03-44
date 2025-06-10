@@ -4,53 +4,66 @@ import React from 'react';
 export default function RevenueSlide3() {
   return (
     <div className="space-y-8">
-      <h3 className="text-2xl font-bold text-purple-800 mb-6">Sous Revni Konplementè yo</h3>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-purple-50 p-6 rounded-lg">
-          <div className="flex items-center space-x-3 mb-4">
-            <img 
-              src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" 
-              alt="Cash withdrawal services" 
-              className="w-12 h-12 rounded object-cover"
-            />
-            <h4 className="text-lg font-bold text-purple-800">💰 Frè sou Retwè Kach</h4>
-          </div>
-          <div className="bg-white p-4 rounded-lg shadow-sm mb-3">
-            <p className="text-gray-700 mb-2 font-semibold">Estrikti Frè:</p>
-            <ul className="text-sm text-gray-600 space-y-1">
-              <li>• Retwè rapid: 100 goud (mwens pase 1 orè)</li>
-              <li>• Retwè nòmal: 50 goud (2-4 orè)</li>
-              <li>• Gwo montan ($500+): 2-3% oswa 200 goud</li>
-              <li>• Sèvis premyè klas: 150-250 goud</li>
-            </ul>
-          </div>
-          <p className="text-sm text-purple-600 font-semibold">
-            Benefis nan chanj ak gwoup purchasing power
-          </p>
-        </div>
+      <div className="mb-6 rounded-lg overflow-hidden">
+        <img 
+          src="https://images.unsplash.com/photo-1551836022-deb4988cc6c0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+          alt="Complementary revenue streams" 
+          className="w-full h-64 object-cover"
+        />
+      </div>
+
+      <div className="text-center space-y-6">
+        <h2 className="text-3xl font-bold text-green-600">Sous Revni Konplèman yo</h2>
         
-        <div className="bg-indigo-50 p-6 rounded-lg">
-          <div className="flex items-center space-x-3 mb-4">
-            <img 
-              src="https://images.unsplash.com/photo-1611224923853-80b023f02d71?ixlib=rb-4.0.3&auto=format&fit=crop&w=100&q=80" 
-              alt="Advertising and promotions" 
-              className="w-12 h-12 rounded object-cover"
-            />
-            <h4 className="text-lg font-bold text-indigo-800">📢 Anons ak Pwomosyon</h4>
+        <p className="text-xl leading-relaxed text-gray-700 max-w-4xl mx-auto">
+          Sous revni adisyonèl yo ki ap ede nou diversifye ak maksimize pwofitabilite platfòm lan.
+        </p>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-gradient-to-br from-yellow-500 to-orange-600 text-white p-6 rounded-xl shadow-lg">
+            <div className="text-3xl mb-3">📢</div>
+            <h3 className="text-lg font-bold mb-3">Piblisite ak Anons</h3>
+            <p className="text-sm opacity-90">Biznis lokal yo peye pou montre pwodui yo nan app lan</p>
+            <div className="mt-4 text-yellow-200">
+              <span className="font-bold">$200-500/mwa</span>
+            </div>
           </div>
-          <div className="bg-white p-4 rounded-lg shadow-sm mb-3">
-            <p className="text-gray-700 mb-2 font-semibold">Opòtinite Revni:</p>
-            <ul className="text-sm text-gray-600 space-y-1">
-              <li>• Anons nan app: 5,000-10,000 goud/mwa</li>
-              <li>• Baniye nan biwo: 3,000-8,000 goud/mwa</li>
-              <li>• Pwomosyon biznis lokal: 15,000+ goud/mwa</li>
-              <li>• Patnèrya ak brand yo: 20,000+ goud/mwa</li>
-            </ul>
+
+          <div className="bg-gradient-to-br from-purple-500 to-pink-600 text-white p-6 rounded-xl shadow-lg">
+            <div className="text-3xl mb-3">🤝</div>
+            <h3 className="text-lg font-bold mb-3">Patnèrya Estratejik</h3>
+            <p className="text-sm opacity-90">Kolaborasyon ak konpayi yo ak komisyon sou vant</p>
+            <div className="mt-4 text-purple-200">
+              <span className="font-bold">10-20%</span>
+            </div>
           </div>
-          <p className="text-sm text-indigo-600 font-semibold">
-            Monetization ak biznis kominotè yo
-          </p>
+
+          <div className="bg-gradient-to-br from-teal-500 to-cyan-600 text-white p-6 rounded-xl shadow-lg">
+            <div className="text-3xl mb-3">💳</div>
+            <h3 className="text-lg font-bold mb-3">Sèvis Premium</h3>
+            <p className="text-sm opacity-90">Fonksyon avanse ak sipò priyorite</p>
+            <div className="mt-4 text-teal-200">
+              <span className="font-bold">$5-15/mwa</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-gradient-to-r from-green-600 to-blue-600 text-white p-8 rounded-xl">
+          <h3 className="text-2xl font-bold mb-4">Pwojeksyon Revni 12 Mwa</h3>
+          <div className="grid grid-cols-3 gap-4 text-center">
+            <div>
+              <p className="text-3xl font-bold">$25K</p>
+              <p className="text-sm opacity-90">Mwa 1-3</p>
+            </div>
+            <div>
+              <p className="text-3xl font-bold">$75K</p>
+              <p className="text-sm opacity-90">Mwa 4-8</p>
+            </div>
+            <div>
+              <p className="text-3xl font-bold">$150K</p>
+              <p className="text-sm opacity-90">Mwa 9-12</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>

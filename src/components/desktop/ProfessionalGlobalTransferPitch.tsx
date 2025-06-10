@@ -1,7 +1,7 @@
 
 import React from 'react';
-import GlobalTransferPitchChapters from './GlobalTransferPitchChapters';
+import GlobalTransferUnifiedSlideshow from './GlobalTransferUnifiedSlideshow';
 
 export default function ProfessionalGlobalTransferPitch() {
-  return <GlobalTransferPitchChapters />;
+  return <GlobalTransferUnifiedSlideshow />;
 }
