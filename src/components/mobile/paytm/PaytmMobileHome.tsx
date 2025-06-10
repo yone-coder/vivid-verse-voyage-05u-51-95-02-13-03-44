@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { 
   Send, 
@@ -22,10 +23,13 @@ import {
 import { useNavigate } from 'react-router-dom';
 import Logo from '../../home/Logo';
 import MobileTransferInput from './MobileTransferInput';
+import HeaderLanguage from '../../home/header/HeaderLanguage';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function PaytmMobileHome() {
   const navigate = useNavigate();
   const [amount, setAmount] = useState('');
+  const { t } = useLanguage();
 
   const handleSendClick = () => {
     navigate('/multi-step-transfer-page');
@@ -46,11 +50,12 @@ export default function PaytmMobileHome() {
                 <Logo width={20} height={20} />
               </div>
               <div>
-                <p className="text-sm opacity-90">Welcome to</p>
-                <p className="font-semibold">Global Transfer</p>
+                <p className="text-sm opacity-90">{t('mobile.welcomeTo')}</p>
+                <p className="font-semibold">{t('mobile.globalTransfer')}</p>
               </div>
             </div>
-            <div className="flex space-x-3">
+            <div className="flex space-x-3 items-center">
+              <HeaderLanguage />
               <Bell className="w-6 h-6" />
               <User className="w-6 h-6" />
             </div>
@@ -68,15 +73,15 @@ export default function PaytmMobileHome() {
               </div>
               <div>
                 <p className="font-semibold text-lg text-gray-800">Marie Joseph</p>
-                <p className="text-sm text-gray-600">Verified Account</p>
-                <p className="text-xs text-gray-500">Member since 2023</p>
+                <p className="text-sm text-gray-600">{t('mobile.verifiedAccount')}</p>
+                <p className="text-xs text-gray-500">{t('mobile.memberSince')} 2023</p>
               </div>
             </div>
             <div className="text-right">
               <div className="bg-green-500 text-white px-2 py-1 rounded-full text-xs mb-1">
-                ✓ Verified
+                ✓ {t('mobile.verified')}
               </div>
-              <p className="text-xs text-gray-500">ID Confirmed</p>
+              <p className="text-xs text-gray-500">{t('mobile.idConfirmed')}</p>
             </div>
           </div>
           <div className="mt-4 flex space-x-2">
@@ -84,10 +89,10 @@ export default function PaytmMobileHome() {
               onClick={handleSendClick}
               className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium flex-1"
             >
-              Send Money
+              {t('mobile.sendMoney')}
             </button>
             <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-full text-sm flex-1">
-              View Profile
+              {t('mobile.viewProfile')}
             </button>
           </div>
         </div>
@@ -98,11 +103,11 @@ export default function PaytmMobileHome() {
         <div className="bg-gradient-to-r from-green-100 to-blue-100 rounded-lg p-3">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-700">Today's Rate</p>
+              <p className="text-sm font-medium text-gray-700">{t('mobile.todaysRate')}</p>
               <p className="text-lg font-bold text-gray-800">1 USD = 133.45 HTG</p>
             </div>
             <div className="bg-green-500 text-white px-2 py-1 rounded-full text-xs">
-              Live
+              {t('mobile.live')}
             </div>
           </div>
         </div>
@@ -112,38 +117,38 @@ export default function PaytmMobileHome() {
       <div className="p-4 space-y-4">
         {/* Quick Transfer Options Card */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
-          <h3 className="font-semibold text-gray-800 mb-3">Quick Transfer</h3>
+          <h3 className="font-semibold text-gray-800 mb-3">{t('mobile.quickTransfer')}</h3>
           <div className="grid grid-cols-4 gap-3">
             <button className="text-center" onClick={handleSendClick}>
               <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-2">
                 <Send className="w-6 h-6 text-red-600" />
               </div>
-              <p className="text-xs text-gray-600 font-medium">Send to Haiti</p>
+              <p className="text-xs text-gray-600 font-medium">{t('mobile.sendToHaiti')}</p>
             </button>
             <button className="text-center" onClick={handleLocalTransferClick}>
               <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
                 <ArrowUpDown className="w-6 h-6 text-green-600" />
               </div>
-              <p className="text-xs text-gray-600 font-medium">Local Transfer</p>
+              <p className="text-xs text-gray-600 font-medium">{t('mobile.localTransfer')}</p>
             </button>
             <button className="text-center">
               <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2">
                 <Zap className="w-6 h-6 text-purple-600" />
               </div>
-              <p className="text-xs text-gray-600 font-medium">Express Send</p>
+              <p className="text-xs text-gray-600 font-medium">{t('mobile.expressSend')}</p>
             </button>
             <button className="text-center">
               <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-2">
                 <CreditCard className="w-6 h-6 text-orange-600" />
               </div>
-              <p className="text-xs text-gray-600 font-medium">Bill Payment</p>
+              <p className="text-xs text-gray-600 font-medium">{t('mobile.billPayment')}</p>
             </button>
           </div>
         </div>
 
         {/* Transfer Amount Input - No Card Wrapper */}
         <div>
-          <h3 className="font-semibold text-gray-800 mb-3">Send Money</h3>
+          <h3 className="font-semibold text-gray-800 mb-3">{t('mobile.sendMoney')}</h3>
           <MobileTransferInput 
             amount={amount}
             onAmountChange={setAmount}
@@ -152,55 +157,55 @@ export default function PaytmMobileHome() {
 
         {/* Financial Services Card */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
-          <h3 className="font-semibold text-gray-800 mb-3">Financial Services</h3>
+          <h3 className="font-semibold text-gray-800 mb-3">{t('mobile.financialServices')}</h3>
           <div className="grid grid-cols-4 gap-3">
             <div className="text-center">
               <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-2">
                 <History className="w-6 h-6 text-red-600" />
               </div>
-              <p className="text-xs text-gray-600 font-medium">Transfer History</p>
+              <p className="text-xs text-gray-600 font-medium">{t('mobile.transferHistory')}</p>
             </div>
             <div className="text-center">
               <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-2">
                 <Users className="w-6 h-6 text-pink-600" />
               </div>
-              <p className="text-xs text-gray-600 font-medium">Recipients</p>
+              <p className="text-xs text-gray-600 font-medium">{t('mobile.recipients')}</p>
             </div>
             <div className="text-center">
               <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-2">
                 <FileText className="w-6 h-6 text-indigo-600" />
               </div>
-              <p className="text-xs text-gray-600 font-medium">Track Money</p>
+              <p className="text-xs text-gray-600 font-medium">{t('mobile.trackMoney')}</p>
             </div>
             <div className="text-center">
               <div className="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-2">
                 <Phone className="w-6 h-6 text-teal-600" />
               </div>
-              <p className="text-xs text-gray-600 font-medium">Mobile Top-Up</p>
+              <p className="text-xs text-gray-600 font-medium">{t('mobile.mobileTopUp')}</p>
             </div>
             <div className="text-center">
               <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-2">
                 <Plus className="w-6 h-6 text-yellow-600" />
               </div>
-              <p className="text-xs text-gray-600 font-medium">Add Funds</p>
+              <p className="text-xs text-gray-600 font-medium">{t('mobile.addFunds')}</p>
             </div>
             <div className="text-center">
               <div className="w-12 h-12 bg-cyan-100 rounded-full flex items-center justify-center mx-auto mb-2">
                 <Wallet className="w-6 h-6 text-cyan-600" />
               </div>
-              <p className="text-xs text-gray-600 font-medium">Bill Payment</p>
+              <p className="text-xs text-gray-600 font-medium">{t('mobile.billPayment')}</p>
             </div>
             <div className="text-center">
               <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-2">
                 <Globe className="w-6 h-6 text-gray-600" />
               </div>
-              <p className="text-xs text-gray-600 font-medium">Agent Locator</p>
+              <p className="text-xs text-gray-600 font-medium">{t('mobile.agentLocator')}</p>
             </div>
             <div className="text-center">
               <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-2">
                 <DollarSign className="w-6 h-6 text-emerald-600" />
               </div>
-              <p className="text-xs text-gray-600 font-medium">Rate Calculator</p>
+              <p className="text-xs text-gray-600 font-medium">{t('mobile.rateCalculator')}</p>
             </div>
           </div>
         </div>
@@ -210,7 +215,7 @@ export default function PaytmMobileHome() {
       <div className="mx-4 mb-4">
         <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
           <div className="flex justify-between items-center mb-3">
-            <h3 className="font-semibold text-gray-800">Recent Recipients</h3>
+            <h3 className="font-semibold text-gray-800">{t('mobile.recentRecipients')}</h3>
             <ChevronRight className="w-5 h-5 text-gray-400" />
           </div>
           <div className="space-y-3">
@@ -221,7 +226,7 @@ export default function PaytmMobileHome() {
                 </div>
                 <div>
                   <p className="font-medium text-gray-800">Jean Pierre</p>
-                  <p className="text-sm text-gray-500">Port-au-Prince • Last: $150</p>
+                  <p className="text-sm text-gray-500">Port-au-Prince • {t('mobile.last')}: $150</p>
                 </div>
               </div>
               <div className="text-right">
@@ -229,9 +234,9 @@ export default function PaytmMobileHome() {
                   onClick={handleSendClick}
                   className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm mb-1"
                 >
-                  Send
+                  {t('mobile.send')}
                 </button>
-                <p className="text-xs text-gray-500">3 days ago</p>
+                <p className="text-xs text-gray-500">{t('mobile.daysAgo', { days: '3' })}</p>
               </div>
             </div>
             <div className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
@@ -241,7 +246,7 @@ export default function PaytmMobileHome() {
                 </div>
                 <div>
                   <p className="font-medium text-gray-800">Marie Louise</p>
-                  <p className="text-sm text-gray-500">Cap-Haïtien • Last: $200</p>
+                  <p className="text-sm text-gray-500">Cap-Haïtien • {t('mobile.last')}: $200</p>
                 </div>
               </div>
               <div className="text-right">
@@ -249,9 +254,9 @@ export default function PaytmMobileHome() {
                   onClick={handleSendClick}
                   className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm mb-1"
                 >
-                  Send
+                  {t('mobile.send')}
                 </button>
-                <p className="text-xs text-gray-500">1 week ago</p>
+                <p className="text-xs text-gray-500">{t('mobile.weekAgo')}</p>
               </div>
             </div>
             <div className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
@@ -261,7 +266,7 @@ export default function PaytmMobileHome() {
                 </div>
                 <div>
                   <p className="font-medium text-gray-800">Pierre Duval</p>
-                  <p className="text-sm text-gray-500">Jacmel • Last: $75</p>
+                  <p className="text-sm text-gray-500">Jacmel • {t('mobile.last')}: $75</p>
                 </div>
               </div>
               <div className="text-right">
@@ -269,9 +274,9 @@ export default function PaytmMobileHome() {
                   onClick={handleSendClick}
                   className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm mb-1"
                 >
-                  Send
+                  {t('mobile.send')}
                 </button>
-                <p className="text-xs text-gray-500">2 weeks ago</p>
+                <p className="text-xs text-gray-500">{t('mobile.weeksAgo', { weeks: '2' })}</p>
               </div>
             </div>
           </div>
@@ -282,8 +287,8 @@ export default function PaytmMobileHome() {
       <div className="mx-4 mb-4">
         <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-4">
           <div className="flex justify-between items-center mb-3">
-            <h3 className="font-semibold text-gray-800">Video Tutorials</h3>
-            <span className="text-xs text-blue-600 font-medium">View All</span>
+            <h3 className="font-semibold text-gray-800">{t('mobile.videoTutorials')}</h3>
+            <span className="text-xs text-blue-600 font-medium">{t('mobile.viewAll')}</span>
           </div>
           <div className="space-y-3">
             <div className="flex items-center p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
@@ -292,11 +297,11 @@ export default function PaytmMobileHome() {
                 <div className="absolute top-1 right-1 bg-red-500 text-white text-xs px-1 rounded">3:45</div>
               </div>
               <div className="flex-1">
-                <p className="font-medium text-gray-800 text-sm">How to Send Money to Haiti</p>
-                <p className="text-xs text-gray-500">Step-by-step guide for first-time users</p>
+                <p className="font-medium text-gray-800 text-sm">{t('mobile.howToSendMoney')}</p>
+                <p className="text-xs text-gray-500">{t('mobile.stepByStepGuide')}</p>
                 <div className="flex items-center mt-1">
                   <div className="flex text-yellow-400 text-xs mr-2">★★★★★</div>
-                  <span className="text-xs text-gray-500">2.1K views</span>
+                  <span className="text-xs text-gray-500">2.1K {t('mobile.views')}</span>
                 </div>
               </div>
             </div>
@@ -307,11 +312,11 @@ export default function PaytmMobileHome() {
                 <div className="absolute top-1 right-1 bg-red-500 text-white text-xs px-1 rounded">2:12</div>
               </div>
               <div className="flex-1">
-                <p className="font-medium text-gray-800 text-sm">Cash Pickup Locations</p>
-                <p className="text-xs text-gray-500">Find the nearest pickup point</p>
+                <p className="font-medium text-gray-800 text-sm">{t('mobile.cashPickupLocations')}</p>
+                <p className="text-xs text-gray-500">{t('mobile.findNearestPickup')}</p>
                 <div className="flex items-center mt-1">
                   <div className="flex text-yellow-400 text-xs mr-2">★★★★☆</div>
-                  <span className="text-xs text-gray-500">1.8K views</span>
+                  <span className="text-xs text-gray-500">1.8K {t('mobile.views')}</span>
                 </div>
               </div>
             </div>
@@ -322,11 +327,11 @@ export default function PaytmMobileHome() {
                 <div className="absolute top-1 right-1 bg-red-500 text-white text-xs px-1 rounded">4:30</div>
               </div>
               <div className="flex-1">
-                <p className="font-medium text-gray-800 text-sm">Mobile Money & Bill Payments</p>
-                <p className="text-xs text-gray-500">Pay bills and top-up phones in Haiti</p>
+                <p className="font-medium text-gray-800 text-sm">{t('mobile.mobileMoney')}</p>
+                <p className="text-xs text-gray-500">{t('mobile.payBillsAndTopUp')}</p>
                 <div className="flex items-center mt-1">
                   <div className="flex text-yellow-400 text-xs mr-2">★★★★★</div>
-                  <span className="text-xs text-gray-500">950 views</span>
+                  <span className="text-xs text-gray-500">950 {t('mobile.views')}</span>
                 </div>
               </div>
             </div>
@@ -339,18 +344,18 @@ export default function PaytmMobileHome() {
         <div className="bg-gradient-to-r from-red-400 to-blue-400 rounded-lg p-4 text-white">
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-semibold text-lg">Zero Fees This Month!</p>
-              <p className="text-sm opacity-90">Send up to $500 with no transfer fees</p>
-              <p className="text-xs opacity-80 mt-1">Valid until June 30, 2025</p>
+              <p className="font-semibold text-lg">{t('mobile.zeroFeesOffer')}</p>
+              <p className="text-sm opacity-90">{t('mobile.zeroFeesDescription')}</p>
+              <p className="text-xs opacity-80 mt-1">{t('mobile.validUntil')}</p>
             </div>
             <div className="text-center">
               <button 
                 onClick={handleSendClick}
                 className="bg-white text-red-500 px-4 py-2 rounded-full text-sm font-medium mb-2"
               >
-                Use Offer
+                {t('mobile.useOffer')}
               </button>
-              <p className="text-xs opacity-80">Terms apply</p>
+              <p className="text-xs opacity-80">{t('mobile.termsApply')}</p>
             </div>
           </div>
         </div>
