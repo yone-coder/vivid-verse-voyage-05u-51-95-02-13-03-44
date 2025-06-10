@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, CheckCircle, Receipt, X, Key } from 'lucide-react';
+import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, CheckCircle, Receipt, X, Key, Globe } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import html2canvas from 'html2canvas';
+import TransferTypeSelector from '@/components/transfer/TransferTypeSelector';
 import StepOneTransfer from '@/components/transfer/StepOneTransfer';
 import StepTwoTransfer from '@/components/transfer/StepTwoTransfer';
 import PaymentMethodList from '@/components/transfer/PaymentMethodList';
@@ -13,6 +14,7 @@ import { internationalPaymentMethods } from '@/components/transfer/PaymentMethod
 import { emailNotificationService } from '@/components/transfer/EmailNotificationService';
 
 export interface TransferData {
+  transferType?: 'international' | 'national';
   amount: string;
   receiverDetails: {
     firstName: string;
@@ -37,6 +39,7 @@ const DesktopMultiStepTransferPage: React.FC = () => {
   const receiptRef = useRef<HTMLDivElement>(null);
   
   const [transferData, setTransferData] = useState<TransferData>({
+    transferType: undefined,
     amount: '100.00',
     receiverDetails: {
       firstName: '',
@@ -641,7 +644,7 @@ const DesktopMultiStepTransferPage: React.FC = () => {
       setPaymentCompleted(true);
       const actualTransactionId = orderDetails?.id || `TX${Date.now()}`;
       setTransactionId(actualTransactionId);
-      setCurrentStep(4);
+      setCurrentStep(5);
       setIsPaymentLoading(false);
       
       // Send email notification using the service
@@ -682,7 +685,7 @@ const DesktopMultiStepTransferPage: React.FC = () => {
   }, []);
 
   const handleNextStep = () => {
-    if (currentStep < 4) {
+    if (currentStep < 5) {
       setCurrentStep(currentStep + 1);
     }
   };
@@ -771,12 +774,13 @@ const DesktopMultiStepTransferPage: React.FC = () => {
     link.click();
   };
 
-  const canProceedFromStep1 = transferData.amount && parseFloat(transferData.amount) > 0;
-  const canProceedFromStep2 = transferData.receiverDetails.firstName && 
+  const canProceedFromStep1 = transferData.transferType !== undefined;
+  const canProceedFromStep2 = transferData.amount && parseFloat(transferData.amount) > 0;
+  const canProceedFromStep3 = transferData.receiverDetails.firstName && 
                               transferData.receiverDetails.lastName &&
                               transferData.receiverDetails.phoneNumber && 
                               transferData.receiverDetails.commune;
-  const canProceedFromStep3 = transferData.selectedPaymentMethod;
+  const canProceedFromStep4 = transferData.selectedPaymentMethod;
 
   const transferFee = transferData.amount ? (Math.ceil(parseFloat(transferData.amount) / 100) * 15).toFixed(2) : '0.00';
   const totalAmount = transferData.amount ? (parseFloat(transferData.amount) + parseFloat(transferFee)).toFixed(2) : '0.00';
@@ -801,7 +805,7 @@ const DesktopMultiStepTransferPage: React.FC = () => {
             {/* Desktop Step Indicator */}
             <div className="mb-8">
               <div className="flex items-center justify-between">
-                {[1, 2, 3, 4].map((step, index) => (
+                {[1, 2, 3, 4, 5].map((step, index) => (
                   <React.Fragment key={step}>
                     <div className="flex flex-col items-center">
                       <div className={`w-12 h-12 rounded-full flex items-center justify-center text-sm font-medium ${
@@ -814,22 +818,24 @@ const DesktopMultiStepTransferPage: React.FC = () => {
                         {step < currentStep ? (
                           <CheckCircle className="h-6 w-6" />
                         ) : step === currentStep ? (
-                          step === 1 ? <DollarSign className="h-6 w-6" /> :
-                          step === 2 ? <User className="h-6 w-6" /> :
-                          step === 3 ? <CreditCard className="h-6 w-6" /> :
+                          step === 1 ? <Globe className="h-6 w-6" /> :
+                          step === 2 ? <DollarSign className="h-6 w-6" /> :
+                          step === 3 ? <User className="h-6 w-6" /> :
+                          step === 4 ? <CreditCard className="h-6 w-6" /> :
                           <Shield className="h-6 w-6" />
                         ) : (
                           step
                         )}
                       </div>
                       <span className="text-sm text-gray-600 mt-2">
-                        {step === 1 ? 'Amount' : 
-                         step === 2 ? 'Recipient' : 
-                         step === 3 ? 'Payment' : 
+                        {step === 1 ? 'Type' : 
+                         step === 2 ? 'Amount' : 
+                         step === 3 ? 'Recipient' : 
+                         step === 4 ? 'Payment' : 
                          'Complete'}
                       </span>
                     </div>
-                    {index < 3 && (
+                    {index < 4 && (
                       <div className={`flex-1 h-1 mx-4 rounded-full ${
                         step < currentStep ? 'bg-green-600' : 'bg-gray-200'
                       }`} />
@@ -843,6 +849,16 @@ const DesktopMultiStepTransferPage: React.FC = () => {
             <div className="space-y-6">
               {currentStep === 1 && (
                 <div>
+                  <h2 className="text-xl font-semibold mb-4">Transfer Type</h2>
+                  <TransferTypeSelector 
+                    transferType={transferData.transferType || 'international'}
+                    onTransferTypeChange={(type) => updateTransferData({ transferType: type })}
+                  />
+                </div>
+              )}
+
+              {currentStep === 2 && (
+                <div>
                   <h2 className="text-xl font-semibold mb-4">Enter Amount</h2>
                   <StepOneTransfer 
                     amount={transferData.amount}
@@ -851,7 +867,7 @@ const DesktopMultiStepTransferPage: React.FC = () => {
                 </div>
               )}
               
-              {currentStep === 2 && (
+              {currentStep === 3 && (
                 <div>
                   <h2 className="text-xl font-semibold mb-4">Recipient Details</h2>
                   <StepTwoTransfer 
@@ -861,14 +877,14 @@ const DesktopMultiStepTransferPage: React.FC = () => {
                 </div>
               )}
               
-              {currentStep === 3 && (
+              {currentStep === 4 && (
                 <div>
                   <h2 className="text-xl font-semibold mb-4">Payment Method</h2>
                   <div ref={paypalContainerRef}></div>
                 </div>
               )}
               
-              {currentStep === 4 && (
+              {currentStep === 5 && (
                 <div>
                   <h2 className="text-xl font-semibold mb-4">Transfer Complete</h2>
                   <div 
@@ -968,7 +984,7 @@ const DesktopMultiStepTransferPage: React.FC = () => {
 
             {/* Desktop Navigation */}
             <div className="flex gap-4 mt-8">
-              {currentStep > 1 && currentStep < 4 && (
+              {currentStep > 1 && currentStep < 5 && (
                 <Button 
                   variant="outline" 
                   onClick={handlePreviousStep}
@@ -979,12 +995,13 @@ const DesktopMultiStepTransferPage: React.FC = () => {
                 </Button>
               )}
               
-              {currentStep < 3 && (
+              {currentStep < 4 && (
                 <Button 
                   onClick={handleNextStep}
                   disabled={
                     (currentStep === 1 && !canProceedFromStep1) ||
-                    (currentStep === 2 && !canProceedFromStep2)
+                    (currentStep === 2 && !canProceedFromStep2) ||
+                    (currentStep === 3 && !canProceedFromStep3)
                   }
                   className="flex-1"
                 >
@@ -993,7 +1010,7 @@ const DesktopMultiStepTransferPage: React.FC = () => {
                 </Button>
               )}
               
-              {currentStep === 4 && (
+              {currentStep === 5 && (
                 <Button 
                   onClick={() => navigate('/for-you')}
                   className="flex-1"
@@ -1008,6 +1025,12 @@ const DesktopMultiStepTransferPage: React.FC = () => {
           <div className="bg-white rounded-xl shadow-lg p-8">
             <h3 className="text-xl font-semibold mb-6">Transfer Summary</h3>
             <div className="space-y-4">
+              {transferData.transferType && (
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Type:</span>
+                  <span className="font-semibold capitalize">{transferData.transferType}</span>
+                </div>
+              )}
               <div className="flex justify-between">
                 <span className="text-gray-600">Amount:</span>
                 <span className="font-semibold">${transferData.amount}</span>
@@ -1030,3 +1053,5 @@ const DesktopMultiStepTransferPage: React.FC = () => {
 };
 
 export default DesktopMultiStepTransferPage;
+
+}

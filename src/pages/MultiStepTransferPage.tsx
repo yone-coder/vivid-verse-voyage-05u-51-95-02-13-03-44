@@ -1,13 +1,16 @@
+
 import React, { useState } from 'react';
 import { ArrowRight, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import TransferHeader from '@/components/transfer/TransferHeader';
+import TransferTypeSelector from '@/components/transfer/TransferTypeSelector';
 import StepOneTransfer from '@/components/transfer/StepOneTransfer';
 import StepTwoTransfer from '@/components/transfer/StepTwoTransfer';
 import StepThreeTransfer from '@/components/transfer/StepThreeTransfer';
 
 export interface TransferData {
+  transferType?: 'international' | 'national';
   amount: string;
   receiverDetails: {
     firstName: string;
@@ -19,9 +22,10 @@ export interface TransferData {
 }
 
 const MultiStepTransferPage: React.FC = () => {
-  const [currentStep, setCurrentStep] = useState(1);
+  const [currentStep, setCurrentStep] = useState(0);
   const navigate = useNavigate();
   const [transferData, setTransferData] = useState<TransferData>({
+    transferType: undefined,
     amount: '',
     receiverDetails: {
       firstName: '',
@@ -39,7 +43,7 @@ const MultiStepTransferPage: React.FC = () => {
   };
 
   const handlePreviousStep = () => {
-    if (currentStep > 1) {
+    if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
     } else {
       navigate('/transfer');
@@ -50,6 +54,7 @@ const MultiStepTransferPage: React.FC = () => {
     setTransferData(prev => ({ ...prev, ...data }));
   };
 
+  const canProceedFromStep0 = transferData.transferType !== undefined;
   const canProceedFromStep1 = transferData.amount && parseFloat(transferData.amount) > 0;
   const canProceedFromStep2 = transferData.receiverDetails.firstName && 
                               transferData.receiverDetails.lastName && 
@@ -63,7 +68,7 @@ const MultiStepTransferPage: React.FC = () => {
       {/* Step Indicator */}
       <div className="max-w-md mx-auto px-4 py-4">
         <div className="flex items-center justify-center mb-6">
-          {[1, 2, 3].map((step) => (
+          {[0, 1, 2, 3].map((step) => (
             <div key={step} className="flex items-center">
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
                 step === currentStep 
@@ -72,7 +77,7 @@ const MultiStepTransferPage: React.FC = () => {
                     ? 'bg-green-600 text-white' 
                     : 'bg-gray-300 text-gray-600'
               }`}>
-                {step}
+                {step + 1}
               </div>
               {step < 3 && (
                 <div className={`w-12 h-0.5 mx-2 ${
@@ -85,6 +90,7 @@ const MultiStepTransferPage: React.FC = () => {
 
         <div className="text-center mb-6">
           <h2 className="text-lg font-semibold">
+            {currentStep === 0 && 'Transfer Type'}
             {currentStep === 1 && 'Enter Amount'}
             {currentStep === 2 && 'Recipient Details'}
             {currentStep === 3 && 'Payment'}
@@ -94,6 +100,18 @@ const MultiStepTransferPage: React.FC = () => {
 
       {/* Step Content */}
       <div className="max-w-md mx-auto px-4">
+        {currentStep === 0 && (
+          <div className="space-y-4">
+            <div className="text-center mb-6">
+              <p className="text-gray-600">Choose your transfer type</p>
+            </div>
+            <TransferTypeSelector 
+              transferType={transferData.transferType || 'international'}
+              onTransferTypeChange={(type) => updateTransferData({ transferType: type })}
+            />
+          </div>
+        )}
+
         {currentStep === 1 && (
           <StepOneTransfer 
             amount={transferData.amount}
@@ -122,13 +140,17 @@ const MultiStepTransferPage: React.FC = () => {
             className="flex-1"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
-            {currentStep === 1 ? 'Back to Home' : 'Previous'}
+            {currentStep === 0 ? 'Back to Home' : 'Previous'}
           </Button>
           
           {currentStep < 3 && (
             <Button 
               onClick={handleNextStep}
-              disabled={currentStep === 1 ? !canProceedFromStep1 : !canProceedFromStep2}
+              disabled={
+                (currentStep === 0 && !canProceedFromStep0) ||
+                (currentStep === 1 && !canProceedFromStep1) || 
+                (currentStep === 2 && !canProceedFromStep2)
+              }
               className="flex-1"
             >
               Next

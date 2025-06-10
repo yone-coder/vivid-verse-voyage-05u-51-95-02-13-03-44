@@ -1,9 +1,9 @@
-
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, Clock, CheckCircle, Receipt } from 'lucide-react';
+import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, Clock, CheckCircle, Receipt, Globe } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { motion } from 'framer-motion';
+import TransferTypeSelector from '@/components/transfer/TransferTypeSelector';
 import StepOneTransfer from '@/components/transfer/StepOneTransfer';
 import StepTwoTransfer from '@/components/transfer/StepTwoTransfer';
 import StepThreeTransfer from '@/components/transfer/StepThreeTransfer';
@@ -13,6 +13,7 @@ import CompactCardSelection from '@/components/transfer/CompactCardSelection';
 import { internationalPaymentMethods } from '@/components/transfer/PaymentMethods';
 
 export interface TransferData {
+  transferType?: 'international' | 'national';
   amount: string;
   receiverDetails: {
     firstName: string;
@@ -39,6 +40,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
   const panelRef = useRef<HTMLDivElement>(null);
   
   const [transferData, setTransferData] = useState<TransferData>({
+    transferType: undefined,
     amount: '',
     receiverDetails: {
       firstName: '',
@@ -51,7 +53,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
   });
 
   const handleNextStep = () => {
-    if (currentStep < 5) {
+    if (currentStep < 6) {
       setCurrentStep(currentStep + 1);
     }
   };
@@ -74,7 +76,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
     console.log('Payment successful:', details);
     setPaymentCompleted(true);
     setTransactionId(details.id || `TX${Date.now()}`);
-    setCurrentStep(5); // Move to receipt step
+    setCurrentStep(6); // Move to receipt step
   };
 
   const handlePaymentError = (error: any) => {
@@ -161,14 +163,15 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
     };
   }, [isDragging]);
 
-  const canProceedFromStep1 = transferData.amount && parseFloat(transferData.amount) > 0;
-  const canProceedFromStep2 = transferData.receiverDetails.firstName && 
+  const canProceedFromStep1 = transferData.transferType !== undefined;
+  const canProceedFromStep2 = transferData.amount && parseFloat(transferData.amount) > 0;
+  const canProceedFromStep3 = transferData.receiverDetails.firstName && 
                               transferData.receiverDetails.lastName &&
                               transferData.receiverDetails.phoneNumber && 
                               transferData.receiverDetails.commune;
-  const canProceedFromStep3 = transferData.selectedPaymentMethod;
+  const canProceedFromStep4 = transferData.selectedPaymentMethod;
 
-  const stepTitles = ['Send Money', 'Recipient Details', 'Payment Method', 'Review & Pay', 'Transfer Complete'];
+  const stepTitles = ['Transfer Type', 'Send Money', 'Recipient Details', 'Payment Method', 'Review & Pay', 'Transfer Complete'];
 
   // Animation variants for step indicator - similar to bottom nav
   const stepVariants = {
@@ -255,7 +258,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
       {/* Animated Step Indicator */}
       <div className="px-4 py-3 flex-shrink-0">
         <div className="flex items-center justify-between">
-          {[1, 2, 3, 4, 5].map((step, index) => (
+          {[1, 2, 3, 4, 5, 6].map((step, index) => (
             <React.Fragment key={step}>
               <div className="flex flex-col items-center">
                 <motion.div 
@@ -278,12 +281,14 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
                   ) : step === currentStep ? (
                     <div className="flex items-center space-x-1">
                       {step === 1 ? (
-                        <DollarSign className="h-3 w-3" />
+                        <Globe className="h-3 w-3" />
                       ) : step === 2 ? (
-                        <User className="h-3 w-3" />
+                        <DollarSign className="h-3 w-3" />
                       ) : step === 3 ? (
-                        <CreditCard className="h-3 w-3" />
+                        <User className="h-3 w-3" />
                       ) : step === 4 ? (
+                        <CreditCard className="h-3 w-3" />
+                      ) : step === 5 ? (
                         <Shield className="h-3 w-3" />
                       ) : (
                         <Receipt className="h-3 w-3" />
@@ -297,7 +302,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
                   )}
                 </motion.div>
               </div>
-              {index < 4 && (
+              {index < 5 && (
                 <motion.div 
                   className="flex-1 h-0.5 mx-2 rounded-full origin-left"
                   variants={lineVariants}
@@ -316,6 +321,19 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
           {currentStep === 1 && (
             <div className="space-y-4">
               <div className="text-center mb-4">
+                <p className="text-gray-600">Choose your transfer type</p>
+              </div>
+              
+              <TransferTypeSelector 
+                transferType={transferData.transferType || 'international'}
+                onTransferTypeChange={(type) => updateTransferData({ transferType: type })}
+              />
+            </div>
+          )}
+
+          {currentStep === 2 && (
+            <div className="space-y-4">
+              <div className="text-center mb-4">
                 <p className="text-gray-600">Enter the amount you want to send</p>
               </div>
               
@@ -326,7 +344,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
             </div>
           )}
           
-          {currentStep === 2 && (
+          {currentStep === 3 && (
             <div className="space-y-4">
               <div className="text-center mb-4">
                 <p className="text-gray-600">Who are you sending ${transferData.amount} to?</p>
@@ -349,7 +367,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
             </div>
           )}
           
-          {currentStep === 3 && (
+          {currentStep === 4 && (
             <div className="space-y-6">
               <div className="text-center mb-6">
                 <h2 className="text-lg font-semibold text-gray-900 mb-2">Choose Payment Method</h2>
@@ -380,7 +398,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
             </div>
           )}
 
-          {currentStep === 4 && (
+          {currentStep === 5 && (
             <div className="space-y-4">
               <div className="text-center mb-4">
                 <p className="text-gray-600 text-sm">Review your transfer details before proceeding</p>
@@ -423,7 +441,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
             </div>
           )}
 
-          {currentStep === 5 && (
+          {currentStep === 6 && (
             <div className="space-y-4">
               <div className="text-center mb-6">
                 <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -534,8 +552,8 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
         </div>
       </div>
 
-      {/* Sticky Navigation Buttons - Only show for steps 1, 2, and step 4+ */}
-      {(currentStep < 3 || currentStep > 3) && (
+      {/* Sticky Navigation Buttons - Only show for steps 1, 2, 3 and step 5+ */}
+      {(currentStep < 4 || currentStep > 4) && (
         <div className="fixed bottom-0 left-0 right-0 border-t bg-white px-4 py-3 z-[60] shadow-lg">
           <div className="flex gap-3 max-w-md mx-auto">
             {currentStep === 1 ? (
@@ -558,12 +576,13 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
                   Previous
                 </Button>
                 
-                {currentStep < 4 ? (
+                {currentStep < 5 ? (
                   <Button 
                     onClick={handleNextStep}
                     disabled={
                       (currentStep === 2 && !canProceedFromStep2) ||
-                      (currentStep === 3 && !canProceedFromStep3)
+                      (currentStep === 3 && !canProceedFromStep3) ||
+                      (currentStep === 4 && !canProceedFromStep4)
                     }
                     className="flex-1 transition-all duration-200"
                   >
