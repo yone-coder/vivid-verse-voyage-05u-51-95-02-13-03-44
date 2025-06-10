@@ -18,7 +18,8 @@ import {
   ArrowUpDown,
   CreditCard,
   Zap,
-  ChevronDown
+  ChevronDown,
+  Search
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Logo from '../../home/Logo';
@@ -30,6 +31,7 @@ export default function PaytmMobileHome() {
   const navigate = useNavigate();
   const [amount, setAmount] = useState('');
   const [isLanguageSheetOpen, setIsLanguageSheetOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const { t, currentLanguage, currentLocation } = useLanguage();
 
   const handleSendClick = () => {
@@ -40,27 +42,46 @@ export default function PaytmMobileHome() {
     navigate('/local-transfer');
   };
 
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Handle search functionality
+    console.log('Searching for:', searchQuery);
+  };
+
   return (
-    <div className="max-w-sm mx-auto bg-white min-h-screen">
-      {/* Simple Single Line Header */}
-      <div className="bg-white px-4 py-3">
-        <div className="flex items-center justify-between">
-          {/* Logo and App Name */}
-          <div className="flex items-center space-x-3">
+    <div className="max-w-sm mx-auto bg-gray-50 min-h-screen">
+      {/* Sticky Header */}
+      <div className="sticky top-0 z-50 bg-gray-50 px-4 py-3 border-b border-gray-100">
+        <div className="flex items-center justify-between space-x-3">
+          {/* Logo */}
+          <div className="flex-shrink-0">
             <img
               src="/lovable-uploads/45eddf56-11aa-4191-b09a-dc6ebfe3e7cc.png"
               alt="Global Transfer Logo"
-              className="w-8 h-8 rounded-lg object-cover"
+              className="w-10 h-10 rounded-full object-cover"
             />
-            <h1 className="font-bold text-lg text-gray-900">Global Transfè</h1>
           </div>
+          
+          {/* Search Bar */}
+          <form onSubmit={handleSearch} className="flex-1">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={t('header.search')}
+                className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+          </form>
           
           {/* Language Selector */}
           <MobileLanguageBottomSheet 
             isOpen={isLanguageSheetOpen}
             onOpenChange={setIsLanguageSheetOpen}
           >
-            <button className="flex items-center bg-gray-100 px-3 py-2 rounded-full space-x-2 hover:bg-gray-200 transition-colors">
+            <button className="flex items-center bg-white px-3 py-2 rounded-full space-x-2 hover:bg-gray-100 transition-colors border border-gray-200">
               {currentLocation.flag ? (
                 <img
                   src={`https://flagcdn.com/${currentLocation.flag.toLowerCase()}.svg`}
@@ -79,7 +100,7 @@ export default function PaytmMobileHome() {
 
       {/* Profile Card */}
       <div className="mx-4 mt-4 mb-4">
-        <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+        <div className="bg-white rounded-xl p-4 border border-gray-200">
           <div className="flex justify-between items-start">
             <div className="flex items-center space-x-3">
               <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
@@ -130,7 +151,7 @@ export default function PaytmMobileHome() {
       {/* Quick Actions */}
       <div className="p-4 space-y-4">
         {/* Quick Transfer Options Card */}
-        <div className="bg-gray-50 rounded-xl border border-gray-100 p-4">
+        <div className="bg-white rounded-xl border border-gray-200 p-4">
           <h3 className="font-semibold text-gray-800 mb-3">{t('mobile.quickTransfer')}</h3>
           <div className="grid grid-cols-4 gap-3">
             <button className="text-center" onClick={handleSendClick}>
@@ -170,7 +191,7 @@ export default function PaytmMobileHome() {
         </div>
 
         {/* Financial Services Card */}
-        <div className="bg-gray-50 rounded-xl border border-gray-100 p-4">
+        <div className="bg-white rounded-xl border border-gray-200 p-4">
           <h3 className="font-semibold text-gray-800 mb-3">{t('mobile.financialServices')}</h3>
           <div className="grid grid-cols-4 gap-3">
             <div className="text-center">
@@ -227,7 +248,7 @@ export default function PaytmMobileHome() {
 
       {/* Recent Recipients */}
       <div className="mx-4 mb-4">
-        <div className="bg-gray-50 rounded-xl border border-gray-100 p-4">
+        <div className="bg-white rounded-xl border border-gray-200 p-4">
           <div className="flex justify-between items-center mb-3">
             <h3 className="font-semibold text-gray-800">{t('mobile.recentRecipients')}</h3>
             <ChevronRight className="w-5 h-5 text-gray-400" />
@@ -299,7 +320,7 @@ export default function PaytmMobileHome() {
 
       {/* Video Tutorials Section */}
       <div className="mx-4 mb-4">
-        <div className="bg-gray-50 rounded-xl border border-gray-100 p-4">
+        <div className="bg-white rounded-xl border border-gray-200 p-4">
           <div className="flex justify-between items-center mb-3">
             <h3 className="font-semibold text-gray-800">{t('mobile.videoTutorials')}</h3>
             <span className="text-xs text-blue-600 font-medium">{t('mobile.viewAll')}</span>
