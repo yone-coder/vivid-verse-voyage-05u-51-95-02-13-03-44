@@ -1,16 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, CheckCircle, Receipt, X, Key, Globe } from 'lucide-react';
+import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, CheckCircle, Receipt, X, Globe } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import html2canvas from 'html2canvas';
 import TransferTypeSelector from '@/components/transfer/TransferTypeSelector';
 import StepOneTransfer from '@/components/transfer/StepOneTransfer';
 import StepTwoTransfer from '@/components/transfer/StepTwoTransfer';
-import PaymentMethodList from '@/components/transfer/PaymentMethodList';
-import { internationalPaymentMethods } from '@/components/transfer/PaymentMethods';
 import { emailNotificationService } from '@/components/transfer/EmailNotificationService';
 
 export interface TransferData {
@@ -52,9 +48,8 @@ const DesktopMultiStepTransferPage: React.FC = () => {
     selectedPaymentMethod: 'credit-card'
   });
 
-  // PayPal integration effect for step 3
   useEffect(() => {
-    if (currentStep === 3 && paypalContainerRef.current) {
+    if (currentStep === 4 && paypalContainerRef.current) {
       const container = paypalContainerRef.current;
       
       // Clear any existing content
@@ -625,7 +620,6 @@ const DesktopMultiStepTransferPage: React.FC = () => {
     }
   }, [currentStep, transferData.amount]);
 
-  // Listen for email capture from PayPal form
   useEffect(() => {
     const handleEmailCapture = (event: any) => {
       setUserEmail(event.detail.email);
@@ -635,7 +629,6 @@ const DesktopMultiStepTransferPage: React.FC = () => {
     return () => window.removeEventListener('emailCaptured', handleEmailCapture);
   }, []);
 
-  // Listen for payment success
   useEffect(() => {
     const handlePaymentSuccess = (event: any) => {
       console.log('Payment success event received:', event.detail);
@@ -663,7 +656,6 @@ const DesktopMultiStepTransferPage: React.FC = () => {
     return () => window.removeEventListener('paymentSuccess', handlePaymentSuccess);
   }, [userEmail, transferData.amount, transferData.receiverDetails.firstName, transferData.receiverDetails.lastName, transferData.receiverDetails.commune, transferData.receiverDetails.phoneNumber]);
 
-  // Listen for form validation changes
   useEffect(() => {
     const handleFormValidation = (event: any) => {
       setIsPaymentFormValid(event.detail.isValid);
@@ -673,7 +665,6 @@ const DesktopMultiStepTransferPage: React.FC = () => {
     return () => window.removeEventListener('paymentFormValidation', handleFormValidation);
   }, []);
 
-  // Listen for payment errors to stop loading overlay
   useEffect(() => {
     const handlePaymentError = (event: any) => {
       console.log('Payment error detected:', event.detail.message);
@@ -1053,5 +1044,3 @@ const DesktopMultiStepTransferPage: React.FC = () => {
 };
 
 export default DesktopMultiStepTransferPage;
-
-}
