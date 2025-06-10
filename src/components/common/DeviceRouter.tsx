@@ -13,6 +13,18 @@ const DeviceRouter: React.FC<DeviceRouterProps> = ({
 }) => {
   const isMobile = useIsMobile();
 
+  // Prevent flash by not rendering until we know the device type
+  if (isMobile === undefined) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="animate-pulse">
+          <div className="h-8 w-32 bg-gray-200 rounded mb-4"></div>
+          <div className="h-4 w-48 bg-gray-200 rounded"></div>
+        </div>
+      </div>
+    );
+  }
+
   return isMobile ? <MobileComponent /> : <DesktopComponent />;
 };
 
