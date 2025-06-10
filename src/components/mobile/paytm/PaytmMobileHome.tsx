@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { 
   Send, 
@@ -19,7 +20,8 @@ import {
   CreditCard,
   Zap,
   ChevronDown,
-  Search
+  Search,
+  Shield
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Logo from '../../home/Logo';
@@ -51,7 +53,7 @@ export default function PaytmMobileHome() {
   return (
     <div className="max-w-sm mx-auto bg-gray-50 min-h-screen">
       {/* Sticky Header */}
-      <div className="sticky top-0 z-50 bg-gray-50 px-4 py-3 border-b border-gray-100">
+      <div className="sticky top-0 z-50 bg-gray-50 px-4 py-3">
         <div className="flex items-center justify-between space-x-3">
           {/* Logo */}
           <div className="flex-shrink-0">
@@ -98,35 +100,60 @@ export default function PaytmMobileHome() {
         </div>
       </div>
 
-      {/* Profile Card */}
+      {/* Professional Profile Card */}
       <div className="mx-4 mt-4 mb-4">
-        <div className="bg-white rounded-xl p-4 border border-gray-200">
-          <div className="flex justify-between items-start">
-            <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                <span className="text-blue-600 font-bold text-lg">MJ</span>
+        <div className="bg-white rounded-2xl p-5">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center space-x-4">
+              <div className="relative">
+                <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center">
+                  <span className="text-white font-bold text-lg">MJ</span>
+                </div>
+                <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
+                  <Shield className="w-2.5 h-2.5 text-white" />
+                </div>
               </div>
-              <div>
-                <p className="font-semibold text-lg text-gray-800">Marie Joseph</p>
-                <p className="text-sm text-gray-600">{t('mobile.verifiedAccount')}</p>
+              <div className="flex-1">
+                <h2 className="font-bold text-xl text-gray-900">Marie Joseph</h2>
+                <p className="text-sm text-gray-600 font-medium">{t('mobile.verifiedAccount')}</p>
                 <p className="text-xs text-gray-500">{t('mobile.memberSince')} 2023</p>
               </div>
             </div>
-            <div className="text-right">
-              <div className="bg-green-500 text-white px-2 py-1 rounded-full text-xs mb-1">
-                ✓ {t('mobile.verified')}
+            <div className="text-center">
+              <div className="inline-flex items-center bg-green-50 text-green-700 px-3 py-1 rounded-full text-xs font-semibold mb-2">
+                <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                {t('mobile.verified')}
               </div>
-              <p className="text-xs text-gray-500">{t('mobile.idConfirmed')}</p>
             </div>
           </div>
-          <div className="mt-4 flex space-x-2">
+          
+          {/* Account Stats */}
+          <div className="bg-gray-50 rounded-xl p-3 mb-4">
+            <div className="grid grid-cols-3 gap-4 text-center">
+              <div>
+                <p className="text-lg font-bold text-gray-900">12</p>
+                <p className="text-xs text-gray-500">Transfers</p>
+              </div>
+              <div>
+                <p className="text-lg font-bold text-gray-900">$2,450</p>
+                <p className="text-xs text-gray-500">Total Sent</p>
+              </div>
+              <div>
+                <p className="text-lg font-bold text-gray-900">5★</p>
+                <p className="text-xs text-gray-500">Rating</p>
+              </div>
+            </div>
+          </div>
+          
+          {/* Action Buttons */}
+          <div className="flex space-x-3">
             <button 
               onClick={handleSendClick}
-              className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium flex-1"
+              className="bg-blue-600 text-white px-6 py-3 rounded-xl text-sm font-semibold flex-1 hover:bg-blue-700 transition-colors"
             >
               {t('mobile.sendMoney')}
             </button>
-            <button className="border border-gray-300 text-gray-700 px-4 py-2 rounded-full text-sm flex-1">
+            <button className="bg-gray-100 text-gray-700 px-6 py-3 rounded-xl text-sm font-semibold flex-1 hover:bg-gray-200 transition-colors">
               {t('mobile.viewProfile')}
             </button>
           </div>
