@@ -5,6 +5,15 @@ import { Globe } from 'lucide-react';
 export default function ProjectOverviewSlide1() {
   return (
     <div className="space-y-8">
+      {/* Full-width Global Transfer Image */}
+      <div className="mb-8 rounded-lg overflow-hidden">
+        <img 
+          src="/lovable-uploads/5b975243-9b1f-4c96-9ed4-53fb345fed58.png" 
+          alt="Global Transfer - Voye lajan fasil, resevwa rapidman – kote ou vle, lè ou vle" 
+          className="w-full h-auto object-cover"
+        />
+      </div>
+
       {/* Hero Section */}
       <div className="mb-8 rounded-lg overflow-hidden bg-gradient-to-r from-blue-600 to-purple-600 text-white p-8">
         <div className="flex items-center mb-6">
