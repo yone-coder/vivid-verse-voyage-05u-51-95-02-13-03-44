@@ -1,8 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
-import { Loader2, TrendingUp, ArrowUpDown } from 'lucide-react';
+import { Loader2, TrendingUp, ArrowUpDown, Info } from 'lucide-react';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 
 // Mock exchange rate function since we don't have the actual utility
 const getExchangeRate = async () => {
@@ -73,117 +74,139 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
   const totalAmount = usdAmount + transferFee;
 
   return (
-    <div className="max-w-md mx-auto space-y-6">
-      {/* Exchange Rate Card */}
-      <div className="bg-card rounded-lg border p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="p-2 bg-muted rounded-lg">
-              <TrendingUp className="h-4 w-4 text-foreground" />
-            </div>
-            <span className="text-sm font-medium text-foreground">Exchange Rate</span>
-          </div>
-          
-          {isLoading ? (
-            <div className="flex items-center gap-2">
-              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">Updating...</span>
-            </div>
-          ) : (
-            <div className="text-right">
-              <div className="flex items-center gap-2 justify-end">
-                <div className={`w-2 h-2 rounded-full ${exchangeRate?.isLive ? 'bg-green-500' : 'bg-primary'} animate-pulse`} />
-                <div className="text-sm font-semibold text-foreground">
-                  1 USD = {exchangeRate?.usdToHtg.toFixed(2)} HTG
-                </div>
+    <div className="max-w-lg mx-auto space-y-8 p-6">
+      {/* Header */}
+      <div className="text-center space-y-2">
+        <h2 className="text-2xl font-semibold text-foreground">Send Money</h2>
+        <p className="text-sm text-muted-foreground">Enter the amount you want to send</p>
+      </div>
+
+      {/* Exchange Rate */}
+      <Card className="border-border/50">
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-muted rounded-lg">
+                <TrendingUp className="h-4 w-4 text-foreground" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-foreground">Exchange Rate</p>
+                <p className="text-xs text-muted-foreground">Updated in real-time</p>
               </div>
             </div>
-          )}
-        </div>
-      </div>
+            
+            {isLoading ? (
+              <div className="flex items-center gap-2">
+                <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                <span className="text-sm text-muted-foreground">Loading...</span>
+              </div>
+            ) : (
+              <div className="text-right">
+                <div className="flex items-center gap-2 justify-end">
+                  <div className={`w-2 h-2 rounded-full ${exchangeRate?.isLive ? 'bg-green-500' : 'bg-muted-foreground'} animate-pulse`} />
+                  <span className="text-sm font-semibold text-foreground">
+                    1 USD = {exchangeRate?.usdToHtg.toFixed(2)} HTG
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
 
-      {/* Send Amount Input Card */}
-      <div className="bg-card rounded-lg border overflow-hidden">
-        <div className="p-4">
-          <Label htmlFor="amount" className="text-sm font-medium text-foreground mb-3 block">
-            Send Amount
-          </Label>
-          <div className="relative">
-            <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-              <span className="text-foreground font-semibold text-xl">$</span>
-            </div>
-            <Input
-              id="amount"
-              type="number"
-              className="pl-8 pr-16 text-2xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-foreground placeholder:text-muted-foreground placeholder:text-2xl placeholder:font-light h-14"
-              placeholder="0.00"
-              value={amount}
-              onChange={(e) => handleSendAmountChange(e.target.value)}
-              min="0"
-              step="0.01"
-            />
-            <div className="absolute inset-y-0 right-3 flex items-center">
-              <span className="text-xs font-medium text-muted-foreground bg-muted px-2 py-1 rounded">
-                USD
-              </span>
-            </div>
+      {/* Amount Input Section */}
+      <div className="space-y-6">
+        {/* Send Amount */}
+        <div className="space-y-3">
+          <Label className="text-sm font-medium text-foreground">You Send</Label>
+          <Card className="border-border/50">
+            <CardContent className="p-0">
+              <div className="relative">
+                <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                  <span className="text-foreground font-semibold text-lg">$</span>
+                </div>
+                <Input
+                  type="number"
+                  className="pl-8 pr-20 text-3xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-foreground placeholder:text-muted-foreground h-16"
+                  placeholder="0.00"
+                  value={amount}
+                  onChange={(e) => handleSendAmountChange(e.target.value)}
+                  min="0"
+                  step="0.01"
+                />
+                <div className="absolute inset-y-0 right-4 flex items-center">
+                  <span className="text-sm font-medium text-muted-foreground bg-muted px-3 py-1 rounded-md">
+                    USD
+                  </span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Exchange Indicator */}
+        <div className="flex justify-center">
+          <div className="p-3 bg-muted rounded-full border border-border">
+            <ArrowUpDown className="h-5 w-5 text-muted-foreground" />
           </div>
         </div>
-      </div>
 
-      {/* Exchange Arrow */}
-      <div className="flex justify-center">
-        <div className="p-2 bg-muted rounded-full border">
-          <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
-        </div>
-      </div>
-
-      {/* Receiver Amount Input Card */}
-      <div className="bg-card rounded-lg border overflow-hidden">
-        <div className="p-4">
-          <Label htmlFor="receiverAmount" className="text-sm font-medium text-foreground mb-3 block">
-            Receiver Gets
-          </Label>
-          <div className="relative">
-            <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-              <span className="text-foreground font-semibold text-sm">HTG</span>
-            </div>
-            <Input
-              id="receiverAmount"
-              type="number"
-              className="pl-12 pr-16 text-2xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-foreground placeholder:text-muted-foreground placeholder:text-2xl placeholder:font-light h-14"
-              placeholder="0.00"
-              value={receiverAmount}
-              onChange={(e) => handleReceiveAmountChange(e.target.value)}
-              min="0"
-              step="0.01"
-            />
-            <div className="absolute inset-y-0 right-3 flex items-center">
-              <span className="text-xs font-medium text-muted-foreground bg-muted px-2 py-1 rounded">
-                HTG
-              </span>
-            </div>
-          </div>
+        {/* Receive Amount */}
+        <div className="space-y-3">
+          <Label className="text-sm font-medium text-foreground">Recipient Gets</Label>
+          <Card className="border-border/50">
+            <CardContent className="p-0">
+              <div className="relative">
+                <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                  <span className="text-foreground font-semibold">HTG</span>
+                </div>
+                <Input
+                  type="number"
+                  className="pl-16 pr-20 text-3xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-foreground placeholder:text-muted-foreground h-16"
+                  placeholder="0.00"
+                  value={receiverAmount}
+                  onChange={(e) => handleReceiveAmountChange(e.target.value)}
+                  min="0"
+                  step="0.01"
+                />
+                <div className="absolute inset-y-0 right-4 flex items-center">
+                  <span className="text-sm font-medium text-muted-foreground bg-muted px-3 py-1 rounded-md">
+                    HTG
+                  </span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
 
       {/* Fee Breakdown */}
-      <div className="bg-muted/50 rounded-lg border p-4">
-        <div className="space-y-3">
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">Transfer fee</span>
-            <span className="font-medium text-foreground">${transferFee.toFixed(2)}</span>
-          </div>
-          <div className="border-t pt-3">
-            <div className="flex items-center justify-between">
-              <span className="font-semibold text-foreground">Total to pay</span>
-              <span className="text-xl font-bold text-foreground">
-                ${totalAmount.toFixed(2)}
-              </span>
+      <Card className="border-border/50">
+        <CardContent className="p-6">
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 mb-4">
+              <Info className="h-4 w-4 text-muted-foreground" />
+              <h3 className="text-sm font-medium text-foreground">Transfer Details</h3>
+            </div>
+            
+            <div className="space-y-3">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">Transfer fee</span>
+                <span className="font-medium text-foreground">${transferFee.toFixed(2)}</span>
+              </div>
+              
+              <Separator />
+              
+              <div className="flex items-center justify-between">
+                <span className="font-semibold text-foreground">Total to pay</span>
+                <span className="text-2xl font-bold text-foreground">
+                  ${totalAmount.toFixed(2)}
+                </span>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
