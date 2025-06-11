@@ -39,7 +39,7 @@ const MobileMultiStepTransferSheetPage: React.FC = () => {
   const receiptRef = useRef<HTMLDivElement>(null);
   
   const [transferData, setTransferData] = useState<TransferData>({
-    transferType: undefined,
+    transferType: 'international',
     amount: '100.00',
     receiverDetails: {
       firstName: '',
@@ -52,14 +52,12 @@ const MobileMultiStepTransferSheetPage: React.FC = () => {
     selectedPaymentMethod: 'credit-card'
   });
 
-  // PayPal integration effect for step 4
+  // PayPal integration effect for step 3
   useEffect(() => {
-    if (currentStep === 4 && paypalContainerRef.current) {
+    if (currentStep === 3 && paypalContainerRef.current) {
+      // Clear any existing content
       const container = paypalContainerRef.current;
       
-      // Clear any existing content
-      container.innerHTML = '';
-
       // Add PayPal checkout styles
       const styleElement = document.createElement('style');
       styleElement.textContent = `
@@ -718,7 +716,7 @@ const MobileMultiStepTransferSheetPage: React.FC = () => {
       setPaymentCompleted(true);
       const actualTransactionId = orderDetails?.id || `TX${Date.now()}`;
       setTransactionId(actualTransactionId);
-      setCurrentStep(5);
+      setCurrentStep(4);
       setIsPaymentLoading(false);
       
       // Send email notification using the service
@@ -759,7 +757,7 @@ const MobileMultiStepTransferSheetPage: React.FC = () => {
   }, []);
 
   const handleNextStep = () => {
-    if (currentStep < 5) {
+    if (currentStep < 4) {
       setCurrentStep(currentStep + 1);
     }
   };
@@ -848,15 +846,14 @@ const MobileMultiStepTransferSheetPage: React.FC = () => {
     link.click();
   };
 
-  const canProceedFromStep1 = transferData.transferType !== undefined;
-  const canProceedFromStep2 = transferData.amount && parseFloat(transferData.amount) > 0;
-  const canProceedFromStep3 = transferData.receiverDetails.firstName && 
+  const canProceedFromStep1 = transferData.amount && parseFloat(transferData.amount) > 0;
+  const canProceedFromStep2 = transferData.receiverDetails.firstName && 
                               transferData.receiverDetails.lastName &&
                               transferData.receiverDetails.phoneNumber && 
                               transferData.receiverDetails.commune;
-  const canProceedFromStep4 = transferData.selectedPaymentMethod;
+  const canProceedFromStep3 = transferData.selectedPaymentMethod;
 
-  const stepTitles = ['Transfer Type', 'Send Money', 'Recipient Details', 'Payment Method', 'Transfer Complete'];
+  const stepTitles = ['Send Money', 'Recipient Details', 'Payment Method', 'Transfer Complete'];
 
   const stepVariants = {
     inactive: { 
@@ -964,7 +961,7 @@ const MobileMultiStepTransferSheetPage: React.FC = () => {
         {/* Animated Step Indicator */}
         <div className="px-4 pb-3">
           <div className="flex items-center justify-between">
-            {[1, 2, 3, 4, 5].map((step, index) => (
+            {[1, 2, 3, 4].map((step, index) => (
               <React.Fragment key={step}>
                 <div className="flex flex-col items-center">
                   <motion.div 
@@ -987,12 +984,10 @@ const MobileMultiStepTransferSheetPage: React.FC = () => {
                     ) : step === currentStep ? (
                       <div className="flex items-center space-x-1">
                         {step === 1 ? (
-                          <Globe className="h-3 w-3" />
-                        ) : step === 2 ? (
                           <DollarSign className="h-3 w-3" />
-                        ) : step === 3 ? (
+                        ) : step === 2 ? (
                           <User className="h-3 w-3" />
-                        ) : step === 4 ? (
+                        ) : step === 3 ? (
                           <CreditCard className="h-3 w-3" />
                         ) : (
                           <Receipt className="h-3 w-3" />
@@ -1006,7 +1001,7 @@ const MobileMultiStepTransferSheetPage: React.FC = () => {
                     )}
                   </motion.div>
                 </div>
-                {index < 4 && (
+                {index < 3 && (
                   <motion.div 
                     className="flex-1 h-0.5 mx-2 rounded-full origin-left"
                     variants={lineVariants}
@@ -1024,32 +1019,30 @@ const MobileMultiStepTransferSheetPage: React.FC = () => {
       <div className="flex-1 overflow-y-auto pb-32">
         <div className="px-4 py-4">
           {currentStep === 1 && (
-            <div className="space-y-4">
-              <div className="text-center mb-4">
-                <p className="text-gray-600">Choose your transfer type</p>
+            <div className="space-y-6">
+              {/* Transfer Type Selector at the top */}
+              <div className="space-y-3">
+                <TransferTypeSelector 
+                  transferType={transferData.transferType || 'international'}
+                  onTransferTypeChange={(type) => updateTransferData({ transferType: type })}
+                />
               </div>
               
-              <TransferTypeSelector 
-                transferType={transferData.transferType || 'international'}
-                onTransferTypeChange={(type) => updateTransferData({ transferType: type })}
-              />
+              {/* Amount Entry Section */}
+              <div className="space-y-4">
+                <div className="text-center">
+                  <p className="text-gray-600">Enter the amount you want to send</p>
+                </div>
+                
+                <StepOneTransfer 
+                  amount={transferData.amount}
+                  onAmountChange={(amount) => updateTransferData({ amount })}
+                />
+              </div>
             </div>
           )}
 
           {currentStep === 2 && (
-            <div className="space-y-4">
-              <div className="text-center mb-4">
-                <p className="text-gray-600">Enter the amount you want to send</p>
-              </div>
-              
-              <StepOneTransfer 
-                amount={transferData.amount}
-                onAmountChange={(amount) => updateTransferData({ amount })}
-              />
-            </div>
-          )}
-          
-          {currentStep === 3 && (
             <div className="space-y-4">
               <div className="text-center mb-4">
                 <p className="text-gray-600">Who are you sending ${transferData.amount} to?</p>
@@ -1062,7 +1055,7 @@ const MobileMultiStepTransferSheetPage: React.FC = () => {
             </div>
           )}
           
-          {currentStep === 4 && (
+          {currentStep === 3 && (
             <div className="space-y-6">
               <div className="text-center mb-6">
                 <h2 className="text-2xl font-bold text-gray-900 mb-3">Complete Your Payment</h2>
@@ -1099,7 +1092,7 @@ const MobileMultiStepTransferSheetPage: React.FC = () => {
             </div>
           )}
           
-          {currentStep === 5 && (
+          {currentStep === 4 && (
             <div className="space-y-4">              
               <div 
                 ref={receiptRef}
@@ -1213,8 +1206,8 @@ const MobileMultiStepTransferSheetPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Sticky Navigation Buttons - Exclude step 4 */}
-      {(currentStep < 4 || currentStep === 5) && (
+      {/* Sticky Navigation Buttons - Exclude step 3 */}
+      {(currentStep < 3 || currentStep === 4) && (
         <div className="fixed bottom-0 left-0 right-0 border-t bg-white px-4 py-3 z-50 shadow-lg">
           <div className="flex gap-3 max-w-md mx-auto">
             {currentStep === 1 ? (
@@ -1237,13 +1230,12 @@ const MobileMultiStepTransferSheetPage: React.FC = () => {
                   Previous
                 </Button>
                 
-                {currentStep < 5 ? (
+                {currentStep < 4 ? (
                   <Button 
                     onClick={handleNextStep}
                     disabled={
                       (currentStep === 2 && !canProceedFromStep2) ||
-                      (currentStep === 3 && !canProceedFromStep3) ||
-                      (currentStep === 4 && !canProceedFromStep4)
+                      (currentStep === 3 && !canProceedFromStep3)
                     }
                     className="flex-1 transition-all duration-200"
                   >
@@ -1264,8 +1256,8 @@ const MobileMultiStepTransferSheetPage: React.FC = () => {
         </div>
       )}
 
-      {/* Sticky Pay Button for Step 4 Only */}
-      {currentStep === 4 && (
+      {/* Sticky Pay Button for Step 3 Only */}
+      {currentStep === 3 && (
         <div className="fixed bottom-0 left-0 right-0 border-t bg-white px-4 py-3 z-50 shadow-lg">
           <div className="max-w-md mx-auto">
             <Button 
