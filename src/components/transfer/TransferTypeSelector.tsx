@@ -2,6 +2,7 @@
 import React from 'react';
 import { Globe, Banknote } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useNavigate, useLocation } from 'react-router-dom';
 
 interface TransferTypeSelectorProps {
   transferType: 'international' | 'national';
@@ -9,10 +10,24 @@ interface TransferTypeSelectorProps {
 }
 
 const TransferTypeSelector: React.FC<TransferTypeSelectorProps> = ({ transferType, onTransferTypeChange }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleTransferTypeChange = (value: 'international' | 'national') => {
+    onTransferTypeChange(value);
+    
+    // Navigate to appropriate route based on transfer type
+    if (value === 'national' && location.pathname !== '/local-transfer') {
+      navigate('/local-transfer');
+    } else if (value === 'international' && location.pathname === '/local-transfer') {
+      navigate('/multi-step-transfer-page');
+    }
+  };
+
   return (
     <Tabs 
       value={transferType} 
-      onValueChange={(value) => onTransferTypeChange(value as 'international' | 'national')}
+      onValueChange={(value) => handleTransferTypeChange(value as 'international' | 'national')}
       className="mb-4"
     >
       <TabsList className="grid w-full grid-cols-2">

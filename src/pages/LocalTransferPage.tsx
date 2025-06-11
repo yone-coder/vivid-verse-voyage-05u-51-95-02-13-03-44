@@ -8,8 +8,8 @@ const LocalTransferPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-white">
       <DeviceRouter
-        mobileComponent={MobileLocalTransferSheetPage}
-        desktopComponent={DesktopMultiStepTransferPage}
+        mobileComponent={() => <MobileLocalTransferSheetPage defaultTransferType="national" />}
+        desktopComponent={() => <DesktopMultiStepTransferPage defaultTransferType="national" />}
       />
     </div>
   );

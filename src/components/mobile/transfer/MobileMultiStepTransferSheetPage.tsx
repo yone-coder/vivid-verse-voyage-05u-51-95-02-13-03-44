@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, CheckCircle, Receipt, ChevronLeft, X, Key, Globe } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import html2canvas from 'html2canvas';
 import TransferTypeSelector from '@/components/transfer/TransferTypeSelector';
 import StepOneTransfer from '@/components/transfer/StepOneTransfer';
+import StepOneLocalTransfer from '@/components/transfer/StepOneLocalTransfer';
 import StepTwoTransfer from '@/components/transfer/StepTwoTransfer';
 import PaymentMethodList from '@/components/transfer/PaymentMethodList';
 import { internationalPaymentMethods } from '@/components/transfer/PaymentMethods';
