@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Loader2, TrendingUp, Shield, Clock, Zap, ArrowUpDown } from 'lucide-react';
+import { Loader2, TrendingUp, ArrowUpDown } from 'lucide-react';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
@@ -73,27 +73,27 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
   const totalAmount = usdAmount + transferFee;
 
   return (
-    <div className="max-w-md mx-auto space-y-4">
-      {/* Exchange Rate Card - Black, White, Blue theme */}
-      <div className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl p-3 border border-blue-200 shadow-sm">
+    <div className="max-w-md mx-auto space-y-6">
+      {/* Exchange Rate Card */}
+      <div className="bg-card rounded-lg border p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="p-1 bg-blue-100 rounded-lg">
-              <TrendingUp className="h-3 w-3 text-blue-600" />
+            <div className="p-2 bg-muted rounded-lg">
+              <TrendingUp className="h-4 w-4 text-foreground" />
             </div>
-            <span className="text-xs font-semibold text-blue-600">Exchange Rate</span>
+            <span className="text-sm font-medium text-foreground">Exchange Rate</span>
           </div>
           
           {isLoading ? (
             <div className="flex items-center gap-2">
-              <Loader2 className="h-3 w-3 animate-spin text-blue-500" />
-              <span className="text-xs text-blue-600 font-medium">Updating...</span>
+              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+              <span className="text-sm text-muted-foreground">Updating...</span>
             </div>
           ) : (
             <div className="text-right">
               <div className="flex items-center gap-2 justify-end">
-                <div className={`w-1.5 h-1.5 rounded-full ${exchangeRate?.isLive ? 'bg-green-500 animate-pulse' : 'bg-blue-500 animate-pulse'}`} />
-                <div className="text-xs font-bold text-black">
+                <div className={`w-2 h-2 rounded-full ${exchangeRate?.isLive ? 'bg-green-500' : 'bg-primary'} animate-pulse`} />
+                <div className="text-sm font-semibold text-foreground">
                   1 USD = {exchangeRate?.usdToHtg.toFixed(2)} HTG
                 </div>
               </div>
@@ -102,20 +102,20 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
         </div>
       </div>
 
-      {/* Send Amount Input Card - Black, White, Blue theme */}
-      <div className="bg-white rounded-xl border border-gray-300 shadow-sm overflow-hidden hover:border-blue-500 transition-colors">
-        <div className="p-3 pb-2">
-          <Label htmlFor="amount" className="text-xs font-bold text-black mb-2 block uppercase tracking-wide">
+      {/* Send Amount Input Card */}
+      <div className="bg-card rounded-lg border overflow-hidden">
+        <div className="p-4">
+          <Label htmlFor="amount" className="text-sm font-medium text-foreground mb-3 block">
             Send Amount
           </Label>
           <div className="relative">
             <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-              <span className="text-blue-600 font-bold text-xl">$</span>
+              <span className="text-foreground font-semibold text-xl">$</span>
             </div>
             <Input
               id="amount"
               type="number"
-              className="pl-8 pr-12 text-2xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-black placeholder-gray-400 placeholder:text-2xl placeholder:font-light h-12"
+              className="pl-8 pr-16 text-2xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-foreground placeholder:text-muted-foreground placeholder:text-2xl placeholder:font-light h-14"
               placeholder="0.00"
               value={amount}
               onChange={(e) => handleSendAmountChange(e.target.value)}
@@ -123,7 +123,7 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
               step="0.01"
             />
             <div className="absolute inset-y-0 right-3 flex items-center">
-              <span className="text-xs font-bold text-blue-600 bg-blue-100 px-2 py-0.5 rounded-full">
+              <span className="text-xs font-medium text-muted-foreground bg-muted px-2 py-1 rounded">
                 USD
               </span>
             </div>
@@ -131,27 +131,27 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
         </div>
       </div>
 
-      {/* Double Arrows - Black, White, Blue theme */}
+      {/* Exchange Arrow */}
       <div className="flex justify-center">
-        <div className="p-1.5 bg-gray-100 rounded-full border border-gray-300">
-          <ArrowUpDown className="h-4 w-4 text-blue-600" />
+        <div className="p-2 bg-muted rounded-full border">
+          <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
         </div>
       </div>
 
-      {/* Receiver Amount Input Card - Black, White, Blue theme */}
-      <div className="bg-white rounded-xl border border-gray-300 shadow-sm overflow-hidden hover:border-blue-500 transition-colors">
-        <div className="p-3 pb-2">
-          <Label htmlFor="receiverAmount" className="text-xs font-bold text-black mb-2 block uppercase tracking-wide">
+      {/* Receiver Amount Input Card */}
+      <div className="bg-card rounded-lg border overflow-hidden">
+        <div className="p-4">
+          <Label htmlFor="receiverAmount" className="text-sm font-medium text-foreground mb-3 block">
             Receiver Gets
           </Label>
           <div className="relative">
             <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-              <span className="text-blue-600 font-bold text-sm">HTG</span>
+              <span className="text-foreground font-semibold text-sm">HTG</span>
             </div>
             <Input
               id="receiverAmount"
               type="number"
-              className="pl-12 pr-12 text-2xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-black placeholder-gray-400 placeholder:text-2xl placeholder:font-light h-12"
+              className="pl-12 pr-16 text-2xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-foreground placeholder:text-muted-foreground placeholder:text-2xl placeholder:font-light h-14"
               placeholder="0.00"
               value={receiverAmount}
               onChange={(e) => handleReceiveAmountChange(e.target.value)}
@@ -159,7 +159,7 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
               step="0.01"
             />
             <div className="absolute inset-y-0 right-3 flex items-center">
-              <span className="text-xs font-bold text-blue-600 bg-blue-100 px-2 py-0.5 rounded-full">
+              <span className="text-xs font-medium text-muted-foreground bg-muted px-2 py-1 rounded">
                 HTG
               </span>
             </div>
@@ -167,17 +167,17 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
         </div>
       </div>
 
-      {/* Fee Breakdown - Black, White, Blue theme */}
-      <div className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl border border-gray-300 shadow-sm p-3">
-        <div className="space-y-2">
-          <div className="flex items-center justify-between text-xs">
-            <span className="text-gray-700 font-medium">Transfer fee</span>
-            <span className="font-bold text-blue-600">${transferFee.toFixed(2)}</span>
+      {/* Fee Breakdown */}
+      <div className="bg-muted/50 rounded-lg border p-4">
+        <div className="space-y-3">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-muted-foreground">Transfer fee</span>
+            <span className="font-medium text-foreground">${transferFee.toFixed(2)}</span>
           </div>
-          <div className="border-t border-gray-200 pt-2">
+          <div className="border-t pt-3">
             <div className="flex items-center justify-between">
-              <span className="font-bold text-black text-sm">Total to pay</span>
-              <span className="text-xl font-bold text-blue-600">
+              <span className="font-semibold text-foreground">Total to pay</span>
+              <span className="text-xl font-bold text-foreground">
                 ${totalAmount.toFixed(2)}
               </span>
             </div>
