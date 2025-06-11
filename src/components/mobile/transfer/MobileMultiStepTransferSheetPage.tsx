@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, CheckCircle, Receipt, ChevronLeft, X, Key, Globe } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -29,7 +28,13 @@ export interface TransferData {
   selectedPaymentMethod?: string;
 }
 
-const MobileMultiStepTransferSheetPage: React.FC = () => {
+interface MobileMultiStepTransferSheetPageProps {
+  defaultTransferType?: 'international' | 'national';
+}
+
+const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPageProps> = ({ 
+  defaultTransferType = 'international' 
+}) => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [paymentCompleted, setPaymentCompleted] = useState(false);
@@ -41,7 +46,7 @@ const MobileMultiStepTransferSheetPage: React.FC = () => {
   const receiptRef = useRef<HTMLDivElement>(null);
   
   const [transferData, setTransferData] = useState<TransferData>({
-    transferType: 'international',
+    transferType: defaultTransferType,
     amount: '100.00',
     receiverDetails: {
       firstName: '',
@@ -1036,10 +1041,17 @@ const MobileMultiStepTransferSheetPage: React.FC = () => {
                   <p className="text-gray-600">Enter the amount you want to send</p>
                 </div>
                 
-                <StepOneTransfer 
-                  amount={transferData.amount}
-                  onAmountChange={(amount) => updateTransferData({ amount })}
-                />
+                {transferData.transferType === 'national' ? (
+                  <StepOneLocalTransfer 
+                    amount={transferData.amount}
+                    onAmountChange={(amount) => updateTransferData({ amount })}
+                  />
+                ) : (
+                  <StepOneTransfer 
+                    amount={transferData.amount}
+                    onAmountChange={(amount) => updateTransferData({ amount })}
+                  />
+                )}
               </div>
             </div>
           )}
