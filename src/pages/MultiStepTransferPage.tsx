@@ -127,7 +127,49 @@ const MultiStepTransferPage: React.FC = () => {
         )}
         
         {currentStep === 3 && (
-          <StepThreeTransfer amount={transferData.amount} />
+          <div className="space-y-4">
+            <div className="text-center mb-6">
+              <h3 className="text-lg font-semibold">Payment Details</h3>
+              <p className="text-gray-600">
+                {transferData.transferType === 'national' 
+                  ? `Complete your HTG ${(parseFloat(transferData.amount || '0') * 127.5).toFixed(2)} transfer`
+                  : `Complete your $${transferData.amount} transfer`
+                }
+              </p>
+            </div>
+            
+            <div className="bg-white rounded-lg border border-gray-200 p-4 space-y-3">
+              <div className="flex justify-between">
+                <span className="text-gray-600">Recipient:</span>
+                <span className="font-medium">
+                  {transferData.receiverDetails.firstName} {transferData.receiverDetails.lastName}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Amount:</span>
+                <span className="font-medium">
+                  {transferData.transferType === 'national' 
+                    ? `HTG ${(parseFloat(transferData.amount || '0') * 127.5).toFixed(2)}`
+                    : `$${transferData.amount}`
+                  }
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Transfer Type:</span>
+                <span className="font-medium capitalize">
+                  {transferData.transferType}
+                </span>
+              </div>
+            </div>
+            
+            <StepThreeTransfer 
+              amount={transferData.amount}
+              onPaymentSuccess={() => {
+                console.log('Payment successful for', transferData.transferType, 'transfer');
+                // Handle payment success
+              }}
+            />
+          </div>
         )}
       </div>
 
