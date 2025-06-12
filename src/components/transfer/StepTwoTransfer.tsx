@@ -75,7 +75,7 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
         <Input
           id="fullName"
           type="text"
-          placeholder="Enter full name"
+          placeholder="First name Last name"
           value={fullName}
           onChange={(e) => handleFullNameChange(e.target.value)}
           className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
