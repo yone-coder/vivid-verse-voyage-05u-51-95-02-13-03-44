@@ -30,6 +30,7 @@ import Logo from '../../home/Logo';
 import MobileTransferInput from './MobileTransferInput';
 import MobileLanguageBottomSheet from './MobileLanguageBottomSheet';
 import { useLanguage } from '@/context/LanguageContext';
+import PaytmBottomNav from './PaytmBottomNav';
 import {
   Carousel,
   CarouselContent,
@@ -122,9 +123,9 @@ export default function PaytmMobileHome() {
   ];
 
   return (
-    <div className="max-w-sm mx-auto bg-gray-50 min-h-screen">
-      {/* Header - Exact match to provided code */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
+    <div className="max-w-sm mx-auto bg-gray-50 min-h-screen pb-20">
+      {/* Sticky Header */}
+      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
         {/* Top Header */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-12">
@@ -192,41 +193,6 @@ export default function PaytmMobileHome() {
                 )}
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* Navigation Tabs */}
-        <div className="border-t border-gray-200">
-          <div className="max-w-7xl mx-auto">
-            <nav className="grid grid-cols-2" aria-label="Tabs">
-              <button
-                onClick={() => {
-                  setActiveTab('international');
-                  handleInternationalTransfer();
-                }}
-                className={`py-2 px-4 border-b-2 font-medium text-sm text-center transition-colors duration-200 ${
-                  activeTab === 'international'
-                    ? 'border-blue-500 text-blue-600 bg-blue-50'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50'
-                }`}
-              >
-                Transfè Entenasyonal
-              </button>
-              
-              <button
-                onClick={() => {
-                  setActiveTab('national');
-                  handleLocalTransferClick();
-                }}
-                className={`py-2 px-4 border-b-2 font-medium text-sm text-center transition-colors duration-200 ${
-                  activeTab === 'national'
-                    ? 'border-blue-500 text-blue-600 bg-blue-50'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50'
-                }`}
-              >
-                Transfer Nasyonal
-              </button>
-            </nav>
           </div>
         </div>
 
@@ -465,6 +431,9 @@ export default function PaytmMobileHome() {
           </div>
         </div>
       </div>
+
+      {/* Bottom Navigation */}
+      <PaytmBottomNav />
     </div>
   );
 }
