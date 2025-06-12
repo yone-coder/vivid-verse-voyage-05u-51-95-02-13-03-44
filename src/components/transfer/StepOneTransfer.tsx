@@ -29,6 +29,14 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
 
   return (
     <div className="space-y-4">
+      {/* Exchange Rate Section */}
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200 p-3">
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-medium text-gray-700">Exchange rate</span>
+          <span className="font-bold text-blue-600">1 USD = {usdToHtgRate} HTG</span>
+        </div>
+      </div>
+
       {/* Send Amount Input */}
       <div className="bg-white rounded-xl border border-blue-300 overflow-hidden">
         <div className="p-3 pb-2">
@@ -81,14 +89,6 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
               </span>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Exchange Rate Section */}
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200 p-3">
-        <div className="flex items-center justify-between">
-          <span className="text-sm font-medium text-gray-700">Exchange rate</span>
-          <span className="font-bold text-blue-600">1 USD = {usdToHtgRate} HTG</span>
         </div>
       </div>
 
