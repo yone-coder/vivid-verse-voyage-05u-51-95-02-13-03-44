@@ -26,18 +26,6 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
     });
   };
 
-  const handleFullNameChange = (fullName: string) => {
-    const names = fullName.trim().split(' ');
-    const firstName = names[0] || '';
-    const lastName = names.slice(1).join(' ') || '';
-    
-    onDetailsChange({
-      ...receiverDetails,
-      firstName,
-      lastName,
-    });
-  };
-
   const haitiDepartments = [
     "Artibonite",
     "Centre",
@@ -64,22 +52,30 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
     "Sud-Est": ["Jacmel", "Marigot", "Cayes-Jacmel", "Bainet", "Côtes-de-Fer", "Grand-Gosier", "Anse-à-Pitres", "Belle-Anse", "Thiotte", "La Vallée", "Banatte", "Corail-Sourd"]
   };
 
-  const fullName = `${receiverDetails.firstName} ${receiverDetails.lastName}`.trim();
-
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <Label htmlFor="fullName" className="text-base font-medium text-gray-700">
+        <Label htmlFor="firstName" className="text-base font-medium text-gray-700">
           What's their full name?
         </Label>
-        <Input
-          id="fullName"
-          type="text"
-          placeholder="First name Last name"
-          value={fullName}
-          onChange={(e) => handleFullNameChange(e.target.value)}
-          className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-        />
+        <div className="grid grid-cols-2 gap-3">
+          <Input
+            id="firstName"
+            type="text"
+            placeholder="First name"
+            value={receiverDetails.firstName}
+            onChange={(e) => handleInputChange('firstName', e.target.value)}
+            className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+          />
+          <Input
+            id="lastName"
+            type="text"
+            placeholder="Last name"
+            value={receiverDetails.lastName}
+            onChange={(e) => handleInputChange('lastName', e.target.value)}
+            className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+          />
+        </div>
       </div>
 
       <div className="space-y-2">

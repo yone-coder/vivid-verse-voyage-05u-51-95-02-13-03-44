@@ -84,16 +84,20 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
         </div>
       </div>
 
+      {/* Exchange Rate Section */}
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200 p-3">
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-medium text-gray-700">Exchange rate</span>
+          <span className="font-bold text-blue-600">1 USD = {usdToHtgRate} HTG</span>
+        </div>
+      </div>
+
       {/* Fee Breakdown */}
       <div className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-xl border border-blue-200 p-3">
         <div className="space-y-2">
           <div className="flex items-center justify-between text-xs">
             <span className="text-gray-600 font-medium">Transfer fee</span>
             <span className="font-bold text-blue-600">${transferFee.toFixed(2)}</span>
-          </div>
-          <div className="flex items-center justify-between text-xs">
-            <span className="text-gray-600 font-medium">Exchange rate</span>
-            <span className="font-bold text-blue-600">1 USD = {usdToHtgRate} HTG</span>
           </div>
           <div className="border-t border-blue-100 pt-2">
             <div className="flex items-center justify-between">
