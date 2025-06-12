@@ -9,8 +9,8 @@ const LocalTransferPage = () => {
   return (
     <LanguageProvider>
       <DeviceRouter
-        mobile={<MobileLocalTransferSheetPage />}
-        desktop={<MobileLocalTransferSheetPage />}
+        mobileComponent={MobileLocalTransferSheetPage}
+        desktopComponent={MobileLocalTransferSheetPage}
       />
     </LanguageProvider>
   );

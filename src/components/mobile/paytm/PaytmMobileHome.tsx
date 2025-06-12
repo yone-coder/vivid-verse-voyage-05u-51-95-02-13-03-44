@@ -123,51 +123,74 @@ export default function PaytmMobileHome() {
 
   return (
     <div className="max-w-sm mx-auto bg-gray-50 min-h-screen">
-      {/* New Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+      {/* Header - Exact match to provided code */}
+      <header className="bg-white shadow-sm border-b border-gray-200">
         {/* Top Header */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-12">
-            {/* Logo and Title */}
-            <div className="flex items-center gap-3">
-              <img
-                src="/lovable-uploads/45eddf56-11aa-4191-b09a-dc6ebfe3e7cc.png"
-                alt="Global Transfer Logo"
-                className="w-8 h-8 rounded-full object-cover shadow-sm"
-              />
-              <h1 className="text-lg font-semibold text-gray-900">Global Transfè</h1>
+            {/* Logo */}
+            <div className="flex-shrink-0">
+              <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                <span className="text-white font-bold text-sm">T</span>
+              </div>
             </div>
 
-            {/* Language Selector */}
-            <div className="relative">
-              <button
-                onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
-                className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center justify-center transition-colors"
-              >
-                <span className="text-sm">{getCurrentLanguage()?.flag}</span>
+            {/* Search Bar */}
+            <div className="flex-1 mx-4">
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Search className="h-4 w-4 text-gray-400" />
+                </div>
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-full leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Chèche transfè yo..."
+                />
+              </div>
+            </div>
+
+            {/* Notifications and Language Selector */}
+            <div className="flex items-center space-x-2">
+              {/* Notifications */}
+              <button className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center justify-center transition-colors relative">
+                <Bell className="h-4 w-4 text-gray-600" />
+                {/* Notification badge */}
+                <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-red-500 rounded-full"></span>
               </button>
 
-              {showLanguageDropdown && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
-                  {languages.map((language) => (
-                    <button
-                      key={language.code}
-                      onClick={() => {
-                        setSelectedLanguage(language.code);
-                        setShowLanguageDropdown(false);
-                      }}
-                      className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 flex items-center ${
-                        selectedLanguage === language.code 
-                          ? 'bg-blue-50 text-blue-700' 
-                          : 'text-gray-700'
-                      }`}
-                    >
-                      <span className="mr-3">{language.flag}</span>
-                      {language.name}
-                    </button>
-                  ))}
-                </div>
-              )}
+              {/* Language Selector */}
+              <div className="relative">
+                <button
+                  onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
+                  className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center justify-center transition-colors"
+                >
+                  <span className="text-sm">{getCurrentLanguage()?.flag}</span>
+                </button>
+
+                {showLanguageDropdown && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
+                    {languages.map((language) => (
+                      <button
+                        key={language.code}
+                        onClick={() => {
+                          setSelectedLanguage(language.code);
+                          setShowLanguageDropdown(false);
+                        }}
+                        className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 flex items-center ${
+                          selectedLanguage === language.code 
+                            ? 'bg-blue-50 text-blue-700' 
+                            : 'text-gray-700'
+                        }`}
+                      >
+                        <span className="mr-3">{language.flag}</span>
+                        {language.name}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
