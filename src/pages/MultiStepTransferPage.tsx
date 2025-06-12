@@ -1,8 +1,9 @@
 
 import React, { useState } from 'react';
-import { ArrowRight, ArrowLeft } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
+import { toast } from "@/hooks/use-toast";
 import TransferHeader from '@/components/transfer/TransferHeader';
 import TransferTypeSelector from '@/components/transfer/TransferTypeSelector';
 import StepOneTransfer from '@/components/transfer/StepOneTransfer';
@@ -23,6 +24,7 @@ export interface TransferData {
 
 const MultiStepTransferPage: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(0);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const navigate = useNavigate();
   const [transferData, setTransferData] = useState<TransferData>({
     transferType: undefined,
@@ -52,6 +54,74 @@ const MultiStepTransferPage: React.FC = () => {
 
   const updateTransferData = (data: Partial<TransferData>) => {
     setTransferData(prev => ({ ...prev, ...data }));
+  };
+
+  const handleMonCashPayment = async () => {
+    if (!transferData.amount || !transferData.receiverDetails.firstName) {
+      toast({
+        title: "Missing Information",
+        description: "Please complete all required fields before proceeding.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsProcessingPayment(true);
+
+    try {
+      // First get the access token
+      const tokenResponse = await fetch('https://moncash-backend.onrender.com/api/get-token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      if (!tokenResponse.ok) {
+        const errorData = await tokenResponse.json();
+        throw new Error(errorData.error || 'Failed to get MonCash access token');
+      }
+
+      const tokenData = await tokenResponse.json();
+      const accessToken = tokenData.accessToken;
+
+      if (!accessToken) {
+        throw new Error('Invalid access token received from MonCash');
+      }
+
+      // Create payment with access token
+      const orderId = `TX${Date.now()}`;
+      const paymentResponse = await fetch('https://moncash-backend.onrender.com/api/create-payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          accessToken,
+          amount: transferData.amount,
+          orderId
+        })
+      });
+
+      if (!paymentResponse.ok) {
+        const errorData = await paymentResponse.json();
+        throw new Error(errorData.error || 'Failed to create MonCash payment');
+      }
+
+      const paymentData = await paymentResponse.json();
+
+      if (!paymentData.paymentUrl) {
+        throw new Error('No payment URL received from MonCash');
+      }
+
+      // Redirect to MonCash payment page
+      window.location.href = paymentData.paymentUrl;
+
+    } catch (error) {
+      console.error('MonCash payment error:', error);
+      toast({
+        title: "Payment Failed",
+        description: error instanceof Error ? error.message : "Failed to process MonCash payment. Please try again.",
+        variant: "destructive",
+      });
+      setIsProcessingPayment(false);
+    }
   };
 
   const canProceedFromStep0 = transferData.transferType !== undefined;
@@ -161,14 +231,48 @@ const MultiStepTransferPage: React.FC = () => {
                 </span>
               </div>
             </div>
-            
-            <StepThreeTransfer 
-              amount={transferData.amount}
-              onPaymentSuccess={() => {
-                console.log('Payment successful for', transferData.transferType, 'transfer');
-                // Handle payment success
-              }}
-            />
+
+            {/* Payment Method Based on Transfer Type */}
+            {transferData.transferType === 'national' ? (
+              <div className="space-y-4">
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                  <h4 className="font-semibold text-red-800 mb-2">MonCash Payment</h4>
+                  <p className="text-sm text-red-700 mb-3">
+                    You will be redirected to MonCash to complete your payment securely.
+                  </p>
+                  <ul className="text-sm text-red-600 space-y-1">
+                    <li>• Make sure you have your MonCash account ready</li>
+                    <li>• Have sufficient funds in your MonCash wallet</li>
+                    <li>• Complete the payment on MonCash website</li>
+                    <li>• You will be redirected back after payment</li>
+                  </ul>
+                </div>
+                
+                <Button 
+                  onClick={handleMonCashPayment}
+                  disabled={isProcessingPayment}
+                  className="w-full bg-red-600 hover:bg-red-700 text-white"
+                  size="lg"
+                >
+                  {isProcessingPayment ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Processing MonCash Payment...
+                    </>
+                  ) : (
+                    'Pay with MonCash'
+                  )}
+                </Button>
+              </div>
+            ) : (
+              <StepThreeTransfer 
+                amount={transferData.amount}
+                onPaymentSuccess={() => {
+                  console.log('Payment successful for', transferData.transferType, 'transfer');
+                  // Handle payment success
+                }}
+              />
+            )}
           </div>
         )}
       </div>
