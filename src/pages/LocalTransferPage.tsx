@@ -1,17 +1,18 @@
 
 import React from 'react';
+import { useIsMobile } from '@/hooks/use-mobile';
 import DeviceRouter from '@/components/common/DeviceRouter';
 import MobileLocalTransferSheetPage from '@/components/mobile/transfer/MobileLocalTransferSheetPage';
-import DesktopMultiStepTransferPage from '@/components/desktop/transfer/DesktopMultiStepTransferPage';
+import { LanguageProvider } from '@/context/LanguageContext';
 
-const LocalTransferPage: React.FC = () => {
+const LocalTransferPage = () => {
   return (
-    <div className="min-h-screen bg-white">
+    <LanguageProvider>
       <DeviceRouter
-        mobileComponent={() => <MobileLocalTransferSheetPage defaultTransferType="national" />}
-        desktopComponent={() => <DesktopMultiStepTransferPage defaultTransferType="national" />}
+        mobile={<MobileLocalTransferSheetPage />}
+        desktop={<MobileLocalTransferSheetPage />}
       />
-    </div>
+    </LanguageProvider>
   );
 };
 

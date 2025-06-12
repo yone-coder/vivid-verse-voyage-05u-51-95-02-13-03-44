@@ -43,6 +43,9 @@ export default function PaytmMobileHome() {
   const [amount, setAmount] = useState('');
   const [isLanguageSheetOpen, setIsLanguageSheetOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [activeTab, setActiveTab] = useState('international');
+  const [selectedLanguage, setSelectedLanguage] = useState('ht');
+  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
   const { t, currentLanguage, currentLocation } = useLanguage();
 
   const handleSendClick = () => {
@@ -60,6 +63,17 @@ export default function PaytmMobileHome() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Searching for:', searchQuery);
+  };
+
+  const languages = [
+    { code: 'ht', name: 'Kreyòl', flag: '🇭🇹' },
+    { code: 'en', name: 'English', flag: '🇺🇸' },
+    { code: 'fr', name: 'Français', flag: '🇫🇷' },
+    { code: 'es', name: 'Español', flag: '🇪🇸' }
+  ];
+
+  const getCurrentLanguage = () => {
+    return languages.find(lang => lang.code === selectedLanguage);
   };
 
   const videoTutorials = [
@@ -109,40 +123,98 @@ export default function PaytmMobileHome() {
 
   return (
     <div className="max-w-sm mx-auto bg-gray-50 min-h-screen">
-      {/* Reduced Height Header - Logo, Title, Language Selector Only */}
-      <div className="sticky top-0 z-50 bg-gray-50 px-4 py-2 border-b border-gray-100">
-        <div className="flex items-center justify-between">
-          {/* Logo and Title */}
-          <div className="flex items-center gap-3">
-            <img
-              src="/lovable-uploads/45eddf56-11aa-4191-b09a-dc6ebfe3e7cc.png"
-              alt="Global Transfer Logo"
-              className="w-8 h-8 rounded-full object-cover shadow-sm"
-            />
-            <h1 className="text-lg font-semibold text-gray-900">Global Transfè</h1>
-          </div>
-          
-          {/* Language Selector */}
-          <MobileLanguageBottomSheet 
-            isOpen={isLanguageSheetOpen}
-            onOpenChange={setIsLanguageSheetOpen}
-          >
-            <button className="w-8 h-8 rounded-full border-2 border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-              {currentLocation.flag ? (
-                <img
-                  src={`https://flagcdn.com/${currentLocation.flag.toLowerCase()}.svg`}
-                  alt={currentLocation.name}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-                  <Globe className="h-4 w-4 text-gray-600" />
+      {/* New Header */}
+      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+        {/* Top Header */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-12">
+            {/* Logo and Title */}
+            <div className="flex items-center gap-3">
+              <img
+                src="/lovable-uploads/45eddf56-11aa-4191-b09a-dc6ebfe3e7cc.png"
+                alt="Global Transfer Logo"
+                className="w-8 h-8 rounded-full object-cover shadow-sm"
+              />
+              <h1 className="text-lg font-semibold text-gray-900">Global Transfè</h1>
+            </div>
+
+            {/* Language Selector */}
+            <div className="relative">
+              <button
+                onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
+                className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center justify-center transition-colors"
+              >
+                <span className="text-sm">{getCurrentLanguage()?.flag}</span>
+              </button>
+
+              {showLanguageDropdown && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
+                  {languages.map((language) => (
+                    <button
+                      key={language.code}
+                      onClick={() => {
+                        setSelectedLanguage(language.code);
+                        setShowLanguageDropdown(false);
+                      }}
+                      className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 flex items-center ${
+                        selectedLanguage === language.code 
+                          ? 'bg-blue-50 text-blue-700' 
+                          : 'text-gray-700'
+                      }`}
+                    >
+                      <span className="mr-3">{language.flag}</span>
+                      {language.name}
+                    </button>
+                  ))}
                 </div>
               )}
-            </button>
-          </MobileLanguageBottomSheet>
+            </div>
+          </div>
         </div>
-      </div>
+
+        {/* Navigation Tabs */}
+        <div className="border-t border-gray-200">
+          <div className="max-w-7xl mx-auto">
+            <nav className="grid grid-cols-2" aria-label="Tabs">
+              <button
+                onClick={() => {
+                  setActiveTab('international');
+                  handleInternationalTransfer();
+                }}
+                className={`py-2 px-4 border-b-2 font-medium text-sm text-center transition-colors duration-200 ${
+                  activeTab === 'international'
+                    ? 'border-blue-500 text-blue-600 bg-blue-50'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                }`}
+              >
+                Transfè Entenasyonal
+              </button>
+              
+              <button
+                onClick={() => {
+                  setActiveTab('national');
+                  handleLocalTransferClick();
+                }}
+                className={`py-2 px-4 border-b-2 font-medium text-sm text-center transition-colors duration-200 ${
+                  activeTab === 'national'
+                    ? 'border-blue-500 text-blue-600 bg-blue-50'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                }`}
+              >
+                Transfer Nasyonal
+              </button>
+            </nav>
+          </div>
+        </div>
+
+        {/* Click outside to close language dropdown */}
+        {showLanguageDropdown && (
+          <div 
+            className="fixed inset-0 z-40" 
+            onClick={() => setShowLanguageDropdown(false)}
+          />
+        )}
+      </header>
 
       {/* Quick Actions */}
       <div className="p-4 space-y-4">
