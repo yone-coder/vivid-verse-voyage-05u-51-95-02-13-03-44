@@ -171,7 +171,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
                               transferData.receiverDetails.commune;
   const canProceedFromStep4 = transferData.selectedPaymentMethod;
 
-  const stepTitles = ['Type', 'Amount', 'Recipient', 'Payment', 'Review', 'Complete'];
+  const stepTitles = ['Transfer Type', 'Send Money', 'Recipient Details', 'Payment Method', 'Review & Pay', 'Transfer Complete'];
 
   // Animation variants for step indicator - similar to bottom nav
   const stepVariants = {
@@ -248,58 +248,95 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
         isFullHeight ? 'h-screen' : 'h-[95vh]'
       }`}
     >
-      {/* Header */}
+      {/* Header with Title only - removed X button */}
       <div className="flex items-center justify-center py-4 px-4 bg-white rounded-t-lg flex-shrink-0">
-        <h1 className="text-lg font-semibold text-gray-900">
+        <h1 className="text-xl font-semibold text-gray-900">
           {stepTitles[currentStep - 1]}
         </h1>
       </div>
       
-      {/* Sticky Transfer Type Selector for Step 1 */}
-      {currentStep === 1 && (
-        <div className="sticky top-0 z-10 bg-white border-b border-gray-100 flex-shrink-0">
-          <TransferTypeSelector 
-            transferType={transferData.transferType || 'international'}
-            onTransferTypeChange={(type) => updateTransferData({ transferType: type })}
-          />
-        </div>
-      )}
-      
-      {/* Step Indicator */}
-      <div className="px-4 py-2 flex-shrink-0">
-        <div className="flex items-center justify-center space-x-2">
+      {/* Animated Step Indicator */}
+      <div className="px-4 py-3 flex-shrink-0">
+        <div className="flex items-center justify-between">
           {[1, 2, 3, 4, 5, 6].map((step, index) => (
-            <div key={step} className="flex items-center">
-              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${
-                step === currentStep 
-                  ? 'bg-blue-600 text-white' 
-                  : step < currentStep 
-                  ? 'bg-green-600 text-white' 
-                  : 'bg-gray-200 text-gray-600'
-              }`}>
-                {step < currentStep ? '✓' : step}
+            <React.Fragment key={step}>
+              <div className="flex flex-col items-center">
+                <motion.div 
+                  className={`rounded-full flex items-center justify-center text-xs font-medium transition-all duration-300 shadow-sm ${
+                    step === currentStep 
+                      ? 'w-auto h-7 px-2 bg-red-600 text-white' 
+                      : 'w-7 h-7 bg-gray-200 text-gray-600'
+                  }`}
+                  variants={stepVariants}
+                  initial="inactive"
+                  animate={
+                    step === currentStep ? 'active' : 
+                    step < currentStep ? 'completed' : 
+                    'inactive'
+                  }
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {step < currentStep ? (
+                    <CheckCircle className="h-3 w-3" />
+                  ) : step === currentStep ? (
+                    <div className="flex items-center space-x-1">
+                      {step === 1 ? (
+                        <Globe className="h-3 w-3" />
+                      ) : step === 2 ? (
+                        <DollarSign className="h-3 w-3" />
+                      ) : step === 3 ? (
+                        <User className="h-3 w-3" />
+                      ) : step === 4 ? (
+                        <CreditCard className="h-3 w-3" />
+                      ) : step === 5 ? (
+                        <Shield className="h-3 w-3" />
+                      ) : (
+                        <Receipt className="h-3 w-3" />
+                      )}
+                      <span className="font-medium whitespace-nowrap text-xs">
+                        {stepTitles[index].split(' ')[0]}
+                      </span>
+                    </div>
+                  ) : (
+                    step
+                  )}
+                </motion.div>
               </div>
               {index < 5 && (
-                <div className={`w-8 h-0.5 mx-1 ${
-                  step < currentStep ? 'bg-green-600' : 'bg-gray-200'
-                }`} />
+                <motion.div 
+                  className="flex-1 h-0.5 mx-2 rounded-full origin-left"
+                  variants={lineVariants}
+                  initial="inactive"
+                  animate={step < currentStep ? 'active' : 'inactive'}
+                />
               )}
-            </div>
+            </React.Fragment>
           ))}
         </div>
       </div>
 
-      {/* Step Content */}
-      <div className="flex-1 overflow-y-auto pb-24">
+      {/* Step Content - Reduced padding and consistent spacing */}
+      <div className="flex-1 overflow-y-auto pb-64">
         <div className="px-4 py-4">
           {currentStep === 1 && (
             <div className="space-y-4">
-              {/* Content for step 1 - TransferTypeSelector is now sticky above */}
+              <div className="text-center mb-4">
+                <p className="text-gray-600">Choose your transfer type</p>
+              </div>
+              
+              <TransferTypeSelector 
+                transferType={transferData.transferType || 'international'}
+                onTransferTypeChange={(type) => updateTransferData({ transferType: type })}
+              />
             </div>
           )}
 
           {currentStep === 2 && (
             <div className="space-y-4">
+              <div className="text-center mb-4">
+                <p className="text-gray-600">Enter the amount you want to send</p>
+              </div>
+              
               <StepOneTransfer 
                 amount={transferData.amount}
                 onAmountChange={(amount) => updateTransferData({ amount })}
@@ -309,10 +346,24 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
           
           {currentStep === 3 && (
             <div className="space-y-4">
+              <div className="text-center mb-4">
+                <p className="text-gray-600">Who are you sending ${transferData.amount} to?</p>
+              </div>
+              
               <StepTwoTransfer 
                 receiverDetails={transferData.receiverDetails}
                 onDetailsChange={(receiverDetails) => updateTransferData({ receiverDetails })}
               />
+              
+              {(transferData.receiverDetails.firstName || transferData.receiverDetails.lastName) && (
+                <div className="bg-green-50 rounded-lg p-4 flex items-start space-x-3">
+                  <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
+                  <div>
+                    <h4 className="font-medium text-green-900">Secure Transfer</h4>
+                    <p className="text-sm text-green-700">Recipient information is encrypted and secure</p>
+                  </div>
+                </div>
+              )}
             </div>
           )}
           
@@ -501,40 +552,48 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
         </div>
       </div>
 
-      {/* Navigation */}
+      {/* Sticky Navigation Buttons - Only show for steps 1, 2, 3 and step 5+ */}
       {(currentStep < 4 || currentStep > 4) && (
         <div className="fixed bottom-0 left-0 right-0 border-t bg-white px-4 py-3 z-[60] shadow-lg">
           <div className="flex gap-3 max-w-md mx-auto">
-            {currentStep > 1 && currentStep < 6 && (
-              <button 
-                onClick={handlePreviousStep}
-                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
-              >
-                Back
-              </button>
-            )}
-            
-            {currentStep < 5 ? (
-              <button 
+            {currentStep === 1 ? (
+              <Button 
                 onClick={handleNextStep}
-                disabled={
-                  (currentStep === 1 && !canProceedFromStep1) ||
-                  (currentStep === 2 && !canProceedFromStep2) ||
-                  (currentStep === 3 && !canProceedFromStep3) ||
-                  (currentStep === 4 && !canProceedFromStep4)
-                }
-                className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:bg-gray-300"
+                disabled={!canProceedFromStep1}
+                className="flex-1 transition-all duration-200"
               >
                 Continue
-              </button>
-            ) : currentStep === 6 ? (
-              <button 
-                onClick={onClose}
-                className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-              >
-                Done
-              </button>
-            ) : null}
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            ) : (
+              <>
+                <Button 
+                  variant="outline" 
+                  onClick={handlePreviousStep}
+                  className="flex-1 transition-all duration-200"
+                >
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Previous
+                </Button>
+                
+                {currentStep < 5 ? (
+                  <Button 
+                    onClick={handleNextStep}
+                    disabled={
+                      (currentStep === 2 && !canProceedFromStep2) ||
+                      (currentStep === 3 && !canProceedFromStep3) ||
+                      (currentStep === 4 && !canProceedFromStep4)
+                    }
+                    className="flex-1 transition-all duration-200"
+                  >
+                    Next
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                ) : (
+                  <div className="flex-1"></div>
+                )}
+              </>
+            )}
           </div>
         </div>
       )}
