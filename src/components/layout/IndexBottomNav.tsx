@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
-  Send, History, MapPin, User, X
+  Send, History, MapPin, User, Route, X
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
@@ -26,7 +26,8 @@ interface BottomNavTab {
 const navItems: BottomNavTab[] = [
   { id: 'send', name: 'Send', icon: Send, path: '/' }, 
   { id: 'history', name: 'History', icon: History, path: '/transfer-history' },
-  { id: 'track', name: 'Track', icon: MapPin, path: '/track-transfer' },
+  { id: 'track', name: 'Track', icon: Route, path: '/track-transfer' },
+  { id: 'locations', name: 'Locations', icon: MapPin, path: '/locations' },
   { id: 'account', name: 'Account', icon: User, path: '/account' },
 ];
 
