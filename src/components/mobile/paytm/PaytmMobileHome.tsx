@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { 
   Send, 
@@ -32,6 +31,7 @@ import MobileLanguageBottomSheet from './MobileLanguageBottomSheet';
 import { useLanguage } from '@/context/LanguageContext';
 import PaytmBottomNav from './PaytmBottomNav';
 import PaytmMobileHeader from './PaytmMobileHeader';
+import PaytmHeroBanner from './PaytmHeroBanner';
 import {
   Carousel,
   CarouselContent,
@@ -125,11 +125,14 @@ export default function PaytmMobileHome() {
 
   return (
     <div className="max-w-sm mx-auto bg-gray-50 min-h-screen pb-20">
-      {/* Use PaytmMobileHeader instead of AliExpressHeader */}
-      <PaytmMobileHeader activeTabId="transfer" />
+      {/* Use PaytmMobileHeader */}
+      <PaytmMobileHeader activeTabId="quick-send" />
 
       {/* Add top margin to account for fixed header */}
       <div className="mt-20">
+        {/* Add PaytmHeroBanner after header */}
+        <PaytmHeroBanner />
+
         {/* Quick Actions */}
         <div className="p-4 space-y-4">
           {/* Quick Transfer Options Card */}
