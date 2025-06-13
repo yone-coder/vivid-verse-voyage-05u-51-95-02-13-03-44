@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Globe, MapPin } from 'lucide-react';
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface TransferTypeSelectorProps {
   transferType: 'international' | 'national';
@@ -12,73 +13,25 @@ const TransferTypeSelector: React.FC<TransferTypeSelectorProps> = ({
   onTransferTypeChange
 }) => {
   return (
-    <div className="space-y-4">
-      {/* Simple Toggle Options */}
-      <div className="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
-        <div className="grid grid-cols-2 gap-3">
-          <button
-            onClick={() => onTransferTypeChange('international')}
-            className={`p-4 rounded-lg border-2 transition-all ${
-              transferType === 'international'
-                ? 'border-blue-500 bg-blue-50'
-                : 'border-gray-200 bg-white hover:border-gray-300'
-            }`}
+    <div className="w-full">
+      <Tabs value={transferType} onValueChange={onTransferTypeChange} className="w-full">
+        <TabsList className="grid w-full grid-cols-2 h-12 bg-gray-100 p-1">
+          <TabsTrigger 
+            value="international" 
+            className="flex items-center space-x-2 data-[state=active]:bg-white data-[state=active]:shadow-sm"
           >
-            <div className="flex flex-col items-center space-y-2">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                transferType === 'international' ? 'bg-blue-100' : 'bg-gray-100'
-              }`}>
-                <Globe className={`h-4 w-4 ${
-                  transferType === 'international' ? 'text-blue-600' : 'text-gray-600'
-                }`} />
-              </div>
-              <div className="text-center">
-                <h3 className={`font-medium text-sm ${
-                  transferType === 'international' ? 'text-blue-900' : 'text-gray-900'
-                }`}>
-                  International
-                </h3>
-                <p className={`text-xs ${
-                  transferType === 'international' ? 'text-blue-600' : 'text-gray-500'
-                }`}>
-                  USD to HTG
-                </p>
-              </div>
-            </div>
-          </button>
-
-          <button
-            onClick={() => onTransferTypeChange('national')}
-            className={`p-4 rounded-lg border-2 transition-all ${
-              transferType === 'national'
-                ? 'border-green-500 bg-green-50'
-                : 'border-gray-200 bg-white hover:border-gray-300'
-            }`}
+            <Globe className="h-4 w-4" />
+            <span>International</span>
+          </TabsTrigger>
+          <TabsTrigger 
+            value="national"
+            className="flex items-center space-x-2 data-[state=active]:bg-white data-[state=active]:shadow-sm"
           >
-            <div className="flex flex-col items-center space-y-2">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                transferType === 'national' ? 'bg-green-100' : 'bg-gray-100'
-              }`}>
-                <MapPin className={`h-4 w-4 ${
-                  transferType === 'national' ? 'text-green-600' : 'text-gray-600'
-                }`} />
-              </div>
-              <div className="text-center">
-                <h3 className={`font-medium text-sm ${
-                  transferType === 'national' ? 'text-green-900' : 'text-gray-900'
-                }`}>
-                  National
-                </h3>
-                <p className={`text-xs ${
-                  transferType === 'national' ? 'text-green-600' : 'text-gray-500'
-                }`}>
-                  HTG to HTG
-                </p>
-              </div>
-            </div>
-          </button>
-        </div>
-      </div>
+            <MapPin className="h-4 w-4" />
+            <span>National</span>
+          </TabsTrigger>
+        </TabsList>
+      </Tabs>
     </div>
   );
 };
