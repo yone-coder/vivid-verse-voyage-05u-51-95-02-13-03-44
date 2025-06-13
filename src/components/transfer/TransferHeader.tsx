@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const TransferHeader: React.FC = () => {
@@ -11,14 +11,14 @@ const TransferHeader: React.FC = () => {
   };
   
   return (
-    <div className="bg-white flex items-center p-4 sticky top-0 z-50 shadow-sm">
+    <div className="bg-blue-600 flex items-center p-4 sticky top-0 z-50 shadow-sm">
       <button 
         onClick={handleBackClick}
-        className="p-2 rounded-full hover:bg-gray-100"
+        className="p-2 rounded-full hover:bg-blue-700 text-white"
       >
-        <ArrowLeft size={20} />
+        <X size={20} />
       </button>
-      <h1 className="text-xl font-semibold ml-2">Send Money to Haiti</h1>
+      <h1 className="text-xl font-semibold ml-2 text-white">Global Transfè</h1>
     </div>
   );
 };
