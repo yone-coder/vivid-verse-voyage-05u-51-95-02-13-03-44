@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, CheckCircle, Receipt, ChevronLeft, X, Key, Globe } from 'lucide-react';
+import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, CheckCircle, Receipt, Search, Key, Globe } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -941,27 +941,22 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
         </div>
       )}
 
-      {/* Header with reduced height, back button (chevron), step title, and close button */}
-      <div className="bg-white sticky top-0 z-50">
-        <div className="flex items-center justify-between p-2 h-12">
-          <button 
-            onClick={handleBackClick}
-            className="p-2 rounded-full hover:bg-gray-100"
-          >
-            <ChevronLeft size={20} />
-          </button>
-          
-          <div className="flex-1 flex justify-center">
-            <h1 className="text-lg font-semibold text-gray-900">
-              {stepTitles[currentStep - 1]}
-            </h1>
+      {/* Header with blue background, GLOBAL TRANSFÈ, logo, and search icon */}
+      <div className="bg-blue-600 sticky top-0 z-50">
+        <div className="flex items-center justify-between p-4 h-16">
+          {/* Logo placeholder */}
+          <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+            <Globe className="w-5 h-5 text-blue-600" />
           </div>
           
-          <button 
-            onClick={handleCloseClick}
-            className="p-2 rounded-full hover:bg-gray-100"
-          >
-            <X size={20} />
+          {/* Title */}
+          <h1 className="text-xl font-bold text-white">
+            GLOBAL TRANSFÈ
+          </h1>
+          
+          {/* Search icon */}
+          <button className="p-2 rounded-full hover:bg-blue-700">
+            <Search className="w-5 h-5 text-white" />
           </button>
         </div>
         
