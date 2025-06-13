@@ -969,7 +969,7 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
         <div className="bg-white px-4 pt-3 pb-3">
           <div className="flex items-center justify-between">
             {[1, 2, 3, 4].map((step, index) => (
-              <React.Fragment key={step}>
+              <div key={step} className="flex items-center">
                 <div className="flex flex-col items-center">
                   <motion.div 
                     className={`rounded-full flex items-center justify-center text-xs font-medium transition-all duration-300 shadow-sm ${
@@ -1016,7 +1016,7 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
                     animate={step < currentStep ? 'active' : 'inactive'}
                   />
                 )}
-              </React.Fragment>
+              </div>
             ))}
           </div>
         </div>
