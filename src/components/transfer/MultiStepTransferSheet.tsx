@@ -248,14 +248,24 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
         isFullHeight ? 'h-screen' : 'h-[95vh]'
       }`}
     >
-      {/* Simplified Header */}
+      {/* Header */}
       <div className="flex items-center justify-center py-4 px-4 bg-white rounded-t-lg flex-shrink-0">
         <h1 className="text-lg font-semibold text-gray-900">
           {stepTitles[currentStep - 1]}
         </h1>
       </div>
       
-      {/* Simplified Step Indicator */}
+      {/* Sticky Transfer Type Selector for Step 1 */}
+      {currentStep === 1 && (
+        <div className="sticky top-0 z-10 bg-white border-b border-gray-100 flex-shrink-0">
+          <TransferTypeSelector 
+            transferType={transferData.transferType || 'international'}
+            onTransferTypeChange={(type) => updateTransferData({ transferType: type })}
+          />
+        </div>
+      )}
+      
+      {/* Step Indicator */}
       <div className="px-4 py-2 flex-shrink-0">
         <div className="flex items-center justify-center space-x-2">
           {[1, 2, 3, 4, 5, 6].map((step, index) => (
@@ -284,10 +294,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
         <div className="px-4 py-4">
           {currentStep === 1 && (
             <div className="space-y-4">
-              <TransferTypeSelector 
-                transferType={transferData.transferType || 'international'}
-                onTransferTypeChange={(type) => updateTransferData({ transferType: type })}
-              />
+              {/* Content for step 1 - TransferTypeSelector is now sticky above */}
             </div>
           )}
 
@@ -494,7 +501,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
         </div>
       </div>
 
-      {/* Simplified Navigation */}
+      {/* Navigation */}
       {(currentStep < 4 || currentStep > 4) && (
         <div className="fixed bottom-0 left-0 right-0 border-t bg-white px-4 py-3 z-[60] shadow-lg">
           <div className="flex gap-3 max-w-md mx-auto">
