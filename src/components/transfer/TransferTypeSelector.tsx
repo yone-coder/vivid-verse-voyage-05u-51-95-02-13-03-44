@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { Globe, Banknote } from 'lucide-react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useNavigate, useLocation } from 'react-router-dom';
 
 interface TransferTypeSelectorProps {
@@ -25,34 +24,51 @@ const TransferTypeSelector: React.FC<TransferTypeSelectorProps> = ({ transferTyp
   };
 
   return (
-    <Tabs 
-      value={transferType} 
-      onValueChange={(value) => handleTransferTypeChange(value as 'international' | 'national')}
-      className="mb-4"
-    >
-      <TabsList className="grid w-full grid-cols-2">
-        <TabsTrigger value="international" className="flex items-center gap-2">
-          <Globe size={16} />
-          <span>International (USD)</span>
-        </TabsTrigger>
-        <TabsTrigger value="national" className="flex items-center gap-2">
-          <Banknote size={16} />
-          <span>National (HTG)</span>
-        </TabsTrigger>
-      </TabsList>
+    <div className="mb-4">
+      {/* Classic Underline Tab Style */}
+      <div className="w-full border-b border-gray-200">
+        <div className="flex">
+          <button
+            onClick={() => handleTransferTypeChange('international')}
+            className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
+              transferType === 'international'
+                ? 'border-blue-600 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            <Globe size={16} />
+            <span>International (USD)</span>
+          </button>
+          
+          <button
+            onClick={() => handleTransferTypeChange('national')}
+            className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
+              transferType === 'national'
+                ? 'border-blue-600 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            <Banknote size={16} />
+            <span>National (HTG)</span>
+          </button>
+        </div>
+      </div>
       
-      <TabsContent value="international">
-        <p className="text-sm text-gray-600 mb-4">
-          Send money internationally to Haiti in US Dollars from anywhere in the world.
-        </p>
-      </TabsContent>
-      
-      <TabsContent value="national">
-        <p className="text-sm text-gray-600 mb-4">
-          Transfer money locally within Haiti using Haitian Gourdes.
-        </p>
-      </TabsContent>
-    </Tabs>
+      {/* Tab Content */}
+      <div className="mt-4">
+        {transferType === 'international' && (
+          <p className="text-sm text-gray-600">
+            Send money internationally to Haiti in US Dollars from anywhere in the world.
+          </p>
+        )}
+        
+        {transferType === 'national' && (
+          <p className="text-sm text-gray-600">
+            Transfer money locally within Haiti using Haitian Gourdes.
+          </p>
+        )}
+      </div>
+    </div>
   );
 };
 
