@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, CheckCircle, Receipt, Search, Key, Globe } from 'lucide-react';
+import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, CheckCircle, Receipt, Search, Key, Globe, Loader2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { motion } from 'framer-motion';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import html2canvas from 'html2canvas';
+import { toast } from "@/hooks/use-toast";
 import TransferTypeSelector from '@/components/transfer/TransferTypeSelector';
 import StepOneTransfer from '@/components/transfer/StepOneTransfer';
 import StepOneLocalTransfer from '@/components/transfer/StepOneLocalTransfer';
@@ -44,6 +45,7 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
   const [transactionId, setTransactionId] = useState('');
   const [isPaymentLoading, setIsPaymentLoading] = useState(false);
   const [isPaymentFormValid, setIsPaymentFormValid] = useState(false);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [userEmail, setUserEmail] = useState('');
   const paypalContainerRef = useRef<HTMLDivElement>(null);
   const receiptRef = useRef<HTMLDivElement>(null);
@@ -717,6 +719,77 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
     }
   };
 
+  // MonCash payment handler for national transfers
+  const handleMonCashPayment = async () => {
+    if (!transferData.amount || !transferData.receiverDetails.firstName) {
+      toast({
+        title: "Missing Information",
+        description: "Please complete all required fields before proceeding.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsProcessingPayment(true);
+    setIsPaymentLoading(true);
+
+    try {
+      // First get the access token
+      const tokenResponse = await fetch('https://moncash-backend.onrender.com/api/get-token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      if (!tokenResponse.ok) {
+        const errorData = await tokenResponse.json();
+        throw new Error(errorData.error || 'Failed to get MonCash access token');
+      }
+
+      const tokenData = await tokenResponse.json();
+      const accessToken = tokenData.accessToken;
+
+      if (!accessToken) {
+        throw new Error('Invalid access token received from MonCash');
+      }
+
+      // Create payment with access token
+      const orderId = `TX${Date.now()}`;
+      const paymentResponse = await fetch('https://moncash-backend.onrender.com/api/create-payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          accessToken,
+          amount: transferData.amount,
+          orderId
+        })
+      });
+
+      if (!paymentResponse.ok) {
+        const errorData = await paymentResponse.json();
+        throw new Error(errorData.error || 'Failed to create MonCash payment');
+      }
+
+      const paymentData = await paymentResponse.json();
+
+      if (!paymentData.paymentUrl) {
+        throw new Error('No payment URL received from MonCash');
+      }
+
+      // Redirect to MonCash payment page
+      window.location.href = paymentData.paymentUrl;
+
+    } catch (error) {
+      console.error('MonCash payment error:', error);
+      toast({
+        title: "Payment Failed",
+        description: error instanceof Error ? error.message : "Failed to process MonCash payment. Please try again.",
+        variant: "destructive",
+      });
+      setIsProcessingPayment(false);
+      setIsPaymentLoading(false);
+    }
+  };
+
   // Listen for payment success
   useEffect(() => {
     const handlePaymentSuccess = (event: any) => {
@@ -913,18 +986,24 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
   const receiverAmount = transferData.amount ? (parseFloat(transferData.amount) * 127.5).toFixed(2) : '0.00';
 
   const handleStickyPayment = async () => {
-    setIsPaymentLoading(true);
-    
-    try {
-      // Trigger the PayPal form submission
-      const cardForm = document.querySelector("#card-form") as HTMLFormElement;
-      if (cardForm) {
-        const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
-        cardForm.dispatchEvent(submitEvent);
+    if (transferData.transferType === 'national') {
+      // Handle MonCash payment for national transfers
+      await handleMonCashPayment();
+    } else {
+      // Handle PayPal payment for international transfers
+      setIsPaymentLoading(true);
+      
+      try {
+        // Trigger the PayPal form submission
+        const cardForm = document.querySelector("#card-form") as HTMLFormElement;
+        if (cardForm) {
+          const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+          cardForm.dispatchEvent(submitEvent);
+        }
+      } catch (error) {
+        console.error('Payment failed:', error);
+        setIsPaymentLoading(false);
       }
-    } catch (error) {
-      console.error('Payment failed:', error);
-      setIsPaymentLoading(false);
     }
   };
 
@@ -1077,35 +1156,77 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
               <div className="text-center mb-6">
                 <h2 className="text-2xl font-bold text-gray-900 mb-3">Complete Your Payment</h2>
                 <p className="text-gray-600 leading-relaxed">
-                  Sending <span className="font-semibold text-blue-600">${transferData.amount}</span> to{' '}
+                  Sending <span className="font-semibold text-blue-600">
+                    {transferData.transferType === 'national' 
+                      ? `HTG ${receiverAmount}`
+                      : `$${transferData.amount}`
+                    }
+                  </span> to{' '}
                   <span className="font-semibold text-gray-900">
                     {transferData.receiverDetails.firstName} {transferData.receiverDetails.lastName}
                   </span>
                 </p>
               </div>
-              
-              {/* Pay with PayPal Button */}
-              <div className="w-full">
-                <Button 
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 text-lg font-semibold"
-                  onClick={() => {
-                    // Handle PayPal payment
-                    console.log('PayPal payment initiated');
-                  }}
-                >
-                  Pay with PayPal
-                </Button>
-              </div>
 
-              {/* Separator */}
-              <div className="flex items-center justify-center space-x-4 my-6">
-                <div className="flex-1 border-t border-gray-300"></div>
-                <span className="text-gray-500 text-sm font-medium px-4">or continue with</span>
-                <div className="flex-1 border-t border-gray-300"></div>
-              </div>
-              
-              {/* PayPal Checkout Container (Form) */}
-              <div ref={paypalContainerRef}></div>
+              {/* Payment Method Based on Transfer Type */}
+              {transferData.transferType === 'national' ? (
+                <div className="space-y-4">
+                  <div className="bg-white rounded-lg border border-gray-200 p-4 space-y-3">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Recipient:</span>
+                      <span className="font-medium">
+                        {transferData.receiverDetails.firstName} {transferData.receiverDetails.lastName}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Amount:</span>
+                      <span className="font-medium">HTG {receiverAmount}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Transfer Type:</span>
+                      <span className="font-medium capitalize">National</span>
+                    </div>
+                  </div>
+
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                    <h4 className="font-semibold text-red-800 mb-2">MonCash Payment</h4>
+                    <p className="text-sm text-red-700 mb-3">
+                      You will be redirected to MonCash to complete your payment securely.
+                    </p>
+                    <ul className="text-sm text-red-600 space-y-1">
+                      <li>• Make sure you have your MonCash account ready</li>
+                      <li>• Have sufficient funds in your MonCash wallet</li>
+                      <li>• Complete the payment on MonCash website</li>
+                      <li>• You will be redirected back after payment</li>
+                    </ul>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {/* Pay with PayPal Button */}
+                  <div className="w-full">
+                    <Button 
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 text-lg font-semibold"
+                      onClick={() => {
+                        // Handle PayPal payment
+                        console.log('PayPal payment initiated');
+                      }}
+                    >
+                      Pay with PayPal
+                    </Button>
+                  </div>
+
+                  {/* Separator */}
+                  <div className="flex items-center justify-center space-x-4 my-6">
+                    <div className="flex-1 border-t border-gray-300"></div>
+                    <span className="text-gray-500 text-sm font-medium px-4">or continue with</span>
+                    <div className="flex-1 border-t border-gray-300"></div>
+                  </div>
+                  
+                  {/* PayPal Checkout Container (Form) */}
+                  <div ref={paypalContainerRef}></div>
+                </div>
+              )}
             </div>
           )}
           
@@ -1279,10 +1400,23 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
           <div className="max-w-md mx-auto">
             <Button 
               onClick={handleStickyPayment}
-              disabled={isPaymentLoading || !isPaymentFormValid}
-              className="w-full bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white py-4 text-lg font-semibold"
+              disabled={isPaymentLoading || (transferData.transferType === 'international' && !isPaymentFormValid)}
+              className={`w-full py-4 text-lg font-semibold ${
+                transferData.transferType === 'national' 
+                  ? 'bg-red-600 hover:bg-red-700 disabled:opacity-50' 
+                  : 'bg-green-600 hover:bg-green-700 disabled:opacity-50'
+              } text-white`}
             >
-              {isPaymentLoading ? 'Processing...' : `Pay $${totalAmount}`}
+              {isPaymentLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  {transferData.transferType === 'national' ? 'Processing MonCash Payment...' : 'Processing...'}
+                </>
+              ) : (
+                transferData.transferType === 'national' 
+                  ? `Pay HTG ${receiverAmount} with MonCash`
+                  : `Pay $${totalAmount}`
+              )}
             </Button>
           </div>
         </div>
