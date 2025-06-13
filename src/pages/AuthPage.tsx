@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -127,7 +126,7 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
         return;
       }
       
-      // Always verify email before proceeding, regardless of previous attempts
+      // Always verify email before proceeding
       setIsLoading(true);
       try {
         await verifyEmail(email);
@@ -137,22 +136,29 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
         
         // Check verification result
         if (emailVerified === false) {
+          // User doesn't exist, redirect to signup
           setIsLoading(false);
           toast.info("No account found with this email. Redirecting to signup...");
           setTimeout(() => {
             navigate('/signup');
           }, 1500);
-          return; // Exit early, don't proceed to step 2
+          return;
         }
 
-        if (emailVerified !== true) {
-          setIsLoading(false);
-          toast.error("Unable to verify email. Please try again.");
+        if (emailVerified === true) {
+          // User exists, proceed to step 2 for password
+          console.log("Email verified successfully, proceeding to step 2");
+          setTimeout(() => {
+            setIsLoading(false);
+            setStep(2);
+          }, 800);
           return;
         }
         
-        // Only proceed if email exists
-        console.log("Email verified successfully, proceeding to step 2");
+        // If verification is inconclusive
+        setIsLoading(false);
+        toast.error("Unable to verify email. Please try again.");
+        return;
         
       } catch (error) {
         setIsLoading(false);
@@ -164,18 +170,17 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
     // Validate phone field
     if (activeTab === 'phone' && !phone) {
       toast.error("Please enter your phone number.");
-      setIsLoading(false);
       return;
     }
 
-    // Clear any error message when proceeding
-    setErrorMessage(null);
-
-    // Proceed to step 2 only if all validations pass
-    setTimeout(() => {
-      setIsLoading(false);
-      setStep(2);
-    }, 800);
+    // For phone tab, proceed to step 2 directly
+    if (activeTab === 'phone') {
+      setIsLoading(true);
+      setTimeout(() => {
+        setIsLoading(false);
+        setStep(2);
+      }, 800);
+    }
   };
 
   // Handle step 2 form submission (password verification/signup)
