@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Home, Receipt, Send, Search, User } from 'lucide-react';
+import { Send, Receipt, Send as SendIcon, Search, User } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 
@@ -10,9 +10,9 @@ export default function PaytmBottomNav() {
   
   const navItems = [
     {
-      name: 'Home',
-      path: '/',
-      icon: Home,
+      name: 'Paytm',
+      path: '/paytm-home',
+      icon: Send,
     },
     {
       name: 'Transactions',
@@ -21,8 +21,8 @@ export default function PaytmBottomNav() {
     },
     {
       name: 'Send',
-      path: '/multi-step-transfer-page',
-      icon: Send,
+      path: '/',
+      icon: SendIcon,
       isSpecial: true,
     },
     {

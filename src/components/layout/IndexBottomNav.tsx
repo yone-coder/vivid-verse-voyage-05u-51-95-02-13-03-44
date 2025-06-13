@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
-  Home, Zap, Rss, MessageCircle, TvMinimalPlay, LayoutGrid, X
+  Send, Zap, Rss, MessageCircle, TvMinimalPlay, LayoutGrid, X
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
@@ -24,7 +24,7 @@ interface BottomNavTab {
 }
 
 const navItems: BottomNavTab[] = [
-  { id: 'home', name: 'Home', icon: Logo, path: '/for-you' }, 
+  { id: 'home', name: 'Send', icon: Send, path: '/' }, 
   { id: 'shorts', name: 'Shorts', icon: Zap, path: '/reels' },
   { id: 'feeds', name: 'Feeds', icon: Rss, path: '/posts' },
   { id: 'messages', name: 'Messages', icon: MessageCircle, path: '/messages' },
@@ -46,7 +46,7 @@ export default function BottomNav() {
 
   useEffect(() => {
     const path = location.pathname;
-    if (path.startsWith('/for-you')) setActiveTab('home');
+    if (path === '/' || path.startsWith('/multi-step-transfer')) setActiveTab('home');
     else if (path.startsWith('/shorts')) setActiveTab('shorts');
     else if (path.startsWith('/feeds')) setActiveTab('feeds');
     else if (path.startsWith('/messages')) setActiveTab('messages');
