@@ -13,7 +13,7 @@ import StepTwoTransfer from '@/components/transfer/StepTwoTransfer';
 import PaymentMethodList from '@/components/transfer/PaymentMethodList';
 import { internationalPaymentMethods } from '@/components/transfer/PaymentMethods';
 import { emailNotificationService } from '@/components/transfer/EmailNotificationService';
-import MobileTransferBottomNav from '@/components/mobile/transfer/MobileTransferBottomNav';
+import IndexBottomNav from '@/components/layout/IndexBottomNav';
 
 export interface TransferData {
   transferType?: 'international' | 'national';
@@ -1285,8 +1285,8 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
         </div>
       )}
 
-      {/* Proper Transfer Bottom Navigation */}
-      <MobileTransferBottomNav />
+      {/* Proper Index Bottom Navigation */}
+      <IndexBottomNav />
     </div>
   );
 };
