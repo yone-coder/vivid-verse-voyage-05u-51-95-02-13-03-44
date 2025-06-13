@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Footer from "@/components/layout/Footer";
@@ -92,7 +93,6 @@ export default function MainLayout() {
     }
   `;
 
-  // NOW we can do conditional returns after all hooks are called
   // If still loading auth state, show loading
   if (isLoading) {
     return (
@@ -102,8 +102,8 @@ export default function MainLayout() {
     );
   }
 
-  // If user is not signed in and not on root page, show auth page
-  if (!user && !isRootHomePage) {
+  // If user is not signed in, show auth page for ALL pages
+  if (!user) {
     return (
       <LanguageProvider>
         <div className="min-h-screen flex flex-col bg-white">
@@ -147,3 +147,4 @@ export default function MainLayout() {
     </LanguageProvider>
   );
 }
+
