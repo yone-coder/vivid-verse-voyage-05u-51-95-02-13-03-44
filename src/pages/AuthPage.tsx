@@ -100,14 +100,14 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
     }
   }, [formState.email, formState.activeTab, verificationInProgress, verificationAttempted, verifyEmail]);
 
-  // Determine auth mode based on verification result
+  // Fixed: Determine auth mode based on verification result without causing infinite loops
   useEffect(() => {
-    if (emailVerified === true) {
+    if (emailVerified === true && formState.authMode !== 'signin') {
       updateFormState({ authMode: 'signin' });
-    } else if (emailVerified === false) {
+    } else if (emailVerified === false && formState.authMode !== 'signup') {
       updateFormState({ authMode: 'signup' });
     }
-  }, [emailVerified, updateFormState]);
+  }, [emailVerified, formState.authMode, updateFormState]);
 
   // Handle step 1 form submission (email/phone verification)
   const handleStep1Submit = async (e: React.FormEvent) => {
@@ -132,6 +132,15 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
         setIsLoading(true);
         await verifyEmail(email);
         setIsLoading(false);
+      }
+
+      // If email doesn't exist, redirect to signup
+      if (emailVerified === false) {
+        toast.info("No account found with this email. Redirecting to signup...");
+        setTimeout(() => {
+          navigate('/signup');
+        }, 1500);
+        return;
       }
     }
 
