@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, Clock, CheckCircle, Receipt, Globe } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -559,7 +560,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
 
       {/* Sticky Navigation Buttons - Only show for steps 1, 2, 3 and step 5+ */}
       {(currentStep < 4 || currentStep > 4) && (
-        <div className="fixed bottom-12 left-0 right-0 border-t bg-white px-4 py-3 z-[60] shadow-lg">
+        <div className="fixed bottom-12 left-0 right-0 bg-white px-4 py-2 z-[60]">
           <div className="flex gap-3 max-w-md mx-auto">
             {currentStep === 1 ? (
               <Button 
