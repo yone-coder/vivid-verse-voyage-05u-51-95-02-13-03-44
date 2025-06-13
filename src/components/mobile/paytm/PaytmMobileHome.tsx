@@ -44,14 +44,28 @@ export default function PaytmMobileHome() {
   const [transferType, setTransferType] = useState<'international' | 'local'>('international');
   const { t, currentLanguage, currentLocation } = useLanguage();
 
-  // Auto-navigate when amount is entered
+  // Auto-navigate when amount is entered - go directly to step 2
   useEffect(() => {
     if (amount && parseFloat(amount) > 0) {
       const timer = setTimeout(() => {
         if (transferType === 'local') {
-          navigate('/local-transfer');
+          // Navigate to local transfer with amount pre-filled (step 2)
+          navigate('/local-transfer', { 
+            state: { 
+              amount, 
+              transferType: 'local',
+              skipToStep: 1 // Skip amount entry step
+            } 
+          });
         } else {
-          navigate('/multi-step-transfer-page');
+          // Navigate to international transfer with amount pre-filled (step 2)
+          navigate('/multi-step-transfer-page', { 
+            state: { 
+              amount, 
+              transferType: 'international',
+              skipToStep: 1 // Skip amount entry step
+            } 
+          });
         }
       }, 1500); // Wait 1.5 seconds after user stops typing
 
@@ -61,9 +75,21 @@ export default function PaytmMobileHome() {
 
   const handleSendClick = () => {
     if (transferType === 'local') {
-      navigate('/local-transfer');
+      navigate('/local-transfer', { 
+        state: { 
+          amount, 
+          transferType: 'local',
+          skipToStep: amount && parseFloat(amount) > 0 ? 1 : 0
+        } 
+      });
     } else {
-      navigate('/multi-step-transfer-page');
+      navigate('/multi-step-transfer-page', { 
+        state: { 
+          amount, 
+          transferType: 'international',
+          skipToStep: amount && parseFloat(amount) > 0 ? 1 : 0
+        } 
+      });
     }
   };
 
@@ -177,7 +203,7 @@ export default function PaytmMobileHome() {
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
                 <span className="text-sm font-medium text-blue-800">
-                  Proceeding to next step...
+                  Proceeding directly to recipient details...
                 </span>
               </div>
             </div>
@@ -294,7 +320,7 @@ export default function PaytmMobileHome() {
                 </span>
               </div>
               <div className="text-xs text-orange-700">
-                Auto-proceeding to transfer details in a moment...
+                Skipping to step 2 - recipient details...
               </div>
             </div>
           )}

@@ -1,7 +1,6 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowRight, ArrowLeft, Loader2 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import TransferHeader from '@/components/transfer/TransferHeader';
@@ -23,12 +22,20 @@ export interface TransferData {
 }
 
 const MultiStepTransferPage: React.FC = () => {
-  const [currentStep, setCurrentStep] = useState(0);
-  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  
+  // Initialize state from navigation or default values
+  const locationState = location.state as any;
+  const initialStep = locationState?.skipToStep ?? 0;
+  const initialAmount = locationState?.amount ?? '';
+  const initialTransferType = locationState?.transferType === 'international' ? 'international' : 'national';
+  
+  const [currentStep, setCurrentStep] = useState(initialStep);
   const [transferData, setTransferData] = useState<TransferData>({
-    transferType: undefined,
-    amount: '',
+    transferType: initialTransferType,
+    amount: initialAmount,
     receiverDetails: {
       firstName: '',
       lastName: '',
@@ -37,6 +44,13 @@ const MultiStepTransferPage: React.FC = () => {
       commune: '',
     }
   });
+
+  // Auto-advance to step 1 if amount is pre-filled
+  useEffect(() => {
+    if (initialAmount && parseFloat(initialAmount) > 0 && initialStep === 1) {
+      setCurrentStep(1);
+    }
+  }, [initialAmount, initialStep]);
 
   const handleNextStep = () => {
     if (currentStep < 3) {
