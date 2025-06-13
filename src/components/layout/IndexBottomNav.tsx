@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
-  Send, Zap, Rss, MessageCircle, TvMinimalPlay, LayoutGrid, X
+  Send, History, MapPin, User, X
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
@@ -12,7 +12,7 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import AuthPage from '@/pages/AuthPage';
 import SignInBanner from './SignInBanner';
 import { useAuth } from '@/context/AuthContext';
-import Logo from '@/components/home/Logo'; // fixed import path (lowercase 'home')
+import Logo from '@/components/home/Logo';
 
 interface BottomNavTab {
   id: string;
@@ -24,12 +24,10 @@ interface BottomNavTab {
 }
 
 const navItems: BottomNavTab[] = [
-  { id: 'home', name: 'Send', icon: Send, path: '/' }, 
-  { id: 'shorts', name: 'Shorts', icon: Zap, path: '/reels' },
-  { id: 'feeds', name: 'Feeds', icon: Rss, path: '/posts' },
-  { id: 'messages', name: 'Messages', icon: MessageCircle, path: '/messages' },
-  { id: 'videos', name: 'Videos', icon: TvMinimalPlay, path: '/videos' },
-  { id: 'more', name: 'More', icon: LayoutGrid, path: '/more' }, // Changed path to /more to point to new MoreMenu page
+  { id: 'send', name: 'Send', icon: Send, path: '/' }, 
+  { id: 'history', name: 'History', icon: History, path: '/transfer-history' },
+  { id: 'track', name: 'Track', icon: MapPin, path: '/track-transfer' },
+  { id: 'account', name: 'Account', icon: User, path: '/account' },
 ];
 
 export default function BottomNav() {
@@ -37,7 +35,7 @@ export default function BottomNav() {
   const location = useLocation();
   const { user } = useAuth();
 
-  const [activeTab, setActiveTab] = useState('home');
+  const [activeTab, setActiveTab] = useState('send');
   const [previousTab, setPreviousTab] = useState(null);
   const [animating, setAnimating] = useState(false);
   const [showProductUpload, setShowProductUpload] = useState(false);
@@ -46,12 +44,10 @@ export default function BottomNav() {
 
   useEffect(() => {
     const path = location.pathname;
-    if (path === '/' || path.startsWith('/multi-step-transfer')) setActiveTab('home');
-    else if (path.startsWith('/shorts')) setActiveTab('shorts');
-    else if (path.startsWith('/feeds')) setActiveTab('feeds');
-    else if (path.startsWith('/messages')) setActiveTab('messages');
-    else if (path.startsWith('/videos')) setActiveTab('videos');
-    else if (path.startsWith('/more') || path.startsWith('/account')) setActiveTab('more');
+    if (path === '/' || path.startsWith('/multi-step-transfer')) setActiveTab('send');
+    else if (path.startsWith('/transfer-history')) setActiveTab('history');
+    else if (path.startsWith('/track-transfer')) setActiveTab('track');
+    else if (path.startsWith('/account')) setActiveTab('account');
   }, [location.pathname]);
 
   const handleTabClick = (item) => {
