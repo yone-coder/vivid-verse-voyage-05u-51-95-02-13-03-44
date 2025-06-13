@@ -11,7 +11,7 @@ interface AuthContainerProps {
 const AuthContainer = ({ isOverlay = true, onClose, children }: AuthContainerProps) => {
   const containerClasses = isOverlay 
     ? "flex flex-col justify-between items-center min-h-full bg-white text-[#333] pt-8 pb-4 relative w-full" 
-    : "flex flex-col justify-center items-center min-h-screen bg-gradient-to-br from-white to-gray-50 text-[#333] py-8";
+    : "flex flex-col justify-center items-center min-h-screen bg-white text-[#333] py-8";
 
   return (
     <div className={containerClasses}>
@@ -25,7 +25,7 @@ const AuthContainer = ({ isOverlay = true, onClose, children }: AuthContainerPro
         </button>
       )}
       <div className="w-full max-w-md px-4 flex flex-col items-center justify-center py-4">
-        <div className={`w-full ${!isOverlay ? "bg-white shadow-lg rounded-xl p-6 border border-gray-100" : ""}`}>
+        <div className={`w-full ${!isOverlay ? "" : ""}`}>
           {children}
         </div>
       </div>
