@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Send, 
   DollarSign, 
@@ -43,6 +43,21 @@ export default function PaytmMobileHome() {
   const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
   const [transferType, setTransferType] = useState<'international' | 'local'>('international');
   const { t, currentLanguage, currentLocation } = useLanguage();
+
+  // Auto-navigate when amount is entered
+  useEffect(() => {
+    if (amount && parseFloat(amount) > 0) {
+      const timer = setTimeout(() => {
+        if (transferType === 'local') {
+          navigate('/local-transfer');
+        } else {
+          navigate('/multi-step-transfer-page');
+        }
+      }, 1500); // Wait 1.5 seconds after user stops typing
+
+      return () => clearTimeout(timer);
+    }
+  }, [amount, transferType, navigate]);
 
   const handleSendClick = () => {
     if (transferType === 'local') {
@@ -156,6 +171,18 @@ export default function PaytmMobileHome() {
             />
           </div>
 
+          {/* Auto-navigation indicator */}
+          {amount && parseFloat(amount) > 0 && (
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-3 animate-fade-in">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                <span className="text-sm font-medium text-blue-800">
+                  Proceeding to next step...
+                </span>
+              </div>
+            </div>
+          )}
+
           {/* Receiver Gets Display */}
           <div className="bg-white rounded-xl border border-green-200 overflow-hidden">
             <div className="p-3 pb-2">
@@ -202,21 +229,21 @@ export default function PaytmMobileHome() {
             </div>
           </div>
 
-          {/* Interactive Send Button */}
+          {/* Manual Send Button (now less prominent since auto-navigation is active) */}
           <div className="mt-6">
             <button
               onClick={handleSendClick}
               disabled={!amount || parseFloat(amount) <= 0}
               className={`w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 transform ${
                 amount && parseFloat(amount) > 0
-                  ? 'bg-gradient-to-r from-[#ff4747] to-red-600 text-white shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]'
+                  ? 'bg-gradient-to-r from-gray-400 to-gray-500 text-white shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] opacity-70'
                   : 'bg-gray-200 text-gray-400 cursor-not-allowed'
               }`}
             >
               <div className="flex items-center justify-center gap-2">
                 <Send className="w-5 h-5" />
                 {amount && parseFloat(amount) > 0 
-                  ? `Send ${transferType === 'international' ? '$' : 'HTG'}${amount} ${transferType === 'local' ? 'locally' : 'to Haiti'}`
+                  ? `Send ${transferType === 'international' ? '$' : 'HTG'}${amount} ${transferType === 'local' ? 'locally' : 'to Haiti'} (Manual)`
                   : 'Enter amount to send'
                 }
               </div>
@@ -257,14 +284,17 @@ export default function PaytmMobileHome() {
             </div>
           </div>
 
-          {/* Rate Update Notification */}
+          {/* Rate update notification - now includes auto-navigation info */}
           {amount && parseFloat(amount) > 0 && (
             <div className="bg-gradient-to-r from-orange-50 to-yellow-50 border border-orange-200 rounded-xl p-3 animate-fade-in">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 mb-2">
                 <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
                 <span className="text-sm font-medium text-orange-800">
                   Rate locked for 30 minutes
                 </span>
+              </div>
+              <div className="text-xs text-orange-700">
+                Auto-proceeding to transfer details in a moment...
               </div>
             </div>
           )}
