@@ -13,6 +13,7 @@ import StepTwoTransfer from '@/components/transfer/StepTwoTransfer';
 import PaymentMethodList from '@/components/transfer/PaymentMethodList';
 import { internationalPaymentMethods } from '@/components/transfer/PaymentMethods';
 import { emailNotificationService } from '@/components/transfer/EmailNotificationService';
+import MobileTransferBottomNav from '@/components/mobile/transfer/MobileTransferBottomNav';
 
 export interface TransferData {
   transferType?: 'international' | 'national';
@@ -1219,7 +1220,7 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
 
       {/* Sticky Navigation Buttons - Exclude step 3 */}
       {(currentStep < 3 || currentStep === 4) && (
-        <div className="fixed bottom-0 left-0 right-0 border-t bg-white px-4 py-3 z-50 shadow-lg">
+        <div className="fixed bottom-16 left-0 right-0 border-t bg-white px-4 py-3 z-50 shadow-lg">
           <div className="flex gap-3 max-w-md mx-auto">
             {currentStep === 1 ? (
               <Button 
@@ -1269,7 +1270,7 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
 
       {/* Sticky Pay Button for Step 3 Only */}
       {currentStep === 3 && (
-        <div className="fixed bottom-0 left-0 right-0 border-t bg-white px-4 py-3 z-50 shadow-lg">
+        <div className="fixed bottom-16 left-0 right-0 border-t bg-white px-4 py-3 z-50 shadow-lg">
           <div className="max-w-md mx-auto">
             <Button 
               onClick={handleStickyPayment}
@@ -1281,6 +1282,9 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
           </div>
         </div>
       )}
+
+      {/* Bottom Navigation */}
+      <MobileTransferBottomNav />
     </div>
   );
 };
