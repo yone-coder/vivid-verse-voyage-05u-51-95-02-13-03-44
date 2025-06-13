@@ -93,8 +93,8 @@ export default function PaytmHeroBanner() {
 
   if (isLoading) {
     return (
-      <div className="mx-4 mb-4">
-        <div className="relative w-full bg-gray-200 animate-pulse aspect-[16/9] rounded-xl">
+      <div className="w-full mb-4">
+        <div className="relative w-full bg-gray-200 animate-pulse aspect-[16/9]">
           <div className="absolute inset-0 flex items-center justify-center">
             <span className="text-gray-400">Loading banners...</span>
           </div>
@@ -104,8 +104,8 @@ export default function PaytmHeroBanner() {
   }
 
   return (
-    <div className="mx-4 mb-4">
-      <div className="relative w-full rounded-xl shadow-lg aspect-[16/9] bg-gray-100 overflow-hidden">
+    <div className="w-full mb-4">
+      <div className="relative w-full aspect-[16/9] bg-gray-100 overflow-hidden">
         {/* Image slides container */}
         <div className="absolute inset-0 w-full h-full">
           {slidesToShow.map((banner, index) => {
