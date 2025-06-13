@@ -2,18 +2,22 @@ import React, { useState, useEffect } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Footer from "@/components/layout/Footer";
 import IndexBottomNav from "@/components/layout/IndexBottomNav";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, Navigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import AliExpressHeader from "@/components/home/AliExpressHeader";
 import { useAuthOverlay } from "@/context/AuthOverlayContext";
 import { LanguageProvider } from "@/context/LanguageContext";
+import { useAuth } from "@/context/AuthContext";
 import FloatingActionButton from "./FloatingActionButton";
 import ProductUploadOverlay from "@/components/product/ProductUploadOverlay";
+import AuthPage from "@/pages/AuthPage";
 
 export default function MainLayout() {
   const isMobile = useIsMobile();
   const location = useLocation();
   const pathname = location.pathname;
+  const { user, isLoading } = useAuth();
+  
   const isProductPage = pathname.includes('/product/');
   const isRootHomePage = pathname === "/";
   const isPaytmHomePage = pathname === "/" || pathname === "/index";
@@ -21,6 +25,8 @@ export default function MainLayout() {
   const isMultiStepTransferPage = pathname === "/multi-step-transfer";
   const isMultiStepTransferSheetPage = pathname === "/multi-step-transfer-page";
   const isTransferOldPage = pathname === "/transfer-old";
+  const isAuthPage = pathname === "/auth";
+  
   const { toast } = useToast();
   const [isFavorite, setIsFavorite] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -28,6 +34,26 @@ export default function MainLayout() {
   const [showProductUpload, setShowProductUpload] = useState(false);
 
   const { openAuthOverlay } = useAuthOverlay();
+
+  // If still loading auth state, show loading
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600"></div>
+      </div>
+    );
+  }
+
+  // If user is not signed in and not on root page, show auth page
+  if (!user && !isRootHomePage) {
+    return (
+      <LanguageProvider>
+        <div className="min-h-screen flex flex-col bg-white">
+          <AuthPage />
+        </div>
+      </LanguageProvider>
+    );
+  }
 
   const toggleFavorite = () => {
     setIsFavorite(!isFavorite);
