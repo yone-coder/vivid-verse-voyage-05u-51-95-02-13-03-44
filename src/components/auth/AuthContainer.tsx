@@ -15,7 +15,7 @@ const AuthContainer = ({ isOverlay = true, onClose, children }: AuthContainerPro
 
   const contentClasses = isOverlay 
     ? "w-full max-w-md px-4 flex flex-col items-center justify-center py-4"
-    : "w-full flex flex-col items-center justify-center";
+    : "w-full px-6 flex flex-col items-center justify-center";
 
   return (
     <div className={containerClasses}>
@@ -29,7 +29,7 @@ const AuthContainer = ({ isOverlay = true, onClose, children }: AuthContainerPro
         </button>
       )}
       <div className={contentClasses}>
-        <div className="w-full">
+        <div className="w-full max-w-none">
           {children}
         </div>
       </div>
