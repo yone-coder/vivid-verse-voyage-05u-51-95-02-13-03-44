@@ -5,20 +5,28 @@ import { useNavigate, useLocation } from 'react-router-dom';
 interface TransferTypeSelectorProps {
   transferType: 'international' | 'national';
   onTransferTypeChange: (value: 'international' | 'national') => void;
+  disableNavigation?: boolean;
 }
 
-const TransferTypeSelector: React.FC<TransferTypeSelectorProps> = ({ transferType, onTransferTypeChange }) => {
+const TransferTypeSelector: React.FC<TransferTypeSelectorProps> = ({ 
+  transferType, 
+  onTransferTypeChange,
+  disableNavigation = false 
+}) => {
   const navigate = useNavigate();
   const location = useLocation();
 
   const handleTransferTypeChange = (value: 'international' | 'national') => {
     onTransferTypeChange(value);
     
-    // Navigate to appropriate route based on transfer type
-    if (value === 'national' && location.pathname !== '/local-transfer') {
-      navigate('/local-transfer');
-    } else if (value === 'international' && location.pathname === '/local-transfer') {
-      navigate('/multi-step-transfer-page');
+    // Only navigate if navigation is not disabled
+    if (!disableNavigation) {
+      // Navigate to appropriate route based on transfer type
+      if (value === 'national' && location.pathname !== '/local-transfer') {
+        navigate('/local-transfer');
+      } else if (value === 'international' && location.pathname === '/local-transfer') {
+        navigate('/multi-step-transfer-page');
+      }
     }
   };
 

@@ -1027,6 +1027,7 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
           <TransferTypeSelector 
             transferType={transferData.transferType || 'international'}
             onTransferTypeChange={(type) => updateTransferData({ transferType: type })}
+            disableNavigation={true}
           />
         </div>
       </div>
