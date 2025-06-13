@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, CheckCircle, Receipt, Search, Key, Globe } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -1020,6 +1021,14 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
             ))}
           </div>
         </div>
+
+        {/* Transfer Type Selector - Sticky below steps indicator */}
+        <div className="bg-white">
+          <TransferTypeSelector 
+            transferType={transferData.transferType || 'international'}
+            onTransferTypeChange={(type) => updateTransferData({ transferType: type })}
+          />
+        </div>
       </div>
 
       {/* Step Content */}
@@ -1027,15 +1036,7 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
         <div className="px-4 py-4">
           {currentStep === 1 && (
             <div className="space-y-6">
-              {/* Transfer Type Selector at the top */}
-              <div className="space-y-3">
-                <TransferTypeSelector 
-                  transferType={transferData.transferType || 'international'}
-                  onTransferTypeChange={(type) => updateTransferData({ transferType: type })}
-                />
-              </div>
-              
-              {/* Amount Entry Section */}
+              {/* Amount Entry Section - removed transfer type selector */}
               <div className="space-y-4">
                 <div className="text-center">
                   <p className="text-gray-600">Enter the amount you want to send</p>
