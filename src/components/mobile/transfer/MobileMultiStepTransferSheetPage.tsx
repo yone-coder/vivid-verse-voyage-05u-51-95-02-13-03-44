@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, CheckCircle, Receipt, Search, Key, Globe } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -1022,14 +1021,16 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
           </div>
         </div>
 
-        {/* Transfer Type Selector - Sticky below steps indicator */}
-        <div className="bg-white">
-          <TransferTypeSelector 
-            transferType={transferData.transferType || 'international'}
-            onTransferTypeChange={(type) => updateTransferData({ transferType: type })}
-            disableNavigation={true}
-          />
-        </div>
+        {/* Transfer Type Selector - Sticky below steps indicator - Only show on step 1 */}
+        {currentStep === 1 && (
+          <div className="bg-white">
+            <TransferTypeSelector 
+              transferType={transferData.transferType || 'international'}
+              onTransferTypeChange={(type) => updateTransferData({ transferType: type })}
+              disableNavigation={true}
+            />
+          </div>
+        )}
       </div>
 
       {/* Step Content */}
