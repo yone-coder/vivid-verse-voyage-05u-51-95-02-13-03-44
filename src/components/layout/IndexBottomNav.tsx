@@ -123,9 +123,7 @@ export default function BottomNav() {
                     />
                   )}
                   {item.badge && (
-                    <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
+                    <div
                       className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold px-1.5 rounded-full"
                     >
                       {item.badge}
