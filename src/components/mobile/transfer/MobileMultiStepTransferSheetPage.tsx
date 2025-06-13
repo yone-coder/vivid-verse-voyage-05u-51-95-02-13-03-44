@@ -1220,9 +1220,9 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
         </div>
       </div>
 
-      {/* Sticky Navigation Buttons - Exclude step 3 */}
+      {/* Non-Sticky Navigation Buttons - Exclude step 3 */}
       {(currentStep < 3 || currentStep === 4) && (
-        <div className="fixed bottom-16 left-0 right-0 border-t bg-white px-4 py-3 z-50 shadow-lg">
+        <div className="border-t bg-white px-4 py-3 z-50 shadow-lg mb-16">
           <div className="flex gap-3 max-w-md mx-auto">
             {currentStep === 1 ? (
               <Button 
