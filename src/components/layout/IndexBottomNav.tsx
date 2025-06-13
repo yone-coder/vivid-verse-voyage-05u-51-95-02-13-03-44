@@ -10,7 +10,6 @@ import { cn } from '@/lib/utils';
 import ProductUploadOverlay from '@/components/product/ProductUploadOverlay';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import AuthPage from '@/pages/AuthPage';
-import SignInBanner from './SignInBanner';
 import { useAuth } from '@/context/AuthContext';
 import Logo from '@/components/home/Logo';
 
@@ -41,7 +40,6 @@ export default function BottomNav() {
   const [animating, setAnimating] = useState(false);
   const [showProductUpload, setShowProductUpload] = useState(false);
   const [showAuthDialog, setShowAuthDialog] = useState(false);
-  const [showSignInBanner, setShowSignInBanner] = useState(true);
 
   useEffect(() => {
     const path = location.pathname;
@@ -66,8 +64,6 @@ export default function BottomNav() {
 
   return (
     <>
-      {showSignInBanner && <SignInBanner openAuthDialog={() => setShowAuthDialog(true)} />}
-
       <Dialog open={showAuthDialog} onOpenChange={setShowAuthDialog}>
         <DialogContent className="w-full max-w-sm p-0 h-[100dvh] sm:h-auto overflow-auto">
           <button 
@@ -133,7 +129,7 @@ export default function BottomNav() {
                       className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold px-1.5 rounded-full"
                     >
                       {item.badge}
-                    </motion.div>
+                    </div>
                   )}
                   {isActive && item.name && (
                     <span className="ml-2 font-medium whitespace-nowrap max-w-[80px] overflow-hidden">
