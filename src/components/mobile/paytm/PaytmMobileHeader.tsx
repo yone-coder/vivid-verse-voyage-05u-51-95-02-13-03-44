@@ -1,7 +1,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useScrollProgress } from '@/hooks/useScrollProgress';
-import { Send, BookOpen, Users } from 'lucide-react';
+import { Send, Download, BookOpen } from 'lucide-react';
 import HeaderSearchBar from '../../home/header/HeaderSearchBar';
 import CategoryTabs from '../../home/header/CategoryTabs';
 import CategoryPanel from '../../home/header/CategoryPanel';
@@ -42,8 +42,8 @@ export default function PaytmMobileHeader({ activeTabId = 'quick-send' }: PaytmM
 
   const categories = [
     { id: 'quick-send', name: 'Quick Send', icon: <Send className="h-3 w-3" />, path: '/' },
+    { id: 'withdraw', name: 'Withdraw', icon: <Download className="h-3 w-3" />, path: '/withdraw' },
     { id: 'learn', name: 'Learn', icon: <BookOpen className="h-3 w-3" />, path: '/learn' },
-    { id: 'community', name: 'Community', icon: <Users className="h-3 w-3" />, path: '/community' },
   ];
   
   const togglePanel = () => setIsOpen(!isOpen);
@@ -99,13 +99,15 @@ export default function PaytmMobileHeader({ activeTabId = 'quick-send' }: PaytmM
         </div>
       </div>
 
-      {/* Category Tabs */}
-      <CategoryTabs 
-        progress={1}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        categories={categories}
-      />
+      {/* Category Tabs - Full Width */}
+      <div className="w-full">
+        <CategoryTabs 
+          progress={1}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          categories={categories}
+        />
+      </div>
 
       {/* Dropdown Panel */}
       <CategoryPanel 
