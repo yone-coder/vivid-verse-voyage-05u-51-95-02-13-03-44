@@ -315,6 +315,16 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
         </div>
       </div>
 
+      {/* Full Width Transfer Type Selector - placed outside padded content */}
+      {currentStep === 1 && (
+        <div className="flex-shrink-0">
+          <TransferTypeSelector 
+            transferType={transferData.transferType || 'international'}
+            onTransferTypeChange={(type) => updateTransferData({ transferType: type })}
+          />
+        </div>
+      )}
+
       {/* Step Content - Reduced padding and consistent spacing */}
       <div className="flex-1 overflow-y-auto pb-64">
         <div className="px-4 py-4">
@@ -323,11 +333,6 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
               <div className="text-center mb-4">
                 <p className="text-gray-600">Choose your transfer type</p>
               </div>
-              
-              <TransferTypeSelector 
-                transferType={transferData.transferType || 'international'}
-                onTransferTypeChange={(type) => updateTransferData({ transferType: type })}
-              />
             </div>
           )}
 
