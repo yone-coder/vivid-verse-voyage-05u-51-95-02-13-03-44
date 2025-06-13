@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, CheckCircle, Receipt, Search, Key, Globe } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -942,26 +943,28 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
       )}
 
       {/* Header with blue background, GLOBAL TRANSFÈ, logo, and search icon */}
-      <div className="bg-blue-600 sticky top-0 z-50">
-        <div className="flex items-center justify-between p-4 h-16">
-          {/* Logo placeholder */}
-          <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-            <Globe className="w-5 h-5 text-blue-600" />
+      <div className="sticky top-0 z-50">
+        <div className="bg-blue-600">
+          <div className="flex items-center justify-between p-4 h-16">
+            {/* Logo placeholder */}
+            <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+              <Globe className="w-5 h-5 text-blue-600" />
+            </div>
+            
+            {/* Title */}
+            <h1 className="text-xl font-bold text-white">
+              GLOBAL TRANSFÈ
+            </h1>
+            
+            {/* Search icon */}
+            <button className="p-2 rounded-full hover:bg-blue-700">
+              <Search className="w-5 h-5 text-white" />
+            </button>
           </div>
-          
-          {/* Title */}
-          <h1 className="text-xl font-bold text-white">
-            GLOBAL TRANSFÈ
-          </h1>
-          
-          {/* Search icon */}
-          <button className="p-2 rounded-full hover:bg-blue-700">
-            <Search className="w-5 h-5 text-white" />
-          </button>
         </div>
         
-        {/* Animated Step Indicator */}
-        <div className="px-4 pb-3">
+        {/* Animated Step Indicator with white background */}
+        <div className="bg-white px-4 pb-3">
           <div className="flex items-center justify-between">
             {[1, 2, 3, 4].map((step, index) => (
               <React.Fragment key={step}>
