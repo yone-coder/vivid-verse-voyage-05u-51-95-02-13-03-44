@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, CheckCircle, Receipt, Search, Key, Globe } from 'lucide-react';
+import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, CheckCircle, Receipt, Search, Key, Globe, Home, Heart, ShoppingBag, MessageCircle, UserCircle } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import html2canvas from 'html2canvas';
 import TransferTypeSelector from '@/components/transfer/TransferTypeSelector';
 import StepOneTransfer from '@/components/transfer/StepOneTransfer';
@@ -37,6 +37,8 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
   defaultTransferType = 'international' 
 }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+  
   const [currentStep, setCurrentStep] = useState(1);
   const [paymentCompleted, setPaymentCompleted] = useState(false);
   const [transactionId, setTransactionId] = useState('');
@@ -1283,8 +1285,60 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
         </div>
       )}
 
-      {/* Bottom Navigation */}
-      <MobileTransferBottomNav />
+      {/* Bottom Navigation - Cloned from ForYou page */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-40">
+        <div className="flex items-center justify-around h-16 px-1">
+          <Link 
+            to="/" 
+            className={`flex flex-col items-center justify-center flex-1 h-full py-2 transition-colors duration-200 ${
+              location.pathname === '/' ? 'text-blue-600' : 'text-gray-400'
+            }`}
+          >
+            <Home className="w-6 h-6 mb-1" />
+            <span className="text-xs">Home</span>
+          </Link>
+          
+          <Link 
+            to="/for-you" 
+            className={`flex flex-col items-center justify-center flex-1 h-full py-2 transition-colors duration-200 ${
+              location.pathname === '/for-you' ? 'text-blue-600' : 'text-gray-400'
+            }`}
+          >
+            <Heart className="w-6 h-6 mb-1" />
+            <span className="text-xs">For You</span>
+          </Link>
+          
+          <Link 
+            to="/multi-step-transfer" 
+            className={`flex flex-col items-center justify-center flex-1 h-full py-2 transition-colors duration-200 ${
+              location.pathname.startsWith('/multi-step-transfer') ? 'text-blue-600' : 'text-gray-400'
+            }`}
+          >
+            <ShoppingBag className="w-6 h-6 mb-1" />
+            <span className="text-xs">Transfer</span>
+          </Link>
+          
+          <Link 
+            to="/messages" 
+            className={`flex flex-col items-center justify-center flex-1 h-full py-2 transition-colors duration-200 ${
+              location.pathname === '/messages' ? 'text-blue-600' : 'text-gray-400'
+            }`}
+          >
+            <MessageCircle className="w-6 h-6 mb-1" />
+            <span className="text-xs">Messages</span>
+          </Link>
+          
+          <Link 
+            to="/profile" 
+            className={`flex flex-col items-center justify-center flex-1 h-full py-2 transition-colors duration-200 ${
+              location.pathname === '/profile' ? 'text-blue-600' : 'text-gray-400'
+            }`}
+          >
+            <UserCircle className="w-6 h-6 mb-1" />
+            <span className="text-xs">Profile</span>
+          </Link>
+        </div>
+      </div>
     </div>
   );
 };
