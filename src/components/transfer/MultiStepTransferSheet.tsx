@@ -259,49 +259,47 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
       <div className="px-4 py-3 flex-shrink-0">
         <div className="flex items-center justify-between">
           {[1, 2, 3, 4, 5, 6].map((step, index) => (
-            <React.Fragment key={step}>
-              <div className="flex flex-col items-center">
-                <motion.div 
-                  className={`rounded-full flex items-center justify-center text-xs font-medium transition-all duration-300 shadow-sm ${
-                    step === currentStep 
-                      ? 'w-auto h-7 px-2 bg-red-600 text-white' 
-                      : 'w-7 h-7 bg-gray-200 text-gray-600'
-                  }`}
-                  variants={stepVariants}
-                  initial="inactive"
-                  animate={
-                    step === currentStep ? 'active' : 
-                    step < currentStep ? 'completed' : 
-                    'inactive'
-                  }
-                  whileTap={{ scale: 0.95 }}
-                >
-                  {step < currentStep ? (
-                    <CheckCircle className="h-3 w-3" />
-                  ) : step === currentStep ? (
-                    <div className="flex items-center space-x-1">
-                      {step === 1 ? (
-                        <Globe className="h-3 w-3" />
-                      ) : step === 2 ? (
-                        <DollarSign className="h-3 w-3" />
-                      ) : step === 3 ? (
-                        <User className="h-3 w-3" />
-                      ) : step === 4 ? (
-                        <CreditCard className="h-3 w-3" />
-                      ) : step === 5 ? (
-                        <Shield className="h-3 w-3" />
-                      ) : (
-                        <Receipt className="h-3 w-3" />
-                      )}
-                      <span className="font-medium whitespace-nowrap text-xs">
-                        {stepTitles[index].split(' ')[0]}
-                      </span>
-                    </div>
-                  ) : (
-                    step
-                  )}
-                </motion.div>
-              </div>
+            <div key={step} className="flex flex-col items-center">
+              <motion.div 
+                className={`rounded-full flex items-center justify-center text-xs font-medium transition-all duration-300 shadow-sm ${
+                  step === currentStep 
+                    ? 'w-auto h-7 px-2 bg-red-600 text-white' 
+                    : 'w-7 h-7 bg-gray-200 text-gray-600'
+                }`}
+                variants={stepVariants}
+                initial="inactive"
+                animate={
+                  step === currentStep ? 'active' : 
+                  step < currentStep ? 'completed' : 
+                  'inactive'
+                }
+                whileTap={{ scale: 0.95 }}
+              >
+                {step < currentStep ? (
+                  <CheckCircle className="h-3 w-3" />
+                ) : step === currentStep ? (
+                  <div className="flex items-center space-x-1">
+                    {step === 1 ? (
+                      <Globe className="h-3 w-3" />
+                    ) : step === 2 ? (
+                      <DollarSign className="h-3 w-3" />
+                    ) : step === 3 ? (
+                      <User className="h-3 w-3" />
+                    ) : step === 4 ? (
+                      <CreditCard className="h-3 w-3" />
+                    ) : step === 5 ? (
+                      <Shield className="h-3 w-3" />
+                    ) : (
+                      <Receipt className="h-3 w-3" />
+                    )}
+                    <span className="font-medium whitespace-nowrap text-xs">
+                      {stepTitles[index].split(' ')[0]}
+                    </span>
+                  </div>
+                ) : (
+                  step
+                )}
+              </motion.div>
               {index < 5 && (
                 <motion.div 
                   className="flex-1 h-0.5 mx-2 rounded-full origin-left"
@@ -310,7 +308,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
                   animate={step < currentStep ? 'active' : 'inactive'}
                 />
               )}
-            </React.Fragment>
+            </div>
           ))}
         </div>
       </div>
@@ -326,7 +324,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
       )}
 
       {/* Step Content - Reduced padding and consistent spacing */}
-      <div className="flex-1 overflow-y-auto pb-64">
+      <div className="flex-1 overflow-y-auto pb-20">
         <div className="px-4 py-4">
           {currentStep === 1 && (
             <div className="space-y-4">
@@ -559,7 +557,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
 
       {/* Sticky Navigation Buttons - Only show for steps 1, 2, 3 and step 5+ */}
       {(currentStep < 4 || currentStep > 4) && (
-        <div className="fixed bottom-12 left-0 right-0 bg-white px-4 py-3 z-[60] border-t border-gray-200">
+        <div className="fixed bottom-0 left-0 right-0 bg-white px-4 py-4 z-[60] border-t border-gray-200">
           <div className="flex gap-3 max-w-md mx-auto">
             {currentStep === 1 ? (
               <Button 
