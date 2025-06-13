@@ -23,8 +23,8 @@ const TransferTypeSelector: React.FC<TransferTypeSelectorProps> = ({ transferTyp
   };
 
   return (
-    <div className="w-full">
-      {/* Classic Underline Tab Style */}
+    <div className="w-full -mx-4">
+      {/* Classic Underline Tab Style - Full Width */}
       <div className="w-full border-b border-gray-200">
         <div className="flex">
           <button
@@ -52,7 +52,7 @@ const TransferTypeSelector: React.FC<TransferTypeSelectorProps> = ({ transferTyp
       </div>
       
       {/* Tab Content */}
-      <div className="mt-3">
+      <div className="mt-3 px-4">
         {transferType === 'international' && (
           <p className="text-xs text-gray-600 text-center">
             Send money internationally to Haiti from anywhere in the world.
