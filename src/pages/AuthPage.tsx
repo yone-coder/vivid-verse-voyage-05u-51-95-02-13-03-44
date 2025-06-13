@@ -134,12 +134,18 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
         setIsLoading(false);
       }
 
-      // If email doesn't exist, redirect to signup
+      // Check if email doesn't exist BEFORE proceeding to step 2
       if (emailVerified === false) {
         toast.info("No account found with this email. Redirecting to signup...");
         setTimeout(() => {
           navigate('/signup');
         }, 1500);
+        return; // Exit early, don't proceed to step 2
+      }
+
+      // Only proceed if email exists
+      if (emailVerified !== true) {
+        toast.error("Unable to verify email. Please try again.");
         return;
       }
     }
@@ -153,7 +159,7 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
     // Clear any error message when proceeding
     setErrorMessage(null);
 
-    // Proceed to step 2
+    // Proceed to step 2 only if all validations pass
     setIsLoading(true);
     setTimeout(() => {
       setIsLoading(false);
