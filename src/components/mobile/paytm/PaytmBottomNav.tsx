@@ -10,8 +10,8 @@ export default function PaytmBottomNav() {
   
   const navItems = [
     {
-      name: 'Paytm',
-      path: '/paytm-home',
+      name: 'Home',
+      path: '/',
       icon: Send,
     },
     {
