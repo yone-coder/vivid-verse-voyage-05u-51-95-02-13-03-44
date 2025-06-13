@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Footer from "@/components/layout/Footer";
@@ -17,9 +18,18 @@ export default function MainLayout() {
   const location = useLocation();
   const pathname = location.pathname;
   
-  // Call useAuth hook unconditionally at the top level
+  // Call ALL hooks unconditionally at the top level
   const { user, isLoading } = useAuth();
+  const { toast } = useToast();
+  const { openAuthOverlay } = useAuthOverlay();
   
+  // All useState hooks
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showProductUpload, setShowProductUpload] = useState(false);
+
+  // Calculate pathname-based booleans
   const isProductPage = pathname.includes('/product/');
   const isRootHomePage = pathname === "/";
   const isPaytmHomePage = pathname === "/" || pathname === "/index";
@@ -28,35 +38,16 @@ export default function MainLayout() {
   const isMultiStepTransferSheetPage = pathname === "/multi-step-transfer-page";
   const isTransferOldPage = pathname === "/transfer-old";
   const isAuthPage = pathname === "/auth";
-  
-  const { toast } = useToast();
-  const [isFavorite, setIsFavorite] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [showProductUpload, setShowProductUpload] = useState(false);
 
-  const { openAuthOverlay } = useAuthOverlay();
+  // All useEffect hooks
+  useEffect(() => {
+    if (pathname === "/auth") {
+      openAuthOverlay();
+      window.history.replaceState({}, "", "/");
+    }
+  }, [pathname, openAuthOverlay]);
 
-  // If still loading auth state, show loading
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600"></div>
-      </div>
-    );
-  }
-
-  // If user is not signed in and not on root page, show auth page
-  if (!user && !isRootHomePage) {
-    return (
-      <LanguageProvider>
-        <div className="min-h-screen flex flex-col bg-white">
-          <AuthPage />
-        </div>
-      </LanguageProvider>
-    );
-  }
-
+  // Handler functions
   const toggleFavorite = () => {
     setIsFavorite(!isFavorite);
     toast({
@@ -101,12 +92,26 @@ export default function MainLayout() {
     }
   `;
 
-  useEffect(() => {
-    if (pathname === "/auth") {
-      openAuthOverlay();
-      window.history.replaceState({}, "", "/");
-    }
-  }, [pathname, openAuthOverlay]);
+  // NOW we can do conditional returns after all hooks are called
+  // If still loading auth state, show loading
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600"></div>
+      </div>
+    );
+  }
+
+  // If user is not signed in and not on root page, show auth page
+  if (!user && !isRootHomePage) {
+    return (
+      <LanguageProvider>
+        <div className="min-h-screen flex flex-col bg-white">
+          <AuthPage />
+        </div>
+      </LanguageProvider>
+    );
+  }
 
   return (
     <LanguageProvider>
