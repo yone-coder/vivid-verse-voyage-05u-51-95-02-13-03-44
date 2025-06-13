@@ -23,7 +23,7 @@ const TransferTypeSelector: React.FC<TransferTypeSelectorProps> = ({ transferTyp
   };
 
   return (
-    <div className="w-full -mx-4">
+    <div className="w-screen relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]">
       {/* Classic Underline Tab Style - Full Width */}
       <div className="w-full border-b border-gray-200">
         <div className="flex">
