@@ -1,7 +1,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useScrollProgress } from '@/hooks/useScrollProgress';
-import { Home, ShoppingBag, Tv, Sofa, ShoppingCart, Car, Gamepad2 } from 'lucide-react';
+import { Send, BookOpen, Users } from 'lucide-react';
 import HeaderSearchBar from '../../home/header/HeaderSearchBar';
 import CategoryTabs from '../../home/header/CategoryTabs';
 import CategoryPanel from '../../home/header/CategoryPanel';
@@ -17,7 +17,7 @@ interface PaytmMobileHeaderProps {
   activeTabId?: string;
 }
 
-export default function PaytmMobileHeader({ activeTabId = 'transfer' }: PaytmMobileHeaderProps) {
+export default function PaytmMobileHeader({ activeTabId = 'quick-send' }: PaytmMobileHeaderProps) {
   const { progress } = useScrollProgress();
   const { t } = useLanguage();
   const location = useLocation();
@@ -41,14 +41,9 @@ export default function PaytmMobileHeader({ activeTabId = 'transfer' }: PaytmMob
   }, [isSearchFocused]);
 
   const categories = [
-    { id: 'transfer', name: 'Transfer', icon: <Home className="h-3 w-3" />, path: '/' },
-    { id: 'electronics', name: 'Electronics & Tech', icon: <Tv className="h-3 w-3" />, path: '/electronics' },
-    { id: 'home', name: 'Home & Living', icon: <Sofa className="h-3 w-3" />, path: '/home-living' },
-    { id: 'fashion', name: 'Fashion & Accessories', icon: <ShoppingBag className="h-3 w-3" />, path: '/fashion' },
-    { id: 'entertainment', name: 'Entertainment', icon: <Gamepad2 className="h-3 w-3" />, path: '/entertainment' },
-    { id: 'kids', name: 'Kids & Hobbies', icon: <ShoppingCart className="h-3 w-3" />, path: '/kids-hobbies' },
-    { id: 'sports', name: 'Sports & Outdoors', icon: <ShoppingBag className="h-3 w-3" />, path: '/sports-outdoors' },
-    { id: 'automotive', name: 'Automotive', icon: <Car className="h-3 w-3" />, path: '/automotive' },
+    { id: 'quick-send', name: 'Quick Send', icon: <Send className="h-3 w-3" />, path: '/' },
+    { id: 'learn', name: 'Learn', icon: <BookOpen className="h-3 w-3" />, path: '/learn' },
+    { id: 'community', name: 'Community', icon: <Users className="h-3 w-3" />, path: '/community' },
   ];
   
   const togglePanel = () => setIsOpen(!isOpen);
