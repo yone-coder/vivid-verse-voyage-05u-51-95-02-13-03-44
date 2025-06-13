@@ -93,7 +93,7 @@ export default function PaytmHeroBanner() {
 
   if (isLoading) {
     return (
-      <div className="w-full mb-4">
+      <div className="w-full">
         <div className="relative w-full bg-gray-200 animate-pulse h-48">
           <div className="absolute inset-0 flex items-center justify-center">
             <span className="text-gray-400">Loading banners...</span>
@@ -104,7 +104,7 @@ export default function PaytmHeroBanner() {
   }
 
   return (
-    <div className="w-full mb-4">
+    <div className="w-full">
       <div className="relative w-full bg-gray-100 overflow-hidden">
         {/* Image slides container */}
         <div className="relative w-full">

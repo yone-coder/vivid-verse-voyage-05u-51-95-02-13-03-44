@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { 
   Send, 
@@ -128,11 +129,13 @@ export default function PaytmMobileHome() {
       {/* Use PaytmMobileHeader */}
       <PaytmMobileHeader activeTabId="quick-send" />
 
-      {/* Add top margin to account for fixed header */}
+      {/* Hero Banner positioned directly after header */}
       <div className="mt-20">
-        {/* Add PaytmHeroBanner after header */}
         <PaytmHeroBanner />
+      </div>
 
+      {/* Main content */}
+      <div className="space-y-1">
         {/* Quick Actions */}
         <div className="p-4 space-y-4">
           {/* Quick Transfer Options Card */}
