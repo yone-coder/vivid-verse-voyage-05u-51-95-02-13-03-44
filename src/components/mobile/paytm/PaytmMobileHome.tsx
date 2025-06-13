@@ -129,8 +129,8 @@ export default function PaytmMobileHome() {
       {/* Use PaytmMobileHeader */}
       <PaytmMobileHeader activeTabId="quick-send" />
 
-      {/* Hero Banner positioned directly after header */}
-      <div className="mt-20">
+      {/* Hero Banner positioned directly after header + category tabs */}
+      <div className="mt-[76px]">
         <PaytmHeroBanner />
       </div>
 
