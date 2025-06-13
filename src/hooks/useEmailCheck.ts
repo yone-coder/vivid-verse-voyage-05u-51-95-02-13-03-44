@@ -42,30 +42,30 @@ export const useEmailCheck = () => {
         // Continue to other methods if this fails
       }
 
-      // Second try: Better password login check - most reliable distinction
+      // Second try: Use signInWithPassword with a dummy password
+      // This will give us clear feedback about whether the user exists
       try {
-        // Try a fake password login - will return different errors based on if user exists
         const { error } = await supabase.auth.signInWithPassword({
           email,
-          password: "check_email_exists_" + Math.random().toString(36).substring(2, 9)
+          password: "dummy_password_for_check_" + Math.random().toString(36).substring(7)
         });
         
         if (error) {
-          // User exists but invalid credentials
-          if (error.message && (
-              error.message.includes("Invalid login credentials") || 
+          // Check the specific error message
+          if (error.message.includes("Invalid login credentials") || 
               error.message.includes("Email not confirmed") ||
-              error.message.includes("Invalid email or password")
-            )) {
-            console.log("Email exists (password check):", email);
+              error.message.includes("Too many requests")) {
+            // User exists but wrong password or other auth issue
+            console.log("Email exists (invalid credentials):", email);
             setEmailVerified(true);
             setIsCheckingEmail(false);
             return true;
           }
           
-          // This is the key improvement - "User not found" indicates the email is not registered
-          if (error.message && error.message.includes("User not found")) {
-            console.log("Email does not exist (user not found):", email);
+          if (error.message.includes("User not found") ||
+              error.message.includes("Invalid email")) {
+            // User definitely doesn't exist
+            console.log("Email does not exist:", email);
             setEmailVerified(false);
             setIsCheckingEmail(false);
             return false;
@@ -73,46 +73,18 @@ export const useEmailCheck = () => {
         }
       } catch (err) {
         console.error("Login check error:", err);
-        // Continue to final method
       }
 
-      // Third try: OTP method - last resort
-      try {
-        const { error } = await supabase.auth.signInWithOtp({
-          email,
-          options: { shouldCreateUser: false }
-        });
-        
-        // Error indicates OTP couldn't be sent - usually because user doesn't exist
-        if (error && (
-            error.message.includes("User not found") || 
-            error.message.includes("Unable to validate email address")
-          )) {
-          console.log("Email not found (OTP method):", email);
-          setEmailVerified(false);
-          setIsCheckingEmail(false);
-          return false;
-        }
-        
-        // No error generally means OTP was sent - user probably exists
-        if (!error) {
-          console.log("Email exists (OTP sent successfully):", email);
-          setEmailVerified(true);
-          setIsCheckingEmail(false);
-          return true;
-        }
-      } catch (err) {
-        console.error("OTP check error:", err);
-      }
-      
-      // If we've reached this point without a conclusive result,
-      // conservatively assume the user doesn't exist
+      // If we reach here, verification was inconclusive
+      // For security, assume user doesn't exist (safer for new signups)
       console.log("Email verification inconclusive, assuming new user:", email);
       setEmailVerified(false);
       setIsCheckingEmail(false);
       return false;
+      
     } catch (error) {
       console.error("Error checking email:", error);
+      // On error, assume user doesn't exist (safer for new signups)
       setEmailVerified(false);
       setIsCheckingEmail(false);
       return false;

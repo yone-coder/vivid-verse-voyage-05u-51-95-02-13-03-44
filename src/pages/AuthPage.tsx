@@ -127,25 +127,36 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
         return;
       }
       
-      // If verification hasn't been attempted or is still in progress, do it now
-      if (!verificationAttempted || verificationInProgress) {
-        setIsLoading(true);
+      // Always verify email before proceeding, regardless of previous attempts
+      setIsLoading(true);
+      try {
         await verifyEmail(email);
+        
+        // Wait for verification to complete
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Check verification result
+        if (emailVerified === false) {
+          setIsLoading(false);
+          toast.info("No account found with this email. Redirecting to signup...");
+          setTimeout(() => {
+            navigate('/signup');
+          }, 1500);
+          return; // Exit early, don't proceed to step 2
+        }
+
+        if (emailVerified !== true) {
+          setIsLoading(false);
+          toast.error("Unable to verify email. Please try again.");
+          return;
+        }
+        
+        // Only proceed if email exists
+        console.log("Email verified successfully, proceeding to step 2");
+        
+      } catch (error) {
         setIsLoading(false);
-      }
-
-      // Check if email doesn't exist BEFORE proceeding to step 2
-      if (emailVerified === false) {
-        toast.info("No account found with this email. Redirecting to signup...");
-        setTimeout(() => {
-          navigate('/signup');
-        }, 1500);
-        return; // Exit early, don't proceed to step 2
-      }
-
-      // Only proceed if email exists
-      if (emailVerified !== true) {
-        toast.error("Unable to verify email. Please try again.");
+        toast.error("Email verification failed. Please try again.");
         return;
       }
     }
@@ -153,6 +164,7 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
     // Validate phone field
     if (activeTab === 'phone' && !phone) {
       toast.error("Please enter your phone number.");
+      setIsLoading(false);
       return;
     }
 
@@ -160,7 +172,6 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
     setErrorMessage(null);
 
     // Proceed to step 2 only if all validations pass
-    setIsLoading(true);
     setTimeout(() => {
       setIsLoading(false);
       setStep(2);
