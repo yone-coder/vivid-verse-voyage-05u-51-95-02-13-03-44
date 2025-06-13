@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Footer from "@/components/layout/Footer";
@@ -10,7 +9,6 @@ import { useAuthOverlay } from "@/context/AuthOverlayContext";
 import { LanguageProvider } from "@/context/LanguageContext";
 import FloatingActionButton from "./FloatingActionButton";
 import ProductUploadOverlay from "@/components/product/ProductUploadOverlay";
-import TranslationEditorTrigger from "@/components/admin/TranslationEditorTrigger";
 
 export default function MainLayout() {
   const isMobile = useIsMobile();
@@ -103,9 +101,6 @@ export default function MainLayout() {
         {!isPaytmHomePage && !isMultiStepTransferPage && !isMultiStepTransferSheetPage && !isTransferOldPage && (
           <FloatingActionButton onClick={() => setShowProductUpload(true)} />
         )}
-
-        {/* Translation Editor Trigger - only show on Paytm homepage or when using Kreyol */}
-        <TranslationEditorTrigger />
 
         {/* Show IndexBottomNav on mobile but not on Paytm homepage or transfer pages */}
         {isMobile && !isPaytmHomePage && !isMultiStepTransferPage && !isMultiStepTransferSheetPage && !isTransferOldPage && <IndexBottomNav />}
