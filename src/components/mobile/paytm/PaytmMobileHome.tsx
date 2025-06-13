@@ -31,7 +31,7 @@ import MobileTransferInput from './MobileTransferInput';
 import MobileLanguageBottomSheet from './MobileLanguageBottomSheet';
 import { useLanguage } from '@/context/LanguageContext';
 import PaytmBottomNav from './PaytmBottomNav';
-import AliExpressHeader from '@/components/home/AliExpressHeader';
+import PaytmMobileHeader from './PaytmMobileHeader';
 import {
   Carousel,
   CarouselContent,
@@ -125,8 +125,8 @@ export default function PaytmMobileHome() {
 
   return (
     <div className="max-w-sm mx-auto bg-gray-50 min-h-screen pb-20">
-      {/* Use AliExpressHeader from ForYou page */}
-      <AliExpressHeader activeTabId="transfer" />
+      {/* Use PaytmMobileHeader instead of AliExpressHeader */}
+      <PaytmMobileHeader activeTabId="transfer" />
 
       {/* Add top margin to account for fixed header */}
       <div className="mt-20">
