@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, CheckCircle, Receipt, ChevronLeft, X, Loader2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -30,13 +29,31 @@ export interface TransferData {
 
 interface MobileLocalTransferSheetPageProps {
   defaultTransferType?: 'international' | 'national';
+  initialState?: {
+    amount?: string;
+    transferType?: 'international' | 'national' | 'local';
+    skipToStep?: number;
+  };
 }
 
 const MobileLocalTransferSheetPage: React.FC<MobileLocalTransferSheetPageProps> = ({ 
-  defaultTransferType = 'national' 
+  defaultTransferType = 'national',
+  initialState 
 }) => {
   const navigate = useNavigate();
-  const [currentStep, setCurrentStep] = useState(1);
+  
+  // Determine initial step based on initialState
+  const getInitialStep = () => {
+    if (initialState?.skipToStep !== undefined) {
+      return initialState.skipToStep + 1; // Convert 0-based to 1-based
+    }
+    if (initialState?.amount && parseFloat(initialState.amount) > 0) {
+      return 2; // Skip to recipient details if amount is provided
+    }
+    return 1;
+  };
+
+  const [currentStep, setCurrentStep] = useState(getInitialStep());
   const [paymentCompleted, setPaymentCompleted] = useState(false);
   const [transactionId, setTransactionId] = useState('');
   const [isPaymentLoading, setIsPaymentLoading] = useState(false);
@@ -45,9 +62,18 @@ const MobileLocalTransferSheetPage: React.FC<MobileLocalTransferSheetPageProps> 
   const paypalContainerRef = useRef<HTMLDivElement>(null);
   const receiptRef = useRef<HTMLDivElement>(null);
   
+  // Determine transfer type from initialState or defaultTransferType
+  const getInitialTransferType = (): 'international' | 'national' => {
+    if (initialState?.transferType) {
+      // Convert 'local' to 'national' for consistency
+      return initialState.transferType === 'local' ? 'national' : initialState.transferType;
+    }
+    return defaultTransferType;
+  };
+
   const [transferData, setTransferData] = useState<TransferData>({
-    transferType: defaultTransferType,
-    amount: '100.00',
+    transferType: getInitialTransferType(),
+    amount: initialState?.amount || '100.00',
     receiverDetails: {
       firstName: '',
       lastName: '',
