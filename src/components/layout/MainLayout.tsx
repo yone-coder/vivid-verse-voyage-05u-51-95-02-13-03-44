@@ -16,6 +16,8 @@ export default function MainLayout() {
   const isMobile = useIsMobile();
   const location = useLocation();
   const pathname = location.pathname;
+  
+  // Call useAuth hook unconditionally at the top level
   const { user, isLoading } = useAuth();
   
   const isProductPage = pathname.includes('/product/');
