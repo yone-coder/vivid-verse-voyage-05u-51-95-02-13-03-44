@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -7,8 +6,9 @@ import { toast } from 'sonner';
 import AuthContainer from '@/components/auth/AuthContainer';
 import AuthHeader from '@/components/auth/AuthHeader';
 import AuthFooter from '@/components/auth/AuthFooter';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import StepOneContent from '@/components/auth/StepOneContent';
+import StepTwoContent from '@/components/auth/StepTwoContent';
+import { useAuthForm } from '@/hooks/useAuthForm';
 import { useEmailCheck } from '@/hooks/useEmailCheck';
 
 interface AuthPageProps {
@@ -17,139 +17,284 @@ interface AuthPageProps {
 }
 
 const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [step, setStep] = useState(1); // 1 = email, 2 = password
-  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
-  const [isLoading, setIsLoading] = useState(false);
-
-  const { checkEmailExists, isCheckingEmail } = useEmailCheck();
-  const { signIn, signUp } = useAuth();
+  // Extract form state and handlers to custom hook
+  const {
+    formState,
+    setActiveTab,
+    setEmail,
+    setPhone,
+    setCountryCode,
+    setPassword,
+    setConfirmPassword,
+    setStep,
+    setIsLoading,
+    setAgreeToTerms,
+    setRememberMe,
+    setAuthSuccess,
+    setErrorMessage,
+    toggleShowPassword,
+    handlePasswordReset,
+    handleGoBack,
+    updateFormState
+  } = useAuthForm();
+  
+  const { checkEmailExists, isCheckingEmail, emailVerified, setEmailVerified } = useEmailCheck();
+  const { user, signIn, signUp } = useAuth();
   const navigate = useNavigate();
 
-  // Step 1: Handle email submission
-  const handleEmailSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // Track verification status separately for synchronization
+  const [verificationAttempted, setVerificationAttempted] = useState(false);
+  const [verificationInProgress, setVerificationInProgress] = useState(false);
+
+  // Reset verification status when email/tab changes
+  useEffect(() => {
+    if (formState.activeTab === 'email') {
+      setVerificationAttempted(false);
+    }
+  }, [formState.email, formState.activeTab]);
+
+  // Redirect if user is already logged in
+  useEffect(() => {
+    if (user) {
+      // Use a timeout to prevent React state update loops
+      setTimeout(() => {
+        navigate('/for-you');
+      }, 0);
+    }
+  }, [user, navigate]);
+
+  // Sync verification status with emailVerified
+  useEffect(() => {
+    if (emailVerified !== null) {
+      setVerificationInProgress(false);
+      setVerificationAttempted(true);
+    }
+  }, [emailVerified]);
+
+  // Wrapped email verification in useCallback to prevent recreation
+  const verifyEmail = useCallback(async (email: string) => {
+    if (!email || !email.includes('@') || !email.includes('.')) return;
     
-    if (!email || !email.includes('@')) {
-      toast.error("Please enter a valid email address.");
+    setVerificationInProgress(true);
+    try {
+      await checkEmailExists(email);
+    } finally {
+      setVerificationAttempted(true);
+    }
+  }, [checkEmailExists]);
+  
+  // Auto-verify email with improved debounce
+  useEffect(() => {
+    const { email, activeTab } = formState;
+    
+    if (activeTab === 'email' && email && email.includes('@') && email.includes('.')) {
+      // Don't try to verify if already in progress or attempted
+      if (verificationInProgress || verificationAttempted) return;
+      
+      const timer = setTimeout(() => {
+        verifyEmail(email);
+      }, 800);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [formState.email, formState.activeTab, verificationInProgress, verificationAttempted, verifyEmail]);
+
+  // Fixed: Determine auth mode based on verification result without causing infinite loops
+  useEffect(() => {
+    if (emailVerified === true && formState.authMode !== 'signin') {
+      updateFormState({ authMode: 'signin' });
+    } else if (emailVerified === false && formState.authMode !== 'signup') {
+      updateFormState({ authMode: 'signup' });
+    }
+  }, [emailVerified, formState.authMode, updateFormState]);
+
+  // Handle step 1 form submission (email/phone verification)
+  const handleStep1Submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const { activeTab, email, phone } = formState;
+
+    // Validate email field
+    if (activeTab === 'email') {
+      if (!email) {
+        toast.error("Please enter your email address.");
+        return;
+      }
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        toast.error("Please enter a valid email address.");
+        return;
+      }
+      
+      // Always verify email before proceeding
+      setIsLoading(true);
+      try {
+        await verifyEmail(email);
+        
+        // Wait for verification to complete
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Check verification result
+        if (emailVerified === false) {
+          // User doesn't exist, redirect to signup
+          setIsLoading(false);
+          toast.info("No account found with this email. Redirecting to signup...");
+          setTimeout(() => {
+            navigate('/signup');
+          }, 1500);
+          return;
+        }
+
+        if (emailVerified === true) {
+          // User exists, proceed to step 2 for password
+          console.log("Email verified successfully, proceeding to step 2");
+          setTimeout(() => {
+            setIsLoading(false);
+            setStep(2);
+          }, 800);
+          return;
+        }
+        
+        // If verification is inconclusive
+        setIsLoading(false);
+        toast.error("Unable to verify email. Please try again.");
+        return;
+        
+      } catch (error) {
+        setIsLoading(false);
+        toast.error("Email verification failed. Please try again.");
+        return;
+      }
+    }
+
+    // Validate phone field
+    if (activeTab === 'phone' && !phone) {
+      toast.error("Please enter your phone number.");
       return;
     }
 
-    setIsLoading(true);
-    
-    try {
-      const exists = await checkEmailExists(email);
-      
-      if (exists) {
-        console.log("Email exists, going to signin mode");
-        setAuthMode('signin');
+    // For phone tab, proceed to step 2 directly
+    if (activeTab === 'phone') {
+      setIsLoading(true);
+      setTimeout(() => {
+        setIsLoading(false);
         setStep(2);
-      } else {
-        console.log("Email doesn't exist, redirecting to signup");
-        toast.info("No account found. Redirecting to signup...");
-        setTimeout(() => {
-          navigate('/signup');
-        }, 1500);
-      }
-    } catch (error) {
-      toast.error("Unable to verify email. Please try again.");
-    } finally {
-      setIsLoading(false);
+      }, 800);
     }
   };
 
-  // Step 2: Handle password submission
-  const handlePasswordSubmit = async (e: React.FormEvent) => {
+  // Handle step 2 form submission (password verification/signup)
+  const handleStep2Submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+    const { 
+      password, confirmPassword, email, 
+      authMode, agreeToTerms, rememberMe 
+    } = formState;
+
+    // Validate password fields
     if (!password) {
       toast.error("Please enter your password.");
       return;
     }
 
+    if (authMode === 'signup' && password !== confirmPassword) {
+      toast.error("Passwords don't match.");
+      return;
+    }
+
+    if (authMode === 'signup' && password.length < 8) {
+      toast.error("Password must be at least 8 characters long.");
+      return;
+    }
+
+    if (authMode === 'signup' && !agreeToTerms) {
+      toast.error("You must agree to the Terms of Service.");
+      return;
+    }
+
+    // Attempt authentication
     setIsLoading(true);
+    setAuthSuccess(false);
 
     try {
-      if (authMode === 'signin') {
-        await signIn(email, password, false);
-        toast.success("Welcome back!");
-        navigate('/for-you');
+      if (authMode === 'signup') {
+        await signUp(email, password);
+        setAuthSuccess(true);
+      } else {
+        // For signin
+        await signIn(email, password, rememberMe);
+        setAuthSuccess(true);
       }
     } catch (error: any) {
       console.error("Auth error:", error);
-      toast.error("Invalid password. Please try again.");
+      toast.error(authMode === 'signin' 
+        ? "Login failed. Please check your credentials and try again." 
+        : "Signup failed. Please try again.");
+      setAuthSuccess(false);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const goBack = () => {
-    setStep(1);
-    setPassword('');
+  // Handle social login
+  const handleSocialLogin = (provider: string) => {
+    toast.info(`${provider.charAt(0).toUpperCase() + provider.slice(1)} login is not configured yet`);
+  };
+
+  // Determine the title based on email verification
+  const getAuthTitle = () => {
+    if (emailVerified === true) {
+      return "Welcome back";
+    } else if (emailVerified === false) {
+      return "Create your account";
+    }
+    return "Continue to Mima";
+  };
+
+  // Determine subtitle based on email verification
+  const getAuthSubtitle = () => {
+    if (emailVerified === true) {
+      return "Enter your password to sign in";
+    } else if (emailVerified === false) {
+      return "Set up your new account";
+    }
+    return "Enter your email or phone number";
   };
 
   return (
     <AuthContainer isOverlay={isOverlay} onClose={onClose}>
       <AuthHeader
-        title={step === 1 ? "Continue to Mima" : "Welcome back"}
-        subtitle={step === 1 ? "Enter your email address" : "Enter your password to sign in"}
+        title={getAuthTitle()}
+        subtitle={getAuthSubtitle()}
       />
 
-      {step === 1 ? (
-        <form onSubmit={handleEmailSubmit} className="w-full space-y-4">
-          <div>
-            <Input
-              type="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full"
-              disabled={isLoading || isCheckingEmail}
-            />
-          </div>
-          
-          <Button 
-            type="submit" 
-            className="w-full bg-[#ff4747] hover:bg-[#ff2727]"
-            disabled={isLoading || isCheckingEmail || !email}
-          >
-            {isLoading || isCheckingEmail ? "Checking..." : "Continue"}
-          </Button>
-        </form>
-      ) : (
-        <form onSubmit={handlePasswordSubmit} className="w-full space-y-4">
-          <div className="text-center mb-4">
-            <p className="text-sm text-gray-600">{email}</p>
-            <button 
-              type="button" 
-              onClick={goBack}
-              className="text-sm text-[#ff4747] hover:underline"
-            >
-              Change email
-            </button>
-          </div>
-          
-          <div>
-            <Input
-              type="password"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full"
-              disabled={isLoading}
-            />
-          </div>
-          
-          <Button 
-            type="submit" 
-            className="w-full bg-[#ff4747] hover:bg-[#ff2727]"
-            disabled={isLoading || !password}
-          >
-            {isLoading ? "Signing in..." : "Sign in"}
-          </Button>
-        </form>
-      )}
+      <form onSubmit={formState.step === 1 ? handleStep1Submit : handleStep2Submit} className="w-full">
+        {formState.step === 1 ? (
+          <StepOneContent
+            formState={formState}
+            setActiveTab={setActiveTab}
+            setEmail={setEmail}
+            setPhone={setPhone}
+            setCountryCode={setCountryCode}
+            onSubmit={handleStep1Submit}
+            handleSocialLogin={handleSocialLogin}
+            isCheckingEmail={isCheckingEmail || verificationInProgress}
+            emailVerified={emailVerified}
+          />
+        ) : (
+          <StepTwoContent
+            formState={formState}
+            setPassword={setPassword}
+            setConfirmPassword={setConfirmPassword}
+            setAgreeToTerms={setAgreeToTerms}
+            setRememberMe={setRememberMe}
+            toggleShowPassword={toggleShowPassword}
+            handleGoBack={handleGoBack}
+            handlePasswordReset={handlePasswordReset}
+            onSubmit={handleStep2Submit}
+          />
+        )}
+      </form>
 
       <AuthFooter />
     </AuthContainer>
