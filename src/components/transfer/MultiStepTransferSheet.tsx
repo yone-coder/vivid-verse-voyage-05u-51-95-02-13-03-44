@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, Clock, CheckCircle, Receipt, Globe } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -315,6 +316,14 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
         </div>
       </div>
 
+      {/* Transfer Type Selector - Full Width Header */}
+      <div className="flex-shrink-0">
+        <TransferTypeSelector 
+          transferType={transferData.transferType || 'international'}
+          onTransferTypeChange={(type) => updateTransferData({ transferType: type })}
+        />
+      </div>
+
       {/* Step Content - Reduced padding and consistent spacing */}
       <div className="flex-1 overflow-y-auto pb-64">
         <div className="px-4 py-4">
@@ -324,10 +333,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
                 <p className="text-gray-600">Choose your transfer type</p>
               </div>
               
-              <TransferTypeSelector 
-                transferType={transferData.transferType || 'international'}
-                onTransferTypeChange={(type) => updateTransferData({ transferType: type })}
-              />
+              {/* TransferTypeSelector moved to header */}
             </div>
           )}
 
