@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, Clock, CheckCircle, Receipt, Globe } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -315,9 +316,9 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
         </div>
       </div>
 
-      {/* Full Width Transfer Type Selector - placed outside padded content */}
+      {/* Sticky Transfer Type Selector - only for step 1 */}
       {currentStep === 1 && (
-        <div className="flex-shrink-0">
+        <div className="sticky top-0 z-10 bg-white flex-shrink-0">
           <TransferTypeSelector 
             transferType={transferData.transferType || 'international'}
             onTransferTypeChange={(type) => updateTransferData({ transferType: type })}
