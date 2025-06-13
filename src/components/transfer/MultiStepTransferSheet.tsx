@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, Clock, CheckCircle, Receipt, Globe } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -255,78 +256,81 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
         </h1>
       </div>
       
-      {/* Animated Step Indicator */}
-      <div className="px-4 py-3 flex-shrink-0 bg-white">
-        <div className="flex items-center justify-between">
-          {[1, 2, 3, 4, 5, 6].map((step, index) => (
-            <React.Fragment key={step}>
-              <div className="flex flex-col items-center">
-                <motion.div 
-                  className={`rounded-full flex items-center justify-center text-xs font-medium transition-all duration-300 shadow-sm ${
-                    step === currentStep 
-                      ? 'w-auto h-7 px-2 bg-red-600 text-white' 
-                      : 'w-7 h-7 bg-gray-200 text-gray-600'
-                  }`}
-                  variants={stepVariants}
-                  initial="inactive"
-                  animate={
-                    step === currentStep ? 'active' : 
-                    step < currentStep ? 'completed' : 
-                    'inactive'
-                  }
-                  whileTap={{ scale: 0.95 }}
-                >
-                  {step < currentStep ? (
-                    <CheckCircle className="h-3 w-3" />
-                  ) : step === currentStep ? (
-                    <div className="flex items-center space-x-1">
-                      {step === 1 ? (
-                        <Globe className="h-3 w-3" />
-                      ) : step === 2 ? (
-                        <DollarSign className="h-3 w-3" />
-                      ) : step === 3 ? (
-                        <User className="h-3 w-3" />
-                      ) : step === 4 ? (
-                        <CreditCard className="h-3 w-3" />
-                      ) : step === 5 ? (
-                        <Shield className="h-3 w-3" />
-                      ) : (
-                        <Receipt className="h-3 w-3" />
-                      )}
-                      <span className="font-medium whitespace-nowrap text-xs">
-                        {stepTitles[index].split(' ')[0]}
-                      </span>
-                    </div>
-                  ) : (
-                    step
-                  )}
-                </motion.div>
-              </div>
-              {index < 5 && (
-                <motion.div 
-                  className="flex-1 h-0.5 mx-2 rounded-full origin-left"
-                  variants={lineVariants}
-                  initial="inactive"
-                  animate={step < currentStep ? 'active' : 'inactive'}
-                />
-              )}
-            </React.Fragment>
-          ))}
+      {/* Sticky Combined Steps and Transfer Type Section */}
+      <div className="sticky top-0 z-20 bg-white shadow-sm flex-shrink-0">
+        {/* Animated Step Indicator */}
+        <div className="px-4 py-3">
+          <div className="flex items-center justify-between">
+            {[1, 2, 3, 4, 5, 6].map((step, index) => (
+              <React.Fragment key={step}>
+                <div className="flex flex-col items-center">
+                  <motion.div 
+                    className={`rounded-full flex items-center justify-center text-xs font-medium transition-all duration-300 shadow-sm ${
+                      step === currentStep 
+                        ? 'w-auto h-7 px-2 bg-red-600 text-white' 
+                        : 'w-7 h-7 bg-gray-200 text-gray-600'
+                    }`}
+                    variants={stepVariants}
+                    initial="inactive"
+                    animate={
+                      step === currentStep ? 'active' : 
+                      step < currentStep ? 'completed' : 
+                      'inactive'
+                    }
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {step < currentStep ? (
+                      <CheckCircle className="h-3 w-3" />
+                    ) : step === currentStep ? (
+                      <div className="flex items-center space-x-1">
+                        {step === 1 ? (
+                          <Globe className="h-3 w-3" />
+                        ) : step === 2 ? (
+                          <DollarSign className="h-3 w-3" />
+                        ) : step === 3 ? (
+                          <User className="h-3 w-3" />
+                        ) : step === 4 ? (
+                          <CreditCard className="h-3 w-3" />
+                        ) : step === 5 ? (
+                          <Shield className="h-3 w-3" />
+                        ) : (
+                          <Receipt className="h-3 w-3" />
+                        )}
+                        <span className="font-medium whitespace-nowrap text-xs">
+                          {stepTitles[index].split(' ')[0]}
+                        </span>
+                      </div>
+                    ) : (
+                      step
+                    )}
+                  </motion.div>
+                </div>
+                {index < 5 && (
+                  <motion.div 
+                    className="flex-1 h-0.5 mx-2 rounded-full origin-left"
+                    variants={lineVariants}
+                    initial="inactive"
+                    animate={step < currentStep ? 'active' : 'inactive'}
+                  />
+                )}
+              </React.Fragment>
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* Main Content Container with relative positioning for sticky content */}
-      <div className="flex-1 overflow-y-auto relative">
-        {/* Sticky Transfer Type Selector - only for step 1 */}
+        {/* Transfer Type Selector - only show on step 1 */}
         {currentStep === 1 && (
-          <div className="sticky top-0 z-20 bg-white shadow-sm">
+          <div className="border-t border-gray-100">
             <TransferTypeSelector 
               transferType={transferData.transferType || 'international'}
               onTransferTypeChange={(type) => updateTransferData({ transferType: type })}
             />
           </div>
         )}
+      </div>
 
+      {/* Main Content Container */}
+      <div className="flex-1 overflow-y-auto relative">
         {/* Step Content */}
         <div className="pb-64">
           <div className="px-4 py-4">
