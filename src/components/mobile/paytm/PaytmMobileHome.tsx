@@ -79,51 +79,6 @@ export default function PaytmMobileHome() {
     return languages.find(lang => lang.code === selectedLanguage);
   };
 
-  const videoTutorials = [
-    {
-      id: 1,
-      title: t('mobile.howToSendMoney'),
-      description: t('mobile.stepByStepGuide'),
-      duration: '3:45',
-      thumbnail: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=300&h=200&fit=crop'
-    },
-    {
-      id: 2,
-      title: t('mobile.cashPickupLocations'),
-      description: t('mobile.findNearestPickup'),
-      duration: '2:12',
-      thumbnail: 'https://images.unsplash.com/photo-1556740738-b6a63e27c4df?w=300&h=200&fit=crop'
-    },
-    {
-      id: 3,
-      title: t('mobile.mobileMoney'),
-      description: t('mobile.payBillsAndTopUp'),
-      duration: '4:30',
-      thumbnail: 'https://images.unsplash.com/photo-1556740758-90de374c12ad?w=300&h=200&fit=crop'
-    },
-    {
-      id: 4,
-      title: 'Account Security Tips',
-      description: 'Keep your transfers safe',
-      duration: '2:45',
-      thumbnail: 'https://images.unsplash.com/photo-1556745757-8d76bdb6984b?w=300&h=200&fit=crop'
-    },
-    {
-      id: 5,
-      title: 'How to Track Transfers',
-      description: 'Monitor your money transfers',
-      duration: '3:15',
-      thumbnail: 'https://images.unsplash.com/photo-1556745753-b2904692b3cd?w=300&h=200&fit=crop'
-    },
-    {
-      id: 6,
-      title: 'Exchange Rate Guide',
-      description: 'Understanding rates',
-      duration: '4:02',
-      thumbnail: 'https://images.unsplash.com/photo-1556745757-8d76bdb6984b?w=300&h=200&fit=crop'
-    }
-  ];
-
   return (
     <div className="max-w-sm mx-auto bg-gray-50 min-h-screen pb-20">
       {/* Use PaytmMobileHeader */}
@@ -134,233 +89,90 @@ export default function PaytmMobileHome() {
         <PaytmHeroBanner />
       </div>
 
-      {/* Main content */}
-      <div className="space-y-1">
-        {/* Quick Actions */}
-        <div className="p-4 space-y-4">
-          {/* Quick Transfer Options Card */}
-          <div className="bg-white rounded-xl border border-gray-200 p-4">
-            <h3 className="font-semibold text-gray-800 mb-3">{t('mobile.quickTransfer')}</h3>
-            <div className="grid grid-cols-4 gap-3">
-              <button className="text-center" onClick={handleSendClick}>
-                <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                  <Send className="w-6 h-6 text-red-600" />
-                </div>
-                <p className="text-xs text-gray-600 font-medium">{t('mobile.sendToHaiti')}</p>
-              </button>
-              <button className="text-center" onClick={handleLocalTransferClick}>
-                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                  <ArrowUpDown className="w-6 h-6 text-green-600" />
-                </div>
-                <p className="text-xs text-gray-600 font-medium">{t('mobile.localTransfer')}</p>
-              </button>
-              <button className="text-center">
-                <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                  <Zap className="w-6 h-6 text-purple-600" />
-                </div>
-                <p className="text-xs text-gray-600 font-medium">{t('mobile.expressSend')}</p>
-              </button>
-              <button className="text-center">
-                <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                  <CreditCard className="w-6 h-6 text-orange-600" />
-                </div>
-                <p className="text-xs text-gray-600 font-medium">{t('mobile.billPayment')}</p>
-              </button>
+      {/* Main content - Only Send Money Section */}
+      <div className="p-4 space-y-6">
+        {/* Send Money Section - Made more interactive */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-xl font-bold text-gray-800">{t('mobile.sendMoney')}</h3>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+              <span className="text-xs text-green-600 font-medium">Live rates</span>
             </div>
           </div>
-
-          {/* Transfer Amount Input - No Card Wrapper */}
-          <div>
-            <h3 className="font-semibold text-gray-800 mb-3">{t('mobile.sendMoney')}</h3>
+          
+          {/* Enhanced Transfer Input with better interactivity */}
+          <div className="transform transition-all duration-300 hover:scale-[1.02]">
             <MobileTransferInput 
               amount={amount}
               onAmountChange={setAmount}
             />
           </div>
-        </div>
 
-        {/* YouTube-style Video Thumbnails Section - Edge to Edge */}
-        <div className="mb-4">
-          <div className="px-4 mb-3">
-            <h3 className="font-semibold text-gray-800">{t('mobile.videoTutorials')}</h3>
+          {/* Interactive Send Button */}
+          <div className="mt-6">
+            <button
+              onClick={handleSendClick}
+              disabled={!amount || parseFloat(amount) <= 0}
+              className={`w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 transform ${
+                amount && parseFloat(amount) > 0
+                  ? 'bg-gradient-to-r from-[#ff4747] to-red-600 text-white shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]'
+                  : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+              }`}
+            >
+              <div className="flex items-center justify-center gap-2">
+                <Send className="w-5 h-5" />
+                {amount && parseFloat(amount) > 0 
+                  ? `Send $${amount} to Haiti`
+                  : 'Enter amount to send'
+                }
+              </div>
+            </button>
           </div>
-          
-          <div className="overflow-x-auto scrollbar-hide">
-            <div className="flex gap-3 px-4 pb-2">
-              {videoTutorials.map((video) => (
-                <div key={video.id} className="flex-shrink-0 w-40">
-                  <div className="relative">
-                    <img
-                      src={video.thumbnail}
-                      alt={video.title}
-                      className="w-full h-24 object-cover rounded-lg"
-                    />
-                    {/* Play button overlay */}
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-8 h-8 bg-black bg-opacity-70 rounded-full flex items-center justify-center">
-                        <Play className="w-4 h-4 text-white ml-0.5" fill="white" />
-                      </div>
-                    </div>
-                    {/* Duration indicator */}
-                    <div className="absolute bottom-1 right-1 bg-black bg-opacity-80 text-white text-xs px-1 py-0.5 rounded">
-                      {video.duration}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
 
-        {/* Financial Services Card */}
-        <div className="mx-4 mb-4">
-          <div className="bg-white rounded-xl border border-gray-200 p-4">
-            <h3 className="font-semibold text-gray-800 mb-3">{t('mobile.financialServices')}</h3>
-            <div className="grid grid-cols-4 gap-3">
-              <div className="text-center">
-                <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                  <History className="w-6 h-6 text-red-600" />
-                </div>
-                <p className="text-xs text-gray-600 font-medium">{t('mobile.transferHistory')}</p>
-              </div>
-              <div className="text-center">
-                <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                  <Users className="w-6 h-6 text-pink-600" />
-                </div>
-                <p className="text-xs text-gray-600 font-medium">{t('mobile.recipients')}</p>
-              </div>
-              <div className="text-center">
-                <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                  <FileText className="w-6 h-6 text-indigo-600" />
-                </div>
-                <p className="text-xs text-gray-600 font-medium">{t('mobile.trackMoney')}</p>
-              </div>
-              <div className="text-center">
-                <div className="w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                  <Phone className="w-6 h-6 text-teal-600" />
-                </div>
-                <p className="text-xs text-gray-600 font-medium">{t('mobile.mobileTopUp')}</p>
-              </div>
-              <div className="text-center">
-                <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                  <Plus className="w-6 h-6 text-yellow-600" />
-                </div>
-                <p className="text-xs text-gray-600 font-medium">{t('mobile.addFunds')}</p>
-              </div>
-              <div className="text-center">
-                <div className="w-12 h-12 bg-cyan-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                  <Wallet className="w-6 h-6 text-cyan-600" />
-                </div>
-                <p className="text-xs text-gray-600 font-medium">{t('mobile.billPayment')}</p>
-              </div>
-              <div className="text-center">
-                <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                  <Globe className="w-6 h-6 text-gray-600" />
-                </div>
-                <p className="text-xs text-gray-600 font-medium">{t('mobile.agentLocator')}</p>
-              </div>
-              <div className="text-center">
-                <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                  <DollarSign className="w-6 h-6 text-emerald-600" />
-                </div>
-                <p className="text-xs text-gray-600 font-medium">{t('mobile.rateCalculator')}</p>
-              </div>
-            </div>
+          {/* Quick Amount Buttons */}
+          <div className="grid grid-cols-4 gap-2 mt-4">
+            {[50, 100, 200, 500].map((quickAmount) => (
+              <button
+                key={quickAmount}
+                onClick={() => setAmount(quickAmount.toString())}
+                className="py-3 px-2 bg-white border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-[#ff4747] hover:text-white hover:border-[#ff4747] transition-all duration-200 transform hover:scale-105 active:scale-95"
+              >
+                ${quickAmount}
+              </button>
+            ))}
           </div>
-        </div>
 
-        {/* Recent Recipients */}
-        <div className="mx-4 mb-4">
-          <div className="bg-white rounded-xl border border-gray-200 p-4">
-            <div className="flex justify-between items-center mb-3">
-              <h3 className="font-semibold text-gray-800">{t('mobile.recentRecipients')}</h3>
-              <ChevronRight className="w-5 h-5 text-gray-400" />
+          {/* Interactive Info Cards */}
+          <div className="grid grid-cols-2 gap-3 mt-6">
+            <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-xl border border-blue-200 hover:shadow-md transition-all duration-300 cursor-pointer">
+              <div className="flex items-center gap-2 mb-2">
+                <Shield className="w-4 h-4 text-blue-600" />
+                <span className="text-xs font-bold text-blue-800 uppercase tracking-wide">Secure</span>
+              </div>
+              <p className="text-sm text-blue-700">Bank-level security for all transfers</p>
             </div>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
-                <div className="flex items-center">
-                  <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                    <span className="text-blue-600 font-semibold text-sm">JP</span>
-                  </div>
-                  <div>
-                    <p className="font-medium text-gray-800">Jean Pierre</p>
-                    <p className="text-sm text-gray-500">Port-au-Prince • {t('mobile.last')}: $150</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <button 
-                    onClick={handleSendClick}
-                    className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm mb-1"
-                  >
-                    {t('mobile.send')}
-                  </button>
-                  <p className="text-xs text-gray-500">{t('mobile.daysAgo', { days: '3' })}</p>
-                </div>
+            
+            <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-xl border border-green-200 hover:shadow-md transition-all duration-300 cursor-pointer">
+              <div className="flex items-center gap-2 mb-2">
+                <Zap className="w-4 h-4 text-green-600" />
+                <span className="text-xs font-bold text-green-800 uppercase tracking-wide">Fast</span>
               </div>
-              <div className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
-                <div className="flex items-center">
-                  <div className="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center mr-3">
-                    <span className="text-pink-600 font-semibold text-sm">ML</span>
-                  </div>
-                  <div>
-                    <p className="font-medium text-gray-800">Marie Louise</p>
-                    <p className="text-sm text-gray-500">Cap-Haïtien • {t('mobile.last')}: $200</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <button 
-                    onClick={handleSendClick}
-                    className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm mb-1"
-                  >
-                    {t('mobile.send')}
-                  </button>
-                  <p className="text-xs text-gray-500">{t('mobile.weekAgo')}</p>
-                </div>
-              </div>
-              <div className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
-                <div className="flex items-center">
-                  <div className="w-10 h-12 bg-green-100 rounded-full flex items-center justify-center mr-3">
-                    <span className="text-green-600 font-semibold text-sm">PD</span>
-                  </div>
-                  <div>
-                    <p className="font-medium text-gray-800">Pierre Duval</p>
-                    <p className="text-sm text-gray-500">Jacmel • {t('mobile.last')}: $75</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <button 
-                    onClick={handleSendClick}
-                    className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm mb-1"
-                  >
-                    {t('mobile.send')}
-                  </button>
-                  <p className="text-xs text-gray-500">{t('mobile.weeksAgo', { weeks: '2' })}</p>
-                </div>
-              </div>
+              <p className="text-sm text-green-700">Money ready in minutes</p>
             </div>
           </div>
-        </div>
 
-        {/* Promotion Banner */}
-        <div className="mx-4 mb-6">
-          <div className="bg-gradient-to-r from-red-400 to-blue-400 rounded-xl p-4 text-white">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-semibold text-lg">{t('mobile.zeroFeesOffer')}</p>
-                <p className="text-sm opacity-90">{t('mobile.zeroFeesDescription')}</p>
-                <p className="text-xs opacity-80 mt-1">{t('mobile.validUntil')}</p>
-              </div>
-              <div className="text-center">
-                <button 
-                  onClick={handleSendClick}
-                  className="bg-white text-red-500 px-4 py-2 rounded-full text-sm font-medium mb-2"
-                >
-                  {t('mobile.useOffer')}
-                </button>
-                <p className="text-xs opacity-80">{t('mobile.termsApply')}</p>
+          {/* Rate Update Notification */}
+          {amount && parseFloat(amount) > 0 && (
+            <div className="bg-gradient-to-r from-orange-50 to-yellow-50 border border-orange-200 rounded-xl p-3 animate-fade-in">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></div>
+                <span className="text-sm font-medium text-orange-800">
+                  Rate locked for 30 minutes
+                </span>
               </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
 
