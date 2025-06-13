@@ -76,11 +76,11 @@ const CategoryTabs = ({
         backdropFilter: `blur(${progress * 8}px)`,
       }}
     >
-      {/* Tabs List */}
+      {/* Tabs List - Full Width No Padding */}
       <div className="h-full">
         <motion.div
           ref={scrollContainerRef}
-          className="flex items-center justify-between h-full px-4"
+          className="flex items-center h-full w-full"
         >
           {categories.map(({ id, name, icon, path }, index) => (
             <button
@@ -91,7 +91,7 @@ const CategoryTabs = ({
               className={`relative flex items-center justify-center gap-1 flex-1 py-1 text-xs font-medium transition-colors duration-150 ease-in-out focus:outline-none focus-visible:ring-1 focus-visible:ring-orange-500 focus-visible:ring-offset-1 ${
                 activeTab === id
                   ? 'text-orange-500'
-                  : 'text-gray-600 hover:text-orange-500 hover:bg-orange-50/70 rounded-md'
+                  : 'text-gray-600 hover:text-orange-500 hover:bg-orange-50/70'
               }`}
             >
               {icon}
