@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
@@ -79,7 +78,7 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
       {/* Content */}
       <div className="relative z-10 min-h-screen flex flex-col">
         {/* Header */}
-        <header className="p-8">
+        <header className="p-4">
           <div className="max-w-md mx-auto">
             {isOverlay && onClose && (
               <button
@@ -92,10 +91,10 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
           </div>
         </header>
 
-        {/* Main Content */}
-        <main className="flex-1 flex items-center justify-center px-8 pb-16">
+        {/* Main Content - Adjusted positioning and padding */}
+        <main className="flex-1 flex items-center justify-center px-8 py-4">
           <div className="w-full max-w-md">
-            <h1 className="text-white text-5xl font-bold mb-12 text-center">
+            <h1 className="text-white text-5xl font-bold mb-8 text-center">
               Sign in
             </h1>
 
@@ -196,7 +195,7 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
                   </button>
                 </div>
 
-                <div className="text-center mt-8">
+                <div className="text-center mt-6">
                   <p className="text-gray-400 text-sm">
                     Don't have an account?{' '}
                     <button 
@@ -279,7 +278,7 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
                     {isLoading ? 'Signing in...' : 'Log In'}
                   </button>
 
-                  <div className="text-center mt-8">
+                  <div className="text-center mt-6">
                     <p className="text-gray-400 text-sm">
                       Don't have an account?{' '}
                       <button 
