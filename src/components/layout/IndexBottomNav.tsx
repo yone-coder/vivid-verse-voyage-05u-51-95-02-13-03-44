@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
-  Send, History, MapPin, User, Route, X
+  Send, History, MapPin, User, Route, X, ArrowRight
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
@@ -22,6 +22,13 @@ interface BottomNavTab {
   badge?: number;
 }
 
+interface IndexBottomNavProps {
+  showContinueButton?: boolean;
+  onContinueClick?: () => void;
+  continueButtonText?: string;
+  continueButtonDisabled?: boolean;
+}
+
 const navItems: BottomNavTab[] = [
   { id: 'send', name: 'Send', icon: Send, path: '/' }, 
   { id: 'history', name: 'History', icon: History, path: '/transfer-history' },
@@ -30,7 +37,12 @@ const navItems: BottomNavTab[] = [
   { id: 'account', name: 'Account', icon: User, path: '/account' },
 ];
 
-export default function BottomNav() {
+export default function BottomNav({ 
+  showContinueButton = false, 
+  onContinueClick, 
+  continueButtonText = "Continue",
+  continueButtonDisabled = false 
+}: IndexBottomNavProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
@@ -92,6 +104,24 @@ export default function BottomNav() {
         animate={{ y: 0 }}
         className="fixed bottom-0 left-0 right-0 bg-white dark:bg-zinc-900 border-t border-gray-200 dark:border-zinc-800 z-50 shadow-lg"
       >
+        {/* Continue Button - appears above the nav bar when showContinueButton is true */}
+        {showContinueButton && (
+          <div className="px-4 py-3 border-b border-gray-200 dark:border-zinc-800">
+            <button
+              onClick={onContinueClick}
+              disabled={continueButtonDisabled}
+              className={cn(
+                "w-full bg-red-600 hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2",
+                continueButtonDisabled && "opacity-50"
+              )}
+            >
+              <span>{continueButtonText}</span>
+              <ArrowRight className="h-4 w-4" />
+            </button>
+          </div>
+        )}
+
+        {/* Navigation Tabs */}
         <div className="flex justify-between items-center h-12 px-2 max-w-md mx-auto">
           {navItems.map((item) => {
             const Icon = item.icon;
