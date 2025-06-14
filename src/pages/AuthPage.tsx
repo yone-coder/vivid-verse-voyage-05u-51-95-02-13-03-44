@@ -65,16 +65,16 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
 
   return (
     <div className="min-h-screen relative flex flex-col">
-      {/* Background Image with Gradient Overlay */}
+      {/* Background Image */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1721322800607-8c38375eef04?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80')`
+          backgroundImage: `url('/lovable-uploads/abcdf0d8-acdf-4009-abf2-0b30ecb1f695.png')`
         }}
       />
       
-      {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/60 to-black"></div>
+      {/* Black Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/60 to-black"></div>
       
       {/* Content */}
       <div className="relative z-10 min-h-screen flex flex-col">
