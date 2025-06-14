@@ -67,7 +67,7 @@ const AuthPage = ({ isOverlay = false, onClose }: AuthPageProps) => {
     <div className="min-h-screen relative flex flex-col">
       {/* Background Image */}
       <div 
-        className="absolute inset-0 bg-cover bg-top bg-no-repeat"
+        className="absolute inset-0 bg-contain bg-top bg-no-repeat w-full"
         style={{
           backgroundImage: `url('/lovable-uploads/abcdf0d8-acdf-4009-abf2-0b30ecb1f695.png')`
         }}
