@@ -4,7 +4,6 @@ import MainLayout from "@/components/layout/MainLayout";
 import Index from "@/pages/Index";
 import AuthPage from "@/pages/AuthPage";
 import SignupPage from "@/pages/SignupPage";
-import ForYou from "@/pages/ForYou";
 import ProductDetail from "@/pages/ProductDetail";
 import SearchPage from "@/pages/SearchPage";
 import ProfilePage from "@/pages/ProfilePage";
@@ -19,7 +18,6 @@ export const router = createBrowserRouter([
       { index: true, element: <Index /> },
       { path: "auth", element: <AuthPage /> },
       { path: "signup", element: <SignupPage /> },
-      { path: "for-you", element: <ForYou /> },
       { path: "product/:id", element: <ProductDetail /> },
       { path: "search", element: <SearchPage /> },
       { path: "profile", element: <ProfilePage /> },

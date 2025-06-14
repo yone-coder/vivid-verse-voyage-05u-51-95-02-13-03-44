@@ -8,10 +8,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "./context/AuthContext";
 import Index from "./pages/Index";
-import ForYou from "./pages/ForYou";
 import SearchPage from "./pages/SearchPage";
 import ProductDetail from "./pages/ProductDetail";
-import Posts from "./pages/Posts";
 import Videos from "./pages/Videos";
 import Reels from "./pages/Reels";
 import Trending from "./pages/Trending";
@@ -19,14 +17,6 @@ import Messages from "./pages/Messages";
 import ProfilePage from "./pages/ProfilePage";
 import MoreMenu from "./pages/MoreMenu";
 import AuthPage from "./pages/AuthPage";
-import CategoriesPage from "./pages/CategoriesPage";
-import FashionPage from "./pages/FashionPage";
-import ElectronicsPage from "./pages/ElectronicsPage";
-import HomeLivingPage from "./pages/HomeLivingPage";
-import SportsOutdoorsPage from "./pages/SportsOutdoorsPage";
-import AutomotivePage from "./pages/AutomotivePage";
-import KidsHobbiesPage from "./pages/KidsHobbiesPage";
-import EntertainmentPage from "./pages/EntertainmentPage";
 import AdminPanel from "./pages/AdminPanel";
 import Checkout from "./pages/Checkout";
 import PayPalCheckout from "./pages/PayPalCheckout";
@@ -66,11 +56,9 @@ function App() {
                   <Routes>
                     <Route path="/" element={<MainLayout />}>
                       <Route index element={<ResponsiveMultiStepTransferPage />} />
-                      <Route path="for-you" element={<ForYou />} />
                       <Route path="paytm-home" element={<Index />} />
                       <Route path="search" element={<SearchPage />} />
                       <Route path="product/:id" element={<ProductDetail />} />
-                      <Route path="posts" element={<Posts />} />
                       <Route path="videos" element={<Videos />} />
                       <Route path="reels" element={<Reels />} />
                       <Route path="trending" element={<Trending />} />
@@ -79,14 +67,6 @@ function App() {
                       <Route path="more" element={<MoreMenu />} />
                       <Route path="auth" element={<AuthPage />} />
                       <Route path="/multi-step-transfer-desktop" element={<MultiStepTransferSheetDesktopPage />} />
-                      <Route path="categories" element={<CategoriesPage />} />
-                      <Route path="categories/fashion" element={<FashionPage />} />
-                      <Route path="categories/electronics" element={<ElectronicsPage />} />
-                      <Route path="categories/home-living" element={<HomeLivingPage />} />
-                      <Route path="categories/sports-outdoors" element={<SportsOutdoorsPage />} />
-                      <Route path="categories/automotive" element={<AutomotivePage />} />
-                      <Route path="categories/kids-hobbies" element={<KidsHobbiesPage />} />
-                      <Route path="categories/entertainment" element={<EntertainmentPage />} />
                       <Route path="admin" element={<AdminPanel />} />
                       <Route path="checkout" element={<Checkout />} />
                       <Route path="paypal-checkout" element={<PayPalCheckout />} />
