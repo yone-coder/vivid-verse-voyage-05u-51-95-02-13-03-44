@@ -59,7 +59,8 @@ function App() {
                 <div className="App min-h-screen bg-background text-foreground">
                   <Routes>
                     <Route path="/" element={<MainLayout />}>
-                      <Route index element={<Index />} />
+                      <Route index element={<ResponsiveMultiStepTransferPage />} />
+                      <Route path="paytm-home" element={<Index />} />
                       <Route path="search" element={<SearchPage />} />
                       <Route path="product/:id" element={<ProductDetail />} />
                       <Route path="videos" element={<Videos />} />
