@@ -1,5 +1,4 @@
 
-
 import React, { useState, useEffect } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Footer from "@/components/layout/Footer";
@@ -34,7 +33,6 @@ export default function MainLayout() {
   const isProductPage = pathname.includes('/product/');
   const isRootHomePage = pathname === "/";
   const isPaytmHomePage = pathname === "/" || pathname === "/index";
-  const isForYouPage = pathname === "/for-you";
   const isMultiStepTransferPage = pathname === "/multi-step-transfer";
   const isMultiStepTransferSheetPage = pathname === "/multi-step-transfer-page";
   const isTransferOldPage = pathname === "/transfer-old";
@@ -118,11 +116,6 @@ export default function MainLayout() {
       <div className="min-h-screen flex flex-col bg-white">
         <style dangerouslySetInnerHTML={{ __html: headerHeightStyle }} />
 
-        {/* Show AliExpressHeader only on mobile For You page, but not on Paytm homepage */}
-        {isForYouPage && isMobile && !isPaytmHomePage && (
-          <AliExpressHeader activeTabId="recommendations" />
-        )}
-
         <main className="flex-grow relative">
           <Outlet />
         </main>
@@ -147,4 +140,3 @@ export default function MainLayout() {
     </LanguageProvider>
   );
 }
-
