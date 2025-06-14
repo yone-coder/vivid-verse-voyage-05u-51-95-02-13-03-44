@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Search, Filter, ArrowUpDown, Eye, MoreHorizontal, Download, Calendar } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -199,125 +198,111 @@ export default function TransferHistoryPage() {
 
   return (
     <div className="container max-w-7xl mx-auto px-4 py-6 pb-24 md:pb-8">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Transfer History</h1>
-        <p className="text-muted-foreground">View and manage all your money transfers</p>
+      {/* Simplified Header */}
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold mb-1">Transfer History</h1>
+        <p className="text-sm text-muted-foreground">View and manage your money transfers</p>
       </div>
 
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-center">
-              <p className="text-2xl font-bold">{totalTransfers}</p>
-              <p className="text-sm text-muted-foreground">Total Transfers</p>
-            </div>
-          </CardContent>
+      {/* Compact Summary Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+        <Card className="p-3">
+          <div className="text-center">
+            <p className="text-lg font-semibold">{totalTransfers}</p>
+            <p className="text-xs text-muted-foreground">Total</p>
+          </div>
         </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-center">
-              <p className="text-2xl font-bold">${totalAmount.toFixed(2)}</p>
-              <p className="text-sm text-muted-foreground">Total Sent</p>
-            </div>
-          </CardContent>
+        <Card className="p-3">
+          <div className="text-center">
+            <p className="text-lg font-semibold">${totalAmount.toFixed(0)}</p>
+            <p className="text-xs text-muted-foreground">Sent</p>
+          </div>
         </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-center">
-              <p className="text-2xl font-bold">${totalFees.toFixed(2)}</p>
-              <p className="text-sm text-muted-foreground">Total Fees</p>
-            </div>
-          </CardContent>
+        <Card className="p-3">
+          <div className="text-center">
+            <p className="text-lg font-semibold">${totalFees.toFixed(0)}</p>
+            <p className="text-xs text-muted-foreground">Fees</p>
+          </div>
         </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-center">
-              <p className="text-2xl font-bold">{completedTransfers}</p>
-              <p className="text-sm text-muted-foreground">Completed</p>
-            </div>
-          </CardContent>
+        <Card className="p-3">
+          <div className="text-center">
+            <p className="text-lg font-semibold">{completedTransfers}</p>
+            <p className="text-xs text-muted-foreground">Completed</p>
+          </div>
         </Card>
       </div>
 
-      {/* Filters and Search */}
+      {/* Streamlined Search and Filters */}
       <Card className="mb-6">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Filter className="h-5 w-5" />
-            Filter & Search
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="p-4">
           {/* Search Bar */}
-          <div className="relative">
+          <div className="relative mb-4">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
             <Input
-              placeholder="Search by receiver name, transfer code, or destination..."
+              placeholder="Search transfers..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10"
             />
           </div>
 
-          {/* Filters */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div>
-              <label className="text-sm font-medium mb-2 block">Status</label>
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger>
-                  <SelectValue placeholder="All statuses" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Statuses</SelectItem>
-                  <SelectItem value="completed">Completed</SelectItem>
-                  <SelectItem value="ready_for_pickup">Ready for Pickup</SelectItem>
-                  <SelectItem value="processing">Processing</SelectItem>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="cancelled">Cancelled</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          {/* Compact Filters Row */}
+          <div className="flex flex-wrap gap-2 items-center">
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-32">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="completed">Completed</SelectItem>
+                <SelectItem value="ready_for_pickup">Ready</SelectItem>
+                <SelectItem value="processing">Processing</SelectItem>
+                <SelectItem value="pending">Pending</SelectItem>
+                <SelectItem value="cancelled">Cancelled</SelectItem>
+              </SelectContent>
+            </Select>
 
-            <div>
-              <label className="text-sm font-medium mb-2 block">Method</label>
-              <Select value={methodFilter} onValueChange={setMethodFilter}>
-                <SelectTrigger>
-                  <SelectValue placeholder="All methods" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Methods</SelectItem>
-                  <SelectItem value="cash_pickup">Cash Pickup</SelectItem>
-                  <SelectItem value="bank_deposit">Bank Deposit</SelectItem>
-                  <SelectItem value="mobile_wallet">Mobile Wallet</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            <Select value={methodFilter} onValueChange={setMethodFilter}>
+              <SelectTrigger className="w-32">
+                <SelectValue placeholder="Method" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Methods</SelectItem>
+                <SelectItem value="cash_pickup">Cash Pickup</SelectItem>
+                <SelectItem value="bank_deposit">Bank Deposit</SelectItem>
+                <SelectItem value="mobile_wallet">Mobile Wallet</SelectItem>
+              </SelectContent>
+            </Select>
 
-            <div>
-              <label className="text-sm font-medium mb-2 block">Sort By</label>
-              <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Sort by" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="date_desc">Date (Newest First)</SelectItem>
-                  <SelectItem value="date_asc">Date (Oldest First)</SelectItem>
-                  <SelectItem value="amount_desc">Amount (High to Low)</SelectItem>
-                  <SelectItem value="amount_asc">Amount (Low to High)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            <Select value={sortBy} onValueChange={setSortBy}>
+              <SelectTrigger className="w-36">
+                <SelectValue placeholder="Sort" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="date_desc">Latest First</SelectItem>
+                <SelectItem value="date_asc">Oldest First</SelectItem>
+                <SelectItem value="amount_desc">High Amount</SelectItem>
+                <SelectItem value="amount_asc">Low Amount</SelectItem>
+              </SelectContent>
+            </Select>
 
-            <div className="flex items-end">
-              <Button variant="outline" className="w-full" onClick={() => {
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => {
                 setSearchQuery('');
                 setStatusFilter('all');
                 setMethodFilter('all');
                 setSortBy('date_desc');
-              }}>
-                Clear Filters
+              }}
+            >
+              Clear
+            </Button>
+
+            <div className="ml-auto">
+              <Button variant="outline" size="sm">
+                <Download className="h-4 w-4 mr-2" />
+                Export
               </Button>
             </div>
           </div>
@@ -326,15 +311,9 @@ export default function TransferHistoryPage() {
 
       {/* Results Summary */}
       <div className="flex justify-between items-center mb-4">
-        <p className="text-muted-foreground">
-          Showing <span className="font-semibold text-foreground">{startIndex + 1}</span> to{' '}
-          <span className="font-semibold text-foreground">{Math.min(startIndex + itemsPerPage, filteredTransfers.length)}</span> of{' '}
-          <span className="font-semibold text-foreground">{filteredTransfers.length}</span> transfers
+        <p className="text-sm text-muted-foreground">
+          {filteredTransfers.length} transfers found
         </p>
-        <Button variant="outline" size="sm">
-          <Download className="h-4 w-4 mr-2" />
-          Export
-        </Button>
       </div>
 
       {/* Transfers Table */}
