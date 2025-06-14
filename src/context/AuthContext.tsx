@@ -33,7 +33,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (event === 'SIGNED_IN') {
           // Use setTimeout to prevent React state update loops
           setTimeout(() => {
-            navigate('/for-you');
+            navigate('/');
           }, 0);
         } else if (event === 'SIGNED_OUT') {
           // Use setTimeout to prevent React state update loops
