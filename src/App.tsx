@@ -1,3 +1,4 @@
+
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -6,7 +7,6 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "./context/AuthContext";
-import Index from "./pages/Index";
 import ProfilePage from "./pages/ProfilePage";
 import AccountPage from "./pages/AccountPage";
 import LocationsPage from "./pages/LocationsPage";
@@ -42,7 +42,7 @@ function App() {
                 <div className="App min-h-screen bg-background text-foreground">
                   <Routes>
                     <Route path="/" element={<MainLayout />}>
-                      <Route index element={<Index />} />
+                      <Route index element={<ResponsiveMultiStepTransferPage />} />
                       <Route path="profile" element={<ProfilePage />} />
                       <Route path="account" element={<AccountPage />} />
                       <Route path="locations" element={<LocationsPage />} />

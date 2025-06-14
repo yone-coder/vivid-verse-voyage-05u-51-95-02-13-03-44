@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Footer from "@/components/layout/Footer";
@@ -31,8 +30,7 @@ export default function MainLayout() {
 
   // Calculate pathname-based booleans
   const isProductPage = pathname.includes('/product/');
-  const isRootHomePage = pathname === "/";
-  const isPaytmHomePage = pathname === "/" || pathname === "/index";
+  const isHomePage = pathname === "/";
   const isMultiStepTransferPage = pathname === "/multi-step-transfer";
   const isMultiStepTransferSheetPage = pathname === "/multi-step-transfer-page";
   const isTransferOldPage = pathname === "/transfer-old";
@@ -121,15 +119,15 @@ export default function MainLayout() {
         </main>
 
         {/* Show Footer only on non-mobile and on specific pages, but not on Paytm homepage */}
-        {!isMobile && !isPaytmHomePage && <Footer />}
+        {!isMobile && !isHomePage && <Footer />}
 
         {/* Floating action button - exclude from Paytm homepage and transfer pages */}
-        {!isPaytmHomePage && !isMultiStepTransferPage && !isMultiStepTransferSheetPage && !isTransferOldPage && (
+        {!isHomePage && !isMultiStepTransferPage && !isMultiStepTransferSheetPage && !isTransferOldPage && (
           <FloatingActionButton onClick={() => setShowProductUpload(true)} />
         )}
 
         {/* Show IndexBottomNav on mobile but not on Paytm homepage or transfer pages */}
-        {isMobile && !isPaytmHomePage && !isMultiStepTransferPage && !isMultiStepTransferSheetPage && !isTransferOldPage && <IndexBottomNav />}
+        {isMobile && !isHomePage && !isMultiStepTransferPage && !isMultiStepTransferSheetPage && !isTransferOldPage && <IndexBottomNav />}
 
         {/* Product Upload Overlay */}
         <ProductUploadOverlay
