@@ -1,4 +1,3 @@
-
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -15,6 +14,7 @@ import Reels from "./pages/Reels";
 import Trending from "./pages/Trending";
 import Messages from "./pages/Messages";
 import ProfilePage from "./pages/ProfilePage";
+import AccountPage from "./pages/AccountPage";
 import MoreMenu from "./pages/MoreMenu";
 import AuthPage from "./pages/AuthPage";
 import AdminPanel from "./pages/AdminPanel";
@@ -64,6 +64,7 @@ function App() {
                       <Route path="trending" element={<Trending />} />
                       <Route path="messages" element={<Messages />} />
                       <Route path="profile" element={<ProfilePage />} />
+                      <Route path="account" element={<AccountPage />} />
                       <Route path="more" element={<MoreMenu />} />
                       <Route path="auth" element={<AuthPage />} />
                       <Route path="/multi-step-transfer-desktop" element={<MultiStepTransferSheetDesktopPage />} />
