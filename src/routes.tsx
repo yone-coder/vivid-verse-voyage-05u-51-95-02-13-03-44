@@ -9,6 +9,7 @@ import SearchPage from "@/pages/SearchPage";
 import ProfilePage from "@/pages/ProfilePage";
 import Checkout from "@/pages/Checkout";
 import NotFound from "@/pages/NotFound";
+import TransferHistoryPage from "@/pages/TransferHistoryPage"; // Added import
 
 export const router = createBrowserRouter([
   {
@@ -22,6 +23,7 @@ export const router = createBrowserRouter([
       { path: "search", element: <SearchPage /> },
       { path: "profile", element: <ProfilePage /> },
       { path: "checkout", element: <Checkout /> },
+      { path: "transfer-history", element: <TransferHistoryPage /> }, // Route added
       { path: "*", element: <NotFound /> }
     ]
   }
