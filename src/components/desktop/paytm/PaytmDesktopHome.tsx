@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Search, Bell, QrCode, Smartphone, Upload, Building2, User, FileText, Users, Lightbulb, Truck, Plus, Send, CreditCard, Gift, Zap, MapPin, Globe, DollarSign, History, Phone, Wallet, ArrowUpDown, ChevronRight, Building, TrendingUp, BarChart3, PieChart, Calculator, Shield, Clock, Star, Award, Target, Briefcase, HeadphonesIcon, Download, Share2, Eye, Lock, Settings, HelpCircle, MessageSquare, Camera, Mic, Video, Play, BookOpen, CheckCircle, Package, Truck as TruckIcon, Timer, AlertCircle, Calendar, Bookmark, Heart, UserPlus, Copy } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -10,7 +9,6 @@ import { Input } from "@/components/ui/input";
 import { useLanguage } from '@/context/LanguageContext';
 import HeaderLanguage from '@/components/home/header/HeaderLanguage';
 import Logo from '../../home/Logo';
-import MobileTransferInput from '@/components/mobile/paytm/MobileTransferInput';
 
 export default function PaytmDesktopHome() {
   const navigate = useNavigate();
@@ -448,10 +446,35 @@ export default function PaytmDesktopHome() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <MobileTransferInput 
-                  amount={amount}
-                  onAmountChange={setAmount}
-                />
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {t('transfer.amount')}
+                    </label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 font-bold text-lg">
+                        $
+                      </span>
+                      <Input
+                        type="number"
+                        placeholder="0.00"
+                        value={amount}
+                        onChange={(e) => setAmount(e.target.value)}
+                        className="pl-8 text-lg font-semibold h-12 border-2 border-gray-300 focus:border-blue-500"
+                      />
+                    </div>
+                  </div>
+                  {amount && (
+                    <div className="bg-blue-50 p-3 rounded-lg">
+                      <p className="text-sm text-blue-800">
+                        Recipient will receive: <span className="font-bold">{(parseFloat(amount) * 133.45).toFixed(2)} HTG</span>
+                      </p>
+                      <p className="text-xs text-blue-600 mt-1">
+                        Exchange rate: 1 USD = 133.45 HTG
+                      </p>
+                    </div>
+                  )}
+                </div>
               </CardContent>
             </Card>
 
@@ -570,9 +593,9 @@ export default function PaytmDesktopHome() {
                       {/* Transfer Header */}
                       <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center space-x-3">
-                          <div className="flex items-center space-x-2">
-                            {getStatusIcon(transfer.status)}
+                          <div className="flex items-center">
                             <span className="font-medium text-gray-900">{transfer.recipient}</span>
+                            {getStatusIcon(transfer.status)}
                           </div>
                           <Badge className={`text-xs ${getStatusColor(transfer.status)}`}>
                             {getStatusText(transfer.status)}
