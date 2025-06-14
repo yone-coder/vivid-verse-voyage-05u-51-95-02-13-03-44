@@ -7,11 +7,9 @@ import {
 import { motion } from 'framer-motion';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
-import ProductUploadOverlay from '@/components/product/ProductUploadOverlay';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import AuthPage from '@/pages/AuthPage';
 import { useAuth } from '@/context/AuthContext';
-import Logo from '@/components/home/Logo';
 
 interface BottomNavTab {
   id: string;
@@ -38,7 +36,6 @@ export default function BottomNav() {
   const [activeTab, setActiveTab] = useState('send');
   const [previousTab, setPreviousTab] = useState(null);
   const [animating, setAnimating] = useState(false);
-  const [showProductUpload, setShowProductUpload] = useState(false);
   const [showAuthDialog, setShowAuthDialog] = useState(false);
 
   useEffect(() => {
@@ -78,14 +75,9 @@ export default function BottomNav() {
           >
             <X className="h-4 w-4" />
           </button>
-          <AuthPage isOverlay onClose={() => setShowAuthDialog(false)} />
+          <AuthPage onClose={() => setShowAuthDialog(false)} />
         </DialogContent>
       </Dialog>
-
-      <ProductUploadOverlay
-        isOpen={showProductUpload}
-        onClose={() => setShowProductUpload(false)}
-      />
 
       <motion.div
         initial={{ y: 100 }}
