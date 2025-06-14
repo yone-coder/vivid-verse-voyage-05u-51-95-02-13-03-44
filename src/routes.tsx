@@ -13,8 +13,7 @@ export const router = createBrowserRouter([
     path: "/",
     element: <MainLayout />,
     children: [
-      { index: true, element: <Navigate to="/multi-step-transfer-page" replace /> },
-      { path: "multi-step-transfer-page", element: <MobileLocalTransferSheetPage /> },
+      { index: true, element: <MobileLocalTransferSheetPage /> },
       { path: "auth", element: <AuthPage /> },
       { path: "signup", element: <SignupPage /> },
       { path: "profile", element: <ProfilePage /> },
