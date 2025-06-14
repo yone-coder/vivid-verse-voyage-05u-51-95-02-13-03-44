@@ -5,7 +5,6 @@ import Index from "@/pages/Index";
 import AuthPage from "@/pages/AuthPage";
 import SignupPage from "@/pages/SignupPage";
 import ProfilePage from "@/pages/ProfilePage";
-import Checkout from "@/pages/Checkout";
 import NotFound from "@/pages/NotFound";
 import TransferHistoryPage from "@/pages/TransferHistoryPage"; // Added import
 
@@ -18,7 +17,6 @@ export const router = createBrowserRouter([
       { path: "auth", element: <AuthPage /> },
       { path: "signup", element: <SignupPage /> },
       { path: "profile", element: <ProfilePage /> },
-      { path: "checkout", element: <Checkout /> },
       { path: "transfer-history", element: <TransferHistoryPage /> }, // Route added
       { path: "*", element: <NotFound /> }
     ]

@@ -1,12 +1,8 @@
-
 import React from 'react';
 import { Link } from "react-router-dom"; 
 import { Card, CardContent } from "@/components/ui/card";
 import {
   SendHorizonal,
-  Plus,
-  CreditCard,
-  Film,
   Settings,
   HelpCircle,
   Info
@@ -18,21 +14,6 @@ const MoreMenu = () => {
       title: "Transfer Money", 
       icon: <SendHorizonal className="h-6 w-6" />, 
       link: "/transfer"
-    },
-    { 
-      title: "Top Up", 
-      icon: <Plus className="h-6 w-6" />, 
-      link: "/topup"
-    },
-    { 
-      title: "Netflix Subscription", 
-      icon: <Film className="h-6 w-6" />, 
-      link: "/netflix"
-    },
-    { 
-      title: "PayPal Checkout", 
-      icon: <CreditCard className="h-6 w-6" />, 
-      link: "/paypal-checkout"
     },
     { 
       title: "Settings", 

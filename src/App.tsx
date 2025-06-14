@@ -16,16 +16,6 @@ import TransferHistoryPage from "./pages/TransferHistoryPage";
 import MoreMenu from "./pages/MoreMenu";
 import AuthPage from "./pages/AuthPage";
 import AdminPanel from "./pages/AdminPanel";
-import Checkout from "./pages/Checkout";
-import PayPalCheckout from "./pages/PayPalCheckout";
-import PayPalHostedCheckout from "./pages/PayPalHostedCheckout";
-import PayPalPayment from "./pages/PayPalPayment";
-import DynamicPayPalCheckout from "./pages/DynamicPayPalCheckout";
-import PayPalDepositPage from "./pages/PayPalDepositPage";
-import DepositPage from "./pages/DepositPage";
-import NFTPaymentPage from "./pages/NFTPaymentPage";
-import TopUpPage from "./pages/TopUpPage";
-import NetflixPage from "./pages/NetflixPage";
 import TransferPage from "./pages/TransferPage";
 import TransferHomePage from "./pages/TransferHomePage";
 import MultiStepTransferPage from "./pages/MultiStepTransferPage";
@@ -64,16 +54,6 @@ function App() {
                       <Route path="auth" element={<AuthPage />} />
                       <Route path="/multi-step-transfer-desktop" element={<MultiStepTransferSheetDesktopPage />} />
                       <Route path="admin" element={<AdminPanel />} />
-                      <Route path="checkout" element={<Checkout />} />
-                      <Route path="paypal-checkout" element={<PayPalCheckout />} />
-                      <Route path="paypal-hosted-checkout" element={<PayPalHostedCheckout />} />
-                      <Route path="paypal-payment" element={<PayPalPayment />} />
-                      <Route path="dynamic-paypal-checkout" element={<DynamicPayPalCheckout />} />
-                      <Route path="paypal-deposit" element={<PayPalDepositPage />} />
-                      <Route path="deposit" element={<DepositPage />} />
-                      <Route path="nft-payment" element={<NFTPaymentPage />} />
-                      <Route path="topup" element={<TopUpPage />} />
-                      <Route path="netflix" element={<NetflixPage />} />
                       <Route path="transfer-old" element={<TransferPage />} />
                       <Route path="transfer" element={<TransferHomePage />} />
                       <Route path="multi-step-transfer" element={<MultiStepTransferPage />} />
