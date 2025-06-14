@@ -6,14 +6,14 @@ import SignupPage from "@/pages/SignupPage";
 import ProfilePage from "@/pages/ProfilePage";
 import NotFound from "@/pages/NotFound";
 import TransferHistoryPage from "@/pages/TransferHistoryPage";
-import ResponsiveMultiStepTransferPage from "@/pages/ResponsiveMultiStepTransferPage";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout />,
     children: [
-      { index: true, element: <ResponsiveMultiStepTransferPage /> },
+      { index: true, element: <div>Redirecting...</div> },
+      { path: "multi-step-transfer-page", element: <div>Multi Step Transfer Page</div> },
       { path: "auth", element: <AuthPage /> },
       { path: "signup", element: <SignupPage /> },
       { path: "profile", element: <ProfilePage /> },
