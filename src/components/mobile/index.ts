@@ -1,2 +1,2 @@
 
-export { default as ForYouMobile } from './ForYouMobile';
+export { default as GlobalTransferPitchMobile } from './GlobalTransferPitchMobile';
