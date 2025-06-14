@@ -46,6 +46,7 @@ export default function BottomNav() {
     if (path === '/' || path.startsWith('/multi-step-transfer')) setActiveTab('send');
     else if (path.startsWith('/transfer-history')) setActiveTab('history');
     else if (path.startsWith('/track-transfer')) setActiveTab('track');
+    else if (path.startsWith('/locations')) setActiveTab('locations');
     else if (path.startsWith('/account')) setActiveTab('account');
   }, [location.pathname]);
 
