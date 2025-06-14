@@ -8,12 +8,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "./context/AuthContext";
 import Index from "./pages/Index";
-import SearchPage from "./pages/SearchPage";
-import ProductDetail from "./pages/ProductDetail";
-import Videos from "./pages/Videos";
-import Reels from "./pages/Reels";
-import Trending from "./pages/Trending";
-import Messages from "./pages/Messages";
 import ProfilePage from "./pages/ProfilePage";
 import AccountPage from "./pages/AccountPage";
 import LocationsPage from "./pages/LocationsPage";
@@ -61,12 +55,6 @@ function App() {
                     <Route path="/" element={<MainLayout />}>
                       <Route index element={<ResponsiveMultiStepTransferPage />} />
                       <Route path="paytm-home" element={<Index />} />
-                      <Route path="search" element={<SearchPage />} />
-                      <Route path="product/:id" element={<ProductDetail />} />
-                      <Route path="videos" element={<Videos />} />
-                      <Route path="reels" element={<Reels />} />
-                      <Route path="trending" element={<Trending />} />
-                      <Route path="messages" element={<Messages />} />
                       <Route path="profile" element={<ProfilePage />} />
                       <Route path="account" element={<AccountPage />} />
                       <Route path="locations" element={<LocationsPage />} />

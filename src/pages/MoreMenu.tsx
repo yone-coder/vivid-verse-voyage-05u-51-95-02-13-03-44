@@ -3,7 +3,6 @@ import React from 'react';
 import { Link } from "react-router-dom"; 
 import { Card, CardContent } from "@/components/ui/card";
 import {
-  Home,
   SendHorizonal,
   Plus,
   CreditCard,
@@ -15,11 +14,6 @@ import {
 
 const MoreMenu = () => {
   const menuItems = [
-    { 
-      title: "Home", 
-      icon: <Home className="h-6 w-6" />, 
-      link: "/for-you"
-    },
     { 
       title: "Transfer Money", 
       icon: <SendHorizonal className="h-6 w-6" />, 
