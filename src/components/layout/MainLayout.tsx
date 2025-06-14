@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Footer from "@/components/layout/Footer";
@@ -7,12 +8,13 @@ import { useToast } from "@/hooks/use-toast";
 import AliExpressHeader from "@/components/home/AliExpressHeader";
 import { useAuthOverlay } from "@/context/AuthOverlayContext";
 import { LanguageProvider } from "@/context/LanguageContext";
+import { AuthProvider } from "@/context/AuthContext";
 import { useAuth } from "@/context/AuthContext";
 import FloatingActionButton from "./FloatingActionButton";
 import ProductUploadOverlay from "@/components/product/ProductUploadOverlay";
 import AuthPage from "@/pages/AuthPage";
 
-export default function MainLayout() {
+function MainLayoutContent() {
   const isMobile = useIsMobile();
   const location = useLocation();
   const pathname = location.pathname;
@@ -136,5 +138,13 @@ export default function MainLayout() {
         />
       </div>
     </LanguageProvider>
+  );
+}
+
+export default function MainLayout() {
+  return (
+    <AuthProvider>
+      <MainLayoutContent />
+    </AuthProvider>
   );
 }
