@@ -18,6 +18,7 @@ import ProfilePage from "./pages/ProfilePage";
 import AccountPage from "./pages/AccountPage";
 import LocationsPage from "./pages/LocationsPage";
 import TrackTransferPage from "./pages/TrackTransferPage";
+import TransferHistoryPage from "./pages/TransferHistoryPage";
 import MoreMenu from "./pages/MoreMenu";
 import AuthPage from "./pages/AuthPage";
 import AdminPanel from "./pages/AdminPanel";
@@ -70,6 +71,7 @@ function App() {
                       <Route path="account" element={<AccountPage />} />
                       <Route path="locations" element={<LocationsPage />} />
                       <Route path="track-transfer" element={<TrackTransferPage />} />
+                      <Route path="transfer-history" element={<TransferHistoryPage />} />
                       <Route path="more" element={<MoreMenu />} />
                       <Route path="auth" element={<AuthPage />} />
                       <Route path="/multi-step-transfer-desktop" element={<MultiStepTransferSheetDesktopPage />} />

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Search, Package, Clock, CheckCircle, XCircle, AlertCircle, MapPin, Phone, Calendar } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -51,7 +50,8 @@ const mockTransferData: { [key: string]: TransferStatus } = {
     },
     receiver: {
       name: 'Marie Dupuis',
-      phone: '+509 1234-5678'
+      phone: '+509 1234-5678',
+      location: 'Port-au-Prince, Haiti'
     },
     sentDate: '2024-06-12',
     estimatedDelivery: '2024-06-14',
@@ -100,7 +100,8 @@ const mockTransferData: { [key: string]: TransferStatus } = {
     },
     receiver: {
       name: 'Pierre Laurent',
-      phone: '+509 9876-5432'
+      phone: '+509 9876-5432',
+      location: 'Cap-Haïtien, Haiti'
     },
     sentDate: '2024-06-14',
     estimatedDelivery: '2024-06-15',
