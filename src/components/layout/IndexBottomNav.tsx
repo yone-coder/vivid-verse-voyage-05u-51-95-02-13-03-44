@@ -1,75 +1,151 @@
 
-import React, { useState } from "react";
-import { Home, Search, User, ShoppingCart, Heart } from "lucide-react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useState, useEffect, useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import {
+  Send, History, MapPin, User, Route, X
+} from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { cn } from '@/lib/utils';
+import ProductUploadOverlay from '@/components/product/ProductUploadOverlay';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import AuthPage from '@/pages/AuthPage';
+import { useAuth } from '@/context/AuthContext';
+import Logo from '@/components/home/Logo';
 
-const IndexBottomNav = () => {
+interface BottomNavTab {
+  id: string;
+  name: string;
+  icon: React.FC<any> | React.ForwardRefExoticComponent<any>;
+  path: string;
+  isAvatar?: boolean;
+  badge?: number;
+}
+
+const navItems: BottomNavTab[] = [
+  { id: 'send', name: 'Send', icon: Send, path: '/' }, 
+  { id: 'history', name: 'History', icon: History, path: '/transfer-history' },
+  { id: 'track', name: 'Track', icon: Route, path: '/track-transfer' },
+  { id: 'locations', name: 'Locations', icon: MapPin, path: '/locations' },
+  { id: 'account', name: 'Account', icon: User, path: '/account' },
+];
+
+export default function BottomNav() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [activeTab, setActiveTab] = useState("home");
+  const { user } = useAuth();
 
-  const handleTabClick = (tab: string, path: string) => {
-    setActiveTab(tab);
-    navigate(path);
+  const [activeTab, setActiveTab] = useState('send');
+  const [previousTab, setPreviousTab] = useState(null);
+  const [animating, setAnimating] = useState(false);
+  const [showProductUpload, setShowProductUpload] = useState(false);
+  const [showAuthDialog, setShowAuthDialog] = useState(false);
+
+  useEffect(() => {
+    const path = location.pathname;
+    if (path === '/' || path.startsWith('/multi-step-transfer')) setActiveTab('send');
+    else if (path.startsWith('/transfer-history')) setActiveTab('history');
+    else if (path.startsWith('/track-transfer')) setActiveTab('track');
+    else if (path.startsWith('/locations')) setActiveTab('locations');
+    else if (path.startsWith('/account')) setActiveTab('account');
+  }, [location.pathname]);
+
+  const handleTabClick = (item, e: React.MouseEvent) => {
+    e.preventDefault();
+    
+    if (animating || item.id === activeTab) return;
+
+    // Don't reload if we're already on the same path
+    if (item.path === location.pathname) return;
+
+    setAnimating(true);
+    setPreviousTab(activeTab);
+    setActiveTab(item.id);
+    navigate(item.path);
+    setTimeout(() => {
+      setAnimating(false);
+      setPreviousTab(null);
+    }, 300);
   };
 
-  const isActive = (path: string) => location.pathname === path;
-
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50">
-      <div className="flex justify-around items-center py-2">
-        <button
-          onClick={() => handleTabClick("home", "/")}
-          className={`flex flex-col items-center p-2 ${
-            isActive("/") ? "text-red-600" : "text-gray-600"
-          }`}
-        >
-          <Home size={20} />
-          <span className="text-xs mt-1">Home</span>
-        </button>
+    <>
+      <Dialog open={showAuthDialog} onOpenChange={setShowAuthDialog}>
+        <DialogContent className="w-full max-w-sm p-0 h-[100dvh] sm:h-auto overflow-auto">
+          <button 
+            onClick={() => setShowAuthDialog(false)}
+            className="absolute left-4 top-4 z-50 rounded-sm opacity-70 text-white bg-gray-800/40 hover:bg-gray-700/40 transition-opacity p-1"
+          >
+            <X className="h-4 w-4" />
+          </button>
+          <AuthPage isOverlay onClose={() => setShowAuthDialog(false)} />
+        </DialogContent>
+      </Dialog>
 
-        <button
-          onClick={() => handleTabClick("search", "/search")}
-          className={`flex flex-col items-center p-2 ${
-            isActive("/search") ? "text-red-600" : "text-gray-600"
-          }`}
-        >
-          <Search size={20} />
-          <span className="text-xs mt-1">Search</span>
-        </button>
+      <ProductUploadOverlay
+        isOpen={showProductUpload}
+        onClose={() => setShowProductUpload(false)}
+      />
 
-        <button
-          onClick={() => handleTabClick("wishlist", "/wishlist")}
-          className={`flex flex-col items-center p-2 ${
-            isActive("/wishlist") ? "text-red-600" : "text-gray-600"
-          }`}
-        >
-          <Heart size={20} />
-          <span className="text-xs mt-1">Wishlist</span>
-        </button>
+      <motion.div
+        initial={{ y: 100 }}
+        animate={{ y: 0 }}
+        className="fixed bottom-0 left-0 right-0 bg-white dark:bg-zinc-900 border-t border-gray-200 dark:border-zinc-800 z-50 shadow-lg"
+      >
+        <div className="flex justify-between items-center h-12 px-2 max-w-md mx-auto">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = activeTab === item.id;
+            const wasActive = previousTab === item.id;
 
-        <button
-          onClick={() => handleTabClick("cart", "/cart")}
-          className={`flex flex-col items-center p-2 ${
-            isActive("/cart") ? "text-red-600" : "text-gray-600"
-          }`}
-        >
-          <ShoppingCart size={20} />
-          <span className="text-xs mt-1">Cart</span>
-        </button>
-
-        <button
-          onClick={() => handleTabClick("profile", "/profile")}
-          className={`flex flex-col items-center p-2 ${
-            isActive("/profile") ? "text-red-600" : "text-gray-600"
-          }`}
-        >
-          <User size={20} />
-          <span className="text-xs mt-1">Profile</span>
-        </button>
-      </div>
-    </div>
+            return (
+              <button
+                key={item.id}
+                onClick={(e) => handleTabClick(item, e)}
+                className={cn(
+                  'flex items-center justify-center relative transition-all duration-300 ease-out transform px-3 py-1 rounded-full',
+                  isActive
+                    ? 'bg-red-600 text-white shadow-md scale-105'
+                    : wasActive
+                      ? 'scale-95 text-gray-500'
+                      : 'scale-100 text-gray-500'
+                )}
+              >
+                <div className="relative flex items-center justify-center">
+                  {item.isAvatar && user ? (
+                    <Avatar className="w-5 h-5 border">
+                      <AvatarImage src={user.user_metadata?.avatar_url} alt="User" />
+                      <AvatarFallback className="text-xs">{user.email?.slice(0, 2).toUpperCase()}</AvatarFallback>
+                    </Avatar>
+                  ) : (
+                   <Icon
+                      className={cn(
+                        'transition-transform duration-300',
+                        'w-5 h-5',
+                        isActive ? 'scale-110' : 'scale-100'
+                      )}
+                      width={20}
+                      height={20}
+                    />
+                  )}
+                  {item.badge && (
+                    <div
+                      className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold px-1.5 rounded-full"
+                    >
+                      {item.badge}
+                    </div>
+                  )}
+                  {isActive && item.name && (
+                    <span className="ml-2 font-medium whitespace-nowrap max-w-[80px] overflow-hidden">
+                      {item.name}
+                    </span>
+                  )}
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </motion.div>
+    </>
   );
-};
-
-export default IndexBottomNav;
+}
