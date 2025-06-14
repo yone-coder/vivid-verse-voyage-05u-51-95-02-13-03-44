@@ -6,7 +6,7 @@ import SignupPage from "@/pages/SignupPage";
 import ProfilePage from "@/pages/ProfilePage";
 import NotFound from "@/pages/NotFound";
 import TransferHistoryPage from "@/pages/TransferHistoryPage";
-import MultiStepTransferSheetPage from "@/pages/MultiStepTransferSheetPage";
+import MobileLocalTransferSheetPage from "@/components/mobile/transfer/MobileLocalTransferSheetPage";
 
 export const router = createBrowserRouter([
   {
@@ -14,7 +14,7 @@ export const router = createBrowserRouter([
     element: <MainLayout />,
     children: [
       { index: true, element: <Navigate to="/multi-step-transfer-page" replace /> },
-      { path: "multi-step-transfer-page", element: <MultiStepTransferSheetPage /> },
+      { path: "multi-step-transfer-page", element: <MobileLocalTransferSheetPage /> },
       { path: "auth", element: <AuthPage /> },
       { path: "signup", element: <SignupPage /> },
       { path: "profile", element: <ProfilePage /> },
