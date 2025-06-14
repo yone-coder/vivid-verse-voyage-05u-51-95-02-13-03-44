@@ -6,7 +6,7 @@ import SignupPage from "@/pages/SignupPage";
 import ProfilePage from "@/pages/ProfilePage";
 import NotFound from "@/pages/NotFound";
 import TransferHistoryPage from "@/pages/TransferHistoryPage";
-import MultiStepTransferPage from "@/pages/MultiStepTransferPage";
+import MultiStepTransferSheetPage from "@/pages/MultiStepTransferSheetPage";
 
 export const router = createBrowserRouter([
   {
@@ -14,7 +14,7 @@ export const router = createBrowserRouter([
     element: <MainLayout />,
     children: [
       { index: true, element: <Navigate to="/multi-step-transfer-page" replace /> },
-      { path: "multi-step-transfer-page", element: <MultiStepTransferPage /> },
+      { path: "multi-step-transfer-page", element: <MultiStepTransferSheetPage /> },
       { path: "auth", element: <AuthPage /> },
       { path: "signup", element: <SignupPage /> },
       { path: "profile", element: <ProfilePage /> },
