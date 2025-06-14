@@ -8,7 +8,7 @@ import { useLocation, Navigate } from 'react-router-dom';
 const LocalTransferPage = () => {
   const location = useLocation();
   
-  // Since MobileLocalTransferSheetPage was deleted, redirect to home
+  // Since auth components were deleted, redirect to home
   const RedirectComponent = () => <Navigate to="/" replace />;
 
   return (
