@@ -50,8 +50,13 @@ export default function BottomNav() {
     else if (path.startsWith('/account')) setActiveTab('account');
   }, [location.pathname]);
 
-  const handleTabClick = (item) => {
+  const handleTabClick = (item, e: React.MouseEvent) => {
+    e.preventDefault();
+    
     if (animating || item.id === activeTab) return;
+
+    // Don't reload if we're already on the same path
+    if (item.path === location.pathname) return;
 
     setAnimating(true);
     setPreviousTab(activeTab);
@@ -96,7 +101,7 @@ export default function BottomNav() {
             return (
               <button
                 key={item.id}
-                onClick={() => handleTabClick(item)}
+                onClick={(e) => handleTabClick(item, e)}
                 className={cn(
                   'flex items-center justify-center relative transition-all duration-300 ease-out transform px-3 py-1 rounded-full',
                   isActive

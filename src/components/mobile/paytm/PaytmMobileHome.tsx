@@ -124,7 +124,7 @@ export default function PaytmMobileHome() {
   const totalAmount = transferType === 'international' ? usdAmount + transferFee : htgAmount + transferFee;
 
   return (
-    <div className="max-w-sm mx-auto bg-gray-50 min-h-screen pb-20">
+    <div className="max-w-sm mx-auto bg-gray-50 min-h-screen pb-28">
       {/* Use PaytmMobileHeader */}
       <PaytmMobileHeader activeTabId="quick-send" />
 
@@ -255,27 +255,6 @@ export default function PaytmMobileHome() {
             </div>
           </div>
 
-          {/* Manual Send Button (now less prominent since auto-navigation is active) */}
-          <div className="mt-6">
-            <button
-              onClick={handleSendClick}
-              disabled={!amount || parseFloat(amount) <= 0}
-              className={`w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 transform ${
-                amount && parseFloat(amount) > 0
-                  ? 'bg-gradient-to-r from-gray-400 to-gray-500 text-white shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] opacity-70'
-                  : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-              }`}
-            >
-              <div className="flex items-center justify-center gap-2">
-                <Send className="w-5 h-5" />
-                {amount && parseFloat(amount) > 0 
-                  ? `Send ${transferType === 'international' ? '$' : 'HTG'}${amount} ${transferType === 'local' ? 'locally' : 'to Haiti'} (Manual)`
-                  : 'Enter amount to send'
-                }
-              </div>
-            </button>
-          </div>
-
           {/* Quick Amount Buttons */}
           <div className="grid grid-cols-4 gap-2 mt-4">
             {(transferType === 'international' ? [50, 100, 200, 500] : [1000, 2500, 5000, 10000]).map((quickAmount) => (
@@ -327,8 +306,12 @@ export default function PaytmMobileHome() {
         </div>
       </div>
 
-      {/* Bottom Navigation */}
-      <PaytmBottomNav />
+      {/* Bottom Navigation with Continue Button */}
+      <PaytmBottomNav 
+        amount={amount}
+        transferType={transferType}
+        onSendClick={handleSendClick}
+      />
     </div>
   );
 }
