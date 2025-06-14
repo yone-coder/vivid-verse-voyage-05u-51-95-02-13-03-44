@@ -31,7 +31,7 @@ export default function AliExpressHeader({ activeTabId = 'recommendations' }: Al
   const searchRef = useRef(null);
 
   // Determine if we should show the top bar based on current route
-  const isForYouPage = location.pathname === '/for-you' || location.pathname === '/';
+  const isForYouPage = location.pathname === '/';
   
   // Determine if we should show icons only in the tabs
   const showIconsOnly = !isForYouPage;
@@ -47,7 +47,7 @@ export default function AliExpressHeader({ activeTabId = 'recommendations' }: Al
   }, [isSearchFocused]);
 
   const categories = [
-    { id: 'recommendations', name: t('home.forYou'), icon: <Home className="h-3 w-3" />, path: '/for-you' },
+    { id: 'recommendations', name: t('home.forYou'), icon: <Home className="h-3 w-3" />, path: '/' },
     { id: 'electronics', name: 'Electronics & Tech', icon: <Tv className="h-3 w-3" />, path: '/electronics' },
     { id: 'home', name: 'Home & Living', icon: <Sofa className="h-3 w-3" />, path: '/home-living' },
     { id: 'fashion', name: 'Fashion & Accessories', icon: <ShoppingBag className="h-3 w-3" />, path: '/fashion' },

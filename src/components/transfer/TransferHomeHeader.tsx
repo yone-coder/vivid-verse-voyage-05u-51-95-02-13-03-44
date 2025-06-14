@@ -7,7 +7,7 @@ const TransferHomeHeader: React.FC = () => {
   const navigate = useNavigate();
 
   const handleBackClick = () => {
-    navigate('/for-you');
+    navigate('/');
   };
 
   return (
