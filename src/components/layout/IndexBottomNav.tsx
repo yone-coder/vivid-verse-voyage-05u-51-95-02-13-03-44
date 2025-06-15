@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -117,7 +118,7 @@ export default function IndexBottomNav({
 
   if (showContinueButton) {
     return (
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 dark:border-zinc-800 z-50 shadow-lg">
+      <div className="bg-white border-t border-gray-200 dark:border-zinc-800 shadow-lg">
         <div className="flex items-center h-16 px-4 max-w-md mx-auto gap-3">
           {/* Previous Button - only show if not on step 1 */}
           {currentStep > 1 && (
