@@ -1,11 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ArrowLeft, X, Check, Loader2, AlertCircle } from 'lucide-react';
+import { ArrowLeft, X, Check, Loader2, AlertCircle, Key, Globe, Search, CheckCircle, User, Receipt, ArrowRight } from 'lucide-react';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
+import { motion } from 'framer-motion';
+import html2canvas from 'html2canvas';
 import TransferTypeSelector from '@/components/transfer/TransferTypeSelector';
 import StepOneTransfer from '@/components/transfer/StepOneTransfer';
 import StepOneLocalTransfer from '@/components/transfer/StepOneLocalTransfer';
@@ -771,11 +773,7 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
   // MonCash payment handler for national transfers
   const handleMonCashPayment = async () => {
     if (!transferData.amount || !transferData.receiverDetails.firstName) {
-      toast({
-        title: "Missing Information",
-        description: "Please complete all required fields before proceeding.",
-        variant: "destructive",
-      });
+      toast("Missing Information: Please complete all required fields before proceeding.");
       return;
     }
 
@@ -829,11 +827,7 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
 
     } catch (error) {
       console.error('MonCash payment error:', error);
-      toast({
-        title: "Payment Failed",
-        description: error instanceof Error ? error.message : "Failed to process MonCash payment. Please try again.",
-        variant: "destructive",
-      });
+      toast("Payment Failed: " + (error instanceof Error ? error.message : "Failed to process MonCash payment. Please try again."));
       setIsProcessingPayment(false);
       setIsPaymentLoading(false);
     }
