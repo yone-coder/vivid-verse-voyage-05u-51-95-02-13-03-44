@@ -1,14 +1,9 @@
 
 import React from 'react';
-import MultiStepTransferSheet from '@/components/transfer/MultiStepTransferSheet';
-import TransferHomeHeader from '@/components/transfer/TransferHomeHeader';
+import MobileMultiStepTransferSheetPage from '@/components/mobile/transfer/MobileMultiStepTransferSheetPage';
 import { Zap, BadgePercent } from 'lucide-react';
 
 const DesktopMultiStepTransferPage: React.FC = () => {
-  const handleClose = () => {
-    console.log("Closing sheet from desktop page");
-  };
-
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -17,10 +12,7 @@ const DesktopMultiStepTransferPage: React.FC = () => {
           {/* Left Column: Interactive Transfer Form */}
           <div className="lg:sticky lg:top-8">
             <div className="flex flex-col bg-white rounded-2xl shadow-2xl shadow-gray-200/50 overflow-hidden" style={{ height: 'calc(100vh - 4rem)' }}>
-              <TransferHomeHeader />
-              <div className="flex-1">
-                 <MultiStepTransferSheet onClose={handleClose} variant="page" />
-              </div>
+              <MobileMultiStepTransferSheetPage />
             </div>
           </div>
 
