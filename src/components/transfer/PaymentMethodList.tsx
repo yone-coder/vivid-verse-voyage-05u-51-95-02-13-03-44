@@ -1,24 +1,38 @@
 
-import React from "react";
+import React from 'react';
+import { RadioGroup } from "@/components/ui/radio-group";
+import PaymentMethodItem, { PaymentMethod } from './PaymentMethodItem';
 
-type Props = {
-  onSelect: (method: string) => void;
-  selected: string;
-  methods: { id: string; label: string }[];
-};
+interface PaymentMethodListProps {
+  methods: PaymentMethod[];
+  selectedMethod: string | null;
+  onMethodChange: (value: string) => void;
+}
 
-const PaymentMethodList: React.FC<Props> = ({ onSelect, selected, methods }) => (
-  <div>
-    {methods.map(m => (
-      <button
-        key={m.id}
-        style={{ fontWeight: m.id === selected ? "bold" : "normal", margin: "4px" }}
-        onClick={() => onSelect(m.id)}
+const PaymentMethodList: React.FC<PaymentMethodListProps> = ({ 
+  methods, 
+  selectedMethod,
+  onMethodChange
+}) => {
+  return (
+    <div className="bg-white rounded-lg p-4 shadow-sm mb-4">
+      <h2 className="font-medium mb-3">Select payment method</h2>
+      
+      <RadioGroup 
+        value={selectedMethod || ''} 
+        onValueChange={onMethodChange}
+        className="space-y-2"
       >
-        {m.label}
-      </button>
-    ))}
-  </div>
-);
+        {methods.map((method) => (
+          <PaymentMethodItem 
+            key={method.id} 
+            method={method} 
+            isSelected={selectedMethod === method.id}
+          />
+        ))}
+      </RadioGroup>
+    </div>
+  );
+};
 
 export default PaymentMethodList;
