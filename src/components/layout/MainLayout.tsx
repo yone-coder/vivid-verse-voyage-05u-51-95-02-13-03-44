@@ -10,8 +10,6 @@ import { useAuthOverlay } from "@/context/AuthOverlayContext";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { useAuth } from "@/context/AuthContext";
-import FloatingActionButton from "./FloatingActionButton";
-import ProductUploadOverlay from "@/components/product/ProductUploadOverlay";
 import AuthPage from "@/pages/AuthPage";
 
 function MainLayoutContent() {
@@ -28,10 +26,8 @@ function MainLayoutContent() {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [showProductUpload, setShowProductUpload] = useState(false);
 
   // Calculate pathname-based booleans
-  const isProductPage = pathname.includes('/product/');
   const isHomePage = pathname === "/";
   const isMultiStepTransferPage = pathname === "/multi-step-transfer";
   const isMultiStepTransferSheetPage = pathname === "/multi-step-transfer-page";
@@ -123,19 +119,8 @@ function MainLayoutContent() {
         {/* Show Footer only on non-mobile and on specific pages, but not on Paytm homepage */}
         {!isMobile && !isHomePage && <Footer />}
 
-        {/* Floating action button - exclude from Paytm homepage and transfer pages */}
-        {!isHomePage && !isMultiStepTransferPage && !isMultiStepTransferSheetPage && !isTransferOldPage && (
-          <FloatingActionButton onClick={() => setShowProductUpload(true)} />
-        )}
-
         {/* Show IndexBottomNav on mobile but not on Paytm homepage or transfer pages */}
         {isMobile && !isHomePage && !isMultiStepTransferPage && !isMultiStepTransferSheetPage && !isTransferOldPage && <IndexBottomNav />}
-
-        {/* Product Upload Overlay */}
-        <ProductUploadOverlay
-          isOpen={showProductUpload}
-          onClose={() => setShowProductUpload(false)}
-        />
       </div>
     </LanguageProvider>
   );

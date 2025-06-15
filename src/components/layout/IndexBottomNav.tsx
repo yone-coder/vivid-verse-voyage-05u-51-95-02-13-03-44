@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -75,7 +74,7 @@ export default function BottomNav() {
           >
             <X className="h-4 w-4" />
           </button>
-          <AuthPage onClose={() => setShowAuthDialog(false)} />
+          <AuthPage />
         </DialogContent>
       </Dialog>
 
