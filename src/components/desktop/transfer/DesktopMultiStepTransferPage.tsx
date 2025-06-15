@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, CheckCircle, Receipt, Search, Key, Globe, Loader2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -882,7 +881,7 @@ const DesktopTransferForm: React.FC<DesktopTransferFormProps> = ({
         <div className="px-4 pb-3">
           <div className="flex items-center justify-between">
             {[1, 2, 3, 4, 5].map((step, index) => (
-              <React.Fragment key={step}>
+              <div key={step} className="flex items-center">
                 <div className="flex flex-col items-center">
                   <motion.div 
                     className={`rounded-full flex items-center justify-center text-xs font-medium transition-all duration-300 shadow-sm ${
@@ -931,7 +930,7 @@ const DesktopTransferForm: React.FC<DesktopTransferFormProps> = ({
                     animate={step < currentStep ? 'active' : 'inactive'}
                   />
                 )}
-              </React.Fragment>
+              </div>
             ))}
           </div>
         </div>
