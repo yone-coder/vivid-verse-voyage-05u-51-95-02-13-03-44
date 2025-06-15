@@ -23,11 +23,27 @@ import {
   MapPin,
   CreditCard
 } from 'lucide-react';
-import MultiStepTransferSheet from '@/components/transfer/MultiStepTransferSheet';
+import TransferTypeSelector from '@/components/transfer/TransferTypeSelector';
+import AmountInput from '@/components/transfer/AmountInput';
+import ReceiverDetailsForm from '@/components/transfer/ReceiverDetailsForm';
+import CompactCardSelection from '@/components/transfer/CompactCardSelection';
 
 export default function DesktopHomePage() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
+  
+  // Transfer form state
+  const [transferType, setTransferType] = useState<'international' | 'national'>('international');
+  const [amount, setAmount] = useState('100');
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('card');
+  const [receiverDetails, setReceiverDetails] = useState({
+    firstName: '',
+    lastName: '',
+    phoneNumber: '',
+    department: 'Artibonite',
+    arrondissement: '',
+    commune: '',
+  });
 
   const features = [
     {
@@ -125,7 +141,7 @@ export default function DesktopHomePage() {
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-blue-50 to-indigo-100">
         <div className="max-w-7xl mx-auto px-6 py-16">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
             {/* Left Content */}
             <div>
               <h1 className="text-5xl font-bold text-gray-900 mb-6 leading-tight">
@@ -144,9 +160,9 @@ export default function DesktopHomePage() {
                   <span className="text-gray-600">Recipient gets</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <div className="text-2xl font-bold text-gray-900">$100 USD</div>
+                  <div className="text-2xl font-bold text-gray-900">${amount || '100'} USD</div>
                   <ArrowRight className="h-5 w-5 text-gray-400" />
-                  <div className="text-2xl font-bold text-blue-600">12,750 HTG</div>
+                  <div className="text-2xl font-bold text-blue-600">{((parseFloat(amount) || 100) * 127.5).toFixed(0)} HTG</div>
                 </div>
                 <div className="text-sm text-gray-500 mt-2">
                   Rate: 1 USD = 127.50 HTG • Fee: $2.99
@@ -167,21 +183,62 @@ export default function DesktopHomePage() {
               </p>
             </div>
 
-            {/* Right Content - Native Mobile Transfer Section */}
-            <div className="relative">
-              <div className="bg-white rounded-2xl shadow-2xl overflow-hidden max-w-sm mx-auto">
-                {/* Mobile Transfer Component - Direct Integration */}
-                <div className="relative">
-                  <MultiStepTransferSheet onClose={() => {}} />
+            {/* Right Content - Native Transfer Form */}
+            <div className="bg-white rounded-2xl shadow-2xl p-6 max-w-md mx-auto w-full">
+              <div className="text-center mb-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-2">Send Money Now</h2>
+                <p className="text-sm text-gray-600">Complete your transfer in minutes</p>
+              </div>
+
+              <div className="space-y-6">
+                {/* Transfer Type */}
+                <div>
+                  <TransferTypeSelector 
+                    transferType={transferType}
+                    onTransferTypeChange={setTransferType}
+                  />
                 </div>
-              </div>
-              
-              {/* Floating elements */}
-              <div className="absolute -top-4 -right-4 bg-green-500 text-white p-3 rounded-full shadow-lg">
-                <CheckCircle className="h-6 w-6" />
-              </div>
-              <div className="absolute -bottom-4 -left-4 bg-blue-500 text-white p-3 rounded-full shadow-lg">
-                <Send className="h-6 w-6" />
+
+                {/* Amount Input */}
+                <div>
+                  <AmountInput
+                    amount={amount}
+                    onAmountChange={setAmount}
+                    currencySymbol={transferType === 'international' ? '$' : 'HTG '}
+                    currencyName={transferType === 'international' ? 'USD' : 'Haitian Gourdes'}
+                  />
+                </div>
+
+                {/* Receiver Details */}
+                <div>
+                  <ReceiverDetailsForm
+                    onDetailsChange={setReceiverDetails}
+                    amount={amount}
+                  />
+                </div>
+
+                {/* Payment Method */}
+                <div>
+                  <h3 className="text-sm font-medium mb-3">Payment Method</h3>
+                  <CompactCardSelection
+                    selectedMethod={selectedPaymentMethod}
+                    onMethodChange={setSelectedPaymentMethod}
+                  />
+                </div>
+
+                {/* Continue Button */}
+                <Button 
+                  onClick={() => navigate('/transfer')}
+                  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3"
+                  size="lg"
+                >
+                  Complete Transfer
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+
+                <p className="text-xs text-gray-500 text-center">
+                  🔒 Your information is secure and encrypted
+                </p>
               </div>
             </div>
           </div>
