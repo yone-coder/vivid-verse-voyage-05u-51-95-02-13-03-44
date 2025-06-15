@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, X, Check, Loader2, AlertCircle, Key, Globe, Search, CheckCircle, User, Receipt, ArrowRight } from 'lucide-react';
@@ -22,7 +21,6 @@ import {
   CircleDollarSign,
   DollarSign 
 } from 'lucide-react';
-import { PaymentMethod } from '@/components/transfer/PaymentMethodItem';
 
 export interface TransferData {
   transferType?: 'international' | 'national';
