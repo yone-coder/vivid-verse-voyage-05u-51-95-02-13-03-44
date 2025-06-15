@@ -1,20 +1,26 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, CheckCircle, Receipt, Search, Key, Globe, Loader2 } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { ArrowLeft, X, Check, Loader2, AlertCircle } from 'lucide-react';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { motion } from 'framer-motion';
-import { useNavigate, Link, useLocation } from 'react-router-dom';
-import html2canvas from 'html2canvas';
-import { toast } from "@/hooks/use-toast";
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { toast } from 'sonner';
 import TransferTypeSelector from '@/components/transfer/TransferTypeSelector';
 import StepOneTransfer from '@/components/transfer/StepOneTransfer';
 import StepOneLocalTransfer from '@/components/transfer/StepOneLocalTransfer';
 import StepTwoTransfer from '@/components/transfer/StepTwoTransfer';
 import PaymentMethodList from '@/components/transfer/PaymentMethodList';
-import { internationalPaymentMethods } from '@/components/transfer/PaymentMethods';
 import { EmailNotificationService } from '@/components/transfer/EmailNotificationService';
 import IndexBottomNav from '@/components/layout/IndexBottomNav';
+import { 
+  CreditCard, 
+  Banknote, 
+  Landmark,
+  CircleDollarSign,
+  DollarSign 
+} from 'lucide-react';
+import { PaymentMethod } from '@/components/transfer/PaymentMethodItem';
 
 export interface TransferData {
   transferType?: 'international' | 'national';
@@ -63,6 +69,49 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
     },
     selectedPaymentMethod: 'credit-card'
   });
+
+  // PayPal backend API URL as a constant
+  const PAYPAL_BACKEND_URL = 'https://paypal-backend-9mw4.onrender.com';
+
+  // International payment methods (USD)
+  const internationalPaymentMethods: PaymentMethod[] = [
+    { 
+      id: 'credit-card', 
+      name: 'Credit or Debit Card', 
+      icon: CreditCard, 
+      description: 'Safe and secure card payment',
+      fee: '3.5% + $0.30',
+      processorUrl: PAYPAL_BACKEND_URL
+    },
+    { 
+      id: 'bank-transfer', 
+      name: 'Bank Transfer / ACH', 
+      icon: Banknote, 
+      description: 'Direct from your bank account',
+      fee: '$0.25' 
+    },
+    { 
+      id: 'zelle', 
+      name: 'Zelle', 
+      icon: Landmark,
+      description: 'Fast transfers between US banks',
+      fee: 'Free' 
+    },
+    { 
+      id: 'paypal', 
+      name: 'PayPal', 
+      icon: CircleDollarSign,
+      description: 'Send using your PayPal balance',
+      fee: '2.9% + $0.30' 
+    },
+    { 
+      id: 'cashapp', 
+      name: 'Cash App', 
+      icon: DollarSign,
+      description: 'Send using Cash App',
+      fee: '1.5%' 
+    }
+  ];
 
   // PayPal integration effect for step 3
   useEffect(() => {
