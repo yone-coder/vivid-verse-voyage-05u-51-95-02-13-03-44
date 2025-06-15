@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
@@ -13,11 +12,13 @@ import {
 } from 'lucide-react';
 import TransferTypeSelector from '@/components/transfer/TransferTypeSelector';
 import AmountInput from '@/components/transfer/AmountInput';
+import MultiStepTransferSheet from '@/components/transfer/MultiStepTransferSheet';
 
 export default function DesktopHomeWithTabs() {
   const navigate = useNavigate();
   const [transferType, setTransferType] = useState<'international' | 'national'>('international');
   const [amount, setAmount] = useState('100.00');
+  const [showTransferSheet, setShowTransferSheet] = useState(false);
 
   // Calculate fees and totals
   const transferFee = amount ? (Math.ceil(parseFloat(amount) / 100) * 15).toFixed(2) : '0.00';
@@ -25,8 +26,17 @@ export default function DesktopHomeWithTabs() {
   const receiverAmount = amount ? (parseFloat(amount) * 132.5).toFixed(2) : '0.00';
 
   const handleContinue = () => {
-    // Navigate to the multi-step transfer page
-    navigate('/multi-step-transfer-page');
+    // Validate amount before proceeding
+    if (!amount || parseFloat(amount) <= 0) {
+      return;
+    }
+    
+    // Show the multi-step transfer sheet - exactly like mobile version
+    setShowTransferSheet(true);
+  };
+
+  const handleCloseTransferSheet = () => {
+    setShowTransferSheet(false);
   };
 
   return (
@@ -271,6 +281,15 @@ export default function DesktopHomeWithTabs() {
           </div>
         </div>
       </section>
+
+      {/* Multi-Step Transfer Sheet - Exactly like mobile version */}
+      {showTransferSheet && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+          <div className="bg-white rounded-lg max-w-md w-full mx-4 max-h-[90vh] overflow-hidden">
+            <MultiStepTransferSheet onClose={handleCloseTransferSheet} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
