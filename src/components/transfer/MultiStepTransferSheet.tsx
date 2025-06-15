@@ -409,11 +409,6 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({
                   </div>
                 </div>
               </div>
-              
-              <StepThreeTransfer 
-                amount={transferData.amount}
-                onPaymentSuccess={handlePaymentSuccess}
-              />
             </div>
           )}
 
@@ -450,14 +445,13 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({
                   <span className="text-lg font-bold text-green-400">{isInternational ? '$' : ''}{totalAmount.toFixed(2)}{!isInternational ? ' HTG' : ''}</span>
                 </div>
               </div>
-              
-              <div className={`flex ${isSheet ? 'justify-center' : 'justify-start'}`}>
-                <Button 
-                  onClick={handlePaymentSuccess}
-                  className="bg-green-600 hover:bg-green-700 text-white px-8 py-3"
-                >
-                  Complete Payment
-                </Button>
+
+              {/* Now, StepThreeTransfer (actual payment UI) only appears in Step 4 */}
+              <div>
+                <StepThreeTransfer 
+                  amount={transferData.amount}
+                  onPaymentSuccess={handlePaymentSuccess}
+                />
               </div>
             </div>
           )}
