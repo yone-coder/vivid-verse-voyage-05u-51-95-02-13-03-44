@@ -23,7 +23,7 @@ import {
   MapPin,
   CreditCard
 } from 'lucide-react';
-import MobileMultiStepTransferSheetPage from '@/components/mobile/transfer/MobileMultiStepTransferSheetPage';
+import MultiStepTransferSheet from '@/components/transfer/MultiStepTransferSheet';
 
 export default function DesktopHomePage() {
   const navigate = useNavigate();
@@ -167,20 +167,13 @@ export default function DesktopHomePage() {
               </p>
             </div>
 
-            {/* Right Content - Mobile App Preview */}
+            {/* Right Content - Native Mobile Transfer Section */}
             <div className="relative">
-              <div className="bg-gray-900 rounded-3xl p-4 shadow-2xl max-w-sm mx-auto">
-                <div className="bg-white rounded-2xl overflow-hidden" style={{ height: '600px' }}>
-                  {/* Mobile App Content */}
-                  <div className="h-full relative overflow-hidden">
-                    <div className="absolute inset-0 scale-90 origin-top">
-                      <MobileMultiStepTransferSheetPage />
-                    </div>
-                  </div>
+              <div className="bg-white rounded-2xl shadow-2xl overflow-hidden max-w-sm mx-auto">
+                {/* Mobile Transfer Component - Direct Integration */}
+                <div className="relative">
+                  <MultiStepTransferSheet onClose={() => {}} />
                 </div>
-                
-                {/* Phone notch */}
-                <div className="absolute top-6 left-1/2 transform -translate-x-1/2 w-32 h-6 bg-gray-900 rounded-full"></div>
               </div>
               
               {/* Floating elements */}
