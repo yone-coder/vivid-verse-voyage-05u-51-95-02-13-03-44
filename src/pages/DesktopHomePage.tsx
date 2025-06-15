@@ -23,27 +23,12 @@ import {
   MapPin,
   CreditCard
 } from 'lucide-react';
-import TransferTypeSelector from '@/components/transfer/TransferTypeSelector';
-import AmountInput from '@/components/transfer/AmountInput';
-import ReceiverDetailsForm from '@/components/transfer/ReceiverDetailsForm';
-import CompactCardSelection from '@/components/transfer/CompactCardSelection';
+import MultiStepTransferSheet from '@/components/transfer/MultiStepTransferSheet';
 
 export default function DesktopHomePage() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
-  
-  // Transfer form state
-  const [transferType, setTransferType] = useState<'international' | 'national'>('international');
-  const [amount, setAmount] = useState('100');
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('card');
-  const [receiverDetails, setReceiverDetails] = useState({
-    firstName: '',
-    lastName: '',
-    phoneNumber: '',
-    department: 'Artibonite',
-    arrondissement: '',
-    commune: '',
-  });
+  const [isTransferSheetOpen, setIsTransferSheetOpen] = useState(false);
 
   const features = [
     {
@@ -103,7 +88,7 @@ export default function DesktopHomePage() {
               <div className="text-2xl font-bold text-blue-600">MoneyTransfer</div>
               <nav className="hidden lg:flex space-x-6">
                 <button 
-                  onClick={() => navigate('/transfer')}
+                  onClick={() => setIsTransferSheetOpen(true)}
                   className="text-gray-700 hover:text-blue-600 font-medium"
                 >
                   Send Money
@@ -130,7 +115,7 @@ export default function DesktopHomePage() {
               <Button variant="ghost" className="text-gray-700">
                 Log in
               </Button>
-              <Button onClick={() => navigate('/transfer')} className="bg-blue-600 hover:bg-blue-700">
+              <Button onClick={() => setIsTransferSheetOpen(true)} className="bg-blue-600 hover:bg-blue-700">
                 Get started
               </Button>
             </div>
@@ -160,19 +145,19 @@ export default function DesktopHomePage() {
                   <span className="text-gray-600">Recipient gets</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <div className="text-2xl font-bold text-gray-900">${amount || '100'} USD</div>
+                  <div className="text-2xl font-bold text-gray-900">$100 USD</div>
                   <ArrowRight className="h-5 w-5 text-gray-400" />
-                  <div className="text-2xl font-bold text-blue-600">{((parseFloat(amount) || 100) * 127.5).toFixed(0)} HTG</div>
+                  <div className="text-2xl font-bold text-blue-600">12,750 HTG</div>
                 </div>
                 <div className="text-sm text-gray-500 mt-2">
-                  Rate: 1 USD = 127.50 HTG • Fee: $2.99
+                  Rate: 1 USD = 127.50 HTG • Fee: $15.00
                 </div>
               </div>
 
               <Button 
                 size="lg" 
                 className="bg-blue-600 hover:bg-blue-700 text-lg px-8 py-4"
-                onClick={() => navigate('/transfer')}
+                onClick={() => setIsTransferSheetOpen(true)}
               >
                 Send money now
                 <ArrowRight className="ml-2 h-5 w-5" />
@@ -183,62 +168,28 @@ export default function DesktopHomePage() {
               </p>
             </div>
 
-            {/* Right Content - Native Transfer Form */}
-            <div className="bg-white rounded-2xl shadow-2xl p-6 max-w-md mx-auto w-full">
-              <div className="text-center mb-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-2">Send Money Now</h2>
-                <p className="text-sm text-gray-600">Complete your transfer in minutes</p>
-              </div>
-
-              <div className="space-y-6">
-                {/* Transfer Type */}
-                <div>
-                  <TransferTypeSelector 
-                    transferType={transferType}
-                    onTransferTypeChange={setTransferType}
+            {/* Right Content - Mobile-Style Transfer Component */}
+            <div className="flex justify-center">
+              <div className="w-full max-w-sm mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden">
+                {isTransferSheetOpen && (
+                  <MultiStepTransferSheet 
+                    onClose={() => setIsTransferSheetOpen(false)}
                   />
-                </div>
-
-                {/* Amount Input */}
-                <div>
-                  <AmountInput
-                    amount={amount}
-                    onAmountChange={setAmount}
-                    currencySymbol={transferType === 'international' ? '$' : 'HTG '}
-                    currencyName={transferType === 'international' ? 'USD' : 'Haitian Gourdes'}
-                  />
-                </div>
-
-                {/* Receiver Details */}
-                <div>
-                  <ReceiverDetailsForm
-                    onDetailsChange={setReceiverDetails}
-                    amount={amount}
-                  />
-                </div>
-
-                {/* Payment Method */}
-                <div>
-                  <h3 className="text-sm font-medium mb-3">Payment Method</h3>
-                  <CompactCardSelection
-                    selectedMethod={selectedPaymentMethod}
-                    onMethodChange={setSelectedPaymentMethod}
-                  />
-                </div>
-
-                {/* Continue Button */}
-                <Button 
-                  onClick={() => navigate('/transfer')}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3"
-                  size="lg"
-                >
-                  Complete Transfer
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-
-                <p className="text-xs text-gray-500 text-center">
-                  🔒 Your information is secure and encrypted
-                </p>
+                )}
+                {!isTransferSheetOpen && (
+                  <div className="p-6 text-center">
+                    <h2 className="text-xl font-semibold text-gray-900 mb-4">Start Your Transfer</h2>
+                    <p className="text-gray-600 mb-6">Click below to begin sending money with our secure transfer process</p>
+                    <Button 
+                      onClick={() => setIsTransferSheetOpen(true)}
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3"
+                      size="lg"
+                    >
+                      Start Transfer
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -314,7 +265,7 @@ export default function DesktopHomePage() {
           <Button 
             size="lg" 
             className="bg-white text-blue-600 hover:bg-blue-50 text-lg px-8 py-4"
-            onClick={() => navigate('/transfer')}
+            onClick={() => setIsTransferSheetOpen(true)}
           >
             Send your first transfer
             <ArrowRight className="ml-2 h-5 w-5" />
@@ -336,7 +287,7 @@ export default function DesktopHomePage() {
             <div>
               <h3 className="font-semibold mb-4">Send Money</h3>
               <ul className="space-y-2 text-gray-400">
-                <li><button onClick={() => navigate('/transfer')} className="hover:text-white">Send to Haiti</button></li>
+                <li><button onClick={() => setIsTransferSheetOpen(true)} className="hover:text-white">Send to Haiti</button></li>
                 <li><button onClick={() => navigate('/locations')} className="hover:text-white">Find locations</button></li>
                 <li><button onClick={() => navigate('/track-transfer')} className="hover:text-white">Track transfer</button></li>
               </ul>
