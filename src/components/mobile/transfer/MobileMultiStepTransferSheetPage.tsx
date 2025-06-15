@@ -1,18 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, CheckCircle, Receipt, Search, Key, Globe, Loader2 } from 'lucide-react';
+import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, CheckCircle, Receipt, Search, Key, Globe, Loader2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { motion } from 'framer-motion';
-import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import html2canvas from 'html2canvas';
 import { toast } from "@/hooks/use-toast";
 import TransferTypeSelector from '@/components/transfer/TransferTypeSelector';
 import StepOneTransfer from '@/components/transfer/StepOneTransfer';
 import StepOneLocalTransfer from '@/components/transfer/StepOneLocalTransfer';
 import StepTwoTransfer from '@/components/transfer/StepTwoTransfer';
-import PaymentMethodList from '@/components/transfer/PaymentMethodList';
-import { internationalPaymentMethods } from '@/components/transfer/PaymentMethods';
 import { emailNotificationService } from '@/components/transfer/EmailNotificationService';
 import IndexBottomNav from '@/components/layout/IndexBottomNav';
 
@@ -38,7 +34,6 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
   defaultTransferType = 'international' 
 }) => {
   const navigate = useNavigate();
-  const location = useLocation();
   
   const [currentStep, setCurrentStep] = useState(1);
   const [paymentCompleted, setPaymentCompleted] = useState(false);
