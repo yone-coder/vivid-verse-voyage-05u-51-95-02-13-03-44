@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Send, History, MapPin, Route, Search, Eye, User, Star, Phone, Clock, CheckCircle, XCircle, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
+import { Send, History, MapPin, Route, Search, Eye, User, Star, Phone, Clock, CheckCircle, XCircle, ArrowUpRight, ArrowDownLeft, ArrowRight, ArrowLeft, DollarSign, CreditCard, Receipt } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import TransferTypeSelector from '@/components/transfer/TransferTypeSelector';
 import StepOneTransfer from '@/components/transfer/StepOneTransfer';
@@ -13,6 +13,7 @@ import StepTwoTransfer from '@/components/transfer/StepTwoTransfer';
 const DesktopHomePage = () => {
   // Transfer state
   const [transferType, setTransferType] = useState<'international' | 'national'>('international');
+  const [currentStep, setCurrentStep] = useState(1);
   const [amount, setAmount] = useState('');
   const [receiverDetails, setReceiverDetails] = useState({
     firstName: '',
@@ -47,6 +48,7 @@ const DesktopHomePage = () => {
     console.log('Transfer submitted:', { transferType, amount, receiverDetails });
     // Reset form
     setAmount('');
+    setCurrentStep(1);
     setReceiverDetails({
       firstName: '',
       lastName: '',
@@ -84,6 +86,49 @@ const DesktopHomePage = () => {
       ...details
     }));
   };
+
+  // Step navigation functions
+  const handleNextStep = () => {
+    if (currentStep < 3) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
+  const handlePreviousStep = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  // Step validation
+  const canProceedFromStep1 = Boolean(amount && parseFloat(amount) > 0);
+  const canProceedFromStep2 = Boolean(
+    receiverDetails.firstName &&
+    receiverDetails.lastName &&
+    receiverDetails.phoneNumber &&
+    receiverDetails.commune
+  );
+
+  const canProceed = Boolean(
+    (currentStep === 1 && canProceedFromStep1) ||
+    (currentStep === 2 && canProceedFromStep2) ||
+    (currentStep === 3)
+  );
+
+  const getStepTitle = () => {
+    switch (currentStep) {
+      case 1:
+        return 'Enter Amount';
+      case 2:
+        return 'Recipient Details';
+      case 3:
+        return 'Review & Send';
+      default:
+        return 'Send Money';
+    }
+  };
+
+  const stepTitles = ['Amount & Type', 'Recipient Info', 'Review & Send'];
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -145,47 +190,161 @@ const DesktopHomePage = () => {
           {/* LEFT COLUMN */}
           <div className="space-y-8">
             
-            {/* Send Money Section */}
+            {/* Send Money Section - Updated with step-by-step flow */}
             <Card className="bg-gradient-to-br from-red-50 to-red-100 border-red-200">
               <CardHeader>
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center">
-                    <Send className="w-6 h-6 text-white" />
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center">
+                      <Send className="w-6 h-6 text-white" />
+                    </div>
+                    <CardTitle className="text-2xl text-red-700">{getStepTitle()}</CardTitle>
                   </div>
-                  <CardTitle className="text-2xl text-red-700">Send Money</CardTitle>
+                  <div className="text-sm text-gray-600">
+                    Step {currentStep} of 3
+                  </div>
+                </div>
+                
+                {/* Progress Steps */}
+                <div className="flex items-center justify-between mt-4 px-2">
+                  {[1, 2, 3].map((step, index) => (
+                    <React.Fragment key={step}>
+                      <div className="flex flex-col items-center">
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-300 ${
+                          step === currentStep
+                            ? 'bg-red-600 text-white'
+                            : step < currentStep
+                            ? 'bg-green-600 text-white'
+                            : 'bg-gray-200 text-gray-600'
+                        }`}>
+                          {step < currentStep ? (
+                            <CheckCircle className="h-4 w-4" />
+                          ) : step === currentStep ? (
+                            <>
+                              {step === 1 && <DollarSign className="h-4 w-4" />}
+                              {step === 2 && <User className="h-4 w-4" />}
+                              {step === 3 && <Receipt className="h-4 w-4" />}
+                            </>
+                          ) : (
+                            step
+                          )}
+                        </div>
+                        <span className={`text-xs mt-1 font-medium ${
+                          step <= currentStep ? 'text-gray-900' : 'text-gray-500'
+                        }`}>
+                          {stepTitles[index]}
+                        </span>
+                      </div>
+                      {index < 2 && (
+                        <div className={`flex-1 h-0.5 mx-2 rounded-full transition-colors duration-300 ${
+                          step < currentStep ? 'bg-green-600' : 'bg-gray-300'
+                        }`} />
+                      )}
+                    </React.Fragment>
+                  ))}
                 </div>
               </CardHeader>
+              
               <CardContent className="space-y-6">
-                <TransferTypeSelector 
-                  transferType={transferType}
-                  onTransferTypeChange={setTransferType}
-                  disableNavigation={true}
-                />
-                
-                {transferType === 'international' ? (
-                  <StepOneTransfer 
-                    amount={amount}
-                    onAmountChange={setAmount}
-                  />
-                ) : (
-                  <StepOneLocalTransfer 
-                    amount={amount}
-                    onAmountChange={setAmount}
-                  />
+                {currentStep === 1 && (
+                  <div className="space-y-6">
+                    <TransferTypeSelector 
+                      transferType={transferType}
+                      onTransferTypeChange={setTransferType}
+                      disableNavigation={true}
+                    />
+                    
+                    {transferType === 'international' ? (
+                      <StepOneTransfer 
+                        amount={amount}
+                        onAmountChange={setAmount}
+                      />
+                    ) : (
+                      <StepOneLocalTransfer 
+                        amount={amount}
+                        onAmountChange={setAmount}
+                      />
+                    )}
+                  </div>
                 )}
 
-                <StepTwoTransfer 
-                  receiverDetails={receiverDetails}
-                  onDetailsChange={handleDetailsChange}
-                />
+                {currentStep === 2 && (
+                  <div className="space-y-4">
+                    <div className="text-center mb-4">
+                      <p className="text-gray-600">Who are you sending ${amount} to?</p>
+                    </div>
+                    <StepTwoTransfer 
+                      receiverDetails={receiverDetails}
+                      onDetailsChange={handleDetailsChange}
+                    />
+                  </div>
+                )}
 
-                <Button 
-                  onClick={handleSendTransfer}
-                  className="w-full bg-red-600 hover:bg-red-700"
-                  size="lg"
-                >
-                  Send Transfer
-                </Button>
+                {currentStep === 3 && (
+                  <div className="space-y-6">
+                    <h3 className="text-lg font-semibold text-gray-900">Transfer Summary</h3>
+                    
+                    <div className="bg-white rounded-lg p-4 space-y-3 border">
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Transfer Type:</span>
+                        <span className="font-medium capitalize">{transferType}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Send Amount:</span>
+                        <span className="font-medium">
+                          {transferType === 'international' ? '$' : 'HTG '}{amount}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Recipient:</span>
+                        <span className="font-medium">
+                          {receiverDetails.firstName} {receiverDetails.lastName}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Phone:</span>
+                        <span className="font-medium">+509 {receiverDetails.phoneNumber}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Location:</span>
+                        <span className="font-medium">
+                          {receiverDetails.commune}, {receiverDetails.department}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                      <p className="text-blue-800 text-sm">
+                        Please review all details carefully before confirming your transfer. 
+                        Once confirmed, this transaction cannot be reversed.
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Action Buttons */}
+                <div className="flex gap-3 pt-4">
+                  {currentStep > 1 && (
+                    <Button 
+                      variant="outline" 
+                      onClick={handlePreviousStep}
+                      className="flex-1"
+                    >
+                      <ArrowLeft className="w-4 h-4 mr-2" />
+                      Back
+                    </Button>
+                  )}
+                  
+                  <Button 
+                    onClick={currentStep === 3 ? handleSendTransfer : handleNextStep}
+                    disabled={!canProceed}
+                    className={`${currentStep === 1 ? 'w-full' : 'flex-1'} bg-red-600 hover:bg-red-700`}
+                    size="lg"
+                  >
+                    {currentStep === 3 ? 'Confirm Transfer' : 'Continue'}
+                    {currentStep < 3 && <ArrowRight className="w-4 h-4 ml-2" />}
+                  </Button>
+                </div>
               </CardContent>
             </Card>
 
