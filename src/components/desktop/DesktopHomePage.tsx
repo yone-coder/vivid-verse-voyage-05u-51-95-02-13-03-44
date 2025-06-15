@@ -13,7 +13,7 @@ const DesktopHomePage = () => {
       icon: Send,
       title: 'Send Money',
       description: 'Send money worldwide with competitive rates',
-      action: () => navigate('/'),
+      action: () => navigate('/transfer'),
       color: 'bg-red-600 hover:bg-red-700'
     },
     {
@@ -79,7 +79,7 @@ const DesktopHomePage = () => {
           <Button 
             size="lg" 
             className="bg-white text-red-600 hover:bg-gray-100 px-8 py-3 text-lg"
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/transfer')}
           >
             Start Transfer
           </Button>
