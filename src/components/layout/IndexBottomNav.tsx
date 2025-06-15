@@ -88,7 +88,7 @@ export default function BottomNav() {
     setPreviousTab(activeTab);
     
     // Use replace instead of push to avoid back button issues
-    navigate(item.path, { replace: false });
+    navigate(item.path, { replace: true });
     
     // Reset animation state after a delay
     setTimeout(() => {

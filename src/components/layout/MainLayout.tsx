@@ -41,22 +41,6 @@ function MainLayoutContent() {
     );
   }
 
-  // Just render children if not logged in
-  if (!user) {
-    return (
-      <LanguageProvider>
-        <div className="min-h-screen flex flex-col bg-white">
-          <main className="flex-grow relative">
-            <Outlet />
-          </main>
-          
-          {/* Show mobile bottom navigation even when not logged in */}
-          {isMobile && <IndexBottomNav />}
-        </div>
-      </LanguageProvider>
-    );
-  }
-
   return (
     <LanguageProvider>
       <div className="min-h-screen flex flex-col bg-white">
@@ -66,8 +50,8 @@ function MainLayoutContent() {
           <Outlet />
         </main>
 
-        {/* Desktop footer - only show on non-home pages for desktop */}
-        {!isMobile && !isHomePage && <Footer />}
+        {/* Desktop footer - only show on non-home pages for desktop when logged in */}
+        {user && !isMobile && !isHomePage && <Footer />}
 
         {/* Mobile bottom navigation */}
         {isMobile && <IndexBottomNav />}
