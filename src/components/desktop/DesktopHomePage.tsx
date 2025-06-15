@@ -136,7 +136,7 @@ const DesktopHomePage = () => {
     }
   };
 
-  const stepTitles = ['Amount & Type', 'Recipient Info', 'Payment Method', 'Complete'];
+  const stepTitles = ['Send Money', 'Recipient Details', 'Payment Method', 'Transfer Complete'];
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -291,37 +291,11 @@ const DesktopHomePage = () => {
 
                 {currentStep === 3 && (
                   <div className="space-y-6">
-                    <h3 className="text-lg font-semibold text-gray-900">Payment Method</h3>
-                    
-                    <div className="bg-gray-50 rounded-lg p-4 space-y-3">
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Transfer Type:</span>
-                        <span className="font-medium capitalize">{transferType}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Send Amount:</span>
-                        <span className="font-medium">
-                          {transferType === 'international' ? '$' : 'HTG '}{amount}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Recipient:</span>
-                        <span className="font-medium">
-                          {receiverDetails.firstName} {receiverDetails.lastName}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Phone:</span>
-                        <span className="font-medium">+509 {receiverDetails.phoneNumber}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Location:</span>
-                        <span className="font-medium">
-                          {receiverDetails.commune}, {receiverDetails.department}
-                        </span>
-                      </div>
+                    <div className="text-center">
+                      <h3 className="text-lg font-semibold text-gray-900">How would you like to pay?</h3>
+                      <p className="text-gray-600 text-sm mt-1">Choose your payment method</p>
                     </div>
-
+                    
                     <div className="space-y-3">
                       <div 
                         className={`p-4 border rounded-lg cursor-pointer transition-colors ${
@@ -341,7 +315,7 @@ const DesktopHomePage = () => {
                               <p className="text-sm text-gray-600">Pay with your debit card</p>
                             </div>
                           </div>
-                          <span className="text-sm text-green-600 font-medium">Free</span>
+                          <span className="text-sm text-green-600 font-medium">No fees</span>
                         </div>
                       </div>
                       
@@ -385,7 +359,7 @@ const DesktopHomePage = () => {
                               <p className="text-sm text-gray-600">Direct from your bank account</p>
                             </div>
                           </div>
-                          <span className="text-sm text-green-600 font-medium">Free</span>
+                          <span className="text-sm text-green-600 font-medium">No fees</span>
                         </div>
                       </div>
                     </div>
@@ -394,55 +368,51 @@ const DesktopHomePage = () => {
 
                 {currentStep === 4 && (
                   <div className="space-y-6">
-                    <h3 className="text-lg font-semibold text-gray-900">Transfer Complete</h3>
-                    
-                    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                      <div className="flex items-center space-x-2">
-                        <div className="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center">
-                          <span className="text-white text-sm">✓</span>
-                        </div>
-                        <p className="text-green-800 font-medium">Transfer Successful!</p>
+                    <div className="text-center">
+                      <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <CheckCircle className="w-8 h-8 text-green-600" />
                       </div>
-                      <p className="text-green-700 text-sm mt-2">
-                        Your transfer of {transferType === 'international' ? '$' : 'HTG '}{amount} to {receiverDetails.firstName} {receiverDetails.lastName} has been completed successfully.
-                      </p>
+                      <h3 className="text-xl font-semibold text-gray-900">Transfer Complete!</h3>
+                      <p className="text-gray-600 text-sm mt-2">Your money is on its way</p>
+                    </div>
+                    
+                    <div className="bg-white rounded-lg p-4 border">
+                      <h4 className="font-medium text-gray-900 mb-3">Transfer Details</h4>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Amount:</span>
+                          <span className="font-medium">
+                            {transferType === 'international' ? '$' : 'HTG '}{amount}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">To:</span>
+                          <span className="font-medium">
+                            {receiverDetails.firstName} {receiverDetails.lastName}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Phone:</span>
+                          <span className="font-medium">+509 {receiverDetails.phoneNumber}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Location:</span>
+                          <span className="font-medium">
+                            {receiverDetails.commune}, {receiverDetails.department}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Reference:</span>
+                          <span className="font-medium">TX{Date.now()}</span>
+                        </div>
+                      </div>
                     </div>
 
-                    <div className="bg-white rounded-lg p-4 space-y-3 border">
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Transaction ID:</span>
-                        <span className="font-medium">TX{Date.now()}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Transfer Type:</span>
-                        <span className="font-medium capitalize">{transferType}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Amount Sent:</span>
-                        <span className="font-medium">
-                          {transferType === 'international' ? '$' : 'HTG '}{amount}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Recipient:</span>
-                        <span className="font-medium">
-                          {receiverDetails.firstName} {receiverDetails.lastName}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Phone:</span>
-                        <span className="font-medium">+509 {receiverDetails.phoneNumber}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Location:</span>
-                        <span className="font-medium">
-                          {receiverDetails.commune}, {receiverDetails.department}
-                        </span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-gray-600">Payment Method:</span>
-                        <span className="font-medium capitalize">{paymentMethod?.replace('-', ' ')}</span>
-                      </div>
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                      <h4 className="font-medium text-blue-900 mb-2">What happens next?</h4>
+                      <p className="text-blue-800 text-sm">
+                        Your recipient will receive an SMS notification when the money is ready for pickup at their chosen location.
+                      </p>
                     </div>
                   </div>
                 )}
@@ -466,7 +436,7 @@ const DesktopHomePage = () => {
                     className={`${currentStep === 1 ? 'w-full' : 'flex-1'} bg-red-600 hover:bg-red-700`}
                     size="lg"
                   >
-                    {currentStep === 4 ? 'Done' : currentStep === 3 ? 'Confirm Payment' : 'Continue'}
+                    {currentStep === 4 ? 'Send Another Transfer' : currentStep === 3 ? 'Complete Transfer' : 'Continue'}
                     {currentStep < 4 && <ArrowRight className="w-4 h-4 ml-2" />}
                   </Button>
                 </div>
