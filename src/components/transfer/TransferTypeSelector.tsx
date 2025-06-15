@@ -22,7 +22,7 @@ const TransferTypeSelector: React.FC<TransferTypeSelectorProps> = ({
     
     if (!disableNavigation) {
       // Unify navigation to a single multi-step page, passing type in state.
-      navigate('/multi-step-transfer-page', { 
+      navigate('/transfer', { 
         state: { transferType: newTransferType } 
       });
     }

@@ -28,9 +28,10 @@ export interface TransferData {
 interface MultiStepTransferSheetProps {
   onClose: () => void;
   variant?: 'sheet' | 'page';
+  disableSelectorNavigation?: boolean;
 }
 
-const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose, variant = 'sheet' }) => {
+const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose, variant = 'sheet', disableSelectorNavigation = false }) => {
   const [currentStep, setCurrentStep] = useState(1);
   const isSheet = variant === 'sheet';
   const [isFullHeight, setIsFullHeight] = useState(false);
@@ -340,6 +341,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
               <TransferTypeSelector 
                 transferType={transferData.transferType || 'international'}
                 onTransferTypeChange={(type) => updateTransferData({ transferType: type })}
+                disableNavigation={disableSelectorNavigation}
               />
             </div>
           )}

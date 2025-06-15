@@ -1,6 +1,6 @@
 
 import React from 'react';
-import MultiStepTransferPage from '@/pages/MultiStepTransferPage';
+import MultiStepTransferSheet from '@/components/transfer/MultiStepTransferSheet';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ShieldCheck, Zap, Banknote, HelpCircle } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
@@ -19,7 +19,7 @@ const DesktopMultiStepTransferPage: React.FC = () => {
           <main className="lg:col-span-3">
             <Card className="overflow-hidden shadow-lg">
                 <CardContent className="p-0">
-                    <MultiStepTransferPage isEmbedded={true} />
+                    <MultiStepTransferSheet variant="page" onClose={() => {}} disableSelectorNavigation={true} />
                 </CardContent>
             </Card>
           </main>
