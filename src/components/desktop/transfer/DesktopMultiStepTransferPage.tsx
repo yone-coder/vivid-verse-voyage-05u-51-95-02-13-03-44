@@ -12,14 +12,14 @@ const DesktopMultiStepTransferPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
           
           {/* Left Column: Interactive Transfer Form */}
           <div className="lg:sticky lg:top-8">
             <div className="flex flex-col bg-white rounded-2xl shadow-2xl shadow-gray-200/50 overflow-hidden" style={{ height: 'calc(100vh - 4rem)' }}>
               <TransferHomeHeader />
-              <div className="flex-1 overflow-y-auto no-scrollbar">
-                 <MultiStepTransferSheet onClose={handleClose} />
+              <div className="flex-1">
+                 <MultiStepTransferSheet onClose={handleClose} variant="page" />
               </div>
             </div>
           </div>

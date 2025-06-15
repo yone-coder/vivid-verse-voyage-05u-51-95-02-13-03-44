@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, Clock, CheckCircle, Receipt, Globe } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -27,10 +28,12 @@ export interface TransferData {
 
 interface MultiStepTransferSheetProps {
   onClose: () => void;
+  variant?: 'sheet' | 'page';
 }
 
-const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose }) => {
+const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose, variant = 'sheet' }) => {
   const [currentStep, setCurrentStep] = useState(1);
+  const isSheet = variant === 'sheet';
   const [isFullHeight, setIsFullHeight] = useState(false);
   const [startY, setStartY] = useState(0);
   const [currentY, setCurrentY] = useState(0);
@@ -140,6 +143,8 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
 
   // Add global mouse event listeners
   useEffect(() => {
+    if (!isSheet) return;
+
     const handleGlobalMouseMove = (e: MouseEvent) => {
       if (isDragging) {
         handleMove(e.clientY);
@@ -161,7 +166,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
       document.removeEventListener('mousemove', handleGlobalMouseMove);
       document.removeEventListener('mouseup', handleGlobalMouseUp);
     };
-  }, [isDragging]);
+  }, [isDragging, isSheet]);
 
   const canProceedFromStep1 = transferData.transferType !== undefined;
   const canProceedFromStep2 = transferData.amount && parseFloat(transferData.amount) > 0;
@@ -241,12 +246,24 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
   // Calculate receiver amount (assuming USD to HTG conversion rate of 127.5)
   const receiverAmount = transferData.amount ? (parseFloat(transferData.amount) * 127.5).toFixed(2) : '0.00';
 
+  const containerClasses = isSheet
+    ? `flex flex-col bg-white rounded-t-lg shadow-lg relative transition-all duration-300 ${
+        isFullHeight ? 'h-screen' : 'h-[95vh]'
+      }`
+    : 'flex flex-col h-full bg-white';
+
+  const navButtonsClasses = isSheet
+    ? 'fixed bottom-0 left-0 right-0 bg-white px-4 py-4 z-[60] border-t border-gray-200'
+    : 'px-4 py-4 border-t border-gray-200 mt-auto';
+
   return (
     <div 
       ref={panelRef}
-      className={`flex flex-col bg-white rounded-t-lg shadow-lg relative transition-all duration-300 ${
-        isFullHeight ? 'h-screen' : 'h-[95vh]'
-      }`}
+      className={containerClasses}
+      onTouchStart={isSheet ? handleTouchStart : undefined}
+      onTouchMove={isSheet ? handleTouchMove : undefined}
+      onTouchEnd={isSheet ? handleTouchEnd : undefined}
+      onMouseDown={isSheet ? handleMouseDown : undefined}
     >
       {/* Header with Title only - removed X button */}
       <div className="flex items-center justify-center py-4 px-4 bg-white rounded-t-lg flex-shrink-0">
@@ -324,7 +341,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
       )}
 
       {/* Step Content - Reduced padding and consistent spacing */}
-      <div className="flex-1 overflow-y-auto pb-20">
+      <div className="flex-1 overflow-y-auto">
         <div className="px-4 py-4">
           {currentStep === 1 && (
             <div className="space-y-4">
@@ -557,7 +574,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
 
       {/* Sticky Navigation Buttons - Only show for steps 1, 2, 3 and step 5+ */}
       {(currentStep < 4 || currentStep > 4) && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white px-4 py-4 z-[60] border-t border-gray-200">
+        <div className={navButtonsClasses}>
           <div className="flex gap-3 max-w-md mx-auto">
             {currentStep === 1 ? (
               <Button 
