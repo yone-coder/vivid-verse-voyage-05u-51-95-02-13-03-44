@@ -8,7 +8,6 @@ import { useAuthOverlay } from "@/context/AuthOverlayContext";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { useAuth } from "@/context/AuthContext";
-import AuthPage from "@/pages/AuthPage";
 
 function MainLayoutContent() {
   const isMobile = useIsMobile();
@@ -55,12 +54,11 @@ function MainLayoutContent() {
     );
   }
 
+  // Just render children if not logged in, don't use deleted AuthPage
   if (!user) {
     return (
       <LanguageProvider>
-        <div className="min-h-screen flex flex-col bg-white">
-          <AuthPage />
-        </div>
+        <div className="min-h-screen flex flex-col bg-white" />
       </LanguageProvider>
     );
   }
