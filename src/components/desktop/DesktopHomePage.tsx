@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -27,8 +26,7 @@ const DesktopHomePage = () => {
   
   // Payment and method selection state
   const [paymentMethod, setPaymentMethod] = useState('');
-  const [deliveryMethod, setDeliveryMethod] = useState('');
-
+  
   // Track transfer state
   const [trackingNumber, setTrackingNumber] = useState('');
   const [trackingResult, setTrackingResult] = useState(null);
@@ -50,7 +48,7 @@ const DesktopHomePage = () => {
   ];
 
   const handleSendTransfer = () => {
-    console.log('Transfer submitted:', { transferType, amount, receiverDetails, paymentMethod, deliveryMethod });
+    console.log('Transfer submitted:', { transferType, amount, receiverDetails, paymentMethod });
     // Reset form
     setAmount('');
     setCurrentStep(1);
@@ -63,7 +61,6 @@ const DesktopHomePage = () => {
       email: ''
     });
     setPaymentMethod('');
-    setDeliveryMethod('');
   };
 
   const handleTrackTransfer = () => {
@@ -96,7 +93,7 @@ const DesktopHomePage = () => {
 
   // Step navigation functions
   const handleNextStep = () => {
-    if (currentStep < 5) {
+    if (currentStep < 4) {
       setCurrentStep(currentStep + 1);
     }
   };
@@ -115,35 +112,31 @@ const DesktopHomePage = () => {
     receiverDetails.phoneNumber &&
     receiverDetails.commune
   );
-  const canProceedFromStep3 = Boolean(deliveryMethod);
-  const canProceedFromStep4 = Boolean(paymentMethod);
+  const canProceedFromStep3 = Boolean(paymentMethod);
 
   const canProceed = Boolean(
     (currentStep === 1 && canProceedFromStep1) ||
     (currentStep === 2 && canProceedFromStep2) ||
     (currentStep === 3 && canProceedFromStep3) ||
-    (currentStep === 4 && canProceedFromStep4) ||
-    (currentStep === 5)
+    (currentStep === 4)
   );
 
   const getStepTitle = () => {
     switch (currentStep) {
       case 1:
-        return 'Enter Amount';
+        return 'Send Money';
       case 2:
         return 'Recipient Details';
       case 3:
-        return 'Delivery Method';
-      case 4:
         return 'Payment Method';
-      case 5:
-        return 'Review & Send';
+      case 4:
+        return 'Transfer Complete';
       default:
         return 'Send Money';
     }
   };
 
-  const stepTitles = ['Amount & Type', 'Recipient Info', 'Delivery Method', 'Payment Method', 'Review & Send'];
+  const stepTitles = ['Amount & Type', 'Recipient Info', 'Payment Method', 'Complete'];
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -205,7 +198,7 @@ const DesktopHomePage = () => {
           {/* LEFT COLUMN */}
           <div className="space-y-8">
             
-            {/* Send Money Section - Updated with 5-step flow */}
+            {/* Send Money Section - Updated with 4-step flow */}
             <Card className="bg-gradient-to-br from-red-50 to-red-100 border-red-200">
               <CardHeader>
                 <div className="flex items-center justify-between">
@@ -216,13 +209,13 @@ const DesktopHomePage = () => {
                     <CardTitle className="text-2xl text-red-700">{getStepTitle()}</CardTitle>
                   </div>
                   <div className="text-sm text-gray-600">
-                    Step {currentStep} of 5
+                    Step {currentStep} of 4
                   </div>
                 </div>
                 
                 {/* Progress Steps */}
                 <div className="flex items-center justify-between mt-4 px-2">
-                  {[1, 2, 3, 4, 5].map((step, index) => (
+                  {[1, 2, 3, 4].map((step, index) => (
                     <React.Fragment key={step}>
                       <div className="flex flex-col items-center">
                         <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-all duration-300 ${
@@ -238,9 +231,8 @@ const DesktopHomePage = () => {
                             <>
                               {step === 1 && <DollarSign className="h-4 w-4" />}
                               {step === 2 && <User className="h-4 w-4" />}
-                              {step === 3 && <MapPin className="h-4 w-4" />}
-                              {step === 4 && <CreditCard className="h-4 w-4" />}
-                              {step === 5 && <Receipt className="h-4 w-4" />}
+                              {step === 3 && <CreditCard className="h-4 w-4" />}
+                              {step === 4 && <Receipt className="h-4 w-4" />}
                             </>
                           ) : (
                             step
@@ -252,7 +244,7 @@ const DesktopHomePage = () => {
                           {stepTitles[index]}
                         </span>
                       </div>
-                      {index < 4 && (
+                      {index < 3 && (
                         <div className={`flex-1 h-0.5 mx-1 rounded-full transition-colors duration-300 ${
                           step < currentStep ? 'bg-green-600' : 'bg-gray-300'
                         }`} />
@@ -299,75 +291,37 @@ const DesktopHomePage = () => {
 
                 {currentStep === 3 && (
                   <div className="space-y-6">
-                    <h3 className="text-lg font-semibold text-gray-900">Choose Delivery Method</h3>
-                    <p className="text-gray-600">How would you like {receiverDetails.firstName} to receive the money?</p>
+                    <h3 className="text-lg font-semibold text-gray-900">Payment Method</h3>
                     
-                    <div className="space-y-3">
-                      <div 
-                        className={`p-4 border rounded-lg cursor-pointer transition-colors ${
-                          deliveryMethod === 'cash-pickup' 
-                            ? 'border-red-500 bg-red-50' 
-                            : 'border-gray-300 hover:border-gray-400'
-                        }`}
-                        onClick={() => setDeliveryMethod('cash-pickup')}
-                      >
-                        <div className="flex items-center space-x-3">
-                          <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                            <MapPin className="w-5 h-5 text-blue-600" />
-                          </div>
-                          <div>
-                            <h4 className="font-medium">Cash Pickup</h4>
-                            <p className="text-sm text-gray-600">Recipient picks up cash at a location</p>
-                          </div>
-                        </div>
+                    <div className="bg-gray-50 rounded-lg p-4 space-y-3">
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Transfer Type:</span>
+                        <span className="font-medium capitalize">{transferType}</span>
                       </div>
-                      
-                      <div 
-                        className={`p-4 border rounded-lg cursor-pointer transition-colors ${
-                          deliveryMethod === 'bank-deposit' 
-                            ? 'border-red-500 bg-red-50' 
-                            : 'border-gray-300 hover:border-gray-400'
-                        }`}
-                        onClick={() => setDeliveryMethod('bank-deposit')}
-                      >
-                        <div className="flex items-center space-x-3">
-                          <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                            <CreditCard className="w-5 h-5 text-green-600" />
-                          </div>
-                          <div>
-                            <h4 className="font-medium">Bank Deposit</h4>
-                            <p className="text-sm text-gray-600">Direct deposit to recipient's bank account</p>
-                          </div>
-                        </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Send Amount:</span>
+                        <span className="font-medium">
+                          {transferType === 'international' ? '$' : 'HTG '}{amount}
+                        </span>
                       </div>
-                      
-                      <div 
-                        className={`p-4 border rounded-lg cursor-pointer transition-colors ${
-                          deliveryMethod === 'mobile-wallet' 
-                            ? 'border-red-500 bg-red-50' 
-                            : 'border-gray-300 hover:border-gray-400'
-                        }`}
-                        onClick={() => setDeliveryMethod('mobile-wallet')}
-                      >
-                        <div className="flex items-center space-x-3">
-                          <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                            <Phone className="w-5 h-5 text-purple-600" />
-                          </div>
-                          <div>
-                            <h4 className="font-medium">Mobile Wallet</h4>
-                            <p className="text-sm text-gray-600">Send to recipient's mobile wallet</p>
-                          </div>
-                        </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Recipient:</span>
+                        <span className="font-medium">
+                          {receiverDetails.firstName} {receiverDetails.lastName}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Phone:</span>
+                        <span className="font-medium">+509 {receiverDetails.phoneNumber}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Location:</span>
+                        <span className="font-medium">
+                          {receiverDetails.commune}, {receiverDetails.department}
+                        </span>
                       </div>
                     </div>
-                  </div>
-                )}
 
-                {currentStep === 4 && (
-                  <div className="space-y-6">
-                    <h3 className="text-lg font-semibold text-gray-900">Choose Payment Method</h3>
-                    <p className="text-gray-600">How would you like to pay for this transfer?</p>
-                    
                     <div className="space-y-3">
                       <div 
                         className={`p-4 border rounded-lg cursor-pointer transition-colors ${
@@ -438,17 +392,33 @@ const DesktopHomePage = () => {
                   </div>
                 )}
 
-                {currentStep === 5 && (
+                {currentStep === 4 && (
                   <div className="space-y-6">
-                    <h3 className="text-lg font-semibold text-gray-900">Transfer Summary</h3>
+                    <h3 className="text-lg font-semibold text-gray-900">Transfer Complete</h3>
                     
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center">
+                          <span className="text-white text-sm">✓</span>
+                        </div>
+                        <p className="text-green-800 font-medium">Transfer Successful!</p>
+                      </div>
+                      <p className="text-green-700 text-sm mt-2">
+                        Your transfer of {transferType === 'international' ? '$' : 'HTG '}{amount} to {receiverDetails.firstName} {receiverDetails.lastName} has been completed successfully.
+                      </p>
+                    </div>
+
                     <div className="bg-white rounded-lg p-4 space-y-3 border">
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Transaction ID:</span>
+                        <span className="font-medium">TX{Date.now()}</span>
+                      </div>
                       <div className="flex justify-between">
                         <span className="text-gray-600">Transfer Type:</span>
                         <span className="font-medium capitalize">{transferType}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Send Amount:</span>
+                        <span className="text-gray-600">Amount Sent:</span>
                         <span className="font-medium">
                           {transferType === 'international' ? '$' : 'HTG '}{amount}
                         </span>
@@ -470,27 +440,16 @@ const DesktopHomePage = () => {
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Delivery Method:</span>
-                        <span className="font-medium capitalize">{deliveryMethod?.replace('-', ' ')}</span>
-                      </div>
-                      <div className="flex justify-between">
                         <span className="text-gray-600">Payment Method:</span>
                         <span className="font-medium capitalize">{paymentMethod?.replace('-', ' ')}</span>
                       </div>
-                    </div>
-
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                      <p className="text-blue-800 text-sm">
-                        Please review all details carefully before confirming your transfer. 
-                        Once confirmed, this transaction cannot be reversed.
-                      </p>
                     </div>
                   </div>
                 )}
 
                 {/* Action Buttons */}
                 <div className="flex gap-3 pt-4">
-                  {currentStep > 1 && (
+                  {currentStep > 1 && currentStep < 4 && (
                     <Button 
                       variant="outline" 
                       onClick={handlePreviousStep}
@@ -502,13 +461,13 @@ const DesktopHomePage = () => {
                   )}
                   
                   <Button 
-                    onClick={currentStep === 5 ? handleSendTransfer : handleNextStep}
+                    onClick={currentStep === 4 ? handleSendTransfer : handleNextStep}
                     disabled={!canProceed}
                     className={`${currentStep === 1 ? 'w-full' : 'flex-1'} bg-red-600 hover:bg-red-700`}
                     size="lg"
                   >
-                    {currentStep === 5 ? 'Confirm Transfer' : 'Continue'}
-                    {currentStep < 5 && <ArrowRight className="w-4 h-4 ml-2" />}
+                    {currentStep === 4 ? 'Done' : currentStep === 3 ? 'Confirm Payment' : 'Continue'}
+                    {currentStep < 4 && <ArrowRight className="w-4 h-4 ml-2" />}
                   </Button>
                 </div>
               </CardContent>
