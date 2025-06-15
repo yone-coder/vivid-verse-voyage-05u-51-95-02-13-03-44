@@ -19,6 +19,7 @@ function MainLayoutContent() {
   const { openAuthOverlay } = useAuthOverlay();
 
   const isHomePage = pathname === "/";
+  const isTransferPage = pathname === "/transfer";
   const isMultiStepTransferPage = pathname === "/multi-step-transfer";
   const isMultiStepTransferSheetPage = pathname === "/multi-step-transfer-page";
   const isTransferOldPage = pathname === "/transfer-old";
@@ -30,10 +31,19 @@ function MainLayoutContent() {
     }
   }, [pathname, openAuthOverlay]);
 
+  // Desktop pages that shouldn't show mobile bottom nav
+  const desktopOnlyPages = ["/transfer"];
+  const shouldShowMobileNav = isMobile && 
+    !isHomePage && 
+    !isMultiStepTransferPage && 
+    !isMultiStepTransferSheetPage && 
+    !isTransferOldPage && 
+    !desktopOnlyPages.includes(pathname);
+
   const headerHeightStyle = `
     :root {
       --header-height: 0px;
-      --bottom-nav-height: ${isMobile && !isMultiStepTransferPage && !isMultiStepTransferSheetPage && !isTransferOldPage ? '48px' : '0px'};
+      --bottom-nav-height: ${shouldShowMobileNav ? '48px' : '0px'};
     }
   `;
 
@@ -64,9 +74,11 @@ function MainLayoutContent() {
           <Outlet />
         </main>
 
+        {/* Desktop footer - only show on non-home pages for desktop */}
         {!isMobile && !isHomePage && <Footer />}
 
-        {isMobile && !isHomePage && !isMultiStepTransferPage && !isMultiStepTransferSheetPage && !isTransferOldPage && <IndexBottomNav />}
+        {/* Mobile bottom navigation */}
+        {shouldShowMobileNav && <IndexBottomNav />}
       </div>
     </LanguageProvider>
   );

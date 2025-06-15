@@ -9,14 +9,16 @@ import NotFound from "@/pages/NotFound";
 import TransferHistoryPage from "@/pages/TransferHistoryPage";
 import LocationsPage from "@/pages/LocationsPage";
 import TrackTransferPage from "@/pages/TrackTransferPage";
-import MobileMultiStepTransferSheetPage from "@/components/mobile/transfer/MobileMultiStepTransferSheetPage";
+import ResponsiveMultiStepTransferPage from "@/pages/ResponsiveMultiStepTransferPage";
+import ResponsiveHomePage from "@/pages/ResponsiveHomePage";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout />,
     children: [
-      { index: true, element: <MobileMultiStepTransferSheetPage /> },
+      { index: true, element: <ResponsiveHomePage /> },
+      { path: "transfer", element: <ResponsiveMultiStepTransferPage /> },
       { path: "auth", element: <AuthPage /> },
       { path: "signup", element: <SignupPage /> },
       { path: "profile", element: <ProfilePage /> },
