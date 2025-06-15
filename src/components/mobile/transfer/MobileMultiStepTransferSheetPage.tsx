@@ -13,7 +13,7 @@ import StepOneLocalTransfer from '@/components/transfer/StepOneLocalTransfer';
 import StepTwoTransfer from '@/components/transfer/StepTwoTransfer';
 import PaymentMethodList from '@/components/transfer/PaymentMethodList';
 import { internationalPaymentMethods } from '@/components/transfer/PaymentMethods';
-import { emailNotificationService } from '@/components/transfer/EmailNotificationService';
+import { EmailNotificationService } from '@/components/transfer/EmailNotificationService';
 import IndexBottomNav from '@/components/layout/IndexBottomNav';
 
 export interface TransferData {
@@ -802,10 +802,10 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
       setCurrentStep(4);
       setIsPaymentLoading(false);
       
-      // Send email notification using the service
+      // Send email notification using the static service method
       if (userEmail) {
         setTimeout(() => {
-          emailNotificationService.sendTransferConfirmation(
+          EmailNotificationService.sendTransferConfirmation(
             userEmail,
             transferData,
             actualTransactionId
