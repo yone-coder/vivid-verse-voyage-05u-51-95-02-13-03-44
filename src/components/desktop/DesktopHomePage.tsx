@@ -2,14 +2,31 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Send, History, MapPin, Route, Plus, Eye, Search } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Send, History, MapPin, Route, Search, Eye, User } from 'lucide-react';
+import TransferTypeSelector from '@/components/transfer/TransferTypeSelector';
+import StepOneTransfer from '@/components/transfer/StepOneTransfer';
+import StepOneLocalTransfer from '@/components/transfer/StepOneLocalTransfer';
+import StepTwoTransfer from '@/components/transfer/StepTwoTransfer';
 
 const DesktopHomePage = () => {
-  const navigate = useNavigate();
-  const [activeSection, setActiveSection] = useState('transfer');
+  // Transfer state
+  const [transferType, setTransferType] = useState<'international' | 'national'>('international');
+  const [amount, setAmount] = useState('');
+  const [receiverDetails, setReceiverDetails] = useState({
+    firstName: '',
+    lastName: '',
+    phoneNumber: '',
+    department: '',
+    commune: '',
+    email: ''
+  });
 
-  // Mock data for demonstration
+  // Track transfer state
+  const [trackingNumber, setTrackingNumber] = useState('');
+  
+  // Mock data
   const recentTransfers = [
     { id: '1', recipient: 'John Doe', amount: '$500', status: 'Completed', date: '2024-06-14' },
     { id: '2', recipient: 'Jane Smith', amount: '$250', status: 'Pending', date: '2024-06-13' },
@@ -21,6 +38,24 @@ const DesktopHomePage = () => {
     { name: 'Mall Location', address: '456 Shopping Center', distance: '1.2 miles' },
     { name: 'Airport Terminal', address: '789 Airport Rd', distance: '3.4 miles' },
   ];
+
+  const handleSendTransfer = () => {
+    console.log('Transfer submitted:', { transferType, amount, receiverDetails });
+    // Reset form
+    setAmount('');
+    setReceiverDetails({
+      firstName: '',
+      lastName: '',
+      phoneNumber: '',
+      department: '',
+      commune: '',
+      email: ''
+    });
+  };
+
+  const handleTrackTransfer = () => {
+    console.log('Tracking transfer:', trackingNumber);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -35,7 +70,8 @@ const DesktopHomePage = () => {
               <h1 className="text-2xl font-bold text-gray-900">Transfer Hub</h1>
             </div>
             <nav className="flex space-x-6">
-              <Button variant="ghost" onClick={() => navigate('/account')}>
+              <Button variant="ghost">
+                <User className="w-4 h-4 mr-2" />
                 Account
               </Button>
             </nav>
@@ -43,81 +79,126 @@ const DesktopHomePage = () => {
         </div>
       </header>
 
-      {/* Main Content - Puzzle Layout */}
+      {/* Main Content - Two Column Layout */}
       <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-[calc(100vh-200px)]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           
-          {/* Send Money Section - Large Left Panel */}
-          <div className="lg:col-span-6 flex flex-col">
-            <Card className="flex-1 bg-gradient-to-br from-red-50 to-red-100 border-red-200">
-              <CardHeader className="pb-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center">
-                      <Send className="w-6 h-6 text-white" />
-                    </div>
-                    <CardTitle className="text-2xl text-red-700">Send Money</CardTitle>
+          {/* Left Column */}
+          <div className="space-y-8">
+            
+            {/* Send Money Section */}
+            <Card className="bg-gradient-to-br from-red-50 to-red-100 border-red-200">
+              <CardHeader>
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center">
+                    <Send className="w-6 h-6 text-white" />
                   </div>
-                  <Button 
-                    size="lg"
-                    onClick={() => navigate('/transfer')}
-                    className="bg-red-600 hover:bg-red-700"
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    New Transfer
-                  </Button>
+                  <CardTitle className="text-2xl text-red-700">Send Money</CardTitle>
                 </div>
               </CardHeader>
-              <CardContent className="flex-1 flex flex-col justify-center">
-                <div className="text-center space-y-6">
-                  <div className="space-y-2">
-                    <h3 className="text-xl font-semibold text-gray-700">Quick Transfer</h3>
-                    <p className="text-gray-600">Send money worldwide with competitive rates</p>
+              <CardContent className="space-y-6">
+                <TransferTypeSelector 
+                  transferType={transferType}
+                  onTransferTypeChange={setTransferType}
+                  disableNavigation={true}
+                />
+                
+                {transferType === 'international' ? (
+                  <StepOneTransfer 
+                    amount={amount}
+                    onAmountChange={setAmount}
+                  />
+                ) : (
+                  <StepOneLocalTransfer 
+                    amount={amount}
+                    onAmountChange={setAmount}
+                  />
+                )}
+
+                <StepTwoTransfer 
+                  receiverDetails={receiverDetails}
+                  onDetailsChange={setReceiverDetails}
+                />
+
+                <Button 
+                  onClick={handleSendTransfer}
+                  className="w-full bg-red-600 hover:bg-red-700"
+                  size="lg"
+                >
+                  Send Transfer
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Track Transfer Section */}
+            <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+              <CardHeader>
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
+                    <Route className="w-5 h-5 text-white" />
                   </div>
-                  
-                  <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
-                    <div className="bg-white rounded-lg p-4 text-center shadow-sm">
-                      <div className="text-2xl font-bold text-red-600">200+</div>
-                      <div className="text-sm text-gray-600">Countries</div>
-                    </div>
-                    <div className="bg-white rounded-lg p-4 text-center shadow-sm">
-                      <div className="text-2xl font-bold text-red-600">$1B+</div>
-                      <div className="text-sm text-gray-600">Transferred</div>
-                    </div>
-                  </div>
+                  <CardTitle className="text-lg text-green-700">Track Transfer</CardTitle>
                 </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-gray-600 text-sm">Monitor your transfer status in real-time</p>
+                <div className="space-y-3">
+                  <Label htmlFor="tracking" className="text-sm font-medium">
+                    Tracking Number
+                  </Label>
+                  <Input 
+                    id="tracking"
+                    type="text" 
+                    placeholder="Enter tracking number"
+                    value={trackingNumber}
+                    onChange={(e) => setTrackingNumber(e.target.value)}
+                    className="border-green-200 focus:border-green-500 focus:ring-green-500"
+                  />
+                  <Button 
+                    onClick={handleTrackTransfer}
+                    className="w-full bg-green-600 hover:bg-green-700"
+                  >
+                    <Search className="w-4 h-4 mr-2" />
+                    Track Now
+                  </Button>
+                </div>
+                
+                {trackingNumber && (
+                  <div className="mt-4 p-4 bg-white rounded-lg border border-green-200">
+                    <h4 className="font-medium text-green-700 mb-2">Transfer Status</h4>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex justify-between">
+                        <span>Status:</span>
+                        <span className="font-medium text-green-600">In Transit</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Expected Delivery:</span>
+                        <span>Tomorrow, 2:00 PM</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
 
-          {/* Right Column - Split into sections */}
-          <div className="lg:col-span-6 flex flex-col space-y-6">
+          {/* Right Column */}
+          <div className="space-y-8">
             
-            {/* Transfer History - Top Right */}
-            <Card className="flex-1 bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
-              <CardHeader className="pb-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                      <History className="w-5 h-5 text-white" />
-                    </div>
-                    <CardTitle className="text-lg text-blue-700">Recent Transfers</CardTitle>
+            {/* Transfer History Section */}
+            <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+              <CardHeader>
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                    <History className="w-5 h-5 text-white" />
                   </div>
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => navigate('/transfer-history')}
-                    className="border-blue-300 text-blue-600 hover:bg-blue-50"
-                  >
-                    <Eye className="w-4 h-4 mr-2" />
-                    View All
-                  </Button>
+                  <CardTitle className="text-lg text-blue-700">Transfer History</CardTitle>
                 </div>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {recentTransfers.slice(0, 3).map((transfer) => (
-                    <div key={transfer.id} className="flex justify-between items-center bg-white p-3 rounded-lg shadow-sm">
+                  {recentTransfers.map((transfer) => (
+                    <div key={transfer.id} className="flex justify-between items-center bg-white p-4 rounded-lg shadow-sm border border-blue-100">
                       <div>
                         <div className="font-medium text-gray-900">{transfer.recipient}</div>
                         <div className="text-sm text-gray-500">{transfer.date}</div>
@@ -135,73 +216,44 @@ const DesktopHomePage = () => {
                     </div>
                   ))}
                 </div>
+                
+                <Button variant="outline" className="w-full mt-4 border-blue-300 text-blue-600 hover:bg-blue-50">
+                  <Eye className="w-4 h-4 mr-2" />
+                  View All History
+                </Button>
               </CardContent>
             </Card>
 
-            {/* Bottom Row - Track and Locations */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
-              
-              {/* Track Transfer */}
-              <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
-                <CardHeader className="pb-4">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
-                      <Route className="w-5 h-5 text-white" />
+            {/* Locations Section */}
+            <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+              <CardHeader>
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
+                    <MapPin className="w-5 h-5 text-white" />
+                  </div>
+                  <CardTitle className="text-lg text-purple-700">Nearby Locations</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {nearbyLocations.map((location, index) => (
+                    <div key={index} className="bg-white p-4 rounded-lg shadow-sm border border-purple-100">
+                      <div className="font-medium text-gray-900 text-sm">{location.name}</div>
+                      <div className="text-xs text-gray-500 mt-1">{location.address}</div>
+                      <div className="text-xs text-purple-600 font-medium mt-1">{location.distance}</div>
+                      <Button size="sm" variant="outline" className="mt-2 w-full border-purple-300 text-purple-600 hover:bg-purple-50">
+                        Get Directions
+                      </Button>
                     </div>
-                    <CardTitle className="text-lg text-green-700">Track Transfer</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <p className="text-gray-600 text-sm">Monitor your transfer status in real-time</p>
-                  <div className="space-y-3">
-                    <input 
-                      type="text" 
-                      placeholder="Enter tracking number"
-                      className="w-full px-3 py-2 border border-green-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
-                    />
-                    <Button 
-                      size="sm" 
-                      className="w-full bg-green-600 hover:bg-green-700"
-                      onClick={() => navigate('/track-transfer')}
-                    >
-                      <Search className="w-4 h-4 mr-2" />
-                      Track Now
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Locations */}
-              <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
-                <CardHeader className="pb-4">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
-                      <MapPin className="w-5 h-5 text-white" />
-                    </div>
-                    <CardTitle className="text-lg text-purple-700">Nearby Locations</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    {nearbyLocations.slice(0, 2).map((location, index) => (
-                      <div key={index} className="bg-white p-3 rounded-lg shadow-sm">
-                        <div className="font-medium text-gray-900 text-sm">{location.name}</div>
-                        <div className="text-xs text-gray-500">{location.address}</div>
-                        <div className="text-xs text-purple-600 font-medium">{location.distance}</div>
-                      </div>
-                    ))}
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="w-full border-purple-300 text-purple-600 hover:bg-purple-50"
-                      onClick={() => navigate('/locations')}
-                    >
-                      View All Locations
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+                  ))}
+                </div>
+                
+                <Button variant="outline" className="w-full mt-4 border-purple-300 text-purple-600 hover:bg-purple-50">
+                  <MapPin className="w-4 h-4 mr-2" />
+                  View All Locations
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
