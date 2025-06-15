@@ -1,5 +1,4 @@
-
-import { TransferData } from '@/pages/MultiStepTransferSheetPage';
+import { TransferData } from '@/components/transfer/MultiStepTransferSheet';
 
 interface EmailNotificationService {
   sendTransferConfirmation: (

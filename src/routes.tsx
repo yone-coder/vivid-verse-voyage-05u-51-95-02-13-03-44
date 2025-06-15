@@ -1,22 +1,19 @@
 
 import { createBrowserRouter } from "react-router-dom";
 import MainLayout from "@/components/layout/MainLayout";
-import MobileMultiStepTransferSheetPage from "@/components/mobile/transfer/MobileMultiStepTransferSheetPage";
-import DesktopMultiStepTransferSheetPage from "@/components/desktop/transfer/DesktopMultiStepTransferSheetPage";
+import DeviceRoutedMultiStep from "@/pages/DeviceRoutedMultiStep";
 import NotFound from "@/components/NotFound";
-import DeviceRouter from "@/components/common/DeviceRouter";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: (
-      <MainLayout>
-        <DeviceRouter
-          mobileComponent={MobileMultiStepTransferSheetPage}
-          desktopComponent={DesktopMultiStepTransferSheetPage}
-        />
-      </MainLayout>
-    ),
+    element: <MainLayout />,
+    children: [
+      {
+        index: true,
+        element: <DeviceRoutedMultiStep />,
+      }
+    ],
   },
   {
     path: "*",
