@@ -14,10 +14,10 @@ const DesktopMultiStepTransferPage: React.FC = () => {
           <p className="text-gray-600 dark:text-gray-400">Complete your transfer securely and efficiently.</p>
         </header>
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-0 lg:gap-8 items-start">
-          {/* LEFT: Render the mobile transfer page as the main flow */}
+          {/* LEFT: Render the mobile transfer page as the main flow, but without header */}
           <main className="lg:col-span-3 flex flex-col items-center bg-white min-h-[calc(100vh-64px)] py-0 px-0">
             <div className="w-full max-w-md lg:max-w-none lg:w-full">
-              <MobileMultiStepTransferSheetPage />
+              <MobileMultiStepTransferSheetPage hideHeader />
             </div>
           </main>
           {/* RIGHT: Desktop sidebar, visible on large screens */}
@@ -64,4 +64,3 @@ const DesktopMultiStepTransferPage: React.FC = () => {
 };
 
 export default DesktopMultiStepTransferPage;
-
