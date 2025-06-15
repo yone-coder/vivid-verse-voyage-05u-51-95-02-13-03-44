@@ -1,11 +1,7 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ArrowLeft, X, Check, Loader2, AlertCircle, Key, Globe, Search, CheckCircle, User, Receipt, ArrowRight } from 'lucide-react';
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { ArrowLeft, Loader2, Key, Globe, Search, CheckCircle, User, Receipt, ArrowRight, CreditCard, Banknote, Landmark, CircleDollarSign, DollarSign } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import html2canvas from 'html2canvas';
@@ -15,13 +11,6 @@ import StepOneLocalTransfer from '@/components/transfer/StepOneLocalTransfer';
 import StepTwoTransfer from '@/components/transfer/StepTwoTransfer';
 import { EmailNotificationService } from '@/components/transfer/EmailNotificationService';
 import IndexBottomNav from '@/components/layout/IndexBottomNav';
-import { 
-  CreditCard, 
-  Banknote, 
-  Landmark,
-  CircleDollarSign,
-  DollarSign 
-} from 'lucide-react';
 
 export interface TransferData {
   transferType?: 'international' | 'national';
@@ -50,12 +39,12 @@ interface MobileMultiStepTransferSheetPageProps {
   defaultTransferType?: 'international' | 'national';
 }
 
-const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPageProps> = ({ 
-  defaultTransferType = 'international' 
+const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPageProps> = ({
+  defaultTransferType = 'international'
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   const [currentStep, setCurrentStep] = useState(1);
   const [paymentCompleted, setPaymentCompleted] = useState(false);
   const [transactionId, setTransactionId] = useState('');
@@ -65,7 +54,7 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
   const [userEmail, setUserEmail] = useState('');
   const paypalContainerRef = useRef<HTMLDivElement>(null);
   const receiptRef = useRef<HTMLDivElement>(null);
-  
+
   const [transferData, setTransferData] = useState<TransferData>({
     transferType: defaultTransferType,
     amount: '100.00',
@@ -85,41 +74,41 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
 
   // International payment methods (USD)
   const internationalPaymentMethods: PaymentMethod[] = [
-    { 
-      id: 'credit-card', 
-      name: 'Credit or Debit Card', 
-      icon: CreditCard, 
+    {
+      id: 'credit-card',
+      name: 'Credit or Debit Card',
+      icon: CreditCard,
       description: 'Safe and secure card payment',
       fee: '3.5% + $0.30',
       processorUrl: PAYPAL_BACKEND_URL
     },
-    { 
-      id: 'bank-transfer', 
-      name: 'Bank Transfer / ACH', 
-      icon: Banknote, 
+    {
+      id: 'bank-transfer',
+      name: 'Bank Transfer / ACH',
+      icon: Banknote,
       description: 'Direct from your bank account',
-      fee: '$0.25' 
+      fee: '$0.25'
     },
-    { 
-      id: 'zelle', 
-      name: 'Zelle', 
+    {
+      id: 'zelle',
+      name: 'Zelle',
       icon: Landmark,
       description: 'Fast transfers between US banks',
-      fee: 'Free' 
+      fee: 'Free'
     },
-    { 
-      id: 'paypal', 
-      name: 'PayPal', 
+    {
+      id: 'paypal',
+      name: 'PayPal',
       icon: CircleDollarSign,
       description: 'Send using your PayPal balance',
-      fee: '2.9% + $0.30' 
+      fee: '2.9% + $0.30'
     },
-    { 
-      id: 'cashapp', 
-      name: 'Cash App', 
+    {
+      id: 'cashapp',
+      name: 'Cash App',
       icon: DollarSign,
       description: 'Send using Cash App',
-      fee: '1.5%' 
+      fee: '1.5%'
     }
   ];
 
@@ -128,7 +117,7 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
     if (currentStep === 3 && paypalContainerRef.current) {
       // Clear any existing content
       const container = paypalContainerRef.current;
-      
+
       // Add PayPal checkout styles
       const styleElement = document.createElement('style');
       styleElement.textContent = `
@@ -759,7 +748,7 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
 
       console.log('Sending email notification to:', userEmail);
       console.log('Using transaction ID:', actualTransactionId);
-      
+
       const response = await fetch('https://resend-u11p.onrender.com/send-email', {
         method: 'POST',
         headers: {
@@ -846,13 +835,13 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
     const handlePaymentSuccess = (event: any) => {
       console.log('Payment success event received:', event.detail);
       const orderDetails = event.detail.orderDetails;
-      
+
       setPaymentCompleted(true);
       const actualTransactionId = orderDetails?.id || `TX${Date.now()}`;
       setTransactionId(actualTransactionId);
       setCurrentStep(4);
       setIsPaymentLoading(false);
-      
+
       // Send email notification using the static service method
       if (userEmail) {
         setTimeout(() => {
@@ -981,25 +970,25 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
   };
 
   const canProceedFromStep1 = transferData.amount && parseFloat(transferData.amount) > 0;
-  const canProceedFromStep2 = transferData.receiverDetails.firstName && 
-                              transferData.receiverDetails.lastName &&
-                              transferData.receiverDetails.phoneNumber && 
-                              transferData.receiverDetails.commune;
-  const canProceedFromStep3 = transferData.selectedPaymentMethod;
+  const canProceedFromStep2 = transferData.receiverDetails.firstName &&
+    transferData.receiverDetails.lastName &&
+    transferData.receiverDetails.phoneNumber &&
+    transferData.receiverDetails.commune;
+  const canProceedFromStep3 = transferData.selectedPaymentMethod !== undefined && transferData.selectedPaymentMethod !== '';
 
   const stepTitles = ['Send Money', 'Recipient Details', 'Payment Method', 'Transfer Complete'];
 
   const stepVariants = {
-    inactive: { 
+    inactive: {
       scale: 1,
       backgroundColor: '#E5E7EB',
       color: '#6B7280'
     },
-    active: { 
+    active: {
       scale: 1.05,
       backgroundColor: '#DC2626',
       color: '#FFFFFF',
-      transition: { 
+      transition: {
         type: "spring",
         stiffness: 260,
         damping: 20
@@ -1043,7 +1032,7 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
     } else {
       // Handle PayPal payment for international transfers
       setIsPaymentLoading(true);
-      
+
       try {
         // Trigger the PayPal form submission
         const cardForm = document.querySelector("#card-form") as HTMLFormElement;
@@ -1082,37 +1071,37 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
             <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
               <Globe className="w-4 h-4 text-blue-600" />
             </div>
-            
+
             {/* Title */}
             <h1 className="text-lg font-bold text-white">
               GLOBAL TRANSFÈ
             </h1>
-            
+
             {/* Search icon */}
             <button className="p-1.5 rounded-full hover:bg-blue-700">
               <Search className="w-4 h-4 text-white" />
             </button>
           </div>
         </div>
-        
+
         {/* Animated Step Indicator with white background and top spacing */}
         <div className="bg-white px-4 pt-3 pb-3">
           <div className="flex items-center justify-between">
             {[1, 2, 3, 4].map((step, index) => (
               <React.Fragment key={step}>
                 <div className="flex flex-col items-center">
-                  <motion.div 
+                  <motion.div
                     className={`rounded-full flex items-center justify-center text-xs font-medium transition-all duration-300 shadow-sm ${
-                      step === currentStep 
-                        ? 'w-auto h-7 px-2 bg-red-600 text-white' 
+                      step === currentStep
+                        ? 'w-auto h-7 px-2 bg-red-600 text-white'
                         : 'w-7 h-7 bg-gray-200 text-gray-600'
                     }`}
                     variants={stepVariants}
                     initial="inactive"
                     animate={
-                      step === currentStep ? 'active' : 
-                      step < currentStep ? 'completed' : 
-                      'inactive'
+                      step === currentStep ? 'active' :
+                        step < currentStep ? 'completed' :
+                          'inactive'
                     }
                     whileTap={{ scale: 0.95 }}
                   >
@@ -1139,7 +1128,7 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
                   </motion.div>
                 </div>
                 {index < 3 && (
-                  <motion.div 
+                  <motion.div
                     className="flex-1 h-0.5 mx-2 rounded-full origin-left"
                     variants={lineVariants}
                     initial="inactive"
@@ -1154,7 +1143,7 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
         {/* Transfer Type Selector - Sticky below steps indicator - Only show on step 1 */}
         {currentStep === 1 && (
           <div className="bg-white">
-            <TransferTypeSelector 
+            <TransferTypeSelector
               transferType={transferData.transferType || 'international'}
               onTransferTypeChange={(type) => updateTransferData({ transferType: type })}
               disableNavigation={true}
@@ -1163,8 +1152,8 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
         )}
       </div>
 
-      {/* Step Content */}
-      <div className="flex-1 overflow-y-auto pb-32">
+      {/* Step Content - Reduced bottom padding since button is now in nav */}
+      <div className="flex-1 overflow-y-auto pb-16">
         <div className="px-4 py-4">
           {currentStep === 1 && (
             <div className="space-y-6">
@@ -1173,14 +1162,14 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
                 <div className="text-center">
                   <p className="text-gray-600">Enter the amount you want to send</p>
                 </div>
-                
+
                 {transferData.transferType === 'national' ? (
-                  <StepOneLocalTransfer 
+                  <StepOneLocalTransfer
                     amount={transferData.amount}
                     onAmountChange={(amount) => updateTransferData({ amount })}
                   />
                 ) : (
-                  <StepOneTransfer 
+                  <StepOneTransfer
                     amount={transferData.amount}
                     onAmountChange={(amount) => updateTransferData({ amount })}
                   />
@@ -1194,21 +1183,21 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
               <div className="text-center mb-4">
                 <p className="text-gray-600">Who are you sending ${transferData.amount} to?</p>
               </div>
-              
-              <StepTwoTransfer 
+
+              <StepTwoTransfer
                 receiverDetails={transferData.receiverDetails}
                 onDetailsChange={(receiverDetails) => updateTransferData({ receiverDetails })}
               />
             </div>
           )}
-          
+
           {currentStep === 3 && (
             <div className="space-y-6">
               <div className="text-center mb-6">
                 <h2 className="text-2xl font-bold text-gray-900 mb-3">Complete Your Payment</h2>
                 <p className="text-gray-600 leading-relaxed">
                   Sending <span className="font-semibold text-blue-600">
-                    {transferData.transferType === 'national' 
+                    {transferData.transferType === 'national'
                       ? `HTG ${receiverAmount}`
                       : `$${transferData.amount}`
                     }
@@ -1256,7 +1245,7 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
                 <div className="space-y-4">
                   {/* Pay with PayPal Button */}
                   <div className="w-full">
-                    <Button 
+                    <Button
                       className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 text-lg font-semibold"
                       onClick={() => {
                         // Handle PayPal payment
@@ -1273,17 +1262,17 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
                     <span className="text-gray-500 text-sm font-medium px-4">or continue with</span>
                     <div className="flex-1 border-t border-gray-300"></div>
                   </div>
-                  
+
                   {/* PayPal Checkout Container (Form) */}
                   <div ref={paypalContainerRef}></div>
                 </div>
               )}
             </div>
           )}
-          
+
           {currentStep === 4 && (
-            <div className="space-y-4">              
-              <div 
+            <div className="space-y-4">
+              <div
                 ref={receiptRef}
                 className="bg-white border-2 border-gray-200 rounded-lg p-6 space-y-4"
               >
@@ -1296,18 +1285,18 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
                     {new Date().toLocaleDateString()}
                   </span>
                 </div>
-                
+
                 <div className="space-y-3">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Transaction ID</span>
                     <span className="font-mono text-gray-900">{transactionId}</span>
                   </div>
-                  
+
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Status</span>
                     <span className="text-green-600 font-medium">Completed</span>
                   </div>
-                  
+
                   <div className="border-t pt-3 space-y-2">
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Recipient</span>
@@ -1322,7 +1311,7 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
                       <span className="font-medium text-right max-w-xs">{transferData.receiverDetails.commune}, {transferData.receiverDetails.department}</span>
                     </div>
                   </div>
-                  
+
                   <div className="border-t pt-3 space-y-2">
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Amount Sent</span>
@@ -1337,7 +1326,7 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
                       <span className="text-blue-600">${totalAmount}</span>
                     </div>
                   </div>
-                  
+
                   <div className="border-t pt-3">
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Payment Method</span>
@@ -1356,7 +1345,7 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
                     </div>
                   )}
                 </div>
-                
+
                 <div className="bg-green-50 rounded-lg p-4 mt-4">
                   <div className="flex items-start space-x-3">
                     <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
@@ -1374,16 +1363,16 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
                   </div>
                 </div>
               </div>
-              
+
               <div className="flex gap-3">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={generateReceiptImage}
                   className="flex-1"
                 >
                   Share Receipt
                 </Button>
-                <Button 
+                <Button
                   onClick={() => navigate('/for-you')}
                   className="flex-1"
                 >
@@ -1395,86 +1384,21 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
         </div>
       </div>
 
-      {/* Sticky Navigation Buttons - Exclude step 3 */}
-      {(currentStep < 3 || currentStep === 4) && (
-        <div className="fixed bottom-16 left-0 right-0 border-t bg-white px-4 py-3 z-50 shadow-lg">
-          <div className="flex gap-3 max-w-md mx-auto">
-            {currentStep === 1 ? (
-              <Button 
-                onClick={handleNextStep}
-                disabled={!canProceedFromStep1}
-                className="flex-1 transition-all duration-200"
-              >
-                Continue
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            ) : (
-              <>
-                <Button 
-                  variant="outline" 
-                  onClick={handlePreviousStep}
-                  className="flex-1 transition-all duration-200"
-                >
-                  <ArrowLeft className="mr-2 h-4 w-4" />
-                  Previous
-                </Button>
-                
-                {currentStep < 4 ? (
-                  <Button 
-                    onClick={handleNextStep}
-                    disabled={
-                      (currentStep === 2 && !canProceedFromStep2) ||
-                      (currentStep === 3 && !canProceedFromStep3)
-                    }
-                    className="flex-1 transition-all duration-200"
-                  >
-                    Next
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                ) : (
-                  <Button 
-                    onClick={() => navigate('/for-you')}
-                    className="flex-1"
-                  >
-                    Done
-                  </Button>
-                )}
-              </>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Sticky Pay Button for Step 3 Only */}
-      {currentStep === 3 && (
-        <div className="fixed bottom-16 left-0 right-0 border-t bg-white px-4 py-3 z-50 shadow-lg">
-          <div className="max-w-md mx-auto">
-            <Button 
-              onClick={handleStickyPayment}
-              disabled={isPaymentLoading || (transferData.transferType === 'international' && !isPaymentFormValid)}
-              className={`w-full py-4 text-lg font-semibold ${
-                transferData.transferType === 'national' 
-                  ? 'bg-red-600 hover:bg-red-700 disabled:opacity-50' 
-                  : 'bg-green-600 hover:bg-green-700 disabled:opacity-50'
-              } text-white`}
-            >
-              {isPaymentLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  {transferData.transferType === 'national' ? 'Processing MonCash Payment...' : 'Processing...'}
-                </>
-              ) : (
-                transferData.transferType === 'national' 
-                  ? `Pay HTG ${receiverAmount} with MonCash`
-                  : `Pay $${totalAmount}`
-              )}
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {/* Proper Index Bottom Navigation */}
-      <IndexBottomNav />
+      {/* Index Bottom Navigation with integrated continue button */}
+      <IndexBottomNav
+        showContinueButton={currentStep < 4}
+        currentStep={currentStep}
+        canProceed={
+          (currentStep === 1 && canProceedFromStep1) ||
+          (currentStep === 2 && canProceedFromStep2) ||
+          (currentStep === 3 && canProceedFromStep3)
+        }
+        onContinue={currentStep === 3 ? handleStickyPayment : handleNextStep}
+        onPrevious={handlePreviousStep}
+        isPaymentLoading={isPaymentLoading}
+        transferData={transferData}
+        isPaymentFormValid={isPaymentFormValid}
+      />
     </div>
   );
 };

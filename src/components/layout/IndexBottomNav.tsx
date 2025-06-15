@@ -1,10 +1,10 @@
-
 import { useState, useEffect, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
-  Send, History, MapPin, User, Route
+  Send, History, MapPin, User, Route, ArrowRight, ArrowLeft, Loader2
 } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/context/AuthContext';
 
@@ -17,6 +17,17 @@ interface BottomNavTab {
   badge?: number;
 }
 
+interface IndexBottomNavProps {
+  showContinueButton?: boolean;
+  currentStep?: number;
+  canProceed?: boolean;
+  onContinue?: () => void;
+  onPrevious?: () => void;
+  isPaymentLoading?: boolean;
+  transferData?: any;
+  isPaymentFormValid?: boolean;
+}
+
 const navItems: BottomNavTab[] = [
   { id: 'send', name: 'Send', icon: Send, path: '/' }, 
   { id: 'history', name: 'History', icon: History, path: '/transfer-history' },
@@ -25,7 +36,16 @@ const navItems: BottomNavTab[] = [
   { id: 'account', name: 'Account', icon: User, path: '/account' },
 ];
 
-export default function BottomNav() {
+export default function IndexBottomNav({ 
+  showContinueButton = false,
+  currentStep = 1,
+  canProceed = false,
+  onContinue,
+  onPrevious,
+  isPaymentLoading = false,
+  transferData,
+  isPaymentFormValid = false
+}: IndexBottomNavProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
@@ -66,6 +86,82 @@ export default function BottomNav() {
     // Navigate to the target path
     navigate(item.path, { replace: true });
   }, [navigate, activeTab, location.pathname]);
+
+  // Calculate values for payment button
+  const transferFee = transferData?.amount ? (Math.ceil(parseFloat(transferData.amount) / 100) * 15).toFixed(2) : '0.00';
+  const totalAmount = transferData?.amount ? (parseFloat(transferData.amount) + parseFloat(transferFee)).toFixed(2) : '0.00';
+  const receiverAmount = transferData?.amount ? (parseFloat(transferData.amount) * 127.5).toFixed(2) : '0.00';
+
+  const getButtonText = () => {
+    if (currentStep === 3) {
+      if (isPaymentLoading) {
+        return transferData?.transferType === 'national' ? 'Processing MonCash Payment...' : 'Processing...';
+      }
+      return transferData?.transferType === 'national' 
+        ? `Pay HTG ${receiverAmount} with MonCash`
+        : `Pay $${totalAmount}`;
+    }
+    if (currentStep === 1) return 'Continue';
+    if (currentStep === 4) return 'Done';
+    return 'Next';
+  };
+
+  const getButtonColor = () => {
+    if (currentStep === 3) {
+      return transferData?.transferType === 'national' 
+        ? 'bg-red-600 hover:bg-red-700' 
+        : 'bg-green-600 hover:bg-green-700';
+    }
+    return 'bg-red-600 hover:bg-red-700';
+  };
+
+  if (showContinueButton) {
+    return (
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 dark:border-zinc-800 z-50 shadow-lg">
+        <div className="flex items-center h-16 px-4 max-w-md mx-auto gap-3">
+          {/* Previous Button - only show if not on step 1 */}
+          {currentStep > 1 && (
+            <Button 
+              variant="outline" 
+              onClick={onPrevious}
+              className="flex-1 transition-all duration-200"
+              disabled={isPaymentLoading}
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Previous
+            </Button>
+          )}
+          
+          {/* Continue/Pay Button */}
+          <Button 
+            onClick={onContinue}
+            disabled={
+              !canProceed || 
+              isPaymentLoading || 
+              (currentStep === 3 && transferData?.transferType === 'international' && !isPaymentFormValid)
+            }
+            className={cn(
+              "transition-all duration-200 text-white font-semibold",
+              currentStep === 1 ? "flex-1" : "flex-2",
+              getButtonColor()
+            )}
+          >
+            {isPaymentLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                {getButtonText()}
+              </>
+            ) : (
+              <>
+                {getButtonText()}
+                {currentStep < 3 && <ArrowRight className="ml-2 h-4 w-4" />}
+              </>
+            )}
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-zinc-900 border-t border-gray-200 dark:border-zinc-800 z-50 shadow-lg">
