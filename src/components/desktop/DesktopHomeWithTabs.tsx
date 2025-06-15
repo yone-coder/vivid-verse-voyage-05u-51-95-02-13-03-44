@@ -8,14 +8,26 @@ import {
   History, 
   Route,
   MapPin,
-  ArrowRight
+  ArrowRight,
+  Loader2
 } from 'lucide-react';
-import MultiStepTransferSheetDesktopPage from '@/pages/MultiStepTransferSheetDesktopPage';
 import TransferTypeSelector from '@/components/transfer/TransferTypeSelector';
+import AmountInput from '@/components/transfer/AmountInput';
 
 export default function DesktopHomeWithTabs() {
   const navigate = useNavigate();
   const [transferType, setTransferType] = useState<'international' | 'national'>('international');
+  const [amount, setAmount] = useState('100.00');
+
+  // Calculate fees and totals
+  const transferFee = amount ? (Math.ceil(parseFloat(amount) / 100) * 15).toFixed(2) : '0.00';
+  const totalAmount = amount ? (parseFloat(amount) + parseFloat(transferFee)).toFixed(2) : '0.00';
+  const receiverAmount = amount ? (parseFloat(amount) * 132.5).toFixed(2) : '0.00';
+
+  const handleContinue = () => {
+    // Navigate to the multi-step transfer page
+    navigate('/multi-step-transfer-page');
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -76,7 +88,7 @@ export default function DesktopHomeWithTabs() {
             </p>
           </div>
 
-          {/* Transfer Form with Type Selector */}
+          {/* Transfer Form */}
           <div className="bg-white rounded-xl shadow-lg overflow-hidden max-w-4xl mx-auto">
             {/* Transfer Type Selector */}
             <div className="border-b border-gray-200">
@@ -87,8 +99,118 @@ export default function DesktopHomeWithTabs() {
               />
             </div>
             
-            {/* Transfer Form */}
-            <MultiStepTransferSheetDesktopPage />
+            {/* Transfer Form Content */}
+            <div className="p-8">
+              <div className="mb-6">
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">Send Money to Haiti</h2>
+                <p className="text-gray-600">Enter the amount you want to send</p>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* Left Column - Amount Input */}
+                <div className="space-y-6">
+                  {/* Exchange Rate Display */}
+                  {transferType === 'international' && (
+                    <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium text-blue-700">Exchange rate</span>
+                        <span className="text-lg font-bold text-blue-800">
+                          1 USD = 132.5 HTG
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Send Amount */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Send Amount
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                        <span className="text-gray-500 font-medium">$</span>
+                      </div>
+                      <Input
+                        type="number"
+                        className="pl-8 pr-16 h-14 text-lg font-medium"
+                        value={amount}
+                        onChange={(e) => setAmount(e.target.value)}
+                        placeholder="0.00"
+                      />
+                      <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                        <span className="text-gray-500 font-medium">USD</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Receiver Gets */}
+                  {transferType === 'international' && amount && parseFloat(amount) > 0 && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Receiver Gets
+                      </label>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                          <span className="text-gray-500 font-medium">HTG</span>
+                        </div>
+                        <Input
+                          type="text"
+                          className="pl-14 pr-16 h-14 text-lg font-medium bg-gray-50"
+                          value={receiverAmount}
+                          readOnly
+                        />
+                        <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+                          <span className="text-gray-500 font-medium">HTG</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Right Column - Fee Summary */}
+                <div className="bg-gray-50 rounded-lg p-6">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Transfer Summary</h3>
+                  
+                  <div className="space-y-3">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Send Amount</span>
+                      <span className="font-medium">${amount || '0.00'}</span>
+                    </div>
+                    
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Transfer fee</span>
+                      <span className="font-medium">${transferFee}</span>
+                    </div>
+                    
+                    <div className="border-t border-gray-200 pt-3">
+                      <div className="flex justify-between">
+                        <span className="text-lg font-semibold text-gray-900">Total to pay</span>
+                        <span className="text-lg font-bold text-blue-600">${totalAmount}</span>
+                      </div>
+                    </div>
+                    
+                    {transferType === 'international' && amount && parseFloat(amount) > 0 && (
+                      <div className="bg-green-50 border border-green-200 rounded-lg p-3 mt-4">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-green-700 font-medium">Recipient receives</span>
+                          <span className="text-green-800 font-bold">{receiverAmount} HTG</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <Button 
+                    onClick={handleContinue}
+                    disabled={!amount || parseFloat(amount) <= 0}
+                    className="w-full mt-6 h-12 text-lg font-medium"
+                    size="lg"
+                  >
+                    Continue
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Quick Access Cards */}
