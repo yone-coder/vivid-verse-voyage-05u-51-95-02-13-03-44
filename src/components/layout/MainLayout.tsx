@@ -22,6 +22,7 @@ function MainLayoutContent() {
   const isMultiStepTransferPage = pathname === "/multi-step-transfer";
   const isMultiStepTransferSheetPage = pathname === "/multi-step-transfer-page";
   const isTransferOldPage = pathname === "/transfer-old";
+  const isNotFoundPage = pathname === "*" || !location.pathname.match(/^\/[^/]*$/);
 
   useEffect(() => {
     if (pathname === "/auth") {
@@ -58,7 +59,14 @@ function MainLayoutContent() {
   if (!user) {
     return (
       <LanguageProvider>
-        <div className="min-h-screen flex flex-col bg-white" />
+        <div className="min-h-screen flex flex-col bg-white">
+          <main className="flex-grow relative">
+            <Outlet />
+          </main>
+          
+          {/* Show mobile bottom navigation on NotFound page even when not logged in */}
+          {isMobile && <IndexBottomNav />}
+        </div>
       </LanguageProvider>
     );
   }
@@ -76,7 +84,7 @@ function MainLayoutContent() {
         {!isMobile && !isHomePage && <Footer />}
 
         {/* Mobile bottom navigation */}
-        {shouldShowMobileNav && <IndexBottomNav />}
+        {(shouldShowMobileNav || isMobile) && <IndexBottomNav />}
       </div>
     </LanguageProvider>
   );
