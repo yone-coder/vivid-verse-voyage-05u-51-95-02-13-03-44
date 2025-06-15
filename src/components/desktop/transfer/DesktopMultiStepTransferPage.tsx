@@ -1,5 +1,4 @@
 
-```tsx
 import React from 'react';
 import MultiStepTransferSheet from '@/components/transfer/MultiStepTransferSheet';
 import { Zap, BadgePercent } from 'lucide-react';
@@ -86,4 +85,3 @@ const DesktopMultiStepTransferPage: React.FC = () => {
 };
 
 export default DesktopMultiStepTransferPage;
-```
