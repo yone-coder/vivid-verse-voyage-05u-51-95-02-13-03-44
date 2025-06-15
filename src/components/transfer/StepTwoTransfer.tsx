@@ -20,6 +20,7 @@ interface StepTwoTransferProps {
 
 const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDetailsChange }) => {
   const handleInputChange = (field: keyof ReceiverDetails, value: string) => {
+    console.log(`Updating ${field} with value:`, value);
     onDetailsChange({
       ...receiverDetails,
       [field]: value,
@@ -50,6 +51,20 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
     "Ouest": ["Port-au-Prince", "Delmas", "Pétionville", "Carrefour", "Cité Soleil", "Tabarre", "Croix-des-Bouquets", "Kenscoff", "Gressier", "Léogâne", "Grand-Goâve", "Petit-Goâve", "Arcahaie", "Cabaret", "Cornillon", "Fonds-Verrettes", "Ganthier", "La Plaine", "Thomazeau", "Pointe-à-Raquette"],
     "Sud": ["Les Cayes", "Aquin", "Saint-Louis-du-Sud", "Cavaillon", "Chardonnières", "Chantal", "Côteaux", "Port-à-Piment", "Roche-à-Bateau", "Torbeck", "Arniquet", "Campin", "Maniche", "Port-Salut", "Saint-Jean-du-Sud"],
     "Sud-Est": ["Jacmel", "Marigot", "Cayes-Jacmel", "Bainet", "Côtes-de-Fer", "Grand-Gosier", "Anse-à-Pitres", "Belle-Anse", "Thiotte", "La Vallée", "Banatte", "Corail-Sourd"]
+  };
+
+  const handleDepartmentChange = (value: string) => {
+    console.log('Department change handler called with:', value);
+    handleInputChange('department', value);
+    // Reset commune when department changes
+    if (receiverDetails.commune) {
+      handleInputChange('commune', '');
+    }
+  };
+
+  const handleCommuneChange = (value: string) => {
+    console.log('Commune change handler called with:', value);
+    handleInputChange('commune', value);
   };
 
   return (
@@ -97,24 +112,20 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
         </div>
       </div>
 
-      <div className="space-y-2 relative z-20">
+      <div className="space-y-2">
         <Label htmlFor="department" className="text-base font-medium text-gray-700">
           Which department are they in?
         </Label>
         <Select 
           value={receiverDetails.department} 
-          onValueChange={(value) => {
-            console.log('Department selected:', value);
-            handleInputChange('department', value);
-            handleInputChange('commune', ''); // Reset commune when department changes
-          }}
+          onValueChange={handleDepartmentChange}
         >
-          <SelectTrigger className="w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 bg-white">
+          <SelectTrigger className="w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500">
             <SelectValue placeholder="Select department" />
           </SelectTrigger>
-          <SelectContent className="bg-white border border-gray-200 shadow-lg z-50 max-h-60 overflow-y-auto">
+          <SelectContent>
             {haitiDepartments.map((dept) => (
-              <SelectItem key={dept} value={dept} className="hover:bg-gray-100 focus:bg-gray-100">
+              <SelectItem key={dept} value={dept}>
                 {dept}
               </SelectItem>
             ))}
@@ -122,24 +133,21 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
         </Select>
       </div>
 
-      <div className="space-y-2 relative z-10">
+      <div className="space-y-2">
         <Label htmlFor="commune" className="text-base font-medium text-gray-700">
           Which city or commune are they in?
         </Label>
         <Select 
           value={receiverDetails.commune} 
-          onValueChange={(value) => {
-            console.log('Commune selected:', value);
-            handleInputChange('commune', value);
-          }}
+          onValueChange={handleCommuneChange}
           disabled={!receiverDetails.department}
         >
-          <SelectTrigger className="w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 bg-white disabled:bg-gray-100">
+          <SelectTrigger className="w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 disabled:bg-gray-100">
             <SelectValue placeholder={receiverDetails.department ? "Select commune" : "Select department first"} />
           </SelectTrigger>
-          <SelectContent className="bg-white border border-gray-200 shadow-lg z-50 max-h-60 overflow-y-auto">
+          <SelectContent>
             {receiverDetails.department && communesByDepartment[receiverDetails.department]?.map((commune) => (
-              <SelectItem key={commune} value={commune} className="hover:bg-gray-100 focus:bg-gray-100">
+              <SelectItem key={commune} value={commune}>
                 {commune}
               </SelectItem>
             ))}
