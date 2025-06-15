@@ -49,8 +49,13 @@ export default function BottomNav() {
 
     if (animating || item.id === activeTab) return;
 
-    // Don't reload if we're already on the same path
+    // Don't navigate if we're already on the same path
     if (item.path === location.pathname) return;
+
+    // For the send tab, also check if we're on any multi-step transfer path
+    if (item.id === 'send' && (location.pathname === '/' || location.pathname.startsWith('/multi-step-transfer'))) {
+      return;
+    }
 
     setAnimating(true);
     setPreviousTab(activeTab);
