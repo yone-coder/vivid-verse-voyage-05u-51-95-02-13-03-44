@@ -10,10 +10,12 @@ export const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <DeviceRouter
-        mobileComponent={MobileMultiStepTransferSheetPage}
-        desktopComponent={DesktopMultiStepTransferSheetPage}
-      />
+      <MainLayout>
+        <DeviceRouter
+          mobileComponent={MobileMultiStepTransferSheetPage}
+          desktopComponent={DesktopMultiStepTransferSheetPage}
+        />
+      </MainLayout>
     ),
   },
   {
