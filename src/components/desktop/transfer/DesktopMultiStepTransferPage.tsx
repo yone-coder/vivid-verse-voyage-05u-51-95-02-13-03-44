@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, CheckCircle, Receipt, Search, Key, Globe, Loader2, Zap, BadgePercent } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -1194,22 +1195,23 @@ const DesktopTransferForm: React.FC<DesktopTransferFormProps> = ({
                       <li>• You will be redirected back after payment</li>
                     </ul>
 
-                  {/* Payment Button for National Transfer */}
-                  <div className="pt-4">
-                    <Button 
-                      onClick={handleStickyPayment}
-                      disabled={isPaymentLoading}
-                      className="w-full py-4 text-lg font-semibold bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white"
-                    >
-                      {isPaymentLoading ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Processing MonCash Payment...
-                        </>
-                      ) : (
-                        `Pay HTG ${receiverAmount} with MonCash`
-                      )}
-                    </Button>
+                    {/* Payment Button for National Transfer */}
+                    <div className="pt-4">
+                      <Button 
+                        onClick={handleStickyPayment}
+                        disabled={isPaymentLoading}
+                        className="w-full py-4 text-lg font-semibold bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white"
+                      >
+                        {isPaymentLoading ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Processing MonCash Payment...
+                          </>
+                        ) : (
+                          `Pay HTG ${receiverAmount} with MonCash`
+                        )}
+                      </Button>
+                    </div>
                   </div>
                 </div>
               ) : (
