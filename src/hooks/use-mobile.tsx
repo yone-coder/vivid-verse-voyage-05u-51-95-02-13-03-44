@@ -4,9 +4,9 @@ import * as React from "react"
 const MOBILE_BREAKPOINT = 768
 
 export function useIsMobile() {
-  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(() => {
+  const [isMobile, setIsMobile] = React.useState<boolean>(() => {
     // Server-side rendering guard
-    if (typeof window === 'undefined') return undefined;
+    if (typeof window === 'undefined') return false;
     
     // Initialize with current window size to prevent flash
     return window.innerWidth < MOBILE_BREAKPOINT;
@@ -19,7 +19,7 @@ export function useIsMobile() {
     }
     mql.addEventListener("change", onChange)
     
-    // Set initial value immediately
+    // Set initial value immediately to ensure consistency
     setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
     
     return () => mql.removeEventListener("change", onChange)
