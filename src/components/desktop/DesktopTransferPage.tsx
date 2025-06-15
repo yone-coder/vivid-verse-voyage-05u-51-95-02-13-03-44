@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Send } from 'lucide-react';
+import { ArrowLeft, Send, CheckCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import TransferTypeSelector from '@/components/transfer/TransferTypeSelector';
 import StepOneTransfer from '@/components/transfer/StepOneTransfer';
@@ -78,6 +78,8 @@ const DesktopTransferPage = () => {
   const handleDetailsChange = (details: any) => {
     setReceiverDetails(details);
   };
+
+  const stepTitles = ['Amount & Type', 'Recipient Info', 'Payment Method', 'Complete'];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -259,10 +261,7 @@ const DesktopTransferPage = () => {
                       <span className={`text-sm ${
                         step <= currentStep ? 'text-gray-900 font-medium' : 'text-gray-500'
                       }`}>
-                        {step === 1 && 'Amount & Type'}
-                        {step === 2 && 'Recipient Info'}
-                        {step === 3 && 'Payment Method'}
-                        {step === 4 && 'Complete'}
+                        {stepTitles[step - 1]}
                       </span>
                     </div>
                   ))}
