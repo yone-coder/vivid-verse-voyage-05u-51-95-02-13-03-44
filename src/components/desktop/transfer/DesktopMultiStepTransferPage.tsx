@@ -1,7 +1,9 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, CheckCircle, Receipt, Search, Key, Globe, Loader2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { Card, Separator } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { motion } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
 import html2canvas from 'html2canvas';
