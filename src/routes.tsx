@@ -7,6 +7,7 @@ import ProfilePage from "@/pages/ProfilePage";
 import NotFound from "@/pages/NotFound";
 import TransferHistoryPage from "@/pages/TransferHistoryPage";
 import LocationsPage from "@/pages/LocationsPage";
+import TrackTransferPage from "@/pages/TrackTransferPage";
 import MobileMultiStepTransferSheetPage from "@/components/mobile/transfer/MobileMultiStepTransferSheetPage";
 
 export const router = createBrowserRouter([
@@ -20,6 +21,7 @@ export const router = createBrowserRouter([
       { path: "profile", element: <ProfilePage /> },
       { path: "transfer-history", element: <TransferHistoryPage /> },
       { path: "locations", element: <LocationsPage /> },
+      { path: "track-transfer", element: <TrackTransferPage /> },
       { path: "*", element: <NotFound /> }
     ]
   }
