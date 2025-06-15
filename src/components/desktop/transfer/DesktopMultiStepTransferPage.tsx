@@ -1,11 +1,13 @@
-
-import React from 'react';
+import React, { useState } from 'react';
 import MultiStepTransferSheet from '@/components/transfer/MultiStepTransferSheet';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ShieldCheck, Zap, Banknote, HelpCircle } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
+import TransferTypeSelector from '@/components/transfer/TransferTypeSelector';
 
 const DesktopMultiStepTransferPage: React.FC = () => {
+  const [transferType, setTransferType] = useState<'international' | 'national'>('international');
+
   return (
     <div className="min-h-screen w-full bg-gray-100 dark:bg-gray-900">
       <div className="container mx-auto px-4 py-8">
@@ -18,8 +20,19 @@ const DesktopMultiStepTransferPage: React.FC = () => {
           
           <main className="lg:col-span-3">
             <Card className="overflow-hidden shadow-lg">
+                <CardHeader>
+                    <TransferTypeSelector
+                        transferType={transferType}
+                        onTransferTypeChange={setTransferType}
+                        disableNavigation={true}
+                    />
+                </CardHeader>
                 <CardContent className="p-0">
-                    <MultiStepTransferSheet variant="page" onClose={() => {}} disableSelectorNavigation={true} />
+                    <MultiStepTransferSheet 
+                        variant="page" 
+                        onClose={() => {}} 
+                        transferType={transferType} 
+                    />
                 </CardContent>
             </Card>
           </main>

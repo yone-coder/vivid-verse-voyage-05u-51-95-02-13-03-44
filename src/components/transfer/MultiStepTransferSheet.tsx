@@ -30,9 +30,15 @@ interface MultiStepTransferSheetProps {
   onClose: () => void;
   variant?: 'sheet' | 'page';
   disableSelectorNavigation?: boolean;
+  transferType?: 'international' | 'national';
 }
 
-const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose, variant = 'sheet', disableSelectorNavigation = false }) => {
+const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ 
+  onClose, 
+  variant = 'sheet', 
+  disableSelectorNavigation = false,
+  transferType: transferTypeProp 
+}) => {
   const [currentStep, setCurrentStep] = useState(1);
   const isSheet = variant === 'sheet';
   const [isFullHeight, setIsFullHeight] = useState(false);
@@ -44,7 +50,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
   const panelRef = useRef<HTMLDivElement>(null);
   
   const [transferData, setTransferData] = useState<TransferData>({
-    transferType: 'international',
+    transferType: transferTypeProp || 'international',
     amount: '',
     receiverDetails: {
       firstName: '',
@@ -55,6 +61,12 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
     },
     selectedPaymentMethod: 'credit-card'
   });
+
+  useEffect(() => {
+    if (transferTypeProp && transferTypeProp !== transferData.transferType) {
+      updateTransferData({ transferType: transferTypeProp, amount: '' });
+    }
+  }, [transferTypeProp]);
 
   const handleNextStep = () => {
     if (currentStep < 5) {
@@ -340,11 +352,13 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
         <div className="px-4 py-4">
           {currentStep === 1 && (
             <div className="space-y-4">
-              <TransferTypeSelector 
-                transferType={transferData.transferType}
-                onTransferTypeChange={(type) => updateTransferData({ transferType: type, amount: '' })}
-                disableNavigation={disableSelectorNavigation}
-              />
+              {!transferTypeProp && (
+                <TransferTypeSelector 
+                  transferType={transferData.transferType}
+                  onTransferTypeChange={(type) => updateTransferData({ transferType: type, amount: '' })}
+                  disableNavigation={disableSelectorNavigation}
+                />
+              )}
               {transferData.transferType === 'international' ? (
                 <StepOneTransfer 
                   amount={transferData.amount}
