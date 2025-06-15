@@ -2,13 +2,13 @@
 import React from 'react';
 import DeviceRouter from '@/components/common/DeviceRouter';
 import MobileMultiStepTransferSheetPage from '@/components/mobile/transfer/MobileMultiStepTransferSheetPage';
-import MultiStepTransferSheetDesktopPage from '@/pages/MultiStepTransferSheetDesktopPage';
+import DesktopHomeWithTabs from '@/components/desktop/DesktopHomeWithTabs';
 
 const ResponsiveHomePage: React.FC = () => {
   return (
     <DeviceRouter
       mobileComponent={MobileMultiStepTransferSheetPage}
-      desktopComponent={MultiStepTransferSheetDesktopPage}
+      desktopComponent={DesktopHomeWithTabs}
     />
   );
 };
