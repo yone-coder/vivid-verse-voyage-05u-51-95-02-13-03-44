@@ -1,4 +1,5 @@
 
+```tsx
 import React from 'react';
 import MultiStepTransferSheet from '@/components/transfer/MultiStepTransferSheet';
 import { Zap, BadgePercent } from 'lucide-react';
@@ -16,7 +17,7 @@ const DesktopMultiStepTransferPage: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
           
           {/* Left Column: Interactive Transfer Form */}
-          <div className="lg:sticky lg:top-8">
+          <div>
             <div className="flex flex-col bg-white rounded-2xl shadow-2xl shadow-gray-200/50 overflow-hidden" style={{ height: 'calc(100vh - 4rem)' }}>
               <MultiStepTransferSheet key={formKey} onClose={handleReset} variant="page" />
             </div>
@@ -85,3 +86,4 @@ const DesktopMultiStepTransferPage: React.FC = () => {
 };
 
 export default DesktopMultiStepTransferPage;
+```
