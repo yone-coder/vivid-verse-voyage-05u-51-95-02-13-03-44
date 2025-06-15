@@ -21,10 +21,12 @@ interface StepTwoTransferProps {
 const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDetailsChange }) => {
   const handleInputChange = (field: keyof ReceiverDetails, value: string) => {
     console.log(`Updating ${field} with value:`, value);
-    onDetailsChange({
+    const updatedDetails = {
       ...receiverDetails,
       [field]: value,
-    });
+    };
+    console.log('Updated details:', updatedDetails);
+    onDetailsChange(updatedDetails);
   };
 
   const haitiDepartments = [
@@ -55,17 +57,25 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
 
   const handleDepartmentChange = (value: string) => {
     console.log('Department change handler called with:', value);
-    handleInputChange('department', value);
-    // Reset commune when department changes
-    if (receiverDetails.commune) {
-      handleInputChange('commune', '');
-    }
+    console.log('Current receiverDetails before change:', receiverDetails);
+    
+    // Update department and reset commune
+    const updatedDetails = {
+      ...receiverDetails,
+      department: value,
+      commune: '' // Reset commune when department changes
+    };
+    
+    console.log('Updated details after department change:', updatedDetails);
+    onDetailsChange(updatedDetails);
   };
 
   const handleCommuneChange = (value: string) => {
     console.log('Commune change handler called with:', value);
     handleInputChange('commune', value);
   };
+
+  console.log('StepTwoTransfer render - receiverDetails:', receiverDetails);
 
   return (
     <div className="space-y-6">
@@ -117,13 +127,13 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
           Which department are they in?
         </Label>
         <Select 
-          value={receiverDetails.department} 
+          value={receiverDetails.department || ""} 
           onValueChange={handleDepartmentChange}
         >
           <SelectTrigger className="w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500">
             <SelectValue placeholder="Select department" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-white z-50">
             {haitiDepartments.map((dept) => (
               <SelectItem key={dept} value={dept}>
                 {dept}
@@ -138,14 +148,14 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
           Which city or commune are they in?
         </Label>
         <Select 
-          value={receiverDetails.commune} 
+          value={receiverDetails.commune || ""} 
           onValueChange={handleCommuneChange}
           disabled={!receiverDetails.department}
         >
           <SelectTrigger className="w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 disabled:bg-gray-100">
             <SelectValue placeholder={receiverDetails.department ? "Select commune" : "Select department first"} />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-white z-50">
             {receiverDetails.department && communesByDepartment[receiverDetails.department]?.map((commune) => (
               <SelectItem key={commune} value={commune}>
                 {commune}
