@@ -22,7 +22,6 @@ function MainLayoutContent() {
   const isMultiStepTransferPage = pathname === "/multi-step-transfer";
   const isMultiStepTransferSheetPage = pathname === "/multi-step-transfer-page";
   const isTransferOldPage = pathname === "/transfer-old";
-  const isNotFoundPage = pathname === "*" || !location.pathname.match(/^\/[^/]*$/);
 
   useEffect(() => {
     if (pathname === "/auth") {
@@ -43,7 +42,7 @@ function MainLayoutContent() {
   const headerHeightStyle = `
     :root {
       --header-height: 0px;
-      --bottom-nav-height: ${shouldShowMobileNav ? '48px' : '0px'};
+      --bottom-nav-height: ${shouldShowMobileNav || isMobile ? '48px' : '0px'};
     }
   `;
 
@@ -55,7 +54,7 @@ function MainLayoutContent() {
     );
   }
 
-  // Just render children if not logged in, don't use deleted AuthPage
+  // Just render children if not logged in
   if (!user) {
     return (
       <LanguageProvider>
@@ -64,7 +63,7 @@ function MainLayoutContent() {
             <Outlet />
           </main>
           
-          {/* Show mobile bottom navigation on NotFound page even when not logged in */}
+          {/* Show mobile bottom navigation even when not logged in */}
           {isMobile && <IndexBottomNav />}
         </div>
       </LanguageProvider>

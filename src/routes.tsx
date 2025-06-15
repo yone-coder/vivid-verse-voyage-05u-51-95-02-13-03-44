@@ -10,10 +10,7 @@ export const router = createBrowserRouter([
     element: <MainLayout />,
     children: [
       { index: true, element: <MobileMultiStepTransferSheetPage /> },
+      { path: "*", element: <NotFound /> },
     ],
-  },
-  {
-    path: "*",
-    element: <NotFound />,
   },
 ]);
