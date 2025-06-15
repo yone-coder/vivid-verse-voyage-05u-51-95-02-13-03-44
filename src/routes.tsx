@@ -11,6 +11,7 @@ import LocationsPage from "@/pages/LocationsPage";
 import TrackTransferPage from "@/pages/TrackTransferPage";
 import ResponsiveMultiStepTransferPage from "@/pages/ResponsiveMultiStepTransferPage";
 import ResponsiveHomePage from "@/pages/ResponsiveHomePage";
+import DesktopMultiStepTransferPage from "@/components/desktop/transfer/DesktopMultiStepTransferPage";
 
 export const router = createBrowserRouter([
   {
@@ -19,6 +20,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <ResponsiveHomePage /> },
       { path: "transfer", element: <ResponsiveMultiStepTransferPage /> },
+      { path: "desktop-multi-step-transfer-page", element: <DesktopMultiStepTransferPage /> },
       { path: "auth", element: <AuthPage /> },
       { path: "signup", element: <SignupPage /> },
       { path: "profile", element: <ProfilePage /> },
