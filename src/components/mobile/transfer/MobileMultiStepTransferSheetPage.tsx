@@ -970,18 +970,24 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
   };
 
   // Define canProceed logic for each step
-  const canProceedFromStep1 = transferData.amount && parseFloat(transferData.amount) > 0;
-  const canProceedFromStep2 = transferData.receiverDetails.firstName &&
+  const canProceedFromStep1 = Boolean(transferData.amount && parseFloat(transferData.amount) > 0);
+  const canProceedFromStep2 = Boolean(
+    transferData.receiverDetails.firstName &&
     transferData.receiverDetails.lastName &&
     transferData.receiverDetails.phoneNumber &&
-    transferData.receiverDetails.commune;
-  const canProceedFromStep3 = transferData.selectedPaymentMethod !== undefined && transferData.selectedPaymentMethod !== '';
+    transferData.receiverDetails.commune
+  );
+  const canProceedFromStep3 = Boolean(
+    transferData.selectedPaymentMethod !== undefined && 
+    transferData.selectedPaymentMethod !== ''
+  );
 
   // Calculate canProceed based on current step
-  const canProceed = 
+  const canProceed = Boolean(
     (currentStep === 1 && canProceedFromStep1) ||
     (currentStep === 2 && canProceedFromStep2) ||
-    (currentStep === 3 && canProceedFromStep3);
+    (currentStep === 3 && canProceedFromStep3)
+  );
 
   const stepTitles = ['Send Money', 'Recipient Details', 'Payment Method', 'Transfer Complete'];
 
