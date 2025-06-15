@@ -237,53 +237,6 @@ const DesktopTransferPage = () => {
       </div>
     </div>
   );
-
-  function handleNext() {
-    if (currentStep < 3) {
-      setCurrentStep(currentStep + 1);
-    }
-  }
-
-  function handleBack() {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-    } else {
-      navigate('/');
-    }
-  }
-
-  function handleComplete() {
-    // Handle transfer completion logic here
-    console.log('Transfer completed:', { transferType, amount, receiverDetails });
-    navigate('/transfer-history');
-  }
-
-  function canProceed() {
-    if (currentStep === 1) {
-      return parseFloat(amount) > 0;
-    }
-    if (currentStep === 2) {
-      return receiverDetails.firstName && 
-             receiverDetails.lastName && 
-             receiverDetails.phoneNumber && 
-             receiverDetails.department && 
-             receiverDetails.commune;
-    }
-    return true;
-  }
-
-  function getStepTitle() {
-    switch (currentStep) {
-      case 1:
-        return 'Enter Amount';
-      case 2:
-        return 'Receiver Details';
-      case 3:
-        return 'Review & Confirm';
-      default:
-        return 'Transfer Money';
-    }
-  }
 };
 
 export default DesktopTransferPage;
