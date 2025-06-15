@@ -1,7 +1,5 @@
 
 import React from 'react';
-import { useQuery } from "@tanstack/react-query";
-import { fetchAllProducts } from "@/integrations/supabase/products";
 import DesktopFlashDeals from './DesktopFlashDeals';
 import DesktopSuperDeals from './DesktopSuperDeals';
 import DesktopSecondaryHero from './DesktopSecondaryHero';

@@ -1,7 +1,4 @@
 
-export { default as DesktopHeader } from './DesktopHeader';
-export { default as DesktopHeroBanner } from './DesktopHeroBanner';
-export { default as DesktopBannerSlides } from './DesktopBannerSlides';
 export { default as DesktopBannerControls } from './DesktopBannerControls';
 export { default as DesktopNewsTicker } from './DesktopNewsTicker';
 export { default as DesktopSidebar } from './DesktopSidebar';
