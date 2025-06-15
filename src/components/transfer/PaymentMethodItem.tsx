@@ -3,6 +3,19 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import { LucideIcon } from 'lucide-react';
+
+export interface PaymentMethod {
+  id: string;
+  name: string;
+  description?: string;
+  icon?: LucideIcon;
+  fee?: string;
+  processingTime?: string;
+  processorUrl?: string;
+  available?: boolean;
+  unavailableReason?: string;
+}
 
 interface PaymentMethodItemProps {
   id: string;

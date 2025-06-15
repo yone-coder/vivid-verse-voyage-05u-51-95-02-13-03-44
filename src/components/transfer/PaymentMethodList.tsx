@@ -25,9 +25,16 @@ const PaymentMethodList: React.FC<PaymentMethodListProps> = ({
       >
         {methods.map((method) => (
           <PaymentMethodItem 
-            key={method.id} 
-            method={method} 
+            key={method.id}
+            id={method.id}
+            name={method.name}
+            description={method.description}
+            icon={method.icon ? React.createElement(method.icon, { className: "w-5 h-5" }) : undefined}
+            fee={method.fee}
+            processingTime={method.processingTime}
             isSelected={selectedMethod === method.id}
+            onClick={() => onMethodChange(method.id)}
+            disabled={method.available === false}
           />
         ))}
       </RadioGroup>
