@@ -1047,6 +1047,42 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
     }
   };
 
+  const onContinue = () => {
+    if (currentStep === 1) {
+      handleNextStep();
+    } else if (currentStep === 2) {
+      handleNextStep();
+    } else if (currentStep === 3) {
+      handleStickyPayment();
+    }
+  };
+
+  const getButtonColor = () => {
+    if (currentStep === 1) {
+      return 'bg-blue-600 hover:bg-blue-700';
+    } else if (currentStep === 2) {
+      return 'bg-blue-600 hover:bg-blue-700';
+    } else if (currentStep === 3) {
+      return 'bg-blue-600 hover:bg-blue-700';
+    } else {
+      return 'bg-blue-600 hover:bg-blue-700';
+    }
+  };
+
+  const getButtonText = () => {
+    if (currentStep === 1) {
+      return 'Next';
+    } else if (currentStep === 2) {
+      return 'Next';
+    } else if (currentStep === 3) {
+      return 'Pay Now';
+    } else {
+      return 'Done';
+    }
+  };
+
+  const cn = (...classes: (string | undefined)[]) => classes.filter(Boolean).join(' ');
+
   return (
     <div className="min-h-screen bg-white">
       {/* Payment Loading Overlay */}
@@ -1245,14 +1281,30 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
                 <div className="space-y-4">
                   {/* Pay with PayPal Button */}
                   <div className="w-full">
-                    <Button
-                      className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 text-lg font-semibold"
-                      onClick={() => {
-                        // Handle PayPal payment
-                        console.log('PayPal payment initiated');
-                      }}
+                    <Button 
+                      onClick={onContinue}
+                      disabled={
+                        !canProceed || 
+                        isPaymentLoading || 
+                        (currentStep === 3 && transferData?.transferType === 'international' && !isPaymentFormValid)
+                      }
+                      className={cn(
+                        "transition-all duration-200 text-white font-semibold",
+                        currentStep === 1 ? "flex-1" : "flex-2",
+                        getButtonColor()
+                      )}
                     >
-                      Pay with PayPal
+                      {isPaymentLoading ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          {getButtonText()}
+                        </>
+                      ) : (
+                        <>
+                          {getButtonText()}
+                          {currentStep < 3 && <ArrowRight className="ml-2 h-4 w-4" />}
+                        </>
+                      )}
                     </Button>
                   </div>
 
