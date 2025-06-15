@@ -24,7 +24,7 @@ const DesktopTransferPage = () => {
   });
 
   const handleNext = () => {
-    if (currentStep < 3) {
+    if (currentStep < 4) {
       setCurrentStep(currentStep + 1);
     }
   };
@@ -54,17 +54,22 @@ const DesktopTransferPage = () => {
              receiverDetails.department && 
              receiverDetails.commune;
     }
+    if (currentStep === 3) {
+      return true; // Payment method step
+    }
     return true;
   };
 
   const getStepTitle = () => {
     switch (currentStep) {
       case 1:
-        return 'Enter Amount';
+        return 'Send Money';
       case 2:
-        return 'Receiver Details';
+        return 'Recipient Details';
       case 3:
-        return 'Review & Confirm';
+        return 'Payment Method';
+      case 4:
+        return 'Transfer Complete';
       default:
         return 'Transfer Money';
     }
@@ -92,7 +97,7 @@ const DesktopTransferPage = () => {
               </div>
             </div>
             <div className="text-sm text-gray-600">
-              Step {currentStep} of 3
+              Step {currentStep} of 4
             </div>
           </div>
         </div>
@@ -138,7 +143,7 @@ const DesktopTransferPage = () => {
 
                 {currentStep === 3 && (
                   <div className="space-y-6">
-                    <h3 className="text-lg font-semibold text-gray-900">Transfer Summary</h3>
+                    <h3 className="text-lg font-semibold text-gray-900">Payment Method</h3>
                     
                     <div className="bg-gray-50 rounded-lg p-4 space-y-3">
                       <div className="flex justify-between">
@@ -171,9 +176,59 @@ const DesktopTransferPage = () => {
 
                     <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                       <p className="text-blue-800 text-sm">
-                        Please review all details carefully before confirming your transfer. 
-                        Once confirmed, this transaction cannot be reversed.
+                        Select your preferred payment method to complete the transfer.
                       </p>
+                    </div>
+                  </div>
+                )}
+
+                {currentStep === 4 && (
+                  <div className="space-y-6">
+                    <h3 className="text-lg font-semibold text-gray-900">Transfer Complete</h3>
+                    
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center">
+                          <span className="text-white text-sm">✓</span>
+                        </div>
+                        <p className="text-green-800 font-medium">Transfer Successful!</p>
+                      </div>
+                      <p className="text-green-700 text-sm mt-2">
+                        Your transfer of {transferType === 'international' ? '$' : 'HTG '}{amount} to {receiverDetails.firstName} {receiverDetails.lastName} has been completed successfully.
+                      </p>
+                    </div>
+
+                    <div className="bg-gray-50 rounded-lg p-4 space-y-3">
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Transaction ID:</span>
+                        <span className="font-medium">TX{Date.now()}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Transfer Type:</span>
+                        <span className="font-medium capitalize">{transferType}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Amount Sent:</span>
+                        <span className="font-medium">
+                          {transferType === 'international' ? '$' : 'HTG '}{amount}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Recipient:</span>
+                        <span className="font-medium">
+                          {receiverDetails.firstName} {receiverDetails.lastName}
+                        </span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Phone:</span>
+                        <span className="font-medium">+509 {receiverDetails.phoneNumber}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Location:</span>
+                        <span className="font-medium">
+                          {receiverDetails.commune}, {receiverDetails.department}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -190,7 +245,7 @@ const DesktopTransferPage = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {[1, 2, 3].map((step) => (
+                  {[1, 2, 3, 4].map((step) => (
                     <div key={step} className="flex items-center space-x-3">
                       <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
                         step < currentStep 
@@ -205,8 +260,9 @@ const DesktopTransferPage = () => {
                         step <= currentStep ? 'text-gray-900 font-medium' : 'text-gray-500'
                       }`}>
                         {step === 1 && 'Amount & Type'}
-                        {step === 2 && 'Receiver Info'}
-                        {step === 3 && 'Review & Send'}
+                        {step === 2 && 'Recipient Info'}
+                        {step === 3 && 'Payment Method'}
+                        {step === 4 && 'Complete'}
                       </span>
                     </div>
                   ))}
@@ -219,13 +275,13 @@ const DesktopTransferPage = () => {
               <Button 
                 className="w-full" 
                 size="lg"
-                onClick={currentStep === 3 ? handleComplete : handleNext}
+                onClick={currentStep === 4 ? handleComplete : handleNext}
                 disabled={!canProceed()}
               >
-                {currentStep === 3 ? 'Confirm Transfer' : 'Continue'}
+                {currentStep === 4 ? 'Done' : currentStep === 3 ? 'Confirm Payment' : 'Continue'}
               </Button>
               
-              {currentStep > 1 && (
+              {currentStep > 1 && currentStep < 4 && (
                 <Button 
                   variant="outline" 
                   className="w-full" 
