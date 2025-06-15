@@ -443,7 +443,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
                 </div>
               </div>
               
-              <div className="flex justify-center">
+              <div className={`flex ${isSheet ? 'justify-center' : 'justify-start'}`}>
                 <Button 
                   onClick={handlePaymentSuccess}
                   className="bg-green-600 hover:bg-green-700 text-white px-8 py-3"
@@ -549,13 +549,13 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
                       navigator.clipboard?.writeText(`Transaction ID: ${transactionId}`);
                     });
                   }}
-                  className="flex-1"
+                  className={isSheet ? "flex-1" : ""}
                 >
                   Share Receipt
                 </Button>
                 <Button 
                   onClick={onClose}
-                  className="flex-1"
+                  className={isSheet ? "flex-1" : ""}
                 >
                   Done
                 </Button>
@@ -568,12 +568,12 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
       {/* Sticky Navigation Buttons - Only show for steps 1, 2, 3 and step 5+ */}
       {(currentStep < 4 || currentStep > 4) && (
         <div className={navButtonsClasses}>
-          <div className="flex gap-3 max-w-md mx-auto">
+          <div className={`flex gap-3 ${isSheet ? 'max-w-md mx-auto' : ''}`}>
             {currentStep === 1 ? (
               <Button 
                 onClick={handleNextStep}
                 disabled={!canProceedFromStep1}
-                className="flex-1 transition-all duration-200"
+                className={`${isSheet ? 'flex-1' : ''} transition-all duration-200`}
               >
                 Continue
                 <ArrowRight className="ml-2 h-4 w-4" />
@@ -583,7 +583,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
                 <Button 
                   variant="outline" 
                   onClick={handlePreviousStep}
-                  className="flex-1 transition-all duration-200"
+                  className={`${isSheet ? 'flex-1' : ''} transition-all duration-200`}
                 >
                   <ArrowLeft className="mr-2 h-4 w-4" />
                   Previous
@@ -597,13 +597,13 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
                       (currentStep === 3 && !canProceedFromStep3) ||
                       (currentStep === 4 && !canProceedFromStep4)
                     }
-                    className="flex-1 transition-all duration-200"
+                    className={`${isSheet ? 'flex-1' : ''} transition-all duration-200`}
                   >
                     Next
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 ) : (
-                  <div className="flex-1"></div>
+                  isSheet ? <div className="flex-1"></div> : null
                 )}
               </>
             )}
