@@ -118,47 +118,98 @@ export default function IndexBottomNav({
 
   if (showContinueButton) {
     return (
-      <div className="bg-white border-t border-gray-200 dark:border-zinc-800 shadow-lg">
-        <div className="flex items-center h-16 px-4 max-w-md mx-auto gap-3">
-          {/* Previous Button - only show if not on step 1 */}
-          {currentStep > 1 && (
+      <div className="fixed bottom-0 left-0 right-0 z-50">
+        {/* Continue Button Container - sits directly above nav bar */}
+        <div className="bg-white border-t border-gray-200 dark:border-zinc-800 shadow-lg">
+          <div className="flex items-center h-16 px-4 max-w-md mx-auto gap-3">
+            {/* Previous Button - only show if not on step 1 */}
+            {currentStep > 1 && (
+              <Button 
+                variant="outline" 
+                onClick={onPrevious}
+                className="flex-1 transition-all duration-200"
+                disabled={isPaymentLoading}
+              >
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Previous
+              </Button>
+            )}
+            
+            {/* Continue/Pay Button */}
             <Button 
-              variant="outline" 
-              onClick={onPrevious}
-              className="flex-1 transition-all duration-200"
-              disabled={isPaymentLoading}
+              onClick={onContinue}
+              disabled={
+                !canProceed || 
+                isPaymentLoading || 
+                (currentStep === 3 && transferData?.transferType === 'international' && !isPaymentFormValid)
+              }
+              className={cn(
+                "transition-all duration-200 text-white font-semibold",
+                currentStep === 1 ? "flex-1" : "flex-2",
+                getButtonColor()
+              )}
             >
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Previous
+              {isPaymentLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  {getButtonText()}
+                </>
+              ) : (
+                <>
+                  {getButtonText()}
+                  {currentStep < 3 && <ArrowRight className="ml-2 h-4 w-4" />}
+                </>
+              )}
             </Button>
-          )}
-          
-          {/* Continue/Pay Button */}
-          <Button 
-            onClick={onContinue}
-            disabled={
-              !canProceed || 
-              isPaymentLoading || 
-              (currentStep === 3 && transferData?.transferType === 'international' && !isPaymentFormValid)
-            }
-            className={cn(
-              "transition-all duration-200 text-white font-semibold",
-              currentStep === 1 ? "flex-1" : "flex-2",
-              getButtonColor()
-            )}
-          >
-            {isPaymentLoading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                {getButtonText()}
-              </>
-            ) : (
-              <>
-                {getButtonText()}
-                {currentStep < 3 && <ArrowRight className="ml-2 h-4 w-4" />}
-              </>
-            )}
-          </Button>
+          </div>
+        </div>
+
+        {/* Bottom Navigation Bar */}
+        <div className="bg-white dark:bg-zinc-900 border-t border-gray-200 dark:border-zinc-800 shadow-lg">
+          <div className="flex justify-between items-center h-12 px-2 max-w-md mx-auto">
+            {navItems.map((item) => {
+              const Icon = item.icon;
+              const isActive = activeTab === item.id;
+
+              return (
+                <button
+                  key={item.id}
+                  onClick={(e) => handleTabClick(item, e)}
+                  className={cn(
+                    'flex items-center justify-center relative transition-colors duration-200 px-3 py-1 rounded-full',
+                    isActive
+                      ? 'bg-red-600 text-white'
+                      : 'text-gray-500 hover:text-gray-700'
+                  )}
+                >
+                  <div className="relative flex items-center justify-center">
+                    {item.isAvatar && user ? (
+                      <Avatar className="w-5 h-5 border">
+                        <AvatarImage src={user.user_metadata?.avatar_url} alt="User" />
+                        <AvatarFallback className="text-xs">{user.email?.slice(0, 2).toUpperCase()}</AvatarFallback>
+                      </Avatar>
+                    ) : (
+                      <Icon
+                        className="w-5 h-5"
+                        width={20}
+                        height={20}
+                      />
+                    )}
+                    {item.badge && (
+                      <div className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold px-1.5 rounded-full">
+                        {item.badge}
+                      </div>
+                    )}
+                    {isActive && item.name && (
+                      <span className="ml-2 font-medium whitespace-nowrap max-w-[80px] overflow-hidden">
+                        {item.name}
+                      </span>
+                    )}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
     );

@@ -18,6 +18,7 @@ function MainLayoutContent() {
   const { openAuthOverlay } = useAuthOverlay();
 
   const isHomePage = pathname === "/";
+  const isMultiStepTransfer = pathname.startsWith("/multi-step-transfer");
 
   useEffect(() => {
     if (pathname === "/auth") {
@@ -26,10 +27,17 @@ function MainLayoutContent() {
     }
   }, [pathname, openAuthOverlay]);
 
+  // Calculate bottom padding based on whether we're in multi-step transfer mode
+  const getBottomPadding = () => {
+    if (!isMobile) return '0px';
+    if (isMultiStepTransfer) return '112px'; // 64px (continue button) + 48px (nav bar)
+    return '48px'; // Just nav bar
+  };
+
   const headerHeightStyle = `
     :root {
       --header-height: 0px;
-      --bottom-nav-height: ${isMobile ? '48px' : '0px'};
+      --bottom-nav-height: ${getBottomPadding()};
     }
   `;
 
@@ -46,7 +54,7 @@ function MainLayoutContent() {
       <div className="min-h-screen flex flex-col bg-white">
         <style dangerouslySetInnerHTML={{ __html: headerHeightStyle }} />
 
-        <main className={`flex-grow relative ${isMobile ? 'pb-12' : ''}`}>
+        <main className={`flex-grow relative`} style={{ paddingBottom: getBottomPadding() }}>
           <Outlet />
         </main>
 
