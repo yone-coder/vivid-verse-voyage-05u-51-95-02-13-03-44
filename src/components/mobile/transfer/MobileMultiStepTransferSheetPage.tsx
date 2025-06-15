@@ -969,12 +969,19 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
     link.click();
   };
 
+  // Define canProceed logic for each step
   const canProceedFromStep1 = transferData.amount && parseFloat(transferData.amount) > 0;
   const canProceedFromStep2 = transferData.receiverDetails.firstName &&
     transferData.receiverDetails.lastName &&
     transferData.receiverDetails.phoneNumber &&
     transferData.receiverDetails.commune;
   const canProceedFromStep3 = transferData.selectedPaymentMethod !== undefined && transferData.selectedPaymentMethod !== '';
+
+  // Calculate canProceed based on current step
+  const canProceed = 
+    (currentStep === 1 && canProceedFromStep1) ||
+    (currentStep === 2 && canProceedFromStep2) ||
+    (currentStep === 3 && canProceedFromStep3);
 
   const stepTitles = ['Send Money', 'Recipient Details', 'Payment Method', 'Transfer Complete'];
 
@@ -1289,8 +1296,7 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
                         (currentStep === 3 && transferData?.transferType === 'international' && !isPaymentFormValid)
                       }
                       className={cn(
-                        "transition-all duration-200 text-white font-semibold",
-                        currentStep === 1 ? "flex-1" : "flex-2",
+                        "w-full transition-all duration-200 text-white font-semibold py-4 text-lg",
                         getButtonColor()
                       )}
                     >
@@ -1440,11 +1446,7 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
       <IndexBottomNav
         showContinueButton={currentStep < 4}
         currentStep={currentStep}
-        canProceed={
-          (currentStep === 1 && canProceedFromStep1) ||
-          (currentStep === 2 && canProceedFromStep2) ||
-          (currentStep === 3 && canProceedFromStep3)
-        }
+        canProceed={canProceed}
         onContinue={currentStep === 3 ? handleStickyPayment : handleNextStep}
         onPrevious={handlePreviousStep}
         isPaymentLoading={isPaymentLoading}
