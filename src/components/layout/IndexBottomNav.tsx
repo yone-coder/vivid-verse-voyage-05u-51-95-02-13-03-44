@@ -70,24 +70,13 @@ export default function BottomNav() {
       return;
     }
 
-    // Check if we're already on the target path
-    if (item.path === location.pathname) {
-      console.log('Already on target path, ignoring click');
-      return;
-    }
-
-    // Special handling for send tab - don't navigate if already on home or multi-step transfer
-    if (item.id === 'send' && (location.pathname === '/' || location.pathname.startsWith('/multi-step-transfer'))) {
-      console.log('Already on send-related path, ignoring click');
-      return;
-    }
-
+    // Simplified navigation logic - just navigate to the target path
     console.log('Proceeding with navigation to:', item.path);
 
     setAnimating(true);
     setPreviousTab(activeTab);
     
-    // Use replace instead of push to avoid back button issues
+    // Navigate to the target path
     navigate(item.path, { replace: true });
     
     // Reset animation state after a delay
@@ -95,7 +84,7 @@ export default function BottomNav() {
       setAnimating(false);
       setPreviousTab(null);
     }, 300);
-  }, [navigate, location.pathname, activeTab, animating]);
+  }, [navigate, activeTab, animating]);
 
   return (
     <motion.div
