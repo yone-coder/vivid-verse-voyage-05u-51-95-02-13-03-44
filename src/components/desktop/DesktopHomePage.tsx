@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -144,9 +143,9 @@ const DesktopHomePage = () => {
 
       {/* Main Content - Two Column Layout */}
       <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-2 gap-8 h-full">
           
-          {/* Left Column */}
+          {/* LEFT COLUMN */}
           <div className="space-y-8">
             
             {/* Send Money Section */}
@@ -254,7 +253,7 @@ const DesktopHomePage = () => {
             </Card>
           </div>
 
-          {/* Right Column */}
+          {/* RIGHT COLUMN */}
           <div className="space-y-8">
             
             {/* Track Transfer Section */}
