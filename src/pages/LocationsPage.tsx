@@ -1,6 +1,15 @@
 
 import React from "react";
-import { MapPin, Phone, Clock } from "lucide-react";
+import { MapPin, Phone, Clock, Navigation } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 const locations = [
   {
@@ -9,7 +18,7 @@ const locations = [
     address: "123 Wall Street, New York, NY 10005, USA",
     hours: "Mon–Fri 9:00am – 5:30pm",
     phone: "+1 (212) 555-1234",
-    img: "https://maps.googleapis.com/maps/api/staticmap?center=New+York+NY&zoom=13&size=400x200&maptype=roadmap&markers=color:red%7CNew+York+NY"
+    img: "https://maps.googleapis.com/maps/api/staticmap?center=40.7061,-74.0092&zoom=14&size=600x400&maptype=roadmap&markers=color:red%7C40.7061,-74.0092&style=feature:poi|visibility:off&style=feature:transit|visibility:off"
   },
   {
     id: 2,
@@ -17,7 +26,7 @@ const locations = [
     address: "8 King’s Road, London SW3 4RY, UK",
     hours: "Mon–Fri 8:30am – 5:00pm",
     phone: "+44 20 7345 6789",
-    img: "https://maps.googleapis.com/maps/api/staticmap?center=London+UK&zoom=13&size=400x200&maptype=roadmap&markers=color:red%7CLondon+UK"
+    img: "https://maps.googleapis.com/maps/api/staticmap?center=51.4886,-0.1622&zoom=14&size=600x400&maptype=roadmap&markers=color:red%7C51.4886,-0.1622&style=feature:poi|visibility:off&style=feature:transit|visibility:off"
   },
   {
     id: 3,
@@ -25,48 +34,63 @@ const locations = [
     address: "55B Allen Avenue, Ikeja, Lagos, Nigeria",
     hours: "Mon–Sat 9:00am – 6:00pm",
     phone: "+234 1 270 5678",
-    img: "https://maps.googleapis.com/maps/api/staticmap?center=Lagos+Nigeria&zoom=13&size=400x200&maptype=roadmap&markers=color:red%7CLagos+Nigeria"
+    img: "https://maps.googleapis.com/maps/api/staticmap?center=6.6018,3.3515&zoom=14&size=600x400&maptype=roadmap&markers=color:red%7C6.6018,3.3515&style=feature:poi|visibility:off&style=feature:transit|visibility:off"
   }
 ];
 
 const LocationsPage: React.FC = () => {
   return (
-    <div className="max-w-2xl mx-auto px-4 py-10">
-      <h1 className="text-3xl font-bold mb-2 text-center flex justify-center items-center gap-2">
-        <MapPin className="w-7 h-7 text-[#ff4747]" />
-        Our Locations
-      </h1>
-      <p className="text-gray-500 text-center mb-6">
-        Visit any of our global branches to send, receive, or track your transfers with our friendly staff. Find a location near you.
-      </p>
+    <div className="container mx-auto px-4 py-10 max-w-6xl">
+      <div className="text-center mb-12">
+        <h1 className="text-4xl font-extrabold tracking-tight mb-2 flex justify-center items-center gap-3">
+          <MapPin className="w-8 h-8 text-[#ff4747]" />
+          Our Global Locations
+        </h1>
+        <p className="text-lg text-muted-foreground">
+          Find a branch near you to manage your transfers with our expert team.
+        </p>
+      </div>
 
-      <div className="space-y-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {locations.map(loc => (
-          <div key={loc.id} className="border rounded-lg bg-white dark:bg-zinc-900/80 shadow-md flex flex-col md:flex-row overflow-hidden">
+          <Card key={loc.id} className="flex flex-col overflow-hidden transform hover:scale-[1.03] transition-transform duration-300 ease-in-out shadow-lg hover:shadow-2xl">
             <img
               src={loc.img}
               alt={`${loc.city} map preview`}
-              className="h-40 w-full md:w-64 object-cover"
+              className="h-48 w-full object-cover"
               loading="lazy"
             />
-            <div className="flex-1 p-4 flex flex-col gap-1 justify-center">
-              <div className="flex items-center gap-2 mb-1">
-                <MapPin className="w-5 h-5 text-[#ff4747]" />
-                <span className="text-lg font-semibold">{loc.city} Branch</span>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-2xl font-bold">
+                {loc.city}
+              </CardTitle>
+              <CardDescription>{loc.address}</CardDescription>
+            </CardHeader>
+            <CardContent className="flex-grow space-y-4">
+              <div className="flex items-center gap-3 text-sm">
+                <Clock className="w-4 h-4 text-muted-foreground" />
+                <span className="font-medium text-foreground/90">{loc.hours}</span>
               </div>
-              <p className="text-sm text-gray-700 dark:text-gray-200">{loc.address}</p>
-              <div className="flex items-center gap-2 mt-2">
-                <Phone className="w-4 h-4 text-blue-600" />
-                <a className="text-blue-600 hover:underline text-sm" href={`tel:${loc.phone.replace(/[^+\d]/g, "")}`}>
+              <div className="flex items-center gap-3 text-sm">
+                <Phone className="w-4 h-4 text-muted-foreground" />
+                <a className="text-blue-500 hover:text-blue-600 hover:underline font-medium" href={`tel:${loc.phone.replace(/[^+\d]/g, "")}`}>
                   {loc.phone}
                 </a>
               </div>
-              <div className="flex items-center gap-2 mt-1">
-                <Clock className="w-4 h-4 text-amber-500" />
-                <span className="text-sm text-gray-600 dark:text-gray-300">{loc.hours}</span>
-              </div>
-            </div>
-          </div>
+            </CardContent>
+            <CardFooter>
+              <Button asChild className="w-full" variant="outline">
+                <a
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(loc.address)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Navigation className="mr-2 h-4 w-4" />
+                  Get Directions
+                </a>
+              </Button>
+            </CardFooter>
+          </Card>
         ))}
       </div>
     </div>
