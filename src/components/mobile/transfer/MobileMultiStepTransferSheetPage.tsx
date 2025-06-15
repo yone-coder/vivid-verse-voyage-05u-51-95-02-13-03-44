@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, X, Check, Loader2, AlertCircle, Key, Globe, Search, CheckCircle, User, Receipt, ArrowRight } from 'lucide-react';
@@ -34,6 +35,15 @@ export interface TransferData {
     email?: string;
   };
   selectedPaymentMethod?: string;
+}
+
+interface PaymentMethod {
+  id: string;
+  name: string;
+  icon: any;
+  description: string;
+  fee: string;
+  processorUrl?: string;
 }
 
 interface MobileMultiStepTransferSheetPageProps {
