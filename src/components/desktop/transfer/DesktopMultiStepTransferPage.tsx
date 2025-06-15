@@ -1,19 +1,14 @@
-
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, CheckCircle, Receipt, Search, Key, Globe, Loader2, Zap, BadgePercent } from 'lucide-react';
+import { ArrowRight, ArrowLeft, DollarSign, User, CreditCard, Shield, CheckCircle, Receipt, Search, Key, Globe, Loader2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { Card, Separator } from "@/components/ui/card";
 import { motion } from 'framer-motion';
-import { useNavigate, Link, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import html2canvas from 'html2canvas';
-import { toast } from "@/hooks/use-toast";
 import TransferTypeSelector from '@/components/transfer/TransferTypeSelector';
 import StepOneTransfer from '@/components/transfer/StepOneTransfer';
 import StepOneLocalTransfer from '@/components/transfer/StepOneLocalTransfer';
 import StepTwoTransfer from '@/components/transfer/StepTwoTransfer';
-import PaymentMethodList from '@/components/transfer/PaymentMethodList';
-import { internationalPaymentMethods } from '@/components/transfer/PaymentMethods';
 import { emailNotificationService } from '@/components/transfer/EmailNotificationService';
 
 export interface TransferData {
@@ -69,7 +64,8 @@ const DesktopTransferForm: React.FC<DesktopTransferFormProps> = ({
     if (currentStep === 3 && paypalContainerRef.current) {
       // Clear any existing content
       const container = paypalContainerRef.current;
-      
+      container.innerHTML = '';
+
       // Add PayPal checkout styles
       const styleElement = document.createElement('style');
       styleElement.textContent = `
@@ -349,7 +345,7 @@ const DesktopTransferForm: React.FC<DesktopTransferFormProps> = ({
 
       container.innerHTML = checkoutHTML;
 
-      // PayPal integration script
+      // Add PayPal integration script
       const script = document.createElement('script');
       script.innerHTML = `
         let current_customer_id;
@@ -635,7 +631,7 @@ const DesktopTransferForm: React.FC<DesktopTransferFormProps> = ({
     }
   }, [currentStep, transferData.amount]);
 
-  // Event listeners and handlers
+  // Listen for email capture from PayPal form
   useEffect(() => {
     const handleEmailCapture = (event: any) => {
       setUserEmail(event.detail.email);
@@ -645,154 +641,15 @@ const DesktopTransferForm: React.FC<DesktopTransferFormProps> = ({
     return () => window.removeEventListener('emailCaptured', handleEmailCapture);
   }, []);
 
-  const sendEmailNotification = async (orderDetails: any) => {
-    if (!userEmail) {
-      console.log('No email captured from payment form');
-      return;
-    }
-
-    const actualTransactionId = orderDetails?.id || transactionId || `TX${Date.now()}`;
-
-    try {
-      const emailData = {
-        to: userEmail,
-        subject: "Money Transfer Confirmation - Transaction Completed",
-        html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
-            <div style="background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-              <h1 style="color: #10b981; text-align: center; margin-bottom: 30px;">💰 Money Transfer Successful!</h1>
-              
-              <div style="background-color: #f0f9ff; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-                <h2 style="color: #1e40af; margin-top: 0;">Transfer Details</h2>
-                <p><strong>Amount Sent:</strong> $${transferData.amount} USD</p>
-                <p><strong>Recipient:</strong> ${transferData.receiverDetails.firstName} ${transferData.receiverDetails.lastName}</p>
-                <p><strong>Location:</strong> ${transferData.receiverDetails.commune}, ${transferData.receiverDetails.department}</p>
-                <p><strong>Transaction ID:</strong> ${actualTransactionId}</p>
-                <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
-                <p><strong>Your Email:</strong> ${userEmail}</p>
-              </div>
-              
-              <div style="background-color: #ecfdf5; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-                <h3 style="color: #065f46; margin-top: 0;">📱 Next Steps</h3>
-                <p>Your money transfer has been processed successfully and will be available for pickup within 24-48 hours.</p>
-                <p>The recipient will receive an SMS notification at <strong>+509 ${transferData.receiverDetails.phoneNumber}</strong> when the funds are ready for pickup.</p>
-              </div>
-              
-              <div style="background-color: #fff7ed; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-                <h3 style="color: #c2410c; margin-top: 0;">💡 Important Information</h3>
-                <p>• Keep this email as your receipt</p>
-                <p>• Transaction ID: <strong>${actualTransactionId}</strong></p>
-                <p>• Customer support: support@example.com</p>
-              </div>
-              
-              <div style="text-align: center; margin-top: 30px;">
-                <p style="color: #6b7280; font-size: 14px;">
-                  This is an automated confirmation email. Please keep this for your records.
-                </p>
-              </div>
-            </div>
-          </div>
-        `,
-        text: `Money Transfer Confirmation - Your transfer of $${transferData.amount} USD to ${transferData.receiverDetails.firstName} ${transferData.receiverDetails.lastName} has been completed successfully. Transaction ID: ${actualTransactionId}. The recipient will be notified when funds are ready for pickup within 24-48 hours.`
-      };
-
-      console.log('Sending email notification to:', userEmail);
-      console.log('Using transaction ID:', actualTransactionId);
-      
-      const response = await fetch('https://resend-u11p.onrender.com/send-email', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(emailData)
-      });
-
-      if (response.ok) {
-        console.log('Email notification sent successfully');
-      } else {
-        console.error('Failed to send email notification');
-      }
-    } catch (error) {
-      console.error('Error sending email notification:', error);
-    }
-  };
-
-  const handleMonCashPayment = async () => {
-    if (!transferData.amount || !transferData.receiverDetails.firstName) {
-      toast({
-        title: "Missing Information",
-        description: "Please complete all required fields before proceeding.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsProcessingPayment(true);
-    setIsPaymentLoading(true);
-
-    try {
-      const tokenResponse = await fetch('https://moncash-backend.onrender.com/api/get-token', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
-      });
-
-      if (!tokenResponse.ok) {
-        const errorData = await tokenResponse.json();
-        throw new Error(errorData.error || 'Failed to get MonCash access token');
-      }
-
-      const tokenData = await tokenResponse.json();
-      const accessToken = tokenData.accessToken;
-
-      if (!accessToken) {
-        throw new Error('Invalid access token received from MonCash');
-      }
-
-      const orderId = `TX${Date.now()}`;
-      const paymentResponse = await fetch('https://moncash-backend.onrender.com/api/create-payment', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          accessToken,
-          amount: transferData.amount,
-          orderId
-        })
-      });
-
-      if (!paymentResponse.ok) {
-        const errorData = await paymentResponse.json();
-        throw new Error(errorData.error || 'Failed to create MonCash payment');
-      }
-
-      const paymentData = await paymentResponse.json();
-
-      if (!paymentData.paymentUrl) {
-        throw new Error('No payment URL received from MonCash');
-      }
-
-      window.location.href = paymentData.paymentUrl;
-
-    } catch (error) {
-      console.error('MonCash payment error:', error);
-      toast({
-        title: "Payment Failed",
-        description: error instanceof Error ? error.message : "Failed to process MonCash payment. Please try again.",
-        variant: "destructive",
-      });
-      setIsProcessingPayment(false);
-      setIsPaymentLoading(false);
-    }
-  };
-
+  // Listen for payment success
   useEffect(() => {
     const handlePaymentSuccess = (event: any) => {
-      console.log('Payment success event received:', event.detail);
       const orderDetails = event.detail.orderDetails;
       
       setPaymentCompleted(true);
       const actualTransactionId = orderDetails?.id || `TX${Date.now()}`;
       setTransactionId(actualTransactionId);
-      setCurrentStep(4);
+      setCurrentStep(5);
       setIsPaymentLoading(false);
       
       if (userEmail) {
@@ -808,8 +665,9 @@ const DesktopTransferForm: React.FC<DesktopTransferFormProps> = ({
 
     window.addEventListener('paymentSuccess', handlePaymentSuccess);
     return () => window.removeEventListener('paymentSuccess', handlePaymentSuccess);
-  }, [userEmail, transferData.amount, transferData.receiverDetails.firstName, transferData.receiverDetails.lastName, transferData.receiverDetails.commune, transferData.receiverDetails.phoneNumber]);
+  }, [userEmail, transferData]);
 
+  // Listen for form validation changes
   useEffect(() => {
     const handleFormValidation = (event: any) => {
       setIsPaymentFormValid(event.detail.isValid);
@@ -819,9 +677,9 @@ const DesktopTransferForm: React.FC<DesktopTransferFormProps> = ({
     return () => window.removeEventListener('paymentFormValidation', handleFormValidation);
   }, []);
 
+  // Listen for payment errors to stop loading overlay
   useEffect(() => {
     const handlePaymentError = (event: any) => {
-      console.log('Payment error detected:', event.detail.message);
       setIsPaymentLoading(false);
     };
 
@@ -830,7 +688,7 @@ const DesktopTransferForm: React.FC<DesktopTransferFormProps> = ({
   }, []);
 
   const handleNextStep = () => {
-    if (currentStep < 4) {
+    if (currentStep < 5) {
       setCurrentStep(currentStep + 1);
     }
   };
@@ -903,14 +761,14 @@ const DesktopTransferForm: React.FC<DesktopTransferFormProps> = ({
     link.click();
   };
 
-  const canProceedFromStep1 = transferData.amount && parseFloat(transferData.amount) > 0;
-  const canProceedFromStep2 = transferData.receiverDetails.firstName && 
+  const canProceedFromStep1 = transferData.transferType !== undefined;
+  const canProceedFromStep2 = transferData.amount && parseFloat(transferData.amount) > 0;
+  const canProceedFromStep3 = transferData.receiverDetails.firstName && 
                               transferData.receiverDetails.lastName &&
                               transferData.receiverDetails.phoneNumber && 
                               transferData.receiverDetails.commune;
-  const canProceedFromStep3 = transferData.selectedPaymentMethod;
 
-  const stepTitles = ['Send Money', 'Recipient Details', 'Payment Method', 'Transfer Complete'];
+  const stepTitles = ['Transfer Type', 'Send Money', 'Recipient Details', 'Payment Method', 'Transfer Complete'];
 
   const stepVariants = {
     inactive: { 
@@ -960,21 +818,29 @@ const DesktopTransferForm: React.FC<DesktopTransferFormProps> = ({
   const receiverAmount = transferData.amount ? (parseFloat(transferData.amount) * 127.5).toFixed(2) : '0.00';
 
   const handleStickyPayment = async () => {
-    if (transferData.transferType === 'national') {
-      await handleMonCashPayment();
-    } else {
-      setIsPaymentLoading(true);
-      
-      try {
+    setIsPaymentLoading(true);
+    
+    try {
+      if (transferData.transferType === 'national') {
+        const moncashPaymentUrl = `https://sandbox.moncashbutton.digicelgroup.com/Moncash-middleware/Payment/Redirect?token=YOUR_TOKEN&amount=${receiverAmount}&orderid=${Date.now()}`;
+        window.open(moncashPaymentUrl, '_blank', 'width=600,height=700');
+        
+        setTimeout(() => {
+          setPaymentCompleted(true);
+          setTransactionId(`HTG${Date.now()}`);
+          setCurrentStep(5);
+          setIsPaymentLoading(false);
+        }, 10000);
+      } else {
         const cardForm = document.querySelector("#card-form") as HTMLFormElement;
         if (cardForm) {
           const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
           cardForm.dispatchEvent(submitEvent);
         }
-      } catch (error) {
-        console.error('Payment failed:', error);
-        setIsPaymentLoading(false);
       }
+    } catch (error) {
+      console.error('Payment failed:', error);
+      setIsPaymentLoading(false);
     }
   };
 
@@ -993,209 +859,233 @@ const DesktopTransferForm: React.FC<DesktopTransferFormProps> = ({
       )}
 
       {/* Header */}
-      <div className="bg-blue-600">
-        <div className="flex items-center justify-between px-4 py-2 h-12">
-          <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
-            <Globe className="w-4 h-4 text-blue-600" />
+      <div className="bg-blue-600 sticky top-0 z-50">
+        <div className="flex items-center justify-between p-4 h-14">
+          <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+            <span className="text-blue-600 font-bold text-xs">GT</span>
           </div>
           
-          <h1 className="text-lg font-bold text-white">
-            GLOBAL TRANSFÈ
-          </h1>
+          <div className="flex-1 flex justify-center">
+            <h1 className="text-xl font-semibold text-white">
+              GLOBAL TRANSFÈ
+            </h1>
+          </div>
           
-          <button className="p-1.5 rounded-full hover:bg-blue-700">
-            <Search className="w-4 h-4 text-white" />
+          <button className="p-2 rounded-full hover:bg-blue-700 text-white">
+            <Search size={20} />
           </button>
         </div>
-      </div>
-      
-      {/* Step Indicator */}
-      <div className="bg-white px-4 pt-3 pb-3">
-        <div className="flex items-center justify-between">
-          {[1, 2, 3, 4].map((step, index) => (
-            <React.Fragment key={step}>
-              <div className="flex flex-col items-center">
-                <motion.div 
-                  className={`rounded-full flex items-center justify-center text-xs font-medium transition-all duration-300 shadow-sm ${
-                    step === currentStep 
-                      ? 'w-auto h-7 px-2 bg-red-600 text-white' 
-                      : 'w-7 h-7 bg-gray-200 text-gray-600'
-                  }`}
-                  variants={stepVariants}
-                  initial="inactive"
-                  animate={
-                    step === currentStep ? 'active' : 
-                    step < currentStep ? 'completed' : 
-                    'inactive'
-                  }
-                  whileTap={{ scale: 0.95 }}
-                >
-                  {step < currentStep ? (
-                    <CheckCircle className="h-3 w-3" />
-                  ) : step === currentStep ? (
-                    <div className="flex items-center space-x-1">
-                      {step === 1 ? (
-                        <DollarSign className="h-3 w-3" />
-                      ) : step === 2 ? (
-                        <User className="h-3 w-3" />
-                      ) : step === 3 ? (
-                        <CreditCard className="h-3 w-3" />
-                      ) : (
-                        <Receipt className="h-3 w-3" />
-                      )}
-                      <span className="font-medium whitespace-nowrap text-xs">
-                        {stepTitles[index].split(' ')[0]}
-                      </span>
-                    </div>
-                  ) : (
-                    step
-                  )}
-                </motion.div>
-              </div>
-              {index < 3 && (
-                <motion.div 
-                  className="flex-1 h-0.5 mx-2 rounded-full origin-left"
-                  variants={lineVariants}
-                  initial="inactive"
-                  animate={step < currentStep ? 'active' : 'inactive'}
-                />
-              )}
-            </React.Fragment>
-          ))}
-        </div>
-      </div>
-
-      {/* Transfer Type Selector */}
-      {currentStep === 1 && (
-        <div className="bg-white">
-          <TransferTypeSelector 
-            transferType={transferData.transferType || 'international'}
-            onTransferTypeChange={(type) => updateTransferData({ transferType: type })}
-            disableNavigation={true}
-          />
-        </div>
-      )}
-
-      {/* Step Content */}
-      <div className="flex-1 overflow-y-auto p-4">
-        <div className="space-y-6">
-          {currentStep === 1 && (
-            <div className="space-y-6">
-              <div className="space-y-4">
-                <div className="text-center">
-                  <p className="text-gray-600">Enter the amount you want to send</p>
+        
+        {/* Animated Step Indicator */}
+        <div className="px-4 pb-3">
+          <div className="flex items-center justify-between">
+            {[1, 2, 3, 4, 5].map((step, index) => (
+              <React.Fragment key={step}>
+                <div className="flex flex-col items-center">
+                  <motion.div 
+                    className={`rounded-full flex items-center justify-center text-xs font-medium transition-all duration-300 shadow-sm ${
+                      step === currentStep 
+                        ? 'w-auto h-7 px-2 bg-red-600 text-white' 
+                        : 'w-7 h-7 bg-gray-200 text-gray-600'
+                    }`}
+                    variants={stepVariants}
+                    initial="inactive"
+                    animate={
+                      step === currentStep ? 'active' : 
+                      step < currentStep ? 'completed' : 
+                      'inactive'
+                    }
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {step < currentStep ? (
+                      <CheckCircle className="h-3 w-3" />
+                    ) : step === currentStep ? (
+                      <div className="flex items-center space-x-1">
+                        {step === 1 ? (
+                          <Globe className="h-3 w-3" />
+                        ) : step === 2 ? (
+                          <DollarSign className="h-3 w-3" />
+                        ) : step === 3 ? (
+                          <User className="h-3 w-3" />
+                        ) : step === 4 ? (
+                          <CreditCard className="h-3 w-3" />
+                        ) : (
+                          <Receipt className="h-3 w-3" />
+                        )}
+                        <span className="font-medium whitespace-nowrap text-xs">
+                          {stepTitles[index].split(' ')[0]}
+                        </span>
+                      </div>
+                    ) : (
+                      step
+                    )}
+                  </motion.div>
                 </div>
-                
-                {transferData.transferType === 'national' ? (
-                  <StepOneLocalTransfer 
-                    amount={transferData.amount}
-                    onAmountChange={(amount) => updateTransferData({ amount })}
-                  />
-                ) : (
-                  <StepOneTransfer 
-                    amount={transferData.amount}
-                    onAmountChange={(amount) => updateTransferData({ amount })}
+                {index < 4 && (
+                  <motion.div 
+                    className="flex-1 h-0.5 mx-2 rounded-full origin-left"
+                    variants={lineVariants}
+                    initial="inactive"
+                    animate={step < currentStep ? 'active' : 'inactive'}
                   />
                 )}
-              </div>
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
+      </div>
 
-              {/* Navigation Button for Step 1 */}
-              <div className="pt-4">
-                <Button 
-                  onClick={handleNextStep}
-                  disabled={!canProceedFromStep1}
-                  className="w-full transition-all duration-200"
-                >
-                  Continue
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </div>
+      {/* Main Content */}
+      <div className="max-w-2xl mx-auto p-6">
+        {currentStep === 1 && (
+          <div className="space-y-6">
+            <div className="text-center">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">Send Money</h2>
+              <p className="text-gray-600 text-lg">Choose your transfer type</p>
             </div>
-          )}
+            
+            <TransferTypeSelector
+              transferType={transferData.transferType || 'international'}
+              onTransferTypeChange={(transferType) => updateTransferData({ transferType })}
+            />
 
-          {currentStep === 2 && (
-            <div className="space-y-4">
-              <div className="text-center mb-4">
-                <p className="text-gray-600">Who are you sending ${transferData.amount} to?</p>
-              </div>
-              
-              <StepTwoTransfer 
-                receiverDetails={transferData.receiverDetails}
-                onDetailsChange={(receiverDetails) => updateTransferData({ receiverDetails })}
+            <div className="flex justify-end">
+              <Button 
+                onClick={handleNextStep}
+                className="px-8 py-3 text-lg"
+              >
+                Continue
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </div>
+          </div>
+        )}
+        
+        {currentStep === 2 && (
+          <div className="space-y-6">
+            <div className="text-center">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                {transferData.transferType === 'national' ? 'Send Money in Haiti' : 'Send Money Internationally'}
+              </h2>
+              <p className="text-gray-600 text-lg">Enter the amount you want to send</p>
+            </div>
+            
+            {transferData.transferType === 'national' ? (
+              <StepOneLocalTransfer 
+                amount={transferData.amount}
+                onAmountChange={(amount) => updateTransferData({ amount })}
               />
+            ) : (
+              <StepOneTransfer 
+                amount={transferData.amount}
+                onAmountChange={(amount) => updateTransferData({ amount })}
+              />
+            )}
 
-              {/* Navigation Buttons for Step 2 */}
-              <div className="flex gap-3 pt-4">
-                <Button 
-                  variant="outline" 
-                  onClick={handlePreviousStep}
-                  className="flex-1 transition-all duration-200"
-                >
-                  <ArrowLeft className="mr-2 h-4 w-4" />
-                  Previous
-                </Button>
-                
-                <Button 
-                  onClick={handleNextStep}
-                  disabled={!canProceedFromStep2}
-                  className="flex-1 transition-all duration-200"
-                >
-                  Next
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </div>
+            <div className="flex gap-4">
+              <Button 
+                variant="outline" 
+                onClick={handlePreviousStep}
+                className="flex-1 py-3"
+              >
+                <ArrowLeft className="mr-2 h-5 w-5" />
+                Previous
+              </Button>
+              <Button 
+                onClick={handleNextStep}
+                disabled={!canProceedFromStep2}
+                className="flex-1 py-3"
+              >
+                Continue
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
             </div>
-          )}
-          
-          {currentStep === 3 && (
-            <div className="space-y-6">
-              <div className="text-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-3">Complete Your Payment</h2>
-                <p className="text-gray-600 leading-relaxed">
-                  Sending <span className="font-semibold text-blue-600">
-                    {transferData.transferType === 'national' 
-                      ? `HTG ${receiverAmount}`
-                      : `$${transferData.amount}`
-                    }
-                  </span> to{' '}
-                  <span className="font-semibold text-gray-900">
-                    {transferData.receiverDetails.firstName} {transferData.receiverDetails.lastName}
-                  </span>
-                </p>
-              </div>
+          </div>
+        )}
+        
+        {currentStep === 3 && (
+          <div className="space-y-6">
+            <div className="text-center">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">Recipient Details</h2>
+              <p className="text-gray-600 text-lg">
+                Who are you sending {transferData.transferType === 'national' ? 'HTG' : '$'}{transferData.transferType === 'national' ? receiverAmount : transferData.amount} to?
+              </p>
+            </div>
+            
+            <StepTwoTransfer 
+              receiverDetails={transferData.receiverDetails}
+              onDetailsChange={(receiverDetails) => updateTransferData({ receiverDetails })}
+            />
 
-              {transferData.transferType === 'national' ? (
-                <div className="space-y-4">
-                  <div className="bg-white rounded-lg border border-gray-200 p-4 space-y-3">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Recipient:</span>
-                      <span className="font-medium">
-                        {transferData.receiverDetails.firstName} {transferData.receiverDetails.lastName}
-                      </span>
+            <div className="flex gap-4">
+              <Button 
+                variant="outline" 
+                onClick={handlePreviousStep}
+                className="flex-1 py-3"
+              >
+                <ArrowLeft className="mr-2 h-5 w-5" />
+                Previous
+              </Button>
+              <Button 
+                onClick={handleNextStep}
+                disabled={!canProceedFromStep3}
+                className="flex-1 py-3"
+              >
+                Continue
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </div>
+          </div>
+        )}
+        
+        {currentStep === 4 && (
+          <div className="space-y-6">
+            <div className="text-center">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">Complete Your Payment</h2>
+              <p className="text-gray-600 text-lg">
+                Sending {transferData.transferType === 'national' ? 'HTG' : '$'}{transferData.transferType === 'national' ? receiverAmount : transferData.amount} to{' '}
+                <span className="font-semibold text-gray-900">
+                  {transferData.receiverDetails.firstName} {transferData.receiverDetails.lastName}
+                </span>
+              </p>
+            </div>
+            
+            {transferData.transferType === 'national' ? (
+              <div className="max-w-md mx-auto">
+                <Card className="p-6 border-2 border-red-200">
+                  <div className="text-center space-y-4">
+                    <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
+                      <Globe className="h-8 w-8 text-red-600" />
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Amount:</span>
-                      <span className="font-medium">HTG {receiverAmount}</span>
+                    
+                    <div>
+                      <h3 className="text-xl font-semibold text-gray-900 mb-2">MonCash Payment</h3>
+                      <p className="text-gray-600 text-sm">Secure payment processing for Haiti</p>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Transfer Type:</span>
-                      <span className="font-medium capitalize">National</span>
-                    </div>
-                  </div>
 
-                  <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                    <h4 className="font-semibold text-red-800 mb-2">MonCash Payment</h4>
-                    <p className="text-sm text-red-700 mb-3">
-                      You will be redirected to MonCash to complete your payment securely.
-                    </p>
-                    <ul className="text-sm text-red-600 space-y-1">
-                      <li>• Make sure you have your MonCash account ready</li>
-                      <li>• Have sufficient funds in your MonCash wallet</li>
-                      <li>• Complete the payment on MonCash website</li>
+                    <div className="bg-gray-50 rounded-lg p-4">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-gray-600">Amount to Send</span>
+                        <span className="font-semibold">HTG {receiverAmount}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-gray-600">Processing Fee</span>
+                        <span className="font-semibold">HTG 0.00</span>
+                      </div>
+                      <Separator className="my-2" />
+                      <div className="flex justify-between items-center font-bold text-lg">
+                        <span>Total</span>
+                        <span className="text-red-600">HTG {receiverAmount}</span>
+                      </div>
+                    </div>
+
+                    <ul className="text-sm text-gray-600 text-left space-y-1">
+                      <li>• Secure MonCash payment gateway</li>
+                      <li>• Instant transfer to recipient</li>
+                      <li>• SMS notification sent automatically</li>
                       <li>• You will be redirected back after payment</li>
                     </ul>
 
-                    {/* Payment Button for National Transfer */}
                     <div className="pt-4">
                       <Button 
                         onClick={handleStickyPayment}
@@ -1213,240 +1103,191 @@ const DesktopTransferForm: React.FC<DesktopTransferFormProps> = ({
                       </Button>
                     </div>
                   </div>
+                </Card>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                <div className="w-full">
+                  <Button 
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 text-lg font-semibold"
+                    onClick={() => {
+                      console.log('PayPal payment initiated');
+                    }}
+                  >
+                    Pay with PayPal
+                  </Button>
                 </div>
-              ) : (
-                <div className="space-y-4">
-                  <div className="w-full">
-                    <Button 
-                      className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 text-lg font-semibold"
-                      onClick={() => {
-                        console.log('PayPal payment initiated');
-                      }}
-                    >
-                      Pay with PayPal
-                    </Button>
-                  </div>
 
-                  <div className="flex items-center justify-center space-x-4 my-6">
-                    <div className="flex-1 border-t border-gray-300"></div>
-                    <span className="text-gray-500 text-sm font-medium px-4">or continue with</span>
-                    <div className="flex-1 border-t border-gray-300"></div>
-                  </div>
-                  
-                  <div ref={paypalContainerRef}></div>
-
-                  {/* Payment Button for International Transfer */}
-                  <div className="pt-4">
-                    <Button 
-                      onClick={handleStickyPayment}
-                      disabled={isPaymentLoading || !isPaymentFormValid}
-                      className="w-full py-4 text-lg font-semibold bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white"
-                    >
-                      {isPaymentLoading ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Processing...
-                        </>
-                      ) : (
-                        `Pay $${totalAmount}`
-                      )}
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-          
-          {currentStep === 4 && (
-            <div className="space-y-4">              
-              <div 
-                ref={receiptRef}
-                className="bg-white border-2 border-gray-200 rounded-lg p-6 space-y-4"
-              >
-                <div className="flex items-center justify-between border-b pb-4">
-                  <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-                    <Receipt className="h-5 w-5 mr-2" />
-                    Receipt
-                  </h3>
-                  <span className="text-sm text-gray-500">
-                    {new Date().toLocaleDateString()}
-                  </span>
+                <div className="flex items-center justify-center space-x-4 my-6">
+                  <div className="flex-1 border-t border-gray-300"></div>
+                  <span className="text-gray-500 text-sm font-medium px-4">or continue with</span>
+                  <div className="flex-1 border-t border-gray-300"></div>
                 </div>
                 
-                <div className="space-y-3">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Transaction ID</span>
-                    <span className="font-mono text-gray-900">{transactionId}</span>
-                  </div>
-                  
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Status</span>
-                    <span className="text-green-600 font-medium">Completed</span>
-                  </div>
-                  
-                  <div className="border-t pt-3 space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Recipient</span>
-                      <span className="font-medium">{transferData.receiverDetails.firstName} {transferData.receiverDetails.lastName}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Phone Number</span>
-                      <span className="font-medium">+509 {transferData.receiverDetails.phoneNumber}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Location</span>
-                      <span className="font-medium text-right max-w-xs">{transferData.receiverDetails.commune}, {transferData.receiverDetails.department}</span>
-                    </div>
-                  </div>
-                  
-                  <div className="border-t pt-3 space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Amount Sent</span>
+                <div ref={paypalContainerRef}></div>
+
+                <div className="bg-white border border-gray-200 rounded-lg p-6 space-y-4">
+                  <h3 className="text-lg font-semibold text-gray-900">Payment Summary</h3>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Amount to Send</span>
                       <span className="font-medium">${transferData.amount}</span>
                     </div>
-                    <div className="flex justify-between text-sm">
+                    <div className="flex justify-between">
                       <span className="text-gray-600">Transfer Fee</span>
                       <span className="font-medium">${transferFee}</span>
                     </div>
-                    <div className="flex justify-between text-lg font-semibold border-t pt-2">
-                      <span>Total Paid</span>
+                    <Separator />
+                    <div className="flex justify-between text-lg font-semibold">
+                      <span>Total</span>
                       <span className="text-blue-600">${totalAmount}</span>
                     </div>
                   </div>
-                  
-                  <div className="border-t pt-3">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Payment Method</span>
-                      <span className="font-medium capitalize">
-                        {transferData.selectedPaymentMethod?.replace('-', ' ')}
-                      </span>
-                    </div>
-                  </div>
+                </div>
+              </div>
+            )}
 
-                  {userEmail && (
-                    <div className="border-t pt-3">
+            <div className="flex gap-4">
+              <Button 
+                variant="outline" 
+                onClick={handlePreviousStep}
+                className="flex-1 py-3"
+              >
+                <ArrowLeft className="mr-2 h-5 w-5" />
+                Previous
+              </Button>
+            </div>
+          </div>
+        )}
+        
+        {currentStep === 5 && (
+          <div className="space-y-6">
+            <div className="text-center">
+              <CheckCircle className="h-16 w-16 text-green-600 mx-auto mb-4" />
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">Transfer Complete!</h2>
+              <p className="text-gray-600 text-lg">
+                Your {transferData.transferType === 'national' ? 'HTG' : '$'}{transferData.transferType === 'national' ? receiverAmount : transferData.amount} transfer has been sent successfully
+              </p>
+            </div>
+            
+            <div 
+              ref={receiptRef}
+              className="bg-white border-2 border-gray-200 rounded-lg p-6 space-y-4 max-w-md mx-auto"
+            >
+              <div className="flex items-center justify-between border-b pb-4">
+                <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+                  <Receipt className="h-5 w-5 mr-2" />
+                  Receipt
+                </h3>
+                <span className="text-sm text-gray-500">
+                  {new Date().toLocaleDateString()}
+                </span>
+              </div>
+              
+              <div className="space-y-3">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Transaction ID</span>
+                  <span className="font-mono text-gray-900">{transactionId}</span>
+                </div>
+                
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Status</span>
+                  <span className="text-green-600 font-medium">Completed</span>
+                </div>
+                
+                <div className="border-t pt-3 space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Recipient</span>
+                    <span className="font-medium">{transferData.receiverDetails.firstName} {transferData.receiverDetails.lastName}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Phone Number</span>
+                    <span className="font-medium">+509 {transferData.receiverDetails.phoneNumber}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Location</span>
+                    <span className="font-medium text-right max-w-xs">{transferData.receiverDetails.commune}, {transferData.receiverDetails.department}</span>
+                  </div>
+                </div>
+                
+                <div className="border-t pt-3 space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Amount Sent</span>
+                    <span className="font-medium">
+                      {transferData.transferType === 'national' ? 'HTG' : '$'}{transferData.transferType === 'national' ? receiverAmount : transferData.amount}
+                    </span>
+                  </div>
+                  {transferData.transferType !== 'national' && (
+                    <>
                       <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">Confirmation Email</span>
-                        <span className="font-medium">{userEmail}</span>
+                        <span className="text-gray-600">Transfer Fee</span>
+                        <span className="font-medium">${transferFee}</span>
                       </div>
-                    </div>
+                      <div className="flex justify-between text-lg font-semibold border-t pt-2">
+                        <span>Total Paid</span>
+                        <span className="text-blue-600">${totalAmount}</span>
+                      </div>
+                    </>
                   )}
                 </div>
                 
-                <div className="bg-green-50 rounded-lg p-4 mt-4">
-                  <div className="flex items-start space-x-3">
-                    <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
-                    <div>
-                      <h4 className="font-medium text-green-900">Delivery Information</h4>
-                      <p className="text-sm text-green-700 mt-1">
-                        The recipient will receive the funds within 24-48 hours. They will be notified via SMS when the money is ready for pickup.
-                      </p>
-                      {userEmail && (
-                        <p className="text-sm text-green-700 mt-1">
-                          A confirmation email has been sent to {userEmail}.
-                        </p>
-                      )}
+                <div className="border-t pt-3">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Payment Method</span>
+                    <span className="font-medium capitalize">
+                      {transferData.transferType === 'national' ? 'MonCash' : transferData.selectedPaymentMethod?.replace('-', ' ')}
+                    </span>
+                  </div>
+                </div>
+
+                {userEmail && (
+                  <div className="border-t pt-3">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Confirmation Email</span>
+                      <span className="font-medium">{userEmail}</span>
                     </div>
+                  </div>
+                )}
+              </div>
+              
+              <div className="bg-green-50 rounded-lg p-4 mt-4">
+                <div className="flex items-start space-x-3">
+                  <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
+                  <div>
+                    <h4 className="font-medium text-green-900">Delivery Information</h4>
+                    <p className="text-sm text-green-700 mt-1">
+                      The recipient will receive the funds within 24-48 hours. They will be notified via SMS when the money is ready for pickup.
+                    </p>
+                    {userEmail && (
+                      <p className="text-sm text-green-700 mt-1">
+                        A confirmation email has been sent to {userEmail}.
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
-              
-              <div className="flex gap-3">
-                <Button 
-                  variant="outline" 
-                  onClick={generateReceiptImage}
-                  className="flex-1"
-                >
-                  Share Receipt
-                </Button>
-                <Button 
-                  onClick={() => {}}
-                  className="flex-1"
-                >
-                  Done
-                </Button>
-              </div>
             </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const DesktopMultiStepTransferPage: React.FC = () => {
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-          
-          {/* Left Column: Interactive Transfer Form */}
-          <div className="lg:sticky lg:top-8">
-            <div className="flex flex-col bg-white rounded-2xl shadow-2xl shadow-gray-200/50 overflow-hidden" style={{ height: 'calc(100vh - 4rem)' }}>
-              <DesktopTransferForm />
-            </div>
-          </div>
-
-          {/* Right Column: Informational Content */}
-          <div className="bg-white rounded-2xl shadow-2xl shadow-gray-200/50 p-8 lg:p-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">Send Money with Confidence</h2>
-            <p className="text-lg text-gray-600 mb-8">
-              Welcome to our new desktop experience. Complete your transfer in a few simple steps.
-            </p>
             
-            <div className="space-y-6">
-              <div className="flex items-start">
-                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
-                  <Zap className="h-6 w-6" />
-                </div>
-                <div className="ml-4">
-                  <h3 className="text-xl font-semibold text-gray-800">Fast & Secure Transfers</h3>
-                  <p className="mt-1 text-gray-500">Your money is transferred securely and arrives quickly to your recipient.</p>
-                </div>
-              </div>
-              <div className="flex items-start">
-                <div className="flex-shrink-0 w-12 h-12 rounded-full bg-green-100 text-green-600 flex items-center justify-center">
-                   <BadgePercent className="h-6 w-6" />
-                </div>
-                <div className="ml-4">
-                  <h3 className="text-xl font-semibold text-gray-800">Competitive Rates</h3>
-                  <p className="mt-1 text-gray-500">We offer competitive exchange rates to maximize the value of your transfer.</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-10 pt-8 border-t border-gray-200">
-              <h3 className="text-xl font-semibold text-gray-800 mb-4">How it works</h3>
-              <ol className="relative border-l border-gray-200 dark:border-gray-700 space-y-6">
-                <li className="ml-6">
-                  <span className="absolute flex items-center justify-center w-8 h-8 bg-blue-100 rounded-full -left-4 ring-4 ring-white">
-                    <span className="font-bold text-blue-600">1</span>
-                  </span>
-                  <h4 className="font-medium text-gray-900">Enter Amount</h4>
-                  <p className="text-sm text-gray-500">Specify how much you want to send.</p>
-                </li>
-                 <li className="ml-6">
-                  <span className="absolute flex items-center justify-center w-8 h-8 bg-blue-100 rounded-full -left-4 ring-4 ring-white">
-                    <span className="font-bold text-blue-600">2</span>
-                  </span>
-                  <h4 className="font-medium text-gray-900">Recipient Details</h4>
-                  <p className="text-sm text-gray-500">Provide your recipient's information.</p>
-                </li>
-                 <li className="ml-6">
-                  <span className="absolute flex items-center justify-center w-8 h-8 bg-blue-100 rounded-full -left-4 ring-4 ring-white">
-                    <span className="font-bold text-blue-600">3</span>
-                  </span>
-                  <h4 className="font-medium text-gray-900">Pay & Send</h4>
-                  <p className="text-sm text-gray-500">Choose your payment method and confirm.</p>
-                </li>
-              </ol>
+            <div className="flex gap-3 max-w-md mx-auto">
+              <Button 
+                variant="outline" 
+                onClick={generateReceiptImage}
+                className="flex-1 py-3"
+              >
+                Share Receipt
+              </Button>
+              <Button 
+                onClick={() => navigate('/for-you')}
+                className="flex-1 py-3"
+              >
+                Done
+              </Button>
             </div>
           </div>
-
-        </div>
+        )}
       </div>
     </div>
   );
 };
 
-export default DesktopMultiStepTransferPage;
+export default DesktopTransferForm;
