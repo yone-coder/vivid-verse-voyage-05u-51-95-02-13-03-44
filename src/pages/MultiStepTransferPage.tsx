@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { ArrowRight, ArrowLeft, Loader2 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -21,7 +22,11 @@ export interface TransferData {
   };
 }
 
-const MultiStepTransferPage: React.FC = () => {
+interface MultiStepTransferPageProps {
+  isEmbedded?: boolean;
+}
+
+const MultiStepTransferPage: React.FC<MultiStepTransferPageProps> = ({ isEmbedded = false }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
@@ -61,7 +66,7 @@ const MultiStepTransferPage: React.FC = () => {
   const handlePreviousStep = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
-    } else {
+    } else if (!isEmbedded) {
       navigate('/transfer');
     }
   };
@@ -145,9 +150,40 @@ const MultiStepTransferPage: React.FC = () => {
                               transferData.receiverDetails.phoneNumber && 
                               transferData.receiverDetails.commune;
 
+  const NavigationButtons = (
+    <div className={isEmbedded ? "bg-white p-4" : "fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4"}>
+      <div className="max-w-md mx-auto flex gap-3">
+        <Button 
+          variant="outline" 
+          onClick={handlePreviousStep}
+          className="flex-1"
+          disabled={isEmbedded && currentStep === 0}
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          {currentStep === 0 && !isEmbedded ? 'Back to Home' : 'Previous'}
+        </Button>
+        
+        {currentStep < 3 && (
+          <Button 
+            onClick={handleNextStep}
+            disabled={
+              (currentStep === 0 && !canProceedFromStep0) ||
+              (currentStep === 1 && !canProceedFromStep1) || 
+              (currentStep === 2 && !canProceedFromStep2)
+            }
+            className="flex-1"
+          >
+            Next
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
+        )}
+      </div>
+    </div>
+  );
+
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
-      <TransferHeader />
+    <div className={isEmbedded ? "" : "min-h-screen bg-gray-50 pb-20"}>
+      {!isEmbedded && <TransferHeader />}
       
       {/* Step Indicator */}
       <div className="max-w-md mx-auto px-4 py-4">
@@ -291,34 +327,7 @@ const MultiStepTransferPage: React.FC = () => {
         )}
       </div>
 
-      {/* Sticky Navigation Buttons */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
-        <div className="max-w-md mx-auto flex gap-3">
-          <Button 
-            variant="outline" 
-            onClick={handlePreviousStep}
-            className="flex-1"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            {currentStep === 0 ? 'Back to Home' : 'Previous'}
-          </Button>
-          
-          {currentStep < 3 && (
-            <Button 
-              onClick={handleNextStep}
-              disabled={
-                (currentStep === 0 && !canProceedFromStep0) ||
-                (currentStep === 1 && !canProceedFromStep1) || 
-                (currentStep === 2 && !canProceedFromStep2)
-              }
-              className="flex-1"
-            >
-              Next
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          )}
-        </div>
-      </div>
+      {NavigationButtons}
     </div>
   );
 };
