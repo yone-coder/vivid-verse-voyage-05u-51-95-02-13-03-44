@@ -249,11 +249,11 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
     ? `flex flex-col bg-white rounded-t-lg shadow-lg relative transition-all duration-300 ${
         isFullHeight ? 'h-screen' : 'h-[95vh]'
       }`
-    : 'flex flex-col h-full bg-white';
+    : 'flex flex-col bg-white';
 
   const navButtonsClasses = isSheet
     ? 'fixed bottom-0 left-0 right-0 bg-white px-4 py-4 z-[60] border-t border-gray-200'
-    : 'px-4 py-4 border-t border-gray-200 mt-auto';
+    : 'px-4 py-4 border-t border-gray-200';
 
   return (
     <div 
@@ -330,7 +330,7 @@ const MultiStepTransferSheet: React.FC<MultiStepTransferSheetProps> = ({ onClose
       </div>
 
       {/* Step Content - Reduced padding and consistent spacing */}
-      <div className="flex-1 overflow-y-auto">
+      <div className={isSheet ? "flex-1 overflow-y-auto" : ""}>
         <div className="px-4 py-4">
           {currentStep === 1 && (
             <div className="space-y-4">

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import MobileMultiStepTransferSheetPage from '@/components/mobile/transfer/MobileMultiStepTransferSheetPage';
+import MultiStepTransferSheet from '@/components/transfer/MultiStepTransferSheet';
 import { Zap, BadgePercent } from 'lucide-react';
 
 const DesktopMultiStepTransferPage: React.FC = () => {
@@ -11,8 +11,8 @@ const DesktopMultiStepTransferPage: React.FC = () => {
           
           {/* Left Column: Interactive Transfer Form */}
           <div className="lg:sticky lg:top-8">
-            <div className="flex flex-col bg-white rounded-2xl shadow-2xl shadow-gray-200/50 overflow-hidden" style={{ height: 'calc(100vh - 4rem)' }}>
-              <MobileMultiStepTransferSheetPage />
+            <div className="flex flex-col bg-white rounded-2xl shadow-2xl shadow-gray-200/50 overflow-hidden">
+              <MultiStepTransferSheet onClose={() => {}} variant="page" />
             </div>
           </div>
 
