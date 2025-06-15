@@ -54,7 +54,7 @@ function MainLayoutContent() {
       <div className="min-h-screen flex flex-col bg-white">
         <style dangerouslySetInnerHTML={{ __html: headerHeightStyle }} />
 
-        <main className={`flex-grow relative`} style={{ paddingBottom: getBottomPadding() }}>
+        <main className={`flex-grow relative ${isMobile ? '' : 'min-h-screen'}`} style={{ paddingBottom: getBottomPadding() }}>
           <Outlet />
         </main>
 
