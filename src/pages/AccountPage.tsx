@@ -1,11 +1,309 @@
 
 import React from 'react';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import {
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  Shield,
+  Bell,
+  CreditCard,
+  LogOut,
+  Edit,
+  Settings,
+  HelpCircle,
+  Lock,
+  Globe,
+  Eye,
+  EyeOff
+} from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+import { cn } from '@/lib/utils';
 
 const AccountPage: React.FC = () => {
+  const { user, signOut } = useAuth();
+  const [showPassword, setShowPassword] = React.useState(false);
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
+
   return (
-    <div className="p-4 pt-8 text-center">
-      <h1 className="text-2xl font-bold">Account</h1>
-      <p className="text-gray-500 mt-2">Manage your account settings.</p>
+    <div className="container mx-auto p-4 md:p-6 pb-20 max-w-4xl">
+      <div className="space-y-2 mb-6">
+        <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Account</h1>
+        <p className="text-muted-foreground">
+          Manage your account settings and preferences.
+        </p>
+      </div>
+
+      <div className="grid gap-6">
+        {/* Profile Section */}
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <User className="w-5 h-5" />
+                  Profile Information
+                </CardTitle>
+                <CardDescription>
+                  Your personal details and contact information.
+                </CardDescription>
+              </div>
+              <Button variant="outline" size="sm">
+                <Edit className="w-4 h-4 mr-2" />
+                Edit
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="flex items-center gap-4">
+              <Avatar className="w-16 h-16">
+                <AvatarImage src={user?.user_metadata?.avatar_url} alt="Profile" />
+                <AvatarFallback className="text-lg">
+                  {user?.email?.slice(0, 2).toUpperCase() || 'U'}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold">
+                  {user?.user_metadata?.full_name || 'John Doe'}
+                </h3>
+                <p className="text-sm text-muted-foreground">{user?.email}</p>
+                <Badge variant="secondary" className="mt-1">
+                  <Shield className="w-3 h-3 mr-1" />
+                  Verified Account
+                </Badge>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="full-name">Full Name</Label>
+                <Input
+                  id="full-name"
+                  defaultValue={user?.user_metadata?.full_name || 'John Doe'}
+                  readOnly
+                  className="bg-muted"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="email">Email Address</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  defaultValue={user?.email || ''}
+                  readOnly
+                  className="bg-muted"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="phone">Phone Number</Label>
+                <Input
+                  id="phone"
+                  defaultValue="+1 (555) 123-4567"
+                  readOnly
+                  className="bg-muted"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="location">Location</Label>
+                <Input
+                  id="location"
+                  defaultValue="New York, USA"
+                  readOnly
+                  className="bg-muted"
+                />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Security Settings */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Lock className="w-5 h-5" />
+              Security & Privacy
+            </CardTitle>
+            <CardDescription>
+              Manage your password and security preferences.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="current-password">Current Password</Label>
+              <div className="relative">
+                <Input
+                  id="current-password"
+                  type={showPassword ? "text" : "password"}
+                  defaultValue="••••••••"
+                  readOnly
+                  className="bg-muted pr-10"
+                />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 h-auto p-1"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </Button>
+              </div>
+            </div>
+            <Button variant="outline" className="w-full">
+              Change Password
+            </Button>
+            <div className="flex items-center justify-between p-3 border rounded-lg">
+              <div className="flex items-center gap-3">
+                <Shield className="w-5 h-5 text-green-600" />
+                <div>
+                  <p className="font-medium">Two-Factor Authentication</p>
+                  <p className="text-sm text-muted-foreground">Add an extra layer of security</p>
+                </div>
+              </div>
+              <Badge variant="outline" className="text-green-600 border-green-600">
+                Enabled
+              </Badge>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Preferences */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Settings className="w-5 h-5" />
+              Preferences
+            </CardTitle>
+            <CardDescription>
+              Customize your app experience and notifications.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between p-3 border rounded-lg">
+              <div className="flex items-center gap-3">
+                <Bell className="w-5 h-5 text-blue-600" />
+                <div>
+                  <p className="font-medium">Email Notifications</p>
+                  <p className="text-sm text-muted-foreground">Receive updates about your transfers</p>
+                </div>
+              </div>
+              <Badge variant="secondary">Enabled</Badge>
+            </div>
+            <div className="flex items-center justify-between p-3 border rounded-lg">
+              <div className="flex items-center gap-3">
+                <Phone className="w-5 h-5 text-green-600" />
+                <div>
+                  <p className="font-medium">SMS Notifications</p>
+                  <p className="text-sm text-muted-foreground">Get text alerts for important updates</p>
+                </div>
+              </div>
+              <Badge variant="outline">Disabled</Badge>
+            </div>
+            <div className="flex items-center justify-between p-3 border rounded-lg">
+              <div className="flex items-center gap-3">
+                <Globe className="w-5 h-5 text-purple-600" />
+                <div>
+                  <p className="font-medium">Language</p>
+                  <p className="text-sm text-muted-foreground">English (US)</p>
+                </div>
+              </div>
+              <Button variant="outline" size="sm">
+                Change
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Payment Methods */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <CreditCard className="w-5 h-5" />
+              Payment Methods
+            </CardTitle>
+            <CardDescription>
+              Manage your saved payment methods for transfers.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between p-3 border rounded-lg">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-6 bg-blue-600 rounded flex items-center justify-center">
+                  <span className="text-white text-xs font-bold">VISA</span>
+                </div>
+                <div>
+                  <p className="font-medium">•••• •••• •••• 4242</p>
+                  <p className="text-sm text-muted-foreground">Expires 12/26</p>
+                </div>
+              </div>
+              <Badge variant="secondary">Primary</Badge>
+            </div>
+            <Button variant="outline" className="w-full">
+              <CreditCard className="w-4 h-4 mr-2" />
+              Add Payment Method
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* Help & Support */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <HelpCircle className="w-5 h-5" />
+              Help & Support
+            </CardTitle>
+            <CardDescription>
+              Get help and manage your account.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <Button variant="outline" className="w-full justify-start">
+              <HelpCircle className="w-4 h-4 mr-2" />
+              Contact Support
+            </Button>
+            <Button variant="outline" className="w-full justify-start">
+              <Settings className="w-4 h-4 mr-2" />
+              Privacy Policy
+            </Button>
+            <Button variant="outline" className="w-full justify-start">
+              <Shield className="w-4 h-4 mr-2" />
+              Terms of Service
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* Sign Out */}
+        <Card>
+          <CardContent className="pt-6">
+            <Button 
+              variant="destructive" 
+              className="w-full"
+              onClick={handleSignOut}
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              Sign Out
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };
