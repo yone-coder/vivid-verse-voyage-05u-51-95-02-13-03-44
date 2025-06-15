@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Send, History, MapPin, User, Route
@@ -37,35 +37,65 @@ export default function BottomNav() {
 
   useEffect(() => {
     const path = location.pathname;
-    if (path === '/' || path.startsWith('/multi-step-transfer')) setActiveTab('send');
-    else if (path.startsWith('/transfer-history')) setActiveTab('history');
-    else if (path.startsWith('/track-transfer')) setActiveTab('track');
-    else if (path.startsWith('/locations')) setActiveTab('locations');
-    else if (path.startsWith('/account')) setActiveTab('account');
+    console.log('Current path:', path);
+    
+    if (path === '/' || path.startsWith('/multi-step-transfer')) {
+      setActiveTab('send');
+    } else if (path.startsWith('/transfer-history')) {
+      setActiveTab('history');
+    } else if (path.startsWith('/track-transfer')) {
+      setActiveTab('track');
+    } else if (path.startsWith('/locations')) {
+      setActiveTab('locations');
+    } else if (path.startsWith('/account')) {
+      setActiveTab('account');
+    }
   }, [location.pathname]);
 
-  const handleTabClick = (item: BottomNavTab, e: React.MouseEvent) => {
+  const handleTabClick = useCallback((item: BottomNavTab, e: React.MouseEvent) => {
     e.preventDefault();
+    e.stopPropagation();
 
-    if (animating || item.id === activeTab) return;
+    console.log('Tab clicked:', item.id, 'Current path:', location.pathname, 'Target path:', item.path);
 
-    // Don't navigate if we're already on the same path
-    if (item.path === location.pathname) return;
-
-    // For the send tab, also check if we're on any multi-step transfer path
-    if (item.id === 'send' && (location.pathname === '/' || location.pathname.startsWith('/multi-step-transfer'))) {
+    // Prevent any action if currently animating
+    if (animating) {
+      console.log('Animation in progress, ignoring click');
       return;
     }
 
+    // If clicking on already active tab, do nothing
+    if (item.id === activeTab) {
+      console.log('Already on active tab, ignoring click');
+      return;
+    }
+
+    // Check if we're already on the target path
+    if (item.path === location.pathname) {
+      console.log('Already on target path, ignoring click');
+      return;
+    }
+
+    // Special handling for send tab - don't navigate if already on home or multi-step transfer
+    if (item.id === 'send' && (location.pathname === '/' || location.pathname.startsWith('/multi-step-transfer'))) {
+      console.log('Already on send-related path, ignoring click');
+      return;
+    }
+
+    console.log('Proceeding with navigation to:', item.path);
+
     setAnimating(true);
     setPreviousTab(activeTab);
-    setActiveTab(item.id);
-    navigate(item.path);
+    
+    // Use replace instead of push to avoid back button issues
+    navigate(item.path, { replace: false });
+    
+    // Reset animation state after a delay
     setTimeout(() => {
       setAnimating(false);
       setPreviousTab(null);
     }, 300);
-  };
+  }, [navigate, location.pathname, activeTab, animating]);
 
   return (
     <motion.div
@@ -83,8 +113,10 @@ export default function BottomNav() {
             <button
               key={item.id}
               onClick={(e) => handleTabClick(item, e)}
+              disabled={animating}
               className={cn(
                 'flex items-center justify-center relative transition-all duration-300 ease-out transform px-3 py-1 rounded-full',
+                'disabled:pointer-events-none',
                 isActive
                   ? 'bg-red-600 text-white shadow-md scale-105'
                   : wasActive
