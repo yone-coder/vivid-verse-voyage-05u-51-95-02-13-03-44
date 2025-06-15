@@ -78,14 +78,11 @@ const DesktopHomePage = () => {
   };
 
   const handleDetailsChange = (details: any) => {
-    setReceiverDetails({
-      firstName: details.firstName || '',
-      lastName: details.lastName || '',
-      phoneNumber: details.phoneNumber || '',
-      department: details.department || '',
-      commune: details.commune || '',
-      email: details.email || ''
-    });
+    console.log('Details changed in DesktopHomePage:', details);
+    setReceiverDetails(prevDetails => ({
+      ...prevDetails,
+      ...details
+    }));
   };
 
   const getStatusIcon = (status: string) => {
