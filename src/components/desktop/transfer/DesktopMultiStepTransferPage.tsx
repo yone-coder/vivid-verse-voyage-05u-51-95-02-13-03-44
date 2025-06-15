@@ -1,6 +1,6 @@
 
 import React from 'react';
-import MultiStepTransferSheet from '@/components/transfer/MultiStepTransferSheet';
+import MobileMultiStepTransferSheetPage from '@/components/mobile/transfer/MobileMultiStepTransferSheetPage';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { ShieldCheck, Zap, Banknote, HelpCircle } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
@@ -14,10 +14,10 @@ const DesktopMultiStepTransferPage: React.FC = () => {
           <p className="text-gray-600 dark:text-gray-400">Complete your transfer securely and efficiently.</p>
         </header>
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-0 lg:gap-8 items-start">
-          {/* LEFT: Exact mobile clone (no Card/Content/Header, white bg, full width on mobile and desktop) */}
+          {/* LEFT: Render the mobile transfer page as the main flow */}
           <main className="lg:col-span-3 flex flex-col items-center bg-white min-h-[calc(100vh-64px)] py-0 px-0">
             <div className="w-full max-w-md lg:max-w-none lg:w-full">
-              <MultiStepTransferSheet variant="page" onClose={() => {}} disableSelectorNavigation={true} />
+              <MobileMultiStepTransferSheetPage />
             </div>
           </main>
           {/* RIGHT: Desktop sidebar, visible on large screens */}
