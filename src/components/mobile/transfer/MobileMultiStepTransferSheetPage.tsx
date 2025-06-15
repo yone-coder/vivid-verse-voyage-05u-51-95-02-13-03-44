@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, X, Check, Loader2, AlertCircle, Key, Globe, Search, CheckCircle, User, Receipt, ArrowRight } from 'lucide-react';
@@ -12,7 +13,6 @@ import TransferTypeSelector from '@/components/transfer/TransferTypeSelector';
 import StepOneTransfer from '@/components/transfer/StepOneTransfer';
 import StepOneLocalTransfer from '@/components/transfer/StepOneLocalTransfer';
 import StepTwoTransfer from '@/components/transfer/StepTwoTransfer';
-import PaymentMethodList from '@/components/transfer/PaymentMethodList';
 import { EmailNotificationService } from '@/components/transfer/EmailNotificationService';
 import IndexBottomNav from '@/components/layout/IndexBottomNav';
 import { 
