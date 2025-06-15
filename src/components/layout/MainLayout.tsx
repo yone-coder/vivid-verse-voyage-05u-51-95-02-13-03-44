@@ -46,7 +46,7 @@ function MainLayoutContent() {
       <div className="min-h-screen flex flex-col bg-white">
         <style dangerouslySetInnerHTML={{ __html: headerHeightStyle }} />
 
-        <main className="flex-grow relative">
+        <main className={`flex-grow relative ${isMobile ? 'pb-12' : ''}`}>
           <Outlet />
         </main>
 
