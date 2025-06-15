@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 interface TransferTypeSelectorProps {
@@ -15,18 +15,16 @@ const TransferTypeSelector: React.FC<TransferTypeSelectorProps> = ({
   disableNavigation = false 
 }) => {
   const navigate = useNavigate();
-  const location = useLocation();
 
   const handleValueChange = (value: string) => {
     const newTransferType = value as 'international' | 'national';
     onTransferTypeChange(newTransferType);
     
     if (!disableNavigation) {
-      if (newTransferType === 'national' && location.pathname !== '/local-transfer') {
-        navigate('/local-transfer');
-      } else if (newTransferType === 'international' && location.pathname === '/local-transfer') {
-        navigate('/multi-step-transfer-page');
-      }
+      // Unify navigation to a single multi-step page, passing type in state.
+      navigate('/multi-step-transfer-page', { 
+        state: { transferType: newTransferType } 
+      });
     }
   };
 

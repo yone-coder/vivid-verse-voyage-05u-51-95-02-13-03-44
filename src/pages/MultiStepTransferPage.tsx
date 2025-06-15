@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { ArrowRight, ArrowLeft, Loader2 } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -35,7 +34,8 @@ const MultiStepTransferPage: React.FC<MultiStepTransferPageProps> = ({ isEmbedde
   const locationState = location.state as any;
   const initialStep = locationState?.skipToStep ?? 0;
   const initialAmount = locationState?.amount ?? '';
-  const initialTransferType = locationState?.transferType === 'international' ? 'international' : 'national';
+  // Default to international unless 'national' is explicitly passed in state
+  const initialTransferType = locationState?.transferType === 'national' ? 'national' : 'international';
   
   const [currentStep, setCurrentStep] = useState(initialStep);
   const [transferData, setTransferData] = useState<TransferData>({
@@ -228,6 +228,7 @@ const MultiStepTransferPage: React.FC<MultiStepTransferPageProps> = ({ isEmbedde
             <TransferTypeSelector 
               transferType={transferData.transferType || 'international'}
               onTransferTypeChange={(type) => updateTransferData({ transferType: type })}
+              disableNavigation={true}
             />
           </div>
         )}
