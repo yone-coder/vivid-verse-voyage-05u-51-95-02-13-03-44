@@ -70,6 +70,10 @@ const DesktopTransferPage = () => {
     }
   };
 
+  const handleDetailsChange = (details: any) => {
+    setReceiverDetails(details);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -128,7 +132,7 @@ const DesktopTransferPage = () => {
                 {currentStep === 2 && (
                   <StepTwoTransfer 
                     receiverDetails={receiverDetails}
-                    onDetailsChange={setReceiverDetails}
+                    onDetailsChange={handleDetailsChange}
                   />
                 )}
 
