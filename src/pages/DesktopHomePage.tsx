@@ -1,97 +1,86 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { 
   Search, 
   Bell, 
   User, 
   Send, 
-  TrendingUp, 
   Shield, 
   Clock, 
   Globe,
   ArrowRight,
-  CreditCard,
-  Smartphone,
-  MapPin,
-  History,
   Star,
-  DollarSign
+  DollarSign,
+  Smartphone,
+  Play,
+  CheckCircle,
+  TrendingUp,
+  Users,
+  MapPin,
+  CreditCard
 } from 'lucide-react';
+import MobileMultiStepTransferSheetPage from '@/components/mobile/transfer/MobileMultiStepTransferSheetPage';
 
 export default function DesktopHomePage() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
 
-  const quickActions = [
-    {
-      icon: Send,
-      title: 'Send Money',
-      description: 'Transfer money to Haiti instantly',
-      color: 'bg-blue-500',
-      path: '/transfer'
-    },
-    {
-      icon: History,
-      title: 'Transfer History',
-      description: 'View all your past transfers',
-      color: 'bg-green-500',
-      path: '/transfer-history'
-    },
-    {
-      icon: MapPin,
-      title: 'Find Locations',
-      description: 'Locate pickup points in Haiti',
-      color: 'bg-purple-500',
-      path: '/locations'
-    },
-    {
-      icon: User,
-      title: 'Account Settings',
-      description: 'Manage your profile and preferences',
-      color: 'bg-orange-500',
-      path: '/account'
-    }
-  ];
-
   const features = [
     {
       icon: Shield,
-      title: 'Secure Transfers',
-      description: 'Bank-level encryption and security protocols'
+      title: 'Trusted & Secure',
+      description: 'Your money is protected with bank-level security and encryption'
     },
     {
       icon: Clock,
-      title: 'Fast Processing',
-      description: 'Transfers completed within 24-48 hours'
+      title: 'Fast Delivery',
+      description: 'Money delivered within minutes to hours, not days'
     },
     {
-      icon: Globe,
-      title: 'Global Reach',
-      description: 'Send money to any location in Haiti'
+      icon: DollarSign,
+      title: 'Great Exchange Rates',
+      description: 'Competitive rates with transparent, low fees'
     },
     {
-      icon: CreditCard,
-      title: 'Multiple Payment Options',
-      description: 'Credit cards, debit cards, and bank transfers'
+      icon: Smartphone,
+      title: 'Easy to Use',
+      description: 'Simple, intuitive mobile and web experience'
     }
   ];
 
   const stats = [
-    { label: 'Countries Served', value: '1', icon: Globe },
-    { label: 'Happy Customers', value: '10K+', icon: User },
-    { label: 'Total Transfers', value: '$2M+', icon: DollarSign },
-    { label: 'Average Rating', value: '4.9', icon: Star }
+    { value: '5M+', label: 'Customers worldwide', icon: Users },
+    { value: '150+', label: 'Countries & territories', icon: Globe },
+    { value: '4.8★', label: 'App store rating', icon: Star },
+    { value: '$50B+', label: 'Money transferred', icon: TrendingUp }
+  ];
+
+  const howItWorks = [
+    {
+      step: '1',
+      title: 'Choose amount',
+      description: 'Enter the amount you want to send'
+    },
+    {
+      step: '2',
+      title: 'Add recipient',
+      description: 'Add your recipient\'s details'
+    },
+    {
+      step: '3',
+      title: 'Pay securely',
+      description: 'Pay with your bank account, debit or credit card'
+    }
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-white shadow-sm border-b sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-8">
@@ -107,43 +96,26 @@ export default function DesktopHomePage() {
                   onClick={() => navigate('/locations')}
                   className="text-gray-700 hover:text-blue-600 font-medium"
                 >
-                  Locations
+                  Receive Money
                 </button>
                 <button 
                   onClick={() => navigate('/transfer-history')}
                   className="text-gray-700 hover:text-blue-600 font-medium"
                 >
-                  History
-                </button>
-                <button 
-                  onClick={() => navigate('/track-transfer')}
-                  className="text-gray-700 hover:text-blue-600 font-medium"
-                >
                   Track Transfer
+                </button>
+                <button className="text-gray-700 hover:text-blue-600 font-medium">
+                  Help
                 </button>
               </nav>
             </div>
             
             <div className="flex items-center space-x-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <Input 
-                  type="text" 
-                  placeholder="Search transfers, locations..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 pr-4 py-2 w-64"
-                />
-              </div>
-              <Button variant="ghost" size="sm">
-                <Bell className="h-5 w-5" />
+              <Button variant="ghost" className="text-gray-700">
+                Log in
               </Button>
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={() => navigate('/account')}
-              >
-                <User className="h-5 w-5" />
+              <Button onClick={() => navigate('/transfer')} className="bg-blue-600 hover:bg-blue-700">
+                Get started
               </Button>
             </div>
           </div>
@@ -151,96 +123,130 @@ export default function DesktopHomePage() {
       </header>
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-purple-700 text-white">
+      <section className="bg-gradient-to-br from-blue-50 to-indigo-100">
         <div className="max-w-7xl mx-auto px-6 py-16">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            {/* Left Content */}
             <div>
-              <h1 className="text-5xl font-bold mb-6">
-                Send Money to Haiti
-                <span className="block text-blue-200">Fast & Secure</span>
+              <h1 className="text-5xl font-bold text-gray-900 mb-6 leading-tight">
+                Send money to 
+                <span className="text-blue-600 block">Haiti instantly</span>
               </h1>
-              <p className="text-xl text-blue-100 mb-8">
-                Transfer money to your loved ones in Haiti with our reliable, 
-                secure, and fast money transfer service. Best exchange rates guaranteed.
+              <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+                Trusted by millions worldwide. Send money with the best exchange rates, 
+                lowest fees, and fastest delivery times.
               </p>
-              <div className="flex space-x-4">
-                <Button 
-                  size="lg" 
-                  className="bg-white text-blue-600 hover:bg-blue-50"
-                  onClick={() => navigate('/transfer')}
-                >
-                  Send Money Now
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-                <Button 
-                  variant="outline" 
-                  size="lg"
-                  className="border-white text-white hover:bg-white hover:text-blue-600"
-                  onClick={() => navigate('/locations')}
-                >
-                  Find Locations
-                </Button>
+              
+              {/* Exchange Rate Preview */}
+              <div className="bg-white rounded-lg p-6 shadow-sm mb-8 border">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-gray-600">You send</span>
+                  <span className="text-gray-600">Recipient gets</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="text-2xl font-bold text-gray-900">$100 USD</div>
+                  <ArrowRight className="h-5 w-5 text-gray-400" />
+                  <div className="text-2xl font-bold text-blue-600">12,750 HTG</div>
+                </div>
+                <div className="text-sm text-gray-500 mt-2">
+                  Rate: 1 USD = 127.50 HTG • Fee: $2.99
+                </div>
               </div>
+
+              <Button 
+                size="lg" 
+                className="bg-blue-600 hover:bg-blue-700 text-lg px-8 py-4"
+                onClick={() => navigate('/transfer')}
+              >
+                Send money now
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+              
+              <p className="text-sm text-gray-500 mt-4">
+                ⚡ Ready in minutes • 🔒 Secure & regulated
+              </p>
             </div>
-            
-            <div className="grid grid-cols-2 gap-4">
-              {stats.map((stat, index) => (
-                <Card key={index} className="bg-white/10 border-white/20 text-white">
-                  <CardContent className="p-6 text-center">
-                    <stat.icon className="h-8 w-8 mx-auto mb-2 text-blue-200" />
-                    <div className="text-2xl font-bold">{stat.value}</div>
-                    <div className="text-sm text-blue-100">{stat.label}</div>
-                  </CardContent>
-                </Card>
-              ))}
+
+            {/* Right Content - Mobile App Preview */}
+            <div className="relative">
+              <div className="bg-gray-900 rounded-3xl p-4 shadow-2xl max-w-sm mx-auto">
+                <div className="bg-white rounded-2xl overflow-hidden" style={{ height: '600px' }}>
+                  {/* Mobile App Content */}
+                  <div className="h-full relative overflow-hidden">
+                    <div className="absolute inset-0 scale-90 origin-top">
+                      <MobileMultiStepTransferSheetPage />
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Phone notch */}
+                <div className="absolute top-6 left-1/2 transform -translate-x-1/2 w-32 h-6 bg-gray-900 rounded-full"></div>
+              </div>
+              
+              {/* Floating elements */}
+              <div className="absolute -top-4 -right-4 bg-green-500 text-white p-3 rounded-full shadow-lg">
+                <CheckCircle className="h-6 w-6" />
+              </div>
+              <div className="absolute -bottom-4 -left-4 bg-blue-500 text-white p-3 rounded-full shadow-lg">
+                <Send className="h-6 w-6" />
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Quick Actions */}
-      <section className="py-16 bg-white">
+      {/* Stats Section */}
+      <section className="py-16 bg-white border-t">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+            {stats.map((stat, index) => (
+              <div key={index} className="text-center">
+                <stat.icon className="h-8 w-8 text-blue-600 mx-auto mb-4" />
+                <div className="text-3xl font-bold text-gray-900 mb-2">{stat.value}</div>
+                <div className="text-gray-600">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How it works */}
+      <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Quick Actions</h2>
-            <p className="text-gray-600 text-lg">Everything you need to manage your money transfers</p>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">How it works</h2>
+            <p className="text-xl text-gray-600">Send money in 3 simple steps</p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {quickActions.map((action, index) => (
-              <Card 
-                key={index} 
-                className="hover:shadow-lg transition-shadow cursor-pointer group"
-                onClick={() => navigate(action.path)}
-              >
-                <CardContent className="p-6 text-center">
-                  <div className={`${action.color} w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform`}>
-                    <action.icon className="h-8 w-8 text-white" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{action.title}</h3>
-                  <p className="text-gray-600 text-sm">{action.description}</p>
-                </CardContent>
-              </Card>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {howItWorks.map((item, index) => (
+              <div key={index} className="text-center">
+                <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-6">
+                  {item.step}
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-4">{item.title}</h3>
+                <p className="text-gray-600">{item.description}</p>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
       {/* Features */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Why Choose Us?</h2>
-            <p className="text-gray-600 text-lg">Trusted by thousands for reliable money transfers</p>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Why choose us?</h2>
+            <p className="text-xl text-gray-600">The smart choice for money transfers</p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map((feature, index) => (
               <div key={index} className="text-center">
-                <div className="bg-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
                   <feature.icon className="h-8 w-8 text-blue-600" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">{feature.title}</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">{feature.title}</h3>
                 <p className="text-gray-600">{feature.description}</p>
               </div>
             ))}
@@ -248,33 +254,21 @@ export default function DesktopHomePage() {
         </div>
       </section>
 
-      {/* Exchange Rate Card */}
-      <section className="py-16 bg-white">
-        <div className="max-w-4xl mx-auto px-6">
-          <Card className="border-2 border-blue-200 bg-gradient-to-r from-blue-50 to-purple-50">
-            <CardHeader>
-              <CardTitle className="text-center text-2xl text-gray-900 flex items-center justify-center">
-                <TrendingUp className="h-6 w-6 mr-2 text-blue-600" />
-                Today's Exchange Rate
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="text-center">
-              <div className="text-4xl font-bold text-gray-900 mb-2">
-                1 USD = 127.50 HTG
-              </div>
-              <p className="text-gray-600 mb-6">
-                Competitive rates updated every hour
-              </p>
-              <Button 
-                size="lg"
-                onClick={() => navigate('/transfer')}
-                className="bg-blue-600 hover:bg-blue-700"
-              >
-                Start Transfer
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </CardContent>
-          </Card>
+      {/* CTA Section */}
+      <section className="py-16 bg-blue-600 text-white">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <h2 className="text-3xl font-bold mb-4">Ready to send money?</h2>
+          <p className="text-xl mb-8 text-blue-100">
+            Join millions who trust us with their money transfers
+          </p>
+          <Button 
+            size="lg" 
+            className="bg-white text-blue-600 hover:bg-blue-50 text-lg px-8 py-4"
+            onClick={() => navigate('/transfer')}
+          >
+            Send your first transfer
+            <ArrowRight className="ml-2 h-5 w-5" />
+          </Button>
         </div>
       </section>
 
@@ -285,34 +279,34 @@ export default function DesktopHomePage() {
             <div>
               <div className="text-xl font-bold mb-4">MoneyTransfer</div>
               <p className="text-gray-400">
-                Reliable money transfer service to Haiti with the best rates and fastest delivery.
+                Fast, secure, and affordable money transfers to Haiti.
               </p>
             </div>
             
             <div>
-              <h3 className="font-semibold mb-4">Services</h3>
+              <h3 className="font-semibold mb-4">Send Money</h3>
               <ul className="space-y-2 text-gray-400">
-                <li><button onClick={() => navigate('/transfer')} className="hover:text-white">Send Money</button></li>
-                <li><button onClick={() => navigate('/locations')} className="hover:text-white">Find Locations</button></li>
-                <li><button onClick={() => navigate('/track-transfer')} className="hover:text-white">Track Transfer</button></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h3 className="font-semibold mb-4">Account</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li><button onClick={() => navigate('/profile')} className="hover:text-white">Profile</button></li>
-                <li><button onClick={() => navigate('/transfer-history')} className="hover:text-white">Transfer History</button></li>
-                <li><button onClick={() => navigate('/account')} className="hover:text-white">Settings</button></li>
+                <li><button onClick={() => navigate('/transfer')} className="hover:text-white">Send to Haiti</button></li>
+                <li><button onClick={() => navigate('/locations')} className="hover:text-white">Find locations</button></li>
+                <li><button onClick={() => navigate('/track-transfer')} className="hover:text-white">Track transfer</button></li>
               </ul>
             </div>
             
             <div>
               <h3 className="font-semibold mb-4">Support</h3>
               <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white">Help Center</a></li>
-                <li><a href="#" className="hover:text-white">Contact Us</a></li>
-                <li><a href="#" className="hover:text-white">Terms of Service</a></li>
+                <li><a href="#" className="hover:text-white">Help center</a></li>
+                <li><a href="#" className="hover:text-white">Contact us</a></li>
+                <li><a href="#" className="hover:text-white">Security</a></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="font-semibold mb-4">Company</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li><a href="#" className="hover:text-white">About us</a></li>
+                <li><a href="#" className="hover:text-white">Careers</a></li>
+                <li><a href="#" className="hover:text-white">Legal</a></li>
               </ul>
             </div>
           </div>
