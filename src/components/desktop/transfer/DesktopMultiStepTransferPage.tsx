@@ -1076,8 +1076,8 @@ const DesktopTransferForm: React.FC<DesktopTransferFormProps> = ({
       )}
 
       {/* Step Content */}
-      <div className="flex-1 overflow-y-auto pb-32">
-        <div className="px-4 py-4">
+      <div className="flex-1 overflow-y-auto p-4">
+        <div className="space-y-6">
           {currentStep === 1 && (
             <div className="space-y-6">
               <div className="space-y-4">
@@ -1097,6 +1097,18 @@ const DesktopTransferForm: React.FC<DesktopTransferFormProps> = ({
                   />
                 )}
               </div>
+
+              {/* Navigation Button for Step 1 */}
+              <div className="pt-4">
+                <Button 
+                  onClick={handleNextStep}
+                  disabled={!canProceedFromStep1}
+                  className="w-full transition-all duration-200"
+                >
+                  Continue
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
             </div>
           )}
 
@@ -1110,6 +1122,27 @@ const DesktopTransferForm: React.FC<DesktopTransferFormProps> = ({
                 receiverDetails={transferData.receiverDetails}
                 onDetailsChange={(receiverDetails) => updateTransferData({ receiverDetails })}
               />
+
+              {/* Navigation Buttons for Step 2 */}
+              <div className="flex gap-3 pt-4">
+                <Button 
+                  variant="outline" 
+                  onClick={handlePreviousStep}
+                  className="flex-1 transition-all duration-200"
+                >
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Previous
+                </Button>
+                
+                <Button 
+                  onClick={handleNextStep}
+                  disabled={!canProceedFromStep2}
+                  className="flex-1 transition-all duration-200"
+                >
+                  Next
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
             </div>
           )}
           
@@ -1160,6 +1193,23 @@ const DesktopTransferForm: React.FC<DesktopTransferFormProps> = ({
                       <li>• Complete the payment on MonCash website</li>
                       <li>• You will be redirected back after payment</li>
                     </ul>
+
+                  {/* Payment Button for National Transfer */}
+                  <div className="pt-4">
+                    <Button 
+                      onClick={handleStickyPayment}
+                      disabled={isPaymentLoading}
+                      className="w-full py-4 text-lg font-semibold bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white"
+                    >
+                      {isPaymentLoading ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Processing MonCash Payment...
+                        </>
+                      ) : (
+                        `Pay HTG ${receiverAmount} with MonCash`
+                      )}
+                    </Button>
                   </div>
                 </div>
               ) : (
@@ -1182,6 +1232,24 @@ const DesktopTransferForm: React.FC<DesktopTransferFormProps> = ({
                   </div>
                   
                   <div ref={paypalContainerRef}></div>
+
+                  {/* Payment Button for International Transfer */}
+                  <div className="pt-4">
+                    <Button 
+                      onClick={handleStickyPayment}
+                      disabled={isPaymentLoading || !isPaymentFormValid}
+                      className="w-full py-4 text-lg font-semibold bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white"
+                    >
+                      {isPaymentLoading ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Processing...
+                        </>
+                      ) : (
+                        `Pay $${totalAmount}`
+                      )}
+                    </Button>
+                  </div>
                 </div>
               )}
             </div>
@@ -1300,82 +1368,6 @@ const DesktopTransferForm: React.FC<DesktopTransferFormProps> = ({
           )}
         </div>
       </div>
-
-      {/* Sticky Navigation Buttons */}
-      {(currentStep < 3 || currentStep === 4) && (
-        <div className="absolute bottom-0 left-0 right-0 border-t bg-white px-4 py-3 shadow-lg">
-          <div className="flex gap-3">
-            {currentStep === 1 ? (
-              <Button 
-                onClick={handleNextStep}
-                disabled={!canProceedFromStep1}
-                className="flex-1 transition-all duration-200"
-              >
-                Continue
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            ) : (
-              <>
-                <Button 
-                  variant="outline" 
-                  onClick={handlePreviousStep}
-                  className="flex-1 transition-all duration-200"
-                >
-                  <ArrowLeft className="mr-2 h-4 w-4" />
-                  Previous
-                </Button>
-                
-                {currentStep < 4 ? (
-                  <Button 
-                    onClick={handleNextStep}
-                    disabled={
-                      (currentStep === 2 && !canProceedFromStep2) ||
-                      (currentStep === 3 && !canProceedFromStep3)
-                    }
-                    className="flex-1 transition-all duration-200"
-                  >
-                    Next
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                ) : (
-                  <Button 
-                    onClick={() => {}}
-                    className="flex-1"
-                  >
-                    Done
-                  </Button>
-                )}
-              </>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Sticky Pay Button for Step 3 Only */}
-      {currentStep === 3 && (
-        <div className="absolute bottom-0 left-0 right-0 border-t bg-white px-4 py-3 shadow-lg">
-          <Button 
-            onClick={handleStickyPayment}
-            disabled={isPaymentLoading || (transferData.transferType === 'international' && !isPaymentFormValid)}
-            className={`w-full py-4 text-lg font-semibold ${
-              transferData.transferType === 'national' 
-                ? 'bg-red-600 hover:bg-red-700 disabled:opacity-50' 
-                : 'bg-green-600 hover:bg-green-700 disabled:opacity-50'
-            } text-white`}
-          >
-            {isPaymentLoading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                {transferData.transferType === 'national' ? 'Processing MonCash Payment...' : 'Processing...'}
-              </>
-            ) : (
-              transferData.transferType === 'national' 
-                ? `Pay HTG ${receiverAmount} with MonCash`
-                : `Pay $${totalAmount}`
-            )}
-          </Button>
-        </div>
-      )}
     </div>
   );
 };
