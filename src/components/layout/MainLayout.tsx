@@ -18,10 +18,6 @@ function MainLayoutContent() {
   const { openAuthOverlay } = useAuthOverlay();
 
   const isHomePage = pathname === "/";
-  const isTransferPage = pathname === "/transfer";
-  const isMultiStepTransferPage = pathname === "/multi-step-transfer";
-  const isMultiStepTransferSheetPage = pathname === "/multi-step-transfer-page";
-  const isTransferOldPage = pathname === "/transfer-old";
 
   useEffect(() => {
     if (pathname === "/auth") {
@@ -30,19 +26,10 @@ function MainLayoutContent() {
     }
   }, [pathname, openAuthOverlay]);
 
-  // Desktop pages that shouldn't show mobile bottom nav
-  const desktopOnlyPages = ["/transfer"];
-  const shouldShowMobileNav = isMobile && 
-    !isHomePage && 
-    !isMultiStepTransferPage && 
-    !isMultiStepTransferSheetPage && 
-    !isTransferOldPage && 
-    !desktopOnlyPages.includes(pathname);
-
   const headerHeightStyle = `
     :root {
       --header-height: 0px;
-      --bottom-nav-height: ${shouldShowMobileNav || isMobile ? '48px' : '0px'};
+      --bottom-nav-height: ${isMobile ? '48px' : '0px'};
     }
   `;
 
@@ -83,7 +70,7 @@ function MainLayoutContent() {
         {!isMobile && !isHomePage && <Footer />}
 
         {/* Mobile bottom navigation */}
-        {(shouldShowMobileNav || isMobile) && <IndexBottomNav />}
+        {isMobile && <IndexBottomNav />}
       </div>
     </LanguageProvider>
   );
