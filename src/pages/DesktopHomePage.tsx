@@ -143,20 +143,20 @@ export default function DesktopHomePage() {
 
           {/* Desktop Tab Switcher */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-4 max-w-2xl mx-auto mb-8 bg-white/80 backdrop-blur">
-              <TabsTrigger value="send" className="flex items-center space-x-2">
+            <TabsList className="grid w-full grid-cols-4 max-w-2xl mx-auto mb-8 bg-white shadow-lg border border-gray-200">
+              <TabsTrigger value="send" className="flex items-center space-x-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white">
                 <Send className="h-4 w-4" />
                 <span>Send</span>
               </TabsTrigger>
-              <TabsTrigger value="history" className="flex items-center space-x-2">
+              <TabsTrigger value="history" className="flex items-center space-x-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white">
                 <History className="h-4 w-4" />
                 <span>History</span>
               </TabsTrigger>
-              <TabsTrigger value="track" className="flex items-center space-x-2">
+              <TabsTrigger value="track" className="flex items-center space-x-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white">
                 <Route className="h-4 w-4" />
                 <span>Track</span>
               </TabsTrigger>
-              <TabsTrigger value="locations" className="flex items-center space-x-2">
+              <TabsTrigger value="locations" className="flex items-center space-x-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white">
                 <MapPin className="h-4 w-4" />
                 <span>Locations</span>
               </TabsTrigger>
