@@ -1,9 +1,10 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Send, History, MapPin, Route, Search, Eye, User, Star, Phone, Clock, CheckCircle, XCircle, ArrowUpRight, ArrowDownLeft, ArrowRight, ArrowLeft, DollarSign, CreditCard, Receipt } from 'lucide-react';
+import { Send, History, MapPin, Route, Search, Eye, User, Star, Phone, Clock, CheckCircle, XCircle, ArrowUpRight, ArrowDownLeft, ArrowRight, ArrowLeft, DollarSign, CreditCard, Receipt, Banknote, Landmark, CircleDollarSign } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import TransferTypeSelector from '@/components/transfer/TransferTypeSelector';
 import StepOneTransfer from '@/components/transfer/StepOneTransfer';
@@ -45,6 +46,45 @@ const DesktopHomePage = () => {
     { id: 1, name: 'Downtown Transfer Center', address: '123 Main Street, Port-au-Prince', phone: '+509 1234-5678', hours: 'Mon-Fri 8AM-6PM', rating: 4.8, services: ['Cash Pickup', 'Money Transfer'], distance: '0.5 miles' },
     { id: 2, name: 'Airport Transfer Point', address: '456 Airport Road, Port-au-Prince', phone: '+509 2345-6789', hours: 'Daily 6AM-10PM', rating: 4.6, services: ['Cash Pickup', 'Money Transfer'], distance: '2.1 miles' },
     { id: 3, name: 'City Mall Location', address: '789 Commercial Ave, Port-au-Prince', phone: '+509 3456-7890', hours: 'Mon-Sun 10AM-8PM', rating: 4.9, services: ['Cash Pickup', 'Money Transfer', 'Bill Payment'], distance: '1.8 miles' },
+  ];
+
+  // International payment methods (USD)
+  const internationalPaymentMethods = [
+    {
+      id: 'credit-card',
+      name: 'Credit or Debit Card',
+      icon: CreditCard,
+      description: 'Safe and secure card payment',
+      fee: '3.5% + $0.30'
+    },
+    {
+      id: 'bank-transfer',
+      name: 'Bank Transfer / ACH',
+      icon: Banknote,
+      description: 'Direct from your bank account',
+      fee: '$0.25'
+    },
+    {
+      id: 'zelle',
+      name: 'Zelle',
+      icon: Landmark,
+      description: 'Fast transfers between US banks',
+      fee: 'Free'
+    },
+    {
+      id: 'paypal',
+      name: 'PayPal',
+      icon: CircleDollarSign,
+      description: 'Send using your PayPal balance',
+      fee: '2.9% + $0.30'
+    },
+    {
+      id: 'cashapp',
+      name: 'Cash App',
+      icon: DollarSign,
+      description: 'Send using Cash App',
+      fee: '1.5%'
+    }
   ];
 
   const handleSendTransfer = () => {
@@ -137,6 +177,12 @@ const DesktopHomePage = () => {
   };
 
   const stepTitles = ['Send Money', 'Recipient Details', 'Payment Method', 'Transfer Complete'];
+
+  // Calculate fees and amounts like mobile version
+  const transferFee = amount ? (Math.ceil(parseFloat(amount) / 100) * 15).toFixed(2) : '0.00';
+  const totalAmount = amount ? (parseFloat(amount) + parseFloat(transferFee)).toFixed(2) : '0.00';
+  const receiverAmount = amount ? (parseFloat(amount) * 127.5).toFixed(2) : '0.00';
+  const transactionId = `TX${Date.now()}`;
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -291,78 +337,98 @@ const DesktopHomePage = () => {
 
                 {currentStep === 3 && (
                   <div className="space-y-6">
-                    <div className="text-center">
-                      <h3 className="text-lg font-semibold text-gray-900">How would you like to pay?</h3>
-                      <p className="text-gray-600 text-sm mt-1">Choose your payment method</p>
+                    <div className="text-center mb-6">
+                      <h2 className="text-xl font-bold text-gray-900 mb-3">Complete Your Payment</h2>
+                      <p className="text-gray-600 leading-relaxed">
+                        Sending <span className="font-semibold text-blue-600">
+                          {transferType === 'national'
+                            ? `HTG ${receiverAmount}`
+                            : `$${amount}`
+                          }
+                        </span> to{' '}
+                        <span className="font-semibold text-gray-900">
+                          {receiverDetails.firstName} {receiverDetails.lastName}
+                        </span>
+                      </p>
                     </div>
-                    
-                    <div className="space-y-3">
-                      <div 
-                        className={`p-4 border rounded-lg cursor-pointer transition-colors ${
-                          paymentMethod === 'debit-card' 
-                            ? 'border-red-500 bg-red-50' 
-                            : 'border-gray-300 hover:border-gray-400'
-                        }`}
-                        onClick={() => setPaymentMethod('debit-card')}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                              <CreditCard className="w-5 h-5 text-blue-600" />
-                            </div>
-                            <div>
-                              <h4 className="font-medium">Debit Card</h4>
-                              <p className="text-sm text-gray-600">Pay with your debit card</p>
-                            </div>
+
+                    {/* Payment Method Based on Transfer Type */}
+                    {transferType === 'national' ? (
+                      <div className="space-y-4">
+                        <div className="bg-white rounded-lg border border-gray-200 p-4 space-y-3">
+                          <div className="flex justify-between">
+                            <span className="text-gray-600">Recipient:</span>
+                            <span className="font-medium">
+                              {receiverDetails.firstName} {receiverDetails.lastName}
+                            </span>
                           </div>
-                          <span className="text-sm text-green-600 font-medium">No fees</span>
+                          <div className="flex justify-between">
+                            <span className="text-gray-600">Amount:</span>
+                            <span className="font-medium">HTG {receiverAmount}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-gray-600">Transfer Type:</span>
+                            <span className="font-medium capitalize">National</span>
+                          </div>
+                        </div>
+
+                        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                          <h4 className="font-semibold text-red-800 mb-2">MonCash Payment</h4>
+                          <p className="text-sm text-red-700 mb-3">
+                            You will be redirected to MonCash to complete your payment securely.
+                          </p>
+                          <ul className="text-sm text-red-600 space-y-1">
+                            <li>• Make sure you have your MonCash account ready</li>
+                            <li>• Have sufficient funds in your MonCash wallet</li>
+                            <li>• Complete the payment on MonCash website</li>
+                            <li>• You will be redirected back after payment</li>
+                          </ul>
                         </div>
                       </div>
-                      
-                      <div 
-                        className={`p-4 border rounded-lg cursor-pointer transition-colors ${
-                          paymentMethod === 'credit-card' 
-                            ? 'border-red-500 bg-red-50' 
-                            : 'border-gray-300 hover:border-gray-400'
-                        }`}
-                        onClick={() => setPaymentMethod('credit-card')}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
-                              <CreditCard className="w-5 h-5 text-yellow-600" />
-                            </div>
-                            <div>
-                              <h4 className="font-medium">Credit Card</h4>
-                              <p className="text-sm text-gray-600">Pay with your credit card</p>
-                            </div>
-                          </div>
-                          <span className="text-sm text-gray-600">3% fee</span>
+                    ) : (
+                      <div className="space-y-4">
+                        <div className="text-center">
+                          <h3 className="text-lg font-semibold text-gray-900">How would you like to pay?</h3>
+                          <p className="text-gray-600 text-sm mt-1">Choose your payment method</p>
+                        </div>
+                        
+                        <div className="space-y-3">
+                          {internationalPaymentMethods.map((method) => {
+                            const IconComponent = method.icon;
+                            return (
+                              <div 
+                                key={method.id}
+                                className={`p-4 border rounded-lg cursor-pointer transition-colors ${
+                                  paymentMethod === method.id 
+                                    ? 'border-red-500 bg-red-50' 
+                                    : 'border-gray-300 hover:border-gray-400'
+                                }`}
+                                onClick={() => setPaymentMethod(method.id)}
+                              >
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center space-x-3">
+                                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                      <IconComponent className="w-5 h-5 text-blue-600" />
+                                    </div>
+                                    <div>
+                                      <h4 className="font-medium">{method.name}</h4>
+                                      <p className="text-sm text-gray-600">{method.description}</p>
+                                    </div>
+                                  </div>
+                                  <span className={`text-sm font-medium ${
+                                    method.fee === 'Free' || method.fee === '$0.25' 
+                                      ? 'text-green-600' 
+                                      : 'text-gray-600'
+                                  }`}>
+                                    {method.fee === 'Free' ? 'No fees' : method.fee}
+                                  </span>
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
-                      
-                      <div 
-                        className={`p-4 border rounded-lg cursor-pointer transition-colors ${
-                          paymentMethod === 'bank-account' 
-                            ? 'border-red-500 bg-red-50' 
-                            : 'border-gray-300 hover:border-gray-400'
-                        }`}
-                        onClick={() => setPaymentMethod('bank-account')}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                              <CreditCard className="w-5 h-5 text-green-600" />
-                            </div>
-                            <div>
-                              <h4 className="font-medium">Bank Account</h4>
-                              <p className="text-sm text-gray-600">Direct from your bank account</p>
-                            </div>
-                          </div>
-                          <span className="text-sm text-green-600 font-medium">No fees</span>
-                        </div>
-                      </div>
-                    </div>
+                    )}
                   </div>
                 )}
 
@@ -376,43 +442,79 @@ const DesktopHomePage = () => {
                       <p className="text-gray-600 text-sm mt-2">Your money is on its way</p>
                     </div>
                     
-                    <div className="bg-white rounded-lg p-4 border">
-                      <h4 className="font-medium text-gray-900 mb-3">Transfer Details</h4>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Amount:</span>
-                          <span className="font-medium">
-                            {transferType === 'international' ? '$' : 'HTG '}{amount}
-                          </span>
+                    <div className="bg-white rounded-lg border border-gray-200 p-6 space-y-4">
+                      <div className="flex items-center justify-between border-b pb-4">
+                        <h3 className="text-lg font-semibold text-gray-900 flex items-center">
+                          <Receipt className="h-5 w-5 mr-2" />
+                          Receipt
+                        </h3>
+                        <span className="text-sm text-gray-500">
+                          {new Date().toLocaleDateString()}
+                        </span>
+                      </div>
+
+                      <div className="space-y-3">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">Transaction ID</span>
+                          <span className="font-mono text-gray-900">{transactionId}</span>
                         </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">To:</span>
-                          <span className="font-medium">
-                            {receiverDetails.firstName} {receiverDetails.lastName}
-                          </span>
+
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">Status</span>
+                          <span className="text-green-600 font-medium">Completed</span>
                         </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Phone:</span>
-                          <span className="font-medium">+509 {receiverDetails.phoneNumber}</span>
+
+                        <div className="border-t pt-3 space-y-2">
+                          <div className="flex justify-between text-sm">
+                            <span className="text-gray-600">Recipient</span>
+                            <span className="font-medium">{receiverDetails.firstName} {receiverDetails.lastName}</span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span className="text-gray-600">Phone Number</span>
+                            <span className="font-medium">+509 {receiverDetails.phoneNumber}</span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span className="text-gray-600">Location</span>
+                            <span className="font-medium text-right max-w-xs">{receiverDetails.commune}, {receiverDetails.department}</span>
+                          </div>
                         </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Location:</span>
-                          <span className="font-medium">
-                            {receiverDetails.commune}, {receiverDetails.department}
-                          </span>
+
+                        <div className="border-t pt-3 space-y-2">
+                          <div className="flex justify-between text-sm">
+                            <span className="text-gray-600">Amount Sent</span>
+                            <span className="font-medium">${amount}</span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span className="text-gray-600">Transfer Fee</span>
+                            <span className="font-medium">${transferFee}</span>
+                          </div>
+                          <div className="flex justify-between text-lg font-semibold border-t pt-2">
+                            <span>Total Paid</span>
+                            <span className="text-blue-600">${totalAmount}</span>
+                          </div>
                         </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Reference:</span>
-                          <span className="font-medium">TX{Date.now()}</span>
+
+                        <div className="border-t pt-3">
+                          <div className="flex justify-between text-sm">
+                            <span className="text-gray-600">Payment Method</span>
+                            <span className="font-medium capitalize">
+                              {paymentMethod?.replace('-', ' ')}
+                            </span>
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                      <h4 className="font-medium text-blue-900 mb-2">What happens next?</h4>
-                      <p className="text-blue-800 text-sm">
-                        Your recipient will receive an SMS notification when the money is ready for pickup at their chosen location.
-                      </p>
+                      <div className="bg-green-50 rounded-lg p-4 mt-4">
+                        <div className="flex items-start space-x-3">
+                          <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
+                          <div>
+                            <h4 className="font-medium text-green-900">Delivery Information</h4>
+                            <p className="text-sm text-green-700 mt-1">
+                              The recipient will receive the funds within 24-48 hours. They will be notified via SMS when the money is ready for pickup.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 )}
