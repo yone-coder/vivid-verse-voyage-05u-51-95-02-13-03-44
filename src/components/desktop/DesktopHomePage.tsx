@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -389,7 +388,7 @@ const DesktopHomePage = () => {
                       <div className="space-y-4">
                         <div className="text-center">
                           <h3 className="text-lg font-semibold text-gray-900">How would you like to pay?</h3>
-                          <p className="text-gray-600 text-sm mt-1">Choose your payment method</p>
+                          <p className="text-gray-600 text-sm mt-1">Choose your preferred payment method</p>
                         </div>
                         
                         <div className="space-y-3">
@@ -398,30 +397,34 @@ const DesktopHomePage = () => {
                             return (
                               <div 
                                 key={method.id}
-                                className={`p-4 border rounded-lg cursor-pointer transition-colors ${
+                                className={`p-4 border-2 rounded-xl cursor-pointer transition-all ${
                                   paymentMethod === method.id 
                                     ? 'border-red-500 bg-red-50' 
-                                    : 'border-gray-300 hover:border-gray-400'
+                                    : 'border-gray-200 hover:border-gray-300'
                                 }`}
                                 onClick={() => setPaymentMethod(method.id)}
                               >
                                 <div className="flex items-center justify-between">
                                   <div className="flex items-center space-x-3">
-                                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                                      <IconComponent className="w-5 h-5 text-blue-600" />
+                                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                                      paymentMethod === method.id ? 'bg-red-100' : 'bg-gray-100'
+                                    }`}>
+                                      <IconComponent className={`w-5 h-5 ${
+                                        paymentMethod === method.id ? 'text-red-600' : 'text-gray-600'
+                                      }`} />
                                     </div>
                                     <div>
-                                      <h4 className="font-medium">{method.name}</h4>
+                                      <h4 className="font-semibold text-gray-900">{method.name}</h4>
                                       <p className="text-sm text-gray-600">{method.description}</p>
                                     </div>
                                   </div>
-                                  <span className={`text-sm font-medium ${
-                                    method.fee === 'Free' || method.fee === '$0.25' 
-                                      ? 'text-green-600' 
-                                      : 'text-gray-600'
-                                  }`}>
-                                    {method.fee === 'Free' ? 'No fees' : method.fee}
-                                  </span>
+                                  <div className="text-right">
+                                    <span className={`text-sm font-semibold ${
+                                      method.fee === 'Free' ? 'text-green-600' : 'text-gray-900'
+                                    }`}>
+                                      {method.fee === 'Free' ? 'Free' : method.fee}
+                                    </span>
+                                  </div>
                                 </div>
                               </div>
                             );
