@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Send, History, MapPin, Route, Search, Eye, User, Star, Phone, Clock, CheckCircle, XCircle, ArrowUpRight, ArrowDownLeft, ArrowRight, ArrowLeft, DollarSign, CreditCard, Receipt, Banknote, Landmark, CircleDollarSign, Loader2, AlertCircle } from 'lucide-react';
+import { Send, History, MapPin, Route, Search, Eye, User, Star, Phone, Clock, CheckCircle, XCircle, ArrowUpRight, ArrowDownLeft, ArrowRight, ArrowLeft, DollarSign, CreditCard, Receipt, Banknote, Landmark, CircleDollarSign, Loader2, AlertCircle, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import TransferTypeSelector from '@/components/transfer/TransferTypeSelector';
@@ -151,6 +151,11 @@ const DesktopHomePage = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     }
+  };
+
+  // Add the missing onContinue function
+  const onContinue = () => {
+    handleNextStep();
   };
 
   // Step validation
@@ -611,7 +616,15 @@ const DesktopHomePage = () => {
                       </div>
                       <div className="text-right">
                         <div className="font-medium text-gray-900 text-sm">{transfer.amount}</div>
-                        <div className={`text-xs px-2 py-1 rounded-full ${getStatusColor(transfer.status)}`}>
+                        <div className={`text-xs px-2 py-1 rounded-full ${
+                          ['completed', 'success'].includes(transfer.status.toLowerCase())
+                            ? 'bg-green-100 text-green-800'
+                            : ['pending', 'processing'].includes(transfer.status.toLowerCase())
+                            ? 'bg-yellow-100 text-yellow-800'
+                            : ['failed', 'error'].includes(transfer.status.toLowerCase())
+                            ? 'bg-red-100 text-red-800'
+                            : 'bg-gray-100 text-gray-800'
+                        }`}>
                           {transfer.status}
                         </div>
                       </div>
