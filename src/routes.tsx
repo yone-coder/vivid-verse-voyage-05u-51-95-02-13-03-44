@@ -5,6 +5,7 @@ import DeviceRouter from "@/components/common/DeviceRouter";
 import MobileMultiStepTransferSheetPage from "@/pages/MobileMultiStepTransferSheetPage";
 import DesktopHomePage from "@/components/desktop/DesktopHomePage";
 import DesktopTransferPage from "@/components/desktop/DesktopTransferPage";
+import DesktopTransferSheetPage from "@/components/desktop/DesktopTransferSheetPage";
 import TransferHistoryPage from "@/pages/TransferHistoryPage";
 import TrackTransferPage from "@/pages/TrackTransferPage";
 import LocationsPage from "@/pages/LocationsPage";
@@ -32,6 +33,13 @@ export const router = createBrowserRouter([
         element: <DeviceRouter 
           mobileComponent={MobileMultiStepTransferSheetPage} 
           desktopComponent={DesktopTransferPage}
+        /> 
+      },
+      { 
+        path: "transfer-sheet", 
+        element: <DeviceRouter 
+          mobileComponent={MobileMultiStepTransferSheetPage} 
+          desktopComponent={DesktopTransferSheetPage}
         /> 
       },
       { 
