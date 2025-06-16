@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -158,7 +159,7 @@ const DesktopHomePage = () => {
     handleNextStep();
   };
 
-  // Step validation
+  // Step validation - Updated to fix step 3 validation
   const canProceedFromStep1 = Boolean(amount && parseFloat(amount) > 0);
   const canProceedFromStep2 = Boolean(
     receiverDetails.firstName &&
@@ -166,7 +167,9 @@ const DesktopHomePage = () => {
     receiverDetails.phoneNumber &&
     receiverDetails.commune
   );
-  const canProceedFromStep3 = Boolean(paymentMethod);
+  const canProceedFromStep3 = Boolean(
+    transferType === 'national' || paymentMethod
+  );
 
   const canProceed = Boolean(
     (currentStep === 1 && canProceedFromStep1) ||
@@ -416,43 +419,57 @@ const DesktopHomePage = () => {
                       </div>
                     ) : (
                       <div className="space-y-4">
-                        {/* Pay with PayPal Button */}
-                        <div className="w-full">
-                          <Button 
-                            onClick={onContinue}
-                            disabled={
-                              !canProceed || 
-                              isPaymentLoading || 
-                              (currentStep === 3 && transferData?.transferType === 'international' && !isPaymentFormValid)
-                            }
-                            className={cn(
-                              "w-full transition-all duration-200 text-white font-semibold py-4 text-lg",
-                              getButtonColor()
-                            )}
-                          >
-                            {isPaymentLoading ? (
-                              <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                {getButtonText()}
-                              </>
-                            ) : (
-                              <>
-                                {getButtonText()}
-                                {currentStep < 3 && <ArrowRight className="ml-2 h-4 w-4" />}
-                              </>
-                            )}
-                          </Button>
+                        {/* International Payment Methods */}
+                        <h3 className="text-lg font-semibold text-gray-900">Choose Payment Method</h3>
+                        
+                        <div className="grid grid-cols-1 gap-3">
+                          {internationalPaymentMethods.map((method) => {
+                            const IconComponent = method.icon;
+                            return (
+                              <div
+                                key={method.id}
+                                className={cn(
+                                  "border rounded-lg p-4 cursor-pointer transition-all",
+                                  paymentMethod === method.id
+                                    ? "border-blue-500 bg-blue-50"
+                                    : "border-gray-200 hover:border-gray-300"
+                                )}
+                                onClick={() => setPaymentMethod(method.id)}
+                              >
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center space-x-3">
+                                    <IconComponent className="h-6 w-6 text-gray-600" />
+                                    <div>
+                                      <h4 className="font-medium text-gray-900">{method.name}</h4>
+                                      <p className="text-sm text-gray-500">{method.description}</p>
+                                    </div>
+                                  </div>
+                                  <div className="text-right">
+                                    <span className="text-sm font-medium text-gray-900">{method.fee}</span>
+                                    <div className={cn(
+                                      "w-4 h-4 rounded-full border-2 mt-1",
+                                      paymentMethod === method.id
+                                        ? "border-blue-500 bg-blue-500"
+                                        : "border-gray-300"
+                                    )}>
+                                      {paymentMethod === method.id && (
+                                        <div className="w-2 h-2 bg-white rounded-full m-0.5" />
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
 
-                        {/* Separator */}
-                        <div className="flex items-center justify-center space-x-4 my-6">
-                          <div className="flex-1 border-t border-gray-300"></div>
-                          <span className="text-gray-500 text-sm font-medium px-4">or continue with</span>
-                          <div className="flex-1 border-t border-gray-300"></div>
-                        </div>
-
-                        {/* PayPal Checkout Container (Form) */}
-                        <div ref={paypalContainerRef}></div>
+                        {paymentMethod && (
+                          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                            <p className="text-blue-800 text-sm">
+                              Selected: {internationalPaymentMethods.find(m => m.id === paymentMethod)?.name}
+                            </p>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
