@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -482,6 +481,7 @@ const DesktopHomePage = () => {
                               style={{ layout: "vertical" }}
                               createOrder={(data, actions) => {
                                 return actions.order.create({
+                                  intent: "CAPTURE",
                                   purchase_units: [
                                     {
                                       amount: {
