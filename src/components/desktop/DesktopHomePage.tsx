@@ -242,7 +242,7 @@ const DesktopHomePage = () => {
     }
   };
 
-  // PayPal payment handling
+  // PayPal payment handling with correct types
   const handlePayPalPayment = async (details: any, data: any) => {
     setIsPaymentLoading(true);
     try {
@@ -456,7 +456,7 @@ const DesktopHomePage = () => {
                         {/* PayPal Integration for International Transfers */}
                         <PayPalScriptProvider
                           options={{
-                            "client-id": "AcQKXQzBGOCFtE8xZF9_1YEj2YM7xOcGPQgfJ7nHpGe4QFJVjmgZGNT7KYL6wqZ6a84UjMU9vD9PqVQF",
+                            clientId: "AcQKXQzBGOCFtE8xZF9_1YEj2YM7xOcGPQgfJ7nHpGe4QFJVjmgZGNT7KYL6wqZ6a84UjMU9vD9PqVQF",
                             currency: "USD",
                             intent: "capture"
                           }}
@@ -485,6 +485,7 @@ const DesktopHomePage = () => {
                                   purchase_units: [
                                     {
                                       amount: {
+                                        currency_code: "USD",
                                         value: totalAmount,
                                       },
                                     },
