@@ -1,4 +1,5 @@
-import React, { useState, useRef } from 'react';
+
+import React, { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,6 +11,7 @@ import TransferTypeSelector from '@/components/transfer/TransferTypeSelector';
 import StepOneTransfer from '@/components/transfer/StepOneTransfer';
 import StepOneLocalTransfer from '@/components/transfer/StepOneLocalTransfer';
 import StepTwoTransfer from '@/components/transfer/StepTwoTransfer';
+import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 
 const DesktopHomePage = () => {
   // Transfer state
@@ -33,6 +35,7 @@ const DesktopHomePage = () => {
   const [cvv, setCvv] = useState('');
   const [isPaymentLoading, setIsPaymentLoading] = useState(false);
   const [isPaymentFormValid, setIsPaymentFormValid] = useState(true);
+  const [paypalOrderId, setPaypalOrderId] = useState<string | null>(null);
   
   // PayPal container ref
   const paypalContainerRef = useRef<HTMLDivElement>(null);
@@ -153,11 +156,6 @@ const DesktopHomePage = () => {
     }
   };
 
-  // Add the missing onContinue function
-  const onContinue = () => {
-    handleNextStep();
-  };
-
   // Step validation
   const canProceedFromStep1 = Boolean(amount && parseFloat(amount) > 0);
   const canProceedFromStep2 = Boolean(
@@ -242,6 +240,30 @@ const DesktopHomePage = () => {
       default:
         return <AlertCircle className="h-4 w-4 text-gray-600" />;
     }
+  };
+
+  // PayPal payment handling
+  const handlePayPalPayment = async (details: any, data: any) => {
+    setIsPaymentLoading(true);
+    try {
+      console.log('PayPal payment approved:', { details, data });
+      setPaypalOrderId(data.orderID);
+      setCurrentStep(4);
+    } catch (error) {
+      console.error('PayPal payment error:', error);
+    } finally {
+      setIsPaymentLoading(false);
+    }
+  };
+
+  // MonCash payment handling
+  const handleMonCashPayment = () => {
+    setIsPaymentLoading(true);
+    // Simulate MonCash payment process
+    setTimeout(() => {
+      setCurrentStep(4);
+      setIsPaymentLoading(false);
+    }, 2000);
   };
 
   return (
@@ -413,46 +435,88 @@ const DesktopHomePage = () => {
                             <li>• You will be redirected back after payment</li>
                           </ul>
                         </div>
+
+                        <Button 
+                          onClick={handleMonCashPayment}
+                          disabled={isPaymentLoading}
+                          className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-4 text-lg"
+                        >
+                          {isPaymentLoading ? (
+                            <>
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                              Processing...
+                            </>
+                          ) : (
+                            `Pay HTG ${receiverAmount} with MonCash`
+                          )}
+                        </Button>
                       </div>
                     ) : (
                       <div className="space-y-4">
-                        {/* Pay with PayPal Button */}
-                        <div className="w-full">
-                          <Button 
-                            onClick={onContinue}
-                            disabled={
-                              !canProceed || 
-                              isPaymentLoading || 
-                              (currentStep === 3 && transferData?.transferType === 'international' && !isPaymentFormValid)
-                            }
-                            className={cn(
-                              "w-full transition-all duration-200 text-white font-semibold py-4 text-lg",
-                              getButtonColor()
-                            )}
-                          >
-                            {isPaymentLoading ? (
-                              <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                {getButtonText()}
-                              </>
-                            ) : (
-                              <>
-                                {getButtonText()}
-                                {currentStep < 3 && <ArrowRight className="ml-2 h-4 w-4" />}
-                              </>
-                            )}
-                          </Button>
-                        </div>
+                        {/* PayPal Integration for International Transfers */}
+                        <PayPalScriptProvider
+                          options={{
+                            "client-id": "AcQKXQzBGOCFtE8xZF9_1YEj2YM7xOcGPQgfJ7nHpGe4QFJVjmgZGNT7KYL6wqZ6a84UjMU9vD9PqVQF",
+                            currency: "USD",
+                            intent: "capture"
+                          }}
+                        >
+                          <div className="bg-white rounded-lg border border-gray-200 p-4">
+                            <h4 className="font-semibold text-gray-800 mb-3">Pay with PayPal</h4>
+                            <div className="space-y-3 mb-4">
+                              <div className="flex justify-between text-sm">
+                                <span className="text-gray-600">Amount to send:</span>
+                                <span className="font-medium">${amount}</span>
+                              </div>
+                              <div className="flex justify-between text-sm">
+                                <span className="text-gray-600">Transfer fee:</span>
+                                <span className="font-medium">${transferFee}</span>
+                              </div>
+                              <div className="flex justify-between text-lg font-semibold border-t pt-2">
+                                <span>Total to pay:</span>
+                                <span className="text-blue-600">${totalAmount}</span>
+                              </div>
+                            </div>
+                            
+                            <PayPalButtons
+                              style={{ layout: "vertical" }}
+                              createOrder={(data, actions) => {
+                                return actions.order.create({
+                                  purchase_units: [
+                                    {
+                                      amount: {
+                                        value: totalAmount,
+                                      },
+                                    },
+                                  ],
+                                });
+                              }}
+                              onApprove={async (data, actions) => {
+                                const details = await actions.order?.capture();
+                                await handlePayPalPayment(details, data);
+                              }}
+                              onError={(err) => {
+                                console.error('PayPal error:', err);
+                              }}
+                            />
+                          </div>
+                        </PayPalScriptProvider>
 
-                        {/* Separator */}
-                        <div className="flex items-center justify-center space-x-4 my-6">
-                          <div className="flex-1 border-t border-gray-300"></div>
-                          <span className="text-gray-500 text-sm font-medium px-4">or continue with</span>
-                          <div className="flex-1 border-t border-gray-300"></div>
+                        {/* Alternative Payment Methods */}
+                        <div className="bg-gray-50 rounded-lg p-4">
+                          <h4 className="font-semibold text-gray-800 mb-3">Other Payment Methods</h4>
+                          <p className="text-sm text-gray-600 mb-3">
+                            Additional payment options will be available soon.
+                          </p>
+                          <div className="grid grid-cols-2 gap-2">
+                            {internationalPaymentMethods.slice(0, 4).map((method) => (
+                              <div key={method.id} className="flex items-center space-x-2 text-sm text-gray-500">
+                                <method.icon className="h-4 w-4" />
+                                <span>{method.name}</span>
+                              </div>
+                            ))}
+                          </div>
                         </div>
-
-                        {/* PayPal Checkout Container (Form) */}
-                        <div ref={paypalContainerRef}></div>
                       </div>
                     )}
                   </div>
@@ -524,9 +588,15 @@ const DesktopHomePage = () => {
                           <div className="flex justify-between text-sm">
                             <span className="text-gray-600">Payment Method</span>
                             <span className="font-medium capitalize">
-                              {paymentMethod?.replace('-', ' ')}
+                              {transferData.transferType === 'national' ? 'MonCash' : 'PayPal'}
                             </span>
                           </div>
+                          {paypalOrderId && (
+                            <div className="flex justify-between text-sm mt-1">
+                              <span className="text-gray-600">PayPal Order ID</span>
+                              <span className="font-mono text-xs">{paypalOrderId}</span>
+                            </div>
+                          )}
                         </div>
                       </div>
 
@@ -558,15 +628,27 @@ const DesktopHomePage = () => {
                     </Button>
                   )}
                   
-                  <Button 
-                    onClick={currentStep === 4 ? handleSendTransfer : handleNextStep}
-                    disabled={!canProceed}
-                    className={`${currentStep === 1 ? 'w-full' : 'flex-1'} bg-red-600 hover:bg-red-700`}
-                    size="lg"
-                  >
-                    {currentStep === 4 ? 'Send Another Transfer' : currentStep === 3 ? `Pay $${totalAmount}` : 'Continue'}
-                    {currentStep < 4 && <ArrowRight className="w-4 h-4 ml-2" />}
-                  </Button>
+                  {currentStep < 3 && (
+                    <Button 
+                      onClick={handleNextStep}
+                      disabled={!canProceed}
+                      className={`${currentStep === 1 ? 'w-full' : 'flex-1'} bg-red-600 hover:bg-red-700`}
+                      size="lg"
+                    >
+                      Continue
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+                  )}
+
+                  {currentStep === 4 && (
+                    <Button 
+                      onClick={handleSendTransfer}
+                      className="w-full bg-red-600 hover:bg-red-700"
+                      size="lg"
+                    >
+                      Send Another Transfer
+                    </Button>
+                  )}
                 </div>
               </CardContent>
             </Card>
