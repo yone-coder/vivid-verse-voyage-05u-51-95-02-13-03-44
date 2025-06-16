@@ -26,6 +26,10 @@ const DesktopHomePage = () => {
   
   // Payment and method selection state
   const [paymentMethod, setPaymentMethod] = useState('');
+  const [email, setEmail] = useState('');
+  const [cardNumber, setCardNumber] = useState('');
+  const [expiryDate, setExpiryDate] = useState('');
+  const [cvv, setCvv] = useState('');
   
   // Track transfer state
   const [trackingNumber, setTrackingNumber] = useState('');
@@ -167,7 +171,7 @@ const DesktopHomePage = () => {
       case 2:
         return 'Recipient Details';
       case 3:
-        return 'Payment Method';
+        return 'Payment';
       case 4:
         return 'Transfer Complete';
       default:
@@ -175,7 +179,7 @@ const DesktopHomePage = () => {
     }
   };
 
-  const stepTitles = ['Send Money', 'Recipient Details', 'Payment Method', 'Transfer Complete'];
+  const stepTitles = ['Send Money', 'Recipient Details', 'Payment', 'Transfer Complete'];
 
   // Calculate fees and amounts like mobile version
   const transferFee = amount ? (Math.ceil(parseFloat(amount) / 100) * 15).toFixed(2) : '0.00';
@@ -340,10 +344,7 @@ const DesktopHomePage = () => {
                       <h2 className="text-xl font-bold text-gray-900 mb-3">Complete Your Payment</h2>
                       <p className="text-gray-600 leading-relaxed">
                         Sending <span className="font-semibold text-blue-600">
-                          {transferType === 'national'
-                            ? `HTG ${receiverAmount}`
-                            : `$${amount}`
-                          }
+                          ${amount}
                         </span> to{' '}
                         <span className="font-semibold text-gray-900">
                           {receiverDetails.firstName} {receiverDetails.lastName}
@@ -351,8 +352,72 @@ const DesktopHomePage = () => {
                       </p>
                     </div>
 
-                    {/* Payment Method Based on Transfer Type */}
-                    {transferType === 'national' ? (
+                    {transferType === 'international' ? (
+                      <div className="space-y-6">
+                        {/* PayPal Payment Button */}
+                        <Button 
+                          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 text-lg font-semibold"
+                          onClick={() => setPaymentMethod('paypal')}
+                        >
+                          Pay Now
+                        </Button>
+                        
+                        <div className="text-center">
+                          <p className="text-gray-500 text-sm">or continue with</p>
+                        </div>
+                        
+                        {/* Email and Card Information Form */}
+                        <div className="space-y-4">
+                          <div>
+                            <Label htmlFor="email" className="text-sm font-medium text-gray-700">
+                              Email Address
+                            </Label>
+                            <Input
+                              id="email"
+                              type="email"
+                              placeholder="your@email.com"
+                              value={email}
+                              onChange={(e) => setEmail(e.target.value)}
+                              className="mt-1"
+                            />
+                          </div>
+                          
+                          <div>
+                            <Label htmlFor="cardInfo" className="text-sm font-medium text-gray-700">
+                              Card Information
+                            </Label>
+                            <div className="mt-1 space-y-3">
+                              <Input
+                                id="cardNumber"
+                                type="text"
+                                placeholder="1234 1234 1234 1234"
+                                value={cardNumber}
+                                onChange={(e) => setCardNumber(e.target.value)}
+                              />
+                              <div className="grid grid-cols-2 gap-3">
+                                <Input
+                                  type="text"
+                                  placeholder="MM/YY"
+                                  value={expiryDate}
+                                  onChange={(e) => setExpiryDate(e.target.value)}
+                                />
+                                <Input
+                                  type="text"
+                                  placeholder="CVV"
+                                  value={cvv}
+                                  onChange={(e) => setCvv(e.target.value)}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* Secured by PayPal */}
+                        <div className="text-center">
+                          <p className="text-xs text-gray-500">Secured by PayPal</p>
+                        </div>
+                      </div>
+                    ) : (
                       <div className="space-y-4">
                         <div className="bg-white rounded-lg border border-gray-200 p-4 space-y-3">
                           <div className="flex justify-between">
@@ -382,53 +447,6 @@ const DesktopHomePage = () => {
                             <li>• Complete the payment on MonCash website</li>
                             <li>• You will be redirected back after payment</li>
                           </ul>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="space-y-4">
-                        <div className="text-center">
-                          <h3 className="text-lg font-semibold text-gray-900">How would you like to pay?</h3>
-                          <p className="text-gray-600 text-sm mt-1">Choose your preferred payment method</p>
-                        </div>
-                        
-                        <div className="space-y-3">
-                          {internationalPaymentMethods.map((method) => {
-                            const IconComponent = method.icon;
-                            return (
-                              <div 
-                                key={method.id}
-                                className={`p-4 border-2 rounded-xl cursor-pointer transition-all ${
-                                  paymentMethod === method.id 
-                                    ? 'border-red-500 bg-red-50' 
-                                    : 'border-gray-200 hover:border-gray-300'
-                                }`}
-                                onClick={() => setPaymentMethod(method.id)}
-                              >
-                                <div className="flex items-center justify-between">
-                                  <div className="flex items-center space-x-3">
-                                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                                      paymentMethod === method.id ? 'bg-red-100' : 'bg-gray-100'
-                                    }`}>
-                                      <IconComponent className={`w-5 h-5 ${
-                                        paymentMethod === method.id ? 'text-red-600' : 'text-gray-600'
-                                      }`} />
-                                    </div>
-                                    <div>
-                                      <h4 className="font-semibold text-gray-900">{method.name}</h4>
-                                      <p className="text-sm text-gray-600">{method.description}</p>
-                                    </div>
-                                  </div>
-                                  <div className="text-right">
-                                    <span className={`text-sm font-semibold ${
-                                      method.fee === 'Free' ? 'text-green-600' : 'text-gray-900'
-                                    }`}>
-                                      {method.fee === 'Free' ? 'Free' : method.fee}
-                                    </span>
-                                  </div>
-                                </div>
-                              </div>
-                            );
-                          })}
                         </div>
                       </div>
                     )}
@@ -531,7 +549,7 @@ const DesktopHomePage = () => {
                       className="flex-1"
                     >
                       <ArrowLeft className="w-4 h-4 mr-2" />
-                      Back
+                      {currentStep === 3 ? 'Previous' : 'Back'}
                     </Button>
                   )}
                   
@@ -541,7 +559,7 @@ const DesktopHomePage = () => {
                     className={`${currentStep === 1 ? 'w-full' : 'flex-1'} bg-red-600 hover:bg-red-700`}
                     size="lg"
                   >
-                    {currentStep === 4 ? 'Send Another Transfer' : currentStep === 3 ? 'Complete Transfer' : 'Continue'}
+                    {currentStep === 4 ? 'Send Another Transfer' : currentStep === 3 ? `Pay $${totalAmount}` : 'Continue'}
                     {currentStep < 4 && <ArrowRight className="w-4 h-4 ml-2" />}
                   </Button>
                 </div>
