@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Send, History, MapPin, Route, Search, Eye, User, Star, Phone, Clock, CheckCircle, XCircle, ArrowUpRight, ArrowDownLeft, ArrowRight, ArrowLeft, DollarSign, CreditCard, Receipt, Banknote, Landmark, CircleDollarSign, Loader2 } from 'lucide-react';
+import { Send, History, MapPin, Route, Search, Eye, User, Star, Phone, Clock, CheckCircle, XCircle, ArrowUpRight, ArrowDownLeft, ArrowRight, ArrowLeft, DollarSign, CreditCard, Receipt, Banknote, Landmark, CircleDollarSign, Loader2, AlertCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import TransferTypeSelector from '@/components/transfer/TransferTypeSelector';
@@ -221,6 +221,23 @@ const DesktopHomePage = () => {
     location.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     location.address.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // Add the missing getStatusIcon function
+  const getStatusIcon = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'completed':
+      case 'success':
+        return <CheckCircle className="h-4 w-4 text-green-600" />;
+      case 'pending':
+      case 'processing':
+        return <Clock className="h-4 w-4 text-yellow-600" />;
+      case 'failed':
+      case 'error':
+        return <X className="h-4 w-4 text-red-600" />;
+      default:
+        return <AlertCircle className="h-4 w-4 text-gray-600" />;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
