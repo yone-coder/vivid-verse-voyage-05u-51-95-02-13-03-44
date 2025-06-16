@@ -26,15 +26,6 @@ export interface TransferData {
   selectedPaymentMethod?: string;
 }
 
-interface PaymentMethod {
-  id: string;
-  name: string;
-  icon: any;
-  description: string;
-  fee: string;
-  processorUrl?: string;
-}
-
 interface MobileMultiStepTransferSheetPageProps {
   defaultTransferType?: 'international' | 'national';
 }
@@ -71,46 +62,6 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
 
   // PayPal backend API URL as a constant
   const PAYPAL_BACKEND_URL = 'https://paypal-backend-9mw4.onrender.com';
-
-  // International payment methods (USD)
-  const internationalPaymentMethods: PaymentMethod[] = [
-    {
-      id: 'credit-card',
-      name: 'Credit or Debit Card',
-      icon: CreditCard,
-      description: 'Safe and secure card payment',
-      fee: '3.5% + $0.30',
-      processorUrl: PAYPAL_BACKEND_URL
-    },
-    {
-      id: 'bank-transfer',
-      name: 'Bank Transfer / ACH',
-      icon: Banknote,
-      description: 'Direct from your bank account',
-      fee: '$0.25'
-    },
-    {
-      id: 'zelle',
-      name: 'Zelle',
-      icon: Landmark,
-      description: 'Fast transfers between US banks',
-      fee: 'Free'
-    },
-    {
-      id: 'paypal',
-      name: 'PayPal',
-      icon: CircleDollarSign,
-      description: 'Send using your PayPal balance',
-      fee: '2.9% + $0.30'
-    },
-    {
-      id: 'cashapp',
-      name: 'Cash App',
-      icon: DollarSign,
-      description: 'Send using Cash App',
-      fee: '1.5%'
-    }
-  ];
 
   // PayPal integration effect for step 3
   useEffect(() => {
