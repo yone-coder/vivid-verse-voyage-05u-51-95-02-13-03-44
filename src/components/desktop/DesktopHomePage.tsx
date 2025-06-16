@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Send, History, MapPin, Route, Search, Eye, User, Star, Phone, Clock, CheckCircle, XCircle, ArrowUpRight, ArrowDownLeft, ArrowRight, ArrowLeft, DollarSign, CreditCard, Receipt, Banknote, Landmark, CircleDollarSign } from 'lucide-react';
+import { Send, History, MapPin, Route, Search, Eye, User, Star, Phone, Clock, CheckCircle, XCircle, ArrowUpRight, ArrowDownLeft, ArrowRight, ArrowLeft, DollarSign, CreditCard, Receipt, Banknote, Landmark, CircleDollarSign, Loader2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 import TransferTypeSelector from '@/components/transfer/TransferTypeSelector';
 import StepOneTransfer from '@/components/transfer/StepOneTransfer';
 import StepOneLocalTransfer from '@/components/transfer/StepOneLocalTransfer';
@@ -30,6 +31,11 @@ const DesktopHomePage = () => {
   const [cardNumber, setCardNumber] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
   const [cvv, setCvv] = useState('');
+  const [isPaymentLoading, setIsPaymentLoading] = useState(false);
+  const [isPaymentFormValid, setIsPaymentFormValid] = useState(true);
+  
+  // PayPal container ref
+  const paypalContainerRef = useRef<HTMLDivElement>(null);
   
   // Track transfer state
   const [trackingNumber, setTrackingNumber] = useState('');
@@ -187,30 +193,28 @@ const DesktopHomePage = () => {
   const receiverAmount = amount ? (parseFloat(amount) * 127.5).toFixed(2) : '0.00';
   const transactionId = `TX${Date.now()}`;
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'completed':
-        return <CheckCircle className="w-5 h-5 text-green-600" />;
-      case 'pending':
-        return <Clock className="w-5 h-5 text-yellow-600" />;
-      case 'failed':
-        return <XCircle className="w-5 h-5 text-red-600" />;
-      default:
-        return <Clock className="w-5 h-5 text-gray-600" />;
-    }
+  // Create transferData object to match mobile structure
+  const transferData = {
+    transferType,
+    amount,
+    receiverDetails
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'completed':
-        return 'bg-green-100 text-green-800';
-      case 'pending':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'failed':
-        return 'bg-red-100 text-red-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
+  const getButtonColor = () => {
+    if (currentStep === 1) return "bg-red-600 hover:bg-red-700";
+    if (currentStep === 2) return "bg-blue-600 hover:bg-blue-700";
+    if (currentStep === 3) return "bg-green-600 hover:bg-green-700";
+    return "bg-red-600 hover:bg-red-700";
+  };
+
+  const getButtonText = () => {
+    if (currentStep === 1) return "Continue";
+    if (currentStep === 2) return "Continue";
+    if (currentStep === 3) {
+      if (transferData.transferType === 'national') return `Pay HTG ${receiverAmount}`;
+      return "Pay Now";
     }
+    return "Continue";
   };
 
   const filteredLocations = nearbyLocations.filter(location =>
@@ -341,89 +345,28 @@ const DesktopHomePage = () => {
                 {currentStep === 3 && (
                   <div className="space-y-6">
                     <div className="text-center mb-6">
-                      <h2 className="text-xl font-bold text-gray-900 mb-3">Complete Your Payment</h2>
+                      <h2 className="text-2xl font-bold text-gray-900 mb-3">Complete Your Payment</h2>
                       <p className="text-gray-600 leading-relaxed">
                         Sending <span className="font-semibold text-blue-600">
-                          ${amount}
+                          {transferData.transferType === 'national'
+                            ? `HTG ${receiverAmount}`
+                            : `$${transferData.amount}`
+                          }
                         </span> to{' '}
                         <span className="font-semibold text-gray-900">
-                          {receiverDetails.firstName} {receiverDetails.lastName}
+                          {transferData.receiverDetails.firstName} {transferData.receiverDetails.lastName}
                         </span>
                       </p>
                     </div>
 
-                    {transferType === 'international' ? (
-                      <div className="space-y-6">
-                        {/* PayPal Payment Button */}
-                        <Button 
-                          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 text-lg font-semibold"
-                          onClick={() => setPaymentMethod('paypal')}
-                        >
-                          Pay Now
-                        </Button>
-                        
-                        <div className="text-center">
-                          <p className="text-gray-500 text-sm">or continue with</p>
-                        </div>
-                        
-                        {/* Email and Card Information Form */}
-                        <div className="space-y-4">
-                          <div>
-                            <Label htmlFor="email" className="text-sm font-medium text-gray-700">
-                              Email Address
-                            </Label>
-                            <Input
-                              id="email"
-                              type="email"
-                              placeholder="your@email.com"
-                              value={email}
-                              onChange={(e) => setEmail(e.target.value)}
-                              className="mt-1"
-                            />
-                          </div>
-                          
-                          <div>
-                            <Label htmlFor="cardInfo" className="text-sm font-medium text-gray-700">
-                              Card Information
-                            </Label>
-                            <div className="mt-1 space-y-3">
-                              <Input
-                                id="cardNumber"
-                                type="text"
-                                placeholder="1234 1234 1234 1234"
-                                value={cardNumber}
-                                onChange={(e) => setCardNumber(e.target.value)}
-                              />
-                              <div className="grid grid-cols-2 gap-3">
-                                <Input
-                                  type="text"
-                                  placeholder="MM/YY"
-                                  value={expiryDate}
-                                  onChange={(e) => setExpiryDate(e.target.value)}
-                                />
-                                <Input
-                                  type="text"
-                                  placeholder="CVV"
-                                  value={cvv}
-                                  onChange={(e) => setCvv(e.target.value)}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        
-                        {/* Secured by PayPal */}
-                        <div className="text-center">
-                          <p className="text-xs text-gray-500">Secured by PayPal</p>
-                        </div>
-                      </div>
-                    ) : (
+                    {/* Payment Method Based on Transfer Type */}
+                    {transferData.transferType === 'national' ? (
                       <div className="space-y-4">
                         <div className="bg-white rounded-lg border border-gray-200 p-4 space-y-3">
                           <div className="flex justify-between">
                             <span className="text-gray-600">Recipient:</span>
                             <span className="font-medium">
-                              {receiverDetails.firstName} {receiverDetails.lastName}
+                              {transferData.receiverDetails.firstName} {transferData.receiverDetails.lastName}
                             </span>
                           </div>
                           <div className="flex justify-between">
@@ -448,6 +391,46 @@ const DesktopHomePage = () => {
                             <li>• You will be redirected back after payment</li>
                           </ul>
                         </div>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        {/* Pay with PayPal Button */}
+                        <div className="w-full">
+                          <Button 
+                            onClick={onContinue}
+                            disabled={
+                              !canProceed || 
+                              isPaymentLoading || 
+                              (currentStep === 3 && transferData?.transferType === 'international' && !isPaymentFormValid)
+                            }
+                            className={cn(
+                              "w-full transition-all duration-200 text-white font-semibold py-4 text-lg",
+                              getButtonColor()
+                            )}
+                          >
+                            {isPaymentLoading ? (
+                              <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                {getButtonText()}
+                              </>
+                            ) : (
+                              <>
+                                {getButtonText()}
+                                {currentStep < 3 && <ArrowRight className="ml-2 h-4 w-4" />}
+                              </>
+                            )}
+                          </Button>
+                        </div>
+
+                        {/* Separator */}
+                        <div className="flex items-center justify-center space-x-4 my-6">
+                          <div className="flex-1 border-t border-gray-300"></div>
+                          <span className="text-gray-500 text-sm font-medium px-4">or continue with</span>
+                          <div className="flex-1 border-t border-gray-300"></div>
+                        </div>
+
+                        {/* PayPal Checkout Container (Form) */}
+                        <div ref={paypalContainerRef}></div>
                       </div>
                     )}
                   </div>
