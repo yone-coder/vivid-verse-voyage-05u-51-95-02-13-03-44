@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -10,10 +11,12 @@ export interface TransferData {
   transferType: 'national' | 'international';
   amount: string;
   receiverDetails: {
-    name: string;
-    accountNumber: string;
-    bankName: string;
-    swiftCode: string;
+    firstName: string;
+    lastName: string;
+    phoneNumber: string;
+    department: string;
+    commune: string;
+    email?: string;
   };
   paymentMethod: 'creditCard' | 'paypal' | 'bankTransfer';
   cardNumber: string;
@@ -24,6 +27,7 @@ export interface TransferData {
   accountName: string;
   accountNumber: string;
   sortCode: string;
+  selectedPaymentMethod?: string;
 }
 
 const DesktopMultiStepTransferPage: React.FC = () => {
@@ -35,10 +39,12 @@ const DesktopMultiStepTransferPage: React.FC = () => {
     transferType: 'international',
     amount: '',
     receiverDetails: {
-      name: '',
-      accountNumber: '',
-      bankName: '',
-      swiftCode: '',
+      firstName: '',
+      lastName: '',
+      phoneNumber: '',
+      department: 'Artibonite',
+      commune: '',
+      email: '',
     },
     paymentMethod: 'creditCard',
     cardNumber: '',
@@ -49,6 +55,7 @@ const DesktopMultiStepTransferPage: React.FC = () => {
     accountName: '',
     accountNumber: '',
     sortCode: '',
+    selectedPaymentMethod: 'credit-card'
   });
   const [isPaymentLoading, setIsPaymentLoading] = useState(false);
   const [isPaymentFormValid, setIsPaymentFormValid] = useState(false);
@@ -68,15 +75,16 @@ const DesktopMultiStepTransferPage: React.FC = () => {
     setCurrentStep((prevStep) => prevStep - 1);
   };
 
-  const canProceed = () => {
+  const canProceed = (): boolean => {
     switch (currentStep) {
       case 1:
         return transferData.amount !== '';
       case 2:
         return (
-          transferData.receiverDetails.name !== '' &&
-          transferData.receiverDetails.accountNumber !== '' &&
-          transferData.receiverDetails.bankName !== ''
+          transferData.receiverDetails.firstName !== '' &&
+          transferData.receiverDetails.lastName !== '' &&
+          transferData.receiverDetails.phoneNumber !== '' &&
+          transferData.receiverDetails.commune !== ''
         );
       case 3:
         return isPaymentFormValid;
@@ -85,39 +93,111 @@ const DesktopMultiStepTransferPage: React.FC = () => {
     }
   };
 
-  const onPaymentSubmit = async () => {
+  // MonCash payment handler for national transfers
+  const handleMonCashPayment = async () => {
+    if (!transferData.amount || !transferData.receiverDetails.firstName) {
+      toast({
+        variant: "destructive",
+        title: "Missing Information",
+        description: "Please complete all required fields before proceeding.",
+      });
+      return;
+    }
+
     setIsPaymentLoading(true);
 
-    // Simulate payment processing
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    try {
+      // First get the access token
+      const tokenResponse = await fetch('https://moncash-backend.onrender.com/api/get-token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
 
-    setIsPaymentLoading(false);
-    setTransactionId(`TXN-${Math.floor(Math.random() * 10000)}`);
-    setCurrentStep(4);
+      if (!tokenResponse.ok) {
+        const errorData = await tokenResponse.json();
+        throw new Error(errorData.error || 'Failed to get MonCash access token');
+      }
 
-    toast({
-      title: "Payment Successful!",
-      description: "Your payment has been processed successfully.",
-    });
+      const tokenData = await tokenResponse.json();
+      const accessToken = tokenData.accessToken;
+
+      if (!accessToken) {
+        throw new Error('Invalid access token received from MonCash');
+      }
+
+      // Create payment with access token
+      const orderId = `TX${Date.now()}`;
+      const paymentResponse = await fetch('https://moncash-backend.onrender.com/api/create-payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          accessToken,
+          amount: transferData.amount,
+          orderId
+        })
+      });
+
+      if (!paymentResponse.ok) {
+        const errorData = await paymentResponse.json();
+        throw new Error(errorData.error || 'Failed to create MonCash payment');
+      }
+
+      const paymentData = await paymentResponse.json();
+
+      if (!paymentData.paymentUrl) {
+        throw new Error('No payment URL received from MonCash');
+      }
+
+      // Redirect to MonCash payment page
+      window.location.href = paymentData.paymentUrl;
+
+    } catch (error) {
+      console.error('MonCash payment error:', error);
+      toast({
+        variant: "destructive",
+        title: "Payment Failed",
+        description: error instanceof Error ? error.message : "Failed to process MonCash payment. Please try again.",
+      });
+      setIsPaymentLoading(false);
+    }
+  };
+
+  const onPaymentSubmit = async () => {
+    if (transferData.transferType === 'national') {
+      await handleMonCashPayment();
+    } else {
+      setIsPaymentLoading(true);
+
+      // Simulate payment processing for international transfers
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      setIsPaymentLoading(false);
+      setTransactionId(`TXN-${Math.floor(Math.random() * 10000)}`);
+      setCurrentStep(4);
+
+      toast({
+        title: "Payment Successful!",
+        description: "Your payment has been processed successfully.",
+      });
+    }
   };
 
   const generateReceiptImage = async () => {
     if (receiptRef.current) {
       try {
         const canvas = await html2canvas(receiptRef.current, {
-          scale: 2, // Increase scale for better resolution
-          useCORS: true, // Enable cross-origin image loading
+          scale: 2,
+          useCORS: true,
         });
 
         const dataURL = canvas.toDataURL('image/png');
 
-        // Create a temporary link element to trigger the download
         const link = document.createElement('a');
         link.href = dataURL;
-        link.download = 'transfer_receipt.png'; // Set the filename
-        document.body.appendChild(link); // Append to the document
-        link.click(); // Simulate a click
-        document.body.removeChild(link); // Remove the element after download
+        link.download = 'transfer_receipt.png';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
 
         toast({
           title: "Receipt Downloaded",
@@ -155,7 +235,7 @@ const DesktopMultiStepTransferPage: React.FC = () => {
               generateReceiptImage={generateReceiptImage}
               handleNextStep={handleNextStep}
               handlePreviousStep={handlePreviousStep}
-              canProceed={canProceed}
+              canProceed={canProceed()}
             />
           </div>
 

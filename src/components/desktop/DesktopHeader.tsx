@@ -16,11 +16,16 @@ import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from 'react-router-dom';
 
 const DesktopHeader: React.FC = () => {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const handleNavigation = (path: string) => {
     navigate(path);
+  };
+
+  const handleLogout = () => {
+    // Handle logout functionality here
+    console.log('Logout clicked');
   };
 
   return (
@@ -143,7 +148,7 @@ const DesktopHeader: React.FC = () => {
                   Settings
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={logout} className="text-red-600">
+                <DropdownMenuItem onClick={handleLogout} className="text-red-600">
                   <LogOut className="mr-2 h-4 w-4" />
                   Sign Out
                 </DropdownMenuItem>
