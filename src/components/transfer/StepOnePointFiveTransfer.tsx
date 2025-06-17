@@ -1,9 +1,10 @@
 
 import React from 'react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Label } from '@/components/ui/label';
-import { MapPin, Building, Smartphone, Home, CreditCard } from 'lucide-react';
+import { Card, CardContent } from "@/components/ui/card";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { MapPin, Building, Smartphone, DollarSign } from 'lucide-react';
 
 interface TransferDetails {
   receivingCountry: string;
@@ -15,45 +16,43 @@ interface StepOnePointFiveTransferProps {
   onTransferDetailsChange: (details: TransferDetails) => void;
 }
 
-const countries = [
-  { value: 'haiti', label: 'Haiti', flag: '🇭🇹' },
-  { value: 'dominican-republic', label: 'Dominican Republic', flag: '🇩🇴' },
-  { value: 'jamaica', label: 'Jamaica', flag: '🇯🇲' },
-  { value: 'trinidad-tobago', label: 'Trinidad & Tobago', flag: '🇹🇹' },
-];
-
-const deliveryMethods = [
-  {
-    id: 'bank-deposit',
-    label: 'Bank Deposit',
-    description: 'Direct deposit to bank account',
-    icon: Building,
-  },
-  {
-    id: 'cash-pickup',
-    label: 'Cash Pickup',
-    description: 'Pick up cash at agent locations',
-    icon: MapPin,
-  },
-  {
-    id: 'mobile-wallet',
-    label: 'Mobile Wallet (MonCash)',
-    description: 'Send to mobile wallet',
-    icon: Smartphone,
-  },
-  {
-    id: 'home-delivery',
-    label: 'Home Delivery',
-    description: 'Delivered to recipient\'s home',
-    icon: Home,
-    optional: true,
-  },
-];
-
 const StepOnePointFiveTransfer: React.FC<StepOnePointFiveTransferProps> = ({
   transferDetails,
   onTransferDetailsChange
 }) => {
+  const countries = [
+    { value: 'haiti', label: 'Haiti', flag: '🇭🇹' },
+    { value: 'dominican-republic', label: 'Dominican Republic', flag: '🇩🇴' },
+    { value: 'jamaica', label: 'Jamaica', flag: '🇯🇲' },
+    { value: 'mexico', label: 'Mexico', flag: '🇲🇽' },
+    { value: 'guatemala', label: 'Guatemala', flag: '🇬🇹' },
+    { value: 'colombia', label: 'Colombia', flag: '🇨🇴' }
+  ];
+
+  const deliveryMethods = [
+    {
+      id: 'cash-pickup',
+      title: 'Cash Pickup',
+      description: 'Recipient picks up cash at a location',
+      icon: MapPin,
+      popular: true
+    },
+    {
+      id: 'moncash',
+      title: 'MonCash',
+      description: 'Direct to MonCash mobile wallet',
+      icon: Smartphone,
+      popular: false
+    },
+    {
+      id: 'natcash',
+      title: 'NatCash',
+      description: 'Direct to NatCash account',
+      icon: DollarSign,
+      popular: false
+    }
+  ];
+
   const handleCountryChange = (country: string) => {
     onTransferDetailsChange({
       ...transferDetails,
@@ -70,23 +69,20 @@ const StepOnePointFiveTransfer: React.FC<StepOnePointFiveTransferProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* Receiving Country Selection */}
+      {/* Country Selection */}
       <div className="space-y-3">
-        <Label className="text-sm font-medium text-gray-700">
-          Select receiving country
+        <Label className="text-base font-medium text-gray-700">
+          Which country are you sending to?
         </Label>
-        <Select
-          value={transferDetails.receivingCountry}
-          onValueChange={handleCountryChange}
-        >
-          <SelectTrigger className="w-full h-12">
-            <SelectValue placeholder="Choose a country" />
+        <Select value={transferDetails.receivingCountry} onValueChange={handleCountryChange}>
+          <SelectTrigger className="w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500">
+            <SelectValue placeholder="Select country" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-white z-50">
             {countries.map((country) => (
               <SelectItem key={country.value} value={country.value}>
                 <div className="flex items-center space-x-2">
-                  <span className="text-lg">{country.flag}</span>
+                  <span>{country.flag}</span>
                   <span>{country.label}</span>
                 </div>
               </SelectItem>
@@ -97,40 +93,58 @@ const StepOnePointFiveTransfer: React.FC<StepOnePointFiveTransferProps> = ({
 
       {/* Delivery Method Selection */}
       <div className="space-y-3">
-        <Label className="text-sm font-medium text-gray-700">
-          Select delivery method
+        <Label className="text-base font-medium text-gray-700">
+          How should they receive the money?
         </Label>
-        <RadioGroup
-          value={transferDetails.deliveryMethod}
+        <RadioGroup 
+          value={transferDetails.deliveryMethod} 
           onValueChange={handleDeliveryMethodChange}
           className="space-y-3"
         >
           {deliveryMethods.map((method) => {
-            const Icon = method.icon;
+            const IconComponent = method.icon;
             return (
-              <div key={method.id} className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-gray-50">
-                <RadioGroupItem value={method.id} id={method.id} />
-                <div className="flex items-center space-x-3 flex-1">
-                  <div className="flex-shrink-0">
-                    <Icon className="h-5 w-5 text-gray-600" />
-                  </div>
-                  <div className="flex-1">
-                    <Label htmlFor={method.id} className="cursor-pointer">
+              <Card
+                key={method.id}
+                className={`cursor-pointer transition-all duration-200 hover:shadow-md ${
+                  transferDetails.deliveryMethod === method.id
+                    ? 'border-red-500 bg-red-50'
+                    : 'border-gray-200 hover:border-gray-300'
+                }`}
+                onClick={() => handleDeliveryMethodChange(method.id)}
+              >
+                <CardContent className="p-4">
+                  <div className="flex items-center space-x-3">
+                    <RadioGroupItem 
+                      value={method.id} 
+                      id={method.id}
+                      className="border-gray-300"
+                    />
+                    <div className={`p-2 rounded-lg ${
+                      transferDetails.deliveryMethod === method.id
+                        ? 'bg-red-100 text-red-600'
+                        : 'bg-gray-100 text-gray-600'
+                    }`}>
+                      <IconComponent className="h-5 w-5" />
+                    </div>
+                    <div className="flex-1">
                       <div className="flex items-center space-x-2">
-                        <span className="font-medium">{method.label}</span>
-                        {method.optional && (
-                          <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
-                            Optional
+                        <Label htmlFor={method.id} className="font-medium text-gray-900 cursor-pointer">
+                          {method.title}
+                        </Label>
+                        {method.popular && (
+                          <span className="px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded-full">
+                            Popular
                           </span>
                         )}
                       </div>
                       <p className="text-sm text-gray-500 mt-1">
                         {method.description}
                       </p>
-                    </Label>
+                    </div>
                   </div>
-                </div>
-              </div>
+                </CardContent>
+              </Card>
             );
           })}
         </RadioGroup>
