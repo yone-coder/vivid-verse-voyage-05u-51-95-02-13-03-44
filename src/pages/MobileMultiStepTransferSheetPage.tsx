@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
+
+import React, { useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 import html2canvas from 'html2canvas';
@@ -10,6 +11,8 @@ import TransferHeader from '@/components/transfer/TransferHeader';
 import StepIndicator from '@/components/transfer/StepIndicator';
 import StepContent from '@/components/transfer/StepContent';
 import TransferHistoryService from '@/services/transferHistoryService';
+import { usePersistedTransferState } from '@/hooks/usePersistedTransferState';
+import { useState } from 'react';
 
 export interface TransferData {
   transferType?: 'international' | 'national';
@@ -39,7 +42,15 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [currentStep, setCurrentStep] = useState(1);
+  // Use persisted state hook
+  const {
+    transferData,
+    currentStep,
+    setCurrentStep,
+    updateTransferData,
+    resetTransferState
+  } = usePersistedTransferState(defaultTransferType);
+
   const [paymentCompleted, setPaymentCompleted] = useState(false);
   const [transactionId, setTransactionId] = useState('');
   const [isPaymentLoading, setIsPaymentLoading] = useState(false);
@@ -47,24 +58,6 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [userEmail, setUserEmail] = useState('');
   const receiptRef = useRef<HTMLDivElement>(null);
-
-  const [transferData, setTransferData] = useState<TransferData>({
-    transferType: defaultTransferType,
-    amount: '100.00',
-    transferDetails: {
-      receivingCountry: '',
-      deliveryMethod: ''
-    },
-    receiverDetails: {
-      firstName: '',
-      lastName: '',
-      phoneNumber: '',
-      department: 'Artibonite',
-      commune: '',
-      email: '',
-    },
-    selectedPaymentMethod: 'credit-card'
-  });
 
   // Debug logging for step progression
   useEffect(() => {
@@ -155,7 +148,7 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
       setPaymentCompleted(true);
       const actualTransactionId = orderDetails?.id || `TX${Date.now()}`;
       setTransactionId(actualTransactionId);
-      setCurrentStep(7); // Fix: Set to step 7 instead of step 4
+      setCurrentStep(7); // Set to step 7 for receipt
       setIsPaymentLoading(false);
 
       // Save transfer to history
@@ -171,11 +164,16 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
           );
         }, 1000);
       }
+
+      // Clear persisted state after successful payment
+      setTimeout(() => {
+        resetTransferState();
+      }, 5000); // Clear after 5 seconds to allow user to see receipt
     };
 
     window.addEventListener('paymentSuccess', handlePaymentSuccess);
     return () => window.removeEventListener('paymentSuccess', handlePaymentSuccess);
-  }, [userEmail, transferData]);
+  }, [userEmail, transferData, resetTransferState]);
 
   // Listen for form validation changes
   useEffect(() => {
@@ -214,10 +212,6 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     }
-  };
-
-  const updateTransferData = (data: Partial<TransferData>) => {
-    setTransferData(prev => ({ ...prev, ...data }));
   };
 
   const generateReceiptImage = async () => {

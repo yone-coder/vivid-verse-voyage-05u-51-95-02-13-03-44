@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
+
+import React, { useRef, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import html2canvas from 'html2canvas';
@@ -6,6 +7,8 @@ import DesktopHeader from './DesktopHeader';
 import DesktopTransferProcess from './DesktopTransferProcess';
 import DesktopSidebarSections from './DesktopSidebarSections';
 import TransferHistoryService from '@/services/transferHistoryService';
+import { usePersistedTransferState } from '@/hooks/usePersistedTransferState';
+import { useState } from 'react';
 
 export interface TransferData {
   transferType: 'national' | 'international';
@@ -38,22 +41,19 @@ const DesktopMultiStepTransferPage: React.FC = () => {
   const { user } = useAuth();
   const { toast } = useToast();
 
-  const [currentStep, setCurrentStep] = useState(1);
-  const [transferData, setTransferData] = useState<TransferData>({
-    transferType: 'international',
-    amount: '',
-    transferDetails: {
-      receivingCountry: '',
-      deliveryMethod: ''
-    },
-    receiverDetails: {
-      firstName: '',
-      lastName: '',
-      phoneNumber: '',
-      department: 'Artibonite',
-      commune: '',
-      email: '',
-    },
+  // Use persisted state hook
+  const {
+    transferData: persistedData,
+    currentStep,
+    setCurrentStep,
+    updateTransferData: updatePersistedData,
+    resetTransferState
+  } = usePersistedTransferState('international');
+
+  // Merge persisted data with desktop-specific fields
+  const [transferData, setTransferDataState] = useState<TransferData>({
+    ...persistedData,
+    transferType: (persistedData.transferType as 'national' | 'international') || 'international',
     paymentMethod: 'creditCard',
     cardNumber: '',
     expiryDate: '',
@@ -63,8 +63,8 @@ const DesktopMultiStepTransferPage: React.FC = () => {
     accountName: '',
     accountNumber: '',
     sortCode: '',
-    selectedPaymentMethod: 'credit-card'
   });
+
   const [isPaymentLoading, setIsPaymentLoading] = useState(false);
   const [isPaymentFormValid, setIsPaymentFormValid] = useState(false);
   const [transactionId, setTransactionId] = useState('');
@@ -89,7 +89,7 @@ const DesktopMultiStepTransferPage: React.FC = () => {
 
       const actualTransactionId = orderDetails?.id || `TX${Date.now()}`;
       setTransactionId(actualTransactionId);
-      setCurrentStep(4);
+      setCurrentStep(7);
       setIsPaymentLoading(false);
 
       // Save transfer to history
@@ -99,11 +99,16 @@ const DesktopMultiStepTransferPage: React.FC = () => {
         title: "Payment Successful!",
         description: "Your payment has been processed successfully.",
       });
+
+      // Clear persisted state after successful payment
+      setTimeout(() => {
+        resetTransferState();
+      }, 5000);
     };
 
     window.addEventListener('paymentSuccess', handlePaymentSuccess);
     return () => window.removeEventListener('paymentSuccess', handlePaymentSuccess);
-  }, [toast, transferData]);
+  }, [toast, transferData, resetTransferState]);
 
   // Listen for payment errors to stop loading overlay
   useEffect(() => {
@@ -117,15 +122,24 @@ const DesktopMultiStepTransferPage: React.FC = () => {
   }, []);
 
   const updateTransferData = (data: Partial<TransferData>) => {
-    setTransferData((prevData) => ({ ...prevData, ...data }));
+    setTransferDataState((prevData) => ({ ...prevData, ...data }));
+    // Also update persisted data for the core transfer fields
+    const persistedFields = {
+      transferType: data.transferType,
+      amount: data.amount,
+      transferDetails: data.transferDetails,
+      receiverDetails: data.receiverDetails,
+      selectedPaymentMethod: data.selectedPaymentMethod
+    };
+    updatePersistedData(persistedFields);
   };
 
   const handleNextStep = () => {
-    setCurrentStep((prevStep) => prevStep + 1);
+    setCurrentStep(currentStep + 1);
   };
 
   const handlePreviousStep = () => {
-    setCurrentStep((prevStep) => prevStep - 1);
+    setCurrentStep(currentStep - 1);
   };
 
   const canProceed = (): boolean => {
