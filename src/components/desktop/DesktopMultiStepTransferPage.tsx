@@ -421,7 +421,7 @@ const DesktopMultiStepTransferPage: React.FC<DesktopMultiStepTransferPageProps> 
       {/* Main Content - Two Column Layout */}
       <div className="container mx-auto px-6 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
-          {/* Left Column */}
+          {/* Left Column - 3 sections */}
           <div className="space-y-6">
             {/* Transfer Process Section */}
             <div className="space-y-6">
@@ -478,10 +478,7 @@ const DesktopMultiStepTransferPage: React.FC<DesktopMultiStepTransferPageProps> 
                 </div>
               </CardContent>
             </Card>
-          </div>
 
-          {/* Right Column */}
-          <div className="space-y-6">
             {/* Track Transfer Section */}
             <Card className="shadow-lg">
               <CardHeader className="pb-4">
@@ -496,7 +493,10 @@ const DesktopMultiStepTransferPage: React.FC<DesktopMultiStepTransferPageProps> 
                 </div>
               </CardContent>
             </Card>
+          </div>
 
+          {/* Right Column - 2 sections */}
+          <div className="space-y-6">
             {/* Locations Section */}
             <Card className="shadow-lg">
               <CardHeader className="pb-4">
