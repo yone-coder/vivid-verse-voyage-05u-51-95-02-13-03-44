@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface StepOneTransferProps {
   amount: string;
@@ -10,30 +11,67 @@ interface StepOneTransferProps {
 
 const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChange }) => {
   const [receiverAmount, setReceiverAmount] = useState('');
+  const [selectedCurrency, setSelectedCurrency] = useState('USD');
 
-  const usdToHtgRate = 132.5; // Fixed exchange rate
+  // Currency options with exchange rates to HTG
+  const currencies = [
+    { code: 'USD', name: 'US Dollar', symbol: '$', rate: 132.5 },
+    { code: 'EUR', name: 'Euro', symbol: '€', rate: 144.8 },
+    { code: 'GBP', name: 'British Pound', symbol: '£', rate: 168.2 },
+    { code: 'CAD', name: 'Canadian Dollar', symbol: 'C$', rate: 97.3 },
+    { code: 'AUD', name: 'Australian Dollar', symbol: 'A$', rate: 86.1 },
+    { code: 'CHF', name: 'Swiss Franc', symbol: 'CHF', rate: 147.9 },
+    { code: 'JPY', name: 'Japanese Yen', symbol: '¥', rate: 0.89 }
+  ];
+
+  const selectedCurrencyData = currencies.find(c => c.code === selectedCurrency) || currencies[0];
 
   useEffect(() => {
-    const usdAmount = parseFloat(amount) || 0;
-    const htgAmount = usdAmount * usdToHtgRate;
+    const sendAmount = parseFloat(amount) || 0;
+    const htgAmount = sendAmount * selectedCurrencyData.rate;
     setReceiverAmount(htgAmount.toFixed(2));
-  }, [amount]);
+  }, [amount, selectedCurrencyData.rate]);
 
   const handleSendAmountChange = (value: string) => {
     onAmountChange(value);
   };
 
-  const usdAmount = parseFloat(amount) || 0;
-  const transferFee = Math.ceil(usdAmount / 100) * 15; // $15 per $100
-  const totalAmount = usdAmount + transferFee;
+  const sendAmount = parseFloat(amount) || 0;
+  const transferFee = Math.ceil(sendAmount / 100) * 15; // $15 per $100 equivalent
+  const totalAmount = sendAmount + transferFee;
 
   return (
     <div className="space-y-4">
+      {/* Currency Selection */}
+      <div className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl border border-purple-200 p-3">
+        <Label htmlFor="currency" className="text-xs font-bold text-purple-600 mb-2 block uppercase tracking-wide">
+          Send Currency
+        </Label>
+        <Select value={selectedCurrency} onValueChange={setSelectedCurrency}>
+          <SelectTrigger className="w-full bg-white border-purple-300 focus:ring-purple-500">
+            <SelectValue placeholder="Select currency" />
+          </SelectTrigger>
+          <SelectContent className="bg-white z-50">
+            {currencies.map((currency) => (
+              <SelectItem key={currency.code} value={currency.code}>
+                <div className="flex items-center space-x-2">
+                  <span className="font-medium">{currency.symbol}</span>
+                  <span>{currency.code}</span>
+                  <span className="text-gray-500">- {currency.name}</span>
+                </div>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
       {/* Exchange Rate Section */}
       <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200 p-3">
         <div className="flex items-center justify-between">
           <span className="text-sm font-medium text-gray-700">Exchange rate</span>
-          <span className="font-bold text-blue-600">1 USD = {usdToHtgRate} HTG</span>
+          <span className="font-bold text-blue-600">
+            1 {selectedCurrency} = {selectedCurrencyData.rate} HTG
+          </span>
         </div>
       </div>
 
@@ -45,7 +83,7 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
           </Label>
           <div className="relative">
             <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-              <span className="text-blue-600 font-bold text-sm">$</span>
+              <span className="text-blue-600 font-bold text-sm">{selectedCurrencyData.symbol}</span>
             </div>
             <Input
               id="amount"
@@ -59,7 +97,7 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
             />
             <div className="absolute inset-y-0 right-3 flex items-center">
               <span className="text-xs font-bold text-blue-600 bg-blue-100 px-2 py-0.5 rounded-full">
-                USD
+                {selectedCurrency}
               </span>
             </div>
           </div>
@@ -97,13 +135,15 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
         <div className="space-y-2">
           <div className="flex items-center justify-between text-xs">
             <span className="text-gray-600 font-medium">Transfer fee</span>
-            <span className="font-bold text-blue-600">${transferFee.toFixed(2)}</span>
+            <span className="font-bold text-blue-600">
+              {selectedCurrencyData.symbol}{transferFee.toFixed(2)}
+            </span>
           </div>
           <div className="border-t border-blue-100 pt-2">
             <div className="flex items-center justify-between">
               <span className="font-bold text-gray-800 text-sm">Total to pay</span>
               <span className="text-xl font-bold text-blue-600">
-                ${totalAmount.toFixed(2)}
+                {selectedCurrencyData.symbol}{totalAmount.toFixed(2)}
               </span>
             </div>
           </div>
