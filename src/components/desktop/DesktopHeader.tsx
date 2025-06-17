@@ -14,6 +14,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from 'react-router-dom';
+import LanguageSelector from '@/components/common/LanguageSelector';
 
 const DesktopHeader: React.FC = () => {
   const { user } = useAuth();
@@ -94,6 +95,9 @@ const DesktopHeader: React.FC = () => {
                 className="pl-10 pr-4 py-2 w-64 text-sm border-gray-300 focus:border-blue-500 focus:ring-blue-500"
               />
             </div>
+
+            {/* Language Selector */}
+            <LanguageSelector variant="compact" />
 
             {/* Notifications */}
             <div className="relative">

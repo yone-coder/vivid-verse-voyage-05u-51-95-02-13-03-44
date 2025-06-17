@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Globe, Search } from 'lucide-react';
+import LanguageSelector from '@/components/common/LanguageSelector';
 
 const TransferHeader: React.FC = () => {
   return (
@@ -16,10 +17,15 @@ const TransferHeader: React.FC = () => {
           GLOBAL TRANSFÈ
         </h1>
 
-        {/* Search icon */}
-        <button className="p-1.5 rounded-full hover:bg-blue-700">
-          <Search className="w-4 h-4 text-white" />
-        </button>
+        {/* Language selector and search */}
+        <div className="flex items-center space-x-2">
+          <div className="bg-white/10 rounded-md p-1">
+            <LanguageSelector variant="compact" />
+          </div>
+          <button className="p-1.5 rounded-full hover:bg-blue-700">
+            <Search className="w-4 h-4 text-white" />
+          </button>
+        </div>
       </div>
     </div>
   );
