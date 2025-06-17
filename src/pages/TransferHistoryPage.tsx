@@ -1,5 +1,4 @@
-
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   Table,
   TableBody,
@@ -35,6 +34,7 @@ import {
 } from "@/components/ui/pagination";
 import { ArrowUpDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import TransferHistoryService, { SavedTransfer } from '@/services/transferHistoryService';
 
 type Transfer = {
   id: string;
@@ -76,6 +76,20 @@ const TransferHistoryPage: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [sortConfig, setSortConfig] = useState<{ key: keyof Transfer | null; direction: 'ascending' | 'descending' }>({ key: 'date', direction: 'descending' });
   const [currentPage, setCurrentPage] = useState(1);
+  const [transfers, setTransfers] = useState<Transfer[]>([]);
+
+  // Load transfers from localStorage on component mount
+  useEffect(() => {
+    const savedTransfers = TransferHistoryService.getTransferHistory();
+    const formattedTransfers: Transfer[] = savedTransfers.map((transfer: SavedTransfer) => ({
+      id: transfer.transactionId,
+      recipient: transfer.recipient,
+      amount: transfer.amount,
+      date: transfer.date,
+      status: transfer.status
+    }));
+    setTransfers(formattedTransfers);
+  }, []);
 
   const filteredTransfers = useMemo(() => {
     let filtered = transfers;

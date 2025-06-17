@@ -9,6 +9,7 @@ import PaymentLoadingOverlay from '@/components/transfer/PaymentLoadingOverlay';
 import TransferHeader from '@/components/transfer/TransferHeader';
 import StepIndicator from '@/components/transfer/StepIndicator';
 import StepContent from '@/components/transfer/StepContent';
+import TransferHistoryService from '@/services/transferHistoryService';
 
 export interface TransferData {
   transferType?: 'international' | 'national';
@@ -157,6 +158,9 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
       setCurrentStep(7); // Fix: Set to step 7 instead of step 4
       setIsPaymentLoading(false);
 
+      // Save transfer to history
+      TransferHistoryService.saveTransfer(transferData, actualTransactionId);
+
       // Send email notification using the static service method
       if (userEmail) {
         setTimeout(() => {
@@ -171,7 +175,7 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
 
     window.addEventListener('paymentSuccess', handlePaymentSuccess);
     return () => window.removeEventListener('paymentSuccess', handlePaymentSuccess);
-  }, [userEmail, transferData.amount, transferData.receiverDetails.firstName, transferData.receiverDetails.lastName, transferData.receiverDetails.commune, transferData.receiverDetails.phoneNumber]);
+  }, [userEmail, transferData]);
 
   // Listen for form validation changes
   useEffect(() => {

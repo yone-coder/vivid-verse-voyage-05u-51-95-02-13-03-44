@@ -5,6 +5,7 @@ import html2canvas from 'html2canvas';
 import DesktopHeader from './DesktopHeader';
 import DesktopTransferProcess from './DesktopTransferProcess';
 import DesktopSidebarSections from './DesktopSidebarSections';
+import TransferHistoryService from '@/services/transferHistoryService';
 
 export interface TransferData {
   transferType: 'national' | 'international';
@@ -91,6 +92,9 @@ const DesktopMultiStepTransferPage: React.FC = () => {
       setCurrentStep(4);
       setIsPaymentLoading(false);
 
+      // Save transfer to history
+      TransferHistoryService.saveTransfer(transferData, actualTransactionId);
+
       toast({
         title: "Payment Successful!",
         description: "Your payment has been processed successfully.",
@@ -99,7 +103,7 @@ const DesktopMultiStepTransferPage: React.FC = () => {
 
     window.addEventListener('paymentSuccess', handlePaymentSuccess);
     return () => window.removeEventListener('paymentSuccess', handlePaymentSuccess);
-  }, [toast]);
+  }, [toast, transferData]);
 
   // Listen for payment errors to stop loading overlay
   useEffect(() => {
