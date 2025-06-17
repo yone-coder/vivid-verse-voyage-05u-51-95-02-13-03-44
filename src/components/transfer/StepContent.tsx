@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { TransferData } from '@/pages/MobileMultiStepTransferSheetPage';
 import StepOneTransfer from './StepOneTransfer';
 import StepOneLocalTransfer from './StepOneLocalTransfer';
