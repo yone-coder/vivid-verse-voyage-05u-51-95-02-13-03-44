@@ -4,7 +4,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import Footer from "@/components/layout/Footer";
 import DesktopFooter from "@/components/desktop/DesktopFooter";
 import IndexBottomNav from "@/components/layout/IndexBottomNav";
-import DesktopHeader from "@/components/desktop/DesktopHeader";
+import PremiumBankingHeader from "@/components/layout/PremiumBankingHeader";
 import { Outlet, useLocation } from "react-router-dom";
 import { useAuthOverlay } from "@/context/AuthOverlayContext";
 import { LanguageProvider } from "@/context/LanguageContext";
@@ -57,8 +57,8 @@ function MainLayoutContent() {
       <div className="min-h-screen flex flex-col bg-white">
         <style dangerouslySetInnerHTML={{ __html: headerHeightStyle }} />
 
-        {/* Desktop Header - only show when logged in and not on mobile */}
-        {user && !isMobile && <DesktopHeader />}
+        {/* Premium Banking Header - show when logged in */}
+        {user && <PremiumBankingHeader />}
 
         <main className={`flex-grow relative ${isMobile ? '' : 'min-h-screen'}`} style={{ paddingBottom: getBottomPadding() }}>
           <Outlet />
