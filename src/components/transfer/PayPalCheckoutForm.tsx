@@ -1,5 +1,5 @@
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 
 interface PayPalCheckoutFormProps {
   transferAmount: string;
@@ -17,9 +17,14 @@ const PayPalCheckoutForm: React.FC<PayPalCheckoutFormProps> = ({
   onPaymentError
 }) => {
   const paypalContainerRef = useRef<HTMLDivElement>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    if (paypalContainerRef.current && transferAmount) {
+    // Only initialize once when the component mounts and transferAmount is available
+    if (paypalContainerRef.current && transferAmount && !isInitialized) {
+      console.log('Initializing PayPal form for amount:', transferAmount);
+      setIsInitialized(true);
+      
       // Clear any existing content
       const container = paypalContainerRef.current;
 
@@ -578,7 +583,47 @@ const PayPalCheckoutForm: React.FC<PayPalCheckoutFormProps> = ({
         }
       };
     }
-  }, [transferAmount, onFormValidation, onEmailCapture, onPaymentSuccess, onPaymentError]);
+  }, [transferAmount]); // Only depend on transferAmount for initialization
+
+  // Separate useEffect for handling callback prop changes without recreating the form
+  useEffect(() => {
+    // Set up event listeners for the callbacks without recreating the form
+    const handleFormValidation = (event: any) => {
+      if (onFormValidation) {
+        onFormValidation(event.detail.isValid);
+      }
+    };
+
+    const handleEmailCapture = (event: any) => {
+      if (onEmailCapture) {
+        onEmailCapture(event.detail.email);
+      }
+    };
+
+    const handlePaymentSuccess = (event: any) => {
+      if (onPaymentSuccess) {
+        onPaymentSuccess(event.detail.orderDetails);
+      }
+    };
+
+    const handlePaymentError = (event: any) => {
+      if (onPaymentError) {
+        onPaymentError(event.detail.message);
+      }
+    };
+
+    window.addEventListener('paymentFormValidation', handleFormValidation);
+    window.addEventListener('emailCaptured', handleEmailCapture);
+    window.addEventListener('paymentSuccess', handlePaymentSuccess);
+    window.addEventListener('paymentError', handlePaymentError);
+
+    return () => {
+      window.removeEventListener('paymentFormValidation', handleFormValidation);
+      window.removeEventListener('emailCaptured', handleEmailCapture);
+      window.removeEventListener('paymentSuccess', handlePaymentSuccess);
+      window.removeEventListener('paymentError', handlePaymentError);
+    };
+  }, [onFormValidation, onEmailCapture, onPaymentSuccess, onPaymentError]);
 
   return <div ref={paypalContainerRef}></div>;
 };
