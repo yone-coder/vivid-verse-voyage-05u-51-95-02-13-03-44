@@ -9,6 +9,8 @@ import TrackTransferPage from "@/pages/TrackTransferPage";
 import LocationsPage from "@/pages/LocationsPage";
 import AccountPage from "@/pages/AccountPage";
 import NotFound from "@/components/NotFound";
+import { AuthProvider } from "@/context/AuthContext";
+import { LanguageProvider } from "@/context/LanguageContext";
 
 // Component that renders the appropriate transfer page based on device
 const TransferPageRouter = () => (
@@ -18,10 +20,19 @@ const TransferPageRouter = () => (
   />
 );
 
+// Root component that wraps everything with providers
+const RootComponent = () => (
+  <LanguageProvider>
+    <AuthProvider>
+      <MainLayout />
+    </AuthProvider>
+  </LanguageProvider>
+);
+
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <MainLayout />,
+    element: <RootComponent />,
     children: [
       { 
         index: true, 
