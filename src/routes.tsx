@@ -2,11 +2,21 @@
 import { createBrowserRouter } from "react-router-dom";
 import MainLayout from "@/components/layout/MainLayout";
 import MobileMultiStepTransferSheetPage from "@/pages/MobileMultiStepTransferSheetPage";
+import DesktopMultiStepTransferPage from "@/components/desktop/DesktopMultiStepTransferPage";
+import DeviceRouter from "@/components/common/DeviceRouter";
 import TransferHistoryPage from "@/pages/TransferHistoryPage";
 import TrackTransferPage from "@/pages/TrackTransferPage";
 import LocationsPage from "@/pages/LocationsPage";
 import AccountPage from "@/pages/AccountPage";
 import NotFound from "@/components/NotFound";
+
+// Component that renders the appropriate transfer page based on device
+const TransferPageRouter = () => (
+  <DeviceRouter
+    mobileComponent={MobileMultiStepTransferSheetPage}
+    desktopComponent={DesktopMultiStepTransferPage}
+  />
+);
 
 export const router = createBrowserRouter([
   {
@@ -15,15 +25,15 @@ export const router = createBrowserRouter([
     children: [
       { 
         index: true, 
-        element: <MobileMultiStepTransferSheetPage />
+        element: <TransferPageRouter />
       },
       { 
         path: "transfer", 
-        element: <MobileMultiStepTransferSheetPage />
+        element: <TransferPageRouter />
       },
       { 
         path: "transfer-sheet", 
-        element: <MobileMultiStepTransferSheetPage />
+        element: <TransferPageRouter />
       },
       { 
         path: "transfer-history", 
