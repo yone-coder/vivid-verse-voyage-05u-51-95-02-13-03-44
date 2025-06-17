@@ -282,16 +282,17 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
     transferData.transferDetails.receivingCountry &&
     transferData.transferDetails.deliveryMethod
   );
+  
   const canProceedFromStep3 = Boolean(
     transferData.receiverDetails.firstName &&
     transferData.receiverDetails.lastName &&
-    transferData.receiverDetails.phoneNumber &&
     transferData.receiverDetails.commune &&
-    // For MonCash/NatCash, also require the moncash phone number
+    // Check for appropriate phone number based on delivery method
     (transferData.transferDetails.deliveryMethod === 'moncash' || transferData.transferDetails.deliveryMethod === 'natcash' 
       ? transferData.receiverDetails.moncashPhoneNumber 
-      : true)
+      : transferData.receiverDetails.phoneNumber)
   );
+  
   const canProceedFromStep4 = true; // Review step should always allow proceeding
   const canProceedFromStep5 = Boolean(
     transferData.selectedPaymentMethod !== undefined && 

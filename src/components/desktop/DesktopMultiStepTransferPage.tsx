@@ -155,12 +155,11 @@ const DesktopMultiStepTransferPage: React.FC = () => {
         return (
           transferData.receiverDetails.firstName !== '' &&
           transferData.receiverDetails.lastName !== '' &&
-          transferData.receiverDetails.phoneNumber !== '' &&
           transferData.receiverDetails.commune !== '' &&
-          // For MonCash/NatCash, also require the moncash phone number
+          // Check for appropriate phone number based on delivery method
           (transferData.transferDetails.deliveryMethod === 'moncash' || transferData.transferDetails.deliveryMethod === 'natcash' 
             ? transferData.receiverDetails.moncashPhoneNumber !== '' 
-            : true)
+            : transferData.receiverDetails.phoneNumber !== '')
         );
       case 4:
         return true; // Review step can always proceed
