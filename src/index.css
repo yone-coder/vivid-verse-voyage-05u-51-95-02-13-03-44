@@ -5,91 +5,91 @@
 
 @layer base {
   :root {
-    --background: 248 250 252;
-    --foreground: 51 65 85;
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
 
-    --card: 255 255 255;
-    --card-foreground: 51 65 85;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
 
-    --popover: 255 255 255;
-    --popover-foreground: 51 65 85;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 59 130 246;
-    --primary-foreground: 255 255 255;
+    --primary: 351 83% 53%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 241 245 249;
-    --secondary-foreground: 71 85 105;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
 
-    --muted: 241 245 249;
-    --muted-foreground: 100 116 139;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 226 232 240;
-    --accent-foreground: 51 65 85;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
 
-    --destructive: 239 68 68;
-    --destructive-foreground: 255 255 255;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
 
-    --border: 226 232 240;
-    --input: 226 232 240;
-    --ring: 59 130 246;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
 
     --radius: 0.5rem;
 
-    --sidebar-background: 248 250 252;
-    --sidebar-foreground: 51 65 85;
-    --sidebar-primary: 59 130 246;
-    --sidebar-primary-foreground: 255 255 255;
-    --sidebar-accent: 241 245 249;
-    --sidebar-accent-foreground: 51 65 85;
-    --sidebar-border: 226 232 240;
-    --sidebar-ring: 59 130 246;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
 
-    /* Banking theme colors */
-    --banking-primary: 59 130 246;
-    --banking-secondary: 71 85 105;
-    --banking-accent: 100 116 139;
-    --banking-light: 248 250 252;
-    --banking-border: 203 213 225;
-    --banking-text: 51 65 85;
+    /* AliExpress specific colors */
+    --ali-red: 351 83% 53%;
+    --ali-orange: 25 95% 53%;
+    --ali-light-gray: 0 0% 96%;
+    --ali-border-gray: 0 0% 90%;
+    --ali-text-primary: 0 0% 20%;
+    --ali-text-secondary: 0 0% 45%;
   }
 
   .dark {
-    --background: 15 23 42;
-    --foreground: 248 250 252;
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
 
-    --card: 30 41 59;
-    --card-foreground: 248 250 252;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 30 41 59;
-    --popover-foreground: 248 250 252;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 59 130 246;
-    --primary-foreground: 255 255 255;
+    --primary: 351 83% 53%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 51 65 85;
-    --secondary-foreground: 226 232 240;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
 
-    --muted: 51 65 85;
-    --muted-foreground: 148 163 184;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 51 65 85;
-    --accent-foreground: 226 232 240;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
 
-    --destructive: 239 68 68;
-    --destructive-foreground: 248 250 252;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
 
-    --border: 51 65 85;
-    --input: 51 65 85;
-    --ring: 59 130 246;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
 
-    --sidebar-background: 15 23 42;
-    --sidebar-foreground: 248 250 252;
-    --sidebar-primary: 59 130 246;
-    --sidebar-primary-foreground: 255 255 255;
-    --sidebar-accent: 30 41 59;
-    --sidebar-accent-foreground: 248 250 252;
-    --sidebar-border: 51 65 85;
-    --sidebar-ring: 59 130 246;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   * {
@@ -97,54 +97,33 @@
   }
 
   body {
-    @apply bg-slate-50 text-slate-700;
+    @apply bg-white text-foreground;
   }
 }
 
-/* Banking theme specific styles */
-.banking-container {
-  @apply bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen;
-}
-
-.banking-card {
-  @apply bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition-all duration-200;
-}
-
-.banking-header {
-  @apply bg-gradient-to-r from-slate-600 to-blue-600 text-white;
-}
-
-.banking-button {
-  @apply bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors duration-200;
-}
-
-.banking-input {
-  @apply border-slate-300 focus:border-blue-500 focus:ring-blue-500;
-}
-
-/* AliExpress specific styles with banking adjustments */
+/* AliExpress specific styles */
 .ali-container {
   @apply max-w-screen-xl mx-auto px-2 sm:px-4;
 }
 
 .ali-button-primary {
-  @apply bg-blue-600 hover:bg-blue-700 text-white transition-colors;
+  @apply bg-[#ff4747] hover:bg-[#ff2020] text-white transition-colors;
 }
 
 .ali-button-secondary {
-  @apply bg-white border border-blue-600 text-blue-600 hover:bg-blue-50 transition-colors;
+  @apply bg-white border border-[#ff4747] text-[#ff4747] hover:bg-[#fff0f0] transition-colors;
 }
 
 .ali-card {
-  @apply bg-white border border-slate-200 rounded-md shadow-sm hover:shadow-md transition-shadow;
+  @apply bg-white border border-[#eaeaea] rounded-md shadow-sm hover:shadow-md transition-shadow;
 }
 
 .ali-price {
-  @apply text-blue-600 font-semibold;
+  @apply text-[#ff4747] font-semibold;
 }
 
 .ali-discount {
-  @apply bg-blue-50 text-blue-600 px-1 py-0.5 text-xs rounded;
+  @apply bg-[#fff3f3] text-[#ff4747] px-1 py-0.5 text-xs rounded;
 }
 
 /* Subtle pulse animation (opacity only) */
@@ -246,10 +225,10 @@
 
   @keyframes pulse-glow {
     0%, 100% {
-      filter: drop-shadow(0 0 6px hsl(var(--banking-primary)));
+      filter: drop-shadow(0 0 6px hsl(var(--ali-red)));
     }
     50% {
-      filter: drop-shadow(0 0 12px hsl(var(--banking-primary)));
+      filter: drop-shadow(0 0 12px hsl(var(--ali-red)));
     }
   }
 
@@ -281,8 +260,8 @@
   
   /* New button animations */
   @keyframes button-glow {
-    0%, 100% { box-shadow: 0 0 4px 2px rgba(59, 130, 246, 0.3); }
-    50% { box-shadow: 0 0 8px 4px rgba(59, 130, 246, 0.5); }
+    0%, 100% { box-shadow: 0 0 4px 2px rgba(255, 71, 71, 0.3); }
+    50% { box-shadow: 0 0 8px 4px rgba(255, 71, 71, 0.5); }
   }
   
   @keyframes button-pulse {
@@ -299,8 +278,8 @@
   }
 }
 
-/* Search glow effect with banking colors */
-@keyframes banking-glow {
+/* Search glow effect */
+@keyframes glowing {
   0% {background-position: 0 0;}
   50% {background-position: 400% 0;}
   100% {background-position: 0 0;}
@@ -315,8 +294,8 @@
   content: "";
   background: linear-gradient(
     45deg,
-    #3b82f6, #1e40af, #1d4ed8, #2563eb,
-    #3b82f6, #60a5fa, #93c5fd, #3b82f6
+    #FF0000, #FF7300, #FFFB00, #48FF00,
+    #00FFD5, #002BFF, #FF00C8, #FF0000
   );
   position: absolute;
   top: -2px;
@@ -326,7 +305,7 @@
   width: calc(100% + 4px);
   height: calc(100% + 4px);
   filter: blur(4px);
-  animation: banking-glow 20s linear infinite;
+  animation: glowing 20s linear infinite;
   transition: opacity .3s ease-in-out;
   border-radius: 20px;
   opacity: 1;
@@ -347,8 +326,8 @@
   content: "";
   background: linear-gradient(
     45deg,
-    #3b82f6, #1e40af, #1d4ed8, #2563eb,
-    #3b82f6, #60a5fa, #93c5fd, #3b82f6
+    #FF0000, #FF7300, #FFFB00, #48FF00,
+    #00FFD5, #002BFF, #FF00C8, #FF0000
   );
   position: absolute;
   top: -0.5px;
@@ -358,10 +337,12 @@
   width: calc(100% + 1px);
   height: calc(100% + 1px);
   filter: blur(1px);
-  animation: banking-glow 20s linear infinite, random-appear 6s infinite;
+  animation: glowing 20s linear infinite, random-appear 6s infinite;
   transition: opacity .3s ease-in-out;
   border-radius: 20px;
   opacity: 0;
 }
+
+
 
 @media (max-width: 640px) { .embla__slide { width: 65vw !important;    flex-shrink: 0;   }  .embla__container {    scroll-snap-type: x mandatory;     scroll-padding-left: 1rem;   }    .embla__slide {    scroll-snap-align: start;   }  }
