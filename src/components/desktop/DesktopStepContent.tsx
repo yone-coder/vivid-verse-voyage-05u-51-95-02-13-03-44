@@ -126,6 +126,7 @@ const DesktopStepContent: React.FC<DesktopStepContentProps> = ({
           <PaymentMethodSelection
             selectedMethod={transferData.selectedPaymentMethod || 'credit-card'}
             onMethodSelect={(method) => updateTransferData({ selectedPaymentMethod: method })}
+            transferType={transferData.transferType}
           />
         </div>
       );

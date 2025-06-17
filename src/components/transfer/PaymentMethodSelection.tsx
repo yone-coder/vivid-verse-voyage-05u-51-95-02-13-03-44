@@ -7,13 +7,16 @@ import { Card, CardContent } from "@/components/ui/card";
 interface PaymentMethodSelectionProps {
   selectedMethod: string;
   onMethodSelect: (method: string) => void;
+  transferType?: 'national' | 'international';
 }
 
 const PaymentMethodSelection: React.FC<PaymentMethodSelectionProps> = ({
   selectedMethod,
-  onMethodSelect
+  onMethodSelect,
+  transferType = 'international'
 }) => {
-  const paymentMethods = [
+  // Payment methods for international transfers
+  const internationalPaymentMethods = [
     {
       id: 'credit-card',
       title: 'Credit/Debit Card',
@@ -43,6 +46,26 @@ const PaymentMethodSelection: React.FC<PaymentMethodSelectionProps> = ({
       popular: false
     }
   ];
+
+  // Payment methods for national transfers
+  const nationalPaymentMethods = [
+    {
+      id: 'moncash',
+      title: 'MonCash',
+      description: 'Pay with your MonCash mobile wallet',
+      icon: Smartphone,
+      popular: true
+    },
+    {
+      id: 'natcash',
+      title: 'NatCash',
+      description: 'Pay with your NatCash account',
+      icon: DollarSign,
+      popular: false
+    }
+  ];
+
+  const paymentMethods = transferType === 'national' ? nationalPaymentMethods : internationalPaymentMethods;
 
   return (
     <div className="space-y-4">
