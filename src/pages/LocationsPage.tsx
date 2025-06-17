@@ -23,7 +23,7 @@ const locations = [
   {
     id: 2,
     city: "London",
-    address: "8 King’s Road, London SW3 4RY, UK",
+    address: "8 King's Road, London SW3 4RY, UK",
     hours: "Mon–Fri 8:30am – 5:00pm",
     phone: "+44 20 7345 6789",
     img: "https://maps.googleapis.com/maps/api/staticmap?center=51.4886,-0.1622&zoom=14&size=600x400&maptype=roadmap&markers=color:red%7C51.4886,-0.1622&style=feature:poi|visibility:off&style=feature:transit|visibility:off"
@@ -40,58 +40,105 @@ const locations = [
 
 const LocationsPage: React.FC = () => {
   return (
-    <div className="container mx-auto px-4 py-10 max-w-6xl">
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-extrabold tracking-tight mb-2 flex justify-center items-center gap-3">
-          <MapPin className="w-8 h-8 text-[#ff4747]" />
-          Our Global Locations
-        </h1>
-        <p className="text-lg text-muted-foreground">
-          Find a branch near you to manage your transfers with our expert team.
-        </p>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header Section */}
+      <div className="bg-white border-b border-gray-200">
+        <div className="px-4 py-6">
+          <div className="flex items-center justify-center gap-3 mb-2">
+            <MapPin className="w-6 h-6 text-red-600" />
+            <h1 className="text-2xl font-bold text-gray-900">Our Locations</h1>
+          </div>
+          <p className="text-center text-gray-600 text-sm">
+            Visit our branches worldwide for in-person assistance
+          </p>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {locations.map(loc => (
-          <Card key={loc.id} className="flex flex-col overflow-hidden transform hover:scale-[1.03] transition-transform duration-300 ease-in-out shadow-lg hover:shadow-2xl">
-            <img
-              src={loc.img}
-              alt={`${loc.city} map preview`}
-              className="h-48 w-full object-cover"
-              loading="lazy"
-            />
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-2xl font-bold">
-                {loc.city}
-              </CardTitle>
-              <CardDescription>{loc.address}</CardDescription>
-            </CardHeader>
-            <CardContent className="flex-grow space-y-4">
-              <div className="flex items-center gap-3 text-sm">
-                <Clock className="w-4 h-4 text-muted-foreground" />
-                <span className="font-medium text-foreground/90">{loc.hours}</span>
+      {/* Locations List */}
+      <div className="px-4 py-6 space-y-4">
+        {locations.map(location => (
+          <Card key={location.id} className="bg-white shadow-sm border border-gray-200 overflow-hidden">
+            {/* Map Image */}
+            <div className="relative h-40 bg-gray-100">
+              <img
+                src={location.img}
+                alt={`${location.city} map`}
+                className="w-full h-full object-cover"
+                loading="lazy"
+              />
+              <div className="absolute top-3 left-3 bg-red-600 text-white px-2 py-1 rounded-full text-xs font-medium">
+                {location.city}
               </div>
-              <div className="flex items-center gap-3 text-sm">
-                <Phone className="w-4 h-4 text-muted-foreground" />
-                <a className="text-blue-500 hover:text-blue-600 hover:underline font-medium" href={`tel:${loc.phone.replace(/[^+\d]/g, "")}`}>
-                  {loc.phone}
-                </a>
+            </div>
+
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg font-semibold text-gray-900">
+                {location.city} Branch
+              </CardTitle>
+              <CardDescription className="text-sm text-gray-600 leading-relaxed">
+                {location.address}
+              </CardDescription>
+            </CardHeader>
+
+            <CardContent className="py-0 space-y-3">
+              {/* Hours */}
+              <div className="flex items-start gap-3">
+                <Clock className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
+                <div>
+                  <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">Hours</p>
+                  <p className="text-sm text-gray-900">{location.hours}</p>
+                </div>
+              </div>
+
+              {/* Phone */}
+              <div className="flex items-start gap-3">
+                <Phone className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
+                <div>
+                  <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">Phone</p>
+                  <a 
+                    href={`tel:${location.phone.replace(/[^+\d]/g, "")}`}
+                    className="text-sm text-red-600 font-medium"
+                  >
+                    {location.phone}
+                  </a>
+                </div>
               </div>
             </CardContent>
-            <CardFooter>
-              <Button asChild className="w-full" variant="outline">
+
+            <CardFooter className="pt-4">
+              <Button 
+                asChild 
+                className="w-full bg-red-600 hover:bg-red-700 text-white"
+                size="sm"
+              >
                 <a
-                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(loc.address)}`}
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location.address)}`}
                   target="_blank"
                   rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2"
                 >
-                  <Navigation className="mr-2 h-4 w-4" />
+                  <Navigation className="h-4 w-4" />
                   Get Directions
                 </a>
               </Button>
             </CardFooter>
           </Card>
         ))}
+      </div>
+
+      {/* Footer Info */}
+      <div className="px-4 pb-20 pt-6">
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="flex items-start gap-3">
+            <MapPin className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+            <div>
+              <h3 className="font-medium text-blue-900 mb-1">Need Help Finding Us?</h3>
+              <p className="text-sm text-blue-700">
+                Can't find a location near you? Contact our support team for assistance with your transfer needs.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
