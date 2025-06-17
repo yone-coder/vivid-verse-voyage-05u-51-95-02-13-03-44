@@ -57,8 +57,8 @@ function MainLayoutContent() {
       <div className="min-h-screen flex flex-col bg-white">
         <style dangerouslySetInnerHTML={{ __html: headerHeightStyle }} />
 
-        {/* Premium Banking Header - show when logged in */}
-        {user && <PremiumBankingHeader />}
+        {/* Premium Banking Header - show for all users */}
+        <PremiumBankingHeader />
 
         <main className={`flex-grow relative ${isMobile ? '' : 'min-h-screen'}`} style={{ paddingBottom: getBottomPadding() }}>
           <Outlet />
