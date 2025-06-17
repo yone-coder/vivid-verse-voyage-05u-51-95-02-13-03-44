@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -24,6 +23,7 @@ export interface TransferData {
     department: string;
     commune: string;
     email?: string;
+    moncashPhoneNumber?: string;
   };
   paymentMethod: 'creditCard' | 'paypal' | 'bankTransfer';
   cardNumber: string;
@@ -156,7 +156,11 @@ const DesktopMultiStepTransferPage: React.FC = () => {
           transferData.receiverDetails.firstName !== '' &&
           transferData.receiverDetails.lastName !== '' &&
           transferData.receiverDetails.phoneNumber !== '' &&
-          transferData.receiverDetails.commune !== ''
+          transferData.receiverDetails.commune !== '' &&
+          // For MonCash/NatCash, also require the moncash phone number
+          (transferData.transferDetails.deliveryMethod === 'moncash' || transferData.transferDetails.deliveryMethod === 'natcash' 
+            ? transferData.receiverDetails.moncashPhoneNumber !== '' 
+            : true)
         );
       case 4:
         return true; // Review step can always proceed

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { TransferData } from '@/pages/MobileMultiStepTransferSheetPage';
 
@@ -35,6 +34,7 @@ export const usePersistedTransferState = (defaultTransferType: 'international' |
         department: 'Artibonite',
         commune: '',
         email: '',
+        moncashPhoneNumber: '',
       },
       selectedPaymentMethod: 'credit-card'
     };
@@ -92,6 +92,7 @@ export const usePersistedTransferState = (defaultTransferType: 'international' |
         department: 'Artibonite',
         commune: '',
         email: '',
+        moncashPhoneNumber: '',
       },
       selectedPaymentMethod: 'credit-card'
     };

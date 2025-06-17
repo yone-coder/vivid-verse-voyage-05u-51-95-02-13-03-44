@@ -97,6 +97,7 @@ const DesktopStepContent: React.FC<DesktopStepContentProps> = ({
           <StepTwoTransfer
             receiverDetails={transferData.receiverDetails}
             onDetailsChange={(receiverDetails) => updateTransferData({ receiverDetails })}
+            transferDetails={transferData.transferDetails}
           />
         </div>
       );

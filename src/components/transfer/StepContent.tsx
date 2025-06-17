@@ -93,6 +93,7 @@ const StepContent: React.FC<StepContentProps> = ({
           <StepTwoTransfer
             receiverDetails={transferData.receiverDetails}
             onDetailsChange={(receiverDetails) => updateTransferData({ receiverDetails })}
+            transferDetails={transferData.transferDetails}
           />
         </div>
       )}

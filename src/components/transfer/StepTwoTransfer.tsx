@@ -3,6 +3,7 @@ import React from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AlertCircle } from 'lucide-react';
 
 interface ReceiverDetails {
   firstName: string;
@@ -11,14 +12,22 @@ interface ReceiverDetails {
   department: string;
   commune: string;
   email?: string;
+  moncashPhoneNumber?: string;
 }
 
 interface StepTwoTransferProps {
   receiverDetails: ReceiverDetails;
   onDetailsChange: (details: ReceiverDetails) => void;
+  transferDetails?: {
+    deliveryMethod: string;
+  };
 }
 
-const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDetailsChange }) => {
+const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ 
+  receiverDetails, 
+  onDetailsChange,
+  transferDetails 
+}) => {
   const handleInputChange = (field: keyof ReceiverDetails, value: string) => {
     console.log(`Updating ${field} with value:`, value);
     const updatedDetails = {
@@ -77,6 +86,9 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
 
   console.log('StepTwoTransfer render - receiverDetails:', receiverDetails);
 
+  const isMonCashOrNatCash = transferDetails?.deliveryMethod === 'moncash' || transferDetails?.deliveryMethod === 'natcash';
+  const paymentMethod = transferDetails?.deliveryMethod === 'moncash' ? 'MonCash' : 'NatCash';
+
   return (
     <div className="space-y-6">
       <div className="space-y-2">
@@ -121,6 +133,40 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({ receiverDetails, onDe
           />
         </div>
       </div>
+
+      {/* MonCash/NatCash Phone Number Field */}
+      {isMonCashOrNatCash && (
+        <div className="space-y-2">
+          <Label htmlFor="moncashPhoneNumber" className="text-base font-medium text-gray-700">
+            What's their {paymentMethod} phone number?
+          </Label>
+          <div className="flex">
+            <div className="flex items-center px-3 border border-r-0 border-gray-300 bg-gray-50 rounded-l-md">
+              <span className="text-sm text-gray-600">+509</span>
+            </div>
+            <Input
+              id="moncashPhoneNumber"
+              type="tel"
+              placeholder={`Enter ${paymentMethod} phone number`}
+              value={receiverDetails.moncashPhoneNumber || ''}
+              onChange={(e) => handleInputChange('moncashPhoneNumber', e.target.value)}
+              className="rounded-l-none border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+            />
+          </div>
+          
+          {/* Notice about account eligibility */}
+          <div className="flex items-start space-x-2 p-3 bg-amber-50 border border-amber-200 rounded-md">
+            <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
+            <div className="text-sm text-amber-800">
+              <p className="font-medium mb-1">Important Notice</p>
+              <p>
+                Please ensure the {paymentMethod} phone number is eligible to receive payments and the account is upgraded. 
+                Unverified or basic accounts may not be able to receive transfers.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="space-y-2">
         <Label htmlFor="department" className="text-base font-medium text-gray-700">

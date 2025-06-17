@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -28,6 +27,7 @@ export interface TransferData {
     department: string;
     commune: string;
     email?: string;
+    moncashPhoneNumber?: string;
   };
   selectedPaymentMethod?: string;
 }
@@ -286,7 +286,11 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
     transferData.receiverDetails.firstName &&
     transferData.receiverDetails.lastName &&
     transferData.receiverDetails.phoneNumber &&
-    transferData.receiverDetails.commune
+    transferData.receiverDetails.commune &&
+    // For MonCash/NatCash, also require the moncash phone number
+    (transferData.transferDetails.deliveryMethod === 'moncash' || transferData.transferDetails.deliveryMethod === 'natcash' 
+      ? transferData.receiverDetails.moncashPhoneNumber 
+      : true)
   );
   const canProceedFromStep4 = true; // Review step should always allow proceeding
   const canProceedFromStep5 = Boolean(
