@@ -1,5 +1,5 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import html2canvas from 'html2canvas';
@@ -63,6 +63,48 @@ const DesktopMultiStepTransferPage: React.FC = () => {
   const userEmail = user?.email || 'default@example.com';
   const receiptRef = useRef<HTMLDivElement>(null);
 
+  // Listen for form validation changes
+  useEffect(() => {
+    const handleFormValidation = (event: any) => {
+      setIsPaymentFormValid(event.detail.isValid);
+    };
+
+    window.addEventListener('paymentFormValidation', handleFormValidation);
+    return () => window.removeEventListener('paymentFormValidation', handleFormValidation);
+  }, []);
+
+  // Listen for payment success
+  useEffect(() => {
+    const handlePaymentSuccess = (event: any) => {
+      console.log('Payment success event received:', event.detail);
+      const orderDetails = event.detail.orderDetails;
+
+      const actualTransactionId = orderDetails?.id || `TX${Date.now()}`;
+      setTransactionId(actualTransactionId);
+      setCurrentStep(4);
+      setIsPaymentLoading(false);
+
+      toast({
+        title: "Payment Successful!",
+        description: "Your payment has been processed successfully.",
+      });
+    };
+
+    window.addEventListener('paymentSuccess', handlePaymentSuccess);
+    return () => window.removeEventListener('paymentSuccess', handlePaymentSuccess);
+  }, [toast]);
+
+  // Listen for payment errors to stop loading overlay
+  useEffect(() => {
+    const handlePaymentError = (event: any) => {
+      console.log('Payment error detected:', event.detail.message);
+      setIsPaymentLoading(false);
+    };
+
+    window.addEventListener('paymentError', handlePaymentError);
+    return () => window.removeEventListener('paymentError', handlePaymentError);
+  }, []);
+
   const updateTransferData = (data: Partial<TransferData>) => {
     setTransferData((prevData) => ({ ...prevData, ...data }));
   };
@@ -87,7 +129,7 @@ const DesktopMultiStepTransferPage: React.FC = () => {
           transferData.receiverDetails.commune !== ''
         );
       case 3:
-        return isPaymentFormValid;
+        return transferData.transferType === 'national' ? true : isPaymentFormValid;
       default:
         return false;
     }
@@ -168,17 +210,17 @@ const DesktopMultiStepTransferPage: React.FC = () => {
     } else {
       setIsPaymentLoading(true);
 
-      // Simulate payment processing for international transfers
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      setIsPaymentLoading(false);
-      setTransactionId(`TXN-${Math.floor(Math.random() * 10000)}`);
-      setCurrentStep(4);
-
-      toast({
-        title: "Payment Successful!",
-        description: "Your payment has been processed successfully.",
-      });
+      try {
+        // Trigger the PayPal form submission
+        const cardForm = document.querySelector("#card-form") as HTMLFormElement;
+        if (cardForm) {
+          const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+          cardForm.dispatchEvent(submitEvent);
+        }
+      } catch (error) {
+        console.error('Payment failed:', error);
+        setIsPaymentLoading(false);
+      }
     }
   };
 
@@ -229,6 +271,7 @@ const DesktopMultiStepTransferPage: React.FC = () => {
               onPaymentSubmit={onPaymentSubmit}
               isPaymentLoading={isPaymentLoading}
               isPaymentFormValid={isPaymentFormValid}
+              setIsPaymentFormValid={setIsPaymentFormValid}
               transactionId={transactionId}
               userEmail={userEmail}
               receiptRef={receiptRef}

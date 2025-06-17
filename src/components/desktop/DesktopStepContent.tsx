@@ -17,6 +17,7 @@ interface DesktopStepContentProps {
   onPaymentSubmit: () => void;
   isPaymentLoading: boolean;
   isPaymentFormValid: boolean;
+  setIsPaymentFormValid: (isValid: boolean) => void;
   transactionId: string;
   userEmail: string;
   receiptRef: React.RefObject<HTMLDivElement>;
@@ -30,6 +31,7 @@ const DesktopStepContent: React.FC<DesktopStepContentProps> = ({
   onPaymentSubmit,
   isPaymentLoading,
   isPaymentFormValid,
+  setIsPaymentFormValid,
   transactionId,
   userEmail,
   receiptRef,

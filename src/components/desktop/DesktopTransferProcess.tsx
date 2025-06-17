@@ -14,6 +14,7 @@ interface DesktopTransferProcessProps {
   onPaymentSubmit: () => void;
   isPaymentLoading: boolean;
   isPaymentFormValid: boolean;
+  setIsPaymentFormValid: (isValid: boolean) => void;
   transactionId: string;
   userEmail: string;
   receiptRef: React.RefObject<HTMLDivElement>;
@@ -30,6 +31,7 @@ const DesktopTransferProcess: React.FC<DesktopTransferProcessProps> = ({
   onPaymentSubmit,
   isPaymentLoading,
   isPaymentFormValid,
+  setIsPaymentFormValid,
   transactionId,
   userEmail,
   receiptRef,
@@ -53,6 +55,7 @@ const DesktopTransferProcess: React.FC<DesktopTransferProcessProps> = ({
             onPaymentSubmit={onPaymentSubmit}
             isPaymentLoading={isPaymentLoading}
             isPaymentFormValid={isPaymentFormValid}
+            setIsPaymentFormValid={setIsPaymentFormValid}
             transactionId={transactionId}
             userEmail={userEmail}
             receiptRef={receiptRef}
