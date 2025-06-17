@@ -300,268 +300,271 @@ const PayPalCheckoutForm: React.FC<PayPalCheckoutFormProps> = ({
 
       container.innerHTML = checkoutHTML;
 
-      // Add PayPal integration script
+      // Add PayPal integration script with proper scoping
       const script = document.createElement('script');
       script.innerHTML = `
-        let current_customer_id;
-        let order_id;
-        let currentPrice = null;
-        let paypal_hosted_fields = null;
+        (function() {
+          // Scoped variables to prevent redeclaration
+          let current_customer_id;
+          let order_id;
+          let currentPrice = null;
+          let paypal_hosted_fields = null;
 
-        const API_BASE_URL = "https://paypal-with-nodejs.onrender.com";
-        const paypal_sdk_url = "https://www.paypal.com/sdk/js";
-        const client_id = "AU23YbLMTqxG3iSvnhcWtix6rGN14uw3axYJgrDe8VqUVng8XiQmmeiaxJWbnpbZP_f4--RTg146F1Mj";
-        const currency = "USD";
-        const intent = "capture";
+          const API_BASE_URL = "https://paypal-with-nodejs.onrender.com";
+          const paypal_sdk_url = "https://www.paypal.com/sdk/js";
+          const client_id = "AU23YbLMTqxG3iSvnhcWtix6rGN14uw3axYJgrDe8VqUVng8XiQmmeiaxJWbnpbZP_f4--RTg146F1Mj";
+          const currency = "USD";
+          const intent = "capture";
 
-        const validatePaymentForm = () => {
-          const emailInput = document.getElementById("email");
-          const cardNumberField = document.getElementById("card-number");
-          const expirationField = document.getElementById("expiration-date");
-          const cvvField = document.getElementById("cvv");
-          
-          const isEmailValid = emailInput && emailInput.value && emailInput.value.includes('@');
-          const hasCardFields = cardNumberField && expirationField && cvvField;
-          
-          if (emailInput && emailInput.value && ${onEmailCapture ? 'true' : 'false'}) {
-            window.dispatchEvent(new CustomEvent('emailCaptured', {
-              detail: { email: emailInput.value }
-            }));
-          }
-          
-          const validationEvent = new CustomEvent('paymentFormValidation', {
-            detail: { isValid: isEmailValid && hasCardFields }
-          });
-          window.dispatchEvent(validationEvent);
-        };
-
-        const addFormValidationListeners = () => {
-          const emailInput = document.getElementById("email");
-          if (emailInput) {
-            emailInput.addEventListener('input', validatePaymentForm);
-            emailInput.addEventListener('blur', validatePaymentForm);
-          }
-          
-          setTimeout(validatePaymentForm, 100);
-        };
-
-        let reset_purchase_button = () => {
-            const btn = document.querySelector("#card-form").querySelector("button[type='submit']");
-            if (btn) {
-              btn.removeAttribute("disabled");
-              const buttonText = currentPrice ? \`Pay \${currentPrice.display}\` : "Pay Now";
-              btn.textContent = buttonText;
-            }
-        }
-
-        const is_user_logged_in = () => {
-          return new Promise((resolve) => {
-            current_customer_id = "";
-            resolve();
-          });
-        }
-
-        const get_client_token = () => {
-          return new Promise(async (resolve, reject) => {
-            try {
-              const response = await fetch(\`\${API_BASE_URL}/get_client_token\`, {
-                method: "POST", 
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ "customer_id": current_customer_id }),
-              });
-
-              const client_token = await response.text();
-              resolve(client_token);
-            } catch (error) {
-              reject(error);
-            }
-          });
-        }
-
-        let handle_click = (event) => {
-            if (event.target.classList.contains("alert-close")) {
-                event.target.closest(".alert").remove();
-            }
-        }
-
-        document.addEventListener("click", handle_click);
-
-        let display_error_alert = (message = "An error occurred. Please try again.") => {
-            const alertsContainer = document.getElementById("alerts");
-            if (alertsContainer) {
-              alertsContainer.innerHTML = \`<div class="alert alert-error"><button class="alert-close">×</button>\${message}</div>\`;
-            }
+          const validatePaymentForm = () => {
+            const emailInput = document.getElementById("email");
+            const cardNumberField = document.getElementById("card-number");
+            const expirationField = document.getElementById("expiration-date");
+            const cvvField = document.getElementById("cvv");
             
-            const errorEvent = new CustomEvent('paymentError', {
-              detail: { message: message }
-            });
-            window.dispatchEvent(errorEvent);
-        }
-
-        let display_success_message = (order_details) => {
-            const alertsContainer = document.getElementById("alerts");
-            if (alertsContainer) {
-              alertsContainer.innerHTML = \`<div class='alert alert-success'>Payment successful! Your transfer has been initiated.</div>\`;
-            }
-
-            const cardForm = document.getElementById("card-form");
-            if (cardForm) {
-              cardForm.classList.add("hide");
-            }
-
-            setTimeout(() => {
-              window.dispatchEvent(new CustomEvent('paymentSuccess', { 
-                detail: { orderDetails: order_details } 
+            const isEmailValid = emailInput && emailInput.value && emailInput.value.includes('@');
+            const hasCardFields = cardNumberField && expirationField && cvvField;
+            
+            if (emailInput && emailInput.value && ${onEmailCapture ? 'true' : 'false'}) {
+              window.dispatchEvent(new CustomEvent('emailCaptured', {
+                detail: { email: emailInput.value }
               }));
-            }, 2000);
-        }
-
-        is_user_logged_in()
-        .then(() => {
-            return fetchCurrentPrice();
-        })
-        .then((priceData) => {
-            return get_client_token();
-        })
-        .then((client_token) => {
-            return script_to_head({
-                "src": paypal_sdk_url + "?client-id=" + client_id + "&enable-funding=venmo&currency=" + currency + "&intent=" + intent + "&components=hosted-fields", 
-                "data-client-token": client_token
-            });
-        })
-        .then(() => {
-            const loadingElement = document.getElementById("loading");
-            const contentElement = document.getElementById("content");
-            
-            if (loadingElement) loadingElement.classList.add("hide");
-            if (contentElement) contentElement.classList.remove("hide");
-
-            if (window.paypal && window.paypal.HostedFields.isEligible()) {
-                paypal_hosted_fields = window.paypal.HostedFields.render({
-                  createOrder: () => {
-                    return fetch(\`\${API_BASE_URL}/create_order\`, {
-                        method: "post", 
-                        headers: { "Content-Type": "application/json; charset=utf-8" },
-                        body: JSON.stringify({ 
-                            "intent": intent,
-                            "amount": currentPrice ? currentPrice.value : null
-                        })
-                    })
-                    .then((response) => response.json())
-                    .then((order) => { 
-                        order_id = order.id; 
-                        return order.id; 
-                    });
-                  },
-                  styles: {
-                    'input': {
-                        'font-size': '14px',
-                        'color': '#1a1a21',
-                        'font-family': 'Inter, sans-serif',
-                        'font-weight': '400'
-                    },
-                    ':focus': { 'color': '#1a1a21' },
-                    '.valid': { 'color': '#1a1a21' },
-                    '.invalid': { 'color': '#dc2626' }
-                  },
-                  fields: {
-                    number: { selector: "#card-number", placeholder: "1234 1234 1234 1234" },
-                    cvv: { selector: "#cvv", placeholder: "CVC" },
-                    expirationDate: { selector: "#expiration-date", placeholder: "MM / YY" }
-                  }
-                }).then((card_fields) => {
-                  setTimeout(addFormValidationListeners, 500);
-                  
-                  card_fields.on('validityChange', validatePaymentForm);
-                  card_fields.on('inputSubmitRequest', validatePaymentForm);
-                  
-                  const cardForm = document.querySelector("#card-form");
-                  if (cardForm) {
-                    cardForm.addEventListener("submit", (event) => {
-                      event.preventDefault();
-
-                      const submitBtn = cardForm.querySelector("button[type='submit']");
-                      if (submitBtn) {
-                        submitBtn.setAttribute("disabled", "");
-                        submitBtn.textContent = "Processing...";
-                      }
-
-                      card_fields.submit({
-                          cardholderName: "Transfer Customer",
-                          billingAddress: {
-                            streetAddress: "123 Springfield Rd",
-                            extendedAddress: "",
-                            region: "AZ",
-                            locality: "CHANDLER",
-                            postalCode: "85224",
-                            countryCodeAlpha2: "US",
-                          },
-                        })
-                        .then(() => {
-                          const emailInput = document.getElementById("email");
-                          return fetch(\`\${API_BASE_URL}/complete_order\`, {
-                              method: "post", 
-                              headers: { "Content-Type": "application/json; charset=utf-8" },
-                              body: JSON.stringify({
-                                  "intent": intent,
-                                  "order_id": order_id,
-                                  "email": emailInput ? emailInput.value : ""
-                              })
-                          })
-                          .then((response) => response.json())
-                          .then((order_details) => {
-                              console.log('PayPal order completed:', order_details);
-                              display_success_message(order_details);
-                           })
-                           .catch((error) => {
-                              console.error('PayPal order completion error:', error);
-                              display_error_alert("Payment processing failed. Please try again.");
-                              reset_purchase_button();
-                           });
-                        })
-                        .catch((err) => {
-                          console.error('PayPal card submission error:', err);
-                          reset_purchase_button();
-                          display_error_alert("Card validation failed. Please check your information.");
-                        });
-                    });
-                  }
-                });
-              } else {
-                display_error_alert("Card payments are not supported in this browser.");
-              }
-        })
-        .catch((error) => {
-            console.error('PayPal initialization error:', error);
-            reset_purchase_button();
-            display_error_alert("Failed to initialize payment system. Please refresh the page.");
-        });
-
-        function fetchCurrentPrice() {
-          const priceData = {
-            value: "${transferAmount}",
-            display: "$" + parseFloat("${transferAmount}").toFixed(2),
-            currency: "USD"
-          };
-          currentPrice = priceData;
-          const submitBtn = document.querySelector('.pay-button');
-          if (submitBtn) {
-            submitBtn.textContent = \`Pay \${priceData.display}\`;
-          }
-          return Promise.resolve(priceData);
-        }
-
-        function script_to_head(attributes_object) {
-          return new Promise((resolve, reject) => {
-            const script = document.createElement('script');
-            for (const name of Object.keys(attributes_object)) {
-              script.setAttribute(name, attributes_object[name]);
             }
-            document.head.appendChild(script);
-            script.addEventListener('load', resolve);
-            script.addEventListener('error', reject);
+            
+            const validationEvent = new CustomEvent('paymentFormValidation', {
+              detail: { isValid: isEmailValid && hasCardFields }
+            });
+            window.dispatchEvent(validationEvent);
+          };
+
+          const addFormValidationListeners = () => {
+            const emailInput = document.getElementById("email");
+            if (emailInput) {
+              emailInput.addEventListener('input', validatePaymentForm);
+              emailInput.addEventListener('blur', validatePaymentForm);
+            }
+            
+            setTimeout(validatePaymentForm, 100);
+          };
+
+          let reset_purchase_button = () => {
+              const btn = document.querySelector("#card-form").querySelector("button[type='submit']");
+              if (btn) {
+                btn.removeAttribute("disabled");
+                const buttonText = currentPrice ? \`Pay \${currentPrice.display}\` : "Pay Now";
+                btn.textContent = buttonText;
+              }
+          }
+
+          const is_user_logged_in = () => {
+            return new Promise((resolve) => {
+              current_customer_id = "";
+              resolve();
+            });
+          }
+
+          const get_client_token = () => {
+            return new Promise(async (resolve, reject) => {
+              try {
+                const response = await fetch(\`\${API_BASE_URL}/get_client_token\`, {
+                  method: "POST", 
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ "customer_id": current_customer_id }),
+                });
+
+                const client_token = await response.text();
+                resolve(client_token);
+              } catch (error) {
+                reject(error);
+              }
+            });
+          }
+
+          let handle_click = (event) => {
+              if (event.target.classList.contains("alert-close")) {
+                  event.target.closest(".alert").remove();
+              }
+          }
+
+          document.addEventListener("click", handle_click);
+
+          let display_error_alert = (message = "An error occurred. Please try again.") => {
+              const alertsContainer = document.getElementById("alerts");
+              if (alertsContainer) {
+                alertsContainer.innerHTML = \`<div class="alert alert-error"><button class="alert-close">×</button>\${message}</div>\`;
+              }
+              
+              const errorEvent = new CustomEvent('paymentError', {
+                detail: { message: message }
+              });
+              window.dispatchEvent(errorEvent);
+          }
+
+          let display_success_message = (order_details) => {
+              const alertsContainer = document.getElementById("alerts");
+              if (alertsContainer) {
+                alertsContainer.innerHTML = \`<div class='alert alert-success'>Payment successful! Your transfer has been initiated.</div>\`;
+              }
+
+              const cardForm = document.getElementById("card-form");
+              if (cardForm) {
+                cardForm.classList.add("hide");
+              }
+
+              setTimeout(() => {
+                window.dispatchEvent(new CustomEvent('paymentSuccess', { 
+                  detail: { orderDetails: order_details } 
+                }));
+              }, 2000);
+          }
+
+          is_user_logged_in()
+          .then(() => {
+              return fetchCurrentPrice();
+          })
+          .then((priceData) => {
+              return get_client_token();
+          })
+          .then((client_token) => {
+              return script_to_head({
+                  "src": paypal_sdk_url + "?client-id=" + client_id + "&enable-funding=venmo&currency=" + currency + "&intent=" + intent + "&components=hosted-fields", 
+                  "data-client-token": client_token
+              });
+          })
+          .then(() => {
+              const loadingElement = document.getElementById("loading");
+              const contentElement = document.getElementById("content");
+              
+              if (loadingElement) loadingElement.classList.add("hide");
+              if (contentElement) contentElement.classList.remove("hide");
+
+              if (window.paypal && window.paypal.HostedFields.isEligible()) {
+                  paypal_hosted_fields = window.paypal.HostedFields.render({
+                    createOrder: () => {
+                      return fetch(\`\${API_BASE_URL}/create_order\`, {
+                          method: "post", 
+                          headers: { "Content-Type": "application/json; charset=utf-8" },
+                          body: JSON.stringify({ 
+                              "intent": intent,
+                              "amount": currentPrice ? currentPrice.value : null
+                          })
+                      })
+                      .then((response) => response.json())
+                      .then((order) => { 
+                          order_id = order.id; 
+                          return order.id; 
+                      });
+                    },
+                    styles: {
+                      'input': {
+                          'font-size': '14px',
+                          'color': '#1a1a21',
+                          'font-family': 'Inter, sans-serif',
+                          'font-weight': '400'
+                      },
+                      ':focus': { 'color': '#1a1a21' },
+                      '.valid': { 'color': '#1a1a21' },
+                      '.invalid': { 'color': '#dc2626' }
+                    },
+                    fields: {
+                      number: { selector: "#card-number", placeholder: "1234 1234 1234 1234" },
+                      cvv: { selector: "#cvv", placeholder: "CVC" },
+                      expirationDate: { selector: "#expiration-date", placeholder: "MM / YY" }
+                    }
+                  }).then((card_fields) => {
+                    setTimeout(addFormValidationListeners, 500);
+                    
+                    card_fields.on('validityChange', validatePaymentForm);
+                    card_fields.on('inputSubmitRequest', validatePaymentForm);
+                    
+                    const cardForm = document.querySelector("#card-form");
+                    if (cardForm) {
+                      cardForm.addEventListener("submit", (event) => {
+                        event.preventDefault();
+
+                        const submitBtn = cardForm.querySelector("button[type='submit']");
+                        if (submitBtn) {
+                          submitBtn.setAttribute("disabled", "");
+                          submitBtn.textContent = "Processing...";
+                        }
+
+                        card_fields.submit({
+                            cardholderName: "Transfer Customer",
+                            billingAddress: {
+                              streetAddress: "123 Springfield Rd",
+                              extendedAddress: "",
+                              region: "AZ",
+                              locality: "CHANDLER",
+                              postalCode: "85224",
+                              countryCodeAlpha2: "US",
+                            },
+                          })
+                          .then(() => {
+                            const emailInput = document.getElementById("email");
+                            return fetch(\`\${API_BASE_URL}/complete_order\`, {
+                                method: "post", 
+                                headers: { "Content-Type": "application/json; charset=utf-8" },
+                                body: JSON.stringify({
+                                    "intent": intent,
+                                    "order_id": order_id,
+                                    "email": emailInput ? emailInput.value : ""
+                                })
+                            })
+                            .then((response) => response.json())
+                            .then((order_details) => {
+                                console.log('PayPal order completed:', order_details);
+                                display_success_message(order_details);
+                             })
+                             .catch((error) => {
+                                console.error('PayPal order completion error:', error);
+                                display_error_alert("Payment processing failed. Please try again.");
+                                reset_purchase_button();
+                             });
+                          })
+                          .catch((err) => {
+                            console.error('PayPal card submission error:', err);
+                            reset_purchase_button();
+                            display_error_alert("Card validation failed. Please check your information.");
+                          });
+                      });
+                    }
+                  });
+                } else {
+                  display_error_alert("Card payments are not supported in this browser.");
+                }
+          })
+          .catch((error) => {
+              console.error('PayPal initialization error:', error);
+              reset_purchase_button();
+              display_error_alert("Failed to initialize payment system. Please refresh the page.");
           });
-        }
+
+          function fetchCurrentPrice() {
+            const priceData = {
+              value: "${transferAmount}",
+              display: "$" + parseFloat("${transferAmount}").toFixed(2),
+              currency: "USD"
+            };
+            currentPrice = priceData;
+            const submitBtn = document.querySelector('.pay-button');
+            if (submitBtn) {
+              submitBtn.textContent = \`Pay \${priceData.display}\`;
+            }
+            return Promise.resolve(priceData);
+          }
+
+          function script_to_head(attributes_object) {
+            return new Promise((resolve, reject) => {
+              const script = document.createElement('script');
+              for (const name of Object.keys(attributes_object)) {
+                script.setAttribute(name, attributes_object[name]);
+              }
+              document.head.appendChild(script);
+              script.addEventListener('load', resolve);
+              script.addEventListener('error', reject);
+            });
+          }
+        })();
       `;
 
       document.head.appendChild(script);
