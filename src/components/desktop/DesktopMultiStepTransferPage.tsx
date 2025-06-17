@@ -418,9 +418,9 @@ const DesktopMultiStepTransferPage: React.FC<DesktopMultiStepTransferPageProps> 
         </div>
       </div>
 
-      {/* Main Content - Two Column Layout */}
+      {/* Main Content - Two Column Layout - Always 2 columns on desktop (md and up) */}
       <div className="container mx-auto px-6 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-7xl mx-auto">
           {/* Left Column - 3 sections */}
           <div className="space-y-6">
             {/* Transfer Process Section */}
