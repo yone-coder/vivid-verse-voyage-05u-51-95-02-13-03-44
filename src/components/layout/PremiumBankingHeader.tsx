@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Menu, X, Bell, User, Globe, ChevronDown, Send, CreditCard, History, Settings, Shield, Lock, Eye, EyeOff, TrendingUp, Camera } from 'lucide-react';
 
@@ -22,7 +21,7 @@ export default function PremiumBankingHeader() {
   };
 
   return (
-    <div className="w-full sticky top-0 z-50">
+    <div className="w-full sticky top-0 z-[9999]">
       {/* Main Header */}
       <header className="bg-gradient-to-r from-blue-800 via-blue-900 to-indigo-900 text-white shadow-xl relative">
         <div className="px-4 py-2">
@@ -152,8 +151,6 @@ export default function PremiumBankingHeader() {
           </div>
         </div>
       )}
-
-
     </div>
   );
 }
