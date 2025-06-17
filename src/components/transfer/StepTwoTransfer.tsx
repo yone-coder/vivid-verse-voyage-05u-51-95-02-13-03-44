@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -115,24 +114,27 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({
         </div>
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="phoneNumber" className="text-base font-medium text-gray-700">
-          What's their phone number?
-        </Label>
-        <div className="flex">
-          <div className="flex items-center px-3 border border-r-0 border-gray-300 bg-gray-50 rounded-l-md">
-            <span className="text-sm text-gray-600">+509</span>
+      {/* Conditionally render regular phone number field - hide for MonCash/NatCash */}
+      {!isMonCashOrNatCash && (
+        <div className="space-y-2">
+          <Label htmlFor="phoneNumber" className="text-base font-medium text-gray-700">
+            What's their phone number?
+          </Label>
+          <div className="flex">
+            <div className="flex items-center px-3 border border-r-0 border-gray-300 bg-gray-50 rounded-l-md">
+              <span className="text-sm text-gray-600">+509</span>
+            </div>
+            <Input
+              id="phoneNumber"
+              type="tel"
+              placeholder="Enter phone number"
+              value={receiverDetails.phoneNumber}
+              onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
+              className="rounded-l-none border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+            />
           </div>
-          <Input
-            id="phoneNumber"
-            type="tel"
-            placeholder="Enter phone number"
-            value={receiverDetails.phoneNumber}
-            onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
-            className="rounded-l-none border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-          />
         </div>
-      </div>
+      )}
 
       {/* MonCash/NatCash Phone Number Field */}
       {isMonCashOrNatCash && (
