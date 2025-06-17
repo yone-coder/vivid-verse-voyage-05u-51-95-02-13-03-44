@@ -189,7 +189,7 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
   }, []);
 
   const handleNextStep = () => {
-    if (currentStep < 6) {
+    if (currentStep < 7) {
       setCurrentStep(currentStep + 1);
     }
   };
@@ -283,6 +283,10 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
     transferData.selectedPaymentMethod !== undefined && 
     transferData.selectedPaymentMethod !== ''
   );
+  const canProceedFromStep6 = Boolean(
+    transferData.selectedPaymentMethod !== undefined && 
+    transferData.selectedPaymentMethod !== ''
+  );
 
   // Calculate canProceed based on current step
   const canProceed = Boolean(
@@ -290,7 +294,8 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
     (currentStep === 2 && canProceedFromStep2) ||
     (currentStep === 3 && canProceedFromStep3) ||
     (currentStep === 4 && canProceedFromStep4) ||
-    (currentStep === 5 && canProceedFromStep5)
+    (currentStep === 5 && canProceedFromStep5) ||
+    (currentStep === 6 && canProceedFromStep6)
   );
 
   const handleStickyPayment = async () => {
@@ -356,10 +361,10 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
 
       {/* Index Bottom Navigation with integrated continue button */}
       <IndexBottomNav
-        showContinueButton={currentStep < 6}
+        showContinueButton={currentStep < 7}
         currentStep={currentStep}
         canProceed={canProceed}
-        onContinue={currentStep === 5 ? handleStickyPayment : handleNextStep}
+        onContinue={currentStep === 6 ? handleStickyPayment : handleNextStep}
         onPrevious={handlePreviousStep}
         isPaymentLoading={isPaymentLoading}
         transferData={transferData}

@@ -6,6 +6,7 @@ import StepOneLocalTransfer from './StepOneLocalTransfer';
 import StepOnePointFiveTransfer from './StepOnePointFiveTransfer';
 import StepTwoTransfer from './StepTwoTransfer';
 import TransferSummary from './TransferSummary';
+import PaymentMethodSelection from './PaymentMethodSelection';
 import PaymentMethodSelector from './PaymentMethodSelector';
 import TransferReceipt from './TransferReceipt';
 import { Button } from "@/components/ui/button";
@@ -101,6 +102,15 @@ const StepContent: React.FC<StepContentProps> = ({
       )}
 
       {currentStep === 5 && (
+        <div className="space-y-4">
+          <PaymentMethodSelection
+            selectedMethod={transferData.selectedPaymentMethod || 'credit-card'}
+            onMethodSelect={(method) => updateTransferData({ selectedPaymentMethod: method })}
+          />
+        </div>
+      )}
+
+      {currentStep === 6 && (
         <PaymentMethodSelector
           transferData={transferData}
           onPaymentSubmit={onPaymentSubmit}
@@ -109,7 +119,7 @@ const StepContent: React.FC<StepContentProps> = ({
         />
       )}
 
-      {currentStep === 6 && (
+      {currentStep === 7 && (
         <div className="space-y-4">
           <TransferReceipt
             ref={receiptRef}

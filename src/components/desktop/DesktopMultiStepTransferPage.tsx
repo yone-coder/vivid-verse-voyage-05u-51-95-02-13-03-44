@@ -143,6 +143,8 @@ const DesktopMultiStepTransferPage: React.FC = () => {
       case 4:
         return true; // Review step can always proceed
       case 5:
+        return transferData.selectedPaymentMethod !== '';
+      case 6:
         return transferData.transferType === 'national' ? true : isPaymentFormValid;
       default:
         return false;

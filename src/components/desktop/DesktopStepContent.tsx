@@ -7,6 +7,7 @@ import StepOneLocalTransfer from '@/components/transfer/StepOneLocalTransfer';
 import StepOnePointFiveTransfer from '@/components/transfer/StepOnePointFiveTransfer';
 import StepTwoTransfer from '@/components/transfer/StepTwoTransfer';
 import TransferSummary from '@/components/transfer/TransferSummary';
+import PaymentMethodSelection from '@/components/transfer/PaymentMethodSelection';
 import PaymentMethodSelector from '@/components/transfer/PaymentMethodSelector';
 import TransferReceipt from '@/components/transfer/TransferReceipt';
 import { Button } from "@/components/ui/button";
@@ -118,8 +119,23 @@ const DesktopStepContent: React.FC<DesktopStepContentProps> = ({
       return (
         <div className="space-y-6">
           <div className="text-center">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Payment Method</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Select Payment Method</h2>
             <p className="text-gray-600">Choose how you'd like to pay</p>
+          </div>
+
+          <PaymentMethodSelection
+            selectedMethod={transferData.selectedPaymentMethod || 'credit-card'}
+            onMethodSelect={(method) => updateTransferData({ selectedPaymentMethod: method })}
+          />
+        </div>
+      );
+
+    case 6:
+      return (
+        <div className="space-y-6">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Payment</h2>
+            <p className="text-gray-600">Complete your payment</p>
           </div>
 
           <PaymentMethodSelector
@@ -131,7 +147,7 @@ const DesktopStepContent: React.FC<DesktopStepContentProps> = ({
         </div>
       );
 
-    case 6:
+    case 7:
       return (
         <div className="space-y-6">
           <div className="text-center">

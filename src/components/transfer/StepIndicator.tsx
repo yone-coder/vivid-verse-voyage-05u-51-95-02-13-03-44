@@ -7,7 +7,7 @@ interface StepIndicatorProps {
 }
 
 const StepIndicator: React.FC<StepIndicatorProps> = ({ currentStep }) => {
-  const totalSteps = 6;
+  const totalSteps = 7;
   const progressValue = (currentStep / totalSteps) * 100;
   
   const stepTitles = [
@@ -15,7 +15,8 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({ currentStep }) => {
     'Transfer Details', 
     'Recipient Details', 
     'Review', 
-    'Payment Method', 
+    'Select Payment Method',
+    'Payment',
     'Transfer Complete'
   ];
 

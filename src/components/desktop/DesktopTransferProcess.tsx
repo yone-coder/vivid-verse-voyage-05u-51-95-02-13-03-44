@@ -66,7 +66,7 @@ const DesktopTransferProcess: React.FC<DesktopTransferProcessProps> = ({
           </CardContent>
 
           {/* Navigation Footer */}
-          {currentStep < 6 && (
+          {currentStep < 7 && (
             <div className="border-t bg-gray-50 px-8 py-6 flex justify-between items-center">
               <Button
                 variant="outline"
@@ -79,15 +79,15 @@ const DesktopTransferProcess: React.FC<DesktopTransferProcessProps> = ({
               </Button>
 
               <div className="text-sm text-gray-500">
-                Step {currentStep} of 6
+                Step {currentStep} of 7
               </div>
 
               <Button
-                onClick={currentStep === 5 ? onPaymentSubmit : handleNextStep}
+                onClick={currentStep === 6 ? onPaymentSubmit : handleNextStep}
                 disabled={!canProceed || isPaymentLoading}
                 className="flex items-center gap-2"
               >
-                {currentStep === 5 ? 'Complete Payment' : 'Continue'}
+                {currentStep === 6 ? 'Complete Payment' : 'Continue'}
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </div>
