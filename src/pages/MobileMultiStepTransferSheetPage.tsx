@@ -1,3 +1,4 @@
+
 import React, { useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -348,16 +349,17 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
     <div className="min-h-screen bg-white">
       <PaymentLoadingOverlay isVisible={isPaymentLoading} />
 
-      {/* Header with blue background, GLOBAL TRANSFÈ, logo, and search icon */}
-      <div className="sticky top-0 z-50">
+      {/* Sticky Header Section */}
+      <div className="sticky top-0 z-[9998] bg-white">
+        {/* Header with blue background, GLOBAL TRANSFÈ, logo, and search icon */}
         <TransferHeader />
 
-        {/* Animated Step Indicator with white background and top spacing */}
+        {/* Step Indicator with white background */}
         <StepIndicator currentStep={currentStep} />
 
-        {/* Transfer Type Selector - Sticky below steps indicator - Only show on step 1 */}
+        {/* Transfer Type Selector - Only show on step 1 */}
         {currentStep === 1 && (
-          <div className="bg-white">
+          <div className="bg-white px-4 pb-4">
             <TransferTypeSelector
               transferType={transferData.transferType || 'international'}
               onTransferTypeChange={(type) => updateTransferData({ transferType: type })}
