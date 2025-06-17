@@ -105,9 +105,9 @@ const DesktopMultiStepTransferPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50/50">
       <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Left Column - Main Transfer Form and Track Transfer */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="md:col-span-2 space-y-8">
             <DesktopTransferProcess
               currentStep={currentStep}
               transferData={transferData}
@@ -128,7 +128,7 @@ const DesktopMultiStepTransferPage: React.FC = () => {
           </div>
           
           {/* Right Column - Sidebar Sections */}
-          <div className="lg:col-span-1">
+          <div className="md:col-span-1">
             <DesktopSidebarSections />
           </div>
         </div>
