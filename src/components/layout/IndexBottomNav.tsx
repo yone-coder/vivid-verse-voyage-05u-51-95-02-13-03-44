@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -134,15 +135,14 @@ export default function IndexBottomNav({
                 getButtonColor()
               )}
             >
-              {/* Back Chevron - only show if not on step 1 */}
+              {/* Back Chevron - only show if not on step 1 - always functional */}
               {currentStep > 1 && (
                 <button 
                   onClick={(e) => {
                     e.stopPropagation();
                     onPrevious?.();
                   }}
-                  disabled={isPaymentLoading}
-                  className="absolute left-3 flex items-center justify-center w-8 h-8 bg-white/20 hover:bg-white/30 rounded-full transition-colors duration-200 disabled:opacity-50"
+                  className="absolute left-3 flex items-center justify-center w-8 h-8 bg-white/20 hover:bg-white/30 rounded-full transition-colors duration-200"
                 >
                   <ChevronLeft className="h-5 w-5" />
                 </button>
