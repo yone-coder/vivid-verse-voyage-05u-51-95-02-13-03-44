@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -118,21 +119,21 @@ export default function IndexBottomNav({
   if (showContinueButton) {
     return (
       <div className="fixed bottom-0 left-0 right-0 z-50">
-        {/* Continue Button Container - sits directly above nav bar */}
+        {/* Continue Button Container - reduced spacing and button height */}
         <div className="bg-white border-t border-gray-200 dark:border-zinc-800 shadow-lg">
-          <div className="h-16 px-4 max-w-md mx-auto">
-            <div className="flex items-center gap-3 mt-2">
-              {/* Independent Back Button */}
+          <div className="h-12 px-4 max-w-md mx-auto">
+            <div className="flex items-center gap-3 mt-1">
+              {/* Independent Back Button - now with trustworthy blue color and circular border */}
               {currentStep > 1 && (
                 <button 
                   onClick={onPrevious}
-                  className="flex-shrink-0 flex items-center justify-center w-12 h-12 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors duration-200"
+                  className="flex-shrink-0 flex items-center justify-center w-9 h-9 bg-blue-600 hover:bg-blue-700 text-white rounded-full transition-colors duration-200"
                 >
-                  <ChevronLeft className="h-5 w-5" />
+                  <ChevronLeft className="h-4 w-4" />
                 </button>
               )}
               
-              {/* Continue/Pay Button - takes remaining space */}
+              {/* Continue/Pay Button - reduced height and circular border */}
               <Button 
                 onClick={onContinue}
                 disabled={
@@ -141,7 +142,7 @@ export default function IndexBottomNav({
                   (currentStep === 6 && transferData?.transferType === 'international' && !isPaymentFormValid)
                 }
                 className={cn(
-                  "flex-1 h-12 transition-all duration-200 text-white font-semibold",
+                  "flex-1 h-9 rounded-full transition-all duration-200 text-white font-semibold",
                   getButtonColor()
                 )}
               >
@@ -149,13 +150,13 @@ export default function IndexBottomNav({
                 <div className="flex items-center justify-center">
                   {isPaymentLoading ? (
                     <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      <Loader2 className="mr-2 h-3 w-3 animate-spin" />
                       {getButtonText()}
                     </>
                   ) : (
                     <>
                       {getButtonText()}
-                      {currentStep < 6 && <ArrowRight className="ml-2 h-4 w-4" />}
+                      {currentStep < 6 && <ArrowRight className="ml-2 h-3 w-3" />}
                     </>
                   )}
                 </div>
