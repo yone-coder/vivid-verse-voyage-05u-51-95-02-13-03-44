@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -10,6 +9,10 @@ import DesktopSidebarSections from './DesktopSidebarSections';
 export interface TransferData {
   transferType: 'national' | 'international';
   amount: string;
+  transferDetails: {
+    receivingCountry: string;
+    deliveryMethod: string;
+  };
   receiverDetails: {
     firstName: string;
     lastName: string;
@@ -38,6 +41,10 @@ const DesktopMultiStepTransferPage: React.FC = () => {
   const [transferData, setTransferData] = useState<TransferData>({
     transferType: 'international',
     amount: '',
+    transferDetails: {
+      receivingCountry: '',
+      deliveryMethod: ''
+    },
     receiverDetails: {
       firstName: '',
       lastName: '',
