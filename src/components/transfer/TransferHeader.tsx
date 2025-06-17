@@ -1,6 +1,5 @@
 import React from 'react';
-import { Globe, Search, ChevronDown } from 'lucide-react';
-import LanguageSelector from '@/components/common/LanguageSelector';
+import { Globe, Search, ChevronRight } from 'lucide-react';
 
 const TransferHeader: React.FC = () => {
   return (
@@ -19,10 +18,10 @@ const TransferHeader: React.FC = () => {
         {/* Actions */}
         <div className="flex items-center space-x-3">
           {/* Language Selector */}
-          <div className="flex items-center bg-white/10 rounded-full px-3 py-1.5 hover:bg-white/20 transition-colors cursor-pointer">
-            <div className="w-5 h-5 rounded-full bg-gradient-to-br from-red-500 via-white to-blue-500 mr-2"></div>
-            <span className="text-white text-sm font-medium">EN</span>
-            <ChevronDown className="w-3 h-3 text-white ml-1" />
+          <div className="flex items-center bg-white/10 rounded-md px-2 py-1 hover:bg-white/20 transition-colors cursor-pointer">
+            <div className="w-4 h-4 rounded-full bg-gradient-to-br from-red-500 via-white to-blue-500 mr-2"></div>
+            <span className="text-white text-xs font-medium">EN</span>
+            <ChevronRight className="w-3 h-3 text-white/70 ml-1" />
           </div>
           
           <button 
