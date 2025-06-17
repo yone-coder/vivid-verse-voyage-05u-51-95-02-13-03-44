@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Menu, X, Bell, User, Globe, ChevronDown, Send, CreditCard, History, Settings, Shield, Lock, Eye, EyeOff, TrendingUp, QrCode } from 'lucide-react';
+import { Menu, X, Bell, User, Globe, ChevronDown, Send, CreditCard, History, Settings, Shield, Lock, Eye, EyeOff, TrendingUp, Camera } from 'lucide-react';
 
 export default function PremiumBankingHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -22,7 +22,7 @@ export default function PremiumBankingHeader() {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full sticky top-0 z-50">
       {/* Main Header */}
       <header className="bg-gradient-to-r from-blue-800 via-blue-900 to-indigo-900 text-white shadow-xl relative">
         <div className="px-4 py-2">
@@ -62,11 +62,7 @@ export default function PremiumBankingHeader() {
                   </svg>
                 </div>
                 <button className="absolute right-3 top-1/2 transform -translate-y-1/2 p-1 rounded-full hover:bg-white/10 transition-colors">
-                  <svg className="w-4 h-4 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" strokeWidth={2}/>
-                    <circle cx="8.5" cy="8.5" r="1.5" strokeWidth={2}/>
-                    <path d="M21 15l-5-5L5 21l5-5" strokeWidth={2}/>
-                  </svg>
+                  <Camera className="w-4 h-4 text-white/70" />
                 </button>
               </div>
             </div>
