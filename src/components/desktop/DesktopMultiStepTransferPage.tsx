@@ -12,13 +12,12 @@ export interface TransferData {
   receiverDetails: {
     firstName: string;
     lastName: string;
-    email: string;
-    phone: string;
-    country: string;
-    city: string;
-    address: string;
+    phoneNumber: string;
+    department: string;
+    commune: string;
+    email?: string;
   };
-  paymentMethod?: string;
+  selectedPaymentMethod?: string;
 }
 
 const DesktopMultiStepTransferPage: React.FC = () => {
@@ -36,11 +35,10 @@ const DesktopMultiStepTransferPage: React.FC = () => {
     receiverDetails: {
       firstName: '',
       lastName: '',
-      email: '',
-      phone: '',
-      country: '',
-      city: '',
-      address: ''
+      phoneNumber: '',
+      department: '',
+      commune: '',
+      email: ''
     }
   });
 
@@ -84,14 +82,15 @@ const DesktopMultiStepTransferPage: React.FC = () => {
     }
   };
 
-  const canProceed = () => {
+  const canProceed = (): boolean => {
     switch (currentStep) {
       case 1:
-        return transferData.amount && parseFloat(transferData.amount) > 0;
+        return Boolean(transferData.amount && parseFloat(transferData.amount) > 0);
       case 2:
-        return transferData.receiverDetails.firstName && 
+        return Boolean(transferData.receiverDetails.firstName && 
                transferData.receiverDetails.lastName && 
-               transferData.receiverDetails.email;
+               transferData.receiverDetails.phoneNumber &&
+               transferData.receiverDetails.commune);
       case 3:
         return isPaymentFormValid;
       default:
