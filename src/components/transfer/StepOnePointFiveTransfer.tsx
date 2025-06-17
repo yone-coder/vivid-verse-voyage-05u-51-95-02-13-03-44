@@ -1,9 +1,8 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { MapPin, Building, Smartphone, DollarSign } from 'lucide-react';
 
 interface TransferDetails {
@@ -20,14 +19,15 @@ const StepOnePointFiveTransfer: React.FC<StepOnePointFiveTransferProps> = ({
   transferDetails,
   onTransferDetailsChange
 }) => {
-  const countries = [
-    { value: 'haiti', label: 'Haiti', flag: '🇭🇹' },
-    { value: 'dominican-republic', label: 'Dominican Republic', flag: '🇩🇴' },
-    { value: 'jamaica', label: 'Jamaica', flag: '🇯🇲' },
-    { value: 'mexico', label: 'Mexico', flag: '🇲🇽' },
-    { value: 'guatemala', label: 'Guatemala', flag: '🇬🇹' },
-    { value: 'colombia', label: 'Colombia', flag: '🇨🇴' }
-  ];
+  // Automatically set Haiti as the receiving country
+  useEffect(() => {
+    if (transferDetails.receivingCountry !== 'haiti') {
+      onTransferDetailsChange({
+        ...transferDetails,
+        receivingCountry: 'haiti'
+      });
+    }
+  }, [transferDetails, onTransferDetailsChange]);
 
   const deliveryMethods = [
     {
@@ -53,13 +53,6 @@ const StepOnePointFiveTransfer: React.FC<StepOnePointFiveTransferProps> = ({
     }
   ];
 
-  const handleCountryChange = (country: string) => {
-    onTransferDetailsChange({
-      ...transferDetails,
-      receivingCountry: country
-    });
-  };
-
   const handleDeliveryMethodChange = (method: string) => {
     onTransferDetailsChange({
       ...transferDetails,
@@ -69,28 +62,6 @@ const StepOnePointFiveTransfer: React.FC<StepOnePointFiveTransferProps> = ({
 
   return (
     <div className="space-y-6">
-      {/* Country Selection */}
-      <div className="space-y-3">
-        <Label className="text-base font-medium text-gray-700">
-          Which country are you sending to?
-        </Label>
-        <Select value={transferDetails.receivingCountry} onValueChange={handleCountryChange}>
-          <SelectTrigger className="w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500">
-            <SelectValue placeholder="Select country" />
-          </SelectTrigger>
-          <SelectContent className="bg-white z-50">
-            {countries.map((country) => (
-              <SelectItem key={country.value} value={country.value}>
-                <div className="flex items-center space-x-2">
-                  <span>{country.flag}</span>
-                  <span>{country.label}</span>
-                </div>
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
       {/* Delivery Method Selection */}
       <div className="space-y-3">
         <Label className="text-base font-medium text-gray-700">
