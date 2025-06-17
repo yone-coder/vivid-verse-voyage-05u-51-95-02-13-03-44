@@ -1,14 +1,14 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle, User, Receipt, CreditCard, DollarSign, Settings } from 'lucide-react';
+import { CheckCircle, User, Receipt, CreditCard, DollarSign, Settings, FileText } from 'lucide-react';
 
 interface StepIndicatorProps {
   currentStep: number;
 }
 
 const StepIndicator: React.FC<StepIndicatorProps> = ({ currentStep }) => {
-  const stepTitles = ['Send Money', 'Transfer Details', 'Recipient Details', 'Payment Method', 'Transfer Complete'];
+  const stepTitles = ['Send Money', 'Transfer Details', 'Recipient Details', 'Review', 'Payment Method', 'Transfer Complete'];
 
   const stepVariants = {
     inactive: {
@@ -56,7 +56,7 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({ currentStep }) => {
   return (
     <div className="bg-white px-4 pt-3 pb-3">
       <div className="flex items-center justify-between">
-        {[1, 2, 3, 4, 5].map((step, index) => (
+        {[1, 2, 3, 4, 5, 6].map((step, index) => (
           <React.Fragment key={step}>
             <div className="flex flex-col items-center">
               <motion.div
@@ -85,6 +85,8 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({ currentStep }) => {
                     ) : step === 3 ? (
                       <User className="h-3 w-3" />
                     ) : step === 4 ? (
+                      <FileText className="h-3 w-3" />
+                    ) : step === 5 ? (
                       <CreditCard className="h-3 w-3" />
                     ) : (
                       <Receipt className="h-3 w-3" />
@@ -98,7 +100,7 @@ const StepIndicator: React.FC<StepIndicatorProps> = ({ currentStep }) => {
                 )}
               </motion.div>
             </div>
-            {index < 4 && (
+            {index < 5 && (
               <motion.div
                 className="flex-1 h-0.5 mx-2 rounded-full origin-left"
                 variants={lineVariants}

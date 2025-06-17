@@ -4,7 +4,9 @@ import { TransferData } from '@/components/desktop/DesktopMultiStepTransferPage'
 import TransferTypeSelector from '@/components/transfer/TransferTypeSelector';
 import StepOneTransfer from '@/components/transfer/StepOneTransfer';
 import StepOneLocalTransfer from '@/components/transfer/StepOneLocalTransfer';
+import StepOnePointFiveTransfer from '@/components/transfer/StepOnePointFiveTransfer';
 import StepTwoTransfer from '@/components/transfer/StepTwoTransfer';
+import TransferSummary from '@/components/transfer/TransferSummary';
 import PaymentMethodSelector from '@/components/transfer/PaymentMethodSelector';
 import TransferReceipt from '@/components/transfer/TransferReceipt';
 import { Button } from "@/components/ui/button";
@@ -72,6 +74,21 @@ const DesktopStepContent: React.FC<DesktopStepContentProps> = ({
       return (
         <div className="space-y-6">
           <div className="text-center">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Transfer Details</h2>
+            <p className="text-gray-600">Choose transfer details</p>
+          </div>
+
+          <StepOnePointFiveTransfer
+            transferDetails={transferData.transferDetails}
+            onTransferDetailsChange={(transferDetails) => updateTransferData({ transferDetails })}
+          />
+        </div>
+      );
+
+    case 3:
+      return (
+        <div className="space-y-6">
+          <div className="text-center">
             <h2 className="text-2xl font-bold text-gray-900 mb-2">Recipient Details</h2>
             <p className="text-gray-600">Who are you sending ${transferData.amount} to?</p>
           </div>
@@ -83,7 +100,21 @@ const DesktopStepContent: React.FC<DesktopStepContentProps> = ({
         </div>
       );
 
-    case 3:
+    case 4:
+      return (
+        <div className="space-y-6">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Review Transfer</h2>
+            <p className="text-gray-600">Please review your transfer details</p>
+          </div>
+
+          <TransferSummary
+            transferData={transferData}
+          />
+        </div>
+      );
+
+    case 5:
       return (
         <div className="space-y-6">
           <div className="text-center">
@@ -100,7 +131,7 @@ const DesktopStepContent: React.FC<DesktopStepContentProps> = ({
         </div>
       );
 
-    case 4:
+    case 6:
       return (
         <div className="space-y-6">
           <div className="text-center">

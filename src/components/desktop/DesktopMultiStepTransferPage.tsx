@@ -130,12 +130,19 @@ const DesktopMultiStepTransferPage: React.FC = () => {
         return transferData.amount !== '';
       case 2:
         return (
+          transferData.transferDetails.receivingCountry !== '' &&
+          transferData.transferDetails.deliveryMethod !== ''
+        );
+      case 3:
+        return (
           transferData.receiverDetails.firstName !== '' &&
           transferData.receiverDetails.lastName !== '' &&
           transferData.receiverDetails.phoneNumber !== '' &&
           transferData.receiverDetails.commune !== ''
         );
-      case 3:
+      case 4:
+        return true; // Review step can always proceed
+      case 5:
         return transferData.transferType === 'national' ? true : isPaymentFormValid;
       default:
         return false;
