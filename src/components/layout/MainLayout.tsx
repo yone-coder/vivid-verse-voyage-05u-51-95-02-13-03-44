@@ -46,7 +46,7 @@ function MainLayoutContent() {
 
   return (
     <LanguageProvider>
-      <div className="min-h-screen flex flex-col bg-white">
+      <div className="min-h-screen flex flex-col banking-container">
         <style dangerouslySetInnerHTML={{ __html: headerHeightStyle }} />
 
         {/* Premium Banking Header - show for all users */}
