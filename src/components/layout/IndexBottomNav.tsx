@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -88,13 +87,13 @@ export default function IndexBottomNav({
     navigate(item.path, { replace: true });
   }, [navigate, activeTab, location.pathname]);
 
-  // Calculate values for payment button
+  // Calculate values for payment button (only used for step 6)
   const transferFee = transferData?.amount ? (Math.ceil(parseFloat(transferData.amount) / 100) * 15).toFixed(2) : '0.00';
   const totalAmount = transferData?.amount ? (parseFloat(transferData.amount) + parseFloat(transferFee)).toFixed(2) : '0.00';
   const receiverAmount = transferData?.amount ? (parseFloat(transferData.amount) * 127.5).toFixed(2) : '0.00';
 
   const getButtonText = () => {
-    if (currentStep === 4) {
+    if (currentStep === 6) {
       if (isPaymentLoading) {
         return transferData?.transferType === 'national' ? 'Processing MonCash Payment...' : 'Processing...';
       }
@@ -103,12 +102,12 @@ export default function IndexBottomNav({
         : `Pay $${totalAmount}`;
     }
     if (currentStep === 1) return 'Continue';
-    if (currentStep === 5) return 'Done';
+    if (currentStep === 7) return 'Done';
     return 'Next';
   };
 
   const getButtonColor = () => {
-    if (currentStep === 4) {
+    if (currentStep === 6) {
       return transferData?.transferType === 'national' 
         ? 'bg-red-600 hover:bg-red-700' 
         : 'bg-green-600 hover:bg-green-700';
@@ -141,7 +140,7 @@ export default function IndexBottomNav({
               disabled={
                 !canProceed || 
                 isPaymentLoading || 
-                (currentStep === 4 && transferData?.transferType === 'international' && !isPaymentFormValid)
+                (currentStep === 6 && transferData?.transferType === 'international' && !isPaymentFormValid)
               }
               className={cn(
                 "transition-all duration-200 text-white font-semibold",
@@ -157,7 +156,7 @@ export default function IndexBottomNav({
               ) : (
                 <>
                   {getButtonText()}
-                  {currentStep < 4 && <ArrowRight className="ml-2 h-4 w-4" />}
+                  {currentStep < 6 && <ArrowRight className="ml-2 h-4 w-4" />}
                 </>
               )}
             </Button>
