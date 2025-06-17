@@ -1,5 +1,5 @@
 import React from 'react';
-import { Globe, Search, ChevronRight } from 'lucide-react';
+import { Globe, Search, ChevronRight, Bell } from 'lucide-react';
 
 const TransferHeader: React.FC = () => {
   return (
@@ -23,6 +23,14 @@ const TransferHeader: React.FC = () => {
             <span className="text-white text-xs font-medium">EN</span>
             <ChevronRight className="w-3 h-3 text-white/70 ml-1" />
           </div>
+          
+          <button 
+            className="p-2 rounded-lg hover:bg-white/10 transition-colors relative"
+            aria-label="Notifications"
+          >
+            <Bell className="w-5 h-5 text-white" />
+            <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+          </button>
           
           <button 
             className="p-2 rounded-lg hover:bg-white/10 transition-colors"
