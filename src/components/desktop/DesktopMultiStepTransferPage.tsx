@@ -2,22 +2,10 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import html2canvas from 'html2canvas';
-import { ArrowLeft, ArrowRight, History, Route, MapPin, User } from 'lucide-react';
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import TransferTypeSelector from '@/components/transfer/TransferTypeSelector';
 import { EmailNotificationService } from '@/components/transfer/EmailNotificationService';
 import PaymentLoadingOverlay from '@/components/transfer/PaymentLoadingOverlay';
-import StepIndicator from '@/components/transfer/StepIndicator';
-import StepOneTransfer from '@/components/transfer/StepOneTransfer';
-import StepOneLocalTransfer from '@/components/transfer/StepOneLocalTransfer';
-import StepTwoTransfer from '@/components/transfer/StepTwoTransfer';
-import PaymentMethodSelector from '@/components/transfer/PaymentMethodSelector';
-import TransferReceipt from '@/components/transfer/TransferReceipt';
-import TransferHistoryPage from '@/pages/TransferHistoryPage';
-import TrackTransferPage from '@/pages/TrackTransferPage';
-import LocationsPage from '@/pages/LocationsPage';
-import AccountPage from '@/pages/AccountPage';
+import DesktopTransferProcess from './DesktopTransferProcess';
+import DesktopSidebarSections from './DesktopSidebarSections';
 
 export interface TransferData {
   transferType?: 'international' | 'national';
@@ -307,106 +295,6 @@ const DesktopMultiStepTransferPage: React.FC<DesktopMultiStepTransferPageProps> 
     }
   };
 
-  const renderStepContent = () => {
-    switch (currentStep) {
-      case 1:
-        return (
-          <div className="space-y-6">
-            <div className="text-center">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Send Money</h2>
-              <p className="text-gray-600">Enter the amount you want to send</p>
-            </div>
-
-            <TransferTypeSelector
-              transferType={transferData.transferType || 'international'}
-              onTransferTypeChange={(type) => updateTransferData({ transferType: type })}
-              disableNavigation={true}
-            />
-
-            {transferData.transferType === 'national' ? (
-              <StepOneLocalTransfer
-                amount={transferData.amount}
-                onAmountChange={(amount) => updateTransferData({ amount })}
-              />
-            ) : (
-              <StepOneTransfer
-                amount={transferData.amount}
-                onAmountChange={(amount) => updateTransferData({ amount })}
-              />
-            )}
-          </div>
-        );
-
-      case 2:
-        return (
-          <div className="space-y-6">
-            <div className="text-center">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Recipient Details</h2>
-              <p className="text-gray-600">Who are you sending ${transferData.amount} to?</p>
-            </div>
-
-            <StepTwoTransfer
-              receiverDetails={transferData.receiverDetails}
-              onDetailsChange={(receiverDetails) => updateTransferData({ receiverDetails })}
-            />
-          </div>
-        );
-
-      case 3:
-        return (
-          <div className="space-y-6">
-            <div className="text-center">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Payment Method</h2>
-              <p className="text-gray-600">Choose how you'd like to pay</p>
-            </div>
-
-            <PaymentMethodSelector
-              transferData={transferData}
-              onPaymentSubmit={handlePayment}
-              isPaymentLoading={isPaymentLoading}
-              isPaymentFormValid={isPaymentFormValid}
-            />
-          </div>
-        );
-
-      case 4:
-        return (
-          <div className="space-y-6">
-            <div className="text-center">
-              <h2 className="text-2xl font-bold text-green-600 mb-2">Transfer Complete!</h2>
-              <p className="text-gray-600">Your money transfer has been processed successfully</p>
-            </div>
-
-            <TransferReceipt
-              ref={receiptRef}
-              transferData={transferData}
-              transactionId={transactionId}
-              userEmail={userEmail}
-            />
-
-            <div className="flex justify-center gap-4">
-              <Button
-                variant="outline"
-                onClick={generateReceiptImage}
-                className="px-8"
-              >
-                Share Receipt
-              </Button>
-              <Button
-                onClick={() => navigate('/for-you')}
-                className="px-8"
-              >
-                Done
-              </Button>
-            </div>
-          </div>
-        );
-
-      default:
-        return null;
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gray-50">
       <PaymentLoadingOverlay isVisible={isPaymentLoading} />
@@ -421,111 +309,28 @@ const DesktopMultiStepTransferPage: React.FC<DesktopMultiStepTransferPageProps> 
       {/* Main Content - Two Column Layout - Always 2 columns on desktop (md and up) */}
       <div className="container mx-auto px-6 py-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-7xl mx-auto">
-          {/* Left Column - 3 sections */}
-          <div className="space-y-6">
-            {/* Transfer Process Section */}
-            <div className="space-y-6">
-              {/* Step Indicator */}
-              <StepIndicator currentStep={currentStep} />
-
-              {/* Main Transfer Card */}
-              <Card className="shadow-lg">
-                <CardContent className="p-8">
-                  {renderStepContent()}
-                </CardContent>
-
-                {/* Navigation Footer */}
-                {currentStep < 4 && (
-                  <div className="border-t bg-gray-50 px-8 py-6 flex justify-between items-center">
-                    <Button
-                      variant="outline"
-                      onClick={handlePreviousStep}
-                      disabled={currentStep === 1}
-                      className="flex items-center gap-2"
-                    >
-                      <ArrowLeft className="h-4 w-4" />
-                      Previous
-                    </Button>
-
-                    <div className="text-sm text-gray-500">
-                      Step {currentStep} of 4
-                    </div>
-
-                    <Button
-                      onClick={currentStep === 3 ? handlePayment : handleNextStep}
-                      disabled={!canProceed || isPaymentLoading}
-                      className="flex items-center gap-2"
-                    >
-                      {currentStep === 3 ? 'Complete Payment' : 'Continue'}
-                      <ArrowRight className="h-4 w-4" />
-                    </Button>
-                  </div>
-                )}
-              </Card>
-            </div>
-
-            {/* Transfer History Section */}
-            <Card className="shadow-lg">
-              <CardHeader className="pb-4">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <History className="h-5 w-5" />
-                  Transfer History
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="max-h-80 overflow-y-auto">
-                  <TransferHistoryPage />
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Track Transfer Section */}
-            <Card className="shadow-lg">
-              <CardHeader className="pb-4">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <Route className="h-5 w-5" />
-                  Track Transfer
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="max-h-64 overflow-y-auto">
-                  <TrackTransferPage />
-                </div>
-              </CardContent>
-            </Card>
+          {/* Left Column - Transfer Process */}
+          <div>
+            <DesktopTransferProcess
+              currentStep={currentStep}
+              transferData={transferData}
+              updateTransferData={updateTransferData}
+              onPaymentSubmit={handlePayment}
+              isPaymentLoading={isPaymentLoading}
+              isPaymentFormValid={isPaymentFormValid}
+              transactionId={transactionId}
+              userEmail={userEmail}
+              receiptRef={receiptRef}
+              generateReceiptImage={generateReceiptImage}
+              handleNextStep={handleNextStep}
+              handlePreviousStep={handlePreviousStep}
+              canProceed={canProceed}
+            />
           </div>
 
-          {/* Right Column - 2 sections */}
-          <div className="space-y-6">
-            {/* Locations Section */}
-            <Card className="shadow-lg">
-              <CardHeader className="pb-4">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <MapPin className="h-5 w-5" />
-                  Our Locations
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="max-h-96 overflow-y-auto">
-                  <LocationsPage />
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Account Section */}
-            <Card className="shadow-lg">
-              <CardHeader className="pb-4">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <User className="h-5 w-5" />
-                  Account Settings
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="max-h-96 overflow-y-auto">
-                  <AccountPage />
-                </div>
-              </CardContent>
-            </Card>
+          {/* Right Column - Sidebar Sections */}
+          <div>
+            <DesktopSidebarSections />
           </div>
         </div>
       </div>
