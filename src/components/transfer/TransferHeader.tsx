@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Globe, Search, ChevronRight, Bell, MessageCircle } from 'lucide-react';
 
 const TransferHeader: React.FC = () => {
