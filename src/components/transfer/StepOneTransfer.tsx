@@ -3,7 +3,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ChevronDown } from 'lucide-react';
-import { getExchangeRate } from '@/utils/currencyConverter';
+import { getAllExchangeRates, CurrencyRates } from '@/utils/currencyConverter';
 
 interface StepOneTransferProps {
   amount: string;
@@ -13,48 +13,59 @@ interface StepOneTransferProps {
 const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChange }) => {
   const [receiverAmount, setReceiverAmount] = useState('');
   const [selectedCurrency, setSelectedCurrency] = useState('USD');
-  const [liveUsdToHtgRate, setLiveUsdToHtgRate] = useState(127.5); // Default fallback rate
-  const [isLoadingRate, setIsLoadingRate] = useState(false);
+  const [liveRates, setLiveRates] = useState<CurrencyRates>({
+    USD: 127.5,
+    EUR: 144.8,
+    GBP: 168.2,
+    CAD: 97.3,
+    AUD: 86.1,
+    CHF: 147.9,
+    JPY: 0.89
+  });
+  const [isLoadingRates, setIsLoadingRates] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [isLive, setIsLive] = useState(false);
 
-  // Currency options with exchange rates to HTG (USD will use live rate)
+  // Currency options
   const currencies = [
-    { code: 'USD', name: 'US Dollar', symbol: '$', rate: liveUsdToHtgRate },
-    { code: 'EUR', name: 'Euro', symbol: '€', rate: 144.8 },
-    { code: 'GBP', name: 'British Pound', symbol: '£', rate: 168.2 },
-    { code: 'CAD', name: 'Canadian Dollar', symbol: 'C$', rate: 97.3 },
-    { code: 'AUD', name: 'Australian Dollar', symbol: 'A$', rate: 86.1 },
-    { code: 'CHF', name: 'Swiss Franc', symbol: 'CHF', rate: 147.9 },
-    { code: 'JPY', name: 'Japanese Yen', symbol: '¥', rate: 0.89 }
+    { code: 'USD', name: 'US Dollar', symbol: '$' },
+    { code: 'EUR', name: 'Euro', symbol: '€' },
+    { code: 'GBP', name: 'British Pound', symbol: '£' },
+    { code: 'CAD', name: 'Canadian Dollar', symbol: 'C$' },
+    { code: 'AUD', name: 'Australian Dollar', symbol: 'A$' },
+    { code: 'CHF', name: 'Swiss Franc', symbol: 'CHF' },
+    { code: 'JPY', name: 'Japanese Yen', symbol: '¥' }
   ];
 
-  // Fetch live USD to HTG rate on component mount
+  // Fetch live rates on component mount
   useEffect(() => {
-    const fetchLiveRate = async () => {
-      setIsLoadingRate(true);
+    const fetchLiveRates = async () => {
+      setIsLoadingRates(true);
       try {
-        const rateData = await getExchangeRate();
-        setLiveUsdToHtgRate(rateData.usdToHtg);
+        const rateData = await getAllExchangeRates();
+        setLiveRates(rateData.rates);
         setLastUpdated(rateData.lastUpdated);
-        console.log('Live USD to HTG rate fetched:', rateData.usdToHtg);
+        setIsLive(rateData.isLive);
+        console.log('Live exchange rates fetched:', rateData.rates);
       } catch (error) {
-        console.error('Failed to fetch live exchange rate:', error);
-        // Keep the default fallback rate
+        console.error('Failed to fetch live exchange rates:', error);
+        // Keep the default fallback rates
       } finally {
-        setIsLoadingRate(false);
+        setIsLoadingRates(false);
       }
     };
 
-    fetchLiveRate();
+    fetchLiveRates();
   }, []);
 
   const selectedCurrencyData = currencies.find(c => c.code === selectedCurrency) || currencies[0];
+  const currentRate = liveRates[selectedCurrency] || 127.5;
 
   useEffect(() => {
     const sendAmount = parseFloat(amount) || 0;
-    const htgAmount = sendAmount * selectedCurrencyData.rate;
+    const htgAmount = sendAmount * currentRate;
     setReceiverAmount(htgAmount.toFixed(2));
-  }, [amount, selectedCurrencyData.rate]);
+  }, [amount, currentRate]);
 
   const handleSendAmountChange = (value: string) => {
     onAmountChange(value);
@@ -71,17 +82,17 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
         <div className="flex items-center justify-between">
           <span className="text-sm font-medium text-gray-700">Exchange rate</span>
           <div className="flex items-center gap-2">
-            {isLoadingRate && selectedCurrency === 'USD' && (
+            {isLoadingRates && (
               <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
             )}
             <span className="font-bold text-blue-600">
-              1 {selectedCurrency} = {selectedCurrencyData.rate.toFixed(2)} HTG
+              1 {selectedCurrency} = {currentRate.toFixed(2)} HTG
             </span>
           </div>
         </div>
-        {selectedCurrency === 'USD' && lastUpdated && (
+        {lastUpdated && (
           <div className="text-xs text-gray-500 mt-1">
-            Live BRH rate • Updated {lastUpdated.toLocaleTimeString()}
+            {isLive ? 'Live BRH rate' : 'Cached rate'} • Updated {lastUpdated.toLocaleTimeString()}
           </div>
         )}
       </div>
