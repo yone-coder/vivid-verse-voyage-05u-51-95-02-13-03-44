@@ -154,7 +154,7 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
       setPaymentCompleted(true);
       const actualTransactionId = orderDetails?.id || `TX${Date.now()}`;
       setTransactionId(actualTransactionId);
-      setCurrentStep(4);
+      setCurrentStep(7); // Fix: Set to step 7 instead of step 4
       setIsPaymentLoading(false);
 
       // Send email notification using the static service method
