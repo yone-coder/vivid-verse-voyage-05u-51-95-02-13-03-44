@@ -2,7 +2,9 @@
 import React, { useEffect } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Footer from "@/components/layout/Footer";
+import DesktopFooter from "@/components/desktop/DesktopFooter";
 import IndexBottomNav from "@/components/layout/IndexBottomNav";
+import DesktopHeader from "@/components/desktop/DesktopHeader";
 import { Outlet, useLocation } from "react-router-dom";
 import { useAuthOverlay } from "@/context/AuthOverlayContext";
 import { LanguageProvider } from "@/context/LanguageContext";
@@ -19,6 +21,7 @@ function MainLayoutContent() {
 
   const isHomePage = pathname === "/";
   const isMultiStepTransfer = pathname.startsWith("/multi-step-transfer");
+  const isAccountPage = pathname === "/account";
 
   useEffect(() => {
     if (pathname === "/auth") {
@@ -54,12 +57,15 @@ function MainLayoutContent() {
       <div className="min-h-screen flex flex-col bg-white">
         <style dangerouslySetInnerHTML={{ __html: headerHeightStyle }} />
 
+        {/* Desktop Header - only show when logged in and not on mobile */}
+        {user && !isMobile && <DesktopHeader />}
+
         <main className={`flex-grow relative ${isMobile ? '' : 'min-h-screen'}`} style={{ paddingBottom: getBottomPadding() }}>
           <Outlet />
         </main>
 
-        {/* Desktop footer - only show on non-home pages for desktop when logged in */}
-        {user && !isMobile && !isHomePage && <Footer />}
+        {/* Desktop footer - show for all desktop pages when logged in */}
+        {user && !isMobile && <DesktopFooter />}
 
         {/* Mobile bottom navigation */}
         {isMobile && <IndexBottomNav />}
