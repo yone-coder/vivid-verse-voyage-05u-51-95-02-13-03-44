@@ -421,7 +421,7 @@ const DesktopMultiStepTransferPage: React.FC<DesktopMultiStepTransferPageProps> 
       {/* Main Content - Two Column Layout */}
       <div className="container mx-auto px-6 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
-          {/* Left Side */}
+          {/* Left Column */}
           <div className="space-y-6">
             {/* Transfer Process Section */}
             <div className="space-y-6">
@@ -464,24 +464,6 @@ const DesktopMultiStepTransferPage: React.FC<DesktopMultiStepTransferPageProps> 
               </Card>
             </div>
 
-            {/* Track Transfer Section */}
-            <Card className="shadow-lg">
-              <CardHeader className="pb-4">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <Route className="h-5 w-5" />
-                  Track Transfer
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="max-h-64 overflow-y-auto">
-                  <TrackTransferPage />
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Right Side */}
-          <div className="space-y-6">
             {/* Transfer History Section */}
             <Card className="shadow-lg">
               <CardHeader className="pb-4">
@@ -493,6 +475,24 @@ const DesktopMultiStepTransferPage: React.FC<DesktopMultiStepTransferPageProps> 
               <CardContent className="p-0">
                 <div className="max-h-80 overflow-y-auto">
                   <TransferHistoryPage />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Right Column */}
+          <div className="space-y-6">
+            {/* Track Transfer Section */}
+            <Card className="shadow-lg">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Route className="h-5 w-5" />
+                  Track Transfer
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="max-h-64 overflow-y-auto">
+                  <TrackTransferPage />
                 </div>
               </CardContent>
             </Card>
