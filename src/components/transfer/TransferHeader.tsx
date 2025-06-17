@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Globe, Search, ChevronRight, Bell } from 'lucide-react';
+import { Globe, Search, ChevronRight, Bell, MessageCircle } from 'lucide-react';
 
 const TransferHeader: React.FC = () => {
   const exchangeRates = [
-    { currency: 'USD', rate: '132.50' },
-    { currency: 'EUR', rate: '144.25' },
-    { currency: 'CAD', rate: '98.75' },
-    { currency: 'GBP', rate: '167.80' },
-    { currency: 'JPY', rate: '0.89' }
+    { from: 'USD', to: 'HTG', rate: '132.50' },
+    { from: 'EUR', to: 'HTG', rate: '144.25' },
+    { from: 'CAD', to: 'HTG', rate: '98.75' },
+    { from: 'GBP', to: 'HTG', rate: '167.80' },
+    { from: 'JPY', to: 'HTG', rate: '0.89' }
   ];
 
   const [currentRateIndex, setCurrentRateIndex] = useState(0);
@@ -34,10 +34,10 @@ const TransferHeader: React.FC = () => {
         <div className="flex items-center bg-white/10 rounded-md px-3 py-1.5 min-w-[120px] justify-center">
           <div className="flex items-center space-x-2 transition-opacity duration-500">
             <span className="text-white text-xs font-medium">
-              {currentRate.currency}
+              {currentRate.from}/{currentRate.to}
             </span>
             <span className="text-green-300 text-xs font-semibold">
-              {currentRate.rate} G
+              {currentRate.rate}
             </span>
           </div>
         </div>
@@ -50,6 +50,13 @@ const TransferHeader: React.FC = () => {
             <span className="text-white text-xs font-medium">EN</span>
             <ChevronRight className="w-3 h-3 text-white/70 ml-1" />
           </div>
+          
+          <button 
+            className="p-2 rounded-lg hover:bg-white/10 transition-colors"
+            aria-label="Chat"
+          >
+            <MessageCircle className="w-5 h-5 text-white" />
+          </button>
           
           <button 
             className="p-2 rounded-lg hover:bg-white/10 transition-colors relative"
