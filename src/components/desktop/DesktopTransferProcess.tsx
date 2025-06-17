@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import StepIndicator from '@/components/transfer/StepIndicator';
 import DesktopStepContent from './DesktopStepContent';
+import PaymentLoadingOverlay from '@/components/transfer/PaymentLoadingOverlay';
 import { TransferData } from './DesktopMultiStepTransferPage';
 
 interface DesktopTransferProcessProps {
@@ -41,57 +42,62 @@ const DesktopTransferProcess: React.FC<DesktopTransferProcessProps> = ({
   canProceed
 }) => {
   return (
-    <div className="space-y-6">
-      {/* Step Indicator */}
-      <StepIndicator currentStep={currentStep} />
+    <>
+      <div className="space-y-6">
+        {/* Step Indicator */}
+        <StepIndicator currentStep={currentStep} />
 
-      {/* Main Transfer Card */}
-      <Card className="shadow-lg">
-        <CardContent className="p-8">
-          <DesktopStepContent
-            currentStep={currentStep}
-            transferData={transferData}
-            updateTransferData={updateTransferData}
-            onPaymentSubmit={onPaymentSubmit}
-            isPaymentLoading={isPaymentLoading}
-            isPaymentFormValid={isPaymentFormValid}
-            setIsPaymentFormValid={setIsPaymentFormValid}
-            transactionId={transactionId}
-            userEmail={userEmail}
-            receiptRef={receiptRef}
-            generateReceiptImage={generateReceiptImage}
-          />
-        </CardContent>
+        {/* Main Transfer Card */}
+        <Card className="shadow-lg">
+          <CardContent className="p-8">
+            <DesktopStepContent
+              currentStep={currentStep}
+              transferData={transferData}
+              updateTransferData={updateTransferData}
+              onPaymentSubmit={onPaymentSubmit}
+              isPaymentLoading={isPaymentLoading}
+              isPaymentFormValid={isPaymentFormValid}
+              setIsPaymentFormValid={setIsPaymentFormValid}
+              transactionId={transactionId}
+              userEmail={userEmail}
+              receiptRef={receiptRef}
+              generateReceiptImage={generateReceiptImage}
+            />
+          </CardContent>
 
-        {/* Navigation Footer */}
-        {currentStep < 4 && (
-          <div className="border-t bg-gray-50 px-8 py-6 flex justify-between items-center">
-            <Button
-              variant="outline"
-              onClick={handlePreviousStep}
-              disabled={currentStep === 1}
-              className="flex items-center gap-2"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Previous
-            </Button>
+          {/* Navigation Footer */}
+          {currentStep < 4 && (
+            <div className="border-t bg-gray-50 px-8 py-6 flex justify-between items-center">
+              <Button
+                variant="outline"
+                onClick={handlePreviousStep}
+                disabled={currentStep === 1}
+                className="flex items-center gap-2"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Previous
+              </Button>
 
-            <div className="text-sm text-gray-500">
-              Step {currentStep} of 4
+              <div className="text-sm text-gray-500">
+                Step {currentStep} of 4
+              </div>
+
+              <Button
+                onClick={currentStep === 3 ? onPaymentSubmit : handleNextStep}
+                disabled={!canProceed || isPaymentLoading}
+                className="flex items-center gap-2"
+              >
+                {currentStep === 3 ? 'Complete Payment' : 'Continue'}
+                <ArrowRight className="h-4 w-4" />
+              </Button>
             </div>
+          )}
+        </Card>
+      </div>
 
-            <Button
-              onClick={currentStep === 3 ? onPaymentSubmit : handleNextStep}
-              disabled={!canProceed || isPaymentLoading}
-              className="flex items-center gap-2"
-            >
-              {currentStep === 3 ? 'Complete Payment' : 'Continue'}
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-          </div>
-        )}
-      </Card>
-    </div>
+      {/* Payment Loading Overlay */}
+      <PaymentLoadingOverlay isVisible={isPaymentLoading} />
+    </>
   );
 };
 
