@@ -64,8 +64,8 @@ function MainLayoutContent() {
           <Outlet />
         </main>
 
-        {/* Desktop footer - show for all desktop pages when logged in */}
-        {user && !isMobile && <DesktopFooter />}
+        {/* Desktop footer - show for all desktop pages */}
+        {!isMobile && <DesktopFooter />}
 
         {/* Mobile bottom navigation */}
         {isMobile && <IndexBottomNav />}
