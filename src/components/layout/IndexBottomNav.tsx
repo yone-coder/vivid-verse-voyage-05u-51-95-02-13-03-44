@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -121,8 +120,18 @@ export default function IndexBottomNav({
       <div className="fixed bottom-0 left-0 right-0 z-50">
         {/* Continue Button Container - sits directly above nav bar */}
         <div className="bg-white border-t border-gray-200 dark:border-zinc-800 shadow-lg">
-          <div className="h-16 px-4 max-w-md mx-auto">
-            {/* Full Width Continue/Pay Button with optional back chevron inside */}
+          <div className="h-16 px-4 max-w-md mx-auto relative">
+            {/* Independent Back Button - positioned absolutely */}
+            {currentStep > 1 && (
+              <button 
+                onClick={onPrevious}
+                className="absolute left-6 top-1/2 transform -translate-y-1/2 z-10 flex items-center justify-center w-8 h-8 bg-red-600 hover:bg-red-700 text-white rounded-full transition-colors duration-200"
+              >
+                <ChevronLeft className="h-5 w-5" />
+              </button>
+            )}
+            
+            {/* Full Width Continue/Pay Button */}
             <Button 
               onClick={onContinue}
               disabled={
@@ -131,23 +140,11 @@ export default function IndexBottomNav({
                 (currentStep === 6 && transferData?.transferType === 'international' && !isPaymentFormValid)
               }
               className={cn(
-                "w-full h-12 mt-2 transition-all duration-200 text-white font-semibold relative",
+                "w-full h-12 mt-2 transition-all duration-200 text-white font-semibold",
+                currentStep > 1 ? "pl-16" : "pl-4", // Add left padding when back button is visible
                 getButtonColor()
               )}
             >
-              {/* Back Chevron - only show if not on step 1 - always functional */}
-              {currentStep > 1 && (
-                <button 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onPrevious?.();
-                  }}
-                  className="absolute left-3 flex items-center justify-center w-8 h-8 bg-white/20 hover:bg-white/30 rounded-full transition-colors duration-200"
-                >
-                  <ChevronLeft className="h-5 w-5" />
-                </button>
-              )}
-              
               {/* Button Content */}
               <div className="flex items-center justify-center">
                 {isPaymentLoading ? (
