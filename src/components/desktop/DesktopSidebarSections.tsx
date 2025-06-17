@@ -18,9 +18,7 @@ const DesktopSidebarSections: React.FC = () => {
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
-          <div className="max-h-80 overflow-y-auto">
-            <TransferHistoryPage />
-          </div>
+          <TransferHistoryPage />
         </CardContent>
       </Card>
 
@@ -33,9 +31,7 @@ const DesktopSidebarSections: React.FC = () => {
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
-          <div className="max-h-64 overflow-y-auto">
-            <TrackTransferPage />
-          </div>
+          <TrackTransferPage />
         </CardContent>
       </Card>
 
@@ -48,9 +44,7 @@ const DesktopSidebarSections: React.FC = () => {
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
-          <div className="max-h-96 overflow-y-auto">
-            <LocationsPage />
-          </div>
+          <LocationsPage />
         </CardContent>
       </Card>
     </div>
