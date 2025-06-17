@@ -3,6 +3,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ChevronDown } from 'lucide-react';
+import { getExchangeRate } from '@/utils/currencyConverter';
 
 interface StepOneTransferProps {
   amount: string;
@@ -12,10 +13,13 @@ interface StepOneTransferProps {
 const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChange }) => {
   const [receiverAmount, setReceiverAmount] = useState('');
   const [selectedCurrency, setSelectedCurrency] = useState('USD');
+  const [liveUsdToHtgRate, setLiveUsdToHtgRate] = useState(127.5); // Default fallback rate
+  const [isLoadingRate, setIsLoadingRate] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
-  // Currency options with exchange rates to HTG
+  // Currency options with exchange rates to HTG (USD will use live rate)
   const currencies = [
-    { code: 'USD', name: 'US Dollar', symbol: '$', rate: 132.5 },
+    { code: 'USD', name: 'US Dollar', symbol: '$', rate: liveUsdToHtgRate },
     { code: 'EUR', name: 'Euro', symbol: '€', rate: 144.8 },
     { code: 'GBP', name: 'British Pound', symbol: '£', rate: 168.2 },
     { code: 'CAD', name: 'Canadian Dollar', symbol: 'C$', rate: 97.3 },
@@ -23,6 +27,26 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
     { code: 'CHF', name: 'Swiss Franc', symbol: 'CHF', rate: 147.9 },
     { code: 'JPY', name: 'Japanese Yen', symbol: '¥', rate: 0.89 }
   ];
+
+  // Fetch live USD to HTG rate on component mount
+  useEffect(() => {
+    const fetchLiveRate = async () => {
+      setIsLoadingRate(true);
+      try {
+        const rateData = await getExchangeRate();
+        setLiveUsdToHtgRate(rateData.usdToHtg);
+        setLastUpdated(rateData.lastUpdated);
+        console.log('Live USD to HTG rate fetched:', rateData.usdToHtg);
+      } catch (error) {
+        console.error('Failed to fetch live exchange rate:', error);
+        // Keep the default fallback rate
+      } finally {
+        setIsLoadingRate(false);
+      }
+    };
+
+    fetchLiveRate();
+  }, []);
 
   const selectedCurrencyData = currencies.find(c => c.code === selectedCurrency) || currencies[0];
 
@@ -46,10 +70,20 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
       <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200 p-3">
         <div className="flex items-center justify-between">
           <span className="text-sm font-medium text-gray-700">Exchange rate</span>
-          <span className="font-bold text-blue-600">
-            1 {selectedCurrency} = {selectedCurrencyData.rate} HTG
-          </span>
+          <div className="flex items-center gap-2">
+            {isLoadingRate && selectedCurrency === 'USD' && (
+              <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+            )}
+            <span className="font-bold text-blue-600">
+              1 {selectedCurrency} = {selectedCurrencyData.rate.toFixed(2)} HTG
+            </span>
+          </div>
         </div>
+        {selectedCurrency === 'USD' && lastUpdated && (
+          <div className="text-xs text-gray-500 mt-1">
+            Live BRH rate • Updated {lastUpdated.toLocaleTimeString()}
+          </div>
+        )}
       </div>
 
       {/* Send Amount Input with Currency Selection */}
