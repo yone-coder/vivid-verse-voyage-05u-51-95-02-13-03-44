@@ -1,7 +1,8 @@
+
 import { useState, useEffect, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
-  Send, History, MapPin, User, Route, ArrowRight, ArrowLeft, Loader2
+  Send, History, MapPin, User, Route, ArrowRight, ChevronLeft, Loader2
 } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -120,19 +121,20 @@ export default function IndexBottomNav({
       <div className="fixed bottom-0 left-0 right-0 z-50">
         {/* Continue Button Container - sits directly above nav bar */}
         <div className="bg-white border-t border-gray-200 dark:border-zinc-800 shadow-lg">
-          <div className="flex items-center h-16 px-4 max-w-md mx-auto gap-3">
-            {/* Previous Button - only show if not on step 1 */}
+          <div className="flex items-center justify-between h-16 px-4 max-w-md mx-auto">
+            {/* Back Chevron - only show if not on step 1 */}
             {currentStep > 1 && (
-              <Button 
-                variant="outline" 
+              <button 
                 onClick={onPrevious}
-                className="flex-1 transition-all duration-200"
                 disabled={isPaymentLoading}
+                className="flex items-center justify-center w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors duration-200 disabled:opacity-50"
               >
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Previous
-              </Button>
+                <ChevronLeft className="h-5 w-5 text-gray-600" />
+              </button>
             )}
+            
+            {/* Spacer for step 1 to push button to the right */}
+            {currentStep === 1 && <div className="w-10" />}
             
             {/* Continue/Pay Button */}
             <Button 
@@ -143,8 +145,7 @@ export default function IndexBottomNav({
                 (currentStep === 6 && transferData?.transferType === 'international' && !isPaymentFormValid)
               }
               className={cn(
-                "transition-all duration-200 text-white font-semibold",
-                currentStep === 1 ? "flex-1" : "flex-2",
+                "transition-all duration-200 text-white font-semibold px-8",
                 getButtonColor()
               )}
             >
