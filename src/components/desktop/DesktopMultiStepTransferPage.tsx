@@ -418,52 +418,52 @@ const DesktopMultiStepTransferPage: React.FC<DesktopMultiStepTransferPageProps> 
         </div>
       </div>
 
-      {/* Main Content - Three Column Layout */}
+      {/* Main Content - Two Column Layout */}
       <div className="container mx-auto px-6 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
-          {/* Left Column - Transfer Process */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
+          {/* Left Column */}
           <div className="space-y-6">
-            {/* Step Indicator */}
-            <StepIndicator currentStep={currentStep} />
+            {/* Transfer Process Section */}
+            <div className="space-y-6">
+              {/* Step Indicator */}
+              <StepIndicator currentStep={currentStep} />
 
-            {/* Main Transfer Card */}
-            <Card className="shadow-lg">
-              <CardContent className="p-8">
-                {renderStepContent()}
-              </CardContent>
+              {/* Main Transfer Card */}
+              <Card className="shadow-lg">
+                <CardContent className="p-8">
+                  {renderStepContent()}
+                </CardContent>
 
-              {/* Navigation Footer */}
-              {currentStep < 4 && (
-                <div className="border-t bg-gray-50 px-8 py-6 flex justify-between items-center">
-                  <Button
-                    variant="outline"
-                    onClick={handlePreviousStep}
-                    disabled={currentStep === 1}
-                    className="flex items-center gap-2"
-                  >
-                    <ArrowLeft className="h-4 w-4" />
-                    Previous
-                  </Button>
+                {/* Navigation Footer */}
+                {currentStep < 4 && (
+                  <div className="border-t bg-gray-50 px-8 py-6 flex justify-between items-center">
+                    <Button
+                      variant="outline"
+                      onClick={handlePreviousStep}
+                      disabled={currentStep === 1}
+                      className="flex items-center gap-2"
+                    >
+                      <ArrowLeft className="h-4 w-4" />
+                      Previous
+                    </Button>
 
-                  <div className="text-sm text-gray-500">
-                    Step {currentStep} of 4
+                    <div className="text-sm text-gray-500">
+                      Step {currentStep} of 4
+                    </div>
+
+                    <Button
+                      onClick={currentStep === 3 ? handlePayment : handleNextStep}
+                      disabled={!canProceed || isPaymentLoading}
+                      className="flex items-center gap-2"
+                    >
+                      {currentStep === 3 ? 'Complete Payment' : 'Continue'}
+                      <ArrowRight className="h-4 w-4" />
+                    </Button>
                   </div>
+                )}
+              </Card>
+            </div>
 
-                  <Button
-                    onClick={currentStep === 3 ? handlePayment : handleNextStep}
-                    disabled={!canProceed || isPaymentLoading}
-                    className="flex items-center gap-2"
-                  >
-                    {currentStep === 3 ? 'Complete Payment' : 'Continue'}
-                    <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </div>
-              )}
-            </Card>
-          </div>
-
-          {/* Middle Column - First Two Sections */}
-          <div className="space-y-6">
             {/* Transfer History Section */}
             <Card className="shadow-lg">
               <CardHeader className="pb-4">
@@ -478,7 +478,10 @@ const DesktopMultiStepTransferPage: React.FC<DesktopMultiStepTransferPageProps> 
                 </div>
               </CardContent>
             </Card>
+          </div>
 
+          {/* Right Column */}
+          <div className="space-y-6">
             {/* Track Transfer Section */}
             <Card className="shadow-lg">
               <CardHeader className="pb-4">
@@ -493,10 +496,7 @@ const DesktopMultiStepTransferPage: React.FC<DesktopMultiStepTransferPageProps> 
                 </div>
               </CardContent>
             </Card>
-          </div>
 
-          {/* Right Column - Last Two Sections */}
-          <div className="space-y-6">
             {/* Locations Section */}
             <Card className="shadow-lg">
               <CardHeader className="pb-4">
