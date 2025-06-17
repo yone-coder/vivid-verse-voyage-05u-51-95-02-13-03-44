@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ChevronDown } from 'lucide-react';
 
 interface StepOneTransferProps {
   amount: string;
@@ -58,26 +59,25 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
           <Label htmlFor="amount" className="text-xs font-bold text-blue-600 mb-2 block uppercase tracking-wide">
             Send Amount
           </Label>
-          <div className="flex gap-2 mb-3">
-            <div className="flex-1 relative">
-              <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                <span className="text-blue-600 font-bold text-sm">{selectedCurrencyData.symbol}</span>
-              </div>
-              <Input
-                id="amount"
-                type="number"
-                className="pl-8 pr-4 text-2xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-gray-900 placeholder-blue-300 placeholder:text-2xl placeholder:font-light h-12"
-                placeholder="0.00"
-                value={amount}
-                onChange={(e) => handleSendAmountChange(e.target.value)}
-                min="0"
-                step="0.01"
-              />
+          <div className="relative">
+            <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+              <span className="text-blue-600 font-bold text-sm">{selectedCurrencyData.symbol}</span>
             </div>
-            <div className="w-24">
+            <Input
+              id="amount"
+              type="number"
+              className="pl-8 pr-20 text-2xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-gray-900 placeholder-blue-300 placeholder:text-2xl placeholder:font-light h-12"
+              placeholder="0.00"
+              value={amount}
+              onChange={(e) => handleSendAmountChange(e.target.value)}
+              min="0"
+              step="0.01"
+            />
+            <div className="absolute inset-y-0 right-3 flex items-center">
               <Select value={selectedCurrency} onValueChange={setSelectedCurrency}>
-                <SelectTrigger className="h-12 bg-blue-50 border-blue-200 focus:ring-blue-500">
-                  <SelectValue />
+                <SelectTrigger className="h-6 w-auto border-0 bg-blue-100 text-blue-600 font-bold text-xs px-2 py-1 rounded-full focus:ring-0 shadow-none">
+                  <SelectValue>{selectedCurrency}</SelectValue>
+                  <ChevronDown className="h-3 w-3 ml-1" />
                 </SelectTrigger>
                 <SelectContent className="bg-white z-50">
                   {currencies.map((currency) => (
