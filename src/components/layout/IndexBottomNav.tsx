@@ -120,46 +120,47 @@ export default function IndexBottomNav({
       <div className="fixed bottom-0 left-0 right-0 z-50">
         {/* Continue Button Container - sits directly above nav bar */}
         <div className="bg-white border-t border-gray-200 dark:border-zinc-800 shadow-lg">
-          <div className="h-16 px-4 max-w-md mx-auto relative">
-            {/* Independent Back Button - positioned absolutely */}
-            {currentStep > 1 && (
-              <button 
-                onClick={onPrevious}
-                className="absolute left-6 top-1/2 transform -translate-y-1/2 z-10 flex items-center justify-center w-8 h-8 bg-red-600 hover:bg-red-700 text-white rounded-full transition-colors duration-200"
-              >
-                <ChevronLeft className="h-5 w-5" />
-              </button>
-            )}
-            
-            {/* Full Width Continue/Pay Button */}
-            <Button 
-              onClick={onContinue}
-              disabled={
-                !canProceed || 
-                isPaymentLoading || 
-                (currentStep === 6 && transferData?.transferType === 'international' && !isPaymentFormValid)
-              }
-              className={cn(
-                "w-full h-12 mt-2 transition-all duration-200 text-white font-semibold",
-                currentStep > 1 ? "pl-16" : "pl-4", // Add left padding when back button is visible
-                getButtonColor()
+          <div className="h-16 px-4 max-w-md mx-auto">
+            <div className="flex items-center gap-3 mt-2">
+              {/* Independent Back Button */}
+              {currentStep > 1 && (
+                <button 
+                  onClick={onPrevious}
+                  className="flex-shrink-0 flex items-center justify-center w-12 h-12 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors duration-200"
+                >
+                  <ChevronLeft className="h-5 w-5" />
+                </button>
               )}
-            >
-              {/* Button Content */}
-              <div className="flex items-center justify-center">
-                {isPaymentLoading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    {getButtonText()}
-                  </>
-                ) : (
-                  <>
-                    {getButtonText()}
-                    {currentStep < 6 && <ArrowRight className="ml-2 h-4 w-4" />}
-                  </>
+              
+              {/* Continue/Pay Button - takes remaining space */}
+              <Button 
+                onClick={onContinue}
+                disabled={
+                  !canProceed || 
+                  isPaymentLoading || 
+                  (currentStep === 6 && transferData?.transferType === 'international' && !isPaymentFormValid)
+                }
+                className={cn(
+                  "flex-1 h-12 transition-all duration-200 text-white font-semibold",
+                  getButtonColor()
                 )}
-              </div>
-            </Button>
+              >
+                {/* Button Content */}
+                <div className="flex items-center justify-center">
+                  {isPaymentLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      {getButtonText()}
+                    </>
+                  ) : (
+                    <>
+                      {getButtonText()}
+                      {currentStep < 6 && <ArrowRight className="ml-2 h-4 w-4" />}
+                    </>
+                  )}
+                </div>
+              </Button>
+            </div>
           </div>
         </div>
 
