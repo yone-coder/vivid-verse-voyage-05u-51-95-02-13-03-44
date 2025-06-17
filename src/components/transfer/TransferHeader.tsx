@@ -1,13 +1,13 @@
 import React from 'react';
-import { Globe, Search, ChevronRight, Bell } from 'lucide-react';
+import { Globe, Search, ChevronRight, Bell, MessageCircle } from 'lucide-react';
 
 const TransferHeader: React.FC = () => {
   const exchangeRates = [
-    { from: 'USD', to: 'EUR', rate: '0.92' },
-    { from: 'USD', to: 'GBP', rate: '0.79' },
-    { from: 'USD', to: 'JPY', rate: '148.5' },
-    { from: 'EUR', to: 'GBP', rate: '0.86' },
-    { from: 'USD', to: 'CAD', rate: '1.35' }
+    { from: 'USD', to: 'HTG', rate: '132.50' },
+    { from: 'EUR', to: 'HTG', rate: '144.25' },
+    { from: 'CAD', to: 'HTG', rate: '98.75' },
+    { from: 'GBP', to: 'HTG', rate: '167.80' },
+    { from: 'JPY', to: 'HTG', rate: '0.89' }
   ];
 
   return (
@@ -29,6 +29,13 @@ const TransferHeader: React.FC = () => {
             </div>
             
             <button 
+              className="p-2 rounded-lg hover:bg-white/10 transition-colors"
+              aria-label="Chat"
+            >
+              <MessageCircle className="w-5 h-5 text-white" />
+            </button>
+            
+            <button 
               className="p-2 rounded-lg hover:bg-white/10 transition-colors relative"
               aria-label="Notifications"
             >
@@ -48,14 +55,14 @@ const TransferHeader: React.FC = () => {
 
       {/* Exchange Rates News Band */}
       <div className="bg-gray-100 border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 py-2">
+        <div className="max-w-7xl mx-auto px-4 py-1">
           <div className="flex items-center space-x-1">
-            <span className="text-sm font-semibold text-gray-700 mr-3">Live Rates:</span>
-            <div className="flex items-center space-x-6 overflow-x-auto">
+            <span className="text-xs font-semibold text-gray-700 mr-3">Live Rates:</span>
+            <div className="flex items-center space-x-4 overflow-x-auto">
               {exchangeRates.map((rate, index) => (
                 <div key={index} className="flex items-center space-x-1 whitespace-nowrap">
-                  <span className="text-sm text-gray-600">{rate.from}/{rate.to}</span>
-                  <span className="text-sm font-medium text-green-600">{rate.rate}</span>
+                  <span className="text-xs text-gray-600">{rate.from}/{rate.to}</span>
+                  <span className="text-xs font-medium text-green-600">{rate.rate}</span>
                 </div>
               ))}
             </div>
