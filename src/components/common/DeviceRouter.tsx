@@ -4,7 +4,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 
 interface DeviceRouterProps {
   mobileComponent: React.ComponentType;
-  desktopComponent: React.ComponentType;
+  desktopComponent?: React.ComponentType;
 }
 
 const DeviceRouter: React.FC<DeviceRouterProps> = ({ 
@@ -23,6 +23,11 @@ const DeviceRouter: React.FC<DeviceRouterProps> = ({
         </div>
       </div>
     );
+  }
+
+  // If no desktop component is provided, use mobile component for both
+  if (!DesktopComponent) {
+    return <MobileComponent />;
   }
 
   return isMobile ? <MobileComponent /> : <DesktopComponent />;
