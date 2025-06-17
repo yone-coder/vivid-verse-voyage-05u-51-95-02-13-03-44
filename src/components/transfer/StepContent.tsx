@@ -3,6 +3,7 @@ import React from 'react';
 import { TransferData } from '@/pages/MobileMultiStepTransferSheetPage';
 import StepOneTransfer from './StepOneTransfer';
 import StepOneLocalTransfer from './StepOneLocalTransfer';
+import StepOnePointFiveTransfer from './StepOnePointFiveTransfer';
 import StepTwoTransfer from './StepTwoTransfer';
 import PaymentMethodSelector from './PaymentMethodSelector';
 import TransferReceipt from './TransferReceipt';
@@ -63,6 +64,19 @@ const StepContent: React.FC<StepContentProps> = ({
       {currentStep === 2 && (
         <div className="space-y-4">
           <div className="text-center mb-4">
+            <p className="text-gray-600">Choose transfer details</p>
+          </div>
+
+          <StepOnePointFiveTransfer
+            transferDetails={transferData.transferDetails}
+            onTransferDetailsChange={(transferDetails) => updateTransferData({ transferDetails })}
+          />
+        </div>
+      )}
+
+      {currentStep === 3 && (
+        <div className="space-y-4">
+          <div className="text-center mb-4">
             <p className="text-gray-600">Who are you sending ${transferData.amount} to?</p>
           </div>
 
@@ -73,7 +87,7 @@ const StepContent: React.FC<StepContentProps> = ({
         </div>
       )}
 
-      {currentStep === 3 && (
+      {currentStep === 4 && (
         <PaymentMethodSelector
           transferData={transferData}
           onPaymentSubmit={onPaymentSubmit}
@@ -82,7 +96,7 @@ const StepContent: React.FC<StepContentProps> = ({
         />
       )}
 
-      {currentStep === 4 && (
+      {currentStep === 5 && (
         <div className="space-y-4">
           <TransferReceipt
             ref={receiptRef}

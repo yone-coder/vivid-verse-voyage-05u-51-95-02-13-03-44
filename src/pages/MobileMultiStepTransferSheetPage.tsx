@@ -14,6 +14,10 @@ import StepContent from '@/components/transfer/StepContent';
 export interface TransferData {
   transferType?: 'international' | 'national';
   amount: string;
+  transferDetails: {
+    receivingCountry: string;
+    deliveryMethod: string;
+  };
   receiverDetails: {
     firstName: string;
     lastName: string;
@@ -47,6 +51,10 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
   const [transferData, setTransferData] = useState<TransferData>({
     transferType: defaultTransferType,
     amount: '100.00',
+    transferDetails: {
+      receivingCountry: '',
+      deliveryMethod: ''
+    },
     receiverDetails: {
       firstName: '',
       lastName: '',
@@ -181,7 +189,7 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
   }, []);
 
   const handleNextStep = () => {
-    if (currentStep < 4) {
+    if (currentStep < 5) {
       setCurrentStep(currentStep + 1);
     }
   };
@@ -261,12 +269,16 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
   // Define canProceed logic for each step
   const canProceedFromStep1 = Boolean(transferData.amount && parseFloat(transferData.amount) > 0);
   const canProceedFromStep2 = Boolean(
+    transferData.transferDetails.receivingCountry &&
+    transferData.transferDetails.deliveryMethod
+  );
+  const canProceedFromStep3 = Boolean(
     transferData.receiverDetails.firstName &&
     transferData.receiverDetails.lastName &&
     transferData.receiverDetails.phoneNumber &&
     transferData.receiverDetails.commune
   );
-  const canProceedFromStep3 = Boolean(
+  const canProceedFromStep4 = Boolean(
     transferData.selectedPaymentMethod !== undefined && 
     transferData.selectedPaymentMethod !== ''
   );
@@ -275,7 +287,8 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
   const canProceed = Boolean(
     (currentStep === 1 && canProceedFromStep1) ||
     (currentStep === 2 && canProceedFromStep2) ||
-    (currentStep === 3 && canProceedFromStep3)
+    (currentStep === 3 && canProceedFromStep3) ||
+    (currentStep === 4 && canProceedFromStep4)
   );
 
   const handleStickyPayment = async () => {
@@ -341,10 +354,10 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
 
       {/* Index Bottom Navigation with integrated continue button */}
       <IndexBottomNav
-        showContinueButton={currentStep < 4}
+        showContinueButton={currentStep < 5}
         currentStep={currentStep}
         canProceed={canProceed}
-        onContinue={currentStep === 3 ? handleStickyPayment : handleNextStep}
+        onContinue={currentStep === 4 ? handleStickyPayment : handleNextStep}
         onPrevious={handlePreviousStep}
         isPaymentLoading={isPaymentLoading}
         transferData={transferData}

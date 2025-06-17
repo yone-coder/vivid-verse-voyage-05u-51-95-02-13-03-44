@@ -94,7 +94,7 @@ export default function IndexBottomNav({
   const receiverAmount = transferData?.amount ? (parseFloat(transferData.amount) * 127.5).toFixed(2) : '0.00';
 
   const getButtonText = () => {
-    if (currentStep === 3) {
+    if (currentStep === 4) {
       if (isPaymentLoading) {
         return transferData?.transferType === 'national' ? 'Processing MonCash Payment...' : 'Processing...';
       }
@@ -103,12 +103,12 @@ export default function IndexBottomNav({
         : `Pay $${totalAmount}`;
     }
     if (currentStep === 1) return 'Continue';
-    if (currentStep === 4) return 'Done';
+    if (currentStep === 5) return 'Done';
     return 'Next';
   };
 
   const getButtonColor = () => {
-    if (currentStep === 3) {
+    if (currentStep === 4) {
       return transferData?.transferType === 'national' 
         ? 'bg-red-600 hover:bg-red-700' 
         : 'bg-green-600 hover:bg-green-700';
@@ -141,7 +141,7 @@ export default function IndexBottomNav({
               disabled={
                 !canProceed || 
                 isPaymentLoading || 
-                (currentStep === 3 && transferData?.transferType === 'international' && !isPaymentFormValid)
+                (currentStep === 4 && transferData?.transferType === 'international' && !isPaymentFormValid)
               }
               className={cn(
                 "transition-all duration-200 text-white font-semibold",
@@ -157,7 +157,7 @@ export default function IndexBottomNav({
               ) : (
                 <>
                   {getButtonText()}
-                  {currentStep < 3 && <ArrowRight className="ml-2 h-4 w-4" />}
+                  {currentStep < 4 && <ArrowRight className="ml-2 h-4 w-4" />}
                 </>
               )}
             </Button>
