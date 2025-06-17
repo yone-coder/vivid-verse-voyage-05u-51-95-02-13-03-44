@@ -25,7 +25,7 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
       // Clear any existing content
       const container = paypalContainerRef.current;
 
-      // Add PayPal checkout styles
+      // Add PayPal checkout styles - COMPACT VERSION
       const styleElement = document.createElement('style');
       styleElement.textContent = `
         :root {
@@ -46,7 +46,7 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
           --success-bg: #d1fae5;
           --error: #ef4444;
           --error-bg: #fee2e2;
-          --border-radius-sm: 12px;
+          --border-radius-sm: 8px;
           --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -62,7 +62,7 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
         .payment-form {
           display: flex;
           flex-direction: column;
-          gap: 1.5rem;
+          gap: 1rem;
         }
 
         .form-group {
@@ -71,20 +71,20 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
 
         .form-label {
           display: block;
-          font-size: 0.875rem;
+          font-size: 0.8rem;
           font-weight: 600;
           color: var(--text-primary);
-          margin-bottom: 0.5rem;
+          margin-bottom: 0.375rem;
         }
 
         .form-input, .form-field {
           width: 100%;
-          padding: 1rem 1.125rem;
+          padding: 0.75rem 1rem;
           background: var(--bg-card);
           border: 1px solid var(--border);
           border-radius: var(--border-radius-sm);
           color: var(--text-primary);
-          font-size: 1rem;
+          font-size: 0.9rem;
           font-family: inherit;
           font-weight: 500;
           transition: var(--transition);
@@ -94,7 +94,7 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
         .form-input:focus, .form-field:focus {
           outline: none;
           border-color: var(--border-focus);
-          box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+          box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
         }
 
         .form-input::placeholder {
@@ -105,12 +105,12 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
         .card-group {
           display: flex;
           flex-direction: column;
-          gap: 0.75rem;
+          gap: 0.5rem;
         }
 
         .card-row {
           display: flex;
-          gap: 0.75rem;
+          gap: 0.5rem;
         }
 
         .card-row .card-field {
@@ -118,12 +118,12 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
         }
 
         .card-field {
-          padding: 1rem 1.125rem;
+          padding: 0.75rem 1rem;
           background: var(--bg-card);
           border: 1px solid var(--border);
           border-radius: var(--border-radius-sm);
           transition: var(--transition);
-          min-height: 56px;
+          min-height: 48px;
           display: flex;
           align-items: center;
           width: 100%;
@@ -132,14 +132,14 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
 
         .card-field:focus-within {
           border-color: var(--border-focus);
-          box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+          box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
         }
 
         .card-field iframe {
           border: none !important;
           outline: none !important;
           width: 100% !important;
-          height: 24px !important;
+          height: 20px !important;
         }
 
         .pay-button {
@@ -147,10 +147,10 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
         }
 
         .alert {
-          padding: 1rem 1.25rem;
+          padding: 0.75rem 1rem;
           border-radius: var(--border-radius-sm);
-          margin-bottom: 1.5rem;
-          font-size: 0.9rem;
+          margin-bottom: 1rem;
+          font-size: 0.85rem;
           font-weight: 500;
           border: none;
         }
@@ -167,12 +167,12 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
 
         .alert-close {
           position: absolute;
-          top: 0.75rem;
-          right: 1rem;
+          top: 0.5rem;
+          right: 0.75rem;
           background: none;
           border: none;
           color: inherit;
-          font-size: 1.25rem;
+          font-size: 1.1rem;
           cursor: pointer;
           opacity: 0.7;
         }
@@ -180,7 +180,7 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
         .loading-container {
           display: flex;
           flex-direction: column;
-          gap: 1.5rem;
+          gap: 1rem;
           margin: 0 auto;
         }
 
@@ -199,7 +199,7 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
 
         .skeleton-card-row {
           display: flex;
-          gap: 0.75rem;
+          gap: 0.5rem;
         }
 
         .skeleton-card-row .skeleton-shimmer {
@@ -212,33 +212,33 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
 
         .security-info {
           text-align: center;
-          margin-top: 2rem;
-          padding-top: 2rem;
+          margin-top: 1.25rem;
+          padding-top: 1.25rem;
           border-top: 1px solid var(--border);
         }
 
         .security-badge {
           display: inline-flex;
           align-items: center;
-          gap: 0.625rem;
-          font-size: 0.8rem;
+          gap: 0.5rem;
+          font-size: 0.75rem;
           color: var(--text-secondary);
           font-weight: 600;
-          padding: 0.5rem 1rem;
+          padding: 0.375rem 0.75rem;
           background: rgba(102, 126, 234, 0.05);
           border-radius: 50px;
           border: 1px solid rgba(102, 126, 234, 0.1);
         }
 
         .security-icon {
-          width: 16px;
-          height: 16px;
+          width: 14px;
+          height: 14px;
           color: var(--success);
         }
       `;
       document.head.appendChild(styleElement);
 
-      // Create the checkout HTML structure
+      // Create the checkout HTML structure - COMPACT VERSION
       const checkoutHTML = `
         <div class="checkout-container">
           <div id="alerts"></div>
@@ -246,25 +246,25 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
           <div id="loading" class="loading-container">
             <div class="skeleton-form">
               <div class="form-group">
-                <div class="skeleton-shimmer h-4 w-24 mb-2 rounded"></div>
-                <div class="skeleton-shimmer h-12 w-full rounded-xl"></div>
+                <div class="skeleton-shimmer h-3 w-20 mb-1 rounded"></div>
+                <div class="skeleton-shimmer h-10 w-full rounded-lg"></div>
               </div>
 
               <div class="form-group">
-                <div class="skeleton-shimmer h-4 w-32 mb-2 rounded"></div>
-                <div class="space-y-3">
-                  <div class="skeleton-shimmer h-12 w-full rounded-xl"></div>
+                <div class="skeleton-shimmer h-3 w-28 mb-1 rounded"></div>
+                <div class="space-y-2">
+                  <div class="skeleton-shimmer h-10 w-full rounded-lg"></div>
                   <div class="skeleton-card-row">
-                    <div class="skeleton-shimmer h-12 rounded-xl"></div>
-                    <div class="skeleton-shimmer h-12 rounded-xl"></div>
+                    <div class="skeleton-shimmer h-10 rounded-lg"></div>
+                    <div class="skeleton-shimmer h-10 rounded-lg"></div>
                   </div>
                 </div>
               </div>
 
-              <div class="skeleton-shimmer h-12 w-full rounded-xl mt-4"></div>
+              <div class="skeleton-shimmer h-10 w-full rounded-lg mt-3"></div>
 
-              <div class="mt-8 text-center">
-                <div class="skeleton-shimmer h-8 w-32 mx-auto rounded-full"></div>
+              <div class="mt-6 text-center">
+                <div class="skeleton-shimmer h-6 w-28 mx-auto rounded-full"></div>
               </div>
             </div>
           </div>
@@ -457,7 +457,7 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
                   },
                   styles: {
                     'input': {
-                        'font-size': '16px',
+                        'font-size': '14px',
                         'color': '#1a1a21',
                         'font-family': 'Inter, sans-serif',
                         'font-weight': '400'
@@ -580,10 +580,10 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
   }, [transferData.amount, transferData.transferType]);
 
   return (
-    <div className="space-y-6">
-      <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-3">Complete Your Payment</h2>
-        <p className="text-gray-600 leading-relaxed">
+    <div className="space-y-4">
+      <div className="text-center mb-4">
+        <h2 className="text-xl font-bold text-gray-900 mb-2">Complete Your Payment</h2>
+        <p className="text-sm text-gray-600 leading-relaxed">
           Sending <span className="font-semibold text-blue-600">
             {transferData.transferType === 'national'
               ? `HTG ${receiverAmount}`
@@ -598,30 +598,30 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
 
       {/* Payment Method Based on Transfer Type */}
       {transferData.transferType === 'national' ? (
-        <div className="space-y-4">
-          <div className="bg-white rounded-lg border border-gray-200 p-4 space-y-3">
-            <div className="flex justify-between">
+        <div className="space-y-3">
+          <div className="bg-white rounded-lg border border-gray-200 p-3 space-y-2">
+            <div className="flex justify-between text-sm">
               <span className="text-gray-600">Recipient:</span>
               <span className="font-medium">
                 {transferData.receiverDetails.firstName} {transferData.receiverDetails.lastName}
               </span>
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between text-sm">
               <span className="text-gray-600">Amount:</span>
               <span className="font-medium">HTG {receiverAmount}</span>
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between text-sm">
               <span className="text-gray-600">Transfer Type:</span>
               <span className="font-medium capitalize">National</span>
             </div>
           </div>
 
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-            <h4 className="font-semibold text-red-800 mb-2">MonCash Payment</h4>
-            <p className="text-sm text-red-700 mb-3">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+            <h4 className="font-semibold text-red-800 mb-1 text-sm">MonCash Payment</h4>
+            <p className="text-xs text-red-700 mb-2">
               You will be redirected to MonCash to complete your payment securely.
             </p>
-            <ul className="text-sm text-red-600 space-y-1">
+            <ul className="text-xs text-red-600 space-y-0.5">
               <li>• Make sure you have your MonCash account ready</li>
               <li>• Have sufficient funds in your MonCash wallet</li>
               <li>• Complete the payment on MonCash website</li>
@@ -630,7 +630,7 @@ const PaymentMethodSelector: React.FC<PaymentMethodSelectorProps> = ({
           </div>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {/* PayPal Checkout Container (Form) */}
           <div ref={paypalContainerRef}></div>
         </div>
