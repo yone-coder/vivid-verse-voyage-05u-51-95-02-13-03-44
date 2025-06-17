@@ -104,7 +104,10 @@ const StepContent: React.FC<StepContentProps> = ({
           </div>
 
           <TransferSummary
-            transferData={transferData}
+            transferData={{
+              ...transferData,
+              transferType: transferData.transferType || 'international'
+            }}
           />
           
           {/* Debug info for step 4 */}
@@ -112,6 +115,7 @@ const StepContent: React.FC<StepContentProps> = ({
             <p>Debug: Step 4 rendered successfully</p>
             <p>Amount: {transferData.amount}</p>
             <p>Recipient: {transferData.receiverDetails.firstName} {transferData.receiverDetails.lastName}</p>
+            <p>Transfer Type: {transferData.transferType || 'international'}</p>
           </div>
         </div>
       )}
