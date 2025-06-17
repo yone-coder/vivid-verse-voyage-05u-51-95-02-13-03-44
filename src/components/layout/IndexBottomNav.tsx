@@ -165,8 +165,8 @@ export default function IndexBottomNav({
           </div>
         </div>
 
-        {/* Bottom Navigation Bar */}
-        <div className="bg-white dark:bg-zinc-900 border-t border-gray-200 dark:border-zinc-800 shadow-lg">
+        {/* Bottom Navigation Bar - removed border-top */}
+        <div className="bg-white dark:bg-zinc-900 shadow-lg">
           <div className="flex justify-between items-center h-12 px-2 max-w-md mx-auto">
             {navItems.map((item) => {
               const Icon = item.icon;
@@ -217,7 +217,7 @@ export default function IndexBottomNav({
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-zinc-900 border-t border-gray-200 dark:border-zinc-800 z-50 shadow-lg">
+    <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-zinc-900 z-50 shadow-lg">
       <div className="flex justify-between items-center h-12 px-2 max-w-md mx-auto">
         {navItems.map((item) => {
           const Icon = item.icon;
