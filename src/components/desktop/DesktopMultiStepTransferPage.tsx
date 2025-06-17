@@ -1,9 +1,8 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import html2canvas from 'html2canvas';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, History, Route, MapPin, User } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import TransferTypeSelector from '@/components/transfer/TransferTypeSelector';
@@ -15,6 +14,10 @@ import StepOneLocalTransfer from '@/components/transfer/StepOneLocalTransfer';
 import StepTwoTransfer from '@/components/transfer/StepTwoTransfer';
 import PaymentMethodSelector from '@/components/transfer/PaymentMethodSelector';
 import TransferReceipt from '@/components/transfer/TransferReceipt';
+import TransferHistoryPage from '@/pages/TransferHistoryPage';
+import TrackTransferPage from '@/pages/TrackTransferPage';
+import LocationsPage from '@/pages/LocationsPage';
+import AccountPage from '@/pages/AccountPage';
 
 export interface TransferData {
   transferType?: 'international' | 'national';
@@ -415,48 +418,112 @@ const DesktopMultiStepTransferPage: React.FC<DesktopMultiStepTransferPageProps> 
         </div>
       </div>
 
-      {/* Main Content */}
+      {/* Main Content - Two Column Layout */}
       <div className="container mx-auto px-6 py-8">
-        <div className="max-w-4xl mx-auto">
-          {/* Step Indicator */}
-          <div className="mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
+          {/* Left Column - Transfer Process */}
+          <div className="space-y-6">
+            {/* Step Indicator */}
             <StepIndicator currentStep={currentStep} />
+
+            {/* Main Transfer Card */}
+            <Card className="shadow-lg">
+              <CardContent className="p-8">
+                {renderStepContent()}
+              </CardContent>
+
+              {/* Navigation Footer */}
+              {currentStep < 4 && (
+                <div className="border-t bg-gray-50 px-8 py-6 flex justify-between items-center">
+                  <Button
+                    variant="outline"
+                    onClick={handlePreviousStep}
+                    disabled={currentStep === 1}
+                    className="flex items-center gap-2"
+                  >
+                    <ArrowLeft className="h-4 w-4" />
+                    Previous
+                  </Button>
+
+                  <div className="text-sm text-gray-500">
+                    Step {currentStep} of 4
+                  </div>
+
+                  <Button
+                    onClick={currentStep === 3 ? handlePayment : handleNextStep}
+                    disabled={!canProceed || isPaymentLoading}
+                    className="flex items-center gap-2"
+                  >
+                    {currentStep === 3 ? 'Complete Payment' : 'Continue'}
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              )}
+            </Card>
           </div>
 
-          {/* Main Card */}
-          <Card className="shadow-lg">
-            <CardContent className="p-8">
-              {renderStepContent()}
-            </CardContent>
-
-            {/* Navigation Footer */}
-            {currentStep < 4 && (
-              <div className="border-t bg-gray-50 px-8 py-6 flex justify-between items-center">
-                <Button
-                  variant="outline"
-                  onClick={handlePreviousStep}
-                  disabled={currentStep === 1}
-                  className="flex items-center gap-2"
-                >
-                  <ArrowLeft className="h-4 w-4" />
-                  Previous
-                </Button>
-
-                <div className="text-sm text-gray-500">
-                  Step {currentStep} of 4
+          {/* Right Column - Dashboard Sections */}
+          <div className="space-y-6">
+            {/* Transfer History Section */}
+            <Card className="shadow-lg">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <History className="h-5 w-5" />
+                  Transfer History
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="max-h-80 overflow-y-auto">
+                  <TransferHistoryPage />
                 </div>
+              </CardContent>
+            </Card>
 
-                <Button
-                  onClick={currentStep === 3 ? handlePayment : handleNextStep}
-                  disabled={!canProceed || isPaymentLoading}
-                  className="flex items-center gap-2"
-                >
-                  {currentStep === 3 ? 'Complete Payment' : 'Continue'}
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-              </div>
-            )}
-          </Card>
+            {/* Track Transfer Section */}
+            <Card className="shadow-lg">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Route className="h-5 w-5" />
+                  Track Transfer
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="max-h-64 overflow-y-auto">
+                  <TrackTransferPage />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Locations Section */}
+            <Card className="shadow-lg">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <MapPin className="h-5 w-5" />
+                  Our Locations
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="max-h-96 overflow-y-auto">
+                  <LocationsPage />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Account Section */}
+            <Card className="shadow-lg">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <User className="h-5 w-5" />
+                  Account Settings
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="max-h-96 overflow-y-auto">
+                  <AccountPage />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
     </div>
