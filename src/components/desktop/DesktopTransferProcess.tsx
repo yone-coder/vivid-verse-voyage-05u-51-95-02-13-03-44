@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -5,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import StepIndicator from '@/components/transfer/StepIndicator';
 import DesktopStepContent from './DesktopStepContent';
 import PaymentLoadingOverlay from '@/components/transfer/PaymentLoadingOverlay';
-import { TransferData } from '@/components/desktop/DesktopMultiStepTransferPage';
+import { TransferData } from './DesktopMultiStepTransferPage';
 
 interface DesktopTransferProcessProps {
   currentStep: number;
