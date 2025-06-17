@@ -42,29 +42,6 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
 
   return (
     <div className="space-y-4">
-      {/* Currency Selection */}
-      <div className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl border border-purple-200 p-3">
-        <Label htmlFor="currency" className="text-xs font-bold text-purple-600 mb-2 block uppercase tracking-wide">
-          Send Currency
-        </Label>
-        <Select value={selectedCurrency} onValueChange={setSelectedCurrency}>
-          <SelectTrigger className="w-full bg-white border-purple-300 focus:ring-purple-500">
-            <SelectValue placeholder="Select currency" />
-          </SelectTrigger>
-          <SelectContent className="bg-white z-50">
-            {currencies.map((currency) => (
-              <SelectItem key={currency.code} value={currency.code}>
-                <div className="flex items-center space-x-2">
-                  <span className="font-medium">{currency.symbol}</span>
-                  <span>{currency.code}</span>
-                  <span className="text-gray-500">- {currency.name}</span>
-                </div>
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
       {/* Exchange Rate Section */}
       <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200 p-3">
         <div className="flex items-center justify-between">
@@ -75,30 +52,44 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
         </div>
       </div>
 
-      {/* Send Amount Input */}
+      {/* Send Amount Input with Currency Selection */}
       <div className="bg-white rounded-xl border border-blue-300 overflow-hidden">
         <div className="p-3 pb-2">
           <Label htmlFor="amount" className="text-xs font-bold text-blue-600 mb-2 block uppercase tracking-wide">
             Send Amount
           </Label>
-          <div className="relative">
-            <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-              <span className="text-blue-600 font-bold text-sm">{selectedCurrencyData.symbol}</span>
+          <div className="flex gap-2 mb-3">
+            <div className="flex-1 relative">
+              <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                <span className="text-blue-600 font-bold text-sm">{selectedCurrencyData.symbol}</span>
+              </div>
+              <Input
+                id="amount"
+                type="number"
+                className="pl-8 pr-4 text-2xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-gray-900 placeholder-blue-300 placeholder:text-2xl placeholder:font-light h-12"
+                placeholder="0.00"
+                value={amount}
+                onChange={(e) => handleSendAmountChange(e.target.value)}
+                min="0"
+                step="0.01"
+              />
             </div>
-            <Input
-              id="amount"
-              type="number"
-              className="pl-8 pr-12 text-2xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-gray-900 placeholder-blue-300 placeholder:text-2xl placeholder:font-light h-12"
-              placeholder="0.00"
-              value={amount}
-              onChange={(e) => handleSendAmountChange(e.target.value)}
-              min="0"
-              step="0.01"
-            />
-            <div className="absolute inset-y-0 right-3 flex items-center">
-              <span className="text-xs font-bold text-blue-600 bg-blue-100 px-2 py-0.5 rounded-full">
-                {selectedCurrency}
-              </span>
+            <div className="w-24">
+              <Select value={selectedCurrency} onValueChange={setSelectedCurrency}>
+                <SelectTrigger className="h-12 bg-blue-50 border-blue-200 focus:ring-blue-500">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-white z-50">
+                  {currencies.map((currency) => (
+                    <SelectItem key={currency.code} value={currency.code}>
+                      <div className="flex items-center space-x-1">
+                        <span className="font-medium">{currency.symbol}</span>
+                        <span className="text-xs">{currency.code}</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
         </div>
