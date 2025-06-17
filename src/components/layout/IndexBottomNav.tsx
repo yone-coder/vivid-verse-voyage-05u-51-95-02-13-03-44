@@ -119,9 +119,9 @@ export default function IndexBottomNav({
   if (showContinueButton) {
     return (
       <div className="fixed bottom-0 left-0 right-0 z-50">
-        {/* Continue Button Container - reduced spacing and button height */}
-        <div className="bg-white border-t border-gray-200 dark:border-zinc-800 shadow-lg">
-          <div className="h-12 px-4 max-w-md mx-auto">
+        {/* Continue Button Container - no borders and reduced padding */}
+        <div className="bg-white shadow-lg">
+          <div className="h-12 px-4 max-w-md mx-auto pb-1">
             <div className="flex items-center gap-3 mt-1">
               {/* Independent Back Button - now with trustworthy blue color and circular border */}
               {currentStep > 1 && (
