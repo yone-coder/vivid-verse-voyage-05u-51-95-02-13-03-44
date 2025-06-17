@@ -39,6 +39,14 @@ const StepContent: React.FC<StepContentProps> = ({
 }) => {
   const navigate = useNavigate();
 
+  // Debug logging for step 4
+  useEffect(() => {
+    if (currentStep === 4) {
+      console.log('Step 4 - Transfer Summary rendering');
+      console.log('Transfer data for summary:', transferData);
+    }
+  }, [currentStep, transferData]);
+
   return (
     <div className="px-4 py-4">
       {currentStep === 1 && (
@@ -98,6 +106,13 @@ const StepContent: React.FC<StepContentProps> = ({
           <TransferSummary
             transferData={transferData}
           />
+          
+          {/* Debug info for step 4 */}
+          <div className="mt-4 p-2 bg-gray-100 rounded text-xs">
+            <p>Debug: Step 4 rendered successfully</p>
+            <p>Amount: {transferData.amount}</p>
+            <p>Recipient: {transferData.receiverDetails.firstName} {transferData.receiverDetails.lastName}</p>
+          </div>
         </div>
       )}
 

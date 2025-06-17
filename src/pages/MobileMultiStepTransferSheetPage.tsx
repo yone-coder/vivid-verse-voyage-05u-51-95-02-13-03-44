@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -65,6 +64,13 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
     },
     selectedPaymentMethod: 'credit-card'
   });
+
+  // Debug logging for step progression
+  useEffect(() => {
+    console.log(`Current step: ${currentStep}`);
+    console.log('Transfer data:', transferData);
+    console.log('Can proceed check:', canProceed);
+  }, [currentStep, transferData]);
 
   // Listen for email capture from PayPal form
   useEffect(() => {
@@ -189,8 +195,14 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
   }, []);
 
   const handleNextStep = () => {
-    if (currentStep < 7) {
+    console.log(`Attempting to move from step ${currentStep} to step ${currentStep + 1}`);
+    console.log('Can proceed:', canProceed);
+    
+    if (currentStep < 7 && canProceed) {
       setCurrentStep(currentStep + 1);
+      console.log(`Successfully moved to step ${currentStep + 1}`);
+    } else {
+      console.log(`Cannot proceed from step ${currentStep}. canProceed: ${canProceed}`);
     }
   };
 
@@ -278,7 +290,7 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
     transferData.receiverDetails.phoneNumber &&
     transferData.receiverDetails.commune
   );
-  const canProceedFromStep4 = true; // Review step can always proceed
+  const canProceedFromStep4 = true; // Review step should always allow proceeding
   const canProceedFromStep5 = Boolean(
     transferData.selectedPaymentMethod !== undefined && 
     transferData.selectedPaymentMethod !== ''
@@ -298,6 +310,15 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
     (currentStep === 6 && canProceedFromStep6)
   );
 
+  // Debug logging for canProceed logic
+  useEffect(() => {
+    if (currentStep === 4) {
+      console.log('Step 4 validation - canProceedFromStep4:', canProceedFromStep4);
+      console.log('Overall canProceed:', canProceed);
+    }
+  }, [currentStep, canProceed, canProceedFromStep4]);
+
+  // Handle sticky payment logic
   const handleStickyPayment = async () => {
     if (transferData.transferType === 'national') {
       // Handle MonCash payment for national transfers
