@@ -44,7 +44,7 @@ const PayPalCardPayment: React.FC<PayPalCardPaymentProps> = ({
           --success-bg: #d1fae5;
           --error: #ef4444;
           --error-bg: #fee2e2;
-          --border-radius-sm: 8px;
+          --border-radius-sm: 12px;
           --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -60,7 +60,7 @@ const PayPalCardPayment: React.FC<PayPalCardPaymentProps> = ({
         .payment-form {
           display: flex;
           flex-direction: column;
-          gap: 1rem;
+          gap: 1.5rem;
         }
 
         .form-group {
@@ -69,22 +69,22 @@ const PayPalCardPayment: React.FC<PayPalCardPaymentProps> = ({
 
         .form-label {
           display: block;
-          font-size: 0.8rem;
-          font-weight: 500;
+          font-size: 0.875rem;
+          font-weight: 600;
           color: var(--text-primary);
-          margin-bottom: 0.375rem;
+          margin-bottom: 0.5rem;
         }
 
         .form-input, .form-field {
           width: 100%;
-          padding: 0.75rem 0.875rem;
+          padding: 1rem 1.125rem;
           background: var(--bg-card);
           border: 1px solid var(--border);
           border-radius: var(--border-radius-sm);
           color: var(--text-primary);
-          font-size: 0.9rem;
+          font-size: 1rem;
           font-family: inherit;
-          font-weight: 400;
+          font-weight: 500;
           transition: var(--transition);
           box-shadow: none;
         }
@@ -92,7 +92,7 @@ const PayPalCardPayment: React.FC<PayPalCardPaymentProps> = ({
         .form-input:focus, .form-field:focus {
           outline: none;
           border-color: var(--border-focus);
-          box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+          box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
         .form-input::placeholder {
@@ -103,12 +103,12 @@ const PayPalCardPayment: React.FC<PayPalCardPaymentProps> = ({
         .card-group {
           display: flex;
           flex-direction: column;
-          gap: 0.5rem;
+          gap: 0.75rem;
         }
 
         .card-row {
           display: flex;
-          gap: 0.5rem;
+          gap: 0.75rem;
         }
 
         .card-row .card-field {
@@ -116,12 +116,12 @@ const PayPalCardPayment: React.FC<PayPalCardPaymentProps> = ({
         }
 
         .card-field {
-          padding: 0.75rem 0.875rem;
+          padding: 1rem 1.125rem;
           background: var(--bg-card);
           border: 1px solid var(--border);
           border-radius: var(--border-radius-sm);
           transition: var(--transition);
-          min-height: 44px;
+          min-height: 56px;
           display: flex;
           align-items: center;
           width: 100%;
@@ -130,14 +130,14 @@ const PayPalCardPayment: React.FC<PayPalCardPaymentProps> = ({
 
         .card-field:focus-within {
           border-color: var(--border-focus);
-          box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+          box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
         .card-field iframe {
           border: none !important;
           outline: none !important;
           width: 100% !important;
-          height: 20px !important;
+          height: 24px !important;
         }
 
         .pay-button {
@@ -145,10 +145,10 @@ const PayPalCardPayment: React.FC<PayPalCardPaymentProps> = ({
         }
 
         .alert {
-          padding: 0.75rem 1rem;
+          padding: 1rem 1.25rem;
           border-radius: var(--border-radius-sm);
-          margin-bottom: 1rem;
-          font-size: 0.85rem;
+          margin-bottom: 1.5rem;
+          font-size: 0.9rem;
           font-weight: 500;
           border: none;
         }
@@ -165,12 +165,12 @@ const PayPalCardPayment: React.FC<PayPalCardPaymentProps> = ({
 
         .alert-close {
           position: absolute;
-          top: 0.5rem;
-          right: 0.75rem;
+          top: 0.75rem;
+          right: 1rem;
           background: none;
           border: none;
           color: inherit;
-          font-size: 1.1rem;
+          font-size: 1.25rem;
           cursor: pointer;
           opacity: 0.7;
         }
@@ -178,7 +178,7 @@ const PayPalCardPayment: React.FC<PayPalCardPaymentProps> = ({
         .loading-container {
           display: flex;
           flex-direction: column;
-          gap: 1rem;
+          gap: 1.5rem;
           margin: 0 auto;
         }
 
@@ -197,7 +197,7 @@ const PayPalCardPayment: React.FC<PayPalCardPaymentProps> = ({
 
         .skeleton-card-row {
           display: flex;
-          gap: 0.5rem;
+          gap: 0.75rem;
         }
 
         .skeleton-card-row .skeleton-shimmer {
@@ -210,55 +210,29 @@ const PayPalCardPayment: React.FC<PayPalCardPaymentProps> = ({
 
         .security-info {
           text-align: center;
-          margin-top: 1.25rem;
-          padding-top: 1.25rem;
+          margin-top: 2rem;
+          padding-top: 2rem;
           border-top: 1px solid var(--border);
         }
 
         .security-badge {
           display: inline-flex;
           align-items: center;
-          gap: 0.5rem;
-          font-size: 0.75rem;
+          gap: 0.625rem;
+          font-size: 0.8rem;
           color: var(--text-secondary);
-          font-weight: 500;
-          padding: 0.375rem 0.75rem;
+          font-weight: 600;
+          padding: 0.5rem 1rem;
           background: rgba(102, 126, 234, 0.05);
           border-radius: 50px;
           border: 1px solid rgba(102, 126, 234, 0.1);
         }
 
         .security-icon {
-          width: 14px;
-          height: 14px;
+          width: 16px;
+          height: 16px;
           color: var(--success);
         }
-
-        /* Compact skeleton styles */
-        .skeleton-form .form-group {
-          margin-bottom: 1rem;
-        }
-
-        .skeleton-form .form-group:last-child {
-          margin-bottom: 0;
-        }
-
-        .h-4 { height: 1rem; }
-        .h-8 { height: 2rem; }
-        .h-10 { height: 2.5rem; }
-        .h-12 { height: 3rem; }
-        .w-24 { width: 6rem; }
-        .w-32 { width: 8rem; }
-        .w-full { width: 100%; }
-        .mb-2 { margin-bottom: 0.5rem; }
-        .mt-4 { margin-top: 1rem; }
-        .mt-6 { margin-top: 1.5rem; }
-        .mx-auto { margin-left: auto; margin-right: auto; }
-        .rounded { border-radius: 0.25rem; }
-        .rounded-xl { border-radius: 0.75rem; }
-        .rounded-full { border-radius: 9999px; }
-        .space-y-2 > * + * { margin-top: 0.5rem; }
-        .text-center { text-align: center; }
       `;
       document.head.appendChild(styleElement);
 
@@ -271,24 +245,24 @@ const PayPalCardPayment: React.FC<PayPalCardPaymentProps> = ({
             <div class="skeleton-form">
               <div class="form-group">
                 <div class="skeleton-shimmer h-4 w-24 mb-2 rounded"></div>
-                <div class="skeleton-shimmer h-10 w-full rounded-xl"></div>
+                <div class="skeleton-shimmer h-12 w-full rounded-xl"></div>
               </div>
 
               <div class="form-group">
                 <div class="skeleton-shimmer h-4 w-32 mb-2 rounded"></div>
-                <div class="space-y-2">
-                  <div class="skeleton-shimmer h-10 w-full rounded-xl"></div>
+                <div class="space-y-3">
+                  <div class="skeleton-shimmer h-12 w-full rounded-xl"></div>
                   <div class="skeleton-card-row">
-                    <div class="skeleton-shimmer h-10 rounded-xl"></div>
-                    <div class="skeleton-shimmer h-10 rounded-xl"></div>
+                    <div class="skeleton-shimmer h-12 rounded-xl"></div>
+                    <div class="skeleton-shimmer h-12 rounded-xl"></div>
                   </div>
                 </div>
               </div>
 
-              <div class="skeleton-shimmer h-10 w-full rounded-xl mt-4"></div>
+              <div class="skeleton-shimmer h-12 w-full rounded-xl mt-4"></div>
 
-              <div class="mt-6 text-center">
-                <div class="skeleton-shimmer h-6 w-32 mx-auto rounded-full"></div>
+              <div class="mt-8 text-center">
+                <div class="skeleton-shimmer h-8 w-32 mx-auto rounded-full"></div>
               </div>
             </div>
           </div>
@@ -489,7 +463,7 @@ const PayPalCardPayment: React.FC<PayPalCardPaymentProps> = ({
                   },
                   styles: {
                     'input': {
-                        'font-size': '14px',
+                        'font-size': '16px',
                         'color': '#1a1a21',
                         'font-family': 'Inter, sans-serif',
                         'font-weight': '400'
