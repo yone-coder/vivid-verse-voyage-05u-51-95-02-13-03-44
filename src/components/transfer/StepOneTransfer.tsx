@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -77,7 +76,6 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
               <Select value={selectedCurrency} onValueChange={setSelectedCurrency}>
                 <SelectTrigger className="h-6 w-auto border-0 bg-blue-100 text-blue-600 font-bold text-xs px-2 py-1 rounded-full focus:ring-0 shadow-none">
                   <SelectValue>{selectedCurrency}</SelectValue>
-                  <ChevronDown className="h-3 w-3 ml-1" />
                 </SelectTrigger>
                 <SelectContent className="bg-white z-50">
                   {currencies.map((currency) => (
