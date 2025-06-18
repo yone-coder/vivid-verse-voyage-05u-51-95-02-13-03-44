@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -113,7 +112,7 @@ export default function IndexBottomNav({
         ? 'bg-red-600 hover:bg-red-700' 
         : 'bg-green-600 hover:bg-green-700';
     }
-    return 'bg-red-600 hover:bg-red-700';
+    return 'bg-slate-500 hover:bg-slate-600';
   };
 
   if (showContinueButton) {
