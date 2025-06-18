@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Menu, X, Bell, User, Globe, ChevronDown, Send, CreditCard, History, Settings, Shield, Lock, Eye, EyeOff, TrendingUp, Camera } from 'lucide-react';
 
@@ -23,7 +24,7 @@ export default function PremiumBankingHeader() {
   return (
     <div className="w-full sticky top-0 z-[9999]">
       {/* Main Header */}
-      <header className="bg-gradient-to-r from-blue-800 via-blue-900 to-indigo-900 text-white shadow-xl relative">
+      <header className="bg-gradient-to-r from-[#2E4A4A] via-[#3D5F5F] to-[#4A7373] text-white shadow-xl relative">
         <div className="px-4 py-2">
           <div className="flex items-center justify-between">
             {/* Account with Menu Overlay */}
@@ -40,7 +41,7 @@ export default function PremiumBankingHeader() {
                   </div>
                   
                   {/* Hamburger Menu Overlay */}
-                  <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center border-2 border-white shadow-lg hover:bg-blue-600 transition-colors">
+                  <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-[#5A8A8A] rounded-full flex items-center justify-center border-2 border-white shadow-lg hover:bg-[#7BA3A3] transition-colors">
                     {isMenuOpen ? <X size={10} className="text-white" /> : <Menu size={10} className="text-white" />}
                   </div>
                 </button>
@@ -92,7 +93,7 @@ export default function PremiumBankingHeader() {
 
       {/* Slide-out Menu */}
       {isMenuOpen && (
-        <div className="bg-slate-800 text-white shadow-xl border-t border-slate-700">
+        <div className="bg-[#3D5F5F] text-white shadow-xl border-t border-[#4A7373]">
           <div className="py-2">
             <MenuItem icon={<Send size={20} />} text="Send Money" primary />
             <MenuItem icon={<CreditCard size={20} />} text="Add Funds" />
@@ -102,14 +103,14 @@ export default function PremiumBankingHeader() {
             <MenuItem icon={<Shield size={20} />} text="Security Center" />
             <MenuItem icon={<Settings size={20} />} text="Settings" />
             
-            <div className="border-t border-slate-700 mt-2 pt-2">
-              <div className="px-4 py-3 bg-slate-900/50">
+            <div className="border-t border-[#4A7373] mt-2 pt-2">
+              <div className="px-4 py-3 bg-[#2E4A4A]/50">
                 <div className="flex items-center space-x-2 mb-2">
                   <Shield className="w-4 h-4 text-green-400" />
                   <span className="text-sm font-medium text-green-400">24/7 Secure Support</span>
                 </div>
-                <p className="text-sm text-slate-300">1-800-GLOBAL-TF</p>
-                <p className="text-xs text-slate-400">Available in 15+ languages</p>
+                <p className="text-sm text-[#BDD1D1]">1-800-GLOBAL-TF</p>
+                <p className="text-xs text-[#A8C5C5]">Available in 15+ languages</p>
               </div>
             </div>
           </div>
@@ -118,23 +119,23 @@ export default function PremiumBankingHeader() {
 
       {/* Profile Dropdown */}
       {isProfileOpen && (
-        <div className="bg-slate-800 text-white shadow-xl border-t border-slate-700">
+        <div className="bg-[#3D5F5F] text-white shadow-xl border-t border-[#4A7373]">
           <div className="py-2">
-            <div className="px-4 py-3 border-b border-slate-700 bg-slate-900/50">
+            <div className="px-4 py-3 border-b border-[#4A7373] bg-[#2E4A4A]/50">
               <div className="flex items-center space-x-3">
-                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center">
+                <div className="w-12 h-12 bg-gradient-to-r from-[#5A8A8A] to-[#7BA3A3] rounded-full flex items-center justify-center">
                   <User size={20} />
                 </div>
                 <div>
                   <p className="font-semibold">John Doe</p>
-                  <p className="text-sm text-slate-300">Premium Member</p>
+                  <p className="text-sm text-[#BDD1D1]">Premium Member</p>
                   <div className="flex items-center space-x-2 mt-1">
                     <div className="flex items-center space-x-1">
                       <Shield size={12} className="text-green-400" />
                       <span className="text-xs text-green-400">Verified</span>
                     </div>
-                    <div className="w-1 h-1 bg-slate-500 rounded-full"></div>
-                    <span className="text-xs text-slate-400">ID: #SG789456</span>
+                    <div className="w-1 h-1 bg-[#A8C5C5] rounded-full"></div>
+                    <span className="text-xs text-[#A8C5C5]">ID: #SG789456</span>
                   </div>
                 </div>
               </div>
@@ -145,7 +146,7 @@ export default function PremiumBankingHeader() {
             <ProfileMenuItem text="Transaction Limits" />
             <ProfileMenuItem text="Notification Settings" />
             <ProfileMenuItem text="Help & Support" />
-            <div className="border-t border-slate-700 mt-1">
+            <div className="border-t border-[#4A7373] mt-1">
               <ProfileMenuItem text="Sign Out" danger />
             </div>
           </div>
@@ -157,10 +158,10 @@ export default function PremiumBankingHeader() {
 
 function MenuItem({ icon, text, primary = false }: { icon: React.ReactNode; text: string; primary?: boolean }) {
   return (
-    <button className={`w-full flex items-center space-x-3 px-4 py-3 hover:bg-slate-700 transition-colors ${
-      primary ? 'bg-gradient-to-r from-blue-600/20 to-indigo-600/20 border-l-4 border-blue-500 text-blue-200' : 'text-slate-200'
+    <button className={`w-full flex items-center space-x-3 px-4 py-3 hover:bg-[#4A7373] transition-colors ${
+      primary ? 'bg-gradient-to-r from-[#5A8A8A]/20 to-[#7BA3A3]/20 border-l-4 border-[#6B9999] text-[#BDD1D1]' : 'text-[#BDD1D1]'
     }`}>
-      <span className={primary ? 'text-blue-400' : 'text-slate-400'}>{icon}</span>
+      <span className={primary ? 'text-[#7BA3A3]' : 'text-[#A8C5C5]'}>{icon}</span>
       <span className="font-medium">{text}</span>
     </button>
   );
@@ -168,8 +169,8 @@ function MenuItem({ icon, text, primary = false }: { icon: React.ReactNode; text
 
 function ProfileMenuItem({ text, danger = false }: { text: string; danger?: boolean }) {
   return (
-    <button className={`w-full text-left px-4 py-2 hover:bg-slate-700 transition-colors ${
-      danger ? 'text-red-400 hover:bg-red-900/20' : 'text-slate-200'
+    <button className={`w-full text-left px-4 py-2 hover:bg-[#4A7373] transition-colors ${
+      danger ? 'text-red-400 hover:bg-red-900/20' : 'text-[#BDD1D1]'
     }`}>
       {text}
     </button>
