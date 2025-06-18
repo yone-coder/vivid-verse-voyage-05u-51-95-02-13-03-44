@@ -349,12 +349,14 @@ const MobileMultiStepTransferSheetPage: React.FC<MobileMultiStepTransferSheetPag
     <div className="min-h-screen bg-white">
       <PaymentLoadingOverlay isVisible={isPaymentLoading} />
 
-      {/* Sticky Header Section - moved StepIndicator here */}
-      <div className="sticky top-0 z-[9998] bg-white">
-        {/* Header with blue background, GLOBAL TRANSFÈ, logo, and search icon */}
+      {/* Main Header - sticky */}
+      <div className="sticky top-0 z-[9999] bg-white">
         <TransferHeader />
+      </div>
 
-        {/* Step Indicator with white background - now properly sticky */}
+      {/* Step Indicator and Transfer Type Selector - sticky below header */}
+      <div className="sticky top-[60px] z-[9998] bg-white">
+        {/* Step Indicator */}
         <StepIndicator currentStep={currentStep} />
 
         {/* Transfer Type Selector - Only show on step 1 */}
