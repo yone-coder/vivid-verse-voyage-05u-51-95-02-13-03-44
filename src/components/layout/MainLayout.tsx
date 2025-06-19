@@ -5,6 +5,7 @@ import Footer from "@/components/layout/Footer";
 import DesktopFooter from "@/components/desktop/DesktopFooter";
 import IndexBottomNav from "@/components/layout/IndexBottomNav";
 import PremiumBankingHeader from "@/components/layout/PremiumBankingHeader";
+import DesktopHeader from "@/components/desktop/DesktopHeader";
 import { Outlet, useLocation } from "react-router-dom";
 import { useAuthOverlay } from "@/context/AuthOverlayContext";
 import { LanguageProvider } from "@/context/LanguageContext";
@@ -49,8 +50,8 @@ function MainLayoutContent() {
       <div className="min-h-screen flex flex-col bg-white">
         <style dangerouslySetInnerHTML={{ __html: headerHeightStyle }} />
 
-        {/* Premium Banking Header - show for all users */}
-        <PremiumBankingHeader />
+        {/* Render appropriate header based on device */}
+        {isMobile ? <PremiumBankingHeader /> : <DesktopHeader />}
 
         <main className={`flex-grow relative ${isMobile ? '' : 'min-h-screen'}`} style={{ paddingBottom: getBottomPadding() }}>
           <Outlet />
