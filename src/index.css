@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -343,6 +342,93 @@
   opacity: 0;
 }
 
+/* Ultra artistic logo animations */
+@keyframes float {
+  0%, 100% { 
+    transform: translateY(0px) scale(1);
+  }
+  50% { 
+    transform: translateY(-20px) scale(1.02);
+  }
+}
 
+@keyframes subtle-rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes gentle-bounce {
+  0%, 100% { 
+    transform: translateY(0px);
+    opacity: 1;
+  }
+  25% { 
+    transform: translateY(-3px);
+    opacity: 0.9;
+  }
+  50% { 
+    transform: translateY(-5px);
+    opacity: 0.8;
+  }
+  75% { 
+    transform: translateY(-2px);
+    opacity: 0.9;
+  }
+}
+
+@keyframes color-shift {
+  0%, 100% { filter: hue-rotate(0deg) brightness(1); }
+  25% { filter: hue-rotate(10deg) brightness(1.1); }
+  50% { filter: hue-rotate(20deg) brightness(1.2); }
+  75% { filter: hue-rotate(15deg) brightness(1.1); }
+}
+
+@keyframes shimmer {
+  0% { 
+    filter: brightness(1) contrast(1);
+    transform: scale(1);
+  }
+  50% { 
+    filter: brightness(1.3) contrast(1.2);
+    transform: scale(1.01);
+  }
+  100% { 
+    filter: brightness(1) contrast(1);
+    transform: scale(1);
+  }
+}
+
+@keyframes artistic-glow {
+  0%, 100% { 
+    filter: drop-shadow(0 0 10px rgba(255, 71, 71, 0.3)) drop-shadow(0 0 20px rgba(255, 71, 71, 0.1));
+  }
+  50% { 
+    filter: drop-shadow(0 0 20px rgba(255, 71, 71, 0.6)) drop-shadow(0 0 40px rgba(255, 71, 71, 0.3));
+  }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-subtle-rotate {
+  animation: subtle-rotate 20s linear infinite;
+}
+
+.animate-gentle-bounce {
+  animation: gentle-bounce 3s ease-in-out infinite;
+}
+
+.animate-color-shift {
+  animation: color-shift 6s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  animation: shimmer 4s ease-in-out infinite;
+}
+
+.animate-artistic-glow {
+  animation: artistic-glow 3s ease-in-out infinite;
+}
 
 @media (max-width: 640px) { .embla__slide { width: 65vw !important;    flex-shrink: 0;   }  .embla__container {    scroll-snap-type: x mandatory;     scroll-padding-left: 1rem;   }    .embla__slide {    scroll-snap-align: start;   }  }
