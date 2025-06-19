@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 interface LogoProps {
@@ -11,14 +10,13 @@ const Logo: React.FC<LogoProps> = ({ className = "", animate = false }) => {
     <div className={`${className} ${animate ? 'animate-pulse' : ''}`}>
       <svg 
         xmlns="http://www.w3.org/2000/svg" 
-        width="120" 
-        height="120" 
+        width="200" 
+        height="200" 
         viewBox="0 0 500 500"
         className="drop-shadow-lg"
         style={{
           shapeRendering: 'geometricPrecision',
           textRendering: 'geometricPrecision',
-          imageRendering: 'optimizeQuality',
           fillRule: 'evenodd',
           clipRule: 'evenodd'
         }}
