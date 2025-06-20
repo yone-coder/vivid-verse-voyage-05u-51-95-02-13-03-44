@@ -36,7 +36,7 @@ export default function AnimatedSplashScreen({ isVisible }: SplashScreenProps) {
         </div>
       </div>
       
-      <style jsx>{`
+      <style>{`
         @keyframes draw-path-complex {
           0% {
             stroke-dashoffset: 2000;
