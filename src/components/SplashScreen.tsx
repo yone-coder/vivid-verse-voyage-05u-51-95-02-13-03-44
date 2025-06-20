@@ -9,8 +9,8 @@ export default function AnimatedSplashScreen({ isVisible }: SplashScreenProps) {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-0 min-h-screen bg-red-500 flex items-center justify-center overflow-hidden z-50">
-      <div className="relative flex flex-col items-center justify-center">
+    <div className="fixed inset-0 min-h-screen bg-red-500 flex flex-col items-center justify-center overflow-hidden z-50">
+      <div className="relative flex flex-col items-center justify-center flex-grow">
         {/* Pulse Background */}
         <div className="absolute top-1/2 left-1/2 w-[600px] h-[600px] rounded-full transform -translate-x-1/2 -translate-y-1/2 opacity-30">
           <div className="w-full h-full rounded-full bg-gradient-radial from-white/10 via-white/5 to-transparent"></div>
@@ -33,6 +33,18 @@ export default function AnimatedSplashScreen({ isVisible }: SplashScreenProps) {
               d="M497.5 319.5c-4.067 1.554-8.4 2.22-13 2 4.045-1.677 8.378-2.344 13-2z"
             />
           </svg>
+        </div>
+      </div>
+
+      {/* Acknowledgment Section */}
+      <div className="absolute bottom-8 left-0 right-0 text-center text-white px-6">
+        <div className="animate-fade-in-delayed">
+          <p className="text-sm opacity-90 mb-2">
+            Made in Désarmes with <span className="text-pink-200">❤️</span>
+          </p>
+          <p className="text-xs opacity-80">
+            Legalized and authorized by BRH
+          </p>
         </div>
       </div>
       
@@ -147,6 +159,21 @@ export default function AnimatedSplashScreen({ isVisible }: SplashScreenProps) {
           }
         }
 
+        @keyframes fade-in-delayed {
+          0% {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          70% {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
         @keyframes logo-float {
           0%, 100% {
             transform: translateY(0px) rotate(0deg);
@@ -183,6 +210,10 @@ export default function AnimatedSplashScreen({ isVisible }: SplashScreenProps) {
 
         .animate-logo-float {
           animation: logo-float 6s ease-in-out infinite;
+        }
+
+        .animate-fade-in-delayed {
+          animation: fade-in-delayed 2s ease-out forwards;
         }
       `}</style>
     </div>
