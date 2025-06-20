@@ -502,3 +502,202 @@
 .animate-path-wave {
   animation: path-wave 4s ease-in-out infinite;
 }
+
+/* Individual Logo Part Animations */
+@keyframes logo-face-breathe {
+  0%, 100% { 
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% { 
+    transform: scale(1.02);
+    filter: brightness(1.05);
+  }
+}
+
+@keyframes logo-cheek-bounce {
+  0%, 100% { 
+    transform: translateY(0px) scale(1);
+  }
+  25% { 
+    transform: translateY(-1px) scale(1.02);
+  }
+  75% { 
+    transform: translateY(1px) scale(0.98);
+  }
+}
+
+@keyframes logo-eye-blink {
+  0%, 90%, 100% { 
+    transform: scaleY(1);
+    opacity: 1;
+  }
+  95% { 
+    transform: scaleY(0.1);
+    opacity: 0.8;
+  }
+}
+
+@keyframes logo-nose-wiggle {
+  0%, 100% { 
+    transform: rotate(0deg) translateX(0px);
+  }
+  25% { 
+    transform: rotate(1deg) translateX(0.5px);
+  }
+  50% { 
+    transform: rotate(0deg) translateX(0px);
+  }
+  75% { 
+    transform: rotate(-1deg) translateX(-0.5px);
+  }
+}
+
+@keyframes logo-mouth-smile {
+  0%, 100% { 
+    transform: scale(1) rotate(0deg);
+  }
+  50% { 
+    transform: scale(1.05) rotate(1deg);
+  }
+}
+
+@keyframes logo-hair-flow {
+  0%, 100% { 
+    transform: translateX(0px) rotate(0deg);
+  }
+  33% { 
+    transform: translateX(1px) rotate(1deg);
+  }
+  66% { 
+    transform: translateX(-1px) rotate(-1deg);
+  }
+}
+
+@keyframes logo-forehead-glow {
+  0%, 100% { 
+    filter: brightness(1) contrast(1);
+    opacity: 1;
+  }
+  50% { 
+    filter: brightness(1.2) contrast(1.1);
+    opacity: 0.9;
+  }
+}
+
+@keyframes logo-feature-pulse {
+  0%, 100% { 
+    transform: scale(1);
+    opacity: var(--original-opacity, 1);
+  }
+  50% { 
+    transform: scale(1.1);
+    opacity: calc(var(--original-opacity, 1) * 0.8);
+  }
+}
+
+@keyframes logo-feature-wave {
+  0%, 100% { 
+    transform: translateY(0px) skewX(0deg);
+  }
+  25% { 
+    transform: translateY(-0.5px) skewX(1deg);
+  }
+  75% { 
+    transform: translateY(0.5px) skewX(-1deg);
+  }
+}
+
+@keyframes logo-shimmer-1 {
+  0%, 100% { 
+    filter: hue-rotate(0deg) brightness(1);
+  }
+  50% { 
+    filter: hue-rotate(10deg) brightness(1.15);
+  }
+}
+
+@keyframes logo-shimmer-2 {
+  0%, 100% { 
+    filter: hue-rotate(0deg) brightness(1);
+  }
+  50% { 
+    filter: hue-rotate(-5deg) brightness(1.1);
+  }
+}
+
+@keyframes logo-shimmer-3 {
+  0%, 100% { 
+    filter: hue-rotate(0deg) brightness(1);
+  }
+  50% { 
+    filter: hue-rotate(15deg) brightness(1.2);
+  }
+}
+
+/* Apply the animations */
+.logo-face-breathe {
+  animation: logo-face-breathe 4s ease-in-out infinite;
+  transform-origin: center center;
+}
+
+.logo-cheek-bounce {
+  animation: logo-cheek-bounce 3s ease-in-out infinite;
+  animation-delay: 0.5s;
+  transform-origin: center center;
+}
+
+.logo-eye-blink {
+  animation: logo-eye-blink 6s ease-in-out infinite;
+  animation-delay: 2s;
+  transform-origin: center center;
+}
+
+.logo-nose-wiggle {
+  animation: logo-nose-wiggle 5s ease-in-out infinite;
+  animation-delay: 1s;
+  transform-origin: center center;
+}
+
+.logo-mouth-smile {
+  animation: logo-mouth-smile 4s ease-in-out infinite;
+  animation-delay: 1.5s;
+  transform-origin: center bottom;
+}
+
+.logo-hair-flow {
+  animation: logo-hair-flow 3s ease-in-out infinite;
+  animation-delay: 0.8s;
+  transform-origin: center top;
+}
+
+.logo-forehead-glow {
+  animation: logo-forehead-glow 5s ease-in-out infinite;
+  animation-delay: 2.5s;
+  transform-origin: center center;
+}
+
+.logo-feature-pulse {
+  animation: logo-feature-pulse 2.5s ease-in-out infinite;
+  transform-origin: center center;
+}
+
+.logo-feature-wave {
+  animation: logo-feature-wave 4s ease-in-out infinite;
+  transform-origin: left center;
+}
+
+.logo-shimmer-1 {
+  animation: logo-shimmer-1 3s ease-in-out infinite;
+  animation-delay: 0.3s;
+}
+
+.logo-shimmer-2 {
+  animation: logo-shimmer-2 3.5s ease-in-out infinite;
+  animation-delay: 0.7s;
+}
+
+.logo-shimmer-3 {
+  animation: logo-shimmer-3 2.8s ease-in-out infinite;
+  animation-delay: 1.2s;
+}
