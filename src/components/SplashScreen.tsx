@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 // Background Pulse Component with Physics
@@ -41,6 +40,83 @@ function PulseBackground({ className = '' }: PulseBackgroundProps) {
             transform: scale(1);
             opacity: 0.3;
             filter: blur(0px);
+          }
+        }
+      `}</style>
+    </div>
+  );
+}
+
+// Top Title Component with Physics
+interface TopTitleProps {
+  className?: string;
+  isExiting?: boolean;
+}
+
+function TopTitle({ className = '', isExiting = false }: TopTitleProps) {
+  return (
+    <div 
+      className={`absolute top-8 left-0 right-0 text-center text-white px-6 ${className}`}
+      style={{
+        animation: isExiting 
+          ? 'title-physics-exit 2s ease-in-out forwards'
+          : 'title-physics-entry 1.5s ease-out 1s forwards'
+      }}
+    >
+      <div style={{ opacity: 0 }}>
+        <h1 className="text-2xl md:text-3xl font-bold tracking-wide">
+          #1 app de transfert à Désarmes
+        </h1>
+      </div>
+      <style>{`
+        @keyframes title-physics-entry {
+          0% {
+            opacity: 0;
+            transform: translateY(-40px) scale(0.7);
+            filter: blur(5px);
+          }
+          30% {
+            opacity: 0.4;
+            transform: translateY(-25px) scale(0.85);
+            filter: blur(3px);
+          }
+          60% {
+            opacity: 0.8;
+            transform: translateY(-10px) scale(0.95);
+            filter: blur(1px);
+          }
+          80% {
+            opacity: 0.95;
+            transform: translateY(-2px) scale(0.98);
+            filter: blur(0.3px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0px) scale(1);
+            filter: blur(0px);
+          }
+        }
+
+        @keyframes title-physics-exit {
+          0% {
+            opacity: 1;
+            transform: translateY(0px) scale(1);
+            filter: blur(0px);
+          }
+          30% {
+            opacity: 0.8;
+            transform: translateY(-15px) scale(1.1);
+            filter: blur(2px);
+          }
+          60% {
+            opacity: 0.4;
+            transform: translateY(-35px) scale(1.3);
+            filter: blur(5px);
+          }
+          100% {
+            opacity: 0;
+            transform: translateY(-70px) scale(1.8);
+            filter: blur(12px);
           }
         }
       `}</style>
@@ -569,6 +645,8 @@ export default function AnimatedSplashScreen({
   return (
     <div className={`fixed inset-0 min-h-screen ${backgroundColor} flex flex-col items-center justify-center overflow-hidden z-50`}>
       <PhysicsBackground isExiting={isExiting} />
+      
+      <TopTitle isExiting={isExiting} />
       
       <div className="relative flex flex-col items-center justify-center flex-grow">
         <PulseBackground />
