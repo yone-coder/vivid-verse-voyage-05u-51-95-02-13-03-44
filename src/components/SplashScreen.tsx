@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 // Background Pulse Component
@@ -35,13 +36,13 @@ function MainLogoPath({
       />
       <style jsx>{`
         .animate-main-path {
-          stroke-dasharray: 2000;
-          stroke-dashoffset: 2000;
-          stroke-width: 3;
-          animation: draw-path-complex 4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
-                     fill-path-complex 1.5s ease-out 4s forwards,
-                     glow-complex 3s ease-in-out 5.5s infinite alternate,
-                     stroke-pulse 2s ease-in-out 4s infinite alternate;
+          stroke-dasharray: 3000;
+          stroke-dashoffset: 3000;
+          stroke-width: 2;
+          animation: draw-path-smooth 6s cubic-bezier(0.16, 1, 0.3, 1) forwards,
+                     fill-path-smooth 2s ease-out 6s forwards,
+                     glow-enhanced 4s ease-in-out 8s infinite alternate,
+                     stroke-shimmer 3s ease-in-out 6s infinite alternate;
         }
       `}</style>
     </>
@@ -69,8 +70,8 @@ function AccentPath({
         .animate-accent-path {
           opacity: 0;
           transform-origin: center;
-          animation: fade-in-pulse-complex 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) 6s forwards,
-                     accent-glow 2s ease-in-out 8s infinite alternate;
+          animation: fade-in-pulse-smooth 2.5s cubic-bezier(0.34, 1.56, 0.64, 1) 8.5s forwards,
+                     accent-glow-enhanced 3s ease-in-out 11s infinite alternate;
         }
       `}</style>
     </>
@@ -94,7 +95,7 @@ function LogoContainer({
   return (
     <div className={`relative drop-shadow-[0_20px_40px_rgba(0,0,0,0.3)] ${className}`}>
       <svg 
-        className={`animate-logo-float`}
+        className={`animate-logo-float-enhanced`}
         style={{ width, height }}
         xmlns="http://www.w3.org/2000/svg" 
         viewBox="0 0 1024 1024"
@@ -102,8 +103,8 @@ function LogoContainer({
         {children}
       </svg>
       <style jsx>{`
-        .animate-logo-float {
-          animation: logo-float 6s ease-in-out infinite;
+        .animate-logo-float-enhanced {
+          animation: logo-float-enhanced 8s ease-in-out infinite;
         }
       `}</style>
     </div>
@@ -145,99 +146,130 @@ function Acknowledgment({
 function GlobalAnimations() {
   return (
     <style jsx global>{`
-      @keyframes draw-path-complex {
+      @keyframes draw-path-smooth {
         0% {
-          stroke-dashoffset: 2000;
+          stroke-dashoffset: 3000;
           stroke-width: 1;
-          filter: drop-shadow(0 0 5px rgba(254, 253, 253, 0.3));
+          filter: drop-shadow(0 0 3px rgba(254, 253, 253, 0.2));
         }
-        30% {
+        15% {
+          stroke-width: 3;
+          filter: drop-shadow(0 0 8px rgba(254, 253, 253, 0.4));
+        }
+        35% {
+          stroke-dashoffset: 2000;
           stroke-width: 4;
           filter: drop-shadow(0 0 15px rgba(254, 253, 253, 0.6));
         }
-        60% {
-          stroke-dashoffset: 500;
+        65% {
+          stroke-dashoffset: 800;
           stroke-width: 3;
           filter: drop-shadow(0 0 25px rgba(254, 253, 253, 0.8));
         }
-        100% {
-          stroke-dashoffset: 0;
-          stroke-width: 3;
-          filter: drop-shadow(0 0 20px rgba(254, 253, 253, 0.7));
-        }
-      }
-
-      @keyframes fill-path-complex {
-        0% {
-          fill: transparent;
-          stroke-width: 3;
-          filter: drop-shadow(0 0 20px rgba(254, 253, 253, 0.7));
-        }
-        50% {
-          fill: rgba(254, 253, 253, 0.3);
+        85% {
+          stroke-dashoffset: 200;
           stroke-width: 2;
           filter: drop-shadow(0 0 30px rgba(254, 253, 253, 0.9));
         }
         100% {
-          fill: #fefdfd;
-          stroke-width: 0;
-          filter: drop-shadow(0 0 25px rgba(254, 253, 253, 0.6));
+          stroke-dashoffset: 0;
+          stroke-width: 2;
+          filter: drop-shadow(0 0 20px rgba(254, 253, 253, 0.7));
         }
       }
 
-      @keyframes glow-complex {
+      @keyframes fill-path-smooth {
         0% {
-          filter: drop-shadow(0 0 15px rgba(254, 253, 253, 0.4)) drop-shadow(0 0 30px rgba(254, 253, 253, 0.2));
-        }
-        50% {
-          filter: drop-shadow(0 0 25px rgba(254, 253, 253, 0.7)) drop-shadow(0 0 50px rgba(254, 253, 253, 0.3));
-        }
-        100% {
-          filter: drop-shadow(0 0 40px rgba(254, 253, 253, 0.9)) drop-shadow(0 0 80px rgba(254, 253, 253, 0.4));
-        }
-      }
-
-      @keyframes stroke-pulse {
-        0% {
-          stroke: #fefdfd;
-        }
-        50% {
-          stroke: rgba(254, 253, 253, 0.8);
-        }
-        100% {
-          stroke: #ffffff;
-        }
-      }
-
-      @keyframes fade-in-pulse-complex {
-        0% {
-          opacity: 0;
-          transform: scale(0.5) rotate(-10deg);
-          filter: drop-shadow(0 0 5px rgba(237, 182, 177, 0.3));
+          fill: transparent;
+          stroke-width: 2;
+          filter: drop-shadow(0 0 20px rgba(254, 253, 253, 0.7));
         }
         30% {
-          opacity: 0.7;
-          transform: scale(1.3) rotate(5deg);
-          filter: drop-shadow(0 0 15px rgba(237, 182, 177, 0.6));
+          fill: rgba(254, 253, 253, 0.1);
+          stroke-width: 1.5;
+          filter: drop-shadow(0 0 25px rgba(254, 253, 253, 0.8));
         }
-        60% {
+        70% {
+          fill: rgba(254, 253, 253, 0.6);
+          stroke-width: 1;
+          filter: drop-shadow(0 0 35px rgba(254, 253, 253, 0.9));
+        }
+        100% {
+          fill: #fefdfd;
+          stroke-width: 0;
+          filter: drop-shadow(0 0 30px rgba(254, 253, 253, 0.8));
+        }
+      }
+
+      @keyframes glow-enhanced {
+        0% {
+          filter: drop-shadow(0 0 20px rgba(254, 253, 253, 0.5)) drop-shadow(0 0 40px rgba(254, 253, 253, 0.2));
+        }
+        50% {
+          filter: drop-shadow(0 0 35px rgba(254, 253, 253, 0.8)) drop-shadow(0 0 70px rgba(254, 253, 253, 0.4));
+        }
+        100% {
+          filter: drop-shadow(0 0 50px rgba(254, 253, 253, 1)) drop-shadow(0 0 100px rgba(254, 253, 253, 0.5));
+        }
+      }
+
+      @keyframes stroke-shimmer {
+        0% {
+          stroke: #fefdfd;
+          stroke-opacity: 1;
+        }
+        25% {
+          stroke: rgba(254, 253, 253, 0.9);
+          stroke-opacity: 0.9;
+        }
+        50% {
+          stroke: #ffffff;
+          stroke-opacity: 0.8;
+        }
+        75% {
+          stroke: rgba(254, 253, 253, 0.85);
+          stroke-opacity: 0.95;
+        }
+        100% {
+          stroke: #fefdfd;
+          stroke-opacity: 1;
+        }
+      }
+
+      @keyframes fade-in-pulse-smooth {
+        0% {
+          opacity: 0;
+          transform: scale(0.3) rotate(-15deg);
+          filter: drop-shadow(0 0 3px rgba(237, 182, 177, 0.2));
+        }
+        20% {
+          opacity: 0.4;
+          transform: scale(0.8) rotate(8deg);
+          filter: drop-shadow(0 0 10px rgba(237, 182, 177, 0.4));
+        }
+        40% {
+          opacity: 0.7;
+          transform: scale(1.4) rotate(-3deg);
+          filter: drop-shadow(0 0 20px rgba(237, 182, 177, 0.6));
+        }
+        70% {
           opacity: 0.9;
-          transform: scale(0.9) rotate(-2deg);
-          filter: drop-shadow(0 0 25px rgba(237, 182, 177, 0.8));
+          transform: scale(0.8) rotate(1deg);
+          filter: drop-shadow(0 0 30px rgba(237, 182, 177, 0.8));
         }
         100% {
           opacity: 1;
           transform: scale(1) rotate(0deg);
-          filter: drop-shadow(0 0 20px rgba(237, 182, 177, 0.7));
+          filter: drop-shadow(0 0 25px rgba(237, 182, 177, 0.7));
         }
       }
 
-      @keyframes accent-glow {
+      @keyframes accent-glow-enhanced {
         0% {
-          filter: drop-shadow(0 0 10px rgba(237, 182, 177, 0.5));
+          filter: drop-shadow(0 0 15px rgba(237, 182, 177, 0.6));
         }
         100% {
-          filter: drop-shadow(0 0 30px rgba(237, 182, 177, 0.9)) drop-shadow(0 0 60px rgba(237, 182, 177, 0.4));
+          filter: drop-shadow(0 0 40px rgba(237, 182, 177, 1)) drop-shadow(0 0 80px rgba(237, 182, 177, 0.5));
         }
       }
 
@@ -256,18 +288,21 @@ function GlobalAnimations() {
         }
       }
 
-      @keyframes logo-float {
+      @keyframes logo-float-enhanced {
         0%, 100% {
-          transform: translateY(0px) rotate(0deg);
+          transform: translateY(0px) rotate(0deg) scale(1);
         }
-        25% {
-          transform: translateY(-10px) rotate(1deg);
+        20% {
+          transform: translateY(-8px) rotate(0.5deg) scale(1.01);
         }
-        50% {
-          transform: translateY(-5px) rotate(0deg);
+        40% {
+          transform: translateY(-12px) rotate(0deg) scale(1.02);
         }
-        75% {
-          transform: translateY(-15px) rotate(-1deg);
+        60% {
+          transform: translateY(-6px) rotate(-0.5deg) scale(1.01);
+        }
+        80% {
+          transform: translateY(-18px) rotate(0.3deg) scale(1.015);
         }
       }
     `}</style>
