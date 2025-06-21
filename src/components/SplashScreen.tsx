@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 // Background Pulse Component
@@ -37,10 +38,10 @@ function MainLogoPath({
           strokeDashoffset: '4000',
           strokeWidth: '2',
           animation: `
-            draw-path-enhanced 8s cubic-bezier(0.16, 1, 0.3, 1) forwards,
-            fill-path-enhanced 3s ease-out 8s forwards,
-            glow-continuous 4s ease-in-out 11s infinite alternate,
-            stroke-flow 3s ease-in-out 8s infinite alternate
+            draw-path-enhanced 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards,
+            fill-path-enhanced 0.8s ease-out 1.5s forwards,
+            glow-continuous 1s ease-in-out 2.3s infinite alternate,
+            stroke-flow 0.8s ease-in-out 1.5s infinite alternate
           `
         }}
       />
@@ -161,8 +162,8 @@ function AccentPath({
           opacity: '0',
           transformOrigin: 'center',
           animation: `
-            fade-in-dramatic 3s cubic-bezier(0.34, 1.56, 0.64, 1) 11s forwards,
-            accent-glow-intense 3s ease-in-out 14s infinite alternate
+            fade-in-dramatic 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 2.3s forwards,
+            accent-glow-intense 1s ease-in-out 3.1s infinite alternate
           `
         }}
       />
@@ -253,7 +254,7 @@ function Acknowledgment({
     <div className={`absolute bottom-8 left-0 right-0 text-center text-white px-6 ${className}`}>
       <div 
         style={{
-          animation: 'fade-in-delayed 2s ease-out forwards'
+          animation: 'fade-in-delayed 0.5s ease-out forwards'
         }}
       >
         <p className="text-sm opacity-90 mb-2">

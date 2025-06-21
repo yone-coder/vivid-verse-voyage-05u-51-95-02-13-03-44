@@ -15,10 +15,10 @@ function App({ children }: { children: React.ReactNode }) {
   const [showSplash, setShowSplash] = useState(true);
 
   useEffect(() => {
-    // Hide splash screen after 15 seconds to give more time for the animations
+    // Hide splash screen after 4 seconds to match the ultra fast animations
     const timer = setTimeout(() => {
       setShowSplash(false);
-    }, 15000);
+    }, 4000);
 
     return () => clearTimeout(timer);
   }, []);
