@@ -13,14 +13,22 @@ const queryClient = new QueryClient();
 
 function App({ children }: { children: React.ReactNode }) {
   const [showSplash, setShowSplash] = useState(true);
+  const [isExiting, setIsExiting] = useState(false);
 
   useEffect(() => {
-    // Hide splash screen after 4 seconds to match the ultra fast animations
-    const timer = setTimeout(() => {
-      setShowSplash(false);
-    }, 4000);
+    // Start exit animation after 8 seconds (extended to show physics)
+    const exitTimer = setTimeout(() => {
+      setIsExiting(true);
+      
+      // Hide splash screen after exit animation completes
+      const hideTimer = setTimeout(() => {
+        setShowSplash(false);
+      }, 2000); // 2 seconds for exit animation
+      
+      return () => clearTimeout(hideTimer);
+    }, 8000);
 
-    return () => clearTimeout(timer);
+    return () => clearTimeout(exitTimer);
   }, []);
 
   return (
@@ -28,8 +36,8 @@ function App({ children }: { children: React.ReactNode }) {
       <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
         <TooltipProvider>
           <AuthOverlayProvider>
-            <SplashScreen isVisible={showSplash} />
-            <div className={`App min-h-screen bg-background text-foreground transition-opacity duration-300 ${showSplash ? 'opacity-0' : 'opacity-100'}`}>
+            <SplashScreen isVisible={showSplash} isExiting={isExiting} />
+            <div className={`App min-h-screen bg-background text-foreground transition-opacity duration-500 ${showSplash ? 'opacity-0' : 'opacity-100'}`}>
               {children}
               <Toaster />
               <Sonner />

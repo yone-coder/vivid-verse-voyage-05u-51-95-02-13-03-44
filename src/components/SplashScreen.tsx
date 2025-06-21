@@ -1,7 +1,7 @@
 
 import React from 'react';
 
-// Background Pulse Component
+// Background Pulse Component with Physics
 interface PulseBackgroundProps {
   className?: string;
 }
@@ -9,12 +9,46 @@ interface PulseBackgroundProps {
 function PulseBackground({ className = '' }: PulseBackgroundProps) {
   return (
     <div className={`absolute top-1/2 left-1/2 w-[600px] h-[600px] rounded-full transform -translate-x-1/2 -translate-y-1/2 opacity-30 ${className}`}>
-      <div className="w-full h-full rounded-full bg-gradient-radial from-white/10 via-white/5 to-transparent"></div>
+      <div 
+        className="w-full h-full rounded-full bg-gradient-radial from-white/10 via-white/5 to-transparent"
+        style={{
+          animation: 'physics-pulse 3s cubic-bezier(0.23, 1, 0.32, 1) infinite'
+        }}
+      ></div>
+      <style>{`
+        @keyframes physics-pulse {
+          0% {
+            transform: scale(1);
+            opacity: 0.3;
+            filter: blur(0px);
+          }
+          25% {
+            transform: scale(1.15);
+            opacity: 0.5;
+            filter: blur(2px);
+          }
+          50% {
+            transform: scale(0.85);
+            opacity: 0.7;
+            filter: blur(1px);
+          }
+          75% {
+            transform: scale(1.05);
+            opacity: 0.4;
+            filter: blur(3px);
+          }
+          100% {
+            transform: scale(1);
+            opacity: 0.3;
+            filter: blur(0px);
+          }
+        }
+      `}</style>
     </div>
   );
 }
 
-// Main Logo Path Component
+// Main Logo Path Component with Advanced Physics
 interface MainLogoPathProps {
   className?: string;
   strokeColor?: string;
@@ -37,104 +71,120 @@ function MainLogoPath({
           strokeDasharray: '4000',
           strokeDashoffset: '4000',
           strokeWidth: '2',
+          transformOrigin: 'center center',
           animation: `
-            draw-path-enhanced 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards,
-            fill-path-enhanced 0.8s ease-out 1.5s forwards,
-            glow-continuous 1s ease-in-out 2.3s infinite alternate,
-            stroke-flow 0.8s ease-in-out 1.5s infinite alternate
+            draw-path-physics 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
+            fill-path-physics 1.2s ease-out 2.5s forwards,
+            physics-vibration 0.8s ease-in-out 3.7s infinite,
+            gravity-bounce 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) 4.5s infinite
           `
         }}
       />
       <style>{`
-        @keyframes draw-path-enhanced {
+        @keyframes draw-path-physics {
           0% {
             stroke-dashoffset: 4000;
             stroke-width: 1;
+            transform: translateY(-20px) rotate(-5deg);
+            filter: drop-shadow(0 10px 20px rgba(255, 255, 255, 0.1));
           }
-          10% {
-            stroke-width: 4;
-          }
-          25% {
-            stroke-dashoffset: 3000;
+          15% {
             stroke-width: 6;
+            transform: translateY(-15px) rotate(-3deg);
+            filter: drop-shadow(0 15px 30px rgba(255, 255, 255, 0.3));
+          }
+          30% {
+            stroke-dashoffset: 3000;
+            stroke-width: 8;
+            transform: translateY(-10px) rotate(-1deg);
+            filter: drop-shadow(0 20px 40px rgba(255, 255, 255, 0.5));
           }
           50% {
             stroke-dashoffset: 1500;
-            stroke-width: 5;
+            stroke-width: 6;
+            transform: translateY(-5px) rotate(1deg);
+            filter: drop-shadow(0 25px 50px rgba(255, 255, 255, 0.7));
           }
           75% {
             stroke-dashoffset: 500;
-            stroke-width: 3;
+            stroke-width: 4;
+            transform: translateY(0px) rotate(0.5deg);
+            filter: drop-shadow(0 30px 60px rgba(255, 255, 255, 0.8));
           }
           90% {
             stroke-dashoffset: 100;
-            stroke-width: 2;
+            stroke-width: 3;
+            transform: translateY(2px) rotate(-0.2deg);
+            filter: drop-shadow(0 35px 70px rgba(255, 255, 255, 0.9));
           }
           100% {
             stroke-dashoffset: 0;
             stroke-width: 2;
+            transform: translateY(0px) rotate(0deg);
+            filter: drop-shadow(0 0 0px rgba(255, 255, 255, 0));
           }
         }
 
-        @keyframes fill-path-enhanced {
+        @keyframes fill-path-physics {
           0% {
             fill: transparent;
             stroke-width: 2;
+            transform: scale(1);
+            filter: brightness(1);
           }
-          20% {
+          25% {
             fill: rgba(255, 255, 255, 0.1);
-            stroke-width: 1.8;
+            stroke-width: 1.5;
+            transform: scale(1.02);
+            filter: brightness(1.2) drop-shadow(0 0 20px rgba(255, 255, 255, 0.5));
           }
           50% {
             fill: rgba(255, 255, 255, 0.4);
-            stroke-width: 1.2;
+            stroke-width: 1;
+            transform: scale(1.05);
+            filter: brightness(1.5) drop-shadow(0 0 40px rgba(255, 255, 255, 0.8));
           }
-          80% {
+          75% {
             fill: rgba(255, 255, 255, 0.8);
             stroke-width: 0.5;
+            transform: scale(1.02);
+            filter: brightness(1.3) drop-shadow(0 0 30px rgba(255, 255, 255, 0.6));
           }
           100% {
             fill: #ffffff;
             stroke-width: 0;
+            transform: scale(1);
+            filter: brightness(1);
           }
         }
 
-        @keyframes glow-continuous {
-          0% {
-            filter: none;
+        @keyframes physics-vibration {
+          0%, 100% {
+            transform: translateX(0px) translateY(0px) rotate(0deg);
+          }
+          25% {
+            transform: translateX(0.5px) translateY(-0.3px) rotate(0.2deg);
           }
           50% {
-            filter: none;
+            transform: translateX(-0.3px) translateY(0.5px) rotate(-0.15deg);
           }
-          100% {
-            filter: none;
+          75% {
+            transform: translateX(0.2px) translateY(-0.2px) rotate(0.1deg);
           }
         }
 
-        @keyframes stroke-flow {
-          0% {
-            stroke: #ffffff;
-            stroke-opacity: 1;
+        @keyframes gravity-bounce {
+          0%, 100% {
+            transform: translateY(0px) scale(1);
           }
-          20% {
-            stroke: rgba(255, 255, 255, 0.9);
-            stroke-opacity: 0.95;
+          25% {
+            transform: translateY(-8px) scale(1.01);
           }
-          40% {
-            stroke: #f8f8f8;
-            stroke-opacity: 0.85;
+          50% {
+            transform: translateY(-15px) scale(1.02);
           }
-          60% {
-            stroke: rgba(255, 255, 255, 0.8);
-            stroke-opacity: 0.9;
-          }
-          80% {
-            stroke: rgba(255, 255, 255, 0.9);
-            stroke-opacity: 0.98;
-          }
-          100% {
-            stroke: #ffffff;
-            stroke-opacity: 1;
+          75% {
+            transform: translateY(-5px) scale(1.005);
           }
         }
       `}</style>
@@ -142,7 +192,7 @@ function MainLogoPath({
   );
 }
 
-// Accent Path Component
+// Accent Path Component with Momentum Physics
 interface AccentPathProps {
   className?: string;
   fillColor?: string;
@@ -162,126 +212,91 @@ function AccentPath({
           opacity: '0',
           transformOrigin: 'center',
           animation: `
-            fade-in-physics 2.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 2.3s forwards,
-            accent-physics-glow 3.5s ease-in-out 5.1s infinite alternate
+            momentum-entry 3.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 3s forwards,
+            elastic-oscillation 1.5s ease-in-out 6.5s infinite,
+            magnetic-pull 2.5s cubic-bezier(0.23, 1, 0.32, 1) 8s infinite
           `
         }}
       />
       <style>{`
-        @keyframes fade-in-physics {
+        @keyframes momentum-entry {
           0% {
             opacity: 0;
-            transform: scale(0.3) rotate(-15deg);
-            filter: blur(2px);
+            transform: scale(0.1) rotate(-45deg) translateX(-50px) translateY(-30px);
+            filter: blur(5px) hue-rotate(180deg);
           }
-          8% {
-            opacity: 0.05;
-            transform: scale(0.35) rotate(-12deg);
-            filter: blur(1.8px);
-          }
-          12% {
+          15% {
             opacity: 0.1;
-            transform: scale(0.4) rotate(-10deg);
-            filter: blur(1.5px);
+            transform: scale(0.3) rotate(-30deg) translateX(-35px) translateY(-20px);
+            filter: blur(4px) hue-rotate(120deg);
           }
-          18% {
-            opacity: 0.15;
-            transform: scale(0.5) rotate(-8deg);
-            filter: blur(1.2px);
-          }
-          25% {
-            opacity: 0.2;
-            transform: scale(0.6) rotate(-6deg);
-            filter: blur(1px);
-          }
-          35% {
+          30% {
             opacity: 0.3;
-            transform: scale(0.75) rotate(-4deg);
-            filter: blur(0.8px);
+            transform: scale(0.6) rotate(-15deg) translateX(-20px) translateY(-10px);
+            filter: blur(3px) hue-rotate(60deg);
           }
           45% {
-            opacity: 0.4;
-            transform: scale(0.85) rotate(-2deg);
-            filter: blur(0.5px);
-          }
-          55% {
             opacity: 0.5;
-            transform: scale(0.95) rotate(-1deg);
-            filter: blur(0.3px);
+            transform: scale(0.9) rotate(-5deg) translateX(-8px) translateY(-3px);
+            filter: blur(2px) hue-rotate(30deg);
           }
-          62% {
-            opacity: 0.6;
-            transform: scale(1.05) rotate(0deg);
-            filter: blur(0.1px);
+          60% {
+            opacity: 0.7;
+            transform: scale(1.1) rotate(2deg) translateX(3px) translateY(2px);
+            filter: blur(1px) hue-rotate(10deg);
           }
-          68% {
-            opacity: 0.8;
-            transform: scale(1.15) rotate(1deg);
-            filter: blur(0px);
+          75% {
+            opacity: 0.85;
+            transform: scale(1.05) rotate(1deg) translateX(1px) translateY(1px);
+            filter: blur(0.5px) hue-rotate(5deg);
           }
-          74% {
-            opacity: 0.9;
-            transform: scale(1.08) rotate(0.5deg);
-            filter: blur(0px);
-          }
-          80% {
+          90% {
             opacity: 0.95;
-            transform: scale(1.03) rotate(0.2deg);
-            filter: blur(0px);
-          }
-          88% {
-            opacity: 0.98;
-            transform: scale(1.01) rotate(0.1deg);
-            filter: blur(0px);
-          }
-          95% {
-            opacity: 0.99;
-            transform: scale(1.005) rotate(0.05deg);
-            filter: blur(0px);
+            transform: scale(1.02) rotate(0.5deg) translateX(0.5px) translateY(0.2px);
+            filter: blur(0.2px) hue-rotate(2deg);
           }
           100% {
             opacity: 1;
-            transform: scale(1) rotate(0deg);
-            filter: blur(0px);
+            transform: scale(1) rotate(0deg) translateX(0px) translateY(0px);
+            filter: blur(0px) hue-rotate(0deg);
           }
         }
 
-        @keyframes accent-physics-glow {
-          0% {
-            filter: brightness(1) saturate(1) hue-rotate(0deg) drop-shadow(0 0 0px rgba(255, 255, 255, 0));
-          }
-          5% {
-            filter: brightness(1.1) saturate(1.1) hue-rotate(1deg) drop-shadow(0 0 2px rgba(255, 255, 255, 0.1));
-          }
-          15% {
-            filter: brightness(1.3) saturate(1.4) hue-rotate(3deg) drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
+        @keyframes elastic-oscillation {
+          0%, 100% {
+            transform: scale(1) rotate(0deg);
+            filter: brightness(1);
           }
           25% {
-            filter: brightness(0.9) saturate(0.8) hue-rotate(-1deg) drop-shadow(0 0 3px rgba(255, 255, 255, 0.2));
+            transform: scale(1.05) rotate(1deg);
+            filter: brightness(1.1);
           }
-          35% {
-            filter: brightness(1.5) saturate(1.7) hue-rotate(6deg) drop-shadow(0 0 8px rgba(255, 255, 255, 0.4));
-          }
-          45% {
-            filter: brightness(0.7) saturate(0.6) hue-rotate(-2deg) drop-shadow(0 0 2px rgba(255, 255, 255, 0.1));
-          }
-          55% {
-            filter: brightness(1.4) saturate(1.6) hue-rotate(4deg) drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
-          }
-          65% {
-            filter: brightness(0.8) saturate(0.7) hue-rotate(-1deg) drop-shadow(0 0 4px rgba(255, 255, 255, 0.2));
+          50% {
+            transform: scale(0.98) rotate(-0.5deg);
+            filter: brightness(0.95);
           }
           75% {
-            filter: brightness(1.2) saturate(1.3) hue-rotate(2deg) drop-shadow(0 0 6px rgba(255, 255, 255, 0.3));
+            transform: scale(1.02) rotate(0.3deg);
+            filter: brightness(1.05);
           }
-          85% {
-            filter: brightness(0.95) saturate(0.9) hue-rotate(-0.5deg) drop-shadow(0 0 3px rgba(255, 255, 255, 0.15));
+        }
+
+        @keyframes magnetic-pull {
+          0%, 100% {
+            transform: translateX(0px) translateY(0px);
+            filter: drop-shadow(0 0 0px rgba(255, 255, 255, 0));
           }
-          95% {
-            filter: brightness(1.1) saturate(1.1) hue-rotate(1deg) drop-shadow(0 0 5px rgba(255, 255, 255, 0.25));
+          25% {
+            transform: translateX(-1px) translateY(-0.5px);
+            filter: drop-shadow(2px 1px 5px rgba(255, 255, 255, 0.3));
           }
-          100% {
-            filter: brightness(1) saturate(1) hue-rotate(0deg) drop-shadow(0 0 0px rgba(255, 255, 255, 0));
+          50% {
+            transform: translateX(1px) translateY(0.5px);
+            filter: drop-shadow(-2px -1px 8px rgba(255, 255, 255, 0.5));
+          }
+          75% {
+            transform: translateX(-0.5px) translateY(-0.2px);
+            filter: drop-shadow(1px 0.5px 3px rgba(255, 255, 255, 0.2));
           }
         }
       `}</style>
@@ -289,22 +304,31 @@ function AccentPath({
   );
 }
 
-// Logo Container Component
+// Logo Container Component with Container Physics
 interface LogoContainerProps {
   className?: string;
   width?: string;
   height?: string;
   children: React.ReactNode;
+  isExiting?: boolean;
 }
 
 function LogoContainer({ 
   className = '', 
   width = '300px', 
   height = '300px',
-  children 
+  children,
+  isExiting = false
 }: LogoContainerProps) {
   return (
-    <div className={`relative ${className}`}>
+    <div 
+      className={`relative ${className}`}
+      style={{
+        animation: isExiting 
+          ? 'explosive-exit 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards'
+          : 'container-physics-float 6s ease-in-out 5s infinite'
+      }}
+    >
       <svg 
         style={{ 
           width, 
@@ -315,29 +339,87 @@ function LogoContainer({
       >
         {children}
       </svg>
+      <style>{`
+        @keyframes container-physics-float {
+          0%, 100% {
+            transform: translateY(0px) rotate(0deg) scale(1);
+            filter: drop-shadow(0 10px 25px rgba(255, 255, 255, 0.1));
+          }
+          25% {
+            transform: translateY(-12px) rotate(0.8deg) scale(1.01);
+            filter: drop-shadow(0 15px 35px rgba(255, 255, 255, 0.2));
+          }
+          50% {
+            transform: translateY(-20px) rotate(0deg) scale(1.02);
+            filter: drop-shadow(0 25px 50px rgba(255, 255, 255, 0.3));
+          }
+          75% {
+            transform: translateY(-8px) rotate(-0.5deg) scale(1.005);
+            filter: drop-shadow(0 12px 30px rgba(255, 255, 255, 0.15));
+          }
+        }
+
+        @keyframes explosive-exit {
+          0% {
+            transform: scale(1) rotate(0deg);
+            opacity: 1;
+            filter: brightness(1) blur(0px);
+          }
+          20% {
+            transform: scale(1.1) rotate(5deg);
+            opacity: 0.9;
+            filter: brightness(1.3) blur(1px);
+          }
+          40% {
+            transform: scale(1.3) rotate(15deg);
+            opacity: 0.7;
+            filter: brightness(1.8) blur(3px);
+          }
+          60% {
+            transform: scale(2) rotate(35deg);
+            opacity: 0.5;
+            filter: brightness(2.5) blur(8px);
+          }
+          80% {
+            transform: scale(4) rotate(80deg);
+            opacity: 0.2;
+            filter: brightness(3) blur(15px);
+          }
+          100% {
+            transform: scale(8) rotate(180deg);
+            opacity: 0;
+            filter: brightness(0) blur(25px);
+          }
+        }
+      `}</style>
     </div>
   );
 }
 
-// Acknowledgment Section Component
+// Acknowledgment Section Component with Physics
 interface AcknowledgmentProps {
   className?: string;
   madeInText?: string;
   authorizedText?: string;
+  isExiting?: boolean;
 }
 
 function Acknowledgment({ 
   className = '',
   madeInText = "Made in Désarmes with",
-  authorizedText = "Legalized and authorized by BRH"
+  authorizedText = "Legalized and authorized by BRH",
+  isExiting = false
 }: AcknowledgmentProps) {
   return (
-    <div className={`absolute bottom-8 left-0 right-0 text-center text-white px-6 ${className}`}>
-      <div 
-        style={{
-          animation: 'fade-in-delayed 0.5s ease-out forwards'
-        }}
-      >
+    <div 
+      className={`absolute bottom-8 left-0 right-0 text-center text-white px-6 ${className}`}
+      style={{
+        animation: isExiting 
+          ? 'text-physics-exit 2s ease-in-out forwards'
+          : 'text-physics-entry 1s ease-out 7s forwards'
+      }}
+    >
+      <div style={{ opacity: 0 }}>
         <p className="text-sm opacity-90 mb-2">
           {madeInText} <span className="text-pink-200">❤️</span>
         </p>
@@ -346,18 +428,54 @@ function Acknowledgment({
         </p>
       </div>
       <style>{`
-        @keyframes fade-in-delayed {
+        @keyframes text-physics-entry {
           0% {
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(30px) scale(0.8);
+            filter: blur(3px);
           }
-          70% {
-            opacity: 0;
-            transform: translateY(20px);
+          30% {
+            opacity: 0.3;
+            transform: translateY(20px) scale(0.9);
+            filter: blur(2px);
+          }
+          60% {
+            opacity: 0.7;
+            transform: translateY(10px) scale(0.95);
+            filter: blur(1px);
+          }
+          80% {
+            opacity: 0.9;
+            transform: translateY(5px) scale(0.98);
+            filter: blur(0.5px);
           }
           100% {
             opacity: 1;
-            transform: translateY(0);
+            transform: translateY(0px) scale(1);
+            filter: blur(0px);
+          }
+        }
+
+        @keyframes text-physics-exit {
+          0% {
+            opacity: 1;
+            transform: translateY(0px) scale(1);
+            filter: blur(0px);
+          }
+          30% {
+            opacity: 0.8;
+            transform: translateY(-10px) scale(1.05);
+            filter: blur(1px);
+          }
+          60% {
+            opacity: 0.5;
+            transform: translateY(-25px) scale(1.2);
+            filter: blur(3px);
+          }
+          100% {
+            opacity: 0;
+            transform: translateY(-50px) scale(1.5);
+            filter: blur(8px);
           }
         }
       `}</style>
@@ -365,226 +483,63 @@ function Acknowledgment({
   );
 }
 
-// Global Animations Component
-function GlobalAnimations() {
+// Physics Background Component
+function PhysicsBackground({ isExiting }: { isExiting: boolean }) {
   return (
-    <style>{`
-      @keyframes draw-path-smooth {
-        0% {
-          stroke-dashoffset: 3000;
-          stroke-width: 1;
-          filter: drop-shadow(0 0 3px rgba(254, 253, 253, 0.2));
+    <div 
+      className="absolute inset-0"
+      style={{
+        animation: isExiting 
+          ? 'background-physics-exit 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards'
+          : 'background-physics-pulse 4s ease-in-out infinite'
+      }}
+    >
+      {/* Multiple physics layers */}
+      <div className="absolute inset-0 bg-gradient-radial from-red-400/20 via-red-500/10 to-transparent"></div>
+      <div className="absolute inset-0 bg-gradient-conic from-red-500/5 via-transparent to-red-600/5"></div>
+      <style>{`
+        @keyframes background-physics-pulse {
+          0%, 100% {
+            opacity: 1;
+            transform: scale(1);
+            filter: hue-rotate(0deg) brightness(1);
+          }
+          50% {
+            opacity: 0.8;
+            transform: scale(1.02);
+            filter: hue-rotate(10deg) brightness(1.1);
+          }
         }
-        15% {
-          stroke-width: 3;
-          filter: drop-shadow(0 0 8px rgba(254, 253, 253, 0.4));
-        }
-        35% {
-          stroke-dashoffset: 2000;
-          stroke-width: 4;
-          filter: drop-shadow(0 0 15px rgba(254, 253, 253, 0.6));
-        }
-        65% {
-          stroke-dashoffset: 800;
-          stroke-width: 3;
-          filter: drop-shadow(0 0 25px rgba(254, 253, 253, 0.8));
-        }
-        85% {
-          stroke-dashoffset: 200;
-          stroke-width: 2;
-          filter: drop-shadow(0 0 30px rgba(254, 253, 253, 0.9));
-        }
-        100% {
-          stroke-dashoffset: 0;
-          stroke-width: 2;
-          filter: none;
-        }
-      }
 
-      @keyframes fill-path-smooth {
-        0% {
-          fill: transparent;
-          stroke-width: 2;
-          filter: none;
+        @keyframes background-physics-exit {
+          0% {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+            filter: brightness(1) blur(0px) hue-rotate(0deg);
+          }
+          25% {
+            opacity: 0.9;
+            transform: scale(1.1) rotate(2deg);
+            filter: brightness(1.5) blur(2px) hue-rotate(30deg);
+          }
+          50% {
+            opacity: 0.7;
+            transform: scale(1.3) rotate(8deg);
+            filter: brightness(2) blur(5px) hue-rotate(90deg);
+          }
+          75% {
+            opacity: 0.4;
+            transform: scale(1.8) rotate(20deg);
+            filter: brightness(3) blur(12px) hue-rotate(180deg);
+          }
+          100% {
+            opacity: 0;
+            transform: scale(3) rotate(45deg);
+            filter: brightness(0) blur(25px) hue-rotate(360deg);
+          }
         }
-        30% {
-          fill: rgba(254, 253, 253, 0.1);
-          stroke-width: 1.5;
-          filter: drop-shadow(0 0 25px rgba(254, 253, 253, 0.8));
-        }
-        70% {
-          fill: rgba(254, 253, 253, 0.6);
-          stroke-width: 1;
-          filter: drop-shadow(0 0 35px rgba(254, 253, 253, 0.9));
-        }
-        100% {
-          fill: #fefdfd;
-          stroke-width: 0;
-          filter: none;
-        }
-      }
-
-      @keyframes glow-enhanced {
-        0% {
-          filter: none;
-        }
-        50% {
-          filter: none;
-        }
-        100% {
-          filter: none;
-        }
-      }
-
-      @keyframes stroke-shimmer {
-        0% {
-          stroke: #fefdfd;
-          stroke-opacity: 1;
-        }
-        25% {
-          stroke: rgba(254, 253, 253, 0.9);
-          stroke-opacity: 0.9;
-        }
-        50% {
-          stroke: #ffffff;
-          stroke-opacity: 0.8;
-        }
-        75% {
-          stroke: rgba(254, 253, 253, 0.85);
-          stroke-opacity: 0.95;
-        }
-        100% {
-          stroke: #fefdfd;
-          stroke-opacity: 1;
-        }
-      }
-
-      @keyframes fade-in-pulse-smooth {
-        0% {
-          opacity: 0;
-          transform: scale(0.3) rotate(-15deg);
-          filter: drop-shadow(0 0 3px rgba(237, 182, 177, 0.2));
-        }
-        20% {
-          opacity: 0.4;
-          transform: scale(0.8) rotate(8deg);
-          filter: drop-shadow(0 0 10px rgba(237, 182, 177, 0.4));
-        }
-        40% {
-          opacity: 0.7;
-          transform: scale(1.4) rotate(-3deg);
-          filter: drop-shadow(0 0 20px rgba(237, 182, 177, 0.6));
-        }
-        70% {
-          opacity: 0.9;
-          transform: scale(0.8) rotate(1deg);
-          filter: drop-shadow(0 0 30px rgba(237, 182, 177, 0.8));
-        }
-        100% {
-          opacity: 1;
-          transform: scale(1) rotate(0deg);
-          filter: none;
-        }
-      }
-
-      @keyframes accent-glow-enhanced {
-        0% {
-          filter: none;
-        }
-        100% {
-          filter: none;
-        }
-      }
-
-      @keyframes fade-in-delayed {
-        0% {
-          opacity: 0;
-          transform: translateY(20px);
-        }
-        70% {
-          opacity: 0;
-          transform: translateY(20px);
-        }
-        100% {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      @keyframes logo-float-enhanced {
-        0%, 100% {
-          transform: translateY(0px) rotate(0deg) scale(1);
-        }
-        20% {
-          transform: translateY(-8px) rotate(0.5deg) scale(1.01);
-        }
-        40% {
-          transform: translateY(-12px) rotate(0deg) scale(1.02);
-        }
-        60% {
-          transform: translateY(-6px) rotate(-0.5deg) scale(1.01);
-        }
-        80% {
-          transform: translateY(-18px) rotate(0.3deg) scale(1.015);
-        }
-      }
-
-      @keyframes splash-exit-zoom {
-        0% {
-          transform: scale(1);
-          opacity: 1;
-          background-color: #ef4444;
-        }
-        30% {
-          transform: scale(1.1);
-          opacity: 0.9;
-          background-color: #ef4444;
-        }
-        60% {
-          transform: scale(1.5);
-          opacity: 0.7;
-          background-color: #f87171;
-        }
-        80% {
-          transform: scale(2.5);
-          opacity: 0.4;
-          background-color: #fca5a5;
-        }
-        95% {
-          transform: scale(4);
-          opacity: 0.1;
-          background-color: #fecaca;
-        }
-        100% {
-          transform: scale(5);
-          opacity: 0;
-          background-color: #ffffff;
-        }
-      }
-
-      @keyframes logo-zoom-out {
-        0% {
-          transform: scale(1);
-          opacity: 1;
-        }
-        50% {
-          transform: scale(1.2);
-          opacity: 0.8;
-        }
-        100% {
-          transform: scale(8);
-          opacity: 0;
-        }
-      }
-
-      .splash-exit {
-        animation: splash-exit-zoom 1s ease-in-out forwards;
-      }
-
-      .logo-exit {
-        animation: logo-zoom-out 1s ease-in-out forwards;
-      }
-    `}</style>
+      `}</style>
+    </div>
   );
 }
 
@@ -605,30 +560,34 @@ export default function AnimatedSplashScreen({
   isVisible,
   isExiting = false,
   backgroundColor = 'bg-red-500',
-  logoWidth = '300px',
-  logoHeight = '300px',
+  logoWidth = '350px',
+  logoHeight = '350px',
   customAcknowledment
 }: SplashScreenProps) {
   if (!isVisible) return null;
 
   return (
-    <>
-      <GlobalAnimations />
-      <div className={`fixed inset-0 min-h-screen ${backgroundColor} flex flex-col items-center justify-center overflow-hidden z-50 ${isExiting ? 'splash-exit' : ''}`}>
-        <div className="relative flex flex-col items-center justify-center flex-grow">
-          <PulseBackground />
-          
-          <LogoContainer width={logoWidth} height={logoHeight} className={isExiting ? 'logo-exit' : ''}>
-            <MainLogoPath />
-            <AccentPath />
-          </LogoContainer>
-        </div>
-
-        <Acknowledgment 
-          madeInText={customAcknowledment?.madeInText}
-          authorizedText={customAcknowledment?.authorizedText}
-        />
+    <div className={`fixed inset-0 min-h-screen ${backgroundColor} flex flex-col items-center justify-center overflow-hidden z-50`}>
+      <PhysicsBackground isExiting={isExiting} />
+      
+      <div className="relative flex flex-col items-center justify-center flex-grow">
+        <PulseBackground />
+        
+        <LogoContainer 
+          width={logoWidth} 
+          height={logoHeight} 
+          isExiting={isExiting}
+        >
+          <MainLogoPath />
+          <AccentPath />
+        </LogoContainer>
       </div>
-    </>
+
+      <Acknowledgment 
+        madeInText={customAcknowledment?.madeInText}
+        authorizedText={customAcknowledment?.authorizedText}
+        isExiting={isExiting}
+      />
+    </div>
   );
 }
