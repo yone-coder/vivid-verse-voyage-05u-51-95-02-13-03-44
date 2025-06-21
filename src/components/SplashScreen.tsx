@@ -78,7 +78,7 @@ function MainLogoPath({
           100% {
             stroke-dashoffset: 0;
             stroke-width: 2;
-            filter: drop-shadow(0 0 30px rgba(239, 68, 68, 0.8));
+            filter: none;
           }
         }
 
@@ -86,7 +86,7 @@ function MainLogoPath({
           0% {
             fill: transparent;
             stroke-width: 2;
-            filter: drop-shadow(0 0 30px rgba(239, 68, 68, 0.8));
+            filter: none;
           }
           20% {
             fill: rgba(239, 68, 68, 0.1);
@@ -106,19 +106,19 @@ function MainLogoPath({
           100% {
             fill: #ef4444;
             stroke-width: 0;
-            filter: drop-shadow(0 0 40px rgba(239, 68, 68, 0.9));
+            filter: none;
           }
         }
 
         @keyframes glow-continuous {
           0% {
-            filter: drop-shadow(0 0 25px rgba(239, 68, 68, 0.6)) drop-shadow(0 0 50px rgba(239, 68, 68, 0.3));
+            filter: none;
           }
           50% {
-            filter: drop-shadow(0 0 45px rgba(239, 68, 68, 0.9)) drop-shadow(0 0 90px rgba(239, 68, 68, 0.5));
+            filter: none;
           }
           100% {
-            filter: drop-shadow(0 0 60px rgba(239, 68, 68, 1)) drop-shadow(0 0 120px rgba(239, 68, 68, 0.6));
+            filter: none;
           }
         }
 
@@ -208,16 +208,16 @@ function AccentPath({
           100% {
             opacity: 1;
             transform: scale(1) rotate(0deg);
-            filter: drop-shadow(0 0 35px rgba(237, 182, 177, 0.8));
+            filter: none;
           }
         }
 
         @keyframes accent-glow-intense {
           0% {
-            filter: drop-shadow(0 0 20px rgba(237, 182, 177, 0.7));
+            filter: none;
           }
           100% {
-            filter: drop-shadow(0 0 50px rgba(237, 182, 177, 1)) drop-shadow(0 0 100px rgba(237, 182, 177, 0.6));
+            filter: none;
           }
         }
       `}</style>
@@ -283,7 +283,7 @@ function LogoContainer({
 }
 
 // Acknowledgment Section Component
-interface AcknowledmentProps {
+interface AcknowledgmentProps {
   className?: string;
   madeInText?: string;
   authorizedText?: string;
@@ -293,7 +293,7 @@ function Acknowledgment({
   className = '',
   madeInText = "Made in Désarmes with",
   authorizedText = "Legalized and authorized by BRH"
-}: AcknowledmentProps) {
+}: AcknowledgmentProps) {
   return (
     <div className={`absolute bottom-8 left-0 right-0 text-center text-white px-6 ${className}`}>
       <div 
@@ -360,7 +360,7 @@ function GlobalAnimations() {
         100% {
           stroke-dashoffset: 0;
           stroke-width: 2;
-          filter: drop-shadow(0 0 20px rgba(254, 253, 253, 0.7));
+          filter: none;
         }
       }
 
@@ -368,7 +368,7 @@ function GlobalAnimations() {
         0% {
           fill: transparent;
           stroke-width: 2;
-          filter: drop-shadow(0 0 20px rgba(254, 253, 253, 0.7));
+          filter: none;
         }
         30% {
           fill: rgba(254, 253, 253, 0.1);
@@ -383,19 +383,19 @@ function GlobalAnimations() {
         100% {
           fill: #fefdfd;
           stroke-width: 0;
-          filter: drop-shadow(0 0 30px rgba(254, 253, 253, 0.8));
+          filter: none;
         }
       }
 
       @keyframes glow-enhanced {
         0% {
-          filter: drop-shadow(0 0 20px rgba(254, 253, 253, 0.5)) drop-shadow(0 0 40px rgba(254, 253, 253, 0.2));
+          filter: none;
         }
         50% {
-          filter: drop-shadow(0 0 35px rgba(254, 253, 253, 0.8)) drop-shadow(0 0 70px rgba(254, 253, 253, 0.4));
+          filter: none;
         }
         100% {
-          filter: drop-shadow(0 0 50px rgba(254, 253, 253, 1)) drop-shadow(0 0 100px rgba(254, 253, 253, 0.5));
+          filter: none;
         }
       }
 
@@ -446,16 +446,16 @@ function GlobalAnimations() {
         100% {
           opacity: 1;
           transform: scale(1) rotate(0deg);
-          filter: drop-shadow(0 0 25px rgba(237, 182, 177, 0.7));
+          filter: none;
         }
       }
 
       @keyframes accent-glow-enhanced {
         0% {
-          filter: drop-shadow(0 0 15px rgba(237, 182, 177, 0.6));
+          filter: none;
         }
         100% {
-          filter: drop-shadow(0 0 40px rgba(237, 182, 177, 1)) drop-shadow(0 0 80px rgba(237, 182, 177, 0.5));
+          filter: none;
         }
       }
 
