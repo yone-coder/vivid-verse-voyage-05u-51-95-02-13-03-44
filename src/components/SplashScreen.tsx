@@ -161,72 +161,126 @@ function AccentPath({
           opacity: '0',
           transformOrigin: 'center',
           animation: `
-            fade-in-sequential 3s cubic-bezier(0.25, 0.46, 0.45, 0.94) 2.3s forwards,
-            accent-glow-varied 4s ease-in-out 5.3s infinite alternate
+            fade-in-physics 2.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 2.3s forwards,
+            accent-physics-glow 3.5s ease-in-out 5.1s infinite alternate
           `
         }}
       />
       <style>{`
-        @keyframes fade-in-sequential {
+        @keyframes fade-in-physics {
           0% {
             opacity: 0;
-            transform: scale(0.5) rotate(-10deg);
+            transform: scale(0.3) rotate(-15deg);
+            filter: blur(2px);
           }
-          5% {
+          8% {
+            opacity: 0.05;
+            transform: scale(0.35) rotate(-12deg);
+            filter: blur(1.8px);
+          }
+          12% {
             opacity: 0.1;
-            transform: scale(0.6) rotate(-8deg);
+            transform: scale(0.4) rotate(-10deg);
+            filter: blur(1.5px);
           }
-          15% {
+          18% {
+            opacity: 0.15;
+            transform: scale(0.5) rotate(-8deg);
+            filter: blur(1.2px);
+          }
+          25% {
             opacity: 0.2;
-            transform: scale(0.7) rotate(-5deg);
+            transform: scale(0.6) rotate(-6deg);
+            filter: blur(1px);
           }
           35% {
             opacity: 0.3;
-            transform: scale(0.8) rotate(-2deg);
+            transform: scale(0.75) rotate(-4deg);
+            filter: blur(0.8px);
           }
-          60% {
+          45% {
+            opacity: 0.4;
+            transform: scale(0.85) rotate(-2deg);
+            filter: blur(0.5px);
+          }
+          55% {
             opacity: 0.5;
-            transform: scale(0.9) rotate(1deg);
+            transform: scale(0.95) rotate(-1deg);
+            filter: blur(0.3px);
           }
-          65% {
+          62% {
+            opacity: 0.6;
+            transform: scale(1.05) rotate(0deg);
+            filter: blur(0.1px);
+          }
+          68% {
             opacity: 0.8;
-            transform: scale(1.1) rotate(2deg);
+            transform: scale(1.15) rotate(1deg);
+            filter: blur(0px);
           }
-          70% {
+          74% {
             opacity: 0.9;
-            transform: scale(1.05) rotate(1deg);
+            transform: scale(1.08) rotate(0.5deg);
+            filter: blur(0px);
           }
-          75% {
+          80% {
             opacity: 0.95;
-            transform: scale(1.02) rotate(0.5deg);
+            transform: scale(1.03) rotate(0.2deg);
+            filter: blur(0px);
+          }
+          88% {
+            opacity: 0.98;
+            transform: scale(1.01) rotate(0.1deg);
+            filter: blur(0px);
+          }
+          95% {
+            opacity: 0.99;
+            transform: scale(1.005) rotate(0.05deg);
+            filter: blur(0px);
           }
           100% {
             opacity: 1;
             transform: scale(1) rotate(0deg);
+            filter: blur(0px);
           }
         }
 
-        @keyframes accent-glow-varied {
+        @keyframes accent-physics-glow {
           0% {
-            filter: brightness(1) saturate(1) hue-rotate(0deg);
+            filter: brightness(1) saturate(1) hue-rotate(0deg) drop-shadow(0 0 0px rgba(237, 182, 177, 0));
           }
-          10% {
-            filter: brightness(1.5) saturate(1.8) hue-rotate(5deg);
+          5% {
+            filter: brightness(1.1) saturate(1.1) hue-rotate(1deg) drop-shadow(0 0 2px rgba(237, 182, 177, 0.1));
           }
-          20% {
-            filter: brightness(0.8) saturate(0.6) hue-rotate(-3deg);
+          15% {
+            filter: brightness(1.3) saturate(1.4) hue-rotate(3deg) drop-shadow(0 0 5px rgba(237, 182, 177, 0.3));
           }
-          40% {
-            filter: brightness(1.3) saturate(1.5) hue-rotate(8deg);
+          25% {
+            filter: brightness(0.9) saturate(0.8) hue-rotate(-1deg) drop-shadow(0 0 3px rgba(237, 182, 177, 0.2));
           }
-          60% {
-            filter: brightness(0.9) saturate(0.8) hue-rotate(-2deg);
+          35% {
+            filter: brightness(1.5) saturate(1.7) hue-rotate(6deg) drop-shadow(0 0 8px rgba(237, 182, 177, 0.4));
           }
-          80% {
-            filter: brightness(1.2) saturate(1.3) hue-rotate(4deg);
+          45% {
+            filter: brightness(0.7) saturate(0.6) hue-rotate(-2deg) drop-shadow(0 0 2px rgba(237, 182, 177, 0.1));
+          }
+          55% {
+            filter: brightness(1.4) saturate(1.6) hue-rotate(4deg) drop-shadow(0 0 10px rgba(237, 182, 177, 0.5));
+          }
+          65% {
+            filter: brightness(0.8) saturate(0.7) hue-rotate(-1deg) drop-shadow(0 0 4px rgba(237, 182, 177, 0.2));
+          }
+          75% {
+            filter: brightness(1.2) saturate(1.3) hue-rotate(2deg) drop-shadow(0 0 6px rgba(237, 182, 177, 0.3));
+          }
+          85% {
+            filter: brightness(0.95) saturate(0.9) hue-rotate(-0.5deg) drop-shadow(0 0 3px rgba(237, 182, 177, 0.15));
+          }
+          95% {
+            filter: brightness(1.1) saturate(1.1) hue-rotate(1deg) drop-shadow(0 0 5px rgba(237, 182, 177, 0.25));
           }
           100% {
-            filter: brightness(1) saturate(1) hue-rotate(0deg);
+            filter: brightness(1) saturate(1) hue-rotate(0deg) drop-shadow(0 0 0px rgba(237, 182, 177, 0));
           }
         }
       `}</style>
