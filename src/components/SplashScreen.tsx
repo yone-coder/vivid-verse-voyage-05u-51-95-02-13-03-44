@@ -240,44 +240,17 @@ function LogoContainer({
   children 
 }: LogoContainerProps) {
   return (
-    <div className={`relative drop-shadow-[0_20px_40px_rgba(0,0,0,0.3)] ${className}`}>
+    <div className={`relative ${className}`}>
       <svg 
-        className="animate-logo-enhanced-float"
         style={{ 
           width, 
-          height,
-          animation: 'logo-enhanced-float 10s ease-in-out infinite'
+          height
         }}
         xmlns="http://www.w3.org/2000/svg" 
         viewBox="0 0 1024 1024"
       >
         {children}
       </svg>
-      <style>{`
-        @keyframes logo-enhanced-float {
-          0%, 100% {
-            transform: translateY(0px) rotate(0deg) scale(1);
-          }
-          15% {
-            transform: translateY(-12px) rotate(0.8deg) scale(1.02);
-          }
-          30% {
-            transform: translateY(-20px) rotate(0deg) scale(1.03);
-          }
-          45% {
-            transform: translateY(-8px) rotate(-0.6deg) scale(1.01);
-          }
-          60% {
-            transform: translateY(-25px) rotate(0.4deg) scale(1.025);
-          }
-          75% {
-            transform: translateY(-15px) rotate(0deg) scale(1.015);
-          }
-          90% {
-            transform: translateY(-5px) rotate(0.2deg) scale(1.005);
-          }
-        }
-      `}</style>
     </div>
   );
 }
