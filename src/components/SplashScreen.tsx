@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 // Background Pulse Component
@@ -22,7 +23,7 @@ interface MainLogoPathProps {
 
 function MainLogoPath({ 
   className = '', 
-  strokeColor = '#ef4444',
+  strokeColor = '#ffffff',
   fillColor = 'transparent' 
 }: MainLogoPathProps) {
   return (
@@ -81,19 +82,19 @@ function MainLogoPath({
             stroke-width: 2;
           }
           20% {
-            fill: rgba(239, 68, 68, 0.1);
+            fill: rgba(255, 255, 255, 0.1);
             stroke-width: 1.8;
           }
           50% {
-            fill: rgba(239, 68, 68, 0.4);
+            fill: rgba(255, 255, 255, 0.4);
             stroke-width: 1.2;
           }
           80% {
-            fill: rgba(239, 68, 68, 0.8);
+            fill: rgba(255, 255, 255, 0.8);
             stroke-width: 0.5;
           }
           100% {
-            fill: #ef4444;
+            fill: #ffffff;
             stroke-width: 0;
           }
         }
@@ -112,27 +113,27 @@ function MainLogoPath({
 
         @keyframes stroke-flow {
           0% {
-            stroke: #ef4444;
+            stroke: #ffffff;
             stroke-opacity: 1;
           }
           20% {
-            stroke: rgba(239, 68, 68, 0.9);
+            stroke: rgba(255, 255, 255, 0.9);
             stroke-opacity: 0.95;
           }
           40% {
-            stroke: #dc2626;
+            stroke: #f8f8f8;
             stroke-opacity: 0.85;
           }
           60% {
-            stroke: rgba(239, 68, 68, 0.8);
+            stroke: rgba(255, 255, 255, 0.8);
             stroke-opacity: 0.9;
           }
           80% {
-            stroke: rgba(239, 68, 68, 0.9);
+            stroke: rgba(255, 255, 255, 0.9);
             stroke-opacity: 0.98;
           }
           100% {
-            stroke: #ef4444;
+            stroke: #ffffff;
             stroke-opacity: 1;
           }
         }
@@ -149,7 +150,7 @@ interface AccentPathProps {
 
 function AccentPath({ 
   className = '', 
-  fillColor = '#edb6b1' 
+  fillColor = '#ffffff' 
 }: AccentPathProps) {
   return (
     <>
@@ -247,40 +248,40 @@ function AccentPath({
 
         @keyframes accent-physics-glow {
           0% {
-            filter: brightness(1) saturate(1) hue-rotate(0deg) drop-shadow(0 0 0px rgba(237, 182, 177, 0));
+            filter: brightness(1) saturate(1) hue-rotate(0deg) drop-shadow(0 0 0px rgba(255, 255, 255, 0));
           }
           5% {
-            filter: brightness(1.1) saturate(1.1) hue-rotate(1deg) drop-shadow(0 0 2px rgba(237, 182, 177, 0.1));
+            filter: brightness(1.1) saturate(1.1) hue-rotate(1deg) drop-shadow(0 0 2px rgba(255, 255, 255, 0.1));
           }
           15% {
-            filter: brightness(1.3) saturate(1.4) hue-rotate(3deg) drop-shadow(0 0 5px rgba(237, 182, 177, 0.3));
+            filter: brightness(1.3) saturate(1.4) hue-rotate(3deg) drop-shadow(0 0 5px rgba(255, 255, 255, 0.3));
           }
           25% {
-            filter: brightness(0.9) saturate(0.8) hue-rotate(-1deg) drop-shadow(0 0 3px rgba(237, 182, 177, 0.2));
+            filter: brightness(0.9) saturate(0.8) hue-rotate(-1deg) drop-shadow(0 0 3px rgba(255, 255, 255, 0.2));
           }
           35% {
-            filter: brightness(1.5) saturate(1.7) hue-rotate(6deg) drop-shadow(0 0 8px rgba(237, 182, 177, 0.4));
+            filter: brightness(1.5) saturate(1.7) hue-rotate(6deg) drop-shadow(0 0 8px rgba(255, 255, 255, 0.4));
           }
           45% {
-            filter: brightness(0.7) saturate(0.6) hue-rotate(-2deg) drop-shadow(0 0 2px rgba(237, 182, 177, 0.1));
+            filter: brightness(0.7) saturate(0.6) hue-rotate(-2deg) drop-shadow(0 0 2px rgba(255, 255, 255, 0.1));
           }
           55% {
-            filter: brightness(1.4) saturate(1.6) hue-rotate(4deg) drop-shadow(0 0 10px rgba(237, 182, 177, 0.5));
+            filter: brightness(1.4) saturate(1.6) hue-rotate(4deg) drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
           }
           65% {
-            filter: brightness(0.8) saturate(0.7) hue-rotate(-1deg) drop-shadow(0 0 4px rgba(237, 182, 177, 0.2));
+            filter: brightness(0.8) saturate(0.7) hue-rotate(-1deg) drop-shadow(0 0 4px rgba(255, 255, 255, 0.2));
           }
           75% {
-            filter: brightness(1.2) saturate(1.3) hue-rotate(2deg) drop-shadow(0 0 6px rgba(237, 182, 177, 0.3));
+            filter: brightness(1.2) saturate(1.3) hue-rotate(2deg) drop-shadow(0 0 6px rgba(255, 255, 255, 0.3));
           }
           85% {
-            filter: brightness(0.95) saturate(0.9) hue-rotate(-0.5deg) drop-shadow(0 0 3px rgba(237, 182, 177, 0.15));
+            filter: brightness(0.95) saturate(0.9) hue-rotate(-0.5deg) drop-shadow(0 0 3px rgba(255, 255, 255, 0.15));
           }
           95% {
-            filter: brightness(1.1) saturate(1.1) hue-rotate(1deg) drop-shadow(0 0 5px rgba(237, 182, 177, 0.25));
+            filter: brightness(1.1) saturate(1.1) hue-rotate(1deg) drop-shadow(0 0 5px rgba(255, 255, 255, 0.25));
           }
           100% {
-            filter: brightness(1) saturate(1) hue-rotate(0deg) drop-shadow(0 0 0px rgba(237, 182, 177, 0));
+            filter: brightness(1) saturate(1) hue-rotate(0deg) drop-shadow(0 0 0px rgba(255, 255, 255, 0));
           }
         }
       `}</style>
@@ -527,6 +528,62 @@ function GlobalAnimations() {
           transform: translateY(-18px) rotate(0.3deg) scale(1.015);
         }
       }
+
+      @keyframes splash-exit-zoom {
+        0% {
+          transform: scale(1);
+          opacity: 1;
+          background-color: #ef4444;
+        }
+        30% {
+          transform: scale(1.1);
+          opacity: 0.9;
+          background-color: #ef4444;
+        }
+        60% {
+          transform: scale(1.5);
+          opacity: 0.7;
+          background-color: #f87171;
+        }
+        80% {
+          transform: scale(2.5);
+          opacity: 0.4;
+          background-color: #fca5a5;
+        }
+        95% {
+          transform: scale(4);
+          opacity: 0.1;
+          background-color: #fecaca;
+        }
+        100% {
+          transform: scale(5);
+          opacity: 0;
+          background-color: #ffffff;
+        }
+      }
+
+      @keyframes logo-zoom-out {
+        0% {
+          transform: scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: scale(1.2);
+          opacity: 0.8;
+        }
+        100% {
+          transform: scale(8);
+          opacity: 0;
+        }
+      }
+
+      .splash-exit {
+        animation: splash-exit-zoom 1s ease-in-out forwards;
+      }
+
+      .logo-exit {
+        animation: logo-zoom-out 1s ease-in-out forwards;
+      }
     `}</style>
   );
 }
@@ -534,6 +591,7 @@ function GlobalAnimations() {
 // Main Splash Screen Component
 interface SplashScreenProps {
   isVisible: boolean;
+  isExiting?: boolean;
   backgroundColor?: string;
   logoWidth?: string;
   logoHeight?: string;
@@ -545,7 +603,8 @@ interface SplashScreenProps {
 
 export default function AnimatedSplashScreen({ 
   isVisible,
-  backgroundColor = 'bg-white',
+  isExiting = false,
+  backgroundColor = 'bg-red-500',
   logoWidth = '300px',
   logoHeight = '300px',
   customAcknowledment
@@ -555,11 +614,11 @@ export default function AnimatedSplashScreen({
   return (
     <>
       <GlobalAnimations />
-      <div className={`fixed inset-0 min-h-screen ${backgroundColor} flex flex-col items-center justify-center overflow-hidden z-50`}>
+      <div className={`fixed inset-0 min-h-screen ${backgroundColor} flex flex-col items-center justify-center overflow-hidden z-50 ${isExiting ? 'splash-exit' : ''}`}>
         <div className="relative flex flex-col items-center justify-center flex-grow">
           <PulseBackground />
           
-          <LogoContainer width={logoWidth} height={logoHeight}>
+          <LogoContainer width={logoWidth} height={logoHeight} className={isExiting ? 'logo-exit' : ''}>
             <MainLogoPath />
             <AccentPath />
           </LogoContainer>
