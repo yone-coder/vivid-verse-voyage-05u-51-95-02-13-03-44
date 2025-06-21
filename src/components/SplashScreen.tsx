@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 // Background Pulse Component
@@ -162,32 +161,32 @@ function AccentPath({
           opacity: '0',
           transformOrigin: 'center',
           animation: `
-            fade-in-dramatic 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 2.3s forwards,
-            accent-glow-intense 1s ease-in-out 3.1s infinite alternate
+            fade-in-smooth 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 2.3s forwards,
+            accent-glow-smooth 2s ease-in-out 2.9s infinite alternate
           `
         }}
       />
       <style>{`
-        @keyframes fade-in-dramatic {
+        @keyframes fade-in-smooth {
           0% {
             opacity: 0;
-            transform: scale(0.2) rotate(-25deg);
+            transform: scale(0.8) rotate(0deg);
           }
-          15% {
-            opacity: 0.3;
-            transform: scale(0.6) rotate(15deg);
+          20% {
+            opacity: 0.2;
+            transform: scale(0.9) rotate(0deg);
           }
-          35% {
-            opacity: 0.6;
-            transform: scale(1.6) rotate(-8deg);
+          40% {
+            opacity: 0.5;
+            transform: scale(1.05) rotate(0deg);
           }
           60% {
-            opacity: 0.8;
-            transform: scale(0.7) rotate(3deg);
+            opacity: 0.7;
+            transform: scale(0.98) rotate(0deg);
           }
-          85% {
-            opacity: 0.95;
-            transform: scale(1.1) rotate(-1deg);
+          80% {
+            opacity: 0.9;
+            transform: scale(1.02) rotate(0deg);
           }
           100% {
             opacity: 1;
@@ -195,12 +194,15 @@ function AccentPath({
           }
         }
 
-        @keyframes accent-glow-intense {
+        @keyframes accent-glow-smooth {
           0% {
-            filter: none;
+            filter: brightness(1) saturate(1);
+          }
+          50% {
+            filter: brightness(1.1) saturate(1.2);
           }
           100% {
-            filter: none;
+            filter: brightness(1) saturate(1);
           }
         }
       `}</style>
