@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 // Background Pulse Component with Physics
@@ -57,7 +56,7 @@ interface TopTitleProps {
 function TopTitle({ className = '', isExiting = false }: TopTitleProps) {
   return (
     <div 
-      className={`absolute top-8 left-0 right-0 text-center text-white px-6 z-10 ${className}`}
+      className={`absolute top-12 left-0 right-0 text-center text-white px-6 z-10 ${className}`}
       style={{
         opacity: 1,
         animation: isExiting 
@@ -65,7 +64,7 @@ function TopTitle({ className = '', isExiting = false }: TopTitleProps) {
           : 'title-physics-entry 1.5s ease-out 0.5s forwards'
       }}
     >
-      <h1 className="text-2xl md:text-3xl font-bold tracking-wide text-white drop-shadow-lg">
+      <h1 className="text-xl md:text-2xl font-light tracking-[0.2em] text-white drop-shadow-2xl uppercase whitespace-nowrap">
         #1 app de transfert à Désarmes
       </h1>
       <style>{`
