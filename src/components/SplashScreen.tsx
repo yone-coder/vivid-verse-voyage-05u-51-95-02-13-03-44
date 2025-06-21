@@ -49,36 +49,29 @@ function MainLogoPath({
           0% {
             stroke-dashoffset: 4000;
             stroke-width: 1;
-            filter: drop-shadow(0 0 5px rgba(239, 68, 68, 0.3));
           }
           10% {
             stroke-width: 4;
-            filter: drop-shadow(0 0 12px rgba(239, 68, 68, 0.5));
           }
           25% {
             stroke-dashoffset: 3000;
             stroke-width: 6;
-            filter: drop-shadow(0 0 20px rgba(239, 68, 68, 0.7));
           }
           50% {
             stroke-dashoffset: 1500;
             stroke-width: 5;
-            filter: drop-shadow(0 0 35px rgba(239, 68, 68, 0.9));
           }
           75% {
             stroke-dashoffset: 500;
             stroke-width: 3;
-            filter: drop-shadow(0 0 45px rgba(239, 68, 68, 1));
           }
           90% {
             stroke-dashoffset: 100;
             stroke-width: 2;
-            filter: drop-shadow(0 0 40px rgba(239, 68, 68, 0.9));
           }
           100% {
             stroke-dashoffset: 0;
             stroke-width: 2;
-            filter: none;
           }
         }
 
@@ -86,27 +79,22 @@ function MainLogoPath({
           0% {
             fill: transparent;
             stroke-width: 2;
-            filter: none;
           }
           20% {
             fill: rgba(239, 68, 68, 0.1);
             stroke-width: 1.8;
-            filter: drop-shadow(0 0 35px rgba(239, 68, 68, 0.85));
           }
           50% {
             fill: rgba(239, 68, 68, 0.4);
             stroke-width: 1.2;
-            filter: drop-shadow(0 0 45px rgba(239, 68, 68, 0.95));
           }
           80% {
             fill: rgba(239, 68, 68, 0.8);
             stroke-width: 0.5;
-            filter: drop-shadow(0 0 50px rgba(239, 68, 68, 1));
           }
           100% {
             fill: #ef4444;
             stroke-width: 0;
-            filter: none;
           }
         }
 
@@ -183,32 +171,26 @@ function AccentPath({
           0% {
             opacity: 0;
             transform: scale(0.2) rotate(-25deg);
-            filter: drop-shadow(0 0 5px rgba(237, 182, 177, 0.3));
           }
           15% {
             opacity: 0.3;
             transform: scale(0.6) rotate(15deg);
-            filter: drop-shadow(0 0 15px rgba(237, 182, 177, 0.5));
           }
           35% {
             opacity: 0.6;
             transform: scale(1.6) rotate(-8deg);
-            filter: drop-shadow(0 0 25px rgba(237, 182, 177, 0.7));
           }
           60% {
             opacity: 0.8;
             transform: scale(0.7) rotate(3deg);
-            filter: drop-shadow(0 0 35px rgba(237, 182, 177, 0.85));
           }
           85% {
             opacity: 0.95;
             transform: scale(1.1) rotate(-1deg);
-            filter: drop-shadow(0 0 40px rgba(237, 182, 177, 0.9));
           }
           100% {
             opacity: 1;
             transform: scale(1) rotate(0deg);
-            filter: none;
           }
         }
 
