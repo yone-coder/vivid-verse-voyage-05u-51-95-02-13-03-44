@@ -304,7 +304,165 @@ function AccentPath({
   );
 }
 
-// Logo Container Component with Container Physics
+// Ultra Spectacular Exit Particle System
+function ExitParticleSystem() {
+  return (
+    <>
+      {/* Primary Explosion Particles */}
+      <div className="absolute inset-0 pointer-events-none">
+        {Array.from({ length: 30 }).map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-2 h-2 bg-white rounded-full"
+            style={{
+              left: '50%',
+              top: '50%',
+              animation: `particle-explosion-${i % 6} 3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards`,
+              animationDelay: `${i * 0.05}s`,
+              opacity: 0
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Secondary Energy Waves */}
+      <div className="absolute inset-0 pointer-events-none">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <div
+            key={i}
+            className="absolute border-2 border-white rounded-full"
+            style={{
+              left: '50%',
+              top: '50%',
+              width: '100px',
+              height: '100px',
+              marginLeft: '-50px',
+              marginTop: '-50px',
+              animation: `energy-wave-${i % 4} 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards`,
+              animationDelay: `${i * 0.2}s`,
+              opacity: 0
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Dimensional Rifts */}
+      <div className="absolute inset-0 pointer-events-none">
+        {Array.from({ length: 12 }).map((_, i) => (
+          <div
+            key={i}
+            className="absolute bg-gradient-to-r from-transparent via-white to-transparent"
+            style={{
+              left: '50%',
+              top: '50%',
+              width: '2px',
+              height: '100px',
+              transformOrigin: 'center bottom',
+              animation: `dimensional-rift-${i % 3} 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards`,
+              animationDelay: `${i * 0.1}s`,
+              opacity: 0,
+              transform: `rotate(${i * 30}deg)`
+            }}
+          />
+        ))}
+      </div>
+
+      <style>{`
+        /* Particle Explosion Patterns */
+        @keyframes particle-explosion-0 {
+          0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+          20% { opacity: 0.8; transform: translate(-150px, -200px) scale(1.5); }
+          60% { opacity: 0.4; transform: translate(-300px, -400px) scale(0.5); }
+          100% { opacity: 0; transform: translate(-500px, -600px) scale(0); }
+        }
+        
+        @keyframes particle-explosion-1 {
+          0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+          20% { opacity: 0.9; transform: translate(180px, -180px) scale(2); }
+          60% { opacity: 0.3; transform: translate(350px, -350px) scale(0.3); }
+          100% { opacity: 0; transform: translate(600px, -500px) scale(0); }
+        }
+        
+        @keyframes particle-explosion-2 {
+          0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+          25% { opacity: 0.7; transform: translate(-120px, 160px) scale(1.8); }
+          65% { opacity: 0.2; transform: translate(-280px, 320px) scale(0.4); }
+          100% { opacity: 0; transform: translate(-450px, 550px) scale(0); }
+        }
+        
+        @keyframes particle-explosion-3 {
+          0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+          30% { opacity: 0.8; transform: translate(200px, 140px) scale(1.6); }
+          70% { opacity: 0.3; transform: translate(400px, 280px) scale(0.6); }
+          100% { opacity: 0; transform: translate(650px, 450px) scale(0); }
+        }
+        
+        @keyframes particle-explosion-4 {
+          0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+          15% { opacity: 0.9; transform: translate(-80px, -80px) scale(2.2); }
+          55% { opacity: 0.4; transform: translate(-200px, -200px) scale(0.2); }
+          100% { opacity: 0; transform: translate(-400px, -400px) scale(0); }
+        }
+        
+        @keyframes particle-explosion-5 {
+          0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+          35% { opacity: 0.6; transform: translate(160px, 200px) scale(1.4); }
+          75% { opacity: 0.1; transform: translate(320px, 400px) scale(0.8); }
+          100% { opacity: 0; transform: translate(500px, 650px) scale(0); }
+        }
+
+        /* Energy Wave Patterns */
+        @keyframes energy-wave-0 {
+          0% { opacity: 0.8; transform: translate(-50%, -50%) scale(1); border-width: 3px; }
+          50% { opacity: 0.4; transform: translate(-50%, -50%) scale(8); border-width: 1px; }
+          100% { opacity: 0; transform: translate(-50%, -50%) scale(15); border-width: 0px; }
+        }
+        
+        @keyframes energy-wave-1 {
+          0% { opacity: 0.6; transform: translate(-50%, -50%) scale(1) rotate(0deg); border-width: 2px; }
+          60% { opacity: 0.3; transform: translate(-50%, -50%) scale(12) rotate(180deg); border-width: 1px; }
+          100% { opacity: 0; transform: translate(-50%, -50%) scale(20) rotate(360deg); border-width: 0px; }
+        }
+        
+        @keyframes energy-wave-2 {
+          0% { opacity: 0.7; transform: translate(-50%, -50%) scale(1); border-width: 4px; }
+          40% { opacity: 0.5; transform: translate(-50%, -50%) scale(6); border-width: 2px; }
+          100% { opacity: 0; transform: translate(-50%, -50%) scale(18); border-width: 0px; }
+        }
+        
+        @keyframes energy-wave-3 {
+          0% { opacity: 0.5; transform: translate(-50%, -50%) scale(1) rotate(0deg); border-width: 2px; }
+          70% { opacity: 0.2; transform: translate(-50%, -50%) scale(10) rotate(-270deg); border-width: 1px; }
+          100% { opacity: 0; transform: translate(-50%, -50%) scale(25) rotate(-360deg); border-width: 0px; }
+        }
+
+        /* Dimensional Rift Patterns */
+        @keyframes dimensional-rift-0 {
+          0% { opacity: 0; height: 50px; filter: blur(0px); }
+          30% { opacity: 0.8; height: 300px; filter: blur(2px); }
+          70% { opacity: 0.4; height: 600px; filter: blur(8px); }
+          100% { opacity: 0; height: 1000px; filter: blur(20px); }
+        }
+        
+        @keyframes dimensional-rift-1 {
+          0% { opacity: 0; height: 30px; width: 1px; filter: blur(0px); }
+          40% { opacity: 0.9; height: 400px; width: 3px; filter: blur(3px); }
+          80% { opacity: 0.2; height: 800px; width: 6px; filter: blur(12px); }
+          100% { opacity: 0; height: 1200px; width: 10px; filter: blur(25px); }
+        }
+        
+        @keyframes dimensional-rift-2 {
+          0% { opacity: 0; height: 40px; filter: blur(0px) hue-rotate(0deg); }
+          50% { opacity: 0.7; height: 500px; filter: blur(5px) hue-rotate(180deg); }
+          90% { opacity: 0.1; height: 900px; filter: blur(15px) hue-rotate(360deg); }
+          100% { opacity: 0; height: 1400px; filter: blur(30px) hue-rotate(540deg); }
+        }
+      `}</style>
+    </>
+  );
+}
+
+// Logo Container Component with Ultra Spectacular Exit
 interface LogoContainerProps {
   className?: string;
   width?: string;
@@ -325,7 +483,7 @@ function LogoContainer({
       className={`relative ${className}`}
       style={{
         animation: isExiting 
-          ? 'explosive-exit 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards'
+          ? 'ultra-spectacular-exit 3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards'
           : 'container-physics-float 6s ease-in-out 5s infinite'
       }}
     >
@@ -339,6 +497,7 @@ function LogoContainer({
       >
         {children}
       </svg>
+      {isExiting && <ExitParticleSystem />}
       <style>{`
         @keyframes container-physics-float {
           0%, 100% {
@@ -359,36 +518,61 @@ function LogoContainer({
           }
         }
 
-        @keyframes explosive-exit {
+        @keyframes ultra-spectacular-exit {
           0% {
             transform: scale(1) rotate(0deg);
             opacity: 1;
-            filter: brightness(1) blur(0px);
+            filter: brightness(1) blur(0px) saturate(1) hue-rotate(0deg);
+          }
+          10% {
+            transform: scale(1.05) rotate(5deg);
+            opacity: 0.95;
+            filter: brightness(1.2) blur(1px) saturate(1.2) hue-rotate(30deg);
           }
           20% {
-            transform: scale(1.1) rotate(5deg);
+            transform: scale(1.15) rotate(15deg);
             opacity: 0.9;
-            filter: brightness(1.3) blur(1px);
+            filter: brightness(1.8) blur(2px) saturate(1.5) hue-rotate(90deg);
+          }
+          30% {
+            transform: scale(1.3) rotate(35deg);
+            opacity: 0.8;
+            filter: brightness(2.5) blur(4px) saturate(2) hue-rotate(180deg);
           }
           40% {
-            transform: scale(1.3) rotate(15deg);
+            transform: scale(1.6) rotate(60deg);
             opacity: 0.7;
-            filter: brightness(1.8) blur(3px);
+            filter: brightness(3.2) blur(8px) saturate(2.5) hue-rotate(270deg);
+          }
+          50% {
+            transform: scale(2.2) rotate(120deg);
+            opacity: 0.6;
+            filter: brightness(4) blur(15px) saturate(3) hue-rotate(360deg);
           }
           60% {
-            transform: scale(2) rotate(35deg);
+            transform: scale(3.5) rotate(200deg);
             opacity: 0.5;
-            filter: brightness(2.5) blur(8px);
+            filter: brightness(5) blur(25px) saturate(4) hue-rotate(450deg);
+          }
+          70% {
+            transform: scale(6) rotate(320deg);
+            opacity: 0.4;
+            filter: brightness(6) blur(40px) saturate(5) hue-rotate(540deg);
           }
           80% {
-            transform: scale(4) rotate(80deg);
-            opacity: 0.2;
-            filter: brightness(3) blur(15px);
+            transform: scale(10) rotate(480deg);
+            opacity: 0.3;
+            filter: brightness(8) blur(60px) saturate(6) hue-rotate(630deg);
+          }
+          90% {
+            transform: scale(18) rotate(720deg);
+            opacity: 0.1;
+            filter: brightness(10) blur(100px) saturate(8) hue-rotate(720deg);
           }
           100% {
-            transform: scale(8) rotate(180deg);
+            transform: scale(35) rotate(1080deg);
             opacity: 0;
-            filter: brightness(0) blur(25px);
+            filter: brightness(15) blur(200px) saturate(10) hue-rotate(900deg);
           }
         }
       `}</style>
@@ -396,7 +580,7 @@ function LogoContainer({
   );
 }
 
-// Acknowledgment Section Component with Physics
+// Acknowledgment Section Component with Dramatic Exit
 interface AcknowledgmentProps {
   className?: string;
   madeInText?: string;
@@ -415,7 +599,7 @@ function Acknowledgment({
       className={`absolute bottom-8 left-0 right-0 text-center text-white px-6 ${className}`}
       style={{
         animation: isExiting 
-          ? 'text-physics-exit 2s ease-in-out forwards'
+          ? 'text-dramatic-exit 3s ease-in-out forwards'
           : 'text-physics-entry 1s ease-out 7s forwards'
       }}
     >
@@ -456,26 +640,36 @@ function Acknowledgment({
           }
         }
 
-        @keyframes text-physics-exit {
+        @keyframes text-dramatic-exit {
           0% {
             opacity: 1;
-            transform: translateY(0px) scale(1);
-            filter: blur(0px);
+            transform: translateY(0px) scale(1) rotate(0deg);
+            filter: blur(0px) brightness(1);
           }
-          30% {
-            opacity: 0.8;
-            transform: translateY(-10px) scale(1.05);
-            filter: blur(1px);
+          20% {
+            opacity: 0.9;
+            transform: translateY(-15px) scale(1.1) rotate(5deg);
+            filter: blur(2px) brightness(1.3);
+          }
+          40% {
+            opacity: 0.7;
+            transform: translateY(-40px) scale(1.3) rotate(15deg);
+            filter: blur(5px) brightness(1.8);
           }
           60% {
             opacity: 0.5;
-            transform: translateY(-25px) scale(1.2);
-            filter: blur(3px);
+            transform: translateY(-80px) scale(1.8) rotate(35deg);
+            filter: blur(12px) brightness(2.5);
+          }
+          80% {
+            opacity: 0.2;
+            transform: translateY(-150px) scale(2.5) rotate(60deg);
+            filter: blur(25px) brightness(3.5);
           }
           100% {
             opacity: 0;
-            transform: translateY(-50px) scale(1.5);
-            filter: blur(8px);
+            transform: translateY(-300px) scale(4) rotate(120deg);
+            filter: blur(50px) brightness(5);
           }
         }
       `}</style>
@@ -483,20 +677,37 @@ function Acknowledgment({
   );
 }
 
-// Physics Background Component
-function PhysicsBackground({ isExiting }: { isExiting: boolean }) {
+// Ultra Spectacular Physics Background with Dimensional Collapse
+function UltraSpectacularBackground({ isExiting }: { isExiting: boolean }) {
   return (
     <div 
       className="absolute inset-0"
       style={{
         animation: isExiting 
-          ? 'background-physics-exit 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards'
+          ? 'dimensional-collapse 3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards'
           : 'background-physics-pulse 4s ease-in-out infinite'
       }}
     >
-      {/* Multiple physics layers */}
+      {/* Primary dimensional layer */}
       <div className="absolute inset-0 bg-gradient-radial from-red-400/20 via-red-500/10 to-transparent"></div>
+      
+      {/* Secondary quantum layer */}
       <div className="absolute inset-0 bg-gradient-conic from-red-500/5 via-transparent to-red-600/5"></div>
+      
+      {/* Tertiary space-time distortion layer */}
+      <div className="absolute inset-0 bg-gradient-to-br from-transparent via-red-400/15 to-transparent"></div>
+      
+      {/* Ultra spectacular exit energy fields */}
+      {isExiting && (
+        <>
+          <div className="absolute inset-0 bg-gradient-radial from-white/30 via-red-300/20 to-transparent animate-pulse"></div>
+          <div className="absolute inset-0 bg-gradient-conic from-yellow-300/40 via-orange-400/30 to-red-500/40" 
+               style={{ animation: 'energy-spiral 1.5s linear infinite' }}></div>
+          <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/50 to-transparent"
+               style={{ animation: 'dimensional-tear 2s ease-in-out infinite' }}></div>
+        </>
+      )}
+      
       <style>{`
         @keyframes background-physics-pulse {
           0%, 100% {
@@ -511,31 +722,63 @@ function PhysicsBackground({ isExiting }: { isExiting: boolean }) {
           }
         }
 
-        @keyframes background-physics-exit {
+        @keyframes dimensional-collapse {
           0% {
             opacity: 1;
             transform: scale(1) rotate(0deg);
-            filter: brightness(1) blur(0px) hue-rotate(0deg);
+            filter: brightness(1) blur(0px) hue-rotate(0deg) saturate(1);
           }
-          25% {
+          15% {
+            opacity: 0.95;
+            transform: scale(1.05) rotate(10deg);
+            filter: brightness(1.3) blur(2px) hue-rotate(60deg) saturate(1.2);
+          }
+          30% {
             opacity: 0.9;
-            transform: scale(1.1) rotate(2deg);
-            filter: brightness(1.5) blur(2px) hue-rotate(30deg);
+            transform: scale(1.15) rotate(30deg);
+            filter: brightness(1.8) blur(5px) hue-rotate(150deg) saturate(1.5);
           }
-          50% {
-            opacity: 0.7;
-            transform: scale(1.3) rotate(8deg);
-            filter: brightness(2) blur(5px) hue-rotate(90deg);
+          45% {
+            opacity: 0.8;
+            transform: scale(1.3) rotate(70deg);
+            filter: brightness(2.5) blur(12px) hue-rotate(270deg) saturate(2);
+          }
+          60% {
+            opacity: 0.6;
+            transform: scale(1.6) rotate(140deg);
+            filter: brightness(3.5) blur(25px) hue-rotate(420deg) saturate(3);
           }
           75% {
             opacity: 0.4;
-            transform: scale(1.8) rotate(20deg);
-            filter: brightness(3) blur(12px) hue-rotate(180deg);
+            transform: scale(2.2) rotate(250deg);
+            filter: brightness(5) blur(50px) hue-rotate(600deg) saturate(4);
+          }
+          90% {
+            opacity: 0.1;
+            transform: scale(3.5) rotate(400deg);
+            filter: brightness(8) blur(100px) hue-rotate(800deg) saturate(6);
           }
           100% {
             opacity: 0;
-            transform: scale(3) rotate(45deg);
-            filter: brightness(0) blur(25px) hue-rotate(360deg);
+            transform: scale(6) rotate(720deg);
+            filter: brightness(15) blur(200px) hue-rotate(1080deg) saturate(10);
+          }
+        }
+
+        @keyframes energy-spiral {
+          0% { transform: rotate(0deg) scale(1); opacity: 0.3; }
+          50% { transform: rotate(180deg) scale(1.2); opacity: 0.6; }
+          100% { transform: rotate(360deg) scale(1); opacity: 0.3; }
+        }
+
+        @keyframes dimensional-tear {
+          0%, 100% { 
+            transform: skewX(0deg) skewY(0deg) scale(1);
+            opacity: 0.2;
+          }
+          50% { 
+            transform: skewX(20deg) skewY(10deg) scale(1.1);
+            opacity: 0.5;
           }
         }
       `}</style>
@@ -568,7 +811,7 @@ export default function AnimatedSplashScreen({
 
   return (
     <div className={`fixed inset-0 min-h-screen ${backgroundColor} flex flex-col items-center justify-center overflow-hidden z-50`}>
-      <PhysicsBackground isExiting={isExiting} />
+      <UltraSpectacularBackground isExiting={isExiting} />
       
       <div className="relative flex flex-col items-center justify-center flex-grow">
         <PulseBackground />
