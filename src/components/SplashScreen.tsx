@@ -161,32 +161,44 @@ function AccentPath({
           opacity: '0',
           transformOrigin: 'center',
           animation: `
-            fade-in-smooth 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 2.3s forwards,
-            accent-glow-smooth 2s ease-in-out 2.9s infinite alternate
+            fade-in-sequential 3s cubic-bezier(0.25, 0.46, 0.45, 0.94) 2.3s forwards,
+            accent-glow-varied 4s ease-in-out 5.3s infinite alternate
           `
         }}
       />
       <style>{`
-        @keyframes fade-in-smooth {
+        @keyframes fade-in-sequential {
           0% {
             opacity: 0;
-            transform: scale(0.8) rotate(0deg);
+            transform: scale(0.5) rotate(-10deg);
           }
-          20% {
+          5% {
+            opacity: 0.1;
+            transform: scale(0.6) rotate(-8deg);
+          }
+          15% {
             opacity: 0.2;
-            transform: scale(0.9) rotate(0deg);
+            transform: scale(0.7) rotate(-5deg);
           }
-          40% {
-            opacity: 0.5;
-            transform: scale(1.05) rotate(0deg);
+          35% {
+            opacity: 0.3;
+            transform: scale(0.8) rotate(-2deg);
           }
           60% {
-            opacity: 0.7;
-            transform: scale(0.98) rotate(0deg);
+            opacity: 0.5;
+            transform: scale(0.9) rotate(1deg);
           }
-          80% {
+          65% {
+            opacity: 0.8;
+            transform: scale(1.1) rotate(2deg);
+          }
+          70% {
             opacity: 0.9;
-            transform: scale(1.02) rotate(0deg);
+            transform: scale(1.05) rotate(1deg);
+          }
+          75% {
+            opacity: 0.95;
+            transform: scale(1.02) rotate(0.5deg);
           }
           100% {
             opacity: 1;
@@ -194,15 +206,27 @@ function AccentPath({
           }
         }
 
-        @keyframes accent-glow-smooth {
+        @keyframes accent-glow-varied {
           0% {
-            filter: brightness(1) saturate(1);
+            filter: brightness(1) saturate(1) hue-rotate(0deg);
           }
-          50% {
-            filter: brightness(1.1) saturate(1.2);
+          10% {
+            filter: brightness(1.5) saturate(1.8) hue-rotate(5deg);
+          }
+          20% {
+            filter: brightness(0.8) saturate(0.6) hue-rotate(-3deg);
+          }
+          40% {
+            filter: brightness(1.3) saturate(1.5) hue-rotate(8deg);
+          }
+          60% {
+            filter: brightness(0.9) saturate(0.8) hue-rotate(-2deg);
+          }
+          80% {
+            filter: brightness(1.2) saturate(1.3) hue-rotate(4deg);
           }
           100% {
-            filter: brightness(1) saturate(1);
+            filter: brightness(1) saturate(1) hue-rotate(0deg);
           }
         }
       `}</style>
