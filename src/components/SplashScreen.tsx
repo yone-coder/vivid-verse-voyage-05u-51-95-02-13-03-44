@@ -23,7 +23,7 @@ interface MainLogoPathProps {
 
 function MainLogoPath({ 
   className = '', 
-  strokeColor = '#fefdfd',
+  strokeColor = '#ef4444',
   fillColor = 'transparent' 
 }: MainLogoPathProps) {
   return (
@@ -50,36 +50,36 @@ function MainLogoPath({
           0% {
             stroke-dashoffset: 4000;
             stroke-width: 1;
-            filter: drop-shadow(0 0 5px rgba(254, 253, 253, 0.3));
+            filter: drop-shadow(0 0 5px rgba(239, 68, 68, 0.3));
           }
           10% {
             stroke-width: 4;
-            filter: drop-shadow(0 0 12px rgba(254, 253, 253, 0.5));
+            filter: drop-shadow(0 0 12px rgba(239, 68, 68, 0.5));
           }
           25% {
             stroke-dashoffset: 3000;
             stroke-width: 6;
-            filter: drop-shadow(0 0 20px rgba(254, 253, 253, 0.7));
+            filter: drop-shadow(0 0 20px rgba(239, 68, 68, 0.7));
           }
           50% {
             stroke-dashoffset: 1500;
             stroke-width: 5;
-            filter: drop-shadow(0 0 35px rgba(254, 253, 253, 0.9));
+            filter: drop-shadow(0 0 35px rgba(239, 68, 68, 0.9));
           }
           75% {
             stroke-dashoffset: 500;
             stroke-width: 3;
-            filter: drop-shadow(0 0 45px rgba(254, 253, 253, 1));
+            filter: drop-shadow(0 0 45px rgba(239, 68, 68, 1));
           }
           90% {
             stroke-dashoffset: 100;
             stroke-width: 2;
-            filter: drop-shadow(0 0 40px rgba(254, 253, 253, 0.9));
+            filter: drop-shadow(0 0 40px rgba(239, 68, 68, 0.9));
           }
           100% {
             stroke-dashoffset: 0;
             stroke-width: 2;
-            filter: drop-shadow(0 0 30px rgba(254, 253, 253, 0.8));
+            filter: drop-shadow(0 0 30px rgba(239, 68, 68, 0.8));
           }
         }
 
@@ -87,65 +87,65 @@ function MainLogoPath({
           0% {
             fill: transparent;
             stroke-width: 2;
-            filter: drop-shadow(0 0 30px rgba(254, 253, 253, 0.8));
+            filter: drop-shadow(0 0 30px rgba(239, 68, 68, 0.8));
           }
           20% {
-            fill: rgba(254, 253, 253, 0.1);
+            fill: rgba(239, 68, 68, 0.1);
             stroke-width: 1.8;
-            filter: drop-shadow(0 0 35px rgba(254, 253, 253, 0.85));
+            filter: drop-shadow(0 0 35px rgba(239, 68, 68, 0.85));
           }
           50% {
-            fill: rgba(254, 253, 253, 0.4);
+            fill: rgba(239, 68, 68, 0.4);
             stroke-width: 1.2;
-            filter: drop-shadow(0 0 45px rgba(254, 253, 253, 0.95));
+            filter: drop-shadow(0 0 45px rgba(239, 68, 68, 0.95));
           }
           80% {
-            fill: rgba(254, 253, 253, 0.8);
+            fill: rgba(239, 68, 68, 0.8);
             stroke-width: 0.5;
-            filter: drop-shadow(0 0 50px rgba(254, 253, 253, 1));
+            filter: drop-shadow(0 0 50px rgba(239, 68, 68, 1));
           }
           100% {
-            fill: #fefdfd;
+            fill: #ef4444;
             stroke-width: 0;
-            filter: drop-shadow(0 0 40px rgba(254, 253, 253, 0.9));
+            filter: drop-shadow(0 0 40px rgba(239, 68, 68, 0.9));
           }
         }
 
         @keyframes glow-continuous {
           0% {
-            filter: drop-shadow(0 0 25px rgba(254, 253, 253, 0.6)) drop-shadow(0 0 50px rgba(254, 253, 253, 0.3));
+            filter: drop-shadow(0 0 25px rgba(239, 68, 68, 0.6)) drop-shadow(0 0 50px rgba(239, 68, 68, 0.3));
           }
           50% {
-            filter: drop-shadow(0 0 45px rgba(254, 253, 253, 0.9)) drop-shadow(0 0 90px rgba(254, 253, 253, 0.5));
+            filter: drop-shadow(0 0 45px rgba(239, 68, 68, 0.9)) drop-shadow(0 0 90px rgba(239, 68, 68, 0.5));
           }
           100% {
-            filter: drop-shadow(0 0 60px rgba(254, 253, 253, 1)) drop-shadow(0 0 120px rgba(254, 253, 253, 0.6));
+            filter: drop-shadow(0 0 60px rgba(239, 68, 68, 1)) drop-shadow(0 0 120px rgba(239, 68, 68, 0.6));
           }
         }
 
         @keyframes stroke-flow {
           0% {
-            stroke: #fefdfd;
+            stroke: #ef4444;
             stroke-opacity: 1;
           }
           20% {
-            stroke: rgba(254, 253, 253, 0.9);
+            stroke: rgba(239, 68, 68, 0.9);
             stroke-opacity: 0.95;
           }
           40% {
-            stroke: #ffffff;
+            stroke: #dc2626;
             stroke-opacity: 0.85;
           }
           60% {
-            stroke: rgba(254, 253, 253, 0.8);
+            stroke: rgba(239, 68, 68, 0.8);
             stroke-opacity: 0.9;
           }
           80% {
-            stroke: rgba(254, 253, 253, 0.9);
+            stroke: rgba(239, 68, 68, 0.9);
             stroke-opacity: 0.98;
           }
           100% {
-            stroke: #fefdfd;
+            stroke: #ef4444;
             stroke-opacity: 1;
           }
         }
@@ -510,7 +510,7 @@ interface SplashScreenProps {
 
 export default function AnimatedSplashScreen({ 
   isVisible,
-  backgroundColor = 'bg-red-500',
+  backgroundColor = 'bg-white',
   logoWidth = '300px',
   logoHeight = '300px',
   customAcknowledment
