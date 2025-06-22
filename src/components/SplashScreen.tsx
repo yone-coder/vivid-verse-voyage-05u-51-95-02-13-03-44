@@ -150,7 +150,7 @@ function MainLogoPath({
           strokeWidth: '2',
           transformOrigin: 'center center',
           animation: isExiting 
-            ? 'pulverize-exit 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards'
+            ? 'netflix-zoom-pulverize 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards'
             : `
               draw-path-physics 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
               fill-path-physics 1.2s ease-out 2.5s forwards,
@@ -267,7 +267,7 @@ function MainLogoPath({
           }
         }
 
-        @keyframes pulverize-exit {
+        @keyframes netflix-zoom-pulverize {
           0% {
             transform: scale(1) rotate(0deg);
             opacity: 1;
@@ -278,35 +278,50 @@ function MainLogoPath({
             opacity: 1;
             filter: brightness(1.1) blur(0.2px);
           }
-          25% {
-            transform: scale(1.1) rotate(5deg);
+          20% {
+            transform: scale(1.05) rotate(3deg);
+            opacity: 0.98;
+            filter: brightness(1.2) blur(0.5px);
+          }
+          30% {
+            transform: scale(1.1) rotate(8deg);
             opacity: 0.95;
-            filter: brightness(1.5) blur(1px);
+            filter: brightness(1.4) blur(1px);
           }
           40% {
-            transform: scale(1.3) rotate(15deg);
-            opacity: 0.85;
-            filter: brightness(2) blur(3px);
+            transform: scale(1.2) rotate(15deg);
+            opacity: 0.9;
+            filter: brightness(1.8) blur(2px);
           }
-          55% {
-            transform: scale(1.8) rotate(35deg);
+          50% {
+            transform: scale(1.5) rotate(25deg);
+            opacity: 0.8;
+            filter: brightness(2.5) blur(4px);
+          }
+          60% {
+            transform: scale(2.5) rotate(45deg);
             opacity: 0.7;
-            filter: brightness(3) blur(6px);
+            filter: brightness(4) blur(8px);
           }
           70% {
-            transform: scale(3) rotate(70deg);
-            opacity: 0.5;
-            filter: brightness(5) blur(12px);
+            transform: scale(5) rotate(80deg);
+            opacity: 0.6;
+            filter: brightness(6) blur(15px);
           }
-          85% {
-            transform: scale(6) rotate(150deg);
-            opacity: 0.3;
-            filter: brightness(8) blur(20px);
+          80% {
+            transform: scale(12) rotate(150deg);
+            opacity: 0.4;
+            filter: brightness(10) blur(25px);
+          }
+          90% {
+            transform: scale(25) rotate(270deg);
+            opacity: 0.2;
+            filter: brightness(15) blur(40px);
           }
           100% {
-            transform: scale(15) rotate(360deg);
+            transform: scale(50) rotate(360deg);
             opacity: 0;
-            filter: brightness(15) blur(40px);
+            filter: brightness(20) blur(60px);
           }
         }
       `}</style>
@@ -336,7 +351,7 @@ function AccentPath({
           opacity: '0',
           transformOrigin: 'center',
           animation: isExiting 
-            ? 'accent-pulverize-exit 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards'
+            ? 'accent-netflix-zoom 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards'
             : `
               momentum-entry 3.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 3s forwards,
               elastic-oscillation 1.5s ease-in-out 6.5s infinite,
@@ -426,36 +441,46 @@ function AccentPath({
           }
         }
 
-        @keyframes accent-pulverize-exit {
+        @keyframes accent-netflix-zoom {
           0% {
             opacity: 1;
             transform: scale(1) rotate(0deg);
             filter: brightness(1) blur(0px);
           }
-          20% {
-            opacity: 0.9;
-            transform: scale(1.2) rotate(10deg);
-            filter: brightness(1.5) blur(1px);
+          15% {
+            opacity: 0.95;
+            transform: scale(1.1) rotate(5deg);
+            filter: brightness(1.3) blur(1px);
           }
-          40% {
-            opacity: 0.7;
+          30% {
+            opacity: 0.9;
+            transform: scale(1.3) rotate(12deg);
+            filter: brightness(1.8) blur(2px);
+          }
+          45% {
+            opacity: 0.8;
             transform: scale(1.8) rotate(25deg);
-            filter: brightness(2.5) blur(3px);
+            filter: brightness(2.5) blur(4px);
           }
           60% {
-            opacity: 0.5;
-            transform: scale(3) rotate(50deg);
-            filter: brightness(4) blur(6px);
+            opacity: 0.6;
+            transform: scale(3) rotate(45deg);
+            filter: brightness(4) blur(8px);
           }
-          80% {
-            opacity: 0.3;
-            transform: scale(6) rotate(90deg);
-            filter: brightness(6) blur(12px);
+          75% {
+            opacity: 0.4;
+            transform: scale(6) rotate(80deg);
+            filter: brightness(7) blur(15px);
+          }
+          90% {
+            opacity: 0.2;
+            transform: scale(15) rotate(180deg);
+            filter: brightness(12) blur(30px);
           }
           100% {
             opacity: 0;
-            transform: scale(12) rotate(180deg);
-            filter: brightness(10) blur(25px);
+            transform: scale(35) rotate(270deg);
+            filter: brightness(20) blur(50px);
           }
         }
       `}</style>
@@ -484,7 +509,7 @@ function LogoContainer({
       className={`relative ${className}`}
       style={{
         animation: isExiting 
-          ? 'container-explosive-exit 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards'
+          ? 'container-netflix-zoom 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards'
           : 'container-physics-float 6s ease-in-out 5s infinite'
       }}
     >
@@ -518,24 +543,34 @@ function LogoContainer({
           }
         }
 
-        @keyframes container-explosive-exit {
+        @keyframes container-netflix-zoom {
           0% {
             transform: scale(1) rotate(0deg);
             opacity: 1;
             filter: brightness(1) blur(0px);
           }
-          30% {
-            transform: scale(1.3) rotate(15deg);
-            opacity: 0.8;
-            filter: brightness(2) blur(3px);
+          20% {
+            transform: scale(1.1) rotate(3deg);
+            opacity: 0.95;
+            filter: brightness(1.2) blur(1px);
+          }
+          40% {
+            transform: scale(1.4) rotate(10deg);
+            opacity: 0.85;
+            filter: brightness(1.6) blur(3px);
           }
           60% {
-            transform: scale(2.5) rotate(45deg);
-            opacity: 0.5;
-            filter: brightness(4) blur(8px);
+            transform: scale(2.2) rotate(25deg);
+            opacity: 0.7;
+            filter: brightness(2.5) blur(6px);
+          }
+          80% {
+            transform: scale(4.5) rotate(60deg);
+            opacity: 0.4;
+            filter: brightness(5) blur(12px);
           }
           100% {
-            transform: scale(8) rotate(180deg);
+            transform: scale(12) rotate(120deg);
             opacity: 0;
             filter: brightness(10) blur(25px);
           }
@@ -692,56 +727,6 @@ function PhysicsBackground({ isExiting }: { isExiting: boolean }) {
   );
 }
 
-// White Zoom-in Overlay Component
-function WhiteZoomOverlay({ isExiting }: { isExiting: boolean }) {
-  if (!isExiting) return null;
-
-  return (
-    <div 
-      className="fixed inset-0 z-50"
-      style={{
-        background: 'white',
-        transform: 'scale(0)',
-        opacity: 0,
-        animation: 'white-zoom-in 1.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.8s forwards'
-      }}
-    >
-      <style>{`
-        @keyframes white-zoom-in {
-          0% { 
-            transform: scale(0);
-            opacity: 0;
-          }
-          15% { 
-            transform: scale(0.05);
-            opacity: 0.1;
-          }
-          30% { 
-            transform: scale(0.15);
-            opacity: 0.3;
-          }
-          50% { 
-            transform: scale(0.4);
-            opacity: 0.6;
-          }
-          70% { 
-            transform: scale(0.7);
-            opacity: 0.8;
-          }
-          90% { 
-            transform: scale(0.95);
-            opacity: 0.95;
-          }
-          100% { 
-            transform: scale(1);
-            opacity: 1;
-          }
-        }
-      `}</style>
-    </div>
-  );
-}
-
 // Main Splash Screen Component
 interface SplashScreenProps {
   isVisible: boolean;
@@ -766,33 +751,29 @@ export default function AnimatedSplashScreen({
   if (!isVisible) return null;
 
   return (
-    <>
-      <div className={`fixed inset-0 min-h-screen ${backgroundColor} flex flex-col items-center justify-center overflow-hidden z-50`}>
-        <PhysicsBackground isExiting={isExiting} />
-        
-        <TopTitle isExiting={isExiting} />
-        
-        <div className="relative flex flex-col items-center justify-center flex-grow">
-          <PulseBackground />
-          
-          <LogoContainer 
-            width={logoWidth} 
-            height={logoHeight} 
-            isExiting={isExiting}
-          >
-            <MainLogoPath isExiting={isExiting} />
-            <AccentPath isExiting={isExiting} />
-          </LogoContainer>
-        </div>
-
-        <Acknowledgment 
-          madeInText={customAcknowledment?.madeInText}
-          authorizedText={customAcknowledment?.authorizedText}
-          isExiting={isExiting}
-        />
-      </div>
+    <div className={`fixed inset-0 min-h-screen ${backgroundColor} flex flex-col items-center justify-center overflow-hidden z-50`}>
+      <PhysicsBackground isExiting={isExiting} />
       
-      <WhiteZoomOverlay isExiting={isExiting} />
-    </>
+      <TopTitle isExiting={isExiting} />
+      
+      <div className="relative flex flex-col items-center justify-center flex-grow">
+        <PulseBackground />
+        
+        <LogoContainer 
+          width={logoWidth} 
+          height={logoHeight} 
+          isExiting={isExiting}
+        >
+          <MainLogoPath isExiting={isExiting} />
+          <AccentPath isExiting={isExiting} />
+        </LogoContainer>
+      </div>
+
+      <Acknowledgment 
+        madeInText={customAcknowledment?.madeInText}
+        authorizedText={customAcknowledment?.authorizedText}
+        isExiting={isExiting}
+      />
+    </div>
   );
 }
