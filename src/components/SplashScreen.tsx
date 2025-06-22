@@ -624,38 +624,20 @@ function WhiteExitOverlay({ isExiting }: { isExiting: boolean }) {
 
   return (
     <div 
-      className="fixed inset-0 bg-white z-50 flex items-start justify-center pt-20"
-      style={{
-        animation: 'white-overlay-enter 2s ease-out forwards'
-      }}
+      className="fixed inset-0 bg-white z-50 iris-top-right"
     >
-      <div 
-        className="w-32 h-32 rounded-full border-4 border-gray-300"
-        style={{
-          animation: 'circle-pulse 2s ease-in-out infinite'
-        }}
-      ></div>
       <style>{`
-        @keyframes white-overlay-enter {
-          0% {
-            opacity: 0;
-            transform: scale(0.8);
+        @keyframes iris-top-right {
+          0% { 
+            clip-path: circle(100% at 100% 0%); 
           }
-          100% {
-            opacity: 1;
-            transform: scale(1);
+          100% { 
+            clip-path: circle(0% at 100% 0%); 
           }
         }
 
-        @keyframes circle-pulse {
-          0%, 100% {
-            transform: scale(1);
-            opacity: 0.7;
-          }
-          50% {
-            transform: scale(1.1);
-            opacity: 1;
-          }
+        .iris-top-right {
+          animation: iris-top-right 1.5s ease-in-out forwards;
         }
       `}</style>
     </div>
