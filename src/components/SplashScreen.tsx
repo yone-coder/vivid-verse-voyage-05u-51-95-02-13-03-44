@@ -618,6 +618,50 @@ function PhysicsBackground({ isExiting }: { isExiting: boolean }) {
   );
 }
 
+// White Exit Overlay Component
+function WhiteExitOverlay({ isExiting }: { isExiting: boolean }) {
+  if (!isExiting) return null;
+
+  return (
+    <div 
+      className="fixed inset-0 bg-white z-50 flex items-start justify-center pt-20"
+      style={{
+        animation: 'white-overlay-enter 2s ease-out forwards'
+      }}
+    >
+      <div 
+        className="w-32 h-32 rounded-full border-4 border-gray-300"
+        style={{
+          animation: 'circle-pulse 2s ease-in-out infinite'
+        }}
+      ></div>
+      <style>{`
+        @keyframes white-overlay-enter {
+          0% {
+            opacity: 0;
+            transform: scale(0.8);
+          }
+          100% {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+
+        @keyframes circle-pulse {
+          0%, 100% {
+            transform: scale(1);
+            opacity: 0.7;
+          }
+          50% {
+            transform: scale(1.1);
+            opacity: 1;
+          }
+        }
+      `}</style>
+    </div>
+  );
+}
+
 // Main Splash Screen Component
 interface SplashScreenProps {
   isVisible: boolean;
@@ -642,29 +686,33 @@ export default function AnimatedSplashScreen({
   if (!isVisible) return null;
 
   return (
-    <div className={`fixed inset-0 min-h-screen ${backgroundColor} flex flex-col items-center justify-center overflow-hidden z-50`}>
-      <PhysicsBackground isExiting={isExiting} />
-      
-      <TopTitle isExiting={isExiting} />
-      
-      <div className="relative flex flex-col items-center justify-center flex-grow">
-        <PulseBackground />
+    <>
+      <div className={`fixed inset-0 min-h-screen ${backgroundColor} flex flex-col items-center justify-center overflow-hidden z-50`}>
+        <PhysicsBackground isExiting={isExiting} />
         
-        <LogoContainer 
-          width={logoWidth} 
-          height={logoHeight} 
-          isExiting={isExiting}
-        >
-          <MainLogoPath />
-          <AccentPath />
-        </LogoContainer>
-      </div>
+        <TopTitle isExiting={isExiting} />
+        
+        <div className="relative flex flex-col items-center justify-center flex-grow">
+          <PulseBackground />
+          
+          <LogoContainer 
+            width={logoWidth} 
+            height={logoHeight} 
+            isExiting={isExiting}
+          >
+            <MainLogoPath />
+            <AccentPath />
+          </LogoContainer>
+        </div>
 
-      <Acknowledgment 
-        madeInText={customAcknowledment?.madeInText}
-        authorizedText={customAcknowledment?.authorizedText}
-        isExiting={isExiting}
-      />
-    </div>
+        <Acknowledgment 
+          madeInText={customAcknowledment?.madeInText}
+          authorizedText={customAcknowledment?.authorizedText}
+          isExiting={isExiting}
+        />
+      </div>
+      
+      <WhiteExitOverlay isExiting={isExiting} />
+    </>
   );
 }
