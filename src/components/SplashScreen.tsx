@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 
 // Background Pulse Component with Physics
@@ -148,7 +146,7 @@ function MainLogoPath({
         fill={fillColor}
         style={{
           strokeDasharray: '4000',
-          strokeDashoffset: '4000',
+          strokeDashoffset: isExiting ? '0' : '4000',
           strokeWidth: '2',
           transformOrigin: 'center center',
           animation: isExiting 
@@ -275,40 +273,40 @@ function MainLogoPath({
             opacity: 1;
             filter: brightness(1) blur(0px);
           }
-          15% {
-            transform: scale(1.05) rotate(2deg);
-            opacity: 0.95;
-            filter: brightness(1.2) blur(0.5px);
+          10% {
+            transform: scale(1.02) rotate(1deg);
+            opacity: 1;
+            filter: brightness(1.1) blur(0.2px);
           }
-          30% {
+          25% {
             transform: scale(1.1) rotate(5deg);
-            opacity: 0.9;
+            opacity: 0.95;
             filter: brightness(1.5) blur(1px);
           }
-          45% {
-            transform: scale(1.2) rotate(15deg);
-            opacity: 0.8;
-            filter: brightness(2) blur(2px);
+          40% {
+            transform: scale(1.3) rotate(15deg);
+            opacity: 0.85;
+            filter: brightness(2) blur(3px);
           }
-          60% {
-            transform: scale(1.5) rotate(30deg);
-            opacity: 0.6;
-            filter: brightness(2.5) blur(4px);
+          55% {
+            transform: scale(1.8) rotate(35deg);
+            opacity: 0.7;
+            filter: brightness(3) blur(6px);
           }
-          75% {
-            transform: scale(2) rotate(60deg);
-            opacity: 0.4;
-            filter: brightness(3) blur(8px);
+          70% {
+            transform: scale(3) rotate(70deg);
+            opacity: 0.5;
+            filter: brightness(5) blur(12px);
           }
-          90% {
-            transform: scale(4) rotate(120deg);
-            opacity: 0.2;
-            filter: brightness(4) blur(15px);
+          85% {
+            transform: scale(6) rotate(150deg);
+            opacity: 0.3;
+            filter: brightness(8) blur(20px);
           }
           100% {
-            transform: scale(10) rotate(360deg);
+            transform: scale(15) rotate(360deg);
             opacity: 0;
-            filter: brightness(10) blur(30px);
+            filter: brightness(15) blur(40px);
           }
         }
       `}</style>
@@ -704,7 +702,8 @@ function WhiteZoomOverlay({ isExiting }: { isExiting: boolean }) {
       style={{
         background: 'white',
         transform: 'scale(0)',
-        animation: 'white-zoom-in 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.5s forwards'
+        opacity: 0,
+        animation: 'white-zoom-in 1.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.8s forwards'
       }}
     >
       <style>{`
@@ -713,21 +712,25 @@ function WhiteZoomOverlay({ isExiting }: { isExiting: boolean }) {
             transform: scale(0);
             opacity: 0;
           }
-          20% { 
-            transform: scale(0.1);
-            opacity: 0.2;
+          15% { 
+            transform: scale(0.05);
+            opacity: 0.1;
           }
-          40% { 
-            transform: scale(0.3);
-            opacity: 0.5;
+          30% { 
+            transform: scale(0.15);
+            opacity: 0.3;
           }
-          60% { 
-            transform: scale(0.6);
-            opacity: 0.7;
+          50% { 
+            transform: scale(0.4);
+            opacity: 0.6;
           }
-          80% { 
-            transform: scale(0.9);
-            opacity: 0.9;
+          70% { 
+            transform: scale(0.7);
+            opacity: 0.8;
+          }
+          90% { 
+            transform: scale(0.95);
+            opacity: 0.95;
           }
           100% { 
             transform: scale(1);
@@ -793,4 +796,3 @@ export default function AnimatedSplashScreen({
     </>
   );
 }
-
