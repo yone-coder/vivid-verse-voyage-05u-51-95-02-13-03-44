@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 
 // Background Pulse Component with Physics
@@ -129,12 +130,14 @@ interface MainLogoPathProps {
   className?: string;
   strokeColor?: string;
   fillColor?: string;
+  isExiting?: boolean;
 }
 
 function MainLogoPath({ 
   className = '', 
   strokeColor = '#ffffff',
-  fillColor = 'transparent' 
+  fillColor = 'transparent',
+  isExiting = false
 }: MainLogoPathProps) {
   return (
     <>
@@ -148,12 +151,14 @@ function MainLogoPath({
           strokeDashoffset: '4000',
           strokeWidth: '2',
           transformOrigin: 'center center',
-          animation: `
-            draw-path-physics 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
-            fill-path-physics 1.2s ease-out 2.5s forwards,
-            physics-vibration 0.8s ease-in-out 3.7s infinite,
-            gravity-bounce 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) 4.5s infinite
-          `
+          animation: isExiting 
+            ? 'pulverize-exit 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards'
+            : `
+              draw-path-physics 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
+              fill-path-physics 1.2s ease-out 2.5s forwards,
+              physics-vibration 0.8s ease-in-out 3.7s infinite,
+              gravity-bounce 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) 4.5s infinite
+            `
         }}
       />
       <style>{`
@@ -263,6 +268,49 @@ function MainLogoPath({
             transform: translateY(-5px) scale(1.005);
           }
         }
+
+        @keyframes pulverize-exit {
+          0% {
+            transform: scale(1) rotate(0deg);
+            opacity: 1;
+            filter: brightness(1) blur(0px);
+          }
+          15% {
+            transform: scale(1.05) rotate(2deg);
+            opacity: 0.95;
+            filter: brightness(1.2) blur(0.5px);
+          }
+          30% {
+            transform: scale(1.1) rotate(5deg);
+            opacity: 0.9;
+            filter: brightness(1.5) blur(1px);
+          }
+          45% {
+            transform: scale(1.2) rotate(15deg);
+            opacity: 0.8;
+            filter: brightness(2) blur(2px);
+          }
+          60% {
+            transform: scale(1.5) rotate(30deg);
+            opacity: 0.6;
+            filter: brightness(2.5) blur(4px);
+          }
+          75% {
+            transform: scale(2) rotate(60deg);
+            opacity: 0.4;
+            filter: brightness(3) blur(8px);
+          }
+          90% {
+            transform: scale(4) rotate(120deg);
+            opacity: 0.2;
+            filter: brightness(4) blur(15px);
+          }
+          100% {
+            transform: scale(10) rotate(360deg);
+            opacity: 0;
+            filter: brightness(10) blur(30px);
+          }
+        }
       `}</style>
     </>
   );
@@ -272,11 +320,13 @@ function MainLogoPath({
 interface AccentPathProps {
   className?: string;
   fillColor?: string;
+  isExiting?: boolean;
 }
 
 function AccentPath({ 
   className = '', 
-  fillColor = '#ffffff' 
+  fillColor = '#ffffff',
+  isExiting = false
 }: AccentPathProps) {
   return (
     <>
@@ -287,11 +337,13 @@ function AccentPath({
         style={{
           opacity: '0',
           transformOrigin: 'center',
-          animation: `
-            momentum-entry 3.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 3s forwards,
-            elastic-oscillation 1.5s ease-in-out 6.5s infinite,
-            magnetic-pull 2.5s cubic-bezier(0.23, 1, 0.32, 1) 8s infinite
-          `
+          animation: isExiting 
+            ? 'accent-pulverize-exit 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards'
+            : `
+              momentum-entry 3.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 3s forwards,
+              elastic-oscillation 1.5s ease-in-out 6.5s infinite,
+              magnetic-pull 2.5s cubic-bezier(0.23, 1, 0.32, 1) 8s infinite
+            `
         }}
       />
       <style>{`
@@ -375,6 +427,39 @@ function AccentPath({
             filter: drop-shadow(1px 0.5px 3px rgba(255, 255, 255, 0.2));
           }
         }
+
+        @keyframes accent-pulverize-exit {
+          0% {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+            filter: brightness(1) blur(0px);
+          }
+          20% {
+            opacity: 0.9;
+            transform: scale(1.2) rotate(10deg);
+            filter: brightness(1.5) blur(1px);
+          }
+          40% {
+            opacity: 0.7;
+            transform: scale(1.8) rotate(25deg);
+            filter: brightness(2.5) blur(3px);
+          }
+          60% {
+            opacity: 0.5;
+            transform: scale(3) rotate(50deg);
+            filter: brightness(4) blur(6px);
+          }
+          80% {
+            opacity: 0.3;
+            transform: scale(6) rotate(90deg);
+            filter: brightness(6) blur(12px);
+          }
+          100% {
+            opacity: 0;
+            transform: scale(12) rotate(180deg);
+            filter: brightness(10) blur(25px);
+          }
+        }
       `}</style>
     </>
   );
@@ -401,7 +486,7 @@ function LogoContainer({
       className={`relative ${className}`}
       style={{
         animation: isExiting 
-          ? 'explosive-exit 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards'
+          ? 'container-explosive-exit 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards'
           : 'container-physics-float 6s ease-in-out 5s infinite'
       }}
     >
@@ -435,36 +520,26 @@ function LogoContainer({
           }
         }
 
-        @keyframes explosive-exit {
+        @keyframes container-explosive-exit {
           0% {
             transform: scale(1) rotate(0deg);
             opacity: 1;
             filter: brightness(1) blur(0px);
           }
-          20% {
-            transform: scale(1.1) rotate(5deg);
-            opacity: 0.9;
-            filter: brightness(1.3) blur(1px);
-          }
-          40% {
+          30% {
             transform: scale(1.3) rotate(15deg);
-            opacity: 0.7;
-            filter: brightness(1.8) blur(3px);
+            opacity: 0.8;
+            filter: brightness(2) blur(3px);
           }
           60% {
-            transform: scale(2) rotate(35deg);
+            transform: scale(2.5) rotate(45deg);
             opacity: 0.5;
-            filter: brightness(2.5) blur(8px);
-          }
-          80% {
-            transform: scale(4) rotate(80deg);
-            opacity: 0.2;
-            filter: brightness(3) blur(15px);
+            filter: brightness(4) blur(8px);
           }
           100% {
             transform: scale(8) rotate(180deg);
             opacity: 0;
-            filter: brightness(0) blur(25px);
+            filter: brightness(10) blur(25px);
           }
         }
       `}</style>
@@ -619,8 +694,8 @@ function PhysicsBackground({ isExiting }: { isExiting: boolean }) {
   );
 }
 
-// White Exit Overlay Component with Iris Effect
-function WhiteExitOverlay({ isExiting }: { isExiting: boolean }) {
+// White Zoom-in Overlay Component
+function WhiteZoomOverlay({ isExiting }: { isExiting: boolean }) {
   if (!isExiting) return null;
 
   return (
@@ -628,17 +703,35 @@ function WhiteExitOverlay({ isExiting }: { isExiting: boolean }) {
       className="fixed inset-0 z-50"
       style={{
         background: 'white',
-        clipPath: 'circle(150% at 50% 50%)',
-        animation: 'iris-close 1.5s ease-in-out forwards'
+        transform: 'scale(0)',
+        animation: 'white-zoom-in 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.5s forwards'
       }}
     >
       <style>{`
-        @keyframes iris-close {
+        @keyframes white-zoom-in {
           0% { 
-            clip-path: circle(150% at 50% 50%); 
+            transform: scale(0);
+            opacity: 0;
+          }
+          20% { 
+            transform: scale(0.1);
+            opacity: 0.2;
+          }
+          40% { 
+            transform: scale(0.3);
+            opacity: 0.5;
+          }
+          60% { 
+            transform: scale(0.6);
+            opacity: 0.7;
+          }
+          80% { 
+            transform: scale(0.9);
+            opacity: 0.9;
           }
           100% { 
-            clip-path: circle(0% at 50% 50%); 
+            transform: scale(1);
+            opacity: 1;
           }
         }
       `}</style>
@@ -684,8 +777,8 @@ export default function AnimatedSplashScreen({
             height={logoHeight} 
             isExiting={isExiting}
           >
-            <MainLogoPath />
-            <AccentPath />
+            <MainLogoPath isExiting={isExiting} />
+            <AccentPath isExiting={isExiting} />
           </LogoContainer>
         </div>
 
@@ -696,7 +789,8 @@ export default function AnimatedSplashScreen({
         />
       </div>
       
-      <WhiteExitOverlay isExiting={isExiting} />
+      <WhiteZoomOverlay isExiting={isExiting} />
     </>
   );
 }
+
