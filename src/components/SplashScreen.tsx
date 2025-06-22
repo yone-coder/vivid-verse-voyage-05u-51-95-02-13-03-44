@@ -624,7 +624,11 @@ function WhiteExitOverlay({ isExiting }: { isExiting: boolean }) {
 
   return (
     <div 
-      className="fixed inset-0 bg-white z-50 iris-top-right"
+      className="fixed inset-0 bg-white z-50"
+      style={{
+        clipPath: 'circle(100% at 100% 0%)',
+        animation: 'iris-top-right 1.5s ease-in-out forwards'
+      }}
     >
       <style>{`
         @keyframes iris-top-right {
@@ -634,10 +638,6 @@ function WhiteExitOverlay({ isExiting }: { isExiting: boolean }) {
           100% { 
             clip-path: circle(0% at 100% 0%); 
           }
-        }
-
-        .iris-top-right {
-          animation: iris-top-right 1.5s ease-in-out forwards;
         }
       `}</style>
     </div>
@@ -689,7 +689,7 @@ export default function AnimatedSplashScreen({
 
         <Acknowledgment 
           madeInText={customAcknowledment?.madeInText}
-          authorizedText={customAcknowledment?.authorizedText}
+          authorizedText={customAcknowledgement?.authorizedText}
           isExiting={isExiting}
         />
       </div>
