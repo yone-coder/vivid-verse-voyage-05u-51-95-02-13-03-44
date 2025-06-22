@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 // Background Pulse Component with Physics
@@ -618,26 +619,27 @@ function PhysicsBackground({ isExiting }: { isExiting: boolean }) {
   );
 }
 
-// White Exit Overlay Component
+// White Exit Overlay Component with Iris Effect
 function WhiteExitOverlay({ isExiting }: { isExiting: boolean }) {
   if (!isExiting) return null;
 
   return (
     <div 
-      className="fixed inset-0 bg-white z-50 iris-top-right"
+      className="fixed inset-0 z-50"
+      style={{
+        background: 'white',
+        clipPath: 'circle(150% at 50% 50%)',
+        animation: 'iris-close 1.5s ease-in-out forwards'
+      }}
     >
       <style>{`
-        @keyframes iris-top-right {
+        @keyframes iris-close {
           0% { 
-            clip-path: circle(100% at 100% 0%); 
+            clip-path: circle(150% at 50% 50%); 
           }
           100% { 
-            clip-path: circle(0% at 100% 0%); 
+            clip-path: circle(0% at 50% 50%); 
           }
-        }
-
-        .iris-top-right {
-          animation: iris-top-right 1.5s ease-in-out forwards;
         }
       `}</style>
     </div>
