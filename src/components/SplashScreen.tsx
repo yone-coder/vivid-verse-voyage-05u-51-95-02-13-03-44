@@ -60,7 +60,7 @@ function TopTitle({ className = '', isExiting = false }: TopTitleProps) {
       style={{
         opacity: 1,
         animation: isExiting 
-          ? 'title-physics-exit 2s ease-in-out forwards'
+          ? 'title-quantum-exit 2s ease-in-out forwards'
           : 'title-physics-entry 1.5s ease-out 0.5s forwards'
       }}
     >
@@ -96,26 +96,41 @@ function TopTitle({ className = '', isExiting = false }: TopTitleProps) {
           }
         }
 
-        @keyframes title-physics-exit {
+        @keyframes title-quantum-exit {
           0% {
             opacity: 1;
-            transform: translateY(0px) scale(1);
-            filter: blur(0px);
+            transform: translateY(0px) scale(1) rotateX(0deg);
+            filter: blur(0px) brightness(1);
+          }
+          15% {
+            opacity: 0.9;
+            transform: translateY(-8px) scale(1.05) rotateX(5deg);
+            filter: blur(1px) brightness(1.2);
           }
           30% {
-            opacity: 0.8;
-            transform: translateY(-15px) scale(1.1);
-            filter: blur(2px);
+            opacity: 0.7;
+            transform: translateY(-20px) scale(1.15) rotateX(15deg);
+            filter: blur(3px) brightness(1.5);
           }
-          60% {
-            opacity: 0.4;
-            transform: translateY(-35px) scale(1.3);
-            filter: blur(5px);
+          50% {
+            opacity: 0.5;
+            transform: translateY(-40px) scale(1.3) rotateX(30deg);
+            filter: blur(6px) brightness(2);
+          }
+          70% {
+            opacity: 0.3;
+            transform: translateY(-70px) scale(1.6) rotateX(50deg);
+            filter: blur(12px) brightness(3);
+          }
+          85% {
+            opacity: 0.1;
+            transform: translateY(-120px) scale(2.2) rotateX(80deg);
+            filter: blur(20px) brightness(5);
           }
           100% {
             opacity: 0;
-            transform: translateY(-70px) scale(1.8);
-            filter: blur(12px);
+            transform: translateY(-200px) scale(3.5) rotateX(120deg);
+            filter: blur(40px) brightness(8);
           }
         }
       `}</style>
@@ -123,7 +138,7 @@ function TopTitle({ className = '', isExiting = false }: TopTitleProps) {
   );
 }
 
-// Main Logo Path Component with Advanced Physics
+// Main Logo Path Component with Ultra Advanced Physics
 interface MainLogoPathProps {
   className?: string;
   strokeColor?: string;
@@ -150,7 +165,7 @@ function MainLogoPath({
           strokeWidth: '2',
           transformOrigin: 'center center',
           animation: isExiting 
-            ? 'netflix-zoom-pulverize 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards'
+            ? 'quantum-disintegration 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards'
             : `
               draw-path-physics 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
               fill-path-physics 1.2s ease-out 2.5s forwards,
@@ -267,61 +282,132 @@ function MainLogoPath({
           }
         }
 
-        @keyframes netflix-zoom-pulverize {
+        @keyframes quantum-disintegration {
           0% {
             transform: scale(1) rotate(0deg);
             opacity: 1;
-            filter: brightness(1) blur(0px);
+            filter: brightness(1) blur(0px) hue-rotate(0deg);
+            stroke-dashoffset: 0;
+          }
+          5% {
+            transform: scale(1.01) rotate(2deg);
+            opacity: 0.98;
+            filter: brightness(1.1) blur(0.5px) hue-rotate(10deg);
+            stroke-dashoffset: 50;
           }
           10% {
-            transform: scale(1.02) rotate(1deg);
-            opacity: 1;
-            filter: brightness(1.1) blur(0.2px);
+            transform: scale(1.03) rotate(5deg);
+            opacity: 0.95;
+            filter: brightness(1.3) blur(1px) hue-rotate(30deg);
+            stroke-dashoffset: 150;
+          }
+          15% {
+            transform: scale(1.08) rotate(12deg);
+            opacity: 0.9;
+            filter: brightness(1.6) blur(2px) hue-rotate(60deg);
+            stroke-dashoffset: 300;
           }
           20% {
-            transform: scale(1.05) rotate(3deg);
-            opacity: 0.98;
-            filter: brightness(1.2) blur(0.5px);
+            transform: scale(1.15) rotate(25deg);
+            opacity: 0.85;
+            filter: brightness(2) blur(4px) hue-rotate(90deg);
+            stroke-dashoffset: 500;
+          }
+          25% {
+            transform: scale(1.25) rotate(45deg);
+            opacity: 0.8;
+            filter: brightness(2.5) blur(6px) hue-rotate(120deg);
+            stroke-dashoffset: 750;
           }
           30% {
-            transform: scale(1.1) rotate(8deg);
-            opacity: 0.95;
-            filter: brightness(1.4) blur(1px);
+            transform: scale(1.4) rotate(70deg);
+            opacity: 0.75;
+            filter: brightness(3.2) blur(8px) hue-rotate(150deg);
+            stroke-dashoffset: 1000;
+          }
+          35% {
+            transform: scale(1.6) rotate(100deg);
+            opacity: 0.7;
+            filter: brightness(4) blur(12px) hue-rotate(180deg);
+            stroke-dashoffset: 1300;
           }
           40% {
-            transform: scale(1.2) rotate(15deg);
-            opacity: 0.9;
-            filter: brightness(1.8) blur(2px);
+            transform: scale(1.9) rotate(140deg);
+            opacity: 0.65;
+            filter: brightness(5) blur(16px) hue-rotate(210deg);
+            stroke-dashoffset: 1650;
+          }
+          45% {
+            transform: scale(2.3) rotate(185deg);
+            opacity: 0.6;
+            filter: brightness(6.5) blur(20px) hue-rotate(240deg);
+            stroke-dashoffset: 2000;
           }
           50% {
-            transform: scale(1.5) rotate(25deg);
-            opacity: 0.8;
-            filter: brightness(2.5) blur(4px);
+            transform: scale(2.8) rotate(240deg);
+            opacity: 0.55;
+            filter: brightness(8) blur(25px) hue-rotate(270deg);
+            stroke-dashoffset: 2400;
+          }
+          55% {
+            transform: scale(3.5) rotate(300deg);
+            opacity: 0.5;
+            filter: brightness(10) blur(30px) hue-rotate(300deg);
+            stroke-dashoffset: 2800;
           }
           60% {
-            transform: scale(2.5) rotate(45deg);
-            opacity: 0.7;
-            filter: brightness(4) blur(8px);
+            transform: scale(4.5) rotate(370deg);
+            opacity: 0.45;
+            filter: brightness(12) blur(35px) hue-rotate(330deg);
+            stroke-dashoffset: 3200;
+          }
+          65% {
+            transform: scale(6) rotate(450deg);
+            opacity: 0.4;
+            filter: brightness(15) blur(40px) hue-rotate(360deg);
+            stroke-dashoffset: 3600;
           }
           70% {
-            transform: scale(5) rotate(80deg);
-            opacity: 0.6;
-            filter: brightness(6) blur(15px);
+            transform: scale(8) rotate(540deg);
+            opacity: 0.35;
+            filter: brightness(18) blur(45px) hue-rotate(390deg);
+            stroke-dashoffset: 3900;
+          }
+          75% {
+            transform: scale(11) rotate(640deg);
+            opacity: 0.3;
+            filter: brightness(22) blur(50px) hue-rotate(420deg);
+            stroke-dashoffset: 4000;
           }
           80% {
-            transform: scale(12) rotate(150deg);
-            opacity: 0.4;
-            filter: brightness(10) blur(25px);
+            transform: scale(15) rotate(750deg);
+            opacity: 0.25;
+            filter: brightness(26) blur(55px) hue-rotate(450deg);
+            stroke-dashoffset: 4000;
+          }
+          85% {
+            transform: scale(20) rotate(870deg);
+            opacity: 0.2;
+            filter: brightness(30) blur(60px) hue-rotate(480deg);
+            stroke-dashoffset: 4000;
           }
           90% {
-            transform: scale(25) rotate(270deg);
-            opacity: 0.2;
-            filter: brightness(15) blur(40px);
+            transform: scale(28) rotate(1000deg);
+            opacity: 0.15;
+            filter: brightness(35) blur(65px) hue-rotate(510deg);
+            stroke-dashoffset: 4000;
+          }
+          95% {
+            transform: scale(40) rotate(1150deg);
+            opacity: 0.1;
+            filter: brightness(40) blur(70px) hue-rotate(540deg);
+            stroke-dashoffset: 4000;
           }
           100% {
-            transform: scale(50) rotate(360deg);
+            transform: scale(60) rotate(1320deg);
             opacity: 0;
-            filter: brightness(20) blur(60px);
+            filter: brightness(50) blur(80px) hue-rotate(600deg);
+            stroke-dashoffset: 4000;
           }
         }
       `}</style>
@@ -329,7 +415,7 @@ function MainLogoPath({
   );
 }
 
-// Accent Path Component with Momentum Physics
+// Accent Path Component with Quantum Physics
 interface AccentPathProps {
   className?: string;
   fillColor?: string;
@@ -351,7 +437,7 @@ function AccentPath({
           opacity: '0',
           transformOrigin: 'center',
           animation: isExiting 
-            ? 'accent-netflix-zoom 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards'
+            ? 'accent-quantum-disintegration 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards'
             : `
               momentum-entry 3.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 3s forwards,
               elastic-oscillation 1.5s ease-in-out 6.5s infinite,
@@ -441,46 +527,61 @@ function AccentPath({
           }
         }
 
-        @keyframes accent-netflix-zoom {
+        @keyframes accent-quantum-disintegration {
           0% {
             opacity: 1;
             transform: scale(1) rotate(0deg);
-            filter: brightness(1) blur(0px);
+            filter: brightness(1) blur(0px) hue-rotate(0deg);
           }
-          15% {
+          10% {
             opacity: 0.95;
-            transform: scale(1.1) rotate(5deg);
-            filter: brightness(1.3) blur(1px);
+            transform: scale(1.05) rotate(8deg);
+            filter: brightness(1.2) blur(1px) hue-rotate(20deg);
+          }
+          20% {
+            opacity: 0.9;
+            transform: scale(1.15) rotate(20deg);
+            filter: brightness(1.5) blur(2px) hue-rotate(50deg);
           }
           30% {
-            opacity: 0.9;
-            transform: scale(1.3) rotate(12deg);
-            filter: brightness(1.8) blur(2px);
+            opacity: 0.85;
+            transform: scale(1.3) rotate(40deg);
+            filter: brightness(2) blur(4px) hue-rotate(80deg);
           }
-          45% {
+          40% {
             opacity: 0.8;
-            transform: scale(1.8) rotate(25deg);
-            filter: brightness(2.5) blur(4px);
+            transform: scale(1.5) rotate(70deg);
+            filter: brightness(2.8) blur(6px) hue-rotate(120deg);
+          }
+          50% {
+            opacity: 0.7;
+            transform: scale(1.8) rotate(110deg);
+            filter: brightness(3.8) blur(8px) hue-rotate(160deg);
           }
           60% {
             opacity: 0.6;
-            transform: scale(3) rotate(45deg);
-            filter: brightness(4) blur(8px);
+            transform: scale(2.3) rotate(160deg);
+            filter: brightness(5) blur(12px) hue-rotate(200deg);
           }
-          75% {
+          70% {
+            opacity: 0.5;
+            transform: scale(3) rotate(220deg);
+            filter: brightness(7) blur(16px) hue-rotate(250deg);
+          }
+          80% {
             opacity: 0.4;
-            transform: scale(6) rotate(80deg);
-            filter: brightness(7) blur(15px);
+            transform: scale(4.2) rotate(290deg);
+            filter: brightness(10) blur(20px) hue-rotate(300deg);
           }
           90% {
             opacity: 0.2;
-            transform: scale(15) rotate(180deg);
-            filter: brightness(12) blur(30px);
+            transform: scale(6.5) rotate(380deg);
+            filter: brightness(15) blur(25px) hue-rotate(360deg);
           }
           100% {
             opacity: 0;
-            transform: scale(35) rotate(270deg);
-            filter: brightness(20) blur(50px);
+            transform: scale(10) rotate(480deg);
+            filter: brightness(25) blur(35px) hue-rotate(420deg);
           }
         }
       `}</style>
@@ -488,7 +589,7 @@ function AccentPath({
   );
 }
 
-// Logo Container Component with Container Physics
+// Logo Container Component with Advanced Container Physics
 interface LogoContainerProps {
   className?: string;
   width?: string;
@@ -509,7 +610,7 @@ function LogoContainer({
       className={`relative ${className}`}
       style={{
         animation: isExiting 
-          ? 'container-netflix-zoom 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards'
+          ? 'container-quantum-exit 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards'
           : 'container-physics-float 6s ease-in-out 5s infinite'
       }}
     >
@@ -543,36 +644,111 @@ function LogoContainer({
           }
         }
 
-        @keyframes container-netflix-zoom {
+        @keyframes container-quantum-exit {
           0% {
             transform: scale(1) rotate(0deg);
             opacity: 1;
-            filter: brightness(1) blur(0px);
+            filter: brightness(1) blur(0px) hue-rotate(0deg);
+          }
+          5% {
+            transform: scale(1.02) rotate(3deg);
+            opacity: 0.98;
+            filter: brightness(1.1) blur(0.5px) hue-rotate(15deg);
+          }
+          10% {
+            transform: scale(1.05) rotate(8deg);
+            opacity: 0.95;
+            filter: brightness(1.3) blur(1px) hue-rotate(30deg);
+          }
+          15% {
+            transform: scale(1.1) rotate(18deg);
+            opacity: 0.9;
+            filter: brightness(1.6) blur(2px) hue-rotate(50deg);
           }
           20% {
-            transform: scale(1.1) rotate(3deg);
-            opacity: 0.95;
-            filter: brightness(1.2) blur(1px);
+            transform: scale(1.18) rotate(32deg);
+            opacity: 0.85;
+            filter: brightness(2) blur(3px) hue-rotate(70deg);
+          }
+          25% {
+            transform: scale(1.3) rotate(50deg);
+            opacity: 0.8;
+            filter: brightness(2.5) blur(4px) hue-rotate(90deg);
+          }
+          30% {
+            transform: scale(1.45) rotate(75deg);
+            opacity: 0.75;
+            filter: brightness(3.2) blur(6px) hue-rotate(120deg);
+          }
+          35% {
+            transform: scale(1.65) rotate(105deg);
+            opacity: 0.7;
+            filter: brightness(4) blur(8px) hue-rotate(150deg);
           }
           40% {
-            transform: scale(1.4) rotate(10deg);
-            opacity: 0.85;
-            filter: brightness(1.6) blur(3px);
+            transform: scale(1.9) rotate(140deg);
+            opacity: 0.65;
+            filter: brightness(5) blur(10px) hue-rotate(180deg);
+          }
+          45% {
+            transform: scale(2.2) rotate(180deg);
+            opacity: 0.6;
+            filter: brightness(6.5) blur(12px) hue-rotate(210deg);
+          }
+          50% {
+            transform: scale(2.6) rotate(230deg);
+            opacity: 0.55;
+            filter: brightness(8) blur(15px) hue-rotate(240deg);
+          }
+          55% {
+            transform: scale(3.2) rotate(285deg);
+            opacity: 0.5;
+            filter: brightness(10) blur(18px) hue-rotate(270deg);
           }
           60% {
-            transform: scale(2.2) rotate(25deg);
-            opacity: 0.7;
-            filter: brightness(2.5) blur(6px);
+            transform: scale(4) rotate(350deg);
+            opacity: 0.45;
+            filter: brightness(12) blur(22px) hue-rotate(300deg);
+          }
+          65% {
+            transform: scale(5.2) rotate(420deg);
+            opacity: 0.4;
+            filter: brightness(15) blur(26px) hue-rotate(330deg);
+          }
+          70% {
+            transform: scale(6.8) rotate(500deg);
+            opacity: 0.35;
+            filter: brightness(18) blur(30px) hue-rotate(360deg);
+          }
+          75% {
+            transform: scale(9) rotate(590deg);
+            opacity: 0.3;
+            filter: brightness(22) blur(35px) hue-rotate(390deg);
           }
           80% {
-            transform: scale(4.5) rotate(60deg);
-            opacity: 0.4;
-            filter: brightness(5) blur(12px);
+            transform: scale(12.5) rotate(690deg);
+            opacity: 0.25;
+            filter: brightness(26) blur(40px) hue-rotate(420deg);
+          }
+          85% {
+            transform: scale(17.5) rotate(800deg);
+            opacity: 0.2;
+            filter: brightness(30) blur(45px) hue-rotate(450deg);
+          }
+          90% {
+            transform: scale(25) rotate(920deg);
+            opacity: 0.15;
+            filter: brightness(35) blur(50px) hue-rotate(480deg);
+          }
+          95% {
+            transform: scale(36) rotate(1050deg);
+            opacity: 0.1;
+            filter: brightness(40) blur(55px) hue-rotate(510deg);
           }
           100% {
-            transform: scale(12) rotate(120deg);
+            transform: scale(55) rotate(1200deg);
             opacity: 0;
-            filter: brightness(10) blur(25px);
+            filter: brightness(50) blur(65px) hue-rotate(600deg);
           }
         }
       `}</style>
@@ -580,7 +756,7 @@ function LogoContainer({
   );
 }
 
-// Acknowledgment Section Component with Physics
+// Acknowledgment Section Component with Quantum Physics
 interface AcknowledgmentProps {
   className?: string;
   madeInText?: string;
@@ -599,7 +775,7 @@ function Acknowledgment({
       className={`absolute bottom-8 left-0 right-0 text-center text-white px-6 ${className}`}
       style={{
         animation: isExiting 
-          ? 'text-physics-exit 2s ease-in-out forwards'
+          ? 'text-quantum-exit 2s ease-in-out forwards'
           : 'text-physics-entry 1s ease-out 7s forwards'
       }}
     >
@@ -640,26 +816,46 @@ function Acknowledgment({
           }
         }
 
-        @keyframes text-physics-exit {
+        @keyframes text-quantum-exit {
           0% {
             opacity: 1;
-            transform: translateY(0px) scale(1);
-            filter: blur(0px);
+            transform: translateY(0px) scale(1) rotateX(0deg);
+            filter: blur(0px) brightness(1);
+          }
+          15% {
+            opacity: 0.9;
+            transform: translateY(-5px) scale(1.03) rotateX(5deg);
+            filter: blur(1px) brightness(1.2);
           }
           30% {
             opacity: 0.8;
-            transform: translateY(-10px) scale(1.05);
-            filter: blur(1px);
+            transform: translateY(-12px) scale(1.08) rotateX(12deg);
+            filter: blur(2px) brightness(1.5);
+          }
+          45% {
+            opacity: 0.7;
+            transform: translateY(-22px) scale(1.15) rotateX(22deg);
+            filter: blur(4px) brightness(2);
           }
           60% {
             opacity: 0.5;
-            transform: translateY(-25px) scale(1.2);
-            filter: blur(3px);
+            transform: translateY(-35px) scale(1.25) rotateX(35deg);
+            filter: blur(6px) brightness(2.8);
+          }
+          75% {
+            opacity: 0.3;
+            transform: translateY(-55px) scale(1.4) rotateX(55deg);
+            filter: blur(10px) brightness(4);
+          }
+          90% {
+            opacity: 0.1;
+            transform: translateY(-85px) scale(1.7) rotateX(85deg);
+            filter: blur(16px) brightness(6);
           }
           100% {
             opacity: 0;
-            transform: translateY(-50px) scale(1.5);
-            filter: blur(8px);
+            transform: translateY(-130px) scale(2.2) rotateX(130deg);
+            filter: blur(25px) brightness(10);
           }
         }
       `}</style>
@@ -667,20 +863,38 @@ function Acknowledgment({
   );
 }
 
-// Physics Background Component
-function PhysicsBackground({ isExiting }: { isExiting: boolean }) {
+// Quantum Background Component with Advanced Physics
+function QuantumBackground({ isExiting }: { isExiting: boolean }) {
   return (
     <div 
       className="absolute inset-0"
       style={{
         animation: isExiting 
-          ? 'background-physics-exit 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards'
+          ? 'background-quantum-exit 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards'
           : 'background-physics-pulse 4s ease-in-out infinite'
       }}
     >
-      {/* Multiple physics layers */}
+      {/* Multiple quantum physics layers */}
       <div className="absolute inset-0 bg-gradient-radial from-red-400/20 via-red-500/10 to-transparent"></div>
       <div className="absolute inset-0 bg-gradient-conic from-red-500/5 via-transparent to-red-600/5"></div>
+      
+      {/* Quantum particle effects */}
+      <div className="absolute inset-0 overflow-hidden">
+        {[...Array(12)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-1 h-1 bg-white/30 rounded-full"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animation: isExiting 
+                ? `particle-quantum-exit ${1.5 + Math.random()}s ease-out ${Math.random() * 0.5}s forwards`
+                : `particle-float ${3 + Math.random() * 2}s ease-in-out ${Math.random() * 2}s infinite`
+            }}
+          />
+        ))}
+      </div>
+      
       <style>{`
         @keyframes background-physics-pulse {
           0%, 100% {
@@ -695,31 +909,107 @@ function PhysicsBackground({ isExiting }: { isExiting: boolean }) {
           }
         }
 
-        @keyframes background-physics-exit {
+        @keyframes background-quantum-exit {
           0% {
             opacity: 1;
             transform: scale(1) rotate(0deg);
-            filter: brightness(1) blur(0px) hue-rotate(0deg);
+            filter: brightness(1) blur(0px) hue-rotate(0deg) saturate(1);
           }
-          25% {
+          10% {
+            opacity: 0.95;
+            transform: scale(1.02) rotate(2deg);
+            filter: brightness(1.2) blur(1px) hue-rotate(20deg) saturate(1.2);
+          }
+          20% {
             opacity: 0.9;
-            transform: scale(1.1) rotate(2deg);
-            filter: brightness(1.5) blur(2px) hue-rotate(30deg);
+            transform: scale(1.05) rotate(5deg);
+            filter: brightness(1.5) blur(2px) hue-rotate(50deg) saturate(1.5);
+          }
+          30% {
+            opacity: 0.85;
+            transform: scale(1.1) rotate(10deg);
+            filter: brightness(2) blur(4px) hue-rotate(80deg) saturate(2);
+          }
+          40% {
+            opacity: 0.8;
+            transform: scale(1.18) rotate(18deg);
+            filter: brightness(2.8) blur(6px) hue-rotate(120deg) saturate(2.5);
           }
           50% {
             opacity: 0.7;
-            transform: scale(1.3) rotate(8deg);
-            filter: brightness(2) blur(5px) hue-rotate(90deg);
+            transform: scale(1.3) rotate(30deg);
+            filter: brightness(3.8) blur(8px) hue-rotate(160deg) saturate(3);
           }
-          75% {
+          60% {
+            opacity: 0.6;
+            transform: scale(1.5) rotate(45deg);
+            filter: brightness(5) blur(12px) hue-rotate(200deg) saturate(3.5);
+          }
+          70% {
+            opacity: 0.5;
+            transform: scale(1.8) rotate(65deg);
+            filter: brightness(7) blur(16px) hue-rotate(250deg) saturate(4);
+          }
+          80% {
             opacity: 0.4;
-            transform: scale(1.8) rotate(20deg);
-            filter: brightness(3) blur(12px) hue-rotate(180deg);
+            transform: scale(2.3) rotate(90deg);
+            filter: brightness(10) blur(20px) hue-rotate(300deg) saturate(4.5);
+          }
+          90% {
+            opacity: 0.2;
+            transform: scale(3.2) rotate(120deg);
+            filter: brightness(15) blur(25px) hue-rotate(360deg) saturate(5);
           }
           100% {
             opacity: 0;
-            transform: scale(3) rotate(45deg);
-            filter: brightness(0) blur(25px) hue-rotate(360deg);
+            transform: scale(5) rotate(180deg);
+            filter: brightness(25) blur(35px) hue-rotate(450deg) saturate(0);
+          }
+        }
+
+        @keyframes particle-float {
+          0%, 100% {
+            transform: translateY(0px) translateX(0px) scale(1);
+            opacity: 0.3;
+          }
+          25% {
+            transform: translateY(-20px) translateX(10px) scale(1.2);
+            opacity: 0.6;
+          }
+          50% {
+            transform: translateY(-40px) translateX(-5px) scale(0.8);
+            opacity: 0.9;
+          }
+          75% {
+            transform: translateY(-25px) translateX(-15px) scale(1.1);
+            opacity: 0.5;
+          }
+        }
+
+        @keyframes particle-quantum-exit {
+          0% {
+            transform: translateY(0px) translateX(0px) scale(1) rotate(0deg);
+            opacity: 0.3;
+          }
+          20% {
+            transform: translateY(-30px) translateX(20px) scale(1.5) rotate(45deg);
+            opacity: 0.8;
+          }
+          40% {
+            transform: translateY(-80px) translateX(-30px) scale(2) rotate(120deg);
+            opacity: 0.9;
+          }
+          60% {
+            transform: translateY(-150px) translateX(60px) scale(3) rotate(220deg);
+            opacity: 0.7;
+          }
+          80% {
+            transform: translateY(-250px) translateX(-80px) scale(4.5) rotate(350deg);
+            opacity: 0.4;
+          }
+          100% {
+            transform: translateY(-400px) translateX(120px) scale(6) rotate(540deg);
+            opacity: 0;
           }
         }
       `}</style>
@@ -740,7 +1030,7 @@ interface SplashScreenProps {
   };
 }
 
-export default function AnimatedSplashScreen({ 
+export default function UltraSleekSplashScreen({ 
   isVisible,
   isExiting = false,
   backgroundColor = 'bg-red-500',
@@ -752,7 +1042,7 @@ export default function AnimatedSplashScreen({
 
   return (
     <div className={`fixed inset-0 min-h-screen ${backgroundColor} flex flex-col items-center justify-center overflow-hidden z-50`}>
-      <PhysicsBackground isExiting={isExiting} />
+      <QuantumBackground isExiting={isExiting} />
       
       <TopTitle isExiting={isExiting} />
       
