@@ -36,10 +36,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({
         </LogoContainer>
 
       </div>
-      {/* Global Transfè text at the far bottom of the page */}
-      <div className="absolute bottom-4 w-full text-center text-white text-4xl font-light uppercase tracking-widest opacity-60">
-        GLOBAL TRANSFÈ
-      </div>
+      {/* Removed the GLOBAL TRANSFÈ text */}
     </div>
   );
 };
