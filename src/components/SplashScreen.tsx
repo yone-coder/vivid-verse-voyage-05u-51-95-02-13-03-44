@@ -137,8 +137,7 @@ function MainLogoPath({
             : `
               draw-path-physics 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
               fill-path-physics 1.2s ease-out 2.5s forwards,
-              physics-vibration 0.8s ease-in-out 3.7s infinite,
-              gravity-bounce 2s cubic-bezier(0.68, -0.55, 0.265, 1.55) 4.5s infinite
+              physics-vibration 0.8s ease-in-out 3.7s infinite
             `
         }}
       />
@@ -232,21 +231,6 @@ function MainLogoPath({
           }
           75% {
             transform: translateX(0.2px) translateY(-0.2px) rotate(0.1deg);
-          }
-        }
-
-        @keyframes gravity-bounce {
-          0%, 100% {
-            transform: translateY(0px) scale(1);
-          }
-          25% {
-            transform: translateY(-8px) scale(1.01);
-          }
-          50% {
-            transform: translateY(-15px) scale(1.02);
-          }
-          75% {
-            transform: translateY(-5px) scale(1.005);
           }
         }
 
