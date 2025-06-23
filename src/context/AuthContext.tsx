@@ -12,6 +12,7 @@ interface AuthContextType {
   signIn: (email: string, password: string, rememberMe?: boolean) => Promise<void>;
   signUp: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
+  checkUserExists: (email: string) => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -72,6 +73,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return toast.error('Your password must be at least 8 characters long.');
     } else {
       return toast.error(defaultMessage);
+    }
+  };
+
+  const checkUserExists = async (email: string): Promise<boolean> => {
+    try {
+      // First, try to sign in with a dummy password to check if user exists
+      // This is a Supabase-specific approach since there's no direct "check user exists" API
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password: 'dummy_password_check_user_exists_12345'
+      });
+      
+      if (error) {
+        // If error message contains "Invalid login credentials", user exists but password is wrong
+        if (error.message.includes('Invalid login credentials')) {
+          return true;
+        }
+        // If error is about user not found or email not confirmed, user doesn't exist
+        return false;
+      }
+      
+      // This shouldn't happen with dummy password, but if it does, user exists
+      return true;
+    } catch (error) {
+      console.error('Error checking user existence:', error);
+      return false;
     }
   };
 
@@ -155,7 +182,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, isLoading, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ user, session, isLoading, signIn, signUp, signOut, checkUserExists }}>
       {children}
     </AuthContext.Provider>
   );

@@ -10,13 +10,14 @@ import LanguageSelector from '@/components/common/LanguageSelector';
 import { toast } from 'sonner';
 
 const SignInScreen: React.FC = () => {
-  const { signIn, signUp, isLoading } = useAuth();
+  const { signIn, signUp, checkUserExists, isLoading } = useAuth();
   const { t } = useLanguage();
   
-  const [mode, setMode] = useState<'signin' | 'signup'>('signin');
-  const [step, setStep] = useState<'email' | 'details' | 'complete'>('email');
+  const [step, setStep] = useState<'email' | 'signin' | 'signup'>('email');
+  const [userExists, setUserExists] = useState<boolean | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isCheckingUser, setIsCheckingUser] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -30,24 +31,53 @@ const SignInScreen: React.FC = () => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleEmailStep = () => {
+  const handleEmailStep = async () => {
     if (!formData.email) {
       toast.error('Please enter your email');
       return;
     }
-    setStep('details');
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      toast.error('Please enter a valid email address');
+      return;
+    }
+
+    setIsCheckingUser(true);
+    try {
+      const exists = await checkUserExists(formData.email);
+      setUserExists(exists);
+      
+      if (exists) {
+        setStep('signin');
+        toast.info('Welcome back! Please enter your password.');
+      } else {
+        setStep('signup');
+        toast.info('New here? Let\'s create your account.');
+      }
+    } catch (error) {
+      console.error('Error checking user:', error);
+      toast.error('Something went wrong. Please try again.');
+    } finally {
+      setIsCheckingUser(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (mode === 'signup' && formData.password !== formData.confirmPassword) {
+    if (step === 'signup' && formData.password !== formData.confirmPassword) {
       toast.error(t('auth.passwordMismatch'));
       return;
     }
 
+    if (formData.password.length < 6) {
+      toast.error('Password must be at least 6 characters long');
+      return;
+    }
+
     try {
-      if (mode === 'signin') {
+      if (step === 'signin') {
         await signIn(formData.email, formData.password, formData.rememberMe);
       } else {
         await signUp(formData.email, formData.password);
@@ -57,17 +87,10 @@ const SignInScreen: React.FC = () => {
     }
   };
 
-  const toggleMode = () => {
-    setMode(mode === 'signin' ? 'signup' : 'signin');
+  const goBackToEmail = () => {
     setStep('email');
-    setFormData({
-      email: '',
-      password: '',
-      confirmPassword: '',
-      firstName: '',
-      lastName: '',
-      rememberMe: false
-    });
+    setUserExists(null);
+    setFormData(prev => ({ ...prev, password: '', confirmPassword: '', firstName: '', lastName: '' }));
   };
 
   const trustFeatures = [
@@ -78,10 +101,10 @@ const SignInScreen: React.FC = () => {
   ];
 
   const getStepIndicator = () => {
-    if (mode === 'signin') return null;
+    if (step === 'email') return null;
     
-    const steps = ['Email', 'Details', 'Complete'];
-    const currentStepIndex = steps.indexOf(step === 'email' ? 'Email' : step === 'details' ? 'Details' : 'Complete');
+    const steps = ['Email', 'Details'];
+    const currentStepIndex = step === 'email' ? 0 : 1;
     
     return (
       <div className="flex items-center justify-center mb-6">
@@ -176,21 +199,21 @@ const SignInScreen: React.FC = () => {
 
           <div className="text-center mb-6">
             <h2 className="text-2xl font-bold text-gray-900 mb-1">
-              {mode === 'signin' ? 'Welcome back' : 
-               step === 'email' ? 'Get started' :
-               step === 'details' ? 'Create password' : 'All set!'}
+              {step === 'email' ? 'Welcome' : 
+               step === 'signin' ? 'Welcome back!' :
+               'Create your account'}
             </h2>
             <p className="text-sm text-gray-600">
-              {mode === 'signin' ? 'Sign in to your account' : 
-               step === 'email' ? 'Enter your email to continue' :
-               step === 'details' ? 'Secure your account' : 'Complete your registration'}
+              {step === 'email' ? 'Enter your email to get started' : 
+               step === 'signin' ? 'Enter your password to continue' :
+               'Complete your account setup'}
             </p>
           </div>
 
           {/* Form */}
-          <form onSubmit={mode === 'signin' || step === 'details' ? handleSubmit : (e) => { e.preventDefault(); handleEmailStep(); }} className="space-y-4">
+          <form onSubmit={step === 'email' ? (e) => { e.preventDefault(); handleEmailStep(); } : handleSubmit} className="space-y-4">
             {/* Email Step */}
-            {(mode === 'signin' || step === 'email') && (
+            {step === 'email' && (
               <div className="space-y-1">
                 <Label htmlFor="email" className="text-xs font-medium text-gray-700 flex items-center">
                   <Mail className="w-3 h-3 mr-1" />
@@ -204,47 +227,33 @@ const SignInScreen: React.FC = () => {
                   className="h-11 text-sm border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter your email"
                   required
+                  disabled={isCheckingUser}
                 />
               </div>
             )}
 
-            {/* Password Step for Sign In or Details Step for Sign Up */}
-            {(mode === 'signin' || step === 'details') && (
+            {/* Sign In Step */}
+            {step === 'signin' && (
               <>
-                {/* Name fields for signup details step */}
-                {mode === 'signup' && step === 'details' && (
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-1">
-                      <Label htmlFor="firstName" className="text-xs font-medium text-gray-700 flex items-center">
-                        <User className="w-3 h-3 mr-1" />
-                        First name
-                      </Label>
-                      <Input
-                        id="firstName"
-                        type="text"
-                        value={formData.firstName}
-                        onChange={(e) => handleInputChange('firstName', e.target.value)}
-                        className="h-11 text-sm border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        placeholder="First name"
-                      />
+                <div className="space-y-1">
+                  <Label className="text-xs font-medium text-gray-700 flex items-center">
+                    <Mail className="w-3 h-3 mr-1" />
+                    Email address
+                  </Label>
+                  <div className="flex items-center space-x-2">
+                    <div className="flex-1 p-3 bg-gray-50 rounded-lg text-sm text-gray-600">
+                      {formData.email}
                     </div>
-                    <div className="space-y-1">
-                      <Label htmlFor="lastName" className="text-xs font-medium text-gray-700">
-                        Last name
-                      </Label>
-                      <Input
-                        id="lastName"
-                        type="text"
-                        value={formData.lastName}
-                        onChange={(e) => handleInputChange('lastName', e.target.value)}
-                        className="h-11 text-sm border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        placeholder="Last name"
-                      />
-                    </div>
+                    <button
+                      type="button"
+                      onClick={goBackToEmail}
+                      className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+                    >
+                      Change
+                    </button>
                   </div>
-                )}
+                </div>
 
-                {/* Password */}
                 <div className="space-y-1">
                   <Label htmlFor="password" className="text-xs font-medium text-gray-700 flex items-center">
                     <Lock className="w-3 h-3 mr-1" />
@@ -257,7 +266,7 @@ const SignInScreen: React.FC = () => {
                       value={formData.password}
                       onChange={(e) => handleInputChange('password', e.target.value)}
                       className="h-11 text-sm border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10"
-                      placeholder="Enter password"
+                      placeholder="Enter your password"
                       required
                     />
                     <button
@@ -270,53 +279,126 @@ const SignInScreen: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Confirm password for signup */}
-                {mode === 'signup' && step === 'details' && (
-                  <div className="space-y-1">
-                    <Label htmlFor="confirmPassword" className="text-xs font-medium text-gray-700">
-                      Confirm password
+                <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center space-x-2">
+                    <input
+                      id="rememberMe"
+                      type="checkbox"
+                      checked={formData.rememberMe}
+                      onChange={(e) => handleInputChange('rememberMe', e.target.checked)}
+                      className="w-3 h-3 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                    />
+                    <Label htmlFor="rememberMe" className="text-xs text-gray-700">
+                      Remember me
                     </Label>
-                    <div className="relative">
-                      <Input
-                        id="confirmPassword"
-                        type={showConfirmPassword ? 'text' : 'password'}
-                        value={formData.confirmPassword}
-                        onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
-                        className="h-11 text-sm border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10"
-                        placeholder="Confirm password"
-                        required
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                      >
-                        {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                      </button>
-                    </div>
                   </div>
-                )}
+                  <button type="button" className="text-xs text-blue-600 hover:text-blue-700 font-medium">
+                    Forgot password?
+                  </button>
+                </div>
+              </>
+            )}
 
-                {/* Remember me for signin */}
-                {mode === 'signin' && (
-                  <div className="flex items-center justify-between text-sm">
-                    <div className="flex items-center space-x-2">
-                      <input
-                        id="rememberMe"
-                        type="checkbox"
-                        checked={formData.rememberMe}
-                        onChange={(e) => handleInputChange('rememberMe', e.target.checked)}
-                        className="w-3 h-3 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-                      />
-                      <Label htmlFor="rememberMe" className="text-xs text-gray-700">
-                        Remember me
-                      </Label>
+            {/* Sign Up Step */}
+            {step === 'signup' && (
+              <>
+                <div className="space-y-1">
+                  <Label className="text-xs font-medium text-gray-700 flex items-center">
+                    <Mail className="w-3 h-3 mr-1" />
+                    Email address
+                  </Label>
+                  <div className="flex items-center space-x-2">
+                    <div className="flex-1 p-3 bg-gray-50 rounded-lg text-sm text-gray-600">
+                      {formData.email}
                     </div>
-                    <button type="button" className="text-xs text-blue-600 hover:text-blue-700 font-medium">
-                      Forgot password?
+                    <button
+                      type="button"
+                      onClick={goBackToEmail}
+                      className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+                    >
+                      Change
                     </button>
                   </div>
-                )}
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <Label htmlFor="firstName" className="text-xs font-medium text-gray-700 flex items-center">
+                      <User className="w-3 h-3 mr-1" />
+                      First name
+                    </Label>
+                    <Input
+                      id="firstName"
+                      type="text"
+                      value={formData.firstName}
+                      onChange={(e) => handleInputChange('firstName', e.target.value)}
+                      className="h-11 text-sm border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="First name"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="lastName" className="text-xs font-medium text-gray-700">
+                      Last name
+                    </Label>
+                    <Input
+                      id="lastName"
+                      type="text"
+                      value={formData.lastName}
+                      onChange={(e) => handleInputChange('lastName', e.target.value)}
+                      className="h-11 text-sm border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Last name"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <Label htmlFor="password" className="text-xs font-medium text-gray-700 flex items-center">
+                    <Lock className="w-3 h-3 mr-1" />
+                    Password
+                  </Label>
+                  <div className="relative">
+                    <Input
+                      id="password"
+                      type={showPassword ? 'text' : 'password'}
+                      value={formData.password}
+                      onChange={(e) => handleInputChange('password', e.target.value)}
+                      className="h-11 text-sm border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10"
+                      placeholder="Create a password"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <Label htmlFor="confirmPassword" className="text-xs font-medium text-gray-700">
+                    Confirm password
+                  </Label>
+                  <div className="relative">
+                    <Input
+                      id="confirmPassword"
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      value={formData.confirmPassword}
+                      onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
+                      className="h-11 text-sm border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10"
+                      placeholder="Confirm your password"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    >
+                      {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
               </>
             )}
 
@@ -324,33 +406,19 @@ const SignInScreen: React.FC = () => {
             <Button
               type="submit"
               className="w-full h-11 text-sm font-semibold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
-              disabled={isLoading}
+              disabled={isLoading || isCheckingUser}
             >
-              {isLoading ? (
+              {isLoading || isCheckingUser ? (
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
               ) : (
                 <>
-                  {mode === 'signin' ? 'Sign in' : 
-                   step === 'email' ? 'Continue' : 'Create account'}
+                  {step === 'email' ? 'Continue' : 
+                   step === 'signin' ? 'Sign in' : 'Create account'}
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </>
               )}
             </Button>
           </form>
-
-          {/* Navigation */}
-          <div className="text-center mt-6">
-            <p className="text-xs text-gray-600">
-              {mode === 'signin' ? "Don't have an account?" : 'Already have an account?'}
-            </p>
-            <button
-              type="button"
-              onClick={toggleMode}
-              className="mt-1 text-sm text-blue-600 hover:text-blue-700 font-semibold"
-            >
-              {mode === 'signin' ? 'Create account' : 'Sign in'}
-            </button>
-          </div>
 
           {/* Mobile Trust indicators */}
           <div className="lg:hidden mt-6 pt-4 border-t border-gray-200">
