@@ -6,7 +6,6 @@ import TopTitle from './splash/TopTitle';
 import LogoContainer from './splash/LogoContainer';
 import MainLogoPath from './splash/MainLogoPath';
 import AccentPath from './splash/AccentPath';
-import Acknowledgment from './splash/Acknowledgment';
 
 // Simple splash screen without exit animations and particles
 const SplashScreen: React.FC<SplashScreenProps> = ({ 
@@ -40,11 +39,6 @@ const SplashScreen: React.FC<SplashScreenProps> = ({
           <AccentPath />
         </LogoContainer>
       </div>
-
-      <Acknowledgment 
-        madeInText={customAcknowledment?.madeInText}
-        authorizedText={customAcknowledment?.authorizedText}
-      />
       
       {/* Screen reader announcement */}
       <div className="sr-only" aria-live="assertive">

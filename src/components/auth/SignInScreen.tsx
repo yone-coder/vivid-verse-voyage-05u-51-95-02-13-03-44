@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { Eye, EyeOff, ArrowRight, Shield, Users, Zap, CheckCircle, Mail, Lock, User, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -7,6 +8,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import LanguageSelector from '@/components/common/LanguageSelector';
 import CompactPhoneInput from '@/components/ui/compact-phone-input';
+import Acknowledgment from '@/components/splash/Acknowledgment';
 import { toast } from 'sonner';
 
 const SignInScreen: React.FC = () => {
@@ -194,7 +196,7 @@ const SignInScreen: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 flex relative">
       {/* Hero Panel */}
       <div className="hidden lg:flex lg:w-2/5 relative overflow-hidden bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700">
         <div 
@@ -539,6 +541,13 @@ const SignInScreen: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Acknowledgment at the bottom */}
+      <Acknowledgment 
+        className="text-gray-600"
+        madeInText="Made in Désarmes with"
+        authorizedText="Legalized and authorized by BRH"
+      />
     </div>
   );
 };

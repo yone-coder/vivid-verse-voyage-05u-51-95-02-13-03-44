@@ -13,13 +13,13 @@ const Acknowledgment: React.FC<AcknowledgmentProps> = ({
     <>
       {/* Bottom center acknowledgment */}
       <div 
-        className={`absolute bottom-8 left-0 right-0 text-center text-white px-6 splash-text-animate ${className}`}
+        className={`absolute bottom-8 left-0 right-0 text-center px-6 splash-text-animate ${className}`}
         role="contentinfo"
         aria-label="Application credits"
       >
-        <div className="animate-fadeIn" style={{ animationDelay: '2s', animationFillMode: 'forwards', opacity: 0 }}>
+        <div className="animate-fadeIn" style={{ animationDelay: '0s', animationFillMode: 'forwards', opacity: 1 }}>
           <p className="text-sm opacity-90 mb-2">
-            {madeInText} <span className="text-pink-200" role="img" aria-label="heart">❤️</span>
+            {madeInText} <span className="text-pink-400" role="img" aria-label="heart">❤️</span>
           </p>
           <p className="text-xs opacity-80">
             {authorizedText}
@@ -29,20 +29,16 @@ const Acknowledgment: React.FC<AcknowledgmentProps> = ({
 
       {/* Bottom left authorization - VISIBLE VERSION */}
       <div 
-        className="absolute bottom-8 left-6 text-white z-50"
+        className="absolute bottom-8 left-6 z-50"
         role="contentinfo"
         aria-label="Authorization"
-        style={{ 
-          border: '2px solid yellow', // Debug border
-          backgroundColor: 'rgba(255, 0, 0, 0.3)' // Debug background
-        }}
       >
-        <div className="animate-fadeIn flex flex-col items-start" style={{ animationDelay: '2s', animationFillMode: 'forwards', opacity: 0 }}>
+        <div className="animate-fadeIn flex flex-col items-start" style={{ animationDelay: '0s', animationFillMode: 'forwards', opacity: 1 }}>
           <p className="text-xs opacity-90 mb-2 font-medium">Autorisé par</p>
           <img 
             src="/images/brt-logo.png" 
             alt="BRT Logo" 
-            className="h-8 w-auto filter brightness-0 invert"
+            className="h-8 w-auto filter brightness-0"
             onLoad={() => console.log('BRT logo loaded successfully')}
             onError={(e) => {
               console.log('Logo failed to load:', e);
