@@ -563,7 +563,7 @@ function LogoContainer({
       style={{
         animation: isExiting 
           ? 'container-quantum-exit 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards'
-          : 'container-physics-float 6s ease-in-out 5s infinite'
+          : undefined
       }}
     >
       <svg 
@@ -577,25 +577,6 @@ function LogoContainer({
         {children}
       </svg>
       <style>{`
-        @keyframes container-physics-float {
-          0%, 100% {
-            transform: translateY(0px) rotate(0deg) scale(1);
-            filter: drop-shadow(0 10px 25px rgba(255, 255, 255, 0.1));
-          }
-          25% {
-            transform: translateY(-12px) rotate(0.8deg) scale(1.01);
-            filter: drop-shadow(0 15px 35px rgba(255, 255, 255, 0.2));
-          }
-          50% {
-            transform: translateY(-20px) rotate(0deg) scale(1.02);
-            filter: drop-shadow(0 25px 50px rgba(255, 255, 255, 0.3));
-          }
-          75% {
-            transform: translateY(-8px) rotate(-0.5deg) scale(1.005);
-            filter: drop-shadow(0 12px 30px rgba(255, 255, 255, 0.15));
-          }
-        }
-
         @keyframes container-quantum-exit {
           0% {
             transform: scale(1) rotate(0deg);
