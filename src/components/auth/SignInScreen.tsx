@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { Eye, EyeOff, ArrowRight, Shield, Users, Zap, CheckCircle, Mail, Lock, User, Phone } from 'lucide-react';
+import { Eye, EyeOff, ArrowRight, Mail, Lock, User, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -8,7 +8,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import LanguageSelector from '@/components/common/LanguageSelector';
 import CompactPhoneInput from '@/components/ui/compact-phone-input';
-import Acknowledgment from '@/components/splash/Acknowledgment';
+import CompactInfoComponent from '@/components/common/CompactInfoComponent';
 import { toast } from 'sonner';
 
 const SignInScreen: React.FC = () => {
@@ -160,13 +160,6 @@ const SignInScreen: React.FC = () => {
     setFormData(prev => ({ ...prev, password: '', confirmPassword: '', firstName: '', lastName: '' }));
   };
 
-  const trustFeatures = [
-    { icon: Shield, text: "Bank-grade security", color: "text-emerald-600" },
-    { icon: Users, text: "2M+ trusted users", color: "text-blue-600" },
-    { icon: Zap, text: "Instant transfers", color: "text-purple-600" },
-    { icon: CheckCircle, text: "100% verified", color: "text-green-600" }
-  ];
-
   const getStepIndicator = () => {
     if (step === 'contact') return null;
     
@@ -218,16 +211,7 @@ const SignInScreen: React.FC = () => {
               Join millions who trust our platform for secure, instant money transfers worldwide.
             </p>
             
-            <div className="grid grid-cols-2 gap-3">
-              {trustFeatures.map((feature, index) => (
-                <div key={index} className="flex items-center space-x-2">
-                  <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
-                    <feature.icon className="w-3 h-3" />
-                  </div>
-                  <span className="text-sm text-blue-100">{feature.text}</span>
-                </div>
-              ))}
-            </div>
+            <CompactInfoComponent />
           </div>
         </div>
 
@@ -526,28 +510,12 @@ const SignInScreen: React.FC = () => {
             </Button>
           </form>
 
-          {/* Mobile Trust indicators */}
+          {/* Mobile Compact Info Component */}
           <div className="lg:hidden mt-6 pt-4 border-t border-gray-200">
-            <div className="grid grid-cols-2 gap-3">
-              {trustFeatures.map((feature, index) => (
-                <div key={index} className="flex items-center space-x-2">
-                  <div className={`w-5 h-5 ${feature.color} bg-gray-50 rounded-full flex items-center justify-center`}>
-                    <feature.icon className="w-3 h-3" />
-                  </div>
-                  <span className="text-xs text-gray-600">{feature.text}</span>
-                </div>
-              ))}
-            </div>
+            <CompactInfoComponent />
           </div>
         </div>
       </div>
-
-      {/* Acknowledgment at the bottom */}
-      <Acknowledgment 
-        className="text-gray-600"
-        madeInText="Made in Désarmes with"
-        authorizedText="Legalized and authorized by BRH"
-      />
     </div>
   );
 };
