@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { ChevronDown, Phone, X, Check, AlertCircle, Globe, Star, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -179,7 +178,7 @@ const CompactPhoneInput: React.FC<CompactPhoneInputProps> = ({
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsDropdownOpen(false);
-        setSearch('');
+        setSearchTerm('');
       }
     };
 
