@@ -29,7 +29,7 @@ function TopTitle({ className = '', isExiting = false }: TopTitleProps) {
       style={{
         opacity: 1,
         animation: isExiting 
-          ? 'title-reverse-physics-exit 2.8s cubic-bezier(0.645, 0.045, 0.355, 1) 0.2s forwards'
+          ? 'title-ultra-fast-exit 0.8s cubic-bezier(0.645, 0.045, 0.355, 1) forwards'
           : 'title-physics-entry 1.5s ease-out 0.5s forwards'
       }}
     >
@@ -65,36 +65,21 @@ function TopTitle({ className = '', isExiting = false }: TopTitleProps) {
           }
         }
 
-        @keyframes title-reverse-physics-exit {
+        @keyframes title-ultra-fast-exit {
           0% {
             opacity: 1;
             transform: translateY(0px) scale(1);
             filter: blur(0px) brightness(1);
           }
-          15% {
-            opacity: 0.95;
-            transform: translateY(-2px) scale(0.98) rotate(1deg);
-            filter: blur(0.3px) brightness(1.1);
-          }
-          30% {
-            opacity: 0.8;
-            transform: translateY(-10px) scale(0.95) rotate(3deg);
-            filter: blur(1px) brightness(1.3);
-          }
           50% {
-            opacity: 0.4;
-            transform: translateY(-25px) scale(0.85) rotate(8deg);
-            filter: blur(3px) brightness(1.6);
-          }
-          75% {
-            opacity: 0.1;
-            transform: translateY(-40px) scale(0.7) rotate(15deg);
-            filter: blur(5px) brightness(2);
+            opacity: 0.3;
+            transform: translateY(-15px) scale(0.8);
+            filter: blur(2px) brightness(1.5);
           }
           100% {
             opacity: 0;
-            transform: translateY(-60px) scale(0.5) rotate(25deg);
-            filter: blur(8px) brightness(3);
+            transform: translateY(-30px) scale(0.5);
+            filter: blur(5px) brightness(2);
           }
         }
       `}</style>
@@ -102,7 +87,7 @@ function TopTitle({ className = '', isExiting = false }: TopTitleProps) {
   );
 }
 
-// Main Logo Path Component with Enhanced Reverse Physics
+// Main Logo Path Component with Ultra Fast Exit
 interface MainLogoPathProps {
   className?: string;
   strokeColor?: string;
@@ -129,7 +114,7 @@ function MainLogoPath({
           strokeWidth: '2',
           transformOrigin: 'center center',
           animation: isExiting 
-            ? 'main-logo-enhanced-reverse-exit 3.5s cubic-bezier(0.77, 0, 0.175, 1) forwards'
+            ? 'main-logo-ultra-fast-exit 1s cubic-bezier(0.77, 0, 0.175, 1) forwards'
             : `
               draw-path-physics 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
               fill-path-physics 1.2s ease-out 2.5s forwards,
@@ -142,42 +127,42 @@ function MainLogoPath({
           0% {
             stroke-dashoffset: 4000;
             stroke-width: 1;
-            transform: translateY(-20px) rotate(-5deg);
+            transform: translateY(-20px);
             filter: drop-shadow(0 10px 20px rgba(255, 255, 255, 0.1));
           }
           15% {
             stroke-width: 6;
-            transform: translateY(-15px) rotate(-3deg);
+            transform: translateY(-15px);
             filter: drop-shadow(0 15px 30px rgba(255, 255, 255, 0.3));
           }
           30% {
             stroke-dashoffset: 3000;
             stroke-width: 8;
-            transform: translateY(-10px) rotate(-1deg);
+            transform: translateY(-10px);
             filter: drop-shadow(0 20px 40px rgba(255, 255, 255, 0.5));
           }
           50% {
             stroke-dashoffset: 1500;
             stroke-width: 6;
-            transform: translateY(-5px) rotate(1deg);
+            transform: translateY(-5px);
             filter: drop-shadow(0 25px 50px rgba(255, 255, 255, 0.7));
           }
           75% {
             stroke-dashoffset: 500;
             stroke-width: 4;
-            transform: translateY(0px) rotate(0.5deg);
+            transform: translateY(0px);
             filter: drop-shadow(0 30px 60px rgba(255, 255, 255, 0.8));
           }
           90% {
             stroke-dashoffset: 100;
             stroke-width: 3;
-            transform: translateY(2px) rotate(-0.2deg);
+            transform: translateY(2px);
             filter: drop-shadow(0 35px 70px rgba(255, 255, 255, 0.9));
           }
           100% {
             stroke-dashoffset: 0;
             stroke-width: 2;
-            transform: translateY(0px) rotate(0deg);
+            transform: translateY(0px);
             filter: drop-shadow(0 0 0px rgba(255, 255, 255, 0));
           }
         }
@@ -217,108 +202,54 @@ function MainLogoPath({
 
         @keyframes physics-vibration {
           0%, 100% {
-            transform: translateX(0px) translateY(0px) rotate(0deg);
+            transform: translateX(0px) translateY(0px);
           }
           25% {
-            transform: translateX(0.5px) translateY(-0.3px) rotate(0.2deg);
+            transform: translateX(0.5px) translateY(-0.3px);
           }
           50% {
-            transform: translateX(-0.3px) translateY(0.5px) rotate(-0.15deg);
+            transform: translateX(-0.3px) translateY(0.5px);
           }
           75% {
-            transform: translateX(0.2px) translateY(-0.2px) rotate(0.1deg);
+            transform: translateX(0.2px) translateY(-0.2px);
           }
         }
 
-        @keyframes main-logo-enhanced-reverse-exit {
+        @keyframes main-logo-ultra-fast-exit {
           0% {
             fill: #ffffff;
             stroke: #ffffff;
             stroke-width: 0;
             stroke-dashoffset: 0;
-            transform: scale(1) rotate(0deg) translateY(0px);
+            transform: scale(1) translateY(0px);
             filter: brightness(1) drop-shadow(0 0 0px rgba(255, 255, 255, 0)) blur(0px);
             opacity: 1;
           }
-          8% {
-            fill: rgba(255, 255, 255, 0.95);
-            stroke: #ffffff;
-            stroke-width: 0.5;
-            stroke-dashoffset: 150;
-            transform: scale(1.01) rotate(-2deg) translateY(-2px);
-            filter: brightness(1.1) drop-shadow(0 0 15px rgba(255, 255, 255, 0.4)) blur(0.2px);
-            opacity: 0.98;
-          }
-          18% {
-            fill: rgba(255, 255, 255, 0.85);
-            stroke: #ffffff;
-            stroke-width: 1;
-            stroke-dashoffset: 400;
-            transform: scale(1.03) rotate(-5deg) translateY(-8px);
-            filter: brightness(1.3) drop-shadow(0 0 25px rgba(255, 255, 255, 0.6)) blur(0.5px);
-            opacity: 0.95;
-          }
-          28% {
+          30% {
             fill: rgba(255, 255, 255, 0.7);
             stroke: #ffffff;
-            stroke-width: 1.5;
-            stroke-dashoffset: 800;
-            transform: scale(1.06) rotate(-10deg) translateY(-18px);
-            filter: brightness(1.5) drop-shadow(0 0 35px rgba(255, 255, 255, 0.8)) blur(1px);
-            opacity: 0.9;
-          }
-          40% {
-            fill: rgba(255, 255, 255, 0.5);
-            stroke: #ffffff;
             stroke-width: 2;
-            stroke-dashoffset: 1400;
-            transform: scale(1.1) rotate(-18deg) translateY(-35px);
-            filter: brightness(1.8) drop-shadow(0 0 50px rgba(255, 255, 255, 0.9)) blur(2px);
+            stroke-dashoffset: 1200;
+            transform: scale(1.15) translateY(-25px);
+            filter: brightness(2) drop-shadow(0 0 50px rgba(255, 255, 255, 0.9)) blur(3px);
             opacity: 0.8;
           }
-          52% {
+          60% {
             fill: rgba(255, 255, 255, 0.3);
             stroke: #ffffff;
-            stroke-width: 3;
-            stroke-dashoffset: 2200;
-            transform: scale(1.15) rotate(-28deg) translateY(-55px);
-            filter: brightness(2.2) drop-shadow(0 0 70px rgba(255, 255, 255, 1)) blur(4px);
-            opacity: 0.65;
-          }
-          65% {
-            fill: rgba(255, 255, 255, 0.15);
-            stroke: #ffffff;
             stroke-width: 4;
-            stroke-dashoffset: 3000;
-            transform: scale(1.2) rotate(-40deg) translateY(-80px);
-            filter: brightness(2.8) drop-shadow(0 0 90px rgba(255, 255, 255, 1)) blur(7px);
-            opacity: 0.45;
-          }
-          78% {
-            fill: rgba(255, 255, 255, 0.08);
-            stroke: #ffffff;
-            stroke-width: 6;
-            stroke-dashoffset: 3600;
-            transform: scale(1.3) rotate(-55deg) translateY(-110px);
-            filter: brightness(3.5) drop-shadow(0 0 120px rgba(255, 255, 255, 1)) blur(12px);
-            opacity: 0.25;
-          }
-          90% {
-            fill: rgba(255, 255, 255, 0.02);
-            stroke: #ffffff;
-            stroke-width: 8;
-            stroke-dashoffset: 3900;
-            transform: scale(1.5) rotate(-75deg) translateY(-150px);
-            filter: brightness(4.5) drop-shadow(0 0 160px rgba(255, 255, 255, 1)) blur(20px);
-            opacity: 0.08;
+            stroke-dashoffset: 2800;
+            transform: scale(1.4) translateY(-60px);
+            filter: brightness(3.5) drop-shadow(0 0 100px rgba(255, 255, 255, 1)) blur(8px);
+            opacity: 0.4;
           }
           100% {
             fill: transparent;
             stroke: #ffffff;
-            stroke-width: 1;
+            stroke-width: 8;
             stroke-dashoffset: 4000;
-            transform: scale(2) rotate(-90deg) translateY(-200px);
-            filter: brightness(6) drop-shadow(0 0 200px rgba(255, 255, 255, 1)) blur(30px);
+            transform: scale(2) translateY(-120px);
+            filter: brightness(5) drop-shadow(0 0 150px rgba(255, 255, 255, 1)) blur(20px);
             opacity: 0;
           }
         }
@@ -327,7 +258,7 @@ function MainLogoPath({
   );
 }
 
-// Accent Path Component with Enhanced Reverse Physics
+// Accent Path Component with Ultra Fast Exit
 interface AccentPathProps {
   className?: string;
   fillColor?: string;
@@ -349,7 +280,7 @@ function AccentPath({
           opacity: isExiting ? '1' : '0',
           transformOrigin: 'center',
           animation: isExiting 
-            ? 'accent-enhanced-reverse-exit 3.2s cubic-bezier(0.86, 0, 0.07, 1) 0.1s forwards'
+            ? 'accent-ultra-fast-exit 0.9s cubic-bezier(0.86, 0, 0.07, 1) forwards'
             : `
               momentum-entry 3.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 3s forwards,
               elastic-oscillation 1.5s ease-in-out 6.5s infinite,
@@ -361,61 +292,61 @@ function AccentPath({
         @keyframes momentum-entry {
           0% {
             opacity: 0;
-            transform: scale(0.1) rotate(-45deg) translateX(-50px) translateY(-30px);
+            transform: scale(0.1) translateX(-50px) translateY(-30px);
             filter: blur(5px) hue-rotate(180deg);
           }
           15% {
             opacity: 0.1;
-            transform: scale(0.3) rotate(-30deg) translateX(-35px) translateY(-20px);
+            transform: scale(0.3) translateX(-35px) translateY(-20px);
             filter: blur(4px) hue-rotate(120deg);
           }
           30% {
             opacity: 0.3;
-            transform: scale(0.6) rotate(-15deg) translateX(-20px) translateY(-10px);
+            transform: scale(0.6) translateX(-20px) translateY(-10px);
             filter: blur(3px) hue-rotate(60deg);
           }
           45% {
             opacity: 0.5;
-            transform: scale(0.9) rotate(-5deg) translateX(-8px) translateY(-3px);
+            transform: scale(0.9) translateX(-8px) translateY(-3px);
             filter: blur(2px) hue-rotate(30deg);
           }
           60% {
             opacity: 0.7;
-            transform: scale(1.1) rotate(2deg) translateX(3px) translateY(2px);
+            transform: scale(1.1) translateX(3px) translateY(2px);
             filter: blur(1px) hue-rotate(10deg);
           }
           75% {
             opacity: 0.85;
-            transform: scale(1.05) rotate(1deg) translateX(1px) translateY(1px);
+            transform: scale(1.05) translateX(1px) translateY(1px);
             filter: blur(0.5px) hue-rotate(5deg);
           }
           90% {
             opacity: 0.95;
-            transform: scale(1.02) rotate(0.5deg) translateX(0.5px) translateY(0.2px);
+            transform: scale(1.02) translateX(0.5px) translateY(0.2px);
             filter: blur(0.2px) hue-rotate(2deg);
           }
           100% {
             opacity: 1;
-            transform: scale(1) rotate(0deg) translateX(0px) translateY(0px);
+            transform: scale(1) translateX(0px) translateY(0px);
             filter: blur(0px) hue-rotate(0deg);
           }
         }
 
         @keyframes elastic-oscillation {
           0%, 100% {
-            transform: scale(1) rotate(0deg);
+            transform: scale(1);
             filter: brightness(1);
           }
           25% {
-            transform: scale(1.05) rotate(1deg);
+            transform: scale(1.05);
             filter: brightness(1.1);
           }
           50% {
-            transform: scale(0.98) rotate(-0.5deg);
+            transform: scale(0.98);
             filter: brightness(0.95);
           }
           75% {
-            transform: scale(1.02) rotate(0.3deg);
+            transform: scale(1.02);
             filter: brightness(1.05);
           }
         }
@@ -439,56 +370,26 @@ function AccentPath({
           }
         }
 
-        @keyframes accent-enhanced-reverse-exit {
+        @keyframes accent-ultra-fast-exit {
           0% {
             opacity: 1;
-            transform: scale(1) rotate(0deg) translateX(0px) translateY(0px);
+            transform: scale(1) translateX(0px) translateY(0px);
             filter: blur(0px) hue-rotate(0deg) brightness(1) drop-shadow(0 0 0px rgba(255, 255, 255, 0));
           }
-          6% {
-            opacity: 0.98;
-            transform: scale(1.02) rotate(0.5deg) translateX(0.5px) translateY(0.2px);
-            filter: blur(0.2px) hue-rotate(2deg) brightness(1.1) drop-shadow(1px 0.5px 3px rgba(255, 255, 255, 0.2));
+          40% {
+            opacity: 0.6;
+            transform: scale(0.4) translateX(-25px) translateY(-15px);
+            filter: blur(3px) hue-rotate(90deg) brightness(2.5) drop-shadow(0 0 30px rgba(255, 255, 255, 0.8));
           }
-          12% {
-            opacity: 0.95;
-            transform: scale(1.05) rotate(1deg) translateX(1px) translateY(1px);
-            filter: blur(0.5px) hue-rotate(5deg) brightness(1.3) drop-shadow(2px 1px 5px rgba(255, 255, 255, 0.3));
-          }
-          20% {
-            opacity: 0.85;
-            transform: scale(1.1) rotate(2deg) translateX(3px) translateY(2px);
-            filter: blur(1px) hue-rotate(10deg) brightness(1.6) drop-shadow(-2px -1px 8px rgba(255, 255, 255, 0.5));
-          }
-          30% {
-            opacity: 0.7;
-            transform: scale(0.9) rotate(-5deg) translateX(-8px) translateY(-3px);
-            filter: blur(2px) hue-rotate(30deg) brightness(2) drop-shadow(0 0 15px rgba(255, 255, 255, 0.7));
-          }
-          42% {
-            opacity: 0.5;
-            transform: scale(0.6) rotate(-15deg) translateX(-20px) translateY(-10px);
-            filter: blur(3px) hue-rotate(60deg) brightness(2.5) drop-shadow(0 0 25px rgba(255, 255, 255, 0.8));
-          }
-          56% {
-            opacity: 0.3;
-            transform: scale(0.3) rotate(-30deg) translateX(-35px) translateY(-20px);
-            filter: blur(4px) hue-rotate(120deg) brightness(3.2) drop-shadow(0 0 40px rgba(255, 255, 255, 0.9));
-          }
-          72% {
-            opacity: 0.1;
-            transform: scale(0.1) rotate(-45deg) translateX(-50px) translateY(-30px);
-            filter: blur(5px) hue-rotate(180deg) brightness(4) drop-shadow(0 0 60px rgba(255, 255, 255, 1));
-          }
-          88% {
-            opacity: 0.02;
-            transform: scale(0.05) rotate(-65deg) translateX(-70px) translateY(-45px);
-            filter: blur(8px) hue-rotate(240deg) brightness(5) drop-shadow(0 0 90px rgba(255, 255, 255, 1));
+          70% {
+            opacity: 0.2;
+            transform: scale(0.15) translateX(-45px) translateY(-25px);
+            filter: blur(6px) hue-rotate(180deg) brightness(4) drop-shadow(0 0 60px rgba(255, 255, 255, 1));
           }
           100% {
             opacity: 0;
-            transform: scale(0.01) rotate(-90deg) translateX(-100px) translateY(-60px);
-            filter: blur(12px) hue-rotate(360deg) brightness(6) drop-shadow(0 0 120px rgba(255, 255, 255, 1));
+            transform: scale(0.02) translateX(-70px) translateY(-40px);
+            filter: blur(10px) hue-rotate(270deg) brightness(6) drop-shadow(0 0 100px rgba(255, 255, 255, 1));
           }
         }
       `}</style>
@@ -496,7 +397,7 @@ function AccentPath({
   );
 }
 
-// Logo Container Component with Enhanced Physics
+// Logo Container Component with Ultra Fast Exit
 interface LogoContainerProps {
   className?: string;
   width?: string;
@@ -517,7 +418,7 @@ function LogoContainer({
       className={`relative ${className}`}
       style={{
         animation: isExiting 
-          ? 'container-enhanced-reverse-exit 3.8s cubic-bezier(0.895, 0.03, 0.685, 0.22) 0.8s forwards'
+          ? 'container-ultra-fast-exit 1.1s cubic-bezier(0.895, 0.03, 0.685, 0.22) forwards'
           : undefined
       }}
     >
@@ -532,51 +433,26 @@ function LogoContainer({
         {children}
       </svg>
       <style>{`
-        @keyframes container-enhanced-reverse-exit {
+        @keyframes container-ultra-fast-exit {
           0% {
-            transform: scale(1) rotate(0deg) translateY(0px);
+            transform: scale(1) translateY(0px);
             opacity: 1;
             filter: blur(0px) brightness(1) contrast(1);
           }
-          10% {
-            transform: scale(0.98) rotate(-2deg) translateY(-5px);
-            opacity: 0.95;
-            filter: blur(0.5px) brightness(1.1) contrast(1.1);
+          40% {
+            transform: scale(0.7) translateY(-40px);
+            opacity: 0.6;
+            filter: blur(5px) brightness(1.8) contrast(1.5);
           }
-          22% {
-            transform: scale(0.94) rotate(-6deg) translateY(-15px);
-            opacity: 0.85;
-            filter: blur(1.5px) brightness(1.3) contrast(1.2);
-          }
-          35% {
-            transform: scale(0.88) rotate(-12deg) translateY(-30px);
-            opacity: 0.7;
-            filter: blur(3px) brightness(1.6) contrast(1.4);
-          }
-          50% {
-            transform: scale(0.8) rotate(-20deg) translateY(-50px);
-            opacity: 0.5;
-            filter: blur(6px) brightness(2) contrast(1.6);
-          }
-          65% {
-            transform: scale(0.7) rotate(-32deg) translateY(-75px);
-            opacity: 0.3;
-            filter: blur(10px) brightness(2.5) contrast(1.8);
-          }
-          78% {
-            transform: scale(0.55) rotate(-48deg) translateY(-105px);
-            opacity: 0.15;
-            filter: blur(15px) brightness(3.2) contrast(2);
-          }
-          88% {
-            transform: scale(0.35) rotate(-68deg) translateY(-140px);
-            opacity: 0.05;
-            filter: blur(22px) brightness(4) contrast(2.5);
+          70% {
+            transform: scale(0.4) translateY(-80px);
+            opacity: 0.2;
+            filter: blur(12px) brightness(2.8) contrast(2);
           }
           100% {
-            transform: scale(0.1) rotate(-90deg) translateY(-200px);
+            transform: scale(0.1) translateY(-140px);
             opacity: 0;
-            filter: blur(35px) brightness(5) contrast(3);
+            filter: blur(25px) brightness(4) contrast(3);
           }
         }
       `}</style>
@@ -584,7 +460,7 @@ function LogoContainer({
   );
 }
 
-// Acknowledgment Section Component with Enhanced Reverse Physics
+// Acknowledgment Section Component with Ultra Fast Exit
 interface AcknowledgmentProps {
   className?: string;
   madeInText?: string;
@@ -603,7 +479,7 @@ function Acknowledgment({
       className={`absolute bottom-8 left-0 right-0 text-center text-white px-6 ${className}`}
       style={{
         animation: isExiting 
-          ? 'text-enhanced-reverse-exit 2.8s cubic-bezier(0.755, 0.05, 0.855, 0.06) 0.6s forwards'
+          ? 'text-ultra-fast-exit 0.7s cubic-bezier(0.755, 0.05, 0.855, 0.06) forwards'
           : 'text-physics-entry 1s ease-out 7s forwards'
       }}
     >
@@ -644,41 +520,21 @@ function Acknowledgment({
           }
         }
 
-        @keyframes text-enhanced-reverse-exit {
+        @keyframes text-ultra-fast-exit {
           0% {
             opacity: 1;
-            transform: translateY(0px) scale(1) rotate(0deg);
+            transform: translateY(0px) scale(1);
             filter: blur(0px) brightness(1);
           }
-          15% {
-            opacity: 0.9;
-            transform: translateY(5px) scale(0.98) rotate(1deg);
-            filter: blur(0.5px) brightness(1.2);
-          }
-          30% {
-            opacity: 0.7;
-            transform: translateY(15px) scale(0.95) rotate(3deg);
-            filter: blur(1px) brightness(1.5);
-          }
           50% {
-            opacity: 0.4;
-            transform: translateY(30px) scale(0.9) rotate(8deg);
-            filter: blur(2px) brightness(2);
-          }
-          70% {
-            opacity: 0.2;
-            transform: translateY(50px) scale(0.8) rotate(15deg);
-            filter: blur(4px) brightness(2.8);
-          }
-          85% {
-            opacity: 0.05;
-            transform: translateY(70px) scale(0.6) rotate(25deg);
-            filter: blur(7px) brightness(3.5);
+            opacity: 0.3;
+            transform: translateY(25px) scale(0.7);
+            filter: blur(3px) brightness(2);
           }
           100% {
             opacity: 0;
-            transform: translateY(100px) scale(0.3) rotate(40deg);
-            filter: blur(12px) brightness(5);
+            transform: translateY(60px) scale(0.4);
+            filter: blur(8px) brightness(3.5);
           }
         }
       `}</style>
@@ -686,7 +542,7 @@ function Acknowledgment({
   );
 }
 
-// Enhanced Progressive White Overlay with Multiple Wave Effects
+// Ultra Fast Progressive White Overlay
 interface ProgressiveWhiteOverlayProps {
   isExiting: boolean;
 }
@@ -698,113 +554,94 @@ function ProgressiveWhiteOverlay({ isExiting }: ProgressiveWhiteOverlayProps) {
     <div 
       className="fixed inset-0 z-[60] pointer-events-none"
       style={{
-        animation: 'progressive-white-overlay 4.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) 1s forwards'
+        animation: 'progressive-white-overlay-ultra-fast 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards'
       }}
     >
-      {/* Multiple expanding white circles with staggered timing */}
+      {/* Ultra fast expanding white circles */}
       <div className="absolute inset-0 flex items-center justify-center">
-        {[...Array(12)].map((_, i) => (
+        {[...Array(6)].map((_, i) => (
           <div
             key={i}
             className="absolute rounded-full bg-white"
             style={{
-              width: `${80 + i * 120}px`,
-              height: `${80 + i * 120}px`,
+              width: `${100 + i * 150}px`,
+              height: `${100 + i * 150}px`,
               transform: 'scale(0)',
-              opacity: 0.1 + (i * 0.02),
-              animation: `enhanced-white-circle-expand-${i + 1} ${2.2 + i * 0.25}s cubic-bezier(0.23, 1, 0.32, 1) ${1.2 + i * 0.08}s forwards`
+              opacity: 0.15 + (i * 0.05),
+              animation: `ultra-fast-white-circle-expand-${i + 1} ${0.6 + i * 0.1}s cubic-bezier(0.23, 1, 0.32, 1) ${0.2 + i * 0.03}s forwards`
             }}
           />
         ))}
       </div>
       
-      {/* Gradient transition waves */}
+      {/* Ultra fast gradient waves */}
       <div className="absolute inset-0">
-        {[...Array(6)].map((_, i) => (
+        {[...Array(3)].map((_, i) => (
           <div
             key={`wave-${i}`}
             className="absolute inset-0"
             style={{
-              background: `radial-gradient(circle at 50% 50%, rgba(255, 255, 255, ${0.05 + i * 0.08}) 0%, transparent 70%)`,
+              background: `radial-gradient(circle at 50% 50%, rgba(255, 255, 255, ${0.1 + i * 0.15}) 0%, transparent 70%)`,
               opacity: 0,
-              animation: `wave-expand-${i + 1} ${1.8 + i * 0.3}s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${1.5 + i * 0.2}s forwards`
+              animation: `ultra-fast-wave-expand-${i + 1} ${0.5 + i * 0.1}s cubic-bezier(0.25, 0.46, 0.45, 0.94) ${0.3 + i * 0.05}s forwards`
             }}
           />
         ))}
       </div>
       
-      {/* Final complete white overlay with smooth transition */}
+      {/* Ultra fast final white overlay */}
       <div 
         className="absolute inset-0 bg-white"
         style={{
           opacity: 0,
-          animation: 'final-enhanced-white-complete 1.8s cubic-bezier(0.23, 1, 0.32, 1) 2.5s forwards'
+          animation: 'final-ultra-fast-white-complete 0.6s cubic-bezier(0.23, 1, 0.32, 1) 0.6s forwards'
         }}
       ></div>
       
       <style>{`
-        @keyframes progressive-white-overlay {
+        @keyframes progressive-white-overlay-ultra-fast {
           0% { opacity: 0; }
           100% { opacity: 1; }
         }
 
-        ${[...Array(12)].map((_, i) => `
-          @keyframes enhanced-white-circle-expand-${i + 1} {
+        ${[...Array(6)].map((_, i) => `
+          @keyframes ultra-fast-white-circle-expand-${i + 1} {
             0% {
               transform: scale(0);
               opacity: 0;
-              filter: blur(2px);
-            }
-            40% {
-              transform: scale(0.4);
-              opacity: ${0.3 + i * 0.02};
               filter: blur(1px);
             }
-            70% {
+            60% {
               transform: scale(0.8);
-              opacity: ${0.5 + i * 0.02};
-              filter: blur(0.5px);
+              opacity: ${0.4 + i * 0.05};
+              filter: blur(0.3px);
             }
             100% {
               transform: scale(1);
-              opacity: ${0.6 + i * 0.02};
+              opacity: ${0.6 + i * 0.05};
               filter: blur(0px);
             }
           }
         `).join('')}
 
-        ${[...Array(6)].map((_, i) => `
-          @keyframes wave-expand-${i + 1} {
+        ${[...Array(3)].map((_, i) => `
+          @keyframes ultra-fast-wave-expand-${i + 1} {
             0% {
               opacity: 0;
               transform: scale(0.5);
             }
-            50% {
-              opacity: ${0.4 + i * 0.1};
-              transform: scale(1.2);
-            }
             100% {
-              opacity: ${0.8 + i * 0.05};
-              transform: scale(2);
+              opacity: ${0.8 + i * 0.1};
+              transform: scale(1.5);
             }
           }
         `).join('')}
 
-        @keyframes final-enhanced-white-complete {
+        @keyframes final-ultra-fast-white-complete {
           0% {
             opacity: 0;
-            transform: scale(0.8);
-            filter: blur(3px);
-          }
-          30% {
-            opacity: 0.3;
-            transform: scale(0.95);
-            filter: blur(1.5px);
-          }
-          60% {
-            opacity: 0.7;
-            transform: scale(1.02);
-            filter: blur(0.5px);
+            transform: scale(0.9);
+            filter: blur(2px);
           }
           100% {
             opacity: 1;
@@ -817,14 +654,14 @@ function ProgressiveWhiteOverlay({ isExiting }: ProgressiveWhiteOverlayProps) {
   );
 }
 
-// Enhanced Quantum Background with Advanced Physics
+// Ultra Fast Quantum Background
 function QuantumBackground({ isExiting }: { isExiting: boolean }) {
   return (
     <div 
       className="absolute inset-0"
       style={{
         animation: isExiting 
-          ? 'background-enhanced-reverse-exit 4.2s cubic-bezier(0.77, 0, 0.175, 1) 0.3s forwards'
+          ? 'background-ultra-fast-exit 1s cubic-bezier(0.77, 0, 0.175, 1) forwards'
           : 'background-physics-pulse 4s ease-in-out infinite'
       }}
     >
@@ -833,9 +670,9 @@ function QuantumBackground({ isExiting }: { isExiting: boolean }) {
       <div className="absolute inset-0 bg-gradient-conic from-red-500/5 via-transparent to-red-600/5"></div>
       <div className="absolute inset-0 bg-gradient-to-br from-red-300/15 via-transparent to-red-700/15"></div>
       
-      {/* Enhanced quantum particle effects */}
+      {/* Ultra fast quantum particle effects */}
       <div className="absolute inset-0 overflow-hidden">
-        {[...Array(18)].map((_, i) => (
+        {[...Array(12)].map((_, i) => (
           <div
             key={i}
             className="absolute w-1 h-1 bg-white rounded-full"
@@ -844,7 +681,7 @@ function QuantumBackground({ isExiting }: { isExiting: boolean }) {
               top: `${Math.random() * 100}%`,
               opacity: 0.2 + Math.random() * 0.3,
               animation: isExiting 
-                ? `particle-enhanced-reverse-exit ${2.2 + Math.random() * 1.2}s cubic-bezier(0.77, 0, 0.175, 1) ${0.8 + Math.random() * 0.6}s forwards`
+                ? `particle-ultra-fast-exit ${0.6 + Math.random() * 0.3}s cubic-bezier(0.77, 0, 0.175, 1) ${Math.random() * 0.2}s forwards`
                 : `particle-float ${3 + Math.random() * 2}s ease-in-out ${Math.random() * 2}s infinite`
             }}
           />
@@ -865,51 +702,21 @@ function QuantumBackground({ isExiting }: { isExiting: boolean }) {
           }
         }
 
-        @keyframes background-enhanced-reverse-exit {
+        @keyframes background-ultra-fast-exit {
           0% {
             opacity: 1;
             transform: scale(1);
             filter: blur(0px) brightness(1) hue-rotate(0deg) contrast(1);
           }
-          12% {
-            opacity: 0.95;
+          50% {
+            opacity: 0.4;
             transform: scale(1.02);
-            filter: blur(0.5px) brightness(1.1) hue-rotate(5deg) contrast(1.1);
-          }
-          25% {
-            opacity: 0.85;
-            transform: scale(1.05);
-            filter: blur(1px) brightness(1.3) hue-rotate(15deg) contrast(1.2);
-          }
-          40% {
-            opacity: 0.7;
-            transform: scale(1.03);
-            filter: blur(2px) brightness(1.6) hue-rotate(30deg) contrast(1.4);
-          }
-          55% {
-            opacity: 0.5;
-            transform: scale(1.01);
-            filter: blur(4px) brightness(2) hue-rotate(50deg) contrast(1.6);
-          }
-          70% {
-            opacity: 0.3;
-            transform: scale(0.98);
-            filter: blur(8px) brightness(2.5) hue-rotate(80deg) contrast(1.8);
-          }
-          82% {
-            opacity: 0.15;
-            transform: scale(0.95);
-            filter: blur(15px) brightness(3.2) hue-rotate(120deg) contrast(2);
-          }
-          92% {
-            opacity: 0.05;
-            transform: scale(0.9);
-            filter: blur(25px) brightness(4) hue-rotate(160deg) contrast(2.5);
+            filter: blur(3px) brightness(2) hue-rotate(30deg) contrast(1.5);
           }
           100% {
             opacity: 0;
-            transform: scale(0.8);
-            filter: blur(40px) brightness(5) hue-rotate(200deg) contrast(3);
+            transform: scale(0.9);
+            filter: blur(10px) brightness(3.5) hue-rotate(60deg) contrast(2);
           }
         }
 
@@ -932,41 +739,21 @@ function QuantumBackground({ isExiting }: { isExiting: boolean }) {
           }
         }
 
-        @keyframes particle-enhanced-reverse-exit {
+        @keyframes particle-ultra-fast-exit {
           0% {
-            transform: scale(1) rotate(0deg) translateY(0px);
+            transform: scale(1) translateY(0px);
             opacity: 0.3;
             filter: brightness(1) blur(0px);
           }
-          15% {
-            transform: scale(1.2) rotate(30deg) translateY(-10px);
-            opacity: 0.6;
-            filter: brightness(1.5) blur(0.5px);
-          }
-          30% {
-            transform: scale(1.8) rotate(90deg) translateY(-25px);
-            opacity: 0.8;
-            filter: brightness(2.2) blur(1px);
-          }
           50% {
-            transform: scale(2.2) rotate(180deg) translateY(-45px);
-            opacity: 0.6;
+            transform: scale(1.5) translateY(-30px);
+            opacity: 0.7;
             filter: brightness(3) blur(2px);
           }
-          70% {
-            transform: scale(1.8) rotate(270deg) translateY(-70px);
-            opacity: 0.3;
-            filter: brightness(4) blur(4px);
-          }
-          85% {
-            transform: scale(1.2) rotate(330deg) translateY(-100px);
-            opacity: 0.1;
-            filter: brightness(5) blur(8px);
-          }
           100% {
-            transform: scale(0) rotate(360deg) translateY(-150px);
+            transform: scale(0) translateY(-80px);
             opacity: 0;
-            filter: brightness(6) blur(15px);
+            filter: brightness(5) blur(8px);
           }
         }
       `}</style>
@@ -1002,7 +789,7 @@ export default function UltraSleekSplashScreen({
       className={`fixed inset-0 min-h-screen ${backgroundColor} flex flex-col items-center justify-center overflow-hidden z-50`}
       style={{
         animation: isExiting 
-          ? 'sophisticated-enhanced-red-to-white-transform 4.8s cubic-bezier(0.23, 1, 0.32, 1) forwards'
+          ? 'sophisticated-ultra-fast-red-to-white-transform 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards'
           : undefined
       }}
     >
@@ -1032,36 +819,15 @@ export default function UltraSleekSplashScreen({
       <ProgressiveWhiteOverlay isExiting={isExiting} />
       
       <style>{`
-        @keyframes sophisticated-enhanced-red-to-white-transform {
+        @keyframes sophisticated-ultra-fast-red-to-white-transform {
           0% {
             background: linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #b91c1c 100%);
           }
-          15% {
-            background: linear-gradient(135deg, #f56565 0%, #e53e3e 50%, #c53030 100%);
-          }
-          25% {
-            background: linear-gradient(135deg, #f87171 0%, #ef4444 50%, #dc2626 100%);
-          }
-          35% {
+          40% {
             background: linear-gradient(135deg, #fca5a5 0%, #f87171 50%, #ef4444 100%);
           }
-          45% {
-            background: linear-gradient(135deg, #fecaca 0%, #fca5a5 50%, #f87171 100%);
-          }
-          55% {
+          70% {
             background: linear-gradient(135deg, #fee2e2 0%, #fecaca 50%, #fca5a5 100%);
-          }
-          65% {
-            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 50%, #fecaca 100%);
-          }
-          75% {
-            background: linear-gradient(135deg, #fefefe 0%, #fef2f2 50%, #fee2e2 100%);
-          }
-          85% {
-            background: linear-gradient(135deg, #ffffff 0%, #fefefe 50%, #fef2f2 100%);
-          }
-          95% {
-            background: linear-gradient(135deg, #ffffff 0%, #ffffff 50%, #fefefe 100%);
           }
           100% {
             background: linear-gradient(135deg, #ffffff 0%, #ffffff 50%, #ffffff 100%);

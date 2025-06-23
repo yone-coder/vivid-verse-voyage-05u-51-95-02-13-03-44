@@ -16,17 +16,17 @@ function App({ children }: { children: React.ReactNode }) {
   const [isExiting, setIsExiting] = useState(false);
 
   useEffect(() => {
-    // Start exit animation after 8 seconds (extended to show physics)
+    // Start exit animation after 4 seconds (reduced from 8)
     const exitTimer = setTimeout(() => {
       setIsExiting(true);
       
-      // Hide splash screen after exit animation completes
+      // Hide splash screen after ultra fast exit animation completes
       const hideTimer = setTimeout(() => {
         setShowSplash(false);
-      }, 2000); // 2 seconds for exit animation
+      }, 1200); // 1.2 seconds for ultra fast exit animation
       
       return () => clearTimeout(hideTimer);
-    }, 8000);
+    }, 4000);
 
     return () => clearTimeout(exitTimer);
   }, []);
