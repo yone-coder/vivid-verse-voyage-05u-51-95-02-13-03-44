@@ -20,7 +20,7 @@ const SignInScreen: React.FC = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isCheckingUser, setIsCheckingUser] = useState(false);
   const [emailValidation, setEmailValidation] = useState<{
-    state: 'valid' | 'invalid' | 'pending' | null;
+    state: 'valid' | 'invalid' | null;
     message: string;
   }>({ state: null, message: '' });
   const [formData, setFormData] = useState({
@@ -33,14 +33,13 @@ const SignInScreen: React.FC = () => {
     rememberMe: false
   });
 
-  // Enhanced email validation
+  // Simple email validation
   const validateEmail = useCallback((email: string) => {
     if (!email) {
       setEmailValidation({ state: null, message: '' });
       return;
     }
 
-    // Real-time validation as user types
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const isValidFormat = emailRegex.test(email);
     
@@ -52,38 +51,9 @@ const SignInScreen: React.FC = () => {
       return;
     }
 
-    // Advanced email format checks
-    const commonTypos = {
-      'gmail.co': 'gmail.com',
-      'gmail.cm': 'gmail.com',
-      'gmai.com': 'gmail.com',
-      'yahoo.co': 'yahoo.com',
-      'hotmail.co': 'hotmail.com',
-      'outlook.co': 'outlook.com'
-    };
-
-    const [username, domain] = email.split('@');
-    if (commonTypos[domain]) {
-      setEmailValidation({ 
-        state: 'invalid', 
-        message: `Did you mean ${username}@${commonTypos[domain]}?` 
-      });
-      return;
-    }
-
-    // Check for common username typos
-    if (username.length < 2) {
-      setEmailValidation({ 
-        state: 'invalid', 
-        message: 'Username seems too short' 
-      });
-      return;
-    }
-
-    // Valid email format
     setEmailValidation({ 
       state: 'valid', 
-      message: 'Email format looks good!' 
+      message: '' 
     });
   }, []);
 
@@ -92,7 +62,7 @@ const SignInScreen: React.FC = () => {
     if (contactType === 'email' && formData.email) {
       const timeoutId = setTimeout(() => {
         validateEmail(formData.email);
-      }, 300);
+      }, 500);
       
       return () => clearTimeout(timeoutId);
     }
@@ -100,11 +70,6 @@ const SignInScreen: React.FC = () => {
 
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    
-    // Reset validation when email changes
-    if (field === 'email') {
-      setEmailValidation({ state: 'pending', message: 'Checking email format...' });
-    }
   };
 
   const handleEmailSuggestionSelect = (suggestion: string) => {
@@ -134,7 +99,6 @@ const SignInScreen: React.FC = () => {
     }
 
     setIsCheckingUser(true);
-    setEmailValidation({ state: 'pending', message: 'Checking if account exists...' });
     
     try {
       if (contactType === 'email') {
@@ -143,11 +107,9 @@ const SignInScreen: React.FC = () => {
         
         if (exists) {
           setStep('signin');
-          setEmailValidation({ state: 'valid', message: 'Account found! Welcome back.' });
           toast.info('Welcome back! Please enter your password.');
         } else {
           setStep('signup');
-          setEmailValidation({ state: 'valid', message: 'Ready to create your account!' });
           toast.info('New here? Let\'s create your account.');
         }
       } else {
@@ -157,7 +119,6 @@ const SignInScreen: React.FC = () => {
       }
     } catch (error) {
       console.error('Error checking user:', error);
-      setEmailValidation({ state: 'invalid', message: 'Error checking account. Please try again.' });
       toast.error('Something went wrong. Please try again.');
     } finally {
       setIsCheckingUser(false);
@@ -320,11 +281,11 @@ const SignInScreen: React.FC = () => {
             {step === 'contact' && (
               <>
                 {/* Contact Type Switcher */}
-                <div className="flex bg-gray-100 rounded-lg p-1 mb-4">
+                <div className="flex bg-gray-50 rounded-lg p-1 mb-4">
                   <button
                     type="button"
                     onClick={() => setContactType('email')}
-                    className={`flex-1 flex items-center justify-center space-x-2 py-2 px-3 rounded-md text-sm font-medium transition-all ${
+                    className={`flex-1 flex items-center justify-center space-x-2 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
                       contactType === 'email' 
                         ? 'bg-white text-blue-600 shadow-sm' 
                         : 'text-gray-600 hover:text-gray-800'
@@ -336,7 +297,7 @@ const SignInScreen: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setContactType('phone')}
-                    className={`flex-1 flex items-center justify-center space-x-2 py-2 px-3 rounded-md text-sm font-medium transition-all ${
+                    className={`flex-1 flex items-center justify-center space-x-2 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
                       contactType === 'phone' 
                         ? 'bg-white text-blue-600 shadow-sm' 
                         : 'text-gray-600 hover:text-gray-800'
@@ -348,8 +309,7 @@ const SignInScreen: React.FC = () => {
                 </div>
 
                 <div className="space-y-1">
-                  <Label htmlFor="contact" className="text-xs font-medium text-gray-700 flex items-center">
-                    {contactType === 'email' ? <Mail className="w-3 h-3 mr-1" /> : <Phone className="w-3 h-3 mr-1" />}
+                  <Label htmlFor="contact" className="text-sm font-medium text-gray-700">
                     {contactType === 'email' ? 'Email address' : 'Phone number'}
                   </Label>
                   {contactType === 'email' ? (
@@ -358,7 +318,7 @@ const SignInScreen: React.FC = () => {
                       type="email"
                       value={formData.email}
                       onChange={(e) => handleInputChange('email', e.target.value)}
-                      className="h-11 text-sm"
+                      className="h-12 text-base"
                       placeholder="Enter your email"
                       required
                       disabled={isCheckingUser}
@@ -385,8 +345,7 @@ const SignInScreen: React.FC = () => {
             {step === 'signin' && (
               <>
                 <div className="space-y-1">
-                  <Label className="text-xs font-medium text-gray-700 flex items-center">
-                    {contactType === 'email' ? <Mail className="w-3 h-3 mr-1" /> : <Phone className="w-3 h-3 mr-1" />}
+                  <Label className="text-sm font-medium text-gray-700">
                     {contactType === 'email' ? 'Email address' : 'Phone number'}
                   </Label>
                   <div className="flex items-center space-x-2">
@@ -404,8 +363,7 @@ const SignInScreen: React.FC = () => {
                 </div>
 
                 <div className="space-y-1">
-                  <Label htmlFor="password" className="text-xs font-medium text-gray-700 flex items-center">
-                    <Lock className="w-3 h-3 mr-1" />
+                  <Label htmlFor="password" className="text-sm font-medium text-gray-700">
                     Password
                   </Label>
                   <div className="relative">
@@ -414,7 +372,7 @@ const SignInScreen: React.FC = () => {
                       type={showPassword ? 'text' : 'password'}
                       value={formData.password}
                       onChange={(e) => handleInputChange('password', e.target.value)}
-                      className="h-11 text-sm border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10"
+                      className="h-12 text-base pr-10"
                       placeholder="Enter your password"
                       required
                     />
@@ -435,13 +393,13 @@ const SignInScreen: React.FC = () => {
                       type="checkbox"
                       checked={formData.rememberMe}
                       onChange={(e) => handleInputChange('rememberMe', e.target.checked)}
-                      className="w-3 h-3 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                      className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                     />
-                    <Label htmlFor="rememberMe" className="text-xs text-gray-700">
+                    <Label htmlFor="rememberMe" className="text-sm text-gray-700">
                       Remember me
                     </Label>
                   </div>
-                  <button type="button" className="text-xs text-blue-600 hover:text-blue-700 font-medium">
+                  <button type="button" className="text-sm text-blue-600 hover:text-blue-700 font-medium">
                     Forgot password?
                   </button>
                 </div>
@@ -452,8 +410,7 @@ const SignInScreen: React.FC = () => {
             {step === 'signup' && (
               <>
                 <div className="space-y-1">
-                  <Label className="text-xs font-medium text-gray-700 flex items-center">
-                    {contactType === 'email' ? <Mail className="w-3 h-3 mr-1" /> : <Phone className="w-3 h-3 mr-1" />}
+                  <Label className="text-sm font-medium text-gray-700">
                     {contactType === 'email' ? 'Email address' : 'Phone number'}
                   </Label>
                   <div className="flex items-center space-x-2">
@@ -472,8 +429,7 @@ const SignInScreen: React.FC = () => {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1">
-                    <Label htmlFor="firstName" className="text-xs font-medium text-gray-700 flex items-center">
-                      <User className="w-3 h-3 mr-1" />
+                    <Label htmlFor="firstName" className="text-sm font-medium text-gray-700">
                       First name
                     </Label>
                     <Input
@@ -481,12 +437,12 @@ const SignInScreen: React.FC = () => {
                       type="text"
                       value={formData.firstName}
                       onChange={(e) => handleInputChange('firstName', e.target.value)}
-                      className="h-11 text-sm border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="h-12 text-base"
                       placeholder="First name"
                     />
                   </div>
                   <div className="space-y-1">
-                    <Label htmlFor="lastName" className="text-xs font-medium text-gray-700">
+                    <Label htmlFor="lastName" className="text-sm font-medium text-gray-700">
                       Last name
                     </Label>
                     <Input
@@ -494,15 +450,14 @@ const SignInScreen: React.FC = () => {
                       type="text"
                       value={formData.lastName}
                       onChange={(e) => handleInputChange('lastName', e.target.value)}
-                      className="h-11 text-sm border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="h-12 text-base"
                       placeholder="Last name"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-1">
-                  <Label htmlFor="password" className="text-xs font-medium text-gray-700 flex items-center">
-                    <Lock className="w-3 h-3 mr-1" />
+                  <Label htmlFor="password" className="text-sm font-medium text-gray-700">
                     Password
                   </Label>
                   <div className="relative">
@@ -511,7 +466,7 @@ const SignInScreen: React.FC = () => {
                       type={showPassword ? 'text' : 'password'}
                       value={formData.password}
                       onChange={(e) => handleInputChange('password', e.target.value)}
-                      className="h-11 text-sm border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10"
+                      className="h-12 text-base pr-10"
                       placeholder="Create a password"
                       required
                     />
@@ -526,7 +481,7 @@ const SignInScreen: React.FC = () => {
                 </div>
 
                 <div className="space-y-1">
-                  <Label htmlFor="confirmPassword" className="text-xs font-medium text-gray-700">
+                  <Label htmlFor="confirmPassword" className="text-sm font-medium text-gray-700">
                     Confirm password
                   </Label>
                   <div className="relative">
@@ -535,7 +490,7 @@ const SignInScreen: React.FC = () => {
                       type={showConfirmPassword ? 'text' : 'password'}
                       value={formData.confirmPassword}
                       onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
-                      className="h-11 text-sm border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10"
+                      className="h-12 text-base pr-10"
                       placeholder="Confirm your password"
                       required
                     />
@@ -554,11 +509,11 @@ const SignInScreen: React.FC = () => {
             {/* Submit button */}
             <Button
               type="submit"
-              className="w-full h-11 text-sm font-semibold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
-              disabled={isLoading || isCheckingUser || (contactType === 'email' && emailValidation.state !== 'valid')}
+              className="w-full h-12 text-base font-semibold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 mt-6"
+              disabled={isLoading || isCheckingUser || (contactType === 'email' && step === 'contact' && emailValidation.state !== 'valid')}
             >
               {isLoading || isCheckingUser ? (
-                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
               ) : (
                 <>
                   {step === 'contact' ? 'Continue' : 
