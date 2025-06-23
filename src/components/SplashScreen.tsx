@@ -35,10 +35,10 @@ const SplashScreen: React.FC<SplashScreenProps> = ({
           <AccentPath />
         </LogoContainer>
 
-        {/* Made in Haiti text */}
-        <div className="mt-8 text-white text-lg font-medium tracking-wide">
-          🇭🇹 Fabriquée à Désarmes 🇭🇹
-        </div>
+      </div>
+      {/* Global Transfè text at the far bottom of the page */}
+      <div className="absolute bottom-4 w-full text-center text-white text-lg font-medium tracking-wide">
+        Global Transfè
       </div>
     </div>
   );
