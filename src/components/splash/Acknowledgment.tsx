@@ -11,11 +11,7 @@ const Acknowledgment: React.FC<AcknowledgmentProps> = ({
     <>
       {/* Bottom center acknowledgment */}
       <div 
-        className={`absolute bottom-8 left-0 right-0 text-center text-white px-6 ${className}`}
-        style={{
-          animation: 'text-physics-entry 1s ease-out 7s forwards',
-          willChange: 'auto'
-        }}
+        className={`absolute bottom-8 left-0 right-0 text-center text-white px-6 splash-text-animate ${className}`}
         role="contentinfo"
         aria-label="Application credits"
       >
@@ -31,11 +27,7 @@ const Acknowledgment: React.FC<AcknowledgmentProps> = ({
 
       {/* Bottom left authorization */}
       <div 
-        className="absolute bottom-8 left-6 text-white z-10"
-        style={{
-          animation: 'text-physics-entry 1s ease-out 7s forwards',
-          willChange: 'auto'
-        }}
+        className="absolute bottom-8 left-6 text-white z-10 splash-text-animate"
         role="contentinfo"
         aria-label="Authorization"
       >
@@ -47,7 +39,6 @@ const Acknowledgment: React.FC<AcknowledgmentProps> = ({
             className="h-8 w-auto filter brightness-0 invert"
             onError={(e) => {
               console.log('Logo failed to load:', e);
-              // Hide the image if it fails to load
               (e.target as HTMLImageElement).style.display = 'none';
             }}
           />
