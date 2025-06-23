@@ -17,7 +17,7 @@ const Acknowledgment: React.FC<AcknowledgmentProps> = ({
         role="contentinfo"
         aria-label="Application credits"
       >
-        <div style={{ opacity: 0 }}>
+        <div className="animate-fadeIn" style={{ animationDelay: '2s', animationFillMode: 'forwards', opacity: 0 }}>
           <p className="text-sm opacity-90 mb-2">
             {madeInText} <span className="text-pink-200" role="img" aria-label="heart">❤️</span>
           </p>
@@ -27,9 +27,9 @@ const Acknowledgment: React.FC<AcknowledgmentProps> = ({
         </div>
       </div>
 
-      {/* Bottom left authorization - DEBUG VERSION */}
+      {/* Bottom left authorization - VISIBLE VERSION */}
       <div 
-        className="absolute bottom-8 left-6 text-white z-50 splash-text-animate"
+        className="absolute bottom-8 left-6 text-white z-50"
         role="contentinfo"
         aria-label="Authorization"
         style={{ 
@@ -37,7 +37,7 @@ const Acknowledgment: React.FC<AcknowledgmentProps> = ({
           backgroundColor: 'rgba(255, 0, 0, 0.3)' // Debug background
         }}
       >
-        <div style={{ opacity: 0 }} className="flex flex-col items-start">
+        <div className="animate-fadeIn flex flex-col items-start" style={{ animationDelay: '2s', animationFillMode: 'forwards', opacity: 0 }}>
           <p className="text-xs opacity-90 mb-2 font-medium">Autorisé par</p>
           <img 
             src="/images/brt-logo.png" 
