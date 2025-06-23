@@ -37,7 +37,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({
 
       </div>
       {/* Global Transfè text at the far bottom of the page */}
-      <div className="absolute bottom-4 w-full text-center text-white text-lg font-medium tracking-wide">
+      <div className="absolute bottom-4 w-full text-center text-white text-4xl font-light tracking-wider opacity-60">
         Global Transfè
       </div>
     </div>
