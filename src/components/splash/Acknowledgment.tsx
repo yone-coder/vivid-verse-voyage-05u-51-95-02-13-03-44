@@ -7,6 +7,8 @@ const Acknowledgment: React.FC<AcknowledgmentProps> = ({
   madeInText = "Made in Désarmes with",
   authorizedText = "Legalized and authorized by BRH"
 }) => {
+  console.log('Acknowledgment component rendering');
+  
   return (
     <>
       {/* Bottom center acknowledgment */}
@@ -25,11 +27,15 @@ const Acknowledgment: React.FC<AcknowledgmentProps> = ({
         </div>
       </div>
 
-      {/* Bottom left authorization */}
+      {/* Bottom left authorization - DEBUG VERSION */}
       <div 
-        className="absolute bottom-8 left-6 text-white z-10 splash-text-animate"
+        className="absolute bottom-8 left-6 text-white z-50 splash-text-animate"
         role="contentinfo"
         aria-label="Authorization"
+        style={{ 
+          border: '2px solid yellow', // Debug border
+          backgroundColor: 'rgba(255, 0, 0, 0.3)' // Debug background
+        }}
       >
         <div style={{ opacity: 0 }} className="flex flex-col items-start">
           <p className="text-xs opacity-90 mb-2 font-medium">Autorisé par</p>
@@ -37,6 +43,7 @@ const Acknowledgment: React.FC<AcknowledgmentProps> = ({
             src="/images/brt-logo.png" 
             alt="BRT Logo" 
             className="h-8 w-auto filter brightness-0 invert"
+            onLoad={() => console.log('BRT logo loaded successfully')}
             onError={(e) => {
               console.log('Logo failed to load:', e);
               (e.target as HTMLImageElement).style.display = 'none';
