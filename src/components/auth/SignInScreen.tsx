@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Eye, EyeOff, ArrowRight, Shield, Users, Zap, CheckCircle, Mail, Lock, User, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,6 +19,10 @@ const SignInScreen: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isCheckingUser, setIsCheckingUser] = useState(false);
+  const [emailValidation, setEmailValidation] = useState<{
+    state: 'valid' | 'invalid' | 'pending' | null;
+    message: string;
+  }>({ state: null, message: '' });
   const [formData, setFormData] = useState({
     email: '',
     phone: '',
@@ -29,8 +33,83 @@ const SignInScreen: React.FC = () => {
     rememberMe: false
   });
 
+  // Enhanced email validation
+  const validateEmail = useCallback((email: string) => {
+    if (!email) {
+      setEmailValidation({ state: null, message: '' });
+      return;
+    }
+
+    // Real-time validation as user types
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isValidFormat = emailRegex.test(email);
+    
+    if (!isValidFormat) {
+      setEmailValidation({ 
+        state: 'invalid', 
+        message: 'Please enter a valid email address' 
+      });
+      return;
+    }
+
+    // Advanced email format checks
+    const commonTypos = {
+      'gmail.co': 'gmail.com',
+      'gmail.cm': 'gmail.com',
+      'gmai.com': 'gmail.com',
+      'yahoo.co': 'yahoo.com',
+      'hotmail.co': 'hotmail.com',
+      'outlook.co': 'outlook.com'
+    };
+
+    const [username, domain] = email.split('@');
+    if (commonTypos[domain]) {
+      setEmailValidation({ 
+        state: 'invalid', 
+        message: `Did you mean ${username}@${commonTypos[domain]}?` 
+      });
+      return;
+    }
+
+    // Check for common username typos
+    if (username.length < 2) {
+      setEmailValidation({ 
+        state: 'invalid', 
+        message: 'Username seems too short' 
+      });
+      return;
+    }
+
+    // Valid email format
+    setEmailValidation({ 
+      state: 'valid', 
+      message: 'Email format looks good!' 
+    });
+  }, []);
+
+  // Debounced email validation
+  useEffect(() => {
+    if (contactType === 'email' && formData.email) {
+      const timeoutId = setTimeout(() => {
+        validateEmail(formData.email);
+      }, 300);
+      
+      return () => clearTimeout(timeoutId);
+    }
+  }, [formData.email, contactType, validateEmail]);
+
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+    
+    // Reset validation when email changes
+    if (field === 'email') {
+      setEmailValidation({ state: 'pending', message: 'Checking email format...' });
+    }
+  };
+
+  const handleEmailSuggestionSelect = (suggestion: string) => {
+    handleInputChange('email', suggestion);
+    validateEmail(suggestion);
   };
 
   const handleContactStep = async () => {
@@ -42,8 +121,7 @@ const SignInScreen: React.FC = () => {
     }
 
     if (contactType === 'email') {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(formData.email)) {
+      if (emailValidation.state !== 'valid') {
         toast.error('Please enter a valid email address');
         return;
       }
@@ -56,27 +134,30 @@ const SignInScreen: React.FC = () => {
     }
 
     setIsCheckingUser(true);
+    setEmailValidation({ state: 'pending', message: 'Checking if account exists...' });
+    
     try {
-      // For now, we'll only check email existence since phone check isn't implemented yet
       if (contactType === 'email') {
         const exists = await checkUserExists(formData.email);
         setUserExists(exists);
         
         if (exists) {
           setStep('signin');
+          setEmailValidation({ state: 'valid', message: 'Account found! Welcome back.' });
           toast.info('Welcome back! Please enter your password.');
         } else {
           setStep('signup');
+          setEmailValidation({ state: 'valid', message: 'Ready to create your account!' });
           toast.info('New here? Let\'s create your account.');
         }
       } else {
-        // For phone, assume new user for now - you can implement phone check later
         setUserExists(false);
         setStep('signup');
         toast.info('New here? Let\'s create your account.');
       }
     } catch (error) {
       console.error('Error checking user:', error);
+      setEmailValidation({ state: 'invalid', message: 'Error checking account. Please try again.' });
       toast.error('Something went wrong. Please try again.');
     } finally {
       setIsCheckingUser(false);
@@ -97,7 +178,7 @@ const SignInScreen: React.FC = () => {
     }
 
     try {
-      const authEmail = contactType === 'email' ? formData.email : formData.phone; // For phone, you'd handle this differently
+      const authEmail = contactType === 'email' ? formData.email : formData.phone;
       
       if (step === 'signin') {
         await signIn(authEmail, formData.password, formData.rememberMe);
@@ -112,6 +193,7 @@ const SignInScreen: React.FC = () => {
   const goBackToContact = () => {
     setStep('contact');
     setUserExists(null);
+    setEmailValidation({ state: null, message: '' });
     setFormData(prev => ({ ...prev, password: '', confirmPassword: '', firstName: '', lastName: '' }));
   };
 
@@ -276,10 +358,17 @@ const SignInScreen: React.FC = () => {
                       type="email"
                       value={formData.email}
                       onChange={(e) => handleInputChange('email', e.target.value)}
-                      className="h-11 text-sm border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="h-11 text-sm"
                       placeholder="Enter your email"
                       required
                       disabled={isCheckingUser}
+                      showValidation={true}
+                      validationState={emailValidation.state}
+                      validationMessage={emailValidation.message}
+                      showEmailSuggestions={true}
+                      onEmailSuggestionSelect={handleEmailSuggestionSelect}
+                      autoComplete="email"
+                      spellCheck={false}
                     />
                   ) : (
                     <CompactPhoneInput
@@ -466,7 +555,7 @@ const SignInScreen: React.FC = () => {
             <Button
               type="submit"
               className="w-full h-11 text-sm font-semibold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
-              disabled={isLoading || isCheckingUser}
+              disabled={isLoading || isCheckingUser || (contactType === 'email' && emailValidation.state !== 'valid')}
             >
               {isLoading || isCheckingUser ? (
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
