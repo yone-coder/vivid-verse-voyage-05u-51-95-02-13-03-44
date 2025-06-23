@@ -6,6 +6,7 @@ import DesktopFooter from "@/components/desktop/DesktopFooter";
 import IndexBottomNav from "@/components/layout/IndexBottomNav";
 import PremiumBankingHeader from "@/components/layout/PremiumBankingHeader";
 import DesktopHeader from "@/components/desktop/DesktopHeader";
+import AuthOverlay from "@/components/auth/AuthOverlay";
 import { Outlet, useLocation } from "react-router-dom";
 import { useAuthOverlay } from "@/context/AuthOverlayContext";
 import { LanguageProvider } from "@/context/LanguageContext";
@@ -62,6 +63,9 @@ function MainLayoutContent() {
 
         {/* Mobile bottom navigation */}
         {isMobile && <IndexBottomNav />}
+
+        {/* Auth Overlay - now inside AuthProvider context */}
+        <AuthOverlay />
       </div>
     </LanguageProvider>
   );
