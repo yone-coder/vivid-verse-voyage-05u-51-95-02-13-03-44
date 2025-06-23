@@ -16,16 +16,20 @@ function App({ children }: { children: React.ReactNode }) {
   const [isExiting, setIsExiting] = useState(false);
 
   useEffect(() => {
-    // Start exit animation after 4 seconds (reduced from 8)
+    // Performance optimization: use requestAnimationFrame for better timing
     const exitTimer = setTimeout(() => {
-      setIsExiting(true);
-      
-      // Hide splash screen after ultra fast exit animation completes
-      const hideTimer = setTimeout(() => {
-        setShowSplash(false);
-      }, 1200); // 1.2 seconds for ultra fast exit animation
-      
-      return () => clearTimeout(hideTimer);
+      requestAnimationFrame(() => {
+        setIsExiting(true);
+        
+        // Hide splash screen after ultra fast exit animation completes
+        const hideTimer = setTimeout(() => {
+          requestAnimationFrame(() => {
+            setShowSplash(false);
+          });
+        }, 1200); // 1.2 seconds for ultra fast exit animation
+        
+        return () => clearTimeout(hideTimer);
+      });
     }, 4000);
 
     return () => clearTimeout(exitTimer);
@@ -37,7 +41,12 @@ function App({ children }: { children: React.ReactNode }) {
         <TooltipProvider>
           <AuthOverlayProvider>
             <SplashScreen isVisible={showSplash} isExiting={isExiting} />
-            <div className={`App min-h-screen bg-background text-foreground transition-opacity duration-500 ${showSplash ? 'opacity-0' : 'opacity-100'}`}>
+            <div 
+              className={`App min-h-screen bg-background text-foreground transition-opacity duration-500 ${showSplash ? 'opacity-0' : 'opacity-100'}`}
+              style={{
+                willChange: showSplash ? 'opacity' : 'auto'
+              }}
+            >
               {children}
               <Toaster />
               <Sonner />
