@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import LanguageSelector from '@/components/common/LanguageSelector';
-import PhoneInput from '@/components/ui/phone-input';
+import CompactPhoneInput from '@/components/ui/compact-phone-input';
 import { toast } from 'sonner';
 
 const SignInScreen: React.FC = () => {
@@ -282,7 +282,7 @@ const SignInScreen: React.FC = () => {
                       disabled={isCheckingUser}
                     />
                   ) : (
-                    <PhoneInput
+                    <CompactPhoneInput
                       value={formData.phone}
                       onChange={(value) => handleInputChange('phone', value)}
                       disabled={isCheckingUser}
