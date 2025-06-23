@@ -20,7 +20,7 @@ const SignInScreen: React.FC = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isCheckingUser, setIsCheckingUser] = useState(false);
   const [emailValidation, setEmailValidation] = useState<{
-    state: 'valid' | 'invalid' | 'pending' | 'warning' | null;
+    state: 'valid' | 'invalid' | 'pending' | null;
     message: string;
   }>({ state: null, message: '' });
   const [formData, setFormData] = useState({
@@ -33,102 +33,57 @@ const SignInScreen: React.FC = () => {
     rememberMe: false
   });
 
-  // Enhanced email validation with comprehensive checks
+  // Enhanced email validation
   const validateEmail = useCallback((email: string) => {
     if (!email) {
       setEmailValidation({ state: null, message: '' });
       return;
     }
 
-    setEmailValidation({ state: 'pending', message: 'Analyzing email...' });
-
-    // Advanced email format validation
+    // Real-time validation as user types
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const isValidFormat = emailRegex.test(email);
     
     if (!isValidFormat) {
       setEmailValidation({ 
         state: 'invalid', 
-        message: 'Please enter a valid email address format' 
+        message: 'Please enter a valid email address' 
       });
       return;
     }
 
-    const [username, domain] = email.split('@');
-    
-    // Enhanced typo detection
-    const commonTypos: Record<string, string> = {
+    // Advanced email format checks
+    const commonTypos = {
       'gmail.co': 'gmail.com',
       'gmail.cm': 'gmail.com',
       'gmai.com': 'gmail.com',
-      'gmial.com': 'gmail.com',
       'yahoo.co': 'yahoo.com',
-      'yahoo.cm': 'yahoo.com',
-      'yaho.com': 'yahoo.com',
       'hotmail.co': 'hotmail.com',
-      'hotmial.com': 'hotmail.com',
-      'outlook.co': 'outlook.com',
-      'outlok.com': 'outlook.com',
-      'outloo.com': 'outlook.com',
+      'outlook.co': 'outlook.com'
     };
 
-    if (commonTypos[domain.toLowerCase()]) {
-      setEmailValidation({ 
-        state: 'warning', 
-        message: `Did you mean ${username}@${commonTypos[domain.toLowerCase()]}?` 
-      });
-      return;
-    }
-
-    // Username validation
-    if (username.length < 2) {
-      setEmailValidation({ 
-        state: 'warning', 
-        message: 'Username seems unusually short' 
-      });
-      return;
-    }
-
-    if (username.includes('..') || username.startsWith('.') || username.endsWith('.')) {
+    const [username, domain] = email.split('@');
+    if (commonTypos[domain]) {
       setEmailValidation({ 
         state: 'invalid', 
-        message: 'Invalid username format - check for extra dots' 
+        message: `Did you mean ${username}@${commonTypos[domain]}?` 
       });
       return;
     }
 
-    // Check for suspicious patterns
-    const suspiciousPatterns = [
-      /^[0-9]{8,}@/,  // Too many numbers at start
-      /test.*test/i,   // Multiple "test" words
-      /temp.*temp/i,   // Multiple "temp" words
-    ];
-
-    if (suspiciousPatterns.some(pattern => pattern.test(email))) {
+    // Check for common username typos
+    if (username.length < 2) {
       setEmailValidation({ 
-        state: 'warning', 
-        message: 'This looks like a test email - consider using your main email' 
+        state: 'invalid', 
+        message: 'Username seems too short' 
       });
       return;
     }
 
-    // Temporary email detection
-    const temporaryDomains = [
-      '10minutemail', 'tempmail', 'guerrillamail', 'throwaway', 'temp-mail'
-    ];
-
-    if (temporaryDomains.some(temp => domain.toLowerCase().includes(temp))) {
-      setEmailValidation({ 
-        state: 'warning', 
-        message: 'Temporary email detected - we recommend using a permanent address' 
-      });
-      return;
-    }
-
-    // All validation passed
+    // Valid email format
     setEmailValidation({ 
       state: 'valid', 
-      message: 'Perfect! Email format looks professional and secure.' 
+      message: 'Email format looks good!' 
     });
   }, []);
 
@@ -140,19 +95,21 @@ const SignInScreen: React.FC = () => {
       }, 300);
       
       return () => clearTimeout(timeoutId);
-    } else if (contactType === 'email' && !formData.email) {
-      setEmailValidation({ state: null, message: '' });
     }
   }, [formData.email, contactType, validateEmail]);
 
   const handleInputChange = (field: string, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+    
+    // Reset validation when email changes
+    if (field === 'email') {
+      setEmailValidation({ state: 'pending', message: 'Checking email format...' });
+    }
   };
 
   const handleEmailSuggestionSelect = (suggestion: string) => {
     handleInputChange('email', suggestion);
-    // Validate the suggested email immediately
-    setTimeout(() => validateEmail(suggestion), 100);
+    validateEmail(suggestion);
   };
 
   const handleContactStep = async () => {
@@ -164,13 +121,9 @@ const SignInScreen: React.FC = () => {
     }
 
     if (contactType === 'email') {
-      if (emailValidation.state === 'invalid') {
-        toast.error('Please fix the email format first');
+      if (emailValidation.state !== 'valid') {
+        toast.error('Please enter a valid email address');
         return;
-      }
-      if (emailValidation.state === 'warning') {
-        // Allow warning state but inform user
-        toast.warning('We noticed a potential issue with your email, but proceeding anyway');
       }
     } else {
       const phoneRegex = /^\+?[\d\s\-\(\)]{10,}$/;
@@ -181,7 +134,7 @@ const SignInScreen: React.FC = () => {
     }
 
     setIsCheckingUser(true);
-    setEmailValidation({ state: 'pending', message: 'Checking account status...' });
+    setEmailValidation({ state: 'pending', message: 'Checking if account exists...' });
     
     try {
       if (contactType === 'email') {
@@ -190,22 +143,22 @@ const SignInScreen: React.FC = () => {
         
         if (exists) {
           setStep('signin');
-          setEmailValidation({ state: 'valid', message: 'Welcome back! Account found.' });
-          toast.success('Welcome back! Please enter your password.');
+          setEmailValidation({ state: 'valid', message: 'Account found! Welcome back.' });
+          toast.info('Welcome back! Please enter your password.');
         } else {
           setStep('signup');
-          setEmailValidation({ state: 'valid', message: 'Ready to create your new account!' });
-          toast.success('New here? Let\'s create your account!');
+          setEmailValidation({ state: 'valid', message: 'Ready to create your account!' });
+          toast.info('New here? Let\'s create your account.');
         }
       } else {
         setUserExists(false);
         setStep('signup');
-        toast.success('Let\'s create your account with this phone number!');
+        toast.info('New here? Let\'s create your account.');
       }
     } catch (error) {
       console.error('Error checking user:', error);
-      setEmailValidation({ state: 'invalid', message: 'Network error. Please check connection and try again.' });
-      toast.error('Connection error. Please try again.');
+      setEmailValidation({ state: 'invalid', message: 'Error checking account. Please try again.' });
+      toast.error('Something went wrong. Please try again.');
     } finally {
       setIsCheckingUser(false);
     }
@@ -244,7 +197,6 @@ const SignInScreen: React.FC = () => {
     setFormData(prev => ({ ...prev, password: '', confirmPassword: '', firstName: '', lastName: '' }));
   };
 
-  // Trust features
   const trustFeatures = [
     { icon: Shield, text: "Bank-grade security", color: "text-emerald-600" },
     { icon: Users, text: "2M+ trusted users", color: "text-blue-600" },
@@ -252,7 +204,6 @@ const SignInScreen: React.FC = () => {
     { icon: CheckCircle, text: "100% verified", color: "text-green-600" }
   ];
 
-  // Get step indicator
   const getStepIndicator = () => {
     if (step === 'contact') return null;
     
@@ -408,7 +359,7 @@ const SignInScreen: React.FC = () => {
                       value={formData.email}
                       onChange={(e) => handleInputChange('email', e.target.value)}
                       className="h-11 text-sm"
-                      placeholder="Enter your email address"
+                      placeholder="Enter your email"
                       required
                       disabled={isCheckingUser}
                       showValidation={true}
@@ -416,10 +367,6 @@ const SignInScreen: React.FC = () => {
                       validationMessage={emailValidation.message}
                       showEmailSuggestions={true}
                       onEmailSuggestionSelect={handleEmailSuggestionSelect}
-                      showEmailInsights={true}
-                      enableSmartCorrection={true}
-                      showSecurityIndicator={true}
-                      enableRealTimeValidation={true}
                       autoComplete="email"
                       spellCheck={false}
                     />
@@ -608,7 +555,7 @@ const SignInScreen: React.FC = () => {
             <Button
               type="submit"
               className="w-full h-11 text-sm font-semibold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200"
-              disabled={isLoading || isCheckingUser || (contactType === 'email' && step === 'contact' && emailValidation.state === 'invalid')}
+              disabled={isLoading || isCheckingUser || (contactType === 'email' && emailValidation.state !== 'valid')}
             >
               {isLoading || isCheckingUser ? (
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
