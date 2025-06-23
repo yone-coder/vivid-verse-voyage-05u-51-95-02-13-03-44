@@ -15,6 +15,298 @@ function PulseBackground({ className = '' }: PulseBackgroundProps) {
   );
 }
 
+// Modern White Exit Layer
+interface ModernWhiteExitLayerProps {
+  isExiting: boolean;
+}
+
+function ModernWhiteExitLayer({ isExiting }: ModernWhiteExitLayerProps) {
+  if (!isExiting) return null;
+
+  return (
+    <>
+      <div 
+        className="fixed inset-0 z-[60]"
+        style={{
+          animation: 'modern-white-layer-entry 2s cubic-bezier(0.16, 1, 0.3, 1) forwards'
+        }}
+      >
+        {/* Primary white layer */}
+        <div className="absolute inset-0 bg-white opacity-0 animate-modern-white-primary"></div>
+        
+        {/* Secondary gradient layer */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white via-gray-50 to-gray-100 opacity-0 animate-modern-white-secondary"></div>
+        
+        {/* Animated geometric shapes */}
+        <div className="absolute inset-0 overflow-hidden">
+          {/* Large circle */}
+          <div 
+            className="absolute w-[800px] h-[800px] rounded-full border-4 border-gray-200/30"
+            style={{
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%) scale(0)',
+              animation: 'geometric-circle-expand 1.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards'
+            }}
+          ></div>
+          
+          {/* Medium circles */}
+          <div 
+            className="absolute w-[400px] h-[400px] rounded-full bg-gradient-to-r from-gray-100/40 to-gray-200/40"
+            style={{
+              top: '30%',
+              left: '20%',
+              transform: 'scale(0) rotate(0deg)',
+              animation: 'geometric-medium-1 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards'
+            }}
+          ></div>
+          
+          <div 
+            className="absolute w-[300px] h-[300px] rounded-full bg-gradient-to-l from-gray-50/50 to-gray-100/50"
+            style={{
+              top: '60%',
+              right: '15%',
+              transform: 'scale(0) rotate(0deg)',
+              animation: 'geometric-medium-2 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards'
+            }}
+          ></div>
+          
+          {/* Small floating elements */}
+          {[...Array(8)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-2 h-2 bg-gray-300/60 rounded-full"
+              style={{
+                top: `${20 + Math.random() * 60}%`,
+                left: `${10 + Math.random() * 80}%`,
+                transform: 'scale(0)',
+                animation: `floating-particle-${i % 4 + 1} ${1.2 + Math.random() * 0.8}s cubic-bezier(0.16, 1, 0.3, 1) ${0.5 + Math.random() * 0.8}s forwards`
+              }}
+            />
+          ))}
+        </div>
+        
+        {/* Modern text overlay */}
+        <div 
+          className="absolute inset-0 flex items-center justify-center"
+          style={{
+            animation: 'modern-text-reveal 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards'
+          }}
+        >
+          <div className="text-center opacity-0 transform translate-y-8">
+            <div className="text-2xl md:text-4xl font-light text-gray-700 tracking-wider mb-2">
+              Désarmes
+            </div>
+            <div className="text-sm md:text-base text-gray-500 tracking-[0.2em] uppercase">
+              Transfert moderne
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <style>{`
+        @keyframes modern-white-layer-entry {
+          0% {
+            transform: scale(0.8) rotate(-5deg);
+            opacity: 0;
+            filter: blur(20px);
+          }
+          25% {
+            transform: scale(0.95) rotate(-2deg);
+            opacity: 0.7;
+            filter: blur(8px);
+          }
+          50% {
+            transform: scale(1.02) rotate(1deg);
+            opacity: 0.9;
+            filter: blur(2px);
+          }
+          75% {
+            transform: scale(1.01) rotate(0.5deg);
+            opacity: 0.95;
+            filter: blur(1px);
+          }
+          100% {
+            transform: scale(1) rotate(0deg);
+            opacity: 1;
+            filter: blur(0px);
+          }
+        }
+
+        @keyframes modern-white-primary {
+          0% {
+            opacity: 0;
+            transform: scale(0.5);
+          }
+          30% {
+            opacity: 0.8;
+            transform: scale(1.1);
+          }
+          60% {
+            opacity: 0.95;
+            transform: scale(1.02);
+          }
+          100% {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+
+        @keyframes modern-white-secondary {
+          0% {
+            opacity: 0;
+            transform: translateY(100px) scale(0.8);
+          }
+          40% {
+            opacity: 0.3;
+            transform: translateY(20px) scale(0.95);
+          }
+          70% {
+            opacity: 0.6;
+            transform: translateY(5px) scale(1.02);
+          }
+          100% {
+            opacity: 0.8;
+            transform: translateY(0px) scale(1);
+          }
+        }
+
+        @keyframes geometric-circle-expand {
+          0% {
+            transform: translate(-50%, -50%) scale(0) rotate(0deg);
+            opacity: 0;
+          }
+          30% {
+            transform: translate(-50%, -50%) scale(0.6) rotate(90deg);
+            opacity: 0.4;
+          }
+          60% {
+            transform: translate(-50%, -50%) scale(1.1) rotate(180deg);
+            opacity: 0.7;
+          }
+          100% {
+            transform: translate(-50%, -50%) scale(1) rotate(360deg);
+            opacity: 0.3;
+          }
+        }
+
+        @keyframes geometric-medium-1 {
+          0% {
+            transform: scale(0) rotate(0deg);
+            opacity: 0;
+          }
+          50% {
+            transform: scale(1.2) rotate(180deg);
+            opacity: 0.6;
+          }
+          100% {
+            transform: scale(1) rotate(360deg);
+            opacity: 0.4;
+          }
+        }
+
+        @keyframes geometric-medium-2 {
+          0% {
+            transform: scale(0) rotate(0deg);
+            opacity: 0;
+          }
+          40% {
+            transform: scale(1.3) rotate(-120deg);
+            opacity: 0.7;
+          }
+          100% {
+            transform: scale(1) rotate(-240deg);
+            opacity: 0.5;
+          }
+        }
+
+        @keyframes floating-particle-1 {
+          0% {
+            transform: scale(0) translateY(0px);
+            opacity: 0;
+          }
+          50% {
+            transform: scale(1.5) translateY(-20px);
+            opacity: 0.8;
+          }
+          100% {
+            transform: scale(1) translateY(-10px);
+            opacity: 0.6;
+          }
+        }
+
+        @keyframes floating-particle-2 {
+          0% {
+            transform: scale(0) translateX(0px);
+            opacity: 0;
+          }
+          50% {
+            transform: scale(1.3) translateX(15px);
+            opacity: 0.7;
+          }
+          100% {
+            transform: scale(1) translateX(8px);
+            opacity: 0.5;
+          }
+        }
+
+        @keyframes floating-particle-3 {
+          0% {
+            transform: scale(0) translate(0px, 0px) rotate(0deg);
+            opacity: 0;
+          }
+          50% {
+            transform: scale(1.4) translate(-12px, -15px) rotate(180deg);
+            opacity: 0.9;
+          }
+          100% {
+            transform: scale(1) translate(-6px, -8px) rotate(360deg);
+            opacity: 0.4;
+          }
+        }
+
+        @keyframes floating-particle-4 {
+          0% {
+            transform: scale(0) translate(0px, 0px);
+            opacity: 0;
+          }
+          50% {
+            transform: scale(1.6) translate(10px, 12px);
+            opacity: 0.6;
+          }
+          100% {
+            transform: scale(1) translate(5px, 6px);
+            opacity: 0.3;
+          }
+        }
+
+        @keyframes modern-text-reveal {
+          0% {
+            opacity: 0;
+            transform: translateY(30px) scale(0.8);
+            filter: blur(10px);
+          }
+          30% {
+            opacity: 0.3;
+            transform: translateY(15px) scale(0.9);
+            filter: blur(5px);
+          }
+          60% {
+            opacity: 0.7;
+            transform: translateY(5px) scale(0.98);
+            filter: blur(2px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0px) scale(1);
+            filter: blur(0px);
+          }
+        }
+      `}</style>
+    </>
+  );
+}
+
 // Top Title Component with Physics
 interface TopTitleProps {
   className?: string;
@@ -28,7 +320,7 @@ function TopTitle({ className = '', isExiting = false }: TopTitleProps) {
       style={{
         opacity: 1,
         animation: isExiting 
-          ? 'title-quantum-exit 2s ease-in-out forwards'
+          ? 'title-modern-exit 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards'
           : 'title-physics-entry 1.5s ease-out 0.5s forwards'
       }}
     >
@@ -64,41 +356,26 @@ function TopTitle({ className = '', isExiting = false }: TopTitleProps) {
           }
         }
 
-        @keyframes title-quantum-exit {
+        @keyframes title-modern-exit {
           0% {
             opacity: 1;
-            transform: translateY(0px) scale(1) rotateX(0deg);
-            filter: blur(0px) brightness(1);
-          }
-          15% {
-            opacity: 0.9;
-            transform: translateY(-8px) scale(1.05) rotateX(5deg);
-            filter: blur(1px) brightness(1.2);
+            transform: translateY(0px) scale(1);
+            filter: blur(0px);
           }
           30% {
-            opacity: 0.7;
-            transform: translateY(-20px) scale(1.15) rotateX(15deg);
-            filter: blur(3px) brightness(1.5);
+            opacity: 0.8;
+            transform: translateY(-10px) scale(0.95);
+            filter: blur(2px);
           }
-          50% {
+          60% {
             opacity: 0.5;
-            transform: translateY(-40px) scale(1.3) rotateX(30deg);
-            filter: blur(6px) brightness(2);
-          }
-          70% {
-            opacity: 0.3;
-            transform: translateY(-70px) scale(1.6) rotateX(50deg);
-            filter: blur(12px) brightness(3);
-          }
-          85% {
-            opacity: 0.1;
-            transform: translateY(-120px) scale(2.2) rotateX(80deg);
-            filter: blur(20px) brightness(5);
+            transform: translateY(-25px) scale(0.85);
+            filter: blur(5px);
           }
           100% {
             opacity: 0;
-            transform: translateY(-200px) scale(3.5) rotateX(120deg);
-            filter: blur(40px) brightness(8);
+            transform: translateY(-50px) scale(0.7);
+            filter: blur(10px);
           }
         }
       `}</style>
@@ -106,7 +383,7 @@ function TopTitle({ className = '', isExiting = false }: TopTitleProps) {
   );
 }
 
-// Main Logo Path Component with Ultra Advanced Physics
+// Main Logo Path Component with Modern Exit
 interface MainLogoPathProps {
   className?: string;
   strokeColor?: string;
@@ -133,7 +410,7 @@ function MainLogoPath({
           strokeWidth: '2',
           transformOrigin: 'center center',
           animation: isExiting 
-            ? 'quantum-disintegration-advanced 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards'
+            ? 'logo-modern-exit 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards'
             : `
               draw-path-physics 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
               fill-path-physics 1.2s ease-out 2.5s forwards,
@@ -234,118 +511,26 @@ function MainLogoPath({
           }
         }
 
-        @keyframes quantum-disintegration-advanced {
+        @keyframes logo-modern-exit {
           0% {
             transform: scale(1) rotate(0deg);
             opacity: 1;
-            filter: brightness(1) blur(0px) hue-rotate(0deg) drop-shadow(0 0 0px rgba(255,255,255,0));
-            stroke-dashoffset: 0;
-            stroke-width: 2;
-          }
-          8% {
-            transform: scale(1.02) rotate(5deg);
-            opacity: 0.98;
-            filter: brightness(1.3) blur(1px) hue-rotate(30deg) drop-shadow(0 0 10px rgba(255,255,255,0.3));
-            stroke-dashoffset: 100;
-            stroke-width: 3;
-          }
-          15% {
-            transform: scale(1.08) rotate(15deg);
-            opacity: 0.95;
-            filter: brightness(1.8) blur(2px) hue-rotate(60deg) drop-shadow(0 0 20px rgba(255,255,255,0.6));
-            stroke-dashoffset: 300;
-            stroke-width: 4;
-          }
-          22% {
-            transform: scale(1.18) rotate(30deg);
-            opacity: 0.9;
-            filter: brightness(2.5) blur(4px) hue-rotate(90deg) drop-shadow(0 0 35px rgba(255,255,255,0.8));
-            stroke-dashoffset: 600;
-            stroke-width: 6;
+            filter: blur(0px);
           }
           30% {
-            transform: scale(1.35) rotate(50deg);
-            opacity: 0.85;
-            filter: brightness(3.5) blur(6px) hue-rotate(120deg) drop-shadow(0 0 50px rgba(255,255,255,1));
-            stroke-dashoffset: 1000;
-            stroke-width: 8;
-          }
-          38% {
-            transform: scale(1.6) rotate(80deg);
+            transform: scale(0.9) rotate(-5deg);
             opacity: 0.8;
-            filter: brightness(4.8) blur(8px) hue-rotate(150deg) drop-shadow(0 0 70px rgba(255,255,255,1.2));
-            stroke-dashoffset: 1500;
-            stroke-width: 10;
-          }
-          45% {
-            transform: scale(2) rotate(120deg);
-            opacity: 0.75;
-            filter: brightness(6.5) blur(12px) hue-rotate(180deg) drop-shadow(0 0 90px rgba(255,255,255,1.5));
-            stroke-dashoffset: 2000;
-            stroke-width: 12;
-          }
-          52% {
-            transform: scale(2.6) rotate(170deg);
-            opacity: 0.7;
-            filter: brightness(8.5) blur(16px) hue-rotate(210deg) drop-shadow(0 0 120px rgba(255,255,255,1.8));
-            stroke-dashoffset: 2600;
-            stroke-width: 14;
+            filter: blur(2px);
           }
           60% {
-            transform: scale(3.5) rotate(230deg);
-            opacity: 0.65;
-            filter: brightness(11) blur(20px) hue-rotate(240deg) drop-shadow(0 0 150px rgba(255,255,255,2));
-            stroke-dashoffset: 3200;
-            stroke-width: 16;
-          }
-          68% {
-            transform: scale(4.8) rotate(300deg);
-            opacity: 0.55;
-            filter: brightness(14) blur(25px) hue-rotate(270deg) drop-shadow(0 0 180px rgba(255,255,255,2.2));
-            stroke-dashoffset: 3600;
-            stroke-width: 18;
-          }
-          75% {
-            transform: scale(6.5) rotate(380deg);
-            opacity: 0.45;
-            filter: brightness(18) blur(30px) hue-rotate(300deg) drop-shadow(0 0 220px rgba(255,255,255,2.5));
-            stroke-dashoffset: 3800;
-            stroke-width: 20;
-          }
-          82% {
-            transform: scale(9) rotate(470deg);
-            opacity: 0.35;
-            filter: brightness(23) blur(35px) hue-rotate(330deg) drop-shadow(0 0 260px rgba(255,255,255,2.8));
-            stroke-dashoffset: 3900;
-            stroke-width: 22;
-          }
-          88% {
-            transform: scale(12.5) rotate(570deg);
-            opacity: 0.25;
-            filter: brightness(28) blur(40px) hue-rotate(360deg) drop-shadow(0 0 300px rgba(255,255,255,3));
-            stroke-dashoffset: 3950;
-            stroke-width: 24;
-          }
-          93% {
-            transform: scale(17) rotate(680deg);
-            opacity: 0.15;
-            filter: brightness(35) blur(45px) hue-rotate(390deg) drop-shadow(0 0 350px rgba(255,255,255,3.5));
-            stroke-dashoffset: 3980;
-            stroke-width: 26;
-          }
-          97% {
-            transform: scale(24) rotate(800deg);
-            opacity: 0.08;
-            filter: brightness(42) blur(50px) hue-rotate(420deg) drop-shadow(0 0 400px rgba(255,255,255,4));
-            stroke-dashoffset: 3995;
-            stroke-width: 28;
+            transform: scale(0.7) rotate(-15deg);
+            opacity: 0.5;
+            filter: blur(5px);
           }
           100% {
-            transform: scale(35) rotate(960deg);
+            transform: scale(0.3) rotate(-30deg);
             opacity: 0;
-            filter: brightness(50) blur(60px) hue-rotate(480deg) drop-shadow(0 0 500px rgba(255,255,255,5));
-            stroke-dashoffset: 4000;
-            stroke-width: 30;
+            filter: blur(10px);
           }
         }
       `}</style>
@@ -375,7 +560,7 @@ function AccentPath({
           opacity: '0',
           transformOrigin: 'center',
           animation: isExiting 
-            ? 'accent-quantum-disintegration-advanced 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards'
+            ? 'accent-modern-exit 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards'
             : `
               momentum-entry 3.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 3s forwards,
               elastic-oscillation 1.5s ease-in-out 6.5s infinite,
@@ -465,56 +650,26 @@ function AccentPath({
           }
         }
 
-        @keyframes accent-quantum-disintegration-advanced {
+        @keyframes accent-modern-exit {
           0% {
             opacity: 1;
             transform: scale(1) rotate(0deg);
-            filter: brightness(1) blur(0px) hue-rotate(0deg) drop-shadow(0 0 0px rgba(255,255,255,0));
+            filter: blur(0px);
           }
-          12% {
-            opacity: 0.95;
-            transform: scale(1.1) rotate(18deg);
-            filter: brightness(1.8) blur(2px) hue-rotate(45deg) drop-shadow(0 0 15px rgba(255,255,255,0.8));
-          }
-          24% {
-            opacity: 0.88;
-            transform: scale(1.3) rotate(45deg);
-            filter: brightness(2.8) blur(4px) hue-rotate(90deg) drop-shadow(0 0 30px rgba(255,255,255,1.2));
-          }
-          36% {
-            opacity: 0.8;
-            transform: scale(1.6) rotate(80deg);
-            filter: brightness(4) blur(6px) hue-rotate(135deg) drop-shadow(0 0 50px rgba(255,255,255,1.6));
-          }
-          48% {
+          40% {
             opacity: 0.7;
-            transform: scale(2.1) rotate(125deg);
-            filter: brightness(5.5) blur(8px) hue-rotate(180deg) drop-shadow(0 0 70px rgba(255,255,255,2));
+            transform: scale(0.8) rotate(-10deg);
+            filter: blur(3px);
           }
-          60% {
-            opacity: 0.6;
-            transform: scale(2.8) rotate(180deg);
-            filter: brightness(7.5) blur(12px) hue-rotate(225deg) drop-shadow(0 0 95px rgba(255,255,255,2.5));
-          }
-          72% {
-            opacity: 0.45;
-            transform: scale(3.8) rotate(250deg);
-            filter: brightness(10) blur(16px) hue-rotate(270deg) drop-shadow(0 0 125px rgba(255,255,255,3));
-          }
-          84% {
-            opacity: 0.3;
-            transform: scale(5.2) rotate(330deg);
-            filter: brightness(13.5) blur(20px) hue-rotate(315deg) drop-shadow(0 0 160px rgba(255,255,255,3.5));
-          }
-          92% {
-            opacity: 0.15;
-            transform: scale(7.5) rotate(420deg);
-            filter: brightness(18) blur(25px) hue-rotate(360deg) drop-shadow(0 0 200px rgba(255,255,255,4));
+          70% {
+            opacity: 0.4;
+            transform: scale(0.5) rotate(-20deg);
+            filter: blur(6px);
           }
           100% {
             opacity: 0;
-            transform: scale(12) rotate(540deg);
-            filter: brightness(25) blur(35px) hue-rotate(450deg) drop-shadow(0 0 300px rgba(255,255,255,5));
+            transform: scale(0.2) rotate(-35deg);
+            filter: blur(10px);
           }
         }
       `}</style>
@@ -543,7 +698,7 @@ function LogoContainer({
       className={`relative ${className}`}
       style={{
         animation: isExiting 
-          ? 'container-quantum-exit-advanced 2.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards'
+          ? 'container-modern-exit 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards'
           : undefined
       }}
     >
@@ -558,66 +713,26 @@ function LogoContainer({
         {children}
       </svg>
       <style>{`
-        @keyframes container-quantum-exit-advanced {
+        @keyframes container-modern-exit {
           0% {
             transform: scale(1) rotate(0deg);
             opacity: 1;
-            filter: brightness(1) blur(0px) hue-rotate(0deg) drop-shadow(0 0 0px rgba(255,255,255,0));
-          }
-          10% {
-            transform: scale(1.05) rotate(8deg);
-            opacity: 0.95;
-            filter: brightness(1.4) blur(1px) hue-rotate(40deg) drop-shadow(0 0 20px rgba(255,255,255,0.4));
-          }
-          20% {
-            transform: scale(1.15) rotate(20deg);
-            opacity: 0.9;
-            filter: brightness(2) blur(2px) hue-rotate(80deg) drop-shadow(0 0 40px rgba(255,255,255,0.8));
+            filter: blur(0px);
           }
           30% {
-            transform: scale(1.3) rotate(40deg);
-            opacity: 0.85;
-            filter: brightness(2.8) blur(4px) hue-rotate(120deg) drop-shadow(0 0 60px rgba(255,255,255,1.2));
-          }
-          40% {
-            transform: scale(1.5) rotate(70deg);
+            transform: scale(0.85) rotate(-8deg);
             opacity: 0.8;
-            filter: brightness(3.8) blur(6px) hue-rotate(160deg) drop-shadow(0 0 85px rgba(255,255,255,1.6));
-          }
-          50% {
-            transform: scale(1.8) rotate(110deg);
-            opacity: 0.75;
-            filter: brightness(5) blur(8px) hue-rotate(200deg) drop-shadow(0 0 110px rgba(255,255,255,2));
+            filter: blur(2px);
           }
           60% {
-            transform: scale(2.2) rotate(160deg);
-            opacity: 0.65;
-            filter: brightness(6.5) blur(12px) hue-rotate(240deg) drop-shadow(0 0 140px rgba(255,255,255,2.5));
-          }
-          70% {
-            transform: scale(2.8) rotate(220deg);
-            opacity: 0.55;
-            filter: brightness(8.5) blur(16px) hue-rotate(280deg) drop-shadow(0 0 175px rgba(255,255,255,3));
-          }
-          80% {
-            transform: scale(3.6) rotate(290deg);
-            opacity: 0.4;
-            filter: brightness(11) blur(20px) hue-rotate(320deg) drop-shadow(0 0 215px rgba(255,255,255,3.5));
-          }
-          88% {
-            transform: scale(4.8) rotate(370deg);
-            opacity: 0.25;
-            filter: brightness(14.5) blur(25px) hue-rotate(360deg) drop-shadow(0 0 260px rgba(255,255,255,4));
-          }
-          94% {
-            transform: scale(6.5) rotate(460deg);
-            opacity: 0.12;
-            filter: brightness(19) blur(30px) hue-rotate(400deg) drop-shadow(0 0 310px rgba(255,255,255,4.5));
+            transform: scale(0.6) rotate(-20deg);
+            opacity: 0.5;
+            filter: blur(5px);
           }
           100% {
-            transform: scale(9.5) rotate(580deg);
+            transform: scale(0.2) rotate(-40deg);
             opacity: 0;
-            filter: brightness(25) blur(40px) hue-rotate(480deg) drop-shadow(0 0 400px rgba(255,255,255,5));
+            filter: blur(15px);
           }
         }
       `}</style>
@@ -644,7 +759,7 @@ function Acknowledgment({
       className={`absolute bottom-8 left-0 right-0 text-center text-white px-6 ${className}`}
       style={{
         animation: isExiting 
-          ? 'text-quantum-exit 2s ease-in-out forwards'
+          ? 'text-modern-exit 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards'
           : 'text-physics-entry 1s ease-out 7s forwards'
       }}
     >
@@ -685,46 +800,26 @@ function Acknowledgment({
           }
         }
 
-        @keyframes text-quantum-exit {
+        @keyframes text-modern-exit {
           0% {
             opacity: 1;
-            transform: translateY(0px) scale(1) rotateX(0deg);
-            filter: blur(0px) brightness(1);
+            transform: translateY(0px) scale(1);
+            filter: blur(0px);
           }
-          15% {
-            opacity: 0.9;
-            transform: translateY(-5px) scale(1.03) rotateX(5deg);
-            filter: blur(1px) brightness(1.2);
-          }
-          30% {
-            opacity: 0.8;
-            transform: translateY(-12px) scale(1.08) rotateX(12deg);
-            filter: blur(2px) brightness(1.5);
-          }
-          45% {
+          40% {
             opacity: 0.7;
-            transform: translateY(-22px) scale(1.15) rotateX(22deg);
-            filter: blur(4px) brightness(2);
+            transform: translateY(-10px) scale(0.9);
+            filter: blur(2px);
           }
-          60% {
-            opacity: 0.5;
-            transform: translateY(-35px) scale(1.25) rotateX(35deg);
-            filter: blur(6px) brightness(2.8);
-          }
-          75% {
-            opacity: 0.3;
-            transform: translateY(-55px) scale(1.4) rotateX(55deg);
-            filter: blur(10px) brightness(4);
-          }
-          90% {
-            opacity: 0.1;
-            transform: translateY(-85px) scale(1.7) rotateX(85deg);
-            filter: blur(16px) brightness(6);
+          70% {
+            opacity: 0.4;
+            transform: translateY(-25px) scale(0.7);
+            filter: blur(5px);
           }
           100% {
             opacity: 0;
-            transform: translateY(-130px) scale(2.2) rotateX(130deg);
-            filter: blur(25px) brightness(10);
+            transform: translateY(-50px) scale(0.5);
+            filter: blur(10px);
           }
         }
       `}</style>
@@ -739,7 +834,7 @@ function QuantumBackground({ isExiting }: { isExiting: boolean }) {
       className="absolute inset-0"
       style={{
         animation: isExiting 
-          ? 'background-quantum-exit 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards'
+          ? 'background-modern-exit 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards'
           : 'background-physics-pulse 4s ease-in-out infinite'
       }}
     >
@@ -757,7 +852,7 @@ function QuantumBackground({ isExiting }: { isExiting: boolean }) {
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
               animation: isExiting 
-                ? `particle-quantum-exit ${1.5 + Math.random()}s ease-out ${Math.random() * 0.5}s forwards`
+                ? `particle-modern-exit ${1 + Math.random() * 0.5}s cubic-bezier(0.16, 1, 0.3, 1) ${Math.random() * 0.3}s forwards`
                 : `particle-float ${3 + Math.random() * 2}s ease-in-out ${Math.random() * 2}s infinite`
             }}
           />
@@ -778,61 +873,26 @@ function QuantumBackground({ isExiting }: { isExiting: boolean }) {
           }
         }
 
-        @keyframes background-quantum-exit {
+        @keyframes background-modern-exit {
           0% {
             opacity: 1;
-            transform: scale(1) rotate(0deg);
-            filter: brightness(1) blur(0px) hue-rotate(0deg) saturate(1);
-          }
-          10% {
-            opacity: 0.95;
-            transform: scale(1.02) rotate(2deg);
-            filter: brightness(1.2) blur(1px) hue-rotate(20deg) saturate(1.2);
-          }
-          20% {
-            opacity: 0.9;
-            transform: scale(1.05) rotate(5deg);
-            filter: brightness(1.5) blur(2px) hue-rotate(50deg) saturate(1.5);
+            transform: scale(1);
+            filter: blur(0px) brightness(1);
           }
           30% {
-            opacity: 0.85;
-            transform: scale(1.1) rotate(10deg);
-            filter: brightness(2) blur(4px) hue-rotate(80deg) saturate(2);
-          }
-          40% {
             opacity: 0.8;
-            transform: scale(1.18) rotate(18deg);
-            filter: brightness(2.8) blur(6px) hue-rotate(120deg) saturate(2.5);
-          }
-          50% {
-            opacity: 0.7;
-            transform: scale(1.3) rotate(30deg);
-            filter: brightness(3.8) blur(8px) hue-rotate(160deg) saturate(3);
+            transform: scale(0.95);
+            filter: blur(2px) brightness(0.8);
           }
           60% {
-            opacity: 0.6;
-            transform: scale(1.5) rotate(45deg);
-            filter: brightness(5) blur(12px) hue-rotate(200deg) saturate(3.5);
-          }
-          70% {
             opacity: 0.5;
-            transform: scale(1.8) rotate(65deg);
-            filter: brightness(7) blur(16px) hue-rotate(250deg) saturate(4);
-          }
-          80% {
-            opacity: 0.4;
-            transform: scale(2.3) rotate(90deg);
-            filter: brightness(10) blur(20px) hue-rotate(300deg) saturate(4.5);
-          }
-          90% {
-            opacity: 0.2;
-            transform: scale(3.2) rotate(120deg);
-            filter: brightness(15) blur(25px) hue-rotate(360deg) saturate(5);
+            transform: scale(0.85);
+            filter: blur(5px) brightness(0.6);
           }
           100% {
             opacity: 0;
-            transform: scale(5) rotate(180deg);
-            filter: brightness(25) blur(35px) hue-rotate(450deg) saturate(0);
+            transform: scale(0.7);
+            filter: blur(10px) brightness(0.3);
           }
         }
 
@@ -855,29 +915,17 @@ function QuantumBackground({ isExiting }: { isExiting: boolean }) {
           }
         }
 
-        @keyframes particle-quantum-exit {
+        @keyframes particle-modern-exit {
           0% {
-            transform: translateY(0px) translateX(0px) scale(1) rotate(0deg);
+            transform: scale(1);
             opacity: 0.3;
           }
-          20% {
-            transform: translateY(-30px) translateX(20px) scale(1.5) rotate(45deg);
-            opacity: 0.8;
-          }
-          40% {
-            transform: translateY(-80px) translateX(-30px) scale(2) rotate(120deg);
-            opacity: 0.9;
-          }
-          60% {
-            transform: translateY(-150px) translateX(60px) scale(3) rotate(220deg);
-            opacity: 0.7;
-          }
-          80% {
-            transform: translateY(-250px) translateX(-80px) scale(4.5) rotate(350deg);
-            opacity: 0.4;
+          50% {
+            transform: scale(0.5);
+            opacity: 0.1;
           }
           100% {
-            transform: translateY(-400px) translateX(120px) scale(6) rotate(540deg);
+            transform: scale(0);
             opacity: 0;
           }
         }
@@ -933,6 +981,8 @@ export default function UltraSleekSplashScreen({
         authorizedText={customAcknowledment?.authorizedText}
         isExiting={isExiting}
       />
+
+      <ModernWhiteExitLayer isExiting={isExiting} />
     </div>
   );
 }
