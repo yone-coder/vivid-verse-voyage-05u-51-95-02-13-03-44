@@ -13,26 +13,14 @@ const queryClient = new QueryClient();
 
 function App({ children }: { children: React.ReactNode }) {
   const [showSplash, setShowSplash] = useState(true);
-  const [isExiting, setIsExiting] = useState(false);
 
   useEffect(() => {
-    // Performance optimization: use requestAnimationFrame for better timing
-    const exitTimer = setTimeout(() => {
-      requestAnimationFrame(() => {
-        setIsExiting(true);
-        
-        // Hide splash screen after ultra fast exit animation completes
-        const hideTimer = setTimeout(() => {
-          requestAnimationFrame(() => {
-            setShowSplash(false);
-          });
-        }, 1200); // 1.2 seconds for ultra fast exit animation
-        
-        return () => clearTimeout(hideTimer);
-      });
+    // Hide splash screen after 4 seconds
+    const hideTimer = setTimeout(() => {
+      setShowSplash(false);
     }, 4000);
 
-    return () => clearTimeout(exitTimer);
+    return () => clearTimeout(hideTimer);
   }, []);
 
   return (
@@ -40,12 +28,9 @@ function App({ children }: { children: React.ReactNode }) {
       <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
         <TooltipProvider>
           <AuthOverlayProvider>
-            <SplashScreen isVisible={showSplash} isExiting={isExiting} />
+            <SplashScreen isVisible={showSplash} />
             <div 
               className={`App min-h-screen bg-background text-foreground transition-opacity duration-500 ${showSplash ? 'opacity-0' : 'opacity-100'}`}
-              style={{
-                willChange: showSplash ? 'opacity' : 'auto'
-              }}
             >
               {children}
               <Toaster />

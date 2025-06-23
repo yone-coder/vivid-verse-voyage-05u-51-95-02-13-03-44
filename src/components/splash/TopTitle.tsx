@@ -3,7 +3,7 @@ import React from 'react';
 import { TopTitleProps } from './types';
 import { SPLASH_ANIMATIONS } from './animations';
 
-const TopTitle: React.FC<TopTitleProps> = ({ className = '', isExiting = false }) => {
+const TopTitle: React.FC<TopTitleProps> = ({ className = '' }) => {
   return (
     <>
       <style>{SPLASH_ANIMATIONS.keyframes}</style>
@@ -11,10 +11,8 @@ const TopTitle: React.FC<TopTitleProps> = ({ className = '', isExiting = false }
         className={`absolute top-12 left-0 right-0 text-center text-white px-4 z-10 ${className}`}
         style={{
           opacity: 1,
-          animation: isExiting 
-            ? SPLASH_ANIMATIONS.configs.titleExit
-            : SPLASH_ANIMATIONS.configs.titleEntry,
-          willChange: isExiting ? 'transform, opacity, filter' : 'auto'
+          animation: SPLASH_ANIMATIONS.configs.titleEntry,
+          willChange: 'auto'
         }}
         role="banner"
         aria-label="Application title"

@@ -13,7 +13,6 @@ export interface SplashScreenProps {
 
 export interface BaseComponentProps {
   className?: string;
-  isExiting?: boolean;
 }
 
 export interface PulseBackgroundProps extends BaseComponentProps {}
@@ -38,12 +37,4 @@ export interface LogoContainerProps extends BaseComponentProps {
 export interface AcknowledgmentProps extends BaseComponentProps {
   madeInText?: string;
   authorizedText?: string;
-}
-
-export interface ProgressiveWhiteOverlayProps {
-  isExiting: boolean;
-}
-
-export interface QuantumBackgroundProps {
-  isExiting: boolean;
 }

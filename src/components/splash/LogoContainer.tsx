@@ -6,17 +6,13 @@ const LogoContainer: React.FC<LogoContainerProps> = ({
   className = '', 
   width = '300px', 
   height = '300px',
-  children,
-  isExiting = false
+  children
 }) => {
   return (
     <div 
       className={`relative ${className}`}
       style={{
-        animation: isExiting 
-          ? 'container-ultra-fast-exit 1.1s cubic-bezier(0.895, 0.03, 0.685, 0.22) forwards'
-          : undefined,
-        willChange: isExiting ? 'transform, opacity, filter' : 'auto'
+        willChange: 'auto'
       }}
       role="img"
       aria-label="Application logo"
