@@ -38,3 +38,11 @@ export interface AcknowledgmentProps extends BaseComponentProps {
   madeInText?: string;
   authorizedText?: string;
 }
+
+export interface ProgressiveWhiteOverlayProps extends BaseComponentProps {
+  isExiting?: boolean;
+}
+
+export interface QuantumBackgroundProps extends BaseComponentProps {
+  isExiting?: boolean;
+}
