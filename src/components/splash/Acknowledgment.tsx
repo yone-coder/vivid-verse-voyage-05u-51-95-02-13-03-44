@@ -31,7 +31,7 @@ const Acknowledgment: React.FC<AcknowledgmentProps> = ({
 
       {/* Bottom left authorization */}
       <div 
-        className="absolute bottom-8 left-6 text-white"
+        className="absolute bottom-8 left-6 text-white z-10"
         style={{
           animation: 'text-physics-entry 1s ease-out 7s forwards',
           willChange: 'auto'
@@ -39,12 +39,17 @@ const Acknowledgment: React.FC<AcknowledgmentProps> = ({
         role="contentinfo"
         aria-label="Authorization"
       >
-        <div style={{ opacity: 0 }}>
-          <p className="text-xs opacity-80 mb-2">Autorisé par</p>
+        <div style={{ opacity: 0 }} className="flex flex-col items-start">
+          <p className="text-xs opacity-90 mb-2 font-medium">Autorisé par</p>
           <img 
             src="/images/brt-logo.png" 
             alt="BRT Logo" 
-            className="h-6 w-auto"
+            className="h-8 w-auto filter brightness-0 invert"
+            onError={(e) => {
+              console.log('Logo failed to load:', e);
+              // Hide the image if it fails to load
+              (e.target as HTMLImageElement).style.display = 'none';
+            }}
           />
         </div>
       </div>
