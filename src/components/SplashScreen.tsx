@@ -1,8 +1,6 @@
-
 import React from 'react';
 import { SplashScreenProps } from './splash/types';
 import PulseBackground from './splash/PulseBackground';
-import TopTitle from './splash/TopTitle';
 import LogoContainer from './splash/LogoContainer';
 import MainLogoPath from './splash/MainLogoPath';
 import AccentPath from './splash/AccentPath';
@@ -23,14 +21,12 @@ const SplashScreen: React.FC<SplashScreenProps> = ({
     <div 
       className={`fixed inset-0 min-h-screen ${backgroundColor} flex flex-col items-center justify-center overflow-hidden z-50`}
       role="dialog"
-      aria-label="Application loading screen"
+      aria-label="Application splash screen"
       aria-live="polite"
     >
-      <TopTitle />
-      
       <div className="relative flex flex-col items-center justify-center flex-grow">
         <PulseBackground />
-        
+
         <LogoContainer 
           width={logoWidth} 
           height={logoHeight}
@@ -38,11 +34,11 @@ const SplashScreen: React.FC<SplashScreenProps> = ({
           <MainLogoPath />
           <AccentPath />
         </LogoContainer>
-      </div>
-      
-      {/* Screen reader announcement */}
-      <div className="sr-only" aria-live="assertive">
-        Application is loading
+
+        {/* Made in Haiti text */}
+        <div className="mt-8 text-white text-lg font-medium tracking-wide">
+          🇭🇹 Fabriquée à Désarmes 🇭🇹
+        </div>
       </div>
     </div>
   );
