@@ -958,7 +958,14 @@ export default function UltraSleekSplashScreen({
   if (!isVisible) return null;
 
   return (
-    <div className={`fixed inset-0 min-h-screen ${backgroundColor} flex flex-col items-center justify-center overflow-hidden z-50`}>
+    <div 
+      className={`fixed inset-0 min-h-screen ${backgroundColor} flex flex-col items-center justify-center overflow-hidden z-50`}
+      style={{
+        animation: isExiting 
+          ? 'background-to-white 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards'
+          : undefined
+      }}
+    >
       <QuantumBackground isExiting={isExiting} />
       
       <TopTitle isExiting={isExiting} />
@@ -983,6 +990,26 @@ export default function UltraSleekSplashScreen({
       />
 
       <ModernWhiteExitLayer isExiting={isExiting} />
+      
+      <style>{`
+        @keyframes background-to-white {
+          0% {
+            background-color: rgb(239 68 68); /* red-500 */
+          }
+          40% {
+            background-color: rgb(248 113 113); /* red-400 */
+          }
+          70% {
+            background-color: rgb(252 165 165); /* red-300 */
+          }
+          90% {
+            background-color: rgb(254 202 202); /* red-200 */
+          }
+          100% {
+            background-color: rgb(255 255 255); /* white */
+          }
+        }
+      `}</style>
     </div>
   );
 }
