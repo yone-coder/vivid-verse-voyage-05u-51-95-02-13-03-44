@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { ChevronDown, Phone, X, Check, AlertCircle, Star, Search, Globe, Zap, Shield, Copy, Eye, EyeOff, RefreshCw } from 'lucide-react';
+import { ChevronDown, Phone, X, Check, AlertCircle, Star, Search, Globe, Zap, Shield, Eye, EyeOff, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface CompactPhoneInputProps {
@@ -35,7 +35,6 @@ const CompactPhoneInput: React.FC<CompactPhoneInputProps> = ({
   const [favoriteCountries, setFavoriteCountries] = useState<Country[]>([]);
   const [recentCountries, setRecentCountries] = useState<Country[]>([]);
   const [isPrivate, setIsPrivate] = useState(false);
-  const [copySuccess, setCopySuccess] = useState(false);
   const [validationScore, setValidationScore] = useState(0);
   const [showTooltip, setShowTooltip] = useState(false);
   
@@ -203,20 +202,6 @@ const CompactPhoneInput: React.FC<CompactPhoneInputProps> = ({
       return updated;
     });
   }, []);
-
-  // Copy to clipboard with feedback
-  const copyToClipboard = useCallback(async () => {
-    if (!phoneNumber || !selectedCountry) return;
-    
-    try {
-      const fullNumber = `${selectedCountry.dial} ${phoneNumber}`;
-      await navigator.clipboard.writeText(fullNumber);
-      setCopySuccess(true);
-      setTimeout(() => setCopySuccess(false), 2000);
-    } catch (err) {
-      console.error('Copy failed:', err);
-    }
-  }, [phoneNumber, selectedCountry]);
 
   // Smart country filtering
   const filteredCountries = countries
@@ -408,7 +393,7 @@ const CompactPhoneInput: React.FC<CompactPhoneInputProps> = ({
             onBlur={() => setIsFocused(false)}
             placeholder={selectedCountry?.format.replace(/#/g, '0') || 'Enter phone number'}
             disabled={disabled}
-            className="w-full px-3 py-3 text-sm bg-transparent outline-none placeholder:text-gray-400 pr-20"
+            className="w-full px-3 py-3 text-sm bg-transparent outline-none placeholder:text-gray-400 pr-16"
             autoComplete="tel"
             inputMode="tel"
           />
@@ -424,15 +409,6 @@ const CompactPhoneInput: React.FC<CompactPhoneInputProps> = ({
                   title={isPrivate ? "Show number" : "Hide number"}
                 >
                   {isPrivate ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
-                </button>
-                
-                <button
-                  type="button"
-                  onClick={copyToClipboard}
-                  className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md transition-all"
-                  title="Copy number"
-                >
-                  {copySuccess ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
                 </button>
                 
                 <button
@@ -503,14 +479,6 @@ const CompactPhoneInput: React.FC<CompactPhoneInputProps> = ({
           <span>Secure & encrypted</span>
         </div>
       </div>
-
-      {/* Copy Success Notification */}
-      {copySuccess && (
-        <div className="absolute top-full left-0 right-0 mt-1 p-2 bg-emerald-500 text-white text-xs rounded-lg shadow-lg flex items-center justify-center space-x-2 z-50">
-          <Check className="w-3 h-3" />
-          <span>Phone number copied!</span>
-        </div>
-      )}
     </div>
   );
 };
