@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Eye, EyeOff, ArrowRight, Shield, Users, Zap, CheckCircle, Mail, Lock, User, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -7,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import LanguageSelector from '@/components/common/LanguageSelector';
+import PhoneInput from '@/components/ui/phone-input';
 import { toast } from 'sonner';
 
 const SignInScreen: React.FC = () => {
@@ -126,7 +126,7 @@ const SignInScreen: React.FC = () => {
     if (step === 'contact') return null;
     
     const steps = ['Contact', 'Details'];
-    const currentStepIndex = step === 'contact' ? 0 : 1;
+    const currentStepIndex = step === 'signin' || step === 'signup' ? 1 : 0;
     
     return (
       <div className="flex items-center justify-center mb-6">
@@ -270,16 +270,24 @@ const SignInScreen: React.FC = () => {
                     {contactType === 'email' ? <Mail className="w-3 h-3 mr-1" /> : <Phone className="w-3 h-3 mr-1" />}
                     {contactType === 'email' ? 'Email address' : 'Phone number'}
                   </Label>
-                  <Input
-                    id="contact"
-                    type={contactType === 'email' ? 'email' : 'tel'}
-                    value={contactType === 'email' ? formData.email : formData.phone}
-                    onChange={(e) => handleInputChange(contactType, e.target.value)}
-                    className="h-11 text-sm border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder={contactType === 'email' ? 'Enter your email' : 'Enter your phone number'}
-                    required
-                    disabled={isCheckingUser}
-                  />
+                  {contactType === 'email' ? (
+                    <Input
+                      id="contact"
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => handleInputChange('email', e.target.value)}
+                      className="h-11 text-sm border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Enter your email"
+                      required
+                      disabled={isCheckingUser}
+                    />
+                  ) : (
+                    <PhoneInput
+                      value={formData.phone}
+                      onChange={(value) => handleInputChange('phone', value)}
+                      disabled={isCheckingUser}
+                    />
+                  )}
                 </div>
               </>
             )}
