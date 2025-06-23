@@ -1,6 +1,16 @@
 
+import { authTranslations } from './auth';
+
+// Helper function to merge translations
+const mergeTranslations = (base: any, auth: any) => {
+  return {
+    ...base,
+    ...auth
+  };
+};
+
 export const translations = {
-  ht: {
+  ht: mergeTranslations({
     // Header translations
     header: {
       language: "Lang",
@@ -69,9 +79,9 @@ export const translations = {
       useOffer: "Itilize Òf la",
       termsApply: "Kondisyon yo aplike"
     }
-  },
+  }, authTranslations.ht),
   
-  en: {
+  en: mergeTranslations({
     // Header translations
     header: {
       language: "Language",
@@ -140,9 +150,9 @@ export const translations = {
       useOffer: "Use Offer",
       termsApply: "Terms apply"
     }
-  },
+  }, authTranslations.en),
 
-  es: {
+  es: mergeTranslations({
     // Header translations
     header: {
       language: "Idioma",
@@ -211,9 +221,9 @@ export const translations = {
       useOffer: "Usar Oferta",
       termsApply: "Se aplican términos"
     }
-  },
+  }, authTranslations.es),
 
-  fr: {
+  fr: mergeTranslations({
     // Header translations
     header: {
       language: "Langue",
@@ -272,7 +282,7 @@ export const translations = {
       howToSendMoney: "Comment Envoyer de l'Argent en Haïti",
       stepByStepGuide: "Guide étape par étape pour les nouveaux utilisateurs",
       views: "vues",
-      cashPickupLocations: "Points de Retrait d'Espèces",
+      cashPickupLocations: "Points de Ret rait d'Espèces",
       findNearestPickup: "Trouvez le point de retrait le plus proche",
       mobileMoney: "Argent Mobile et Paiement de Factures",
       payBillsAndTopUp: "Payez les factures et rechargez les téléphones en Haïti",
@@ -282,5 +292,5 @@ export const translations = {
       useOffer: "Utiliser l'Offre",
       termsApply: "Conditions applicables"
     }
-  }
+  }, authTranslations.fr)
 };

@@ -6,6 +6,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "next-themes";
 import { AuthOverlayProvider } from "./context/AuthOverlayContext";
+import AuthOverlay from "./components/auth/AuthOverlay";
 import SplashScreen from "./components/SplashScreen";
 import "./App.css";
 
@@ -33,6 +34,7 @@ function App({ children }: { children: React.ReactNode }) {
               className={`App min-h-screen bg-background text-foreground transition-opacity duration-500 ${showSplash ? 'opacity-0' : 'opacity-100'}`}
             >
               {children}
+              <AuthOverlay />
               <Toaster />
               <Sonner />
             </div>
