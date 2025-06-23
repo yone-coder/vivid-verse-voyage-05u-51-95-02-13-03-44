@@ -1,5 +1,5 @@
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Footer from "@/components/layout/Footer";
 import DesktopFooter from "@/components/desktop/DesktopFooter";
@@ -7,6 +7,7 @@ import IndexBottomNav from "@/components/layout/IndexBottomNav";
 import PremiumBankingHeader from "@/components/layout/PremiumBankingHeader";
 import DesktopHeader from "@/components/desktop/DesktopHeader";
 import AuthOverlay from "@/components/auth/AuthOverlay";
+import SignInScreen from "@/components/auth/SignInScreen";
 import { Outlet, useLocation } from "react-router-dom";
 import { useAuthOverlay } from "@/context/AuthOverlayContext";
 import { LanguageProvider } from "@/context/LanguageContext";
@@ -17,6 +18,7 @@ function MainLayoutContent() {
   const isMobile = useIsMobile();
   const location = useLocation();
   const pathname = location.pathname;
+  const [showSplash, setShowSplash] = useState(true);
   
   const { user, isLoading } = useAuth();
   const { openAuthOverlay } = useAuthOverlay();
@@ -25,12 +27,30 @@ function MainLayoutContent() {
   const isMultiStepTransfer = pathname.startsWith("/multi-step-transfer");
   const isAccountPage = pathname === "/account";
 
+  // Hide splash screen after 4 seconds
+  useEffect(() => {
+    const hideTimer = setTimeout(() => {
+      setShowSplash(false);
+    }, 4000);
+
+    return () => clearTimeout(hideTimer);
+  }, []);
+
   useEffect(() => {
     if (pathname === "/auth") {
       openAuthOverlay();
       window.history.replaceState({}, "", "/");
     }
   }, [pathname, openAuthOverlay]);
+
+  // Show SignInScreen if user is not authenticated and splash is not visible
+  if (!showSplash && !user && !isLoading) {
+    return (
+      <LanguageProvider>
+        <SignInScreen />
+      </LanguageProvider>
+    );
+  }
 
   // Calculate bottom padding based on whether we're in multi-step transfer mode
   const getBottomPadding = () => {
