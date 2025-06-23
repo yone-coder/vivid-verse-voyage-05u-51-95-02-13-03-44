@@ -1,6 +1,5 @@
-
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { ChevronDown, Phone, X, Check, AlertCircle, Star, Search, Globe, Zap, Shield, Eye, EyeOff, RefreshCw } from 'lucide-react';
+import { ChevronDown, Phone, X, Check, AlertCircle, Star, Search, Globe, Zap, Shield, Eye, EyeOff, RefreshCw, Flag } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface CompactPhoneInputProps {
@@ -44,10 +43,6 @@ const CompactPhoneInput: React.FC<CompactPhoneInputProps> = ({
   // Enhanced country list with better data
   const countries: Country[] = [
     { 
-      code: 'HT', name: 'Haiti', dial: '+509', flag: '🇭🇹', 
-      format: '####-####', length: 8, popularity: 100
-    },
-    { 
       code: 'US', name: 'United States', dial: '+1', flag: '🇺🇸', 
       format: '(###) ###-####', length: 10, popularity: 95
     },
@@ -85,9 +80,9 @@ const CompactPhoneInput: React.FC<CompactPhoneInputProps> = ({
     }
   ];
 
-  // Initialize with Haiti as default
+  // Initialize with US as default
   useEffect(() => {
-    const defaultCountry = countries.find(c => c.code === 'HT') || countries[0];
+    const defaultCountry = countries.find(c => c.code === 'US') || countries[0];
     setSelectedCountry(defaultCountry);
     
     // Load favorites and recent from localStorage
@@ -271,7 +266,7 @@ const CompactPhoneInput: React.FC<CompactPhoneInputProps> = ({
             disabled={disabled}
           >
             <div className="relative">
-              <span className="text-lg leading-none">{selectedCountry?.flag}</span>
+              <Flag className="w-4 h-4 text-gray-600" />
               {favoriteCountries.some(c => c.code === selectedCountry?.code) && (
                 <Star className="w-2 h-2 text-amber-500 fill-current absolute -top-0.5 -right-0.5" />
               )}
@@ -517,7 +512,7 @@ const CountryItem: React.FC<CountryItemProps> = ({
     </button>
     
     <div onClick={onSelect} className="flex items-center gap-3 flex-1">
-      <span className="text-xl leading-none">{country.flag}</span>
+      <Flag className="w-4 h-4 text-gray-600" />
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
           <span className="font-medium text-sm text-gray-900 truncate">{country.name}</span>
