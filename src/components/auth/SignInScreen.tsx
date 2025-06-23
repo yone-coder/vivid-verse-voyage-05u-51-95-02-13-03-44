@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Eye, EyeOff, ArrowRight, Shield, Users, Zap, CheckCircle, Mail, Lock, User } from 'lucide-react';
+import { Eye, EyeOff, ArrowRight, Shield, Users, Zap, CheckCircle, Mail, Lock, User, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -13,13 +13,15 @@ const SignInScreen: React.FC = () => {
   const { signIn, signUp, checkUserExists, isLoading } = useAuth();
   const { t } = useLanguage();
   
-  const [step, setStep] = useState<'email' | 'signin' | 'signup'>('email');
+  const [step, setStep] = useState<'contact' | 'signin' | 'signup'>('contact');
+  const [contactType, setContactType] = useState<'email' | 'phone'>('email');
   const [userExists, setUserExists] = useState<boolean | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isCheckingUser, setIsCheckingUser] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
+    phone: '',
     password: '',
     confirmPassword: '',
     firstName: '',
@@ -31,27 +33,45 @@ const SignInScreen: React.FC = () => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleEmailStep = async () => {
-    if (!formData.email) {
-      toast.error('Please enter your email');
+  const handleContactStep = async () => {
+    const contactValue = contactType === 'email' ? formData.email : formData.phone;
+    
+    if (!contactValue) {
+      toast.error(`Please enter your ${contactType}`);
       return;
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      toast.error('Please enter a valid email address');
-      return;
+    if (contactType === 'email') {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(formData.email)) {
+        toast.error('Please enter a valid email address');
+        return;
+      }
+    } else {
+      const phoneRegex = /^\+?[\d\s\-\(\)]{10,}$/;
+      if (!phoneRegex.test(formData.phone)) {
+        toast.error('Please enter a valid phone number');
+        return;
+      }
     }
 
     setIsCheckingUser(true);
     try {
-      const exists = await checkUserExists(formData.email);
-      setUserExists(exists);
-      
-      if (exists) {
-        setStep('signin');
-        toast.info('Welcome back! Please enter your password.');
+      // For now, we'll only check email existence since phone check isn't implemented yet
+      if (contactType === 'email') {
+        const exists = await checkUserExists(formData.email);
+        setUserExists(exists);
+        
+        if (exists) {
+          setStep('signin');
+          toast.info('Welcome back! Please enter your password.');
+        } else {
+          setStep('signup');
+          toast.info('New here? Let\'s create your account.');
+        }
       } else {
+        // For phone, assume new user for now - you can implement phone check later
+        setUserExists(false);
         setStep('signup');
         toast.info('New here? Let\'s create your account.');
       }
@@ -77,18 +97,20 @@ const SignInScreen: React.FC = () => {
     }
 
     try {
+      const authEmail = contactType === 'email' ? formData.email : formData.phone; // For phone, you'd handle this differently
+      
       if (step === 'signin') {
-        await signIn(formData.email, formData.password, formData.rememberMe);
+        await signIn(authEmail, formData.password, formData.rememberMe);
       } else {
-        await signUp(formData.email, formData.password);
+        await signUp(authEmail, formData.password);
       }
     } catch (error) {
       // Error handling is done in AuthContext
     }
   };
 
-  const goBackToEmail = () => {
-    setStep('email');
+  const goBackToContact = () => {
+    setStep('contact');
     setUserExists(null);
     setFormData(prev => ({ ...prev, password: '', confirmPassword: '', firstName: '', lastName: '' }));
   };
@@ -101,10 +123,10 @@ const SignInScreen: React.FC = () => {
   ];
 
   const getStepIndicator = () => {
-    if (step === 'email') return null;
+    if (step === 'contact') return null;
     
-    const steps = ['Email', 'Details'];
-    const currentStepIndex = step === 'email' ? 0 : 1;
+    const steps = ['Contact', 'Details'];
+    const currentStepIndex = step === 'contact' ? 0 : 1;
     
     return (
       <div className="flex items-center justify-center mb-6">
@@ -199,37 +221,67 @@ const SignInScreen: React.FC = () => {
 
           <div className="text-center mb-6">
             <h2 className="text-2xl font-bold text-gray-900 mb-1">
-              {step === 'email' ? 'Welcome' : 
+              {step === 'contact' ? 'Welcome' : 
                step === 'signin' ? 'Welcome back!' :
                'Create your account'}
             </h2>
             <p className="text-sm text-gray-600">
-              {step === 'email' ? 'Enter your email to get started' : 
+              {step === 'contact' ? 'Enter your contact info to get started' : 
                step === 'signin' ? 'Enter your password to continue' :
                'Complete your account setup'}
             </p>
           </div>
 
           {/* Form */}
-          <form onSubmit={step === 'email' ? (e) => { e.preventDefault(); handleEmailStep(); } : handleSubmit} className="space-y-4">
-            {/* Email Step */}
-            {step === 'email' && (
-              <div className="space-y-1">
-                <Label htmlFor="email" className="text-xs font-medium text-gray-700 flex items-center">
-                  <Mail className="w-3 h-3 mr-1" />
-                  Email address
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => handleInputChange('email', e.target.value)}
-                  className="h-11 text-sm border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Enter your email"
-                  required
-                  disabled={isCheckingUser}
-                />
-              </div>
+          <form onSubmit={step === 'contact' ? (e) => { e.preventDefault(); handleContactStep(); } : handleSubmit} className="space-y-4">
+            {/* Contact Step */}
+            {step === 'contact' && (
+              <>
+                {/* Contact Type Switcher */}
+                <div className="flex bg-gray-100 rounded-lg p-1 mb-4">
+                  <button
+                    type="button"
+                    onClick={() => setContactType('email')}
+                    className={`flex-1 flex items-center justify-center space-x-2 py-2 px-3 rounded-md text-sm font-medium transition-all ${
+                      contactType === 'email' 
+                        ? 'bg-white text-blue-600 shadow-sm' 
+                        : 'text-gray-600 hover:text-gray-800'
+                    }`}
+                  >
+                    <Mail className="w-4 h-4" />
+                    <span>Email</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setContactType('phone')}
+                    className={`flex-1 flex items-center justify-center space-x-2 py-2 px-3 rounded-md text-sm font-medium transition-all ${
+                      contactType === 'phone' 
+                        ? 'bg-white text-blue-600 shadow-sm' 
+                        : 'text-gray-600 hover:text-gray-800'
+                    }`}
+                  >
+                    <Phone className="w-4 h-4" />
+                    <span>Phone</span>
+                  </button>
+                </div>
+
+                <div className="space-y-1">
+                  <Label htmlFor="contact" className="text-xs font-medium text-gray-700 flex items-center">
+                    {contactType === 'email' ? <Mail className="w-3 h-3 mr-1" /> : <Phone className="w-3 h-3 mr-1" />}
+                    {contactType === 'email' ? 'Email address' : 'Phone number'}
+                  </Label>
+                  <Input
+                    id="contact"
+                    type={contactType === 'email' ? 'email' : 'tel'}
+                    value={contactType === 'email' ? formData.email : formData.phone}
+                    onChange={(e) => handleInputChange(contactType, e.target.value)}
+                    className="h-11 text-sm border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder={contactType === 'email' ? 'Enter your email' : 'Enter your phone number'}
+                    required
+                    disabled={isCheckingUser}
+                  />
+                </div>
+              </>
             )}
 
             {/* Sign In Step */}
@@ -237,16 +289,16 @@ const SignInScreen: React.FC = () => {
               <>
                 <div className="space-y-1">
                   <Label className="text-xs font-medium text-gray-700 flex items-center">
-                    <Mail className="w-3 h-3 mr-1" />
-                    Email address
+                    {contactType === 'email' ? <Mail className="w-3 h-3 mr-1" /> : <Phone className="w-3 h-3 mr-1" />}
+                    {contactType === 'email' ? 'Email address' : 'Phone number'}
                   </Label>
                   <div className="flex items-center space-x-2">
                     <div className="flex-1 p-3 bg-gray-50 rounded-lg text-sm text-gray-600">
-                      {formData.email}
+                      {contactType === 'email' ? formData.email : formData.phone}
                     </div>
                     <button
                       type="button"
-                      onClick={goBackToEmail}
+                      onClick={goBackToContact}
                       className="text-blue-600 hover:text-blue-700 text-sm font-medium"
                     >
                       Change
@@ -304,16 +356,16 @@ const SignInScreen: React.FC = () => {
               <>
                 <div className="space-y-1">
                   <Label className="text-xs font-medium text-gray-700 flex items-center">
-                    <Mail className="w-3 h-3 mr-1" />
-                    Email address
+                    {contactType === 'email' ? <Mail className="w-3 h-3 mr-1" /> : <Phone className="w-3 h-3 mr-1" />}
+                    {contactType === 'email' ? 'Email address' : 'Phone number'}
                   </Label>
                   <div className="flex items-center space-x-2">
                     <div className="flex-1 p-3 bg-gray-50 rounded-lg text-sm text-gray-600">
-                      {formData.email}
+                      {contactType === 'email' ? formData.email : formData.phone}
                     </div>
                     <button
                       type="button"
-                      onClick={goBackToEmail}
+                      onClick={goBackToContact}
                       className="text-blue-600 hover:text-blue-700 text-sm font-medium"
                     >
                       Change
@@ -412,7 +464,7 @@ const SignInScreen: React.FC = () => {
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
               ) : (
                 <>
-                  {step === 'email' ? 'Continue' : 
+                  {step === 'contact' ? 'Continue' : 
                    step === 'signin' ? 'Sign in' : 'Create account'}
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </>
