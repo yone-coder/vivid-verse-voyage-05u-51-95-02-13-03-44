@@ -10,39 +10,7 @@ function PulseBackground({ className = '' }: PulseBackgroundProps) {
     <div className={`absolute top-1/2 left-1/2 w-[600px] h-[600px] rounded-full transform -translate-x-1/2 -translate-y-1/2 opacity-30 ${className}`}>
       <div 
         className="w-full h-full rounded-full bg-gradient-radial from-white/10 via-white/5 to-transparent"
-        style={{
-          animation: 'physics-pulse 3s cubic-bezier(0.23, 1, 0.32, 1) infinite'
-        }}
       ></div>
-      <style>{`
-        @keyframes physics-pulse {
-          0% {
-            transform: scale(1);
-            opacity: 0.3;
-            filter: blur(0px);
-          }
-          25% {
-            transform: scale(1.15);
-            opacity: 0.5;
-            filter: blur(2px);
-          }
-          50% {
-            transform: scale(0.85);
-            opacity: 0.7;
-            filter: blur(1px);
-          }
-          75% {
-            transform: scale(1.05);
-            opacity: 0.4;
-            filter: blur(3px);
-          }
-          100% {
-            transform: scale(1);
-            opacity: 0.3;
-            filter: blur(0px);
-          }
-        }
-      `}</style>
     </div>
   );
 }
