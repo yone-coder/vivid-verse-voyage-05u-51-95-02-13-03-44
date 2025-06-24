@@ -20,6 +20,7 @@ export default function EmailAuthScreen() {
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
   const [inlineSuggestion, setInlineSuggestion] = useState('');
+  const [faviconUrl, setFaviconUrl] = useState(null);
   const suggestionsRef = useRef(null);
 
   const languages = [
@@ -42,7 +43,7 @@ export default function EmailAuthScreen() {
   // Email validation regex
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  // Handle email input change and update inline suggestion and suggestions list
+  // Handle email input change and update inline suggestion, suggestions list, and favicon
   const handleEmailChange = (e) => {
     const value = e.target.value;
     setEmail(value);
@@ -52,6 +53,13 @@ export default function EmailAuthScreen() {
     const atIndex = value.indexOf('@');
     if (atIndex > -1) {
       const typedDomainPart = value.slice(atIndex + 1).toLowerCase();
+
+      if (typedDomainPart.length > 0) {
+        // Update favicon URL for the typed domain
+        setFaviconUrl(`https://www.google.com/s2/favicons?domain=${typedDomainPart}`);
+      } else {
+        setFaviconUrl(null);
+      }
 
       if (typedDomainPart.length === 0) {
         // Show all suggestions if user just typed '@'
@@ -70,9 +78,10 @@ export default function EmailAuthScreen() {
         }
       }
     } else {
-      // No '@' typed yet, clear suggestions and inline suggestion
+      // No '@' typed yet, clear suggestions, inline suggestion, and favicon
       setSuggestions([]);
       setInlineSuggestion('');
+      setFaviconUrl(null);
     }
   };
 
@@ -87,6 +96,13 @@ export default function EmailAuthScreen() {
       setIsEmailValid(emailRegex.test(inlineSuggestion));
       setInlineSuggestion('');
       setSuggestions([]);
+
+      // Update favicon for accepted suggestion domain
+      const atIndex = inlineSuggestion.indexOf('@');
+      if (atIndex > -1) {
+        const domain = inlineSuggestion.slice(atIndex + 1).toLowerCase();
+        setFaviconUrl(`https://www.google.com/s2/favicons?domain=${domain}`);
+      }
     }
   };
 
@@ -98,6 +114,7 @@ export default function EmailAuthScreen() {
     setIsEmailValid(emailRegex.test(newEmail));
     setSuggestions([]);
     setInlineSuggestion('');
+    setFaviconUrl(`https://www.google.com/s2/favicons?domain=${domain}`);
   };
 
   const handleBack = () => {
@@ -145,7 +162,7 @@ export default function EmailAuthScreen() {
         <p className="text-center text-sm text-gray-500">Step 2 of 4</p>
       </div>
 
-      {/* Main content container - removed justify-center to reduce vertical space */}
+      {/* Main content container */}
       <div className="flex-1 flex flex-col w-full max-w-md mx-auto relative">
         {/* Welcome heading */}
         <div className="text-center mb-8">
@@ -163,7 +180,16 @@ export default function EmailAuthScreen() {
             Email address
           </label>
           <div className="relative">
-            <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+            {faviconUrl ? (
+              <img
+                src={faviconUrl}
+                alt="Domain favicon"
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 rounded"
+                onError={() => setFaviconUrl(null)} // fallback to mail icon if favicon fails to load
+              />
+            ) : (
+              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+            )}
 
             {/* Inline suggestion ghost text */}
             {inlineSuggestion &&
