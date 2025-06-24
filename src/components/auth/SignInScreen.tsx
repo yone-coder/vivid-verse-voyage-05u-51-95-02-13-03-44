@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowLeft, Mail, Lock, Key, Check, HelpCircle, X, ChevronDown, Globe } from 'lucide-react';
+import { ArrowLeft, Mail, Lock, Key, Check, HelpCircle, X, ChevronDown, Globe, Eye, EyeOff } from 'lucide-react';
 
 // LanguageSelector Component (unchanged)
 const LanguageSelector = ({ selectedLanguage, setSelectedLanguage }) => {
@@ -369,22 +369,24 @@ const EmailAuthScreen = ({ onBack, selectedLanguage, onContinueWithPassword }) =
   );
 };
 
-// PasswordAuthScreen Component (new)
+// PasswordAuthScreen Component (updated with your design)
 const PasswordAuthScreen = ({ email, onBack }) => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
 
-  const isPasswordValid = password.length >= 6; // simple validation
+  const passwordInputRef = useRef(null);
 
-  const handleSubmit = () => {
-    if (isPasswordValid) {
-      alert(`Logging in with email: ${email} and password: ${password}`);
-      // TODO: Implement actual authentication logic here
-    }
+  const handlePasswordChange = (value) => {
+    setPassword(value);
+    setIsPasswordValid(value.length >= 8);
   };
+
+  const faviconUrl = `https://www.google.com/s2/favicons?domain=${email.split('@')[1] || ''}`;
 
   return (
     <div className="min-h-screen bg-white flex flex-col px-4">
+      {/* Header */}
       <div className="pt-2 pb-3 flex items-center justify-between">
         <button
           onClick={onBack}
@@ -393,50 +395,131 @@ const PasswordAuthScreen = ({ email, onBack }) => {
         >
           <ArrowLeft className="w-5 h-5 text-gray-700" />
         </button>
-        <h2 className="text-lg font-semibold text-gray-900">Enter Password</h2>
-        <div className="w-10 h-10" /> {/* placeholder for spacing */}
+
+        <h2 className="text-lg font-semibold text-gray-900">
+          Welcome Back! Sign In
+        </h2>
+
+        <button
+          className="flex items-center justify-center w-10 h-10 hover:bg-gray-100 rounded-full transition-colors active:scale-95"
+          aria-label="Help"
+          onClick={() => alert('Need help? Contact support@example.com')}
+          type="button"
+        >
+          <HelpCircle className="w-5 h-5 text-gray-700" />
+        </button>
       </div>
 
-      <div className="flex-1 flex flex-col justify-center w-full max-w-md mx-auto">
-        <p className="mb-4 text-gray-700 text-center">
-          Signing in as <span className="font-medium">{email}</span>
-        </p>
+      {/* Progress Bar */}
+      <div className="mb-4 px-0">
+        <div className="flex items-center gap-2 mb-2">
+          <div className="flex-1 h-1 bg-red-500 rounded-full"></div>
+          <div className="flex-1 h-1 bg-red-500 rounded-full"></div>
+          <div className="flex-1 h-1 bg-red-500 rounded-full"></div>
+          <div className="flex-1 h-1 bg-gray-300 rounded-full"></div>
+        </div>
+      </div>
 
-        <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-          Password
-        </label>
-        <div className="relative mb-6">
-          <input
-            id="password"
-            type={showPassword ? 'text' : 'password'}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter your password"
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
-            autoComplete="current-password"
-          />
+      {/* Main content container */}
+      <div className="flex-1 flex flex-col w-full max-w-md mx-auto relative">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-semibold text-gray-900 mb-2">
+            Enter your password
+          </h1>
+          <p className="text-gray-600">
+            We'll send you a verification code or you can sign in with your password
+          </p>
+        </div>
+
+        {/* Email display */}
+        <div className="mb-4">
+          <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+            {faviconUrl ? (
+              <img
+                src={faviconUrl}
+                alt="Domain favicon"
+                className="w-5 h-5 rounded"
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = '';
+                }}
+              />
+            ) : (
+              <Mail className="w-5 h-5 text-gray-400" />
+            )}
+            <span className="text-gray-700">{email}</span>
+          </div>
+        </div>
+
+        {/* Password input */}
+        <div className="mb-6 relative">
+          <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+            Password
+          </label>
+          <div className="relative">
+            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+
+            <input
+              id="password"
+              type={showPassword ? 'text' : 'password'}
+              value={password}
+              onChange={(e) => handlePasswordChange(e.target.value)}
+              placeholder="Enter your password"
+              autoComplete="current-password"
+              ref={passwordInputRef}
+              className="relative w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors bg-transparent"
+            />
+
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-10 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
+            >
+              {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+            </button>
+
+            {isPasswordValid && (
+              <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-500" />
+            )}
+          </div>
+        </div>
+
+        <div className="space-y-3 mb-8">
           <button
+            disabled={!isPasswordValid}
+            className={`w-full flex items-center justify-center gap-3 py-4 px-4 rounded-lg font-medium transition-all ${
+              isPasswordValid
+                ? 'bg-red-500 text-white hover:bg-red-600 active:scale-98'
+                : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+            }`}
             type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
-            aria-label={showPassword ? 'Hide password' : 'Show password'}
           >
-            {showPassword ? <Lock className="w-5 h-5" /> : <Key className="w-5 h-5" />}
+            <Lock className="w-5 h-5" />
+            <span>Sign In</span>
+          </button>
+
+          <button
+            className="w-full flex items-center justify-center gap-3 py-4 px-4 border-2 border-red-500 text-red-500 rounded-lg font-medium transition-all hover:bg-red-50 active:scale-98"
+            type="button"
+          >
+            <Key className="w-5 h-5" />
+            <span>Send Verification Code</span>
           </button>
         </div>
 
-        <button
-          disabled={!isPasswordValid}
-          onClick={handleSubmit}
-          className={`w-full py-4 rounded-lg font-medium transition-colors ${
-            isPasswordValid
-              ? 'bg-red-500 text-white hover:bg-red-600 active:scale-98'
-              : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-          }`}
-          type="button"
-        >
-          Sign In
-        </button>
+        <div className="text-center">
+          <button className="text-red-500 font-medium hover:text-red-600 mb-4" type="button">
+            Forgot password?
+          </button>
+
+          <div className="flex items-center justify-center gap-2">
+            <svg className="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M18,8A6,6 0 0,0 12,2A6,6 0 0,0 6,8H4C2.89,8 2,8.89 2,10V20A2,2 0 0,0 4,22H20A2,2 0 0,0 22,20V10C22,8.89 21.1,8 20,8H18M12,4A4,4 0 0,1 16,8H8A4,4 0 0,1 12,4Z"/>
+            </svg>
+            <span className="text-gray-500 text-sm">Your password is secure with us</span>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -525,7 +608,7 @@ export default function LoginPage() {
               </button>
               <button className="w-full flex items-center justify-center gap-3 py-3 px-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
                 <svg className="w-5 h-5" fill="#000000" viewBox="0 0 24 24">
-                  <path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/>
+                  <path d="M15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/>
                 </svg>
                 <span className="text-gray-700 font-medium">Continue with Apple</span>
               </button>
