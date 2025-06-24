@@ -8,6 +8,7 @@ import TransferHistoryPage from "@/pages/TransferHistoryPage";
 import TrackTransferPage from "@/pages/TrackTransferPage";
 import LocationsPage from "@/pages/LocationsPage";
 import AccountPage from "@/pages/AccountPage";
+import ComponentsPage from "@/pages/ComponentsPage";
 import NotFound from "@/components/NotFound";
 
 // Component that renders the appropriate transfer page based on device
@@ -50,6 +51,10 @@ export const router = createBrowserRouter([
       { 
         path: "account", 
         element: <AccountPage />
+      },
+      { 
+        path: "components", 
+        element: <ComponentsPage />
       },
       { path: "*", element: <NotFound /> },
     ],
