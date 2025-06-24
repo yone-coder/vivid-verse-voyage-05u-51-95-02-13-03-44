@@ -62,17 +62,37 @@ export default function EmailAuthScreen() {
     }
   };
 
-  // Detect input changes, including autofill
+  // Detect input changes, including autofill, with polling and event listeners
   useEffect(() => {
     const input = emailInputRef.current;
     if (!input) return;
 
-    const handleInput = () => handleEmailChange(input.value);
-    const handleChange = () => handleEmailChange(input.value);
+    let lastValue = input.value;
+
+    const checkValueChange = () => {
+      if (input.value !== lastValue) {
+        lastValue = input.value;
+        handleEmailChange(input.value);
+      }
+    };
+
+    // Poll every 300ms for changes (including autofill)
+    const intervalId = setInterval(checkValueChange, 300);
+
+    // Listen to input and change events for manual typing
+    const handleInput = () => {
+      lastValue = input.value;
+      handleEmailChange(input.value);
+    };
+    const handleChange = () => {
+      lastValue = input.value;
+      handleEmailChange(input.value);
+    };
 
     // Detect autofill in Chrome (animationstart hack)
     const handleAnimationStart = (e) => {
       if (e.animationName === 'onAutoFillStart') {
+        lastValue = input.value;
         handleEmailChange(input.value);
       }
     };
@@ -84,15 +104,17 @@ export default function EmailAuthScreen() {
     // Initial check for autofill on mount - with a delay to catch autofill
     const timeoutId = setTimeout(() => {
       if (input.value) {
+        lastValue = input.value;
         handleEmailChange(input.value);
       }
     }, 200); // 200ms delay to allow autofill to complete
 
     return () => {
+      clearInterval(intervalId);
+      clearTimeout(timeoutId);
       input.removeEventListener('input', handleInput);
       input.removeEventListener('change', handleChange);
       input.removeEventListener('animationstart', handleAnimationStart);
-      clearTimeout(timeoutId);
     };
   }, []);
 
