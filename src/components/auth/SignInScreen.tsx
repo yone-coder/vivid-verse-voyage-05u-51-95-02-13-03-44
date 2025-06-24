@@ -749,7 +749,7 @@ const VerificationCodeScreen = ({ email, onBack, onResendCode, onVerificationSuc
   );
 };
 
-// New SuccessScreen Component
+// Updated SuccessScreen Component - no progress bar and auto-redirect
 const SuccessScreen = ({ email, onContinue }) => {
   const [showCheckmark, setShowCheckmark] = useState(false);
   const [showContent, setShowContent] = useState(false);
@@ -765,25 +765,21 @@ const SuccessScreen = ({ email, onContinue }) => {
       setShowContent(true);
     }, 800);
 
+    // Auto-redirect after 3 seconds
+    const redirectTimer = setTimeout(() => {
+      onContinue();
+    }, 3000);
+
     return () => {
       clearTimeout(checkmarkTimer);
       clearTimeout(contentTimer);
+      clearTimeout(redirectTimer);
     };
-  }, []);
+  }, [onContinue]);
 
   return (
     <div className="min-h-screen bg-white flex flex-col px-4">
-      {/* Progress Bar - All complete */}
-      <div className="pt-6 mb-8 px-0">
-        <div className="flex items-center gap-2 mb-2">
-          <div className="flex-1 h-1 bg-red-500 rounded-full"></div>
-          <div className="flex-1 h-1 bg-red-500 rounded-full"></div>
-          <div className="flex-1 h-1 bg-red-500 rounded-full"></div>
-          <div className="flex-1 h-1 bg-red-500 rounded-full"></div>
-        </div>
-      </div>
-
-      {/* Main content container */}
+      {/* Main content container - no progress bar */}
       <div className="flex-1 flex flex-col items-center justify-center w-full max-w-md mx-auto relative">
         
         {/* Animated Checkmark */}
@@ -815,14 +811,9 @@ const SuccessScreen = ({ email, onContinue }) => {
           <p className="text-sm text-gray-500 mb-8">
             {email}
           </p>
-
-          <button
-            onClick={onContinue}
-            className="w-full flex items-center justify-center gap-3 py-4 px-4 bg-red-500 text-white rounded-lg font-medium transition-all hover:bg-red-600 active:scale-98"
-            type="button"
-          >
-            <span>Continue to Dashboard</span>
-          </button>
+          <p className="text-sm text-gray-400">
+            Redirecting to homepage...
+          </p>
         </div>
 
         {/* Security message */}
@@ -901,8 +892,8 @@ export default function LoginPage() {
   };
 
   const handleContinueToDashboard = () => {
-    console.log('Redirecting to dashboard...');
-    // Here you would typically redirect to the main app
+    console.log('Redirecting to homepage...');
+    setCurrentScreen('login'); // Reset to login for demo purposes
   };
 
   return (
