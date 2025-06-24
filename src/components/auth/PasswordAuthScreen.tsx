@@ -1,8 +1,7 @@
 
 import React, { useState, useRef } from 'react';
-import { ArrowLeft, Lock, Key, Mail, Eye, EyeOff, HelpCircle } from 'lucide-react';
+import { ArrowLeft, Lock, Mail, Eye, EyeOff, HelpCircle } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
-import { toast } from 'sonner';
 
 interface PasswordAuthScreenProps {
   email: string;
@@ -42,12 +41,6 @@ const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({ email, onBack, 
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleSendVerificationCode = async () => {
-    // For now, just show a toast. In a real implementation, you'd call your verification code API
-    toast.success('Verification code sent to your email!');
-    // You could navigate to verification screen here if needed
   };
 
   const faviconOverrides: Record<string, string> = {
@@ -102,7 +95,7 @@ const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({ email, onBack, 
             Enter your password
           </h1>
           <p className="text-gray-600">
-            Sign in with your password or request a verification code
+            Sign in with your password
           </p>
         </div>
 
@@ -168,7 +161,7 @@ const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({ email, onBack, 
           </div>
         </div>
 
-        <div className="space-y-3 mb-8">
+        <div className="mb-8">
           <button
             disabled={!isPasswordValid || isLoading}
             onClick={handleSignIn}
@@ -181,16 +174,6 @@ const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({ email, onBack, 
           >
             <Lock className="w-5 h-5" />
             <span>{isLoading ? 'Signing In...' : 'Sign In'}</span>
-          </button>
-
-          <button
-            onClick={handleSendVerificationCode}
-            className="w-full flex items-center justify-center gap-3 py-4 px-4 border-2 border-red-500 text-red-500 rounded-lg font-medium transition-all hover:bg-red-50 active:scale-98"
-            type="button"
-            disabled={isLoading}
-          >
-            <Key className="w-5 h-5" />
-            <span>Send Verification Code</span>
           </button>
         </div>
 
