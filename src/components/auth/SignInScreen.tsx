@@ -15,15 +15,15 @@ export default function LoginPage() {
   const [selectedLanguage, setSelectedLanguage] = useState('ht');
   const [emailForPassword, setEmailForPassword] = useState('');
 
-  const { user } = useAuth();
+  const { user, skipSuccessScreen } = useAuth();
   const navigate = useNavigate();
 
-  // Redirect to home if user is already authenticated
+  // Redirect to home if user is already authenticated AND we're not showing success screen
   useEffect(() => {
-    if (user) {
+    if (user && currentScreen !== 'success') {
       navigate('/');
     }
-  }, [user, navigate]);
+  }, [user, navigate, currentScreen]);
 
   const handleContinueWithEmail = () => {
     setCurrentScreen('email');
@@ -64,11 +64,11 @@ export default function LoginPage() {
 
   const handleContinueToDashboard = () => {
     console.log('Redirecting to homepage...');
-    navigate('/'); // This will redirect to the home page (mobile multi-step transfer)
+    skipSuccessScreen();
   };
 
-  // Don't render if user is already authenticated
-  if (user) {
+  // Don't render if user is already authenticated and we're not showing success screen
+  if (user && currentScreen !== 'success') {
     return null;
   }
 

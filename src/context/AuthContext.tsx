@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { User, Session } from "@supabase/supabase-js";
@@ -13,6 +12,7 @@ interface AuthContextType {
   signUp: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   checkUserExists: (email: string) => Promise<boolean>;
+  skipSuccessScreen: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -21,6 +21,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [shouldSkipSuccessScreen, setShouldSkipSuccessScreen] = useState<boolean>(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -31,10 +32,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setSession(currentSession);
         setUser(currentSession?.user ?? null);
         
-        if (event === 'SIGNED_IN') {
-          // Use setTimeout to prevent React state update loops
+        if (event === 'SIGNED_IN' && shouldSkipSuccessScreen) {
+          // Only redirect immediately if we're skipping the success screen
           setTimeout(() => {
             navigate('/');
+            setShouldSkipSuccessScreen(false);
           }, 0);
         } else if (event === 'SIGNED_OUT') {
           // Use setTimeout to prevent React state update loops
@@ -55,7 +57,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => {
       subscription.unsubscribe();
     };
-  }, [navigate]);
+  }, [navigate, shouldSkipSuccessScreen]);
+
+  const skipSuccessScreen = () => {
+    setShouldSkipSuccessScreen(true);
+    navigate('/');
+  };
 
   const handleAuthError = (error: any, defaultMessage: string) => {
     console.error(defaultMessage, error);
@@ -182,7 +189,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, isLoading, signIn, signUp, signOut, checkUserExists }}>
+    <AuthContext.Provider value={{ user, session, isLoading, signIn, signUp, signOut, checkUserExists, skipSuccessScreen }}>
       {children}
     </AuthContext.Provider>
   );
