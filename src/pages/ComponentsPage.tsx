@@ -1,5 +1,6 @@
+
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowLeft, Mail, Lock, Key, Check, HelpCircle } from 'lucide-react';
+import { ArrowLeft, Mail, Lock, Key, Check, HelpCircle, Eye, EyeOff } from 'lucide-react';
 
 const commonEmailDomains = [
   'gmail.com',
@@ -19,12 +20,17 @@ const faviconOverrides = {
 };
 
 export default function EmailAuthScreen() {
+  const [currentScreen, setCurrentScreen] = useState('email'); // 'email' or 'password'
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [isEmailValid, setIsEmailValid] = useState(false);
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
   const [faviconUrl, setFaviconUrl] = useState(null);
 
   const emailInputRef = useRef(null);
+  const passwordInputRef = useRef(null);
   const suggestionsRef = useRef(null);
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -60,6 +66,12 @@ export default function EmailAuthScreen() {
       setSuggestions([]);
       setFaviconUrl(null);
     }
+  };
+
+  // Handle password input changes
+  const handlePasswordChange = (value) => {
+    setPassword(value);
+    setIsPasswordValid(value.length >= 8);
   };
 
   // Detect input changes, including autofill, with polling and event listeners
@@ -132,9 +144,159 @@ export default function EmailAuthScreen() {
   };
 
   const handleBack = () => {
-    console.log('Navigate back to login screen');
+    if (currentScreen === 'password') {
+      setCurrentScreen('email');
+    } else {
+      console.log('Navigate back to login screen');
+    }
   };
 
+  const handleContinueWithPassword = () => {
+    setCurrentScreen('password');
+  };
+
+  if (currentScreen === 'password') {
+    return (
+      <div className="min-h-screen bg-white flex flex-col px-4">
+        {/* Header */}
+        <div className="pt-2 pb-3 flex items-center justify-between">
+          <button
+            onClick={handleBack}
+            className="flex items-center justify-center w-10 h-10 hover:bg-gray-100 rounded-full transition-colors active:scale-95"
+            aria-label="Go back"
+          >
+            <ArrowLeft className="w-5 h-5 text-gray-700" />
+          </button>
+
+          <h2 className="text-lg font-semibold text-gray-900">
+            Welcome Back! Sign In
+          </h2>
+
+          <button
+            className="flex items-center justify-center w-10 h-10 hover:bg-gray-100 rounded-full transition-colors active:scale-95"
+            aria-label="Help"
+            onClick={() => alert('Need help? Contact support@example.com')}
+            type="button"
+          >
+            <HelpCircle className="w-5 h-5 text-gray-700" />
+          </button>
+        </div>
+
+        {/* Progress Bar */}
+        <div className="mb-4 px-0">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="flex-1 h-1 bg-red-500 rounded-full"></div>
+            <div className="flex-1 h-1 bg-red-500 rounded-full"></div>
+            <div className="flex-1 h-1 bg-red-500 rounded-full"></div>
+            <div className="flex-1 h-1 bg-gray-300 rounded-full"></div>
+          </div>
+        </div>
+
+        {/* Main content container */}
+        <div className="flex-1 flex flex-col w-full max-w-md mx-auto relative">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-semibold text-gray-900 mb-2">
+              Enter your password
+            </h1>
+            <p className="text-gray-600">
+              We'll send you a verification code or you can sign in with your password
+            </p>
+          </div>
+
+          {/* Email display */}
+          <div className="mb-4">
+            <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+              {faviconUrl ? (
+                <img
+                  src={faviconUrl}
+                  alt="Domain favicon"
+                  className="w-5 h-5 rounded"
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = '';
+                  }}
+                />
+              ) : (
+                <Mail className="w-5 h-5 text-gray-400" />
+              )}
+              <span className="text-gray-700">{email}</span>
+            </div>
+          </div>
+
+          {/* Password input */}
+          <div className="mb-6 relative">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              Password
+            </label>
+            <div className="relative">
+              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              
+              <input
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => handlePasswordChange(e.target.value)}
+                placeholder="Enter your password"
+                autoComplete="current-password"
+                ref={passwordInputRef}
+                className="relative w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors bg-transparent"
+              />
+
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-10 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              >
+                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
+
+              {isPasswordValid && (
+                <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-500" />
+              )}
+            </div>
+          </div>
+
+          <div className="space-y-3 mb-8">
+            <button
+              disabled={!isPasswordValid}
+              className={`w-full flex items-center justify-center gap-3 py-4 px-4 rounded-lg font-medium transition-all ${
+                isPasswordValid
+                  ? 'bg-red-500 text-white hover:bg-red-600 active:scale-98'
+                  : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+              }`}
+              type="button"
+            >
+              <Lock className="w-5 h-5" />
+              <span>Sign In</span>
+            </button>
+
+            <button
+              className="w-full flex items-center justify-center gap-3 py-4 px-4 border-2 border-red-500 text-red-500 rounded-lg font-medium transition-all hover:bg-red-50 active:scale-98"
+              type="button"
+            >
+              <Key className="w-5 h-5" />
+              <span>Send Verification Code</span>
+            </button>
+          </div>
+
+          <div className="text-center">
+            <button className="text-red-500 font-medium hover:text-red-600 mb-4" type="button">
+              Forgot password?
+            </button>
+
+            <div className="flex items-center justify-center gap-2">
+              <svg className="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M18,8A6,6 0 0,0 12,2A6,6 0 0,0 6,8H4C2.89,8 2,8.89 2,10V20A2,2 0 0,0 4,22H20A2,2 0 0,0 22,20V10C22,8.89 21.1,8 20,8H18M12,4A4,4 0 0,1 16,8H8A4,4 0 0,1 12,4Z"/>
+              </svg>
+              <span className="text-gray-500 text-sm">Your password is secure with us</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Email screen (existing code)
   return (
     <div className="min-h-screen bg-white flex flex-col px-4">
       {/* Header */}
@@ -249,6 +411,7 @@ export default function EmailAuthScreen() {
         <div className="space-y-3 mb-8">
           <button
             disabled={!isEmailValid}
+            onClick={handleContinueWithPassword}
             className={`w-full flex items-center justify-center gap-3 py-4 px-4 rounded-lg font-medium transition-all ${
               isEmailValid
                 ? 'bg-red-500 text-white hover:bg-red-600 active:scale-98'
