@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowLeft, Mail, Lock, Key, Check, HelpCircle, X, ChevronDown, Globe } from 'lucide-react';
 
-// LanguageSelector Component
+// LanguageSelector Component (unchanged)
 const LanguageSelector = ({ selectedLanguage, setSelectedLanguage }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -112,15 +112,14 @@ const LanguageSelector = ({ selectedLanguage, setSelectedLanguage }) => {
   );
 };
 
-// EmailAuthScreen Component
-const EmailAuthScreen = ({ onBack, selectedLanguage }) => {
+// EmailAuthScreen Component (updated)
+const EmailAuthScreen = ({ onBack, selectedLanguage, onContinueWithPassword }) => {
   const [email, setEmail] = useState('');
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
   const [faviconUrl, setFaviconUrl] = useState(null);
 
   const emailInputRef = useRef(null);
-  const suggestionsRef = useRef(null);
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -213,10 +212,6 @@ const EmailAuthScreen = ({ onBack, selectedLanguage }) => {
     };
   }, []);
 
-  const handleKeyDown = (e) => {
-    // No inline suggestion autocomplete logic
-  };
-
   const handleSuggestionClick = (domain) => {
     const atIndex = email.indexOf('@');
     const newEmail = atIndex > -1 ? email.slice(0, atIndex + 1) + domain : email + '@' + domain;
@@ -291,7 +286,6 @@ const EmailAuthScreen = ({ onBack, selectedLanguage }) => {
               type="email"
               value={email}
               onChange={(e) => handleEmailChange(e.target.value)}
-              onKeyDown={handleKeyDown}
               placeholder="Enter your email address"
               autoComplete="email"
               ref={emailInputRef}
@@ -313,7 +307,6 @@ const EmailAuthScreen = ({ onBack, selectedLanguage }) => {
             className="mb-6 mt-1 flex gap-2 overflow-x-auto px-1"
             role="listbox"
             aria-label="Email domain suggestions"
-            ref={suggestionsRef}
           >
             {suggestions.map((domain) => (
               <button
@@ -338,6 +331,7 @@ const EmailAuthScreen = ({ onBack, selectedLanguage }) => {
                 : 'bg-gray-200 text-gray-400 cursor-not-allowed'
             }`}
             type="button"
+            onClick={() => onContinueWithPassword(email)}
           >
             <Lock className="w-5 h-5" />
             <span>Continue with Password</span>
@@ -375,10 +369,84 @@ const EmailAuthScreen = ({ onBack, selectedLanguage }) => {
   );
 };
 
+// PasswordAuthScreen Component (new)
+const PasswordAuthScreen = ({ email, onBack }) => {
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+
+  const isPasswordValid = password.length >= 6; // simple validation
+
+  const handleSubmit = () => {
+    if (isPasswordValid) {
+      alert(`Logging in with email: ${email} and password: ${password}`);
+      // TODO: Implement actual authentication logic here
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-white flex flex-col px-4">
+      <div className="pt-2 pb-3 flex items-center justify-between">
+        <button
+          onClick={onBack}
+          className="flex items-center justify-center w-10 h-10 hover:bg-gray-100 rounded-full transition-colors active:scale-95"
+          aria-label="Go back"
+        >
+          <ArrowLeft className="w-5 h-5 text-gray-700" />
+        </button>
+        <h2 className="text-lg font-semibold text-gray-900">Enter Password</h2>
+        <div className="w-10 h-10" /> {/* placeholder for spacing */}
+      </div>
+
+      <div className="flex-1 flex flex-col justify-center w-full max-w-md mx-auto">
+        <p className="mb-4 text-gray-700 text-center">
+          Signing in as <span className="font-medium">{email}</span>
+        </p>
+
+        <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+          Password
+        </label>
+        <div className="relative mb-6">
+          <input
+            id="password"
+            type={showPassword ? 'text' : 'password'}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Enter your password"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
+            autoComplete="current-password"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+            aria-label={showPassword ? 'Hide password' : 'Show password'}
+          >
+            {showPassword ? <Lock className="w-5 h-5" /> : <Key className="w-5 h-5" />}
+          </button>
+        </div>
+
+        <button
+          disabled={!isPasswordValid}
+          onClick={handleSubmit}
+          className={`w-full py-4 rounded-lg font-medium transition-colors ${
+            isPasswordValid
+              ? 'bg-red-500 text-white hover:bg-red-600 active:scale-98'
+              : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+          }`}
+          type="button"
+        >
+          Sign In
+        </button>
+      </div>
+    </div>
+  );
+};
+
 // Main LoginPage Component
 export default function LoginPage() {
-  const [currentScreen, setCurrentScreen] = useState('login'); // 'login' or 'email'
+  const [currentScreen, setCurrentScreen] = useState('login'); // 'login', 'email', 'password'
   const [selectedLanguage, setSelectedLanguage] = useState('ht');
+  const [emailForPassword, setEmailForPassword] = useState('');
 
   const languages = [
     { code: 'ht', name: 'Kreyòl Ayisyen', country: 'HT', countryName: 'Haiti' },
@@ -402,7 +470,16 @@ export default function LoginPage() {
   };
 
   const handleBack = () => {
-    setCurrentScreen('login');
+    if (currentScreen === 'password') {
+      setCurrentScreen('email');
+    } else if (currentScreen === 'email') {
+      setCurrentScreen('login');
+    }
+  };
+
+  const handleContinueWithPassword = (email) => {
+    setEmailForPassword(email);
+    setCurrentScreen('password');
   };
 
   return (
@@ -481,8 +558,14 @@ export default function LoginPage() {
             </p>
           </div>
         </div>
+      ) : currentScreen === 'email' ? (
+        <EmailAuthScreen
+          onBack={handleBack}
+          selectedLanguage={selectedLanguage}
+          onContinueWithPassword={handleContinueWithPassword}
+        />
       ) : (
-        <EmailAuthScreen onBack={handleBack} selectedLanguage={selectedLanguage} />
+        <PasswordAuthScreen email={emailForPassword} onBack={handleBack} />
       )}
     </>
   );
