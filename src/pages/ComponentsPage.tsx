@@ -14,7 +14,6 @@ const commonEmailDomains = [
   'me.com',
 ];
 
-// Custom mapping for favicons to fix Gmail icon issue
 const faviconOverrides = {
   'gmail.com': 'https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico',
 };
@@ -30,60 +29,69 @@ export default function EmailAuthScreen() {
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  // Polling to detect autofill changes and sync input value with state
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (emailInputRef.current) {
-        const currentValue = emailInputRef.current.value.trim();
-        if (currentValue && currentValue !== email) {
-          setEmail(currentValue);
-          setIsEmailValid(emailRegex.test(currentValue));
-        }
-      }
-    }, 100); // check every 100ms
+  // Handle email input changes, including manual typing and autofill
+  const handleEmailChange = (value) => {
+    const trimmedValue = value.trim();
+    setEmail(trimmedValue);
+    setIsEmailValid(emailRegex.test(trimmedValue));
 
-    return () => clearInterval(interval); // cleanup on unmount
-  }, [email]);
-
-  // Update faviconUrl whenever email changes, including autofill scenarios
-  useEffect(() => {
-    const atIndex = email.indexOf('@');
+    const atIndex = trimmedValue.indexOf('@');
     if (atIndex > -1) {
-      const typedDomainPart = email.slice(atIndex + 1).toLowerCase();
+      const typedDomainPart = trimmedValue.slice(atIndex + 1).toLowerCase();
+      if (typedDomainPart.length === 0) {
+        setSuggestions(commonEmailDomains);
+      } else {
+        const filtered = commonEmailDomains.filter((domain) =>
+          domain.startsWith(typedDomainPart)
+        );
+        setSuggestions(filtered);
+      }
+
+      // Update favicon immediately
       if (typedDomainPart.length > 0) {
-        const favicon = faviconOverrides[typedDomainPart]
-          || `https://www.google.com/s2/favicons?domain=${typedDomainPart}`;
+        const favicon =
+          faviconOverrides[typedDomainPart] ||
+          `https://www.google.com/s2/favicons?domain=${typedDomainPart}`;
         setFaviconUrl(favicon);
       } else {
         setFaviconUrl(null);
       }
     } else {
+      setSuggestions([]);
       setFaviconUrl(null);
     }
-  }, [email]);
-
-  const handleEmailChange = (e) => {
-    const value = e.target.value.trim();
-    setEmail(value);
-
-    setIsEmailValid(emailRegex.test(value));
-
-    const atIndex = value.indexOf('@');
-    if (atIndex > -1) {
-      const typedDomainPart = value.slice(atIndex + 1).toLowerCase();
-
-      if (typedDomainPart.length === 0) {
-        setSuggestions(commonEmailDomains);
-      } else {
-        const filtered = commonEmailDomains.filter(domain =>
-          domain.startsWith(typedDomainPart)
-        );
-        setSuggestions(filtered);
-      }
-    } else {
-      setSuggestions([]);
-    }
   };
+
+  // Detect input changes, including autofill
+  useEffect(() => {
+    const input = emailInputRef.current;
+    if (!input) return;
+
+    const handleInput = () => handleEmailChange(input.value);
+    const handleChange = () => handleEmailChange(input.value);
+
+    // Detect autofill in Chrome (animationstart hack)
+    const handleAnimationStart = (e) => {
+      if (e.animationName === 'onAutoFillStart') {
+        handleEmailChange(input.value);
+      }
+    };
+
+    input.addEventListener('input', handleInput);
+    input.addEventListener('change', handleChange);
+    input.addEventListener('animationstart', handleAnimationStart);
+
+    // Initial check for autofill on mount
+    if (input.value) {
+      handleEmailChange(input.value);
+    }
+
+    return () => {
+      input.removeEventListener('input', handleInput);
+      input.removeEventListener('change', handleChange);
+      input.removeEventListener('animationstart', handleAnimationStart);
+    };
+  }, []);
 
   const handleKeyDown = (e) => {
     // No inline suggestion autocomplete logic here
@@ -95,9 +103,7 @@ export default function EmailAuthScreen() {
     setEmail(newEmail);
     setIsEmailValid(emailRegex.test(newEmail));
     setSuggestions([]);
-    setFaviconUrl(
-      faviconOverrides[domain] || `https://www.google.com/s2/favicons?domain=${domain}`
-    );
+    setFaviconUrl(faviconOverrides[domain] || `https://www.google.com/s2/favicons?domain=${domain}`);
   };
 
   const handleBack = () => {
@@ -164,7 +170,7 @@ export default function EmailAuthScreen() {
                 className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 rounded"
                 onError={(e) => {
                   e.currentTarget.onerror = null; // Prevent infinite loop
-                  e.currentTarget.src = ''; // fallback to empty or default icon
+                  e.currentTarget.src = ''; // Fallback to empty
                 }}
               />
             ) : (
@@ -175,7 +181,7 @@ export default function EmailAuthScreen() {
               id="email"
               type="email"
               value={email}
-              onChange={handleEmailChange}
+              onChange={(e) => handleEmailChange(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Enter your email address"
               autoComplete="email"
