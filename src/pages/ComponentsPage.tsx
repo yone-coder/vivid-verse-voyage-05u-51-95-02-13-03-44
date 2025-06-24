@@ -137,12 +137,7 @@ export default function EmailAuthScreen() {
                 src={faviconUrl}
                 alt="Domain favicon"
                 className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 rounded"
-                onError={() => {
-                  // Fix: Prevent clearing faviconUrl to avoid flicker
-                  if (faviconUrl !== faviconOverrides['gmail.com']) {
-                    setFaviconUrl(faviconOverrides['gmail.com']);
-                  }
-                }}
+                // No onError fallback here
               />
             ) : (
               <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
