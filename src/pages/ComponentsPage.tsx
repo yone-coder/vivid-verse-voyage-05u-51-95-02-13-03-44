@@ -20,12 +20,9 @@ const faviconOverrides = {
 };
 
 export default function EmailAuthScreen() {
-  // Removed selectedLanguage and languages array
-
   const [email, setEmail] = useState('');
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
-  // Removed inlineSuggestion state
   const [faviconUrl, setFaviconUrl] = useState(null);
   const suggestionsRef = useRef(null);
 
@@ -64,7 +61,7 @@ export default function EmailAuthScreen() {
   };
 
   const handleKeyDown = (e) => {
-    // Removed inlineSuggestion logic here; no autocomplete inside input now
+    // No inline suggestion autocomplete logic here
   };
 
   const handleSuggestionClick = (domain) => {
@@ -140,13 +137,16 @@ export default function EmailAuthScreen() {
                 src={faviconUrl}
                 alt="Domain favicon"
                 className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 rounded"
-                onError={() => setFaviconUrl(null)}
+                onError={() => {
+                  // Fix: Prevent clearing faviconUrl to avoid flicker
+                  if (faviconUrl !== faviconOverrides['gmail.com']) {
+                    setFaviconUrl(faviconOverrides['gmail.com']);
+                  }
+                }}
               />
             ) : (
               <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
             )}
-
-            {/* Removed inlineSuggestion rendering */}
 
             <input
               id="email"
