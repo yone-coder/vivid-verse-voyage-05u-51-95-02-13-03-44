@@ -14,6 +14,11 @@ function PasswordScreen({ email = 'user@example.com', onBack }) {
     setIsPasswordValid(value.length >= 8);
   };
 
+  const handleChangeEmail = () => {
+    console.log('Change email clicked');
+    // This would typically navigate back to email step
+  };
+
   const faviconUrl = `https://www.google.com/s2/favicons?domain=${email.split('@')[1] || ''}`;
 
   return (
@@ -65,21 +70,18 @@ function PasswordScreen({ email = 'user@example.com', onBack }) {
 
         {/* Email display */}
         <div className="mb-4">
-          <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-            {faviconUrl ? (
-              <img
-                src={faviconUrl}
-                alt="Domain favicon"
-                className="w-5 h-5 rounded"
-                onError={(e) => {
-                  e.currentTarget.onerror = null;
-                  e.currentTarget.src = '';
-                }}
-              />
-            ) : (
+          <div className="flex items-center justify-between gap-3 p-3 bg-gray-50 rounded-lg">
+            <div className="flex items-center gap-3">
               <Mail className="w-5 h-5 text-gray-400" />
-            )}
-            <span className="text-gray-700">{email}</span>
+              <span className="text-gray-700">{email}</span>
+            </div>
+            <button
+              onClick={handleChangeEmail}
+              className="text-red-500 font-medium hover:text-red-600 text-sm"
+              type="button"
+            >
+              Change
+            </button>
           </div>
         </div>
 
