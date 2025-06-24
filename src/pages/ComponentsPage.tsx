@@ -1,12 +1,13 @@
-import React, { useState, useRef } from 'react';
+
+import React from 'react';
 import { ArrowLeft, Lock, Key, Check, HelpCircle, Eye, EyeOff, Mail } from 'lucide-react';
 
-export default function PasswordScreen({ email = 'user@example.com', onBack }) {
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [isPasswordValid, setIsPasswordValid] = useState(false);
+function PasswordScreen({ email = 'user@example.com', onBack }) {
+  const [password, setPassword] = React.useState('');
+  const [showPassword, setShowPassword] = React.useState(false);
+  const [isPasswordValid, setIsPasswordValid] = React.useState(false);
 
-  const passwordInputRef = useRef(null);
+  const passwordInputRef = React.useRef(null);
 
   const handlePasswordChange = (value) => {
     setPassword(value);
@@ -154,4 +155,12 @@ export default function PasswordScreen({ email = 'user@example.com', onBack }) {
       </div>
     </div>
   );
+}
+
+export default function ComponentsPage() {
+  const handleBack = () => {
+    console.log('Back button clicked');
+  };
+
+  return <PasswordScreen email="demo@example.com" onBack={handleBack} />;
 }
