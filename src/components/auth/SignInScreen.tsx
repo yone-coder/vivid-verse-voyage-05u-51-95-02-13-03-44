@@ -15,7 +15,7 @@ const LanguageSelector = () => {
     { code: 'it', name: 'Italiano', country: 'IT', countryName: 'Italy' },
     { code: 'zh', name: '中文', country: 'CN', countryName: 'China' },
     { code: 'ja', name: '日本語', country: 'JP', countryName: 'Japan' },
-    { code: 'ko', name: '한국어', country: 'KR', countryName: 'South Korea' },
+    
     { code: 'ar', name: 'العربية', country: 'SA', countryName: 'Saudi Arabia' },
     { code: 'ru', name: 'Русский', country: 'RU', countryName: 'Russia' }
   ];
