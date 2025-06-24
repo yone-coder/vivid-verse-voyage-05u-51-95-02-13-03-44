@@ -23,8 +23,9 @@ const DesktopHeader: React.FC = () => {
   };
 
   const handleLogout = () => {
-    // Handle logout functionality here
-    console.log('Logout clicked');
+    console.log('Logout clicked - clearing authentication');
+    localStorage.removeItem('isAuthenticated');
+    window.dispatchEvent(new Event('authStateChanged'));
   };
 
   return (

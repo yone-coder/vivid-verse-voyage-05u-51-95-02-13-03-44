@@ -12,6 +12,14 @@ const SuccessScreen: React.FC<SuccessScreenProps> = ({ email, onContinue }) => {
   const [showContent, setShowContent] = useState(false);
 
   useEffect(() => {
+    // Set authentication state immediately when success screen is shown
+    localStorage.setItem('isAuthenticated', 'true');
+    
+    // Dispatch custom event to notify other components
+    window.dispatchEvent(new Event('authStateChanged'));
+    
+    console.log('User authenticated successfully, setting localStorage');
+
     // Start checkmark animation immediately
     const checkmarkTimer = setTimeout(() => {
       setShowCheckmark(true);

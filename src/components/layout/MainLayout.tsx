@@ -14,11 +14,35 @@ function MainLayoutContent() {
   const location = useLocation();
   const pathname = location.pathname;
   const [showSplash, setShowSplash] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
   const isHomePage = pathname === "/";
   const isMultiStepTransfer = pathname.startsWith("/multi-step-transfer");
   const isAccountPage = pathname === "/account";
   const isComponentsPage = pathname === "/components";
+
+  // Check authentication status on mount
+  useEffect(() => {
+    const checkAuthStatus = () => {
+      const authStatus = localStorage.getItem('isAuthenticated');
+      const isLoggedIn = authStatus === 'true';
+      
+      console.log('Checking auth status:', isLoggedIn);
+      setIsAuthenticated(isLoggedIn);
+      setIsCheckingAuth(false);
+    };
+
+    checkAuthStatus();
+
+    // Listen for authentication changes
+    const handleAuthChange = () => {
+      checkAuthStatus();
+    };
+
+    window.addEventListener('authStateChanged', handleAuthChange);
+    return () => window.removeEventListener('authStateChanged', handleAuthChange);
+  }, []);
 
   // Hide splash screen after 4 seconds
   useEffect(() => {
@@ -28,6 +52,23 @@ function MainLayoutContent() {
 
     return () => clearTimeout(hideTimer);
   }, []);
+
+  // Show loading while checking auth
+  if (isCheckingAuth) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-red-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show login screen if not authenticated
+  if (!isAuthenticated) {
+    return <SignInScreen />;
+  }
 
   // Calculate bottom padding based on whether we're in multi-step transfer mode
   const getBottomPadding = () => {
