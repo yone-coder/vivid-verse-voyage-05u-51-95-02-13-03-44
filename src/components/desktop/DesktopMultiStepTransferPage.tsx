@@ -1,5 +1,4 @@
 import React, { useRef, useEffect } from 'react';
-import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import html2canvas from 'html2canvas';
 import DesktopHeader from './DesktopHeader';
@@ -38,7 +37,6 @@ export interface TransferData {
 }
 
 const DesktopMultiStepTransferPage: React.FC = () => {
-  const { user } = useAuth();
   const { toast } = useToast();
 
   // Use persisted state hook
@@ -68,7 +66,7 @@ const DesktopMultiStepTransferPage: React.FC = () => {
   const [isPaymentLoading, setIsPaymentLoading] = useState(false);
   const [isPaymentFormValid, setIsPaymentFormValid] = useState(false);
   const [transactionId, setTransactionId] = useState('');
-  const userEmail = user?.email || 'default@example.com';
+  const userEmail = 'default@example.com';
   const receiptRef = useRef<HTMLDivElement>(null);
 
   // Listen for form validation changes

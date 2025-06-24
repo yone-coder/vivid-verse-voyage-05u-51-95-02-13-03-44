@@ -6,7 +6,6 @@ import {
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { useAuth } from '@/context/AuthContext';
 
 interface BottomNavTab {
   id: string;
@@ -48,7 +47,6 @@ export default function IndexBottomNav({
 }: IndexBottomNavProps) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user } = useAuth();
 
   const [activeTab, setActiveTab] = useState('send');
 
@@ -183,10 +181,10 @@ export default function IndexBottomNav({
                   )}
                 >
                   <div className="relative flex items-center justify-center">
-                    {item.isAvatar && user ? (
+                    {item.isAvatar ? (
                       <Avatar className="w-5 h-5 border">
-                        <AvatarImage src={user.user_metadata?.avatar_url} alt="User" />
-                        <AvatarFallback className="text-xs">{user.email?.slice(0, 2).toUpperCase()}</AvatarFallback>
+                        <AvatarImage src="" alt="User" />
+                        <AvatarFallback className="text-xs">U</AvatarFallback>
                       </Avatar>
                     ) : (
                       <Icon
@@ -234,10 +232,10 @@ export default function IndexBottomNav({
               )}
             >
               <div className="relative flex items-center justify-center">
-                {item.isAvatar && user ? (
+                {item.isAvatar ? (
                   <Avatar className="w-5 h-5 border">
-                    <AvatarImage src={user.user_metadata?.avatar_url} alt="User" />
-                    <AvatarFallback className="text-xs">{user.email?.slice(0, 2).toUpperCase()}</AvatarFallback>
+                    <AvatarImage src="" alt="User" />
+                    <AvatarFallback className="text-xs">U</AvatarFallback>
                   </Avatar>
                 ) : (
                   <Icon

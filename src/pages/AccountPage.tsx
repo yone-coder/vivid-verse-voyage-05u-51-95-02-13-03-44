@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {
   Card,
@@ -29,16 +28,14 @@ import {
   Eye,
   EyeOff
 } from 'lucide-react';
-import { useAuth } from '@/context/AuthContext';
 import { cn } from '@/lib/utils';
 
 const AccountPage: React.FC = () => {
-  const { user, signOut } = useAuth();
   const [showPassword, setShowPassword] = React.useState(false);
 
   const handleSignOut = async () => {
     try {
-      await signOut();
+      console.log('Sign out clicked');
     } catch (error) {
       console.error('Error signing out:', error);
     }
@@ -76,16 +73,16 @@ const AccountPage: React.FC = () => {
           <CardContent className="space-y-6">
             <div className="flex items-center gap-4">
               <Avatar className="w-16 h-16">
-                <AvatarImage src={user?.user_metadata?.avatar_url} alt="Profile" />
+                <AvatarImage src="" alt="Profile" />
                 <AvatarFallback className="text-lg">
-                  {user?.email?.slice(0, 2).toUpperCase() || 'U'}
+                  JD
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1">
                 <h3 className="text-lg font-semibold">
-                  {user?.user_metadata?.full_name || 'John Doe'}
+                  John Doe
                 </h3>
-                <p className="text-sm text-muted-foreground">{user?.email}</p>
+                <p className="text-sm text-muted-foreground">john.doe@example.com</p>
                 <Badge variant="secondary" className="mt-1">
                   <Shield className="w-3 h-3 mr-1" />
                   Verified Account
@@ -98,7 +95,7 @@ const AccountPage: React.FC = () => {
                 <Label htmlFor="full-name">Full Name</Label>
                 <Input
                   id="full-name"
-                  defaultValue={user?.user_metadata?.full_name || 'John Doe'}
+                  defaultValue="John Doe"
                   readOnly
                   className="bg-muted"
                 />
@@ -108,7 +105,7 @@ const AccountPage: React.FC = () => {
                 <Input
                   id="email"
                   type="email"
-                  defaultValue={user?.email || ''}
+                  defaultValue="john.doe@example.com"
                   readOnly
                   className="bg-muted"
                 />

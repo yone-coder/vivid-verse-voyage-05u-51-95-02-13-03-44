@@ -12,12 +12,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from 'react-router-dom';
 import LanguageSelector from '@/components/common/LanguageSelector';
 
 const DesktopHeader: React.FC = () => {
-  const { user } = useAuth();
   const navigate = useNavigate();
 
   const handleNavigation = (path: string) => {
@@ -119,12 +117,10 @@ const DesktopHeader: React.FC = () => {
                   <div className="w-8 h-8 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center">
                     <User className="w-4 h-4 text-gray-600" />
                   </div>
-                  {user && (
-                    <div className="hidden lg:block text-left">
-                      <p className="text-sm font-medium text-gray-900">{user.email?.split('@')[0]}</p>
-                      <p className="text-xs text-gray-500">Premium Member</p>
-                    </div>
-                  )}
+                  <div className="hidden lg:block text-left">
+                    <p className="text-sm font-medium text-gray-900">User</p>
+                    <p className="text-xs text-gray-500">Premium Member</p>
+                  </div>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
