@@ -24,9 +24,39 @@ export default function EmailAuthScreen() {
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
   const [faviconUrl, setFaviconUrl] = useState(null);
+
+  const emailInputRef = useRef(null);
   const suggestionsRef = useRef(null);
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  // Sync input value on mount to handle autofill
+  useEffect(() => {
+    if (emailInputRef.current) {
+      const currentValue = emailInputRef.current.value.trim();
+      if (currentValue && currentValue !== email) {
+        setEmail(currentValue);
+        setIsEmailValid(emailRegex.test(currentValue));
+      }
+    }
+  }, []); // Run once on mount
+
+  // Update faviconUrl whenever email changes, including autofill scenarios
+  useEffect(() => {
+    const atIndex = email.indexOf('@');
+    if (atIndex > -1) {
+      const typedDomainPart = email.slice(atIndex + 1).toLowerCase();
+      if (typedDomainPart.length > 0) {
+        const favicon = faviconOverrides[typedDomainPart]
+          || `https://www.google.com/s2/favicons?domain=${typedDomainPart}`;
+        setFaviconUrl(favicon);
+      } else {
+        setFaviconUrl(null);
+      }
+    } else {
+      setFaviconUrl(null);
+    }
+  }, [email]);
 
   const handleEmailChange = (e) => {
     const value = e.target.value.trim();
@@ -50,23 +80,6 @@ export default function EmailAuthScreen() {
       setSuggestions([]);
     }
   };
-
-  // Update faviconUrl whenever email changes, including autofill scenarios
-  useEffect(() => {
-    const atIndex = email.indexOf('@');
-    if (atIndex > -1) {
-      const typedDomainPart = email.slice(atIndex + 1).toLowerCase();
-      if (typedDomainPart.length > 0) {
-        const favicon = faviconOverrides[typedDomainPart]
-          || `https://www.google.com/s2/favicons?domain=${typedDomainPart}`;
-        setFaviconUrl(favicon);
-      } else {
-        setFaviconUrl(null);
-      }
-    } else {
-      setFaviconUrl(null);
-    }
-  }, [email]);
 
   const handleKeyDown = (e) => {
     // No inline suggestion autocomplete logic here
@@ -162,6 +175,7 @@ export default function EmailAuthScreen() {
               onKeyDown={handleKeyDown}
               placeholder="Enter your email address"
               autoComplete="email"
+              ref={emailInputRef}
               className="relative w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors bg-transparent"
               aria-autocomplete="list"
               aria-expanded={suggestions.length > 0}
