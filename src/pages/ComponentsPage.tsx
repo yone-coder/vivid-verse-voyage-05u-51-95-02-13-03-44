@@ -169,7 +169,7 @@ export default function EmailAuthScreen() {
           <div className="flex-1 h-1 bg-gray-300 rounded-full"></div>
           <div className="flex-1 h-1 bg-gray-300 rounded-full"></div>
         </div>
-        <p className="text-center text-sm text-gray-500">Step 2 of 4</p>
+        {/* Removed the "Step 2 of 4" text here */}
       </div>
 
       {/* Main content container */}
