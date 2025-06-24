@@ -1,5 +1,5 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { ArrowLeft, Mail, HelpCircle } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { toast } from 'sonner';
@@ -9,20 +9,30 @@ interface EmailAuthScreenProps {
   selectedLanguage: string;
   onContinueWithPassword: (email: string) => void;
   onContinueWithCode: (email: string) => void;
+  initialEmail?: string;
 }
 
 const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({ 
   onBack, 
   selectedLanguage, 
   onContinueWithPassword, 
-  onContinueWithCode 
+  onContinueWithCode,
+  initialEmail = ''
 }) => {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(initialEmail);
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const { checkUserExists, signUp } = useAuth();
   const emailInputRef = useRef<HTMLInputElement>(null);
+
+  // Update email validation when component mounts or initialEmail changes
+  useEffect(() => {
+    if (initialEmail) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      setIsEmailValid(emailRegex.test(initialEmail));
+    }
+  }, [initialEmail]);
 
   const handleEmailChange = (value: string) => {
     setEmail(value);
