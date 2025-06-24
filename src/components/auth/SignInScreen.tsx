@@ -15,15 +15,21 @@ export default function LoginPage() {
   const [selectedLanguage, setSelectedLanguage] = useState('ht');
   const [emailForPassword, setEmailForPassword] = useState('');
 
-  const { user, skipSuccessScreen } = useAuth();
+  const { user, skipSuccessScreen, isLoading } = useAuth();
   const navigate = useNavigate();
 
-  // Redirect to home if user is already authenticated AND we're not showing success screen
+  // Only redirect if user is authenticated AND we're not in the success flow AND not loading
   useEffect(() => {
-    if (user && currentScreen !== 'success') {
+    if (user && !isLoading && currentScreen !== 'success') {
+      // If we just signed in successfully, show success screen first
+      if (currentScreen === 'password' || currentScreen === 'verification') {
+        setCurrentScreen('success');
+        return;
+      }
+      // Otherwise redirect normally
       navigate('/');
     }
-  }, [user, navigate, currentScreen]);
+  }, [user, isLoading, navigate, currentScreen]);
 
   const handleContinueWithEmail = () => {
     setCurrentScreen('email');
@@ -59,7 +65,8 @@ export default function LoginPage() {
   };
 
   const handleSignInSuccess = () => {
-    setCurrentScreen('success');
+    // Don't set to success here - let the useEffect handle it based on user state
+    console.log('Sign in completed, user state will update and trigger success screen');
   };
 
   const handleContinueToDashboard = () => {
@@ -67,8 +74,8 @@ export default function LoginPage() {
     skipSuccessScreen();
   };
 
-  // Don't render if user is already authenticated and we're not showing success screen
-  if (user && currentScreen !== 'success') {
+  // Don't render if user is already authenticated and we're not showing success screen and not loading
+  if (user && !isLoading && currentScreen !== 'success') {
     return null;
   }
 

@@ -32,8 +32,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setSession(currentSession);
         setUser(currentSession?.user ?? null);
         
+        // Only redirect immediately if we're explicitly skipping the success screen
         if (event === 'SIGNED_IN' && shouldSkipSuccessScreen) {
-          // Only redirect immediately if we're skipping the success screen
           setTimeout(() => {
             navigate('/');
             setShouldSkipSuccessScreen(false);
@@ -44,6 +44,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             navigate('/auth');
           }, 0);
         }
+        // For normal sign-ins, let the SignInScreen component handle the success flow
       }
     );
 
