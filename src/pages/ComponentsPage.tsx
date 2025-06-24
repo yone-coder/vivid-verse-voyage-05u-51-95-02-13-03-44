@@ -30,16 +30,20 @@ export default function EmailAuthScreen() {
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  // Sync input value on mount to handle autofill
+  // Polling to detect autofill changes and sync input value with state
   useEffect(() => {
-    if (emailInputRef.current) {
-      const currentValue = emailInputRef.current.value.trim();
-      if (currentValue && currentValue !== email) {
-        setEmail(currentValue);
-        setIsEmailValid(emailRegex.test(currentValue));
+    const interval = setInterval(() => {
+      if (emailInputRef.current) {
+        const currentValue = emailInputRef.current.value.trim();
+        if (currentValue && currentValue !== email) {
+          setEmail(currentValue);
+          setIsEmailValid(emailRegex.test(currentValue));
+        }
       }
-    }
-  }, []); // Run once on mount
+    }, 100); // check every 100ms
+
+    return () => clearInterval(interval); // cleanup on unmount
+  }, [email]);
 
   // Update faviconUrl whenever email changes, including autofill scenarios
   useEffect(() => {
