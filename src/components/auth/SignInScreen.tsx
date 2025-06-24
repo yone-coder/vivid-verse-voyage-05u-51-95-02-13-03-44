@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowLeft, Mail, Lock, Key, Check, HelpCircle, X, ChevronDown, Globe, Eye, EyeOff } from 'lucide-react';
 
@@ -388,6 +387,13 @@ const PasswordAuthScreen = ({ email, onBack }) => {
     onBack(); // Navigate back to email step
   };
 
+  const faviconOverrides = {
+    'gmail.com': 'https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico',
+  };
+
+  const domain = email.split('@')[1] || '';
+  const faviconUrl = faviconOverrides[domain] || `https://www.google.com/s2/favicons?domain=${domain}`;
+
   return (
     <div className="min-h-screen bg-white flex flex-col px-4">
       {/* Header */}
@@ -439,7 +445,19 @@ const PasswordAuthScreen = ({ email, onBack }) => {
         <div className="mb-4">
           <div className="flex items-center justify-between gap-3 p-3 bg-gray-50 rounded-lg">
             <div className="flex items-center gap-3">
-              <Mail className="w-5 h-5 text-gray-400" />
+              {faviconUrl ? (
+                <img
+                  src={faviconUrl}
+                  alt="Email provider favicon"
+                  className="w-5 h-5 rounded"
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = '';
+                  }}
+                />
+              ) : (
+                <Mail className="w-5 h-5 text-gray-400" />
+              )}
               <span className="text-gray-700">{email}</span>
             </div>
             <button
