@@ -19,10 +19,19 @@ export default function LoginPage() {
   const { user, skipSuccessScreen, isLoading } = useAuth();
   const navigate = useNavigate();
 
-  // Only redirect if user is authenticated AND we're not in the success flow AND not loading
+  // Handle successful login - show success screen when user is authenticated
+  useEffect(() => {
+    if (user && !isLoading && currentScreen !== 'success') {
+      console.log('User authenticated, showing success screen');
+      setCurrentScreen('success');
+    }
+  }, [user, isLoading, currentScreen]);
+
+  // Handle success screen timeout and redirect
   useEffect(() => {
     if (currentScreen === 'success') {
       const timer = setTimeout(() => {
+        console.log('Success screen timeout, redirecting to homepage');
         skipSuccessScreen();
         navigate('/');
       }, 3000); // 3 seconds delay
@@ -65,21 +74,26 @@ export default function LoginPage() {
   };
 
   const handleSignInSuccess = () => {
-    // Don't set to success here - let the useEffect handle it based on user state
-    console.log('Sign in completed, user state will update and trigger success screen');
+    console.log('Sign in completed successfully');
+    // Don't manually set to success here - let the useEffect handle it based on user state
   };
 
   const handleContinueToDashboard = () => {
-    console.log('Redirecting to homepage...');
+    console.log('Manual redirect to homepage from success screen');
     skipSuccessScreen();
+    navigate('/');
   };
 
-  // Don't render if user is already authenticated and we're not showing success screen and not loading
-  if (user && !isLoading && currentScreen !== 'success') {
+  // Show loading state while checking authentication
+  if (isLoading) {
+    return <div className="min-h-screen bg-white flex items-center justify-center">Loading...</div>;
+  }
+
+  // If user is authenticated and we're not showing success screen, redirect immediately
+  if (user && currentScreen !== 'success') {
     return null;
   }
 
-  // Force the multi-step flow to always start with the main login screen
   return (
     <div className="min-h-screen bg-white">
       {currentScreen === 'login' && (

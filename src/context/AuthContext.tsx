@@ -21,34 +21,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [shouldSkipSuccessScreen, setShouldSkipSuccessScreen] = useState<boolean>(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Set up auth state change listener FIRST
+    // Set up auth state change listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, currentSession) => {
         console.log("Auth state changed:", event);
         setSession(currentSession);
         setUser(currentSession?.user ?? null);
         
-        // Only redirect immediately if we're explicitly skipping the success screen
-        if (event === 'SIGNED_IN' && shouldSkipSuccessScreen) {
-          setTimeout(() => {
-            navigate('/');
-            setShouldSkipSuccessScreen(false);
-          }, 0);
-        } else if (event === 'SIGNED_OUT') {
-          // Use setTimeout to prevent React state update loops
+        // Handle sign out - redirect to auth
+        if (event === 'SIGNED_OUT') {
           setTimeout(() => {
             navigate('/auth');
           }, 0);
         }
-        // For normal sign-ins, let the SignInScreen component handle the success flow
+        // For sign in, let the SignInScreen component handle the success flow
       }
     );
 
-    // THEN check for existing session
+    // Check for existing session
     supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
@@ -58,10 +51,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => {
       subscription.unsubscribe();
     };
-  }, [navigate, shouldSkipSuccessScreen]);
+  }, [navigate]);
 
   const skipSuccessScreen = () => {
-    setShouldSkipSuccessScreen(true);
+    console.log('Skipping success screen, navigating to homepage');
     navigate('/');
   };
 
