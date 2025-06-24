@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ArrowLeft, Mail, Lock, Key, Check, HelpCircle } from 'lucide-react';
+import Lottie from 'lottie-react'; // Import the Lottie component
 
 const commonEmailDomains = [
   'gmail.com',
@@ -21,6 +22,29 @@ export default function EmailAuthScreen() {
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const suggestionsRef = useRef(null);
+
+  // --- Lottie Animation State and Fetching ---
+  const [lottieAnimationData, setLottieAnimationData] = useState(null);
+  const lottieAnimationUrl = 'https://assets10.lottiefiles.com/packages/lf20_jcikwtux.json'; // Example Lottie URL for a login/sign-in animation
+
+  useEffect(() => {
+    // Fetch the Lottie animation JSON from the URL
+    fetch(lottieAnimationUrl)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+        setLottieAnimationData(data);
+      })
+      .catch(error => {
+        console.error("Error fetching Lottie animation:", error);
+        // Optionally handle error, e.g., show a placeholder or skip animation
+      });
+  }, [lottieAnimationUrl]); // Re-fetch if URL changes (though unlikely for a static URL)
+  // --- End Lottie Animation State and Fetching ---
 
   const languages = [
     { code: 'ht', name: 'Kreyòl Ayisyen', country: 'HT', countryName: 'Haiti' },
@@ -139,6 +163,24 @@ export default function EmailAuthScreen() {
       </div>
 
       <div className="flex-1 flex flex-col justify-center w-full max-w-md mx-auto relative">
+        {/* --- Lottie Animation Section --- */}
+        {lottieAnimationData ? ( // Only render Lottie if data is loaded
+          <div className="mb-8 flex justify-center items-center">
+            <Lottie
+              animationData={lottieAnimationData}
+              loop={true} // Set to true for continuous loop
+              autoplay={true} // Set to true to start animation automatically
+              style={{ height: 150, width: 150 }} // Adjust size as needed
+            />
+          </div>
+        ) : (
+          // Optional: Add a placeholder or loading indicator while fetching
+          <div className="mb-8 flex justify-center items-center h-[150px]">
+            <div className="text-gray-400 text-sm">Loading animation...</div>
+          </div>
+        )}
+        {/* --- End Lottie Animation Section --- */}
+
         {/* Welcome heading */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-semibold text-gray-900 mb-2">
