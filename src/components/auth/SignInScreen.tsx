@@ -20,16 +20,15 @@ export default function LoginPage() {
 
   // Only redirect if user is authenticated AND we're not in the success flow AND not loading
   useEffect(() => {
-    if (user && !isLoading && currentScreen !== 'success') {
-      // If we just signed in successfully, show success screen first
-      if (currentScreen === 'password' || currentScreen === 'verification') {
-        setCurrentScreen('success');
-        return;
-      }
-      // Otherwise redirect normally
+  if (currentScreen === 'success') {
+    const timer = setTimeout(() => {
       navigate('/');
-    }
-  }, [user, isLoading, navigate, currentScreen]);
+    }, 3000); // 3 seconds delay
+
+    return () => clearTimeout(timer);
+  }
+}, [currentScreen, navigate]);
+
 
   const handleContinueWithEmail = () => {
     setCurrentScreen('email');
