@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { ArrowLeft, Mail, Lock, Key, Check, HelpCircle } from 'lucide-react';
 
 const commonEmailDomains = [
@@ -38,14 +38,6 @@ export default function EmailAuthScreen() {
     if (atIndex > -1) {
       const typedDomainPart = value.slice(atIndex + 1).toLowerCase();
 
-      if (typedDomainPart.length > 0) {
-        const favicon = faviconOverrides[typedDomainPart] 
-          || `https://www.google.com/s2/favicons?domain=${typedDomainPart}`;
-        setFaviconUrl(favicon);
-      } else {
-        setFaviconUrl(null);
-      }
-
       if (typedDomainPart.length === 0) {
         setSuggestions(commonEmailDomains);
       } else {
@@ -56,9 +48,25 @@ export default function EmailAuthScreen() {
       }
     } else {
       setSuggestions([]);
-      setFaviconUrl(null);
     }
   };
+
+  // Update faviconUrl whenever email changes, including autofill scenarios
+  useEffect(() => {
+    const atIndex = email.indexOf('@');
+    if (atIndex > -1) {
+      const typedDomainPart = email.slice(atIndex + 1).toLowerCase();
+      if (typedDomainPart.length > 0) {
+        const favicon = faviconOverrides[typedDomainPart]
+          || `https://www.google.com/s2/favicons?domain=${typedDomainPart}`;
+        setFaviconUrl(favicon);
+      } else {
+        setFaviconUrl(null);
+      }
+    } else {
+      setFaviconUrl(null);
+    }
+  }, [email]);
 
   const handleKeyDown = (e) => {
     // No inline suggestion autocomplete logic here
@@ -137,7 +145,10 @@ export default function EmailAuthScreen() {
                 src={faviconUrl}
                 alt="Domain favicon"
                 className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 rounded"
-                // No onError fallback here
+                onError={(e) => {
+                  e.currentTarget.onerror = null; // Prevent infinite loop
+                  e.currentTarget.src = ''; // fallback to empty or default icon
+                }}
               />
             ) : (
               <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
