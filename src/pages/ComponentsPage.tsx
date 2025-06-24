@@ -19,7 +19,8 @@ export default function EmailAuthScreen() {
   const [email, setEmail] = useState('');
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false); // no longer used but kept for safety
+  const [inlineSuggestion, setInlineSuggestion] = useState('');
   const suggestionsRef = useRef(null);
 
   const languages = [
@@ -42,7 +43,7 @@ export default function EmailAuthScreen() {
   // Email validation regex
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  // Handle email input change and update suggestions
+  // Handle email input change and update inline suggestion
   const handleEmailChange = (e) => {
     const value = e.target.value;
     setEmail(value);
@@ -50,48 +51,43 @@ export default function EmailAuthScreen() {
     // Validate email
     setIsEmailValid(emailRegex.test(value));
 
-    // Generate domain suggestions only if user typed '@' but hasn't completed domain
     const atIndex = value.indexOf('@');
     if (atIndex > -1) {
       const typedDomainPart = value.slice(atIndex + 1).toLowerCase();
 
       if (typedDomainPart.length === 0) {
-        // Show all suggestions if user just typed '@'
-        setSuggestions(commonEmailDomains);
-        setShowSuggestions(true);
+        // Show first suggestion inline if user just typed '@'
+        setInlineSuggestion(value + commonEmailDomains[0]);
       } else {
         // Filter suggestions based on typed domain part
         const filtered = commonEmailDomains.filter(domain =>
           domain.startsWith(typedDomainPart)
         );
-        setSuggestions(filtered);
-        setShowSuggestions(filtered.length > 0);
+
+        if (filtered.length > 0) {
+          setInlineSuggestion(value.slice(0, atIndex + 1) + filtered[0]);
+        } else {
+          setInlineSuggestion('');
+        }
       }
     } else {
-      // No '@' typed yet, hide suggestions
-      setShowSuggestions(false);
+      // No '@' typed yet, clear inline suggestion
+      setInlineSuggestion('');
     }
   };
 
-  // Handle selecting a suggestion
-  const handleSuggestionClick = (domain) => {
-    const atIndex = email.indexOf('@');
-    const newEmail = email.slice(0, atIndex + 1) + domain;
-    setEmail(newEmail);
-    setIsEmailValid(emailRegex.test(newEmail));
-    setShowSuggestions(false);
-  };
+  // Handle accepting the inline suggestion on Tab or Right Arrow
+  const handleKeyDown = (e) => {
+    if (!inlineSuggestion) return;
 
-  // Close suggestions when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (suggestionsRef.current && !suggestionsRef.current.contains(event.target)) {
-        setShowSuggestions(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+    // Accept suggestion on Tab or Right Arrow if cursor is at end
+    if ((e.key === 'Tab' || e.key === 'ArrowRight') && email.length < inlineSuggestion.length) {
+      e.preventDefault();
+      setEmail(inlineSuggestion);
+      setIsEmailValid(emailRegex.test(inlineSuggestion));
+      setInlineSuggestion('');
+    }
+  };
 
   const handleBack = () => {
     // Handle back navigation
@@ -101,7 +97,7 @@ export default function EmailAuthScreen() {
   return (
     <div className="min-h-screen bg-white flex flex-col px-4">
       {/* Header */}
-      <div className="pt-4 pb-6 flex items-center justify-between">
+      <div className="pt-2 pb-3 flex items-center justify-between">
         {/* Back Button */}
         <button
           onClick={handleBack}
@@ -128,7 +124,7 @@ export default function EmailAuthScreen() {
       </div>
 
       {/* Progress Bar */}
-      <div className="mb-8 px-0">
+      <div className="mb-4 px-0">
         <div className="flex items-center gap-2 mb-2">
           <div className="flex-1 h-1 bg-red-500 rounded-full"></div>
           <div className="flex-1 h-1 bg-red-500 rounded-full"></div>
@@ -139,8 +135,6 @@ export default function EmailAuthScreen() {
       </div>
 
       <div className="flex-1 flex flex-col justify-center w-full max-w-md mx-auto relative">
-        {/* Removed Lottie Animation Section */}
-
         {/* Welcome heading */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-semibold text-gray-900 mb-2">
@@ -152,56 +146,44 @@ export default function EmailAuthScreen() {
         </div>
 
         {/* Email Input */}
-        <div className="mb-8 relative" ref={suggestionsRef}>
+        <div className="mb-8 relative">
           <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
             Email address
           </label>
           <div className="relative">
             <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+
+            {/* Inline suggestion ghost text */}
+            {inlineSuggestion &&
+              inlineSuggestion.toLowerCase().startsWith(email.toLowerCase()) &&
+              email.length < inlineSuggestion.length && (
+                <div
+                  aria-hidden="true"
+                  className="absolute left-10 top-1/2 transform -translate-y-1/2 pointer-events-none text-gray-300 select-none whitespace-nowrap"
+                  style={{ userSelect: 'none' }}
+                >
+                  {inlineSuggestion}
+                </div>
+              )}
+
             <input
               id="email"
               type="email"
               value={email}
               onChange={handleEmailChange}
+              onKeyDown={handleKeyDown}
               placeholder="Enter your email address"
               autoComplete="email"
-              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
+              className="relative w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors bg-transparent"
               aria-autocomplete="list"
-              aria-controls="email-suggestions"
-              aria-expanded={showSuggestions}
-              aria-haspopup="listbox"
+              aria-expanded={false}
+              aria-haspopup="false"
             />
+
             {isEmailValid && (
               <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-500" />
             )}
           </div>
-
-          {/* Suggestions Dropdown */}
-          {showSuggestions && (
-            <ul
-              id="email-suggestions"
-              role="listbox"
-              className="absolute z-50 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-48 overflow-auto"
-            >
-              {suggestions.map((domain) => (
-                <li
-                  key={domain}
-                  role="option"
-                  tabIndex={0}
-                  onClick={() => handleSuggestionClick(domain)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      handleSuggestionClick(domain);
-                    }
-                  }}
-                  className="cursor-pointer px-4 py-2 hover:bg-red-100"
-                >
-                  {email.slice(0, email.indexOf('@') + 1)}<strong>{domain}</strong>
-                </li>
-              ))}
-            </ul>
-          )}
         </div>
 
         {/* Authentication Options */}
