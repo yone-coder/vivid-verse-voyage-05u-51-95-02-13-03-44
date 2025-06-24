@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { X, Check, ChevronDown, HelpCircle } from 'lucide-react';
+import { X, Check, ChevronDown, Globe } from 'lucide-react';
 
 const LanguageSelector = () => {
   const [selectedLanguage, setSelectedLanguage] = useState('ht');
@@ -23,27 +22,21 @@ const LanguageSelector = () => {
 
   const currentLang = languages.find(lang => lang.code === selectedLanguage);
 
-  const handleLanguageSelect = (langCode: string) => {
+  const handleLanguageSelect = (langCode) => {
     setSelectedLanguage(langCode);
     setIsOpen(false);
   };
 
   return (
     <>
-      {/* Language Selector Trigger */}
+      {/* Language Selector Trigger - Top Right */}
       <button
         onClick={() => setIsOpen(true)}
-        className="flex items-center w-full px-4 py-3 bg-gray-100 rounded-xl hover:bg-gray-200 transition-colors active:scale-98"
+        className="flex items-center gap-2 px-3 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors active:scale-98"
       >
-        <HelpCircle className="w-5 h-5 text-gray-500 flex-shrink-0" />
-        <img 
-          src={`https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/${currentLang?.country.toLowerCase()}.svg`}
-          alt={`${currentLang?.name} flag`}
-          className="w-6 h-4 rounded-sm flex-shrink-0 mx-4"
-        />
-        <span className="text-sm text-gray-500 flex-1 text-left">{currentLang?.countryName}</span>
-        <span className="text-sm font-medium text-gray-700 flex-1 text-left">{currentLang?.name}</span>
-        <ChevronDown className="w-4 h-4 text-gray-500 flex-shrink-0 ml-4" />
+        <Globe className="w-5 h-5 text-gray-500" />
+        <span className="text-sm font-medium text-gray-700">{currentLang.name}</span>
+        <ChevronDown className="w-4 h-4 text-gray-500" />
       </button>
 
       {/* Bottom Sheet */}
@@ -88,15 +81,17 @@ const LanguageSelector = () => {
                     alt={`${lang.name} flag`}
                     className="w-8 h-5 rounded-sm flex-shrink-0"
                   />
-                  <span className="text-gray-500 font-medium flex-1 text-left ml-6">{lang.countryName}</span>
-                  <span className="text-gray-800 font-medium flex-1 text-left">{lang.name}</span>
+                  <div className="flex flex-col items-start flex-1 ml-4">
+                    <span className="text-gray-800 font-medium">{lang.name}</span>
+                    <span className="text-gray-500 text-sm">{lang.countryName}</span>
+                  </div>
                   {lang.code === selectedLanguage && (
-                    <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 ml-6">
+                    <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
                       <Check className="w-3 h-3 text-white stroke-2" />
                     </div>
                   )}
                   {lang.code !== selectedLanguage && (
-                    <div className="w-6 h-6 flex-shrink-0 ml-6"></div>
+                    <div className="w-6 h-6 flex-shrink-0"></div>
                   )}
                 </button>
               ))}
@@ -140,11 +135,40 @@ const LanguageSelector = () => {
   );
 };
 
-export default function SignInScreen() {
+export default function LoginPage() {
+  const [selectedLanguage, setSelectedLanguage] = useState('ht');
+
+  const languages = [
+    { code: 'ht', name: 'Kreyòl Ayisyen', country: 'HT', countryName: 'Haiti' },
+    { code: 'fr', name: 'Français', country: 'FR', countryName: 'France' },
+    { code: 'en', name: 'English', country: 'US', countryName: 'United States' },
+    { code: 'es', name: 'Español', country: 'ES', countryName: 'Spain' },
+    { code: 'pt', name: 'Português', country: 'PT', countryName: 'Portugal' },
+    { code: 'de', name: 'Deutsch', country: 'DE', countryName: 'Germany' },
+    { code: 'it', name: 'Italiano', country: 'IT', countryName: 'Italy' },
+    { code: 'zh', name: '中文', country: 'CN', countryName: 'China' },
+    { code: 'ja', name: '日本語', country: 'JP', countryName: 'Japan' },
+    { code: 'ko', name: '한국어', country: 'KR', countryName: 'South Korea' },
+    { code: 'ar', name: 'العربية', country: 'SA', countryName: 'Saudi Arabia' },
+    { code: 'ru', name: 'Русский', country: 'RU', countryName: 'Russia' }
+  ];
+
+  const currentLang = languages.find(lang => lang.code === selectedLanguage);
+
   return (
     <div className="min-h-screen bg-white flex flex-col px-4">
       {/* Top navigation bar */}
-      <div className="pt-4 pb-4">
+      <div className="pt-4 pb-4 flex items-center justify-between">
+        {/* Flag icon - Top Left */}
+        <div className="flex items-center">
+          <img 
+            src={`https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/${currentLang.country.toLowerCase()}.svg`}
+            alt={`${currentLang.name} flag`}
+            className="w-8 h-5 rounded-sm"
+          />
+        </div>
+        
+        {/* Language Selector - Top Right */}
         <LanguageSelector />
       </div>
       
