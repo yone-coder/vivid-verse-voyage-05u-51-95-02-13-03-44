@@ -23,7 +23,7 @@ export default function LoginPage() {
   if (currentScreen === 'success') {
     const timer = setTimeout(() => {
       navigate('/');
-    }, 3000); // 3 seconds delay
+    }, 4000); // 3 seconds delay
 
     return () => clearTimeout(timer);
   }
