@@ -1,6 +1,5 @@
 
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '@/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import MainLoginScreen from './MainLoginScreen';
 import EmailAuthScreen from './EmailAuthScreen';
@@ -16,29 +15,7 @@ export default function LoginPage() {
   const [selectedLanguage, setSelectedLanguage] = useState('ht');
   const [emailForPassword, setEmailForPassword] = useState('');
 
-  const { user, skipSuccessScreen, isLoading } = useAuth();
   const navigate = useNavigate();
-
-  // Handle successful login - show success screen when user is authenticated
-  useEffect(() => {
-    if (user && !isLoading && currentScreen !== 'success') {
-      console.log('User authenticated, showing success screen');
-      setCurrentScreen('success');
-    }
-  }, [user, isLoading, currentScreen]);
-
-  // Handle success screen timeout and redirect
-  useEffect(() => {
-    if (currentScreen === 'success') {
-      const timer = setTimeout(() => {
-        console.log('Success screen timeout, redirecting to homepage');
-        skipSuccessScreen();
-        navigate('/');
-      }, 3000); // 3 seconds delay
-
-      return () => clearTimeout(timer);
-    }
-  }, [currentScreen, navigate, skipSuccessScreen]);
 
   const handleContinueWithEmail = () => {
     setCurrentScreen('email');
@@ -75,24 +52,13 @@ export default function LoginPage() {
 
   const handleSignInSuccess = () => {
     console.log('Sign in completed successfully');
-    // Don't manually set to success here - let the useEffect handle it based on user state
+    setCurrentScreen('success');
   };
 
   const handleContinueToDashboard = () => {
     console.log('Manual redirect to homepage from success screen');
-    skipSuccessScreen();
     navigate('/');
   };
-
-  // Show loading state while checking authentication
-  if (isLoading) {
-    return <div className="min-h-screen bg-white flex items-center justify-center">Loading...</div>;
-  }
-
-  // If user is authenticated and we're not showing success screen, redirect immediately
-  if (user && currentScreen !== 'success') {
-    return null;
-  }
 
   return (
     <div className="min-h-screen bg-white">

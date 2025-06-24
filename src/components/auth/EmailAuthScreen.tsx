@@ -1,7 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowLeft, Mail, HelpCircle } from 'lucide-react';
-import { useAuth } from '@/context/AuthContext';
 import { toast } from 'sonner';
 
 interface EmailAuthScreenProps {
@@ -23,7 +22,6 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { checkUserExists, signUp } = useAuth();
   const emailInputRef = useRef<HTMLInputElement>(null);
 
   // Update email validation when component mounts or initialEmail changes
@@ -45,17 +43,11 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
 
     setIsLoading(true);
     try {
-      const userExists = await checkUserExists(email);
-      if (userExists) {
-        onContinueWithPassword(email);
-      } else {
-        // User doesn't exist, create account
-        await signUp(email, 'tempPassword123!'); // You might want to collect password first
-        toast.success('Account created! Please check your email to verify your account.');
-      }
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      onContinueWithPassword(email);
     } catch (error) {
       console.error('Error checking user:', error);
-      // Fallback to password screen if check fails
       onContinueWithPassword(email);
     } finally {
       setIsLoading(false);

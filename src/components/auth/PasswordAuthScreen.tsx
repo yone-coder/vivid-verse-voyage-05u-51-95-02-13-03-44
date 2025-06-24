@@ -1,7 +1,6 @@
 
 import React, { useState, useRef } from 'react';
 import { ArrowLeft, Lock, Mail, Eye, EyeOff, HelpCircle } from 'lucide-react';
-import { useAuth } from '@/context/AuthContext';
 
 interface PasswordAuthScreenProps {
   email: string;
@@ -15,7 +14,6 @@ const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({ email, onBack, 
   const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { signIn } = useAuth();
   const passwordInputRef = useRef<HTMLInputElement>(null);
 
   const handlePasswordChange = (value: string) => {
@@ -33,11 +31,11 @@ const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({ email, onBack, 
 
     setIsLoading(true);
     try {
-      await signIn(email, password);
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
       onSignInSuccess();
     } catch (error) {
       console.error('Sign in failed:', error);
-      // Error handling is done in the AuthContext
     } finally {
       setIsLoading(false);
     }
