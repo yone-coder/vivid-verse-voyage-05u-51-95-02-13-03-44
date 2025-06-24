@@ -56,7 +56,7 @@ function MainLayoutContent() {
 
   // Calculate bottom padding based on whether we're in multi-step transfer mode
   const getBottomPadding = () => {
-    if (!isMobile) return '0px';
+    if (!isMobile || isComponentsPage) return '0px';
     if (isMultiStepTransfer) return '112px'; // 64px (continue button) + 48px (nav bar)
     return '48px'; // Just nav bar
   };
@@ -73,18 +73,18 @@ function MainLayoutContent() {
       <div className="min-h-screen flex flex-col bg-white">
         <style dangerouslySetInnerHTML={{ __html: headerHeightStyle }} />
 
-        {/* Render appropriate header based on device */}
-        {isMobile ? <PremiumBankingHeader /> : <DesktopHeader />}
+        {/* Render appropriate header based on device - hide on components page */}
+        {!isComponentsPage && (isMobile ? <PremiumBankingHeader /> : <DesktopHeader />)}
 
         <main className={`flex-grow relative ${isMobile ? '' : 'min-h-screen'}`} style={{ paddingBottom: getBottomPadding() }}>
           <Outlet />
         </main>
 
-        {/* Desktop footer - show for all desktop pages */}
-        {!isMobile && <DesktopFooter />}
+        {/* Desktop footer - show for all desktop pages except components */}
+        {!isMobile && !isComponentsPage && <DesktopFooter />}
 
-        {/* Mobile bottom navigation */}
-        {isMobile && <IndexBottomNav />}
+        {/* Mobile bottom navigation - hide on components page */}
+        {isMobile && !isComponentsPage && <IndexBottomNav />}
 
         {/* Auth Overlay - now inside AuthProvider context */}
         <AuthOverlay />
