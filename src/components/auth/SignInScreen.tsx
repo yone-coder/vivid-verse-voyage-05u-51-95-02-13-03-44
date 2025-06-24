@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -39,6 +38,7 @@ export default function LoginPage() {
       setCurrentScreen('email');
     } else if (currentScreen === 'email') {
       setCurrentScreen('login');
+      setEmailForPassword(''); // Clear email when going back to login
     }
   };
 
@@ -88,6 +88,7 @@ export default function LoginPage() {
           selectedLanguage={selectedLanguage}
           onContinueWithPassword={handleContinueWithPassword}
           onContinueWithCode={handleContinueWithCode}
+          initialEmail={emailForPassword}
         />
       )}
       
