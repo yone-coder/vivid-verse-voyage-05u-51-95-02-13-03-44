@@ -11,8 +11,7 @@ import SignInScreen from "@/components/auth/SignInScreen";
 import { Outlet, useLocation } from "react-router-dom";
 import { useAuthOverlay } from "@/context/AuthOverlayContext";
 import { LanguageProvider } from "@/context/LanguageContext";
-import { AuthProvider } from "@/context/AuthContext";
-import { useAuth } from "@/context/AuthContext";
+import { AuthProvider, useAuth } from "@/context/AuthContext";
 
 function MainLayoutContent() {
   const isMobile = useIsMobile();
@@ -43,16 +42,6 @@ function MainLayoutContent() {
       window.history.replaceState({}, "", "/");
     }
   }, [pathname, openAuthOverlay]);
-
-  // Show SignInScreen if user is not authenticated and splash is not visible
-  // But allow access to components page without authentication
-  if (!showSplash && !user && !isLoading && !isComponentsPage) {
-    return (
-      <LanguageProvider>
-        <SignInScreen />
-      </LanguageProvider>
-    );
-  }
 
   // Calculate bottom padding based on whether we're in multi-step transfer mode
   const getBottomPadding = () => {
@@ -93,10 +82,39 @@ function MainLayoutContent() {
   );
 }
 
+function AuthenticatedLayout() {
+  const [showSplash, setShowSplash] = useState(true);
+  const { user, isLoading } = useAuth();
+  const location = useLocation();
+  const isComponentsPage = location.pathname === "/components";
+
+  // Hide splash screen after 4 seconds
+  useEffect(() => {
+    const hideTimer = setTimeout(() => {
+      setShowSplash(false);
+    }, 4000);
+
+    return () => clearTimeout(hideTimer);
+  }, []);
+
+  // Show SignInScreen if user is not authenticated and splash is not visible
+  // But allow access to components page without authentication
+  if (!showSplash && !user && !isLoading && !isComponentsPage) {
+    return (
+      <LanguageProvider>
+        <SignInScreen />
+      </LanguageProvider>
+    );
+  }
+
+  // Show the main layout if authenticated or still loading
+  return <MainLayoutContent />;
+}
+
 export default function MainLayout() {
   return (
     <AuthProvider>
-      <MainLayoutContent />
+      <AuthenticatedLayout />
     </AuthProvider>
   );
 }
