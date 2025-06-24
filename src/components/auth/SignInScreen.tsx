@@ -112,7 +112,7 @@ const LanguageSelector = ({ selectedLanguage, setSelectedLanguage }) => {
   );
 };
 
-// EmailAuthScreen Component (updated)
+// EmailAuthScreen Component (unchanged)
 const EmailAuthScreen = ({ onBack, selectedLanguage, onContinueWithPassword, onContinueWithCode }) => {
   const [email, setEmail] = useState('');
   const [isEmailValid, setIsEmailValid] = useState(false);
@@ -370,8 +370,8 @@ const EmailAuthScreen = ({ onBack, selectedLanguage, onContinueWithPassword, onC
   );
 };
 
-// PasswordAuthScreen Component (updated with email icon and change button)
-const PasswordAuthScreen = ({ email, onBack }) => {
+// PasswordAuthScreen Component (unchanged)
+const PasswordAuthScreen = ({ email, onBack, onSignInSuccess }) => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isPasswordValid, setIsPasswordValid] = useState(false);
@@ -386,6 +386,12 @@ const PasswordAuthScreen = ({ email, onBack }) => {
   const handleChangeEmail = () => {
     console.log('Change email clicked');
     onBack(); // Navigate back to email step
+  };
+
+  const handleSignIn = () => {
+    if (isPasswordValid) {
+      onSignInSuccess();
+    }
   };
 
   const faviconOverrides = {
@@ -504,6 +510,7 @@ const PasswordAuthScreen = ({ email, onBack }) => {
         <div className="space-y-3 mb-8">
           <button
             disabled={!isPasswordValid}
+            onClick={handleSignIn}
             className={`w-full flex items-center justify-center gap-3 py-4 px-4 rounded-lg font-medium transition-all ${
               isPasswordValid
                 ? 'bg-red-500 text-white hover:bg-red-600 active:scale-98'
@@ -541,8 +548,8 @@ const PasswordAuthScreen = ({ email, onBack }) => {
   );
 };
 
-// New VerificationCodeScreen Component
-const VerificationCodeScreen = ({ email, onBack, onResendCode }) => {
+// VerificationCodeScreen Component (fixed timeLeft type)
+const VerificationCodeScreen = ({ email, onBack, onResendCode, onVerificationSuccess }) => {
   const [code, setCode] = useState(['', '', '', '', '', '']);
   const [isComplete, setIsComplete] = useState(false);
   const [timeLeft, setTimeLeft] = useState(60);
@@ -582,6 +589,12 @@ const VerificationCodeScreen = ({ email, onBack, onResendCode }) => {
     setTimeLeft(60);
     setCanResend(false);
     onResendCode(email);
+  };
+
+  const handleVerifyCode = () => {
+    if (isComplete) {
+      onVerificationSuccess();
+    }
   };
 
   const faviconOverrides = {
@@ -710,6 +723,7 @@ const VerificationCodeScreen = ({ email, onBack, onResendCode }) => {
         <div className="space-y-3 mb-8">
           <button
             disabled={!isComplete}
+            onClick={handleVerifyCode}
             className={`w-full flex items-center justify-center gap-3 py-4 px-4 rounded-lg font-medium transition-all ${
               isComplete
                 ? 'bg-red-500 text-white hover:bg-red-600 active:scale-98'
@@ -735,9 +749,101 @@ const VerificationCodeScreen = ({ email, onBack, onResendCode }) => {
   );
 };
 
-// Main LoginPage Component
+// New SuccessScreen Component
+const SuccessScreen = ({ email, onContinue }) => {
+  const [showCheckmark, setShowCheckmark] = useState(false);
+  const [showContent, setShowContent] = useState(false);
+
+  useEffect(() => {
+    // Start checkmark animation immediately
+    const checkmarkTimer = setTimeout(() => {
+      setShowCheckmark(true);
+    }, 100);
+
+    // Show content after checkmark animation
+    const contentTimer = setTimeout(() => {
+      setShowContent(true);
+    }, 800);
+
+    return () => {
+      clearTimeout(checkmarkTimer);
+      clearTimeout(contentTimer);
+    };
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-white flex flex-col px-4">
+      {/* Progress Bar - All complete */}
+      <div className="pt-6 mb-8 px-0">
+        <div className="flex items-center gap-2 mb-2">
+          <div className="flex-1 h-1 bg-red-500 rounded-full"></div>
+          <div className="flex-1 h-1 bg-red-500 rounded-full"></div>
+          <div className="flex-1 h-1 bg-red-500 rounded-full"></div>
+          <div className="flex-1 h-1 bg-red-500 rounded-full"></div>
+        </div>
+      </div>
+
+      {/* Main content container */}
+      <div className="flex-1 flex flex-col items-center justify-center w-full max-w-md mx-auto relative">
+        
+        {/* Animated Checkmark */}
+        <div className="mb-8 relative">
+          <div className={`w-24 h-24 rounded-full border-4 border-green-500 flex items-center justify-center transition-all duration-500 ${
+            showCheckmark ? 'scale-100 opacity-100' : 'scale-50 opacity-0'
+          }`}>
+            <Check className={`w-12 h-12 text-green-500 transition-all duration-300 delay-300 ${
+              showCheckmark ? 'scale-100 opacity-100' : 'scale-0 opacity-0'
+            }`} />
+          </div>
+          
+          {/* Pulsing background effect */}
+          <div className={`absolute inset-0 w-24 h-24 rounded-full bg-green-500 opacity-20 transition-all duration-1000 ${
+            showCheckmark ? 'animate-ping' : ''
+          }`}></div>
+        </div>
+
+        {/* Success content */}
+        <div className={`text-center transition-all duration-500 delay-500 ${
+          showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+        }`}>
+          <h1 className="text-3xl font-semibold text-gray-900 mb-3">
+            Welcome back!
+          </h1>
+          <p className="text-gray-600 mb-2">
+            You have successfully signed in to your account
+          </p>
+          <p className="text-sm text-gray-500 mb-8">
+            {email}
+          </p>
+
+          <button
+            onClick={onContinue}
+            className="w-full flex items-center justify-center gap-3 py-4 px-4 bg-red-500 text-white rounded-lg font-medium transition-all hover:bg-red-600 active:scale-98"
+            type="button"
+          >
+            <span>Continue to Dashboard</span>
+          </button>
+        </div>
+
+        {/* Security message */}
+        <div className={`text-center mt-8 transition-all duration-500 delay-700 ${
+          showContent ? 'opacity-100' : 'opacity-0'
+        }`}>
+          <div className="flex items-center justify-center gap-2">
+            <svg className="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M18,8A6,6 0 0,0 12,2A6,6 0 0,0 6,8H4C2.89,8 2,8.89 2,10V20A2,2 0 0,0 4,22H20A2,2 0 0,0 22,20V10C22,8.89 21.1,8 20,8H18M12,4A4,4 0 0,1 16,8H8A4,4 0 0,1 12,4Z"/>
+            </svg>
+            <span className="text-gray-500 text-sm">Your session is secure</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Main LoginPage Component (updated)
 export default function LoginPage() {
-  const [currentScreen, setCurrentScreen] = useState('login'); // 'login', 'email', 'password', 'verification'
+  const [currentScreen, setCurrentScreen] = useState('login'); // 'login', 'email', 'password', 'verification', 'success'
   const [selectedLanguage, setSelectedLanguage] = useState('ht');
   const [emailForPassword, setEmailForPassword] = useState('');
 
@@ -763,7 +869,9 @@ export default function LoginPage() {
   };
 
   const handleBack = () => {
-    if (currentScreen === 'verification') {
+    if (currentScreen === 'success') {
+      setCurrentScreen('login');
+    } else if (currentScreen === 'verification') {
       setCurrentScreen('email');
     } else if (currentScreen === 'password') {
       setCurrentScreen('email');
@@ -786,6 +894,15 @@ export default function LoginPage() {
   const handleResendCode = (email) => {
     console.log('Resending verification code to:', email);
     // Here you would typically call your API to resend the code
+  };
+
+  const handleSignInSuccess = () => {
+    setCurrentScreen('success');
+  };
+
+  const handleContinueToDashboard = () => {
+    console.log('Redirecting to dashboard...');
+    // Here you would typically redirect to the main app
   };
 
   return (
@@ -872,12 +989,22 @@ export default function LoginPage() {
           onContinueWithCode={handleContinueWithCode}
         />
       ) : currentScreen === 'password' ? (
-        <PasswordAuthScreen email={emailForPassword} onBack={handleBack} />
-      ) : (
+        <PasswordAuthScreen 
+          email={emailForPassword} 
+          onBack={handleBack}
+          onSignInSuccess={handleSignInSuccess}
+        />
+      ) : currentScreen === 'verification' ? (
         <VerificationCodeScreen 
           email={emailForPassword} 
           onBack={handleBack}
           onResendCode={handleResendCode}
+          onVerificationSuccess={handleSignInSuccess}
+        />
+      ) : (
+        <SuccessScreen 
+          email={emailForPassword}
+          onContinue={handleContinueToDashboard}
         />
       )}
     </>
