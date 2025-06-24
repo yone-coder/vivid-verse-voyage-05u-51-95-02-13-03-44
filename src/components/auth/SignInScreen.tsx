@@ -1,5 +1,7 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '@/context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import MainLoginScreen from './MainLoginScreen';
 import EmailAuthScreen from './EmailAuthScreen';
 import PasswordAuthScreen from './PasswordAuthScreen';
@@ -13,6 +15,16 @@ export default function LoginPage() {
   const [currentScreen, setCurrentScreen] = useState<ScreenType>('login');
   const [selectedLanguage, setSelectedLanguage] = useState('ht');
   const [emailForPassword, setEmailForPassword] = useState('');
+
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  // Redirect to home if user is already authenticated
+  useEffect(() => {
+    if (user) {
+      navigate('/');
+    }
+  }, [user, navigate]);
 
   const handleContinueWithEmail = () => {
     setCurrentScreen('email');
@@ -52,8 +64,13 @@ export default function LoginPage() {
 
   const handleContinueToDashboard = () => {
     console.log('Redirecting to homepage...');
-    setCurrentScreen('login'); // Reset to login for demo purposes
+    navigate('/'); // This will redirect to the home page (mobile multi-step transfer)
   };
+
+  // Don't render if user is already authenticated
+  if (user) {
+    return null;
+  }
 
   return (
     <>

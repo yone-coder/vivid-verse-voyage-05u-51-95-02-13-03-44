@@ -1,6 +1,8 @@
 
 import React, { useState, useRef } from 'react';
 import { ArrowLeft, Lock, Key, Mail, Eye, EyeOff, HelpCircle } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+import { toast } from 'sonner';
 
 interface PasswordAuthScreenProps {
   email: string;
@@ -12,7 +14,9 @@ const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({ email, onBack, 
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isPasswordValid, setIsPasswordValid] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
+  const { signIn } = useAuth();
   const passwordInputRef = useRef<HTMLInputElement>(null);
 
   const handlePasswordChange = (value: string) => {
@@ -25,10 +29,25 @@ const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({ email, onBack, 
     onBack(); // Navigate back to email step
   };
 
-  const handleSignIn = () => {
-    if (isPasswordValid) {
+  const handleSignIn = async () => {
+    if (!isPasswordValid || isLoading) return;
+
+    setIsLoading(true);
+    try {
+      await signIn(email, password);
       onSignInSuccess();
+    } catch (error) {
+      console.error('Sign in failed:', error);
+      // Error handling is done in the AuthContext
+    } finally {
+      setIsLoading(false);
     }
+  };
+
+  const handleSendVerificationCode = async () => {
+    // For now, just show a toast. In a real implementation, you'd call your verification code API
+    toast.success('Verification code sent to your email!');
+    // You could navigate to verification screen here if needed
   };
 
   const faviconOverrides: Record<string, string> = {
@@ -46,6 +65,7 @@ const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({ email, onBack, 
           onClick={onBack}
           className="flex items-center justify-center w-10 h-10 hover:bg-gray-100 rounded-full transition-colors active:scale-95"
           aria-label="Go back"
+          disabled={isLoading}
         >
           <ArrowLeft className="w-5 h-5 text-gray-700" />
         </button>
@@ -59,6 +79,7 @@ const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({ email, onBack, 
           aria-label="Help"
           onClick={() => alert('Need help? Contact support@example.com')}
           type="button"
+          disabled={isLoading}
         >
           <HelpCircle className="w-5 h-5 text-gray-700" />
         </button>
@@ -81,7 +102,7 @@ const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({ email, onBack, 
             Enter your password
           </h1>
           <p className="text-gray-600">
-            We'll send you a verification code or you can sign in with your password
+            Sign in with your password or request a verification code
           </p>
         </div>
 
@@ -108,6 +129,7 @@ const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({ email, onBack, 
               onClick={handleChangeEmail}
               className="text-red-500 font-medium hover:text-red-600 text-sm"
               type="button"
+              disabled={isLoading}
             >
               Change
             </button>
@@ -130,7 +152,8 @@ const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({ email, onBack, 
               placeholder="Enter your password"
               autoComplete="current-password"
               ref={passwordInputRef}
-              className="relative w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors bg-transparent"
+              disabled={isLoading}
+              className="relative w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors bg-transparent disabled:opacity-50"
             />
 
             <button
@@ -138,6 +161,7 @@ const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({ email, onBack, 
               onClick={() => setShowPassword(!showPassword)}
               className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
               aria-label={showPassword ? 'Hide password' : 'Show password'}
+              disabled={isLoading}
             >
               {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
             </button>
@@ -146,22 +170,24 @@ const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({ email, onBack, 
 
         <div className="space-y-3 mb-8">
           <button
-            disabled={!isPasswordValid}
+            disabled={!isPasswordValid || isLoading}
             onClick={handleSignIn}
             className={`w-full flex items-center justify-center gap-3 py-4 px-4 rounded-lg font-medium transition-all ${
-              isPasswordValid
+              isPasswordValid && !isLoading
                 ? 'bg-red-500 text-white hover:bg-red-600 active:scale-98'
                 : 'bg-gray-200 text-gray-400 cursor-not-allowed'
             }`}
             type="button"
           >
             <Lock className="w-5 h-5" />
-            <span>Sign In</span>
+            <span>{isLoading ? 'Signing In...' : 'Sign In'}</span>
           </button>
 
           <button
+            onClick={handleSendVerificationCode}
             className="w-full flex items-center justify-center gap-3 py-4 px-4 border-2 border-red-500 text-red-500 rounded-lg font-medium transition-all hover:bg-red-50 active:scale-98"
             type="button"
+            disabled={isLoading}
           >
             <Key className="w-5 h-5" />
             <span>Send Verification Code</span>
@@ -169,7 +195,11 @@ const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({ email, onBack, 
         </div>
 
         <div className="text-center">
-          <button className="text-red-500 font-medium hover:text-red-600 mb-4" type="button">
+          <button 
+            className="text-red-500 font-medium hover:text-red-600 mb-4" 
+            type="button"
+            disabled={isLoading}
+          >
             Forgot password?
           </button>
 

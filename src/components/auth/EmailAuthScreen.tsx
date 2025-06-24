@@ -1,6 +1,8 @@
 
-import React, { useState, useRef, useEffect } from 'react';
-import { ArrowLeft, Mail, Lock, Key, Check, HelpCircle } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { ArrowLeft, Mail, HelpCircle } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+import { toast } from 'sonner';
 
 interface EmailAuthScreenProps {
   onBack: () => void;
@@ -17,134 +19,80 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
 }) => {
   const [email, setEmail] = useState('');
   const [isEmailValid, setIsEmailValid] = useState(false);
-  const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [faviconUrl, setFaviconUrl] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
+  const { checkUserExists, signUp } = useAuth();
   const emailInputRef = useRef<HTMLInputElement>(null);
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const handleEmailChange = (value: string) => {
+    setEmail(value);
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    setIsEmailValid(emailRegex.test(value));
+  };
 
-  const commonEmailDomains = [
-    'gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'icloud.com',
-    'aol.com', 'protonmail.com', 'live.com', 'msn.com', 'me.com',
-  ];
+  const handleContinueWithPassword = async () => {
+    if (!isEmailValid || isLoading) return;
+
+    setIsLoading(true);
+    try {
+      const userExists = await checkUserExists(email);
+      if (userExists) {
+        onContinueWithPassword(email);
+      } else {
+        // User doesn't exist, create account
+        await signUp(email, 'tempPassword123!'); // You might want to collect password first
+        toast.success('Account created! Please check your email to verify your account.');
+      }
+    } catch (error) {
+      console.error('Error checking user:', error);
+      // Fallback to password screen if check fails
+      onContinueWithPassword(email);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleContinueWithCode = () => {
+    if (!isEmailValid || isLoading) return;
+    onContinueWithCode(email);
+  };
 
   const faviconOverrides: Record<string, string> = {
     'gmail.com': 'https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico',
   };
 
-  const handleEmailChange = (value: string) => {
-    const trimmedValue = value.trim();
-    setEmail(trimmedValue);
-    setIsEmailValid(emailRegex.test(trimmedValue));
-
-    const atIndex = trimmedValue.indexOf('@');
-    if (atIndex > -1) {
-      const typedDomainPart = trimmedValue.slice(atIndex + 1).toLowerCase();
-      if (typedDomainPart.length === 0) {
-        setSuggestions(commonEmailDomains);
-      } else {
-        const filtered = commonEmailDomains.filter((domain) =>
-          domain.startsWith(typedDomainPart)
-        );
-        setSuggestions(filtered);
-      }
-      if (typedDomainPart.length > 0) {
-        const favicon =
-          faviconOverrides[typedDomainPart] ||
-          `https://www.google.com/s2/favicons?domain=${typedDomainPart}`;
-        setFaviconUrl(favicon);
-      } else {
-        setFaviconUrl(null);
-      }
-    } else {
-      setSuggestions([]);
-      setFaviconUrl(null);
-    }
-  };
-
-  useEffect(() => {
-    const input = emailInputRef.current;
-    if (!input) return;
-
-    let lastValue = input.value;
-
-    const checkValueChange = () => {
-      if (input.value !== lastValue) {
-        lastValue = input.value;
-        handleEmailChange(input.value);
-      }
-    };
-
-    const intervalId = setInterval(checkValueChange, 300);
-
-    const handleInput = () => {
-      lastValue = input.value;
-      handleEmailChange(input.value);
-    };
-    const handleChange = () => {
-      lastValue = input.value;
-      handleEmailChange(input.value);
-    };
-    const handleAnimationStart = (e: AnimationEvent) => {
-      if (e.animationName === 'onAutoFillStart') {
-        lastValue = input.value;
-        handleEmailChange(input.value);
-      }
-    };
-
-    input.addEventListener('input', handleInput);
-    input.addEventListener('change', handleChange);
-    input.addEventListener('animationstart', handleAnimationStart);
-
-    const timeoutId = setTimeout(() => {
-      if (input.value) {
-        lastValue = input.value;
-        handleEmailChange(input.value);
-      }
-    }, 200);
-
-    return () => {
-      clearInterval(intervalId);
-      clearTimeout(timeoutId);
-      input.removeEventListener('input', handleInput);
-      input.removeEventListener('change', handleChange);
-      input.removeEventListener('animationstart', handleAnimationStart);
-    };
-  }, []);
-
-  const handleSuggestionClick = (domain: string) => {
-    const atIndex = email.indexOf('@');
-    const newEmail = atIndex > -1 ? email.slice(0, atIndex + 1) + domain : email + '@' + domain;
-    setEmail(newEmail);
-    setIsEmailValid(emailRegex.test(newEmail));
-    setSuggestions([]);
-    setFaviconUrl(faviconOverrides[domain] || `https://www.google.com/s2/favicons?domain=${domain}`);
-  };
+  const domain = email.split('@')[1] || '';
+  const faviconUrl = faviconOverrides[domain] || `https://www.google.com/s2/favicons?domain=${domain}`;
 
   return (
     <div className="min-h-screen bg-white flex flex-col px-4">
+      {/* Header */}
       <div className="pt-2 pb-3 flex items-center justify-between">
         <button
           onClick={onBack}
           className="flex items-center justify-center w-10 h-10 hover:bg-gray-100 rounded-full transition-colors active:scale-95"
           aria-label="Go back"
+          disabled={isLoading}
         >
           <ArrowLeft className="w-5 h-5 text-gray-700" />
         </button>
+
         <h2 className="text-lg font-semibold text-gray-900">
-          Welcome Back! Sign In
+          Continue with Email
         </h2>
+
         <button
           className="flex items-center justify-center w-10 h-10 hover:bg-gray-100 rounded-full transition-colors active:scale-95"
           aria-label="Help"
           onClick={() => alert('Need help? Contact support@example.com')}
           type="button"
+          disabled={isLoading}
         >
           <HelpCircle className="w-5 h-5 text-gray-700" />
         </button>
       </div>
 
+      {/* Progress Bar */}
       <div className="mb-4 px-0">
         <div className="flex items-center gap-2 mb-2">
           <div className="flex-1 h-1 bg-red-500 rounded-full"></div>
@@ -154,34 +102,36 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
         </div>
       </div>
 
+      {/* Main content container */}
       <div className="flex-1 flex flex-col w-full max-w-md mx-auto relative">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-semibold text-gray-900 mb-2">
-            Enter your email
+            What's your email?
           </h1>
           <p className="text-gray-600">
-            We'll send you a verification code or you can sign in with your password
+            We'll check if you have an account or create a new one
           </p>
         </div>
 
-        <div className="mb-2 relative">
+        {/* Email input */}
+        <div className="mb-6 relative">
           <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
             Email address
           </label>
           <div className="relative">
-            {faviconUrl ? (
+            {faviconUrl && email ? (
               <img
                 src={faviconUrl}
-                alt="Domain favicon"
+                alt="Email provider favicon"
                 className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 rounded"
                 onError={(e) => {
-                  e.currentTarget.onerror = null;
-                  e.currentTarget.src = '';
+                  e.currentTarget.style.display = 'none';
                 }}
               />
             ) : (
               <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
             )}
+
             <input
               id="email"
               type="email"
@@ -190,80 +140,50 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
               placeholder="Enter your email address"
               autoComplete="email"
               ref={emailInputRef}
-              className="relative w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors bg-transparent"
-              aria-autocomplete="list"
-              aria-expanded={suggestions.length > 0}
-              aria-haspopup="listbox"
-              aria-controls="email-suggestions"
+              disabled={isLoading}
+              className="relative w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors bg-transparent disabled:opacity-50"
             />
-            {isEmailValid && (
-              <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-500" />
-            )}
           </div>
         </div>
 
-        {suggestions.length > 0 && (
-          <div
-            id="email-suggestions"
-            className="mb-6 mt-1 flex gap-2 overflow-x-auto px-1"
-            role="listbox"
-            aria-label="Email domain suggestions"
-          >
-            {suggestions.map((domain) => (
-              <button
-                key={domain}
-                type="button"
-                onClick={() => handleSuggestionClick(domain)}
-                className="flex-shrink-0 px-3 py-1 rounded-full border border-gray-300 text-gray-700 hover:bg-red-50 hover:border-red-500 transition-colors text-sm whitespace-nowrap"
-                role="option"
-              >
-                @{domain}
-              </button>
-            ))}
-          </div>
-        )}
-
         <div className="space-y-3 mb-8">
           <button
-            disabled={!isEmailValid}
+            disabled={!isEmailValid || isLoading}
+            onClick={handleContinueWithPassword}
             className={`w-full flex items-center justify-center gap-3 py-4 px-4 rounded-lg font-medium transition-all ${
-              isEmailValid
+              isEmailValid && !isLoading
                 ? 'bg-red-500 text-white hover:bg-red-600 active:scale-98'
                 : 'bg-gray-200 text-gray-400 cursor-not-allowed'
             }`}
             type="button"
-            onClick={() => onContinueWithPassword(email)}
           >
-            <Lock className="w-5 h-5" />
-            <span>Continue with Password</span>
+            <Mail className="w-5 h-5" />
+            <span>{isLoading ? 'Checking...' : 'Continue with Password'}</span>
           </button>
+
           <button
-            disabled={!isEmailValid}
+            disabled={!isEmailValid || isLoading}
+            onClick={handleContinueWithCode}
             className={`w-full flex items-center justify-center gap-3 py-4 px-4 border-2 rounded-lg font-medium transition-all ${
-              isEmailValid
+              isEmailValid && !isLoading
                 ? 'border-red-500 text-red-500 hover:bg-red-50 active:scale-98'
-                : 'border-gray-200 text-gray-400 cursor-not-allowed'
+                : 'border-gray-300 text-gray-400 cursor-not-allowed'
             }`}
             type="button"
-            onClick={() => onContinueWithCode(email)}
           >
-            <Key className="w-5 h-5" />
-            <span>Continue with Code</span>
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+            </svg>
+            <span>Send Verification Code</span>
           </button>
         </div>
 
         <div className="text-center">
-          <p className="text-sm text-gray-500 mb-4">
-            Don't have an account?{' '}
-            <button className="text-red-500 font-medium hover:text-red-600" type="button">
-              Sign up
-            </button>
-          </p>
           <div className="flex items-center justify-center gap-2">
             <svg className="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M18,8A6,6 0 0,0 12,2A6,6 0 0,0 6,8H4C2.89,8 2,8.89 2,10V20A2,2 0 0,0 4,22H20A2,2 0 0,0 22,20V10C22,8.89 21.1,8 20,8H18M12,4A4,4 0 0,1 16,8H8A4,4 0 0,1 12,4Z"/>
             </svg>
-            <span className="text-gray-500 text-sm">Your email is secure with us</span>
+            <span className="text-gray-500 text-sm">Your email is safe with us</span>
           </div>
         </div>
       </div>
