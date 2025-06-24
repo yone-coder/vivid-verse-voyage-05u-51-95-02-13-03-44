@@ -14,6 +14,11 @@ const commonEmailDomains = [
   'me.com',
 ];
 
+// Custom mapping for favicons to fix Gmail icon issue
+const faviconOverrides = {
+  'gmail.com': 'https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico',
+};
+
 export default function EmailAuthScreen() {
   const [selectedLanguage, setSelectedLanguage] = useState('ht');
   const [email, setEmail] = useState('');
@@ -40,12 +45,10 @@ export default function EmailAuthScreen() {
 
   const currentLang = languages.find(lang => lang.code === selectedLanguage);
 
-  // Email validation regex
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  // Handle email input change and update inline suggestion, suggestions list, and favicon
   const handleEmailChange = (e) => {
-    const value = e.target.value;
+    const value = e.target.value.trim();
     setEmail(value);
 
     setIsEmailValid(emailRegex.test(value));
@@ -55,18 +58,18 @@ export default function EmailAuthScreen() {
       const typedDomainPart = value.slice(atIndex + 1).toLowerCase();
 
       if (typedDomainPart.length > 0) {
-        // Update favicon URL for the typed domain
-        setFaviconUrl(`https://www.google.com/s2/favicons?domain=${typedDomainPart}`);
+        // Use override favicon URL if exists, else fallback to Google favicon API
+        const favicon = faviconOverrides[typedDomainPart] 
+          || `https://www.google.com/s2/favicons?domain=${typedDomainPart}`;
+        setFaviconUrl(favicon);
       } else {
         setFaviconUrl(null);
       }
 
       if (typedDomainPart.length === 0) {
-        // Show all suggestions if user just typed '@'
         setSuggestions(commonEmailDomains);
         setInlineSuggestion(value + commonEmailDomains[0]);
       } else {
-        // Filter suggestions based on typed domain part
         const filtered = commonEmailDomains.filter(domain =>
           domain.startsWith(typedDomainPart)
         );
@@ -78,18 +81,15 @@ export default function EmailAuthScreen() {
         }
       }
     } else {
-      // No '@' typed yet, clear suggestions, inline suggestion, and favicon
       setSuggestions([]);
       setInlineSuggestion('');
       setFaviconUrl(null);
     }
   };
 
-  // Handle accepting the inline suggestion on Tab or Right Arrow
   const handleKeyDown = (e) => {
     if (!inlineSuggestion) return;
 
-    // Accept suggestion on Tab or Right Arrow if cursor is at end
     if ((e.key === 'Tab' || e.key === 'ArrowRight') && email.length < inlineSuggestion.length) {
       e.preventDefault();
       setEmail(inlineSuggestion);
@@ -97,16 +97,16 @@ export default function EmailAuthScreen() {
       setInlineSuggestion('');
       setSuggestions([]);
 
-      // Update favicon for accepted suggestion domain
       const atIndex = inlineSuggestion.indexOf('@');
       if (atIndex > -1) {
         const domain = inlineSuggestion.slice(atIndex + 1).toLowerCase();
-        setFaviconUrl(`https://www.google.com/s2/favicons?domain=${domain}`);
+        const favicon = faviconOverrides[domain] 
+          || `https://www.google.com/s2/favicons?domain=${domain}`;
+        setFaviconUrl(favicon);
       }
     }
   };
 
-  // Handle clicking a suggestion pill
   const handleSuggestionClick = (domain) => {
     const atIndex = email.indexOf('@');
     const newEmail = atIndex > -1 ? email.slice(0, atIndex + 1) + domain : email + '@' + domain;
@@ -114,11 +114,12 @@ export default function EmailAuthScreen() {
     setIsEmailValid(emailRegex.test(newEmail));
     setSuggestions([]);
     setInlineSuggestion('');
-    setFaviconUrl(`https://www.google.com/s2/favicons?domain=${domain}`);
+    const favicon = faviconOverrides[domain] 
+      || `https://www.google.com/s2/favicons?domain=${domain}`;
+    setFaviconUrl(favicon);
   };
 
   const handleBack = () => {
-    // Handle back navigation
     console.log('Navigate back to login screen');
   };
 
@@ -126,7 +127,6 @@ export default function EmailAuthScreen() {
     <div className="min-h-screen bg-white flex flex-col px-4">
       {/* Header */}
       <div className="pt-2 pb-3 flex items-center justify-between">
-        {/* Back Button */}
         <button
           onClick={handleBack}
           className="flex items-center justify-center w-10 h-10 hover:bg-gray-100 rounded-full transition-colors active:scale-95"
@@ -135,12 +135,10 @@ export default function EmailAuthScreen() {
           <ArrowLeft className="w-5 h-5 text-gray-700" />
         </button>
 
-        {/* Title */}
         <h2 className="text-lg font-semibold text-gray-900">
           Welcome Back! Sign In
         </h2>
 
-        {/* Help Button */}
         <button
           className="flex items-center justify-center w-10 h-10 hover:bg-gray-100 rounded-full transition-colors active:scale-95"
           aria-label="Help"
@@ -164,7 +162,6 @@ export default function EmailAuthScreen() {
 
       {/* Main content container */}
       <div className="flex-1 flex flex-col w-full max-w-md mx-auto relative">
-        {/* Welcome heading */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-semibold text-gray-900 mb-2">
             Enter your email
@@ -174,7 +171,6 @@ export default function EmailAuthScreen() {
           </p>
         </div>
 
-        {/* Email Input */}
         <div className="mb-2 relative">
           <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
             Email address
@@ -185,13 +181,12 @@ export default function EmailAuthScreen() {
                 src={faviconUrl}
                 alt="Domain favicon"
                 className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 rounded"
-                onError={() => setFaviconUrl(null)} // fallback to mail icon if favicon fails to load
+                onError={() => setFaviconUrl(null)}
               />
             ) : (
               <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
             )}
 
-            {/* Inline suggestion ghost text */}
             {inlineSuggestion &&
               inlineSuggestion.toLowerCase().startsWith(email.toLowerCase()) &&
               email.length < inlineSuggestion.length && (
@@ -225,7 +220,6 @@ export default function EmailAuthScreen() {
           </div>
         </div>
 
-        {/* Suggestions Horizontal List */}
         {suggestions.length > 0 && (
           <div
             id="email-suggestions"
@@ -248,7 +242,6 @@ export default function EmailAuthScreen() {
           </div>
         )}
 
-        {/* Authentication Options */}
         <div className="space-y-3 mb-8">
           <button
             disabled={!isEmailValid}
@@ -277,7 +270,6 @@ export default function EmailAuthScreen() {
           </button>
         </div>
 
-        {/* Help Text */}
         <div className="text-center">
           <p className="text-sm text-gray-500 mb-4">
             Don't have an account?{' '}
