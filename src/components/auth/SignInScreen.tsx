@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -20,18 +21,15 @@ export default function LoginPage() {
 
   // Only redirect if user is authenticated AND we're not in the success flow AND not loading
   useEffect(() => {
-  if (currentScreen === 'success') {
-    const timer = setTimeout(() => {
-      skipSuccessScreen();
-      navigate('/');
-    }, 3000); // 3 seconds delay
+    if (currentScreen === 'success') {
+      const timer = setTimeout(() => {
+        skipSuccessScreen();
+        navigate('/');
+      }, 3000); // 3 seconds delay
 
-    return () => clearTimeout(timer);
-  }
-}, [currentScreen, navigate, skipSuccessScreen]);
-
-
-
+      return () => clearTimeout(timer);
+    }
+  }, [currentScreen, navigate, skipSuccessScreen]);
 
   const handleContinueWithEmail = () => {
     setCurrentScreen('email');
@@ -81,8 +79,9 @@ export default function LoginPage() {
     return null;
   }
 
+  // Force the multi-step flow to always start with the main login screen
   return (
-    <>
+    <div className="min-h-screen bg-white">
       {currentScreen === 'login' && (
         <MainLoginScreen
           selectedLanguage={selectedLanguage}
@@ -124,6 +123,6 @@ export default function LoginPage() {
           onContinue={handleContinueToDashboard}
         />
       )}
-    </>
+    </div>
   );
 }
