@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { X, Check, ChevronDown, Globe } from 'lucide-react';
 
@@ -99,7 +100,7 @@ const LanguageSelector = () => {
         </>
       )}
 
-      <style jsx>{`
+      <style>{`
         @keyframes slide-up {
           from {
             transform: translateY(100%);

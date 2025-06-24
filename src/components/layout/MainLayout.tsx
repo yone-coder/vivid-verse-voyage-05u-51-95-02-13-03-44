@@ -26,6 +26,7 @@ function MainLayoutContent() {
   const isHomePage = pathname === "/";
   const isMultiStepTransfer = pathname.startsWith("/multi-step-transfer");
   const isAccountPage = pathname === "/account";
+  const isComponentsPage = pathname === "/components";
 
   // Hide splash screen after 4 seconds
   useEffect(() => {
@@ -44,7 +45,8 @@ function MainLayoutContent() {
   }, [pathname, openAuthOverlay]);
 
   // Show SignInScreen if user is not authenticated and splash is not visible
-  if (!showSplash && !user && !isLoading) {
+  // But allow access to components page without authentication
+  if (!showSplash && !user && !isLoading && !isComponentsPage) {
     return (
       <LanguageProvider>
         <SignInScreen />
