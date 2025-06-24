@@ -20,30 +20,14 @@ const faviconOverrides = {
 };
 
 export default function EmailAuthScreen() {
-  const [selectedLanguage, setSelectedLanguage] = useState('ht');
+  // Removed selectedLanguage and languages array
+
   const [email, setEmail] = useState('');
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
-  const [inlineSuggestion, setInlineSuggestion] = useState('');
+  // Removed inlineSuggestion state
   const [faviconUrl, setFaviconUrl] = useState(null);
   const suggestionsRef = useRef(null);
-
-  const languages = [
-    { code: 'ht', name: 'Kreyòl Ayisyen', country: 'HT', countryName: 'Haiti' },
-    { code: 'fr', name: 'Français', country: 'FR', countryName: 'France' },
-    { code: 'en', name: 'English', country: 'US', countryName: 'United States' },
-    { code: 'es', name: 'Español', country: 'ES', countryName: 'Spain' },
-    { code: 'pt', name: 'Português', country: 'PT', countryName: 'Portugal' },
-    { code: 'de', name: 'Deutsch', country: 'DE', countryName: 'Germany' },
-    { code: 'it', name: 'Italiano', country: 'IT', countryName: 'Italy' },
-    { code: 'zh', name: '中文', country: 'CN', countryName: 'China' },
-    { code: 'ja', name: '日本語', country: 'JP', countryName: 'Japan' },
-    { code: 'ko', name: '한국어', country: 'KR', countryName: 'South Korea' },
-    { code: 'ar', name: 'العربية', country: 'SA', countryName: 'Saudi Arabia' },
-    { code: 'ru', name: 'Русский', country: 'RU', countryName: 'Russia' }
-  ];
-
-  const currentLang = languages.find(lang => lang.code === selectedLanguage);
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -58,7 +42,6 @@ export default function EmailAuthScreen() {
       const typedDomainPart = value.slice(atIndex + 1).toLowerCase();
 
       if (typedDomainPart.length > 0) {
-        // Use override favicon URL if exists, else fallback to Google favicon API
         const favicon = faviconOverrides[typedDomainPart] 
           || `https://www.google.com/s2/favicons?domain=${typedDomainPart}`;
         setFaviconUrl(favicon);
@@ -68,43 +51,20 @@ export default function EmailAuthScreen() {
 
       if (typedDomainPart.length === 0) {
         setSuggestions(commonEmailDomains);
-        setInlineSuggestion(value + commonEmailDomains[0]);
       } else {
         const filtered = commonEmailDomains.filter(domain =>
           domain.startsWith(typedDomainPart)
         );
         setSuggestions(filtered);
-        if (filtered.length > 0) {
-          setInlineSuggestion(value.slice(0, atIndex + 1) + filtered[0]);
-        } else {
-          setInlineSuggestion('');
-        }
       }
     } else {
       setSuggestions([]);
-      setInlineSuggestion('');
       setFaviconUrl(null);
     }
   };
 
   const handleKeyDown = (e) => {
-    if (!inlineSuggestion) return;
-
-    if ((e.key === 'Tab' || e.key === 'ArrowRight') && email.length < inlineSuggestion.length) {
-      e.preventDefault();
-      setEmail(inlineSuggestion);
-      setIsEmailValid(emailRegex.test(inlineSuggestion));
-      setInlineSuggestion('');
-      setSuggestions([]);
-
-      const atIndex = inlineSuggestion.indexOf('@');
-      if (atIndex > -1) {
-        const domain = inlineSuggestion.slice(atIndex + 1).toLowerCase();
-        const favicon = faviconOverrides[domain] 
-          || `https://www.google.com/s2/favicons?domain=${domain}`;
-        setFaviconUrl(favicon);
-      }
-    }
+    // Removed inlineSuggestion logic here; no autocomplete inside input now
   };
 
   const handleSuggestionClick = (domain) => {
@@ -113,10 +73,9 @@ export default function EmailAuthScreen() {
     setEmail(newEmail);
     setIsEmailValid(emailRegex.test(newEmail));
     setSuggestions([]);
-    setInlineSuggestion('');
-    const favicon = faviconOverrides[domain] 
-      || `https://www.google.com/s2/favicons?domain=${domain}`;
-    setFaviconUrl(favicon);
+    setFaviconUrl(
+      faviconOverrides[domain] || `https://www.google.com/s2/favicons?domain=${domain}`
+    );
   };
 
   const handleBack = () => {
@@ -187,17 +146,7 @@ export default function EmailAuthScreen() {
               <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
             )}
 
-            {inlineSuggestion &&
-              inlineSuggestion.toLowerCase().startsWith(email.toLowerCase()) &&
-              email.length < inlineSuggestion.length && (
-                <div
-                  aria-hidden="true"
-                  className="absolute left-10 top-1/2 transform -translate-y-1/2 pointer-events-none text-gray-300 select-none whitespace-nowrap"
-                  style={{ userSelect: 'none' }}
-                >
-                  {inlineSuggestion}
-                </div>
-              )}
+            {/* Removed inlineSuggestion rendering */}
 
             <input
               id="email"
