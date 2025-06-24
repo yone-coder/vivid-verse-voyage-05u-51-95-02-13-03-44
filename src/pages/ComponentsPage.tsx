@@ -81,15 +81,18 @@ export default function EmailAuthScreen() {
     input.addEventListener('change', handleChange);
     input.addEventListener('animationstart', handleAnimationStart);
 
-    // Initial check for autofill on mount
-    if (input.value) {
-      handleEmailChange(input.value);
-    }
+    // Initial check for autofill on mount - with a delay to catch autofill
+    const timeoutId = setTimeout(() => {
+      if (input.value) {
+        handleEmailChange(input.value);
+      }
+    }, 200); // 200ms delay to allow autofill to complete
 
     return () => {
       input.removeEventListener('input', handleInput);
       input.removeEventListener('change', handleChange);
       input.removeEventListener('animationstart', handleAnimationStart);
+      clearTimeout(timeoutId);
     };
   }, []);
 
