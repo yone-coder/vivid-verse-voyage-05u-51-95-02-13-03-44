@@ -145,7 +145,8 @@ export default function EmailAuthScreen() {
         <p className="text-center text-sm text-gray-500">Step 2 of 4</p>
       </div>
 
-      <div className="flex-1 flex flex-col justify-center w-full max-w-md mx-auto relative">
+      {/* Main content container - removed justify-center to reduce vertical space */}
+      <div className="flex-1 flex flex-col w-full max-w-md mx-auto relative">
         {/* Welcome heading */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-semibold text-gray-900 mb-2">
