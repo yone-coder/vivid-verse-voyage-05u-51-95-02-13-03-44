@@ -22,12 +22,14 @@ export default function LoginPage() {
   useEffect(() => {
   if (currentScreen === 'success') {
     const timer = setTimeout(() => {
+      skipSuccessScreen();
       navigate('/');
     }, 3000); // 3 seconds delay
 
     return () => clearTimeout(timer);
   }
-}, [currentScreen, navigate]);
+}, [currentScreen, navigate, skipSuccessScreen]);
+
 
 
 
