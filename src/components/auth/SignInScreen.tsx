@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { ArrowLeft, Mail, Lock, Key, Check, HelpCircle, X, ChevronDown, Globe } from 'lucide-react';
 
 // LanguageSelector Component
