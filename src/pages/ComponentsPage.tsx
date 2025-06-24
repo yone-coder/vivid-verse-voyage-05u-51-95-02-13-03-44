@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { ArrowLeft, Mail, Lock, Key, Check, HelpCircle } from 'lucide-react';
 
 const commonEmailDomains = [
@@ -19,7 +19,6 @@ export default function EmailAuthScreen() {
   const [email, setEmail] = useState('');
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
-  const [showSuggestions, setShowSuggestions] = useState(false); // no longer used but kept for safety
   const [inlineSuggestion, setInlineSuggestion] = useState('');
   const suggestionsRef = useRef(null);
 
@@ -43,12 +42,11 @@ export default function EmailAuthScreen() {
   // Email validation regex
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  // Handle email input change and update inline suggestion
+  // Handle email input change and update inline suggestion and suggestions list
   const handleEmailChange = (e) => {
     const value = e.target.value;
     setEmail(value);
 
-    // Validate email
     setIsEmailValid(emailRegex.test(value));
 
     const atIndex = value.indexOf('@');
@@ -56,14 +54,15 @@ export default function EmailAuthScreen() {
       const typedDomainPart = value.slice(atIndex + 1).toLowerCase();
 
       if (typedDomainPart.length === 0) {
-        // Show first suggestion inline if user just typed '@'
+        // Show all suggestions if user just typed '@'
+        setSuggestions(commonEmailDomains);
         setInlineSuggestion(value + commonEmailDomains[0]);
       } else {
         // Filter suggestions based on typed domain part
         const filtered = commonEmailDomains.filter(domain =>
           domain.startsWith(typedDomainPart)
         );
-
+        setSuggestions(filtered);
         if (filtered.length > 0) {
           setInlineSuggestion(value.slice(0, atIndex + 1) + filtered[0]);
         } else {
@@ -71,7 +70,8 @@ export default function EmailAuthScreen() {
         }
       }
     } else {
-      // No '@' typed yet, clear inline suggestion
+      // No '@' typed yet, clear suggestions and inline suggestion
+      setSuggestions([]);
       setInlineSuggestion('');
     }
   };
@@ -86,7 +86,18 @@ export default function EmailAuthScreen() {
       setEmail(inlineSuggestion);
       setIsEmailValid(emailRegex.test(inlineSuggestion));
       setInlineSuggestion('');
+      setSuggestions([]);
     }
+  };
+
+  // Handle clicking a suggestion pill
+  const handleSuggestionClick = (domain) => {
+    const atIndex = email.indexOf('@');
+    const newEmail = atIndex > -1 ? email.slice(0, atIndex + 1) + domain : email + '@' + domain;
+    setEmail(newEmail);
+    setIsEmailValid(emailRegex.test(newEmail));
+    setSuggestions([]);
+    setInlineSuggestion('');
   };
 
   const handleBack = () => {
@@ -146,7 +157,7 @@ export default function EmailAuthScreen() {
         </div>
 
         {/* Email Input */}
-        <div className="mb-8 relative">
+        <div className="mb-2 relative">
           <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
             Email address
           </label>
@@ -176,8 +187,9 @@ export default function EmailAuthScreen() {
               autoComplete="email"
               className="relative w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors bg-transparent"
               aria-autocomplete="list"
-              aria-expanded={false}
-              aria-haspopup="false"
+              aria-expanded={suggestions.length > 0}
+              aria-haspopup="listbox"
+              aria-controls="email-suggestions"
             />
 
             {isEmailValid && (
@@ -185,6 +197,29 @@ export default function EmailAuthScreen() {
             )}
           </div>
         </div>
+
+        {/* Suggestions Horizontal List */}
+        {suggestions.length > 0 && (
+          <div
+            id="email-suggestions"
+            className="mb-6 mt-1 flex gap-2 overflow-x-auto px-1"
+            role="listbox"
+            aria-label="Email domain suggestions"
+            ref={suggestionsRef}
+          >
+            {suggestions.map((domain) => (
+              <button
+                key={domain}
+                type="button"
+                onClick={() => handleSuggestionClick(domain)}
+                className="flex-shrink-0 px-3 py-1 rounded-full border border-gray-300 text-gray-700 hover:bg-red-50 hover:border-red-500 transition-colors text-sm whitespace-nowrap"
+                role="option"
+              >
+                @{domain}
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Authentication Options */}
         <div className="space-y-3 mb-8">
