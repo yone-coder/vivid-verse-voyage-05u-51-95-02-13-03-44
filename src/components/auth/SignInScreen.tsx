@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowLeft, Mail, Lock, Key, Check, HelpCircle, X, ChevronDown, Globe, Eye, EyeOff } from 'lucide-react';
+import { ArrowLeft, Mail, Lock, Key, Check, HelpCircle, X, ChevronDown, Globe, Eye, EyeOff, Apple } from 'lucide-react';
 
 // LanguageSelector Component (unchanged)
 const LanguageSelector = ({ selectedLanguage, setSelectedLanguage }) => {
@@ -622,9 +622,7 @@ export default function LoginPage() {
                 <span className="text-gray-700 font-medium">Continue with Facebook</span>
               </button>
               <button className="w-full flex items-center justify-center gap-3 py-3 px-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                <svg className="w-5 h-5" fill="#000000" viewBox="0 0 24 24">
-                  <path d="M15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/>
-                </svg>
+                <Apple className="w-5 h-5 text-black" />
                 <span className="text-gray-700 font-medium">Continue with Apple</span>
               </button>
               <button 
