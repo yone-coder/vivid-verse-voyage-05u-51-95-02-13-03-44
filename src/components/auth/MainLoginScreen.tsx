@@ -1,4 +1,5 @@
 import React from 'react';
+import Lottie from 'lottie-react';
 import LanguageSelector from './LanguageSelector';
 
 interface Language {
@@ -36,10 +37,21 @@ const MainLoginScreen: React.FC<MainLoginScreenProps> = ({
 
   const currentLang = languages.find(lang => lang.code === selectedLanguage);
 
+  // Replace this URL with your actual Lottie JSON URL
+  const lottieUrl = 'https://assets9.lottiefiles.com/packages/lf20_abcdef.json';
+
+  const [animationData, setAnimationData] = React.useState<any>(null);
+
+  React.useEffect(() => {
+    fetch(lottieUrl)
+      .then(res => res.json())
+      .then(data => setAnimationData(data))
+      .catch(err => console.error('Failed to load Lottie animation', err));
+  }, [lottieUrl]);
+
   return (
     <div className="min-h-screen bg-white flex flex-col px-4">
       <div className="pt-4 pb-4 flex items-center justify-between">
-        {/* Swapped positions: LanguageSelector on left, Flag on right */}
         <LanguageSelector selectedLanguage={selectedLanguage} setSelectedLanguage={setSelectedLanguage} />
         <div className="flex items-center">
           <img 
@@ -51,15 +63,23 @@ const MainLoginScreen: React.FC<MainLoginScreenProps> = ({
       </div>
 
       <div className="flex-1 flex flex-col justify-center w-full p-4">
-        <h1 className="text-3xl font-semibold text-red-500 text-center mb-2">
-          Welcome
-        </h1>
-        <p className="text-gray-600 text-center mb-6">
-          Sign in to continue
-        </p>
+        {/* Lottie animation replacing welcome text */}
+        <div className="flex justify-center mb-6">
+          {animationData ? (
+            <Lottie 
+              animationData={animationData} 
+              loop={true} 
+              style={{ width: 150, height: 150 }}
+            />
+          ) : (
+            <p className="text-center text-gray-500">Loading animation...</p>
+          )}
+        </div>
+
         <div className="flex justify-center mb-8">
           <div className="w-16 h-1 bg-red-500 rounded-full"></div>
         </div>
+
         <div className="space-y-3 mb-6">
           <button className="w-full flex items-center justify-center gap-3 py-3 px-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
             <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -98,12 +118,14 @@ const MainLoginScreen: React.FC<MainLoginScreenProps> = ({
             <span className="text-gray-700 font-medium">Continue with Phone Number</span>
           </button>
         </div>
+
         <div className="flex items-center justify-center gap-2 mb-4">
           <svg className="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 24 24">
             <path d="M18,8A6,6 0 0,0 12,2A6,6 0 0,0 6,8H4C2.89,8 2,8.89 2,10V20A2,2 0 0,0 4,22H20A2,2 0 0,0 22,20V10C22,8.89 21.1,8 20,8H18M12,4A4,4 0 0,1 16,8H8A4,4 0 0,1 12,4Z"/>
           </svg>
           <span className="text-gray-500 text-sm">Secure Authentication</span>
         </div>
+
         <p className="text-xs text-gray-500 text-center leading-relaxed">
           By proceeding, you confirm that you've read and agree to our{' '}
           <span className="text-red-500">Terms of Service</span> and{' '}
