@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { ArrowLeft, Mail, HelpCircle } from 'lucide-react';
 
 const COMMON_DOMAINS = [
@@ -8,6 +8,14 @@ const COMMON_DOMAINS = [
   'hotmail.com',
   'icloud.com',
 ];
+
+const FAVICON_OVERRIDES: Record<string, string> = {
+  'gmail.com': 'https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico',
+  'yahoo.com': 'https://s.yimg.com/rz/l/favicon.ico',
+  'outlook.com': 'https://res.cdn.office.net/assets/mail/favicon-57eaf8c3f8.ico',
+  'hotmail.com': 'https://res.cdn.office.net/assets/mail/favicon-57eaf8c3f8.ico',
+  'icloud.com': 'https://www.icloud.com/favicon.ico',
+};
 
 interface EmailAuthScreenProps {
   onBack: () => void;
@@ -27,11 +35,51 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
   const [email, setEmail] = useState(initialEmail);
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [faviconError, setFaviconError] = useState(false);
+  const [currentDomain, setCurrentDomain] = useState('');
+  const [faviconUrl, setFaviconUrl] = useState('');
+  const [showFavicon, setShowFavicon] = useState(false);
   const emailInputRef = useRef<HTMLInputElement>(null);
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+  // Extract domain from email
+  const extractDomain = (emailValue: string): string => {
+    if (!emailValue.includes('@')) return '';
+    const parts = emailValue.split('@');
+    if (parts.length !== 2) return '';
+    const domain = parts[1].trim();
+    // Must have at least one dot and not be empty
+    return domain.includes('.') && domain.length > 3 ? domain : '';
+  };
+
+  // Update domain and favicon when email changes
+  useEffect(() => {
+    const domain = extractDomain(email);
+    console.log('Email changed:', email, 'Domain extracted:', domain);
+    
+    setCurrentDomain(domain);
+    
+    if (domain) {
+      // Get favicon URL
+      const url = FAVICON_OVERRIDES[domain] || `https://www.google.com/s2/favicons?domain=${domain}&sz=20`;
+      console.log('Setting favicon URL:', url);
+      setFaviconUrl(url);
+      setShowFavicon(true);
+    } else {
+      console.log('No valid domain, hiding favicon');
+      setFaviconUrl('');
+      setShowFavicon(false);
+    }
+  }, [email]);
+
+  // Validate email format
+  useEffect(() => {
+    const isValid = emailRegex.test(email);
+    console.log('Email validation:', email, 'Valid:', isValid);
+    setIsEmailValid(isValid);
+  }, [email]);
+
+  // Initialize with initial email
   useEffect(() => {
     if (initialEmail) {
       setIsEmailValid(emailRegex.test(initialEmail));
@@ -39,19 +87,16 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
   }, [initialEmail]);
 
   const handleEmailChange = (value: string) => {
+    console.log('Email input changed:', value);
     setEmail(value);
-    setIsEmailValid(emailRegex.test(value));
-    // Reset favicon error when email changes
-    setFaviconError(false);
   };
 
   const handleDomainClick = (domain: string) => {
     const atIndex = email.indexOf('@');
     const localPart = atIndex === -1 ? email : email.slice(0, atIndex);
     const newEmail = `${localPart}@${domain}`;
+    console.log('Domain clicked:', domain, 'New email:', newEmail);
     setEmail(newEmail);
-    setIsEmailValid(emailRegex.test(newEmail));
-    setFaviconError(false);
     emailInputRef.current?.focus();
   };
 
@@ -60,7 +105,6 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
 
     setIsLoading(true);
     try {
-      // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
       onContinueWithPassword(email);
     } catch (error) {
@@ -76,37 +120,13 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
     onContinueWithCode(email);
   };
 
-  // Memoize favicon URL to prevent unnecessary recalculations
-  const { domain, faviconUrl, shouldShowFavicon } = useMemo(() => {
-    const extractedDomain = email.includes('@') ? email.split('@')[1] : '';
-    
-    // Only show favicon if domain exists and has at least one dot
-    const validDomain = extractedDomain && extractedDomain.includes('.');
-    
-    if (!validDomain) {
-      return { domain: '', faviconUrl: '', shouldShowFavicon: false };
-    }
+  const handleFaviconError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    console.log('Favicon failed to load:', faviconUrl);
+    setShowFavicon(false);
+  };
 
-    const faviconOverrides: Record<string, string> = {
-      'gmail.com': 'https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico',
-      'yahoo.com': 'https://s.yimg.com/rz/l/favicon.ico',
-      'outlook.com': 'https://res.cdn.office.net/assets/mail/favicon-57eaf8c3f8.ico',
-      'hotmail.com': 'https://res.cdn.office.net/assets/mail/favicon-57eaf8c3f8.ico',
-      'icloud.com': 'https://www.icloud.com/favicon.ico',
-    };
-
-    const url = faviconOverrides[extractedDomain] || 
-                 `https://www.google.com/s2/favicons?domain=${extractedDomain}&sz=16`;
-
-    return {
-      domain: extractedDomain,
-      faviconUrl: url,
-      shouldShowFavicon: true
-    };
-  }, [email]);
-
-  const handleFaviconError = () => {
-    setFaviconError(true);
+  const handleFaviconLoad = () => {
+    console.log('Favicon loaded successfully:', faviconUrl);
   };
 
   return (
@@ -158,6 +178,14 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
           </p>
         </div>
 
+        {/* Debug info - remove this in production */}
+        <div className="mb-4 p-2 bg-gray-100 rounded text-xs">
+          <div>Email: "{email}"</div>
+          <div>Domain: "{currentDomain}"</div>
+          <div>Show Favicon: {showFavicon ? 'Yes' : 'No'}</div>
+          <div>Favicon URL: {faviconUrl}</div>
+        </div>
+
         {/* Email input */}
         <div className="mb-2 relative">
           <label
@@ -167,13 +195,14 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
             Email address
           </label>
           <div className="relative">
-            {shouldShowFavicon && !faviconError ? (
+            {showFavicon && faviconUrl ? (
               <img
                 src={faviconUrl}
-                alt={`${domain} favicon`}
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 rounded"
+                alt={`${currentDomain} favicon`}
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5"
                 onError={handleFaviconError}
-                onLoad={() => console.log('Favicon loaded for:', domain)}
+                onLoad={handleFaviconLoad}
+                style={{ display: 'block' }}
               />
             ) : (
               <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
