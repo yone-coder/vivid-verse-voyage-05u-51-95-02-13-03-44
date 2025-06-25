@@ -15,7 +15,10 @@ const FAVICON_OVERRIDES: Record<string, string> = {
   'outlook.com': 'https://outlook.com/favicon.ico',
   'hotmail.com': 'https://outlook.com/favicon.ico',
   'icloud.com': 'https://www.icloud.com/favicon.ico',
-};
+  'protonmail.com': 'https://mail.proton.me/favicon.ico',
+  'proton.me': 'https://mail.proton.me/favicon.ico',
+}
+
 
 
 interface EmailAuthScreenProps {
