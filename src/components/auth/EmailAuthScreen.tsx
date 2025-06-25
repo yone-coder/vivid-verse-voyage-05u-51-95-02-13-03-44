@@ -11,8 +11,10 @@ const COMMON_DOMAINS = [
   'icloud.com',
 ];
 
+const GMAIL_SVG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDQ4IDQ4Ij4KPHBhdGggZmlsbD0iIzRjYWY1MCIgZD0iTTQ1LDE2LjJsLTUsMi43NWwtNSw0Ljc1TDM1LDQwaDdjMS42NTcsMCwzLTEuMzQzLDMtM1YxNi4yeiI+PC9wYXRoPjxwYXRoIGZpbGw9IiMxZTg4ZTUiIGQ9Ik0zLDE2LjJsMy42MTQsMS43MUwxMywyMy43VjQwSDZjLTEuNjU3LDAtMy0xLjM0My0zLTNWMTYuMnoiPjwvcGF0aD4KPHBvbHlnb24gZmlsbD0iI2U1MzkzNSIgcG9pbnRzPSIzNSwxMS4yIDI0LDE5LjQ1IDEzLDExLjIgMTIsMTcgMTMsMjMuNyAyNCwzMS45NSAzNSwyMy43IDM2LDE3Ij48L3BvbHlnb24+PHBhdGggZmlsbD0iI2M2MjgyOCIgZD0iTTMsMTIuMjk4VjE2LjJsMTAsNy41VjExLjJMOS44NzYsOC44NTlDOS4xMzIsOC4zMDEsOC4yMjgsOCw3LjI5OCw4aDBDNC45MjQsOCwzLDkuOTI0LDMsMTIuMjk4eiI+PC9wYXRoPjxwYXRoIGZpbGw9IiNmYmMwMmQiIGQ9Ik00NSwxMi4yOThWMTYuMmwtMTAsNy41VjExLjJsMy4xMjQtMi4zNDFDMzguODY4LDguMzAxLDM5Ljc3Miw4LDQwLjcwMiw4aDAgQzQzLjA3Niw4LDQ1LDkuOTI0LDQ1LDEyLjI5OHoiPjwvcGF0aD4KPC9zdmc+';
+
 const FAVICON_OVERRIDES: Record<string, string> = {
-  'gmail.com': 'https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico',
+  'gmail.com': GMAIL_SVG,
   'yahoo.com': 'https://s.yimg.com/rz/l/favicon.ico',
   'outlook.com': 'https://outlook.com/favicon.ico',
   'hotmail.com': 'https://outlook.com/favicon.ico',
@@ -61,9 +63,9 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
   // Function to update favicon based on email value
   const updateFavicon = (emailValue: string) => {
     const domain = extractDomain(emailValue);
-    
+
     setCurrentDomain(domain);
-    
+
     if (domain) {
       // Get favicon URL
       const url = FAVICON_OVERRIDES[domain] || `https://www.google.com/s2/favicons?domain=${domain}&sz=20`;
