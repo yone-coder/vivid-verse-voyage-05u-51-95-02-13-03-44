@@ -77,49 +77,84 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
     updateFavicon(email);
   }, [email]);
 
-  // Handle autofill detection
+  // Handle autofill detection with multiple strategies
   useEffect(() => {
     const input = emailInputRef.current;
     if (!input) return;
 
-    // Check for autofill immediately and on a slight delay
-    const checkAutofill = () => {
-      const currentValue = input.value;
-      if (currentValue !== email) {
-        console.log('Autofill detected:', currentValue);
-        setEmail(currentValue);
-        updateFavicon(currentValue);
+    // Direct DOM value checker
+    const syncWithDOM = () => {
+      const domValue = input.value;
+      if (domValue !== email && domValue.length > 0) {
+        console.log('DOM sync - Value mismatch detected:', domValue, 'vs state:', email);
+        setEmail(domValue);
+        updateFavicon(domValue);
+        return true;
       }
+      return false;
     };
 
-    // Multiple strategies to detect autofill
-    const handleAnimationStart = (e: AnimationEvent) => {
-      if (e.animationName === 'onAutoFillStart') {
-        console.log('Autofill animation detected');
-        setTimeout(checkAutofill, 100);
-      }
+    // Event handlers
+    const handleFocus = () => {
+      console.log('Input focused, checking for autofill...');
+      setTimeout(syncWithDOM, 50);
+      setTimeout(syncWithDOM, 200);
+      setTimeout(syncWithDOM, 500);
     };
 
-    const handleInput = () => {
-      checkAutofill();
+    const handleBlur = () => {
+      console.log('Input blurred, final autofill check...');
+      syncWithDOM();
     };
 
-    // Polling fallback for autofill detection
-    const pollForAutofill = setInterval(checkAutofill, 100);
+    const handleInput = (e: Event) => {
+      console.log('Input event triggered');
+      syncWithDOM();
+    };
 
-    input.addEventListener('animationstart', handleAnimationStart);
+    const handleChange = (e: Event) => {
+      console.log('Change event triggered');
+      syncWithDOM();
+    };
+
+    // MutationObserver to watch for value changes
+    const observer = new MutationObserver(() => {
+      console.log('DOM mutation detected, checking value...');
+      syncWithDOM();
+    });
+
+    observer.observe(input, {
+      attributes: true,
+      attributeFilter: ['value']
+    });
+
+    // Continuous polling for the first few seconds
+    const pollInterval = setInterval(() => {
+      syncWithDOM();
+    }, 100);
+
+    const stopPolling = setTimeout(() => {
+      clearInterval(pollInterval);
+      console.log('Stopped continuous polling');
+    }, 5000);
+
+    // Add all event listeners
+    input.addEventListener('focus', handleFocus);
+    input.addEventListener('blur', handleBlur);
     input.addEventListener('input', handleInput);
+    input.addEventListener('change', handleChange);
 
-    // Cleanup
-    const timeoutId = setTimeout(() => {
-      clearInterval(pollForAutofill);
-    }, 3000); // Stop polling after 3 seconds
+    // Initial check
+    setTimeout(syncWithDOM, 100);
 
     return () => {
-      clearInterval(pollForAutofill);
-      clearTimeout(timeoutId);
-      input.removeEventListener('animationstart', handleAnimationStart);
+      clearInterval(pollInterval);
+      clearTimeout(stopPolling);
+      observer.disconnect();
+      input.removeEventListener('focus', handleFocus);
+      input.removeEventListener('blur', handleBlur);
       input.removeEventListener('input', handleInput);
+      input.removeEventListener('change', handleChange);
     };
   }, [email]);
 
@@ -182,16 +217,6 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
 
   return (
     <div className="min-h-screen bg-white flex flex-col px-4">
-      <style>{`
-        @keyframes onAutoFillStart {
-          from { /*empty*/ }
-          to { /*empty*/ }
-        }
-        input:-webkit-autofill {
-          animation-name: onAutoFillStart;
-          animation-duration: 0.001s;
-        }
-      `}</style>
       {/* Header */}
       <div className="pt-2 pb-3 flex items-center justify-between">
         <button
@@ -279,9 +304,6 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
               ref={emailInputRef}
               disabled={isLoading}
               className="relative w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors bg-transparent disabled:opacity-50"
-              style={{
-                animation: 'onAutoFillStart 0s'
-              }}
             />
           </div>
         </div>
