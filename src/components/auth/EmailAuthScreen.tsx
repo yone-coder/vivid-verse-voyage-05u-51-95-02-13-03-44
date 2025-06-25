@@ -52,10 +52,10 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
     return domain.includes('.') && domain.length > 3 ? domain : '';
   };
 
-  // Update domain and favicon when email changes
-  useEffect(() => {
-    const domain = extractDomain(email);
-    console.log('Email changed:', email, 'Domain extracted:', domain);
+  // Function to update favicon based on email value
+  const updateFavicon = (emailValue: string) => {
+    const domain = extractDomain(emailValue);
+    console.log('Email changed:', emailValue, 'Domain extracted:', domain);
     
     setCurrentDomain(domain);
     
@@ -70,6 +70,57 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
       setFaviconUrl('');
       setShowFavicon(false);
     }
+  };
+
+  // Update domain and favicon when email changes
+  useEffect(() => {
+    updateFavicon(email);
+  }, [email]);
+
+  // Handle autofill detection
+  useEffect(() => {
+    const input = emailInputRef.current;
+    if (!input) return;
+
+    // Check for autofill immediately and on a slight delay
+    const checkAutofill = () => {
+      const currentValue = input.value;
+      if (currentValue !== email) {
+        console.log('Autofill detected:', currentValue);
+        setEmail(currentValue);
+        updateFavicon(currentValue);
+      }
+    };
+
+    // Multiple strategies to detect autofill
+    const handleAnimationStart = (e: AnimationEvent) => {
+      if (e.animationName === 'onAutoFillStart') {
+        console.log('Autofill animation detected');
+        setTimeout(checkAutofill, 100);
+      }
+    };
+
+    const handleInput = () => {
+      checkAutofill();
+    };
+
+    // Polling fallback for autofill detection
+    const pollForAutofill = setInterval(checkAutofill, 100);
+
+    input.addEventListener('animationstart', handleAnimationStart);
+    input.addEventListener('input', handleInput);
+
+    // Cleanup
+    const timeoutId = setTimeout(() => {
+      clearInterval(pollForAutofill);
+    }, 3000); // Stop polling after 3 seconds
+
+    return () => {
+      clearInterval(pollForAutofill);
+      clearTimeout(timeoutId);
+      input.removeEventListener('animationstart', handleAnimationStart);
+      input.removeEventListener('input', handleInput);
+    };
   }, [email]);
 
   // Validate email format
@@ -131,6 +182,16 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
 
   return (
     <div className="min-h-screen bg-white flex flex-col px-4">
+      <style>{`
+        @keyframes onAutoFillStart {
+          from { /*empty*/ }
+          to { /*empty*/ }
+        }
+        input:-webkit-autofill {
+          animation-name: onAutoFillStart;
+          animation-duration: 0.001s;
+        }
+      `}</style>
       {/* Header */}
       <div className="pt-2 pb-3 flex items-center justify-between">
         <button
@@ -218,6 +279,9 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
               ref={emailInputRef}
               disabled={isLoading}
               className="relative w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors bg-transparent disabled:opacity-50"
+              style={{
+                animation: 'onAutoFillStart 0s'
+              }}
             />
           </div>
         </div>
