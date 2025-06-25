@@ -62,9 +62,9 @@ const MainLoginScreen: React.FC<MainLoginScreenProps> = ({
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col justify-center w-full p-4">
+      <div className="flex-1 flex flex-col justify-center w-full p-2">
         {/* Lottie animation replacing welcome text */}
-        <div className="flex justify-center mb-6">
+        <div className="flex justify-center mb-4">
           {animationData ? (
             <Lottie 
               animationData={animationData} 
