@@ -55,18 +55,15 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
   // Function to update favicon based on email value
   const updateFavicon = (emailValue: string) => {
     const domain = extractDomain(emailValue);
-    console.log('Email changed:', emailValue, 'Domain extracted:', domain);
     
     setCurrentDomain(domain);
     
     if (domain) {
       // Get favicon URL
       const url = FAVICON_OVERRIDES[domain] || `https://www.google.com/s2/favicons?domain=${domain}&sz=20`;
-      console.log('Setting favicon URL:', url);
       setFaviconUrl(url);
       setShowFavicon(true);
     } else {
-      console.log('No valid domain, hiding favicon');
       setFaviconUrl('');
       setShowFavicon(false);
     }
@@ -86,7 +83,6 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
     const syncWithDOM = () => {
       const domValue = input.value;
       if (domValue !== email && domValue.length > 0) {
-        console.log('DOM sync - Value mismatch detected:', domValue, 'vs state:', email);
         setEmail(domValue);
         updateFavicon(domValue);
         return true;
@@ -96,30 +92,25 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
 
     // Event handlers
     const handleFocus = () => {
-      console.log('Input focused, checking for autofill...');
       setTimeout(syncWithDOM, 50);
       setTimeout(syncWithDOM, 200);
       setTimeout(syncWithDOM, 500);
     };
 
     const handleBlur = () => {
-      console.log('Input blurred, final autofill check...');
       syncWithDOM();
     };
 
     const handleInput = (e: Event) => {
-      console.log('Input event triggered');
       syncWithDOM();
     };
 
     const handleChange = (e: Event) => {
-      console.log('Change event triggered');
       syncWithDOM();
     };
 
     // MutationObserver to watch for value changes
     const observer = new MutationObserver(() => {
-      console.log('DOM mutation detected, checking value...');
       syncWithDOM();
     });
 
@@ -135,7 +126,6 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
 
     const stopPolling = setTimeout(() => {
       clearInterval(pollInterval);
-      console.log('Stopped continuous polling');
     }, 5000);
 
     // Add all event listeners
@@ -161,7 +151,6 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
   // Validate email format
   useEffect(() => {
     const isValid = emailRegex.test(email);
-    console.log('Email validation:', email, 'Valid:', isValid);
     setIsEmailValid(isValid);
   }, [email]);
 
@@ -173,7 +162,6 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
   }, [initialEmail]);
 
   const handleEmailChange = (value: string) => {
-    console.log('Email input changed:', value);
     setEmail(value);
   };
 
@@ -181,7 +169,6 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
     const atIndex = email.indexOf('@');
     const localPart = atIndex === -1 ? email : email.slice(0, atIndex);
     const newEmail = `${localPart}@${domain}`;
-    console.log('Domain clicked:', domain, 'New email:', newEmail);
     setEmail(newEmail);
     emailInputRef.current?.focus();
   };
@@ -207,12 +194,11 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
   };
 
   const handleFaviconError = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    console.log('Favicon failed to load:', faviconUrl);
     setShowFavicon(false);
   };
 
   const handleFaviconLoad = () => {
-    console.log('Favicon loaded successfully:', faviconUrl);
+    // Icon loaded successfully
   };
 
   return (
@@ -264,28 +250,6 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
           </p>
         </div>
 
-        {/* Debug info - remove this in production */}
-        <div className="mb-4 p-2 bg-gray-100 rounded text-xs">
-          <div>Email: "{email}"</div>
-          <div>Domain: "{currentDomain}"</div>
-          <div>Show Favicon: {showFavicon ? 'Yes' : 'No'}</div>
-          <div>Favicon URL: {faviconUrl}</div>
-          <div>Has URL: {faviconUrl ? 'Yes' : 'No'}</div>
-          <div>Should Render: {(showFavicon && faviconUrl) ? 'Yes' : 'No'}</div>
-          {faviconUrl && (
-            <div className="mt-2">
-              <div>Test favicon here:</div>
-              <img 
-                src={faviconUrl} 
-                alt="test" 
-                className="w-5 h-5 border border-blue-500"
-                onLoad={() => console.log('DEBUG: Test favicon loaded')}
-                onError={() => console.log('DEBUG: Test favicon failed')}
-              />
-            </div>
-          )}
-        </div>
-
         {/* Email input */}
         <div className="mb-2 relative">
           <label
@@ -295,7 +259,6 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
             Email address
           </label>
           <div className="relative">
-            {/* Debug: Always show both elements to see which is rendering */}
             <div className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 z-10">
               {showFavicon && faviconUrl ? (
                 <img
@@ -304,13 +267,9 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
                   className="w-full h-full object-contain"
                   onError={handleFaviconError}
                   onLoad={handleFaviconLoad}
-                  style={{ 
-                    display: 'block',
-                    backgroundColor: 'rgba(255,0,0,0.1)' // Red tint to see if it's there
-                  }}
                 />
               ) : (
-                <Mail className="w-full h-full text-gray-400" style={{ backgroundColor: 'rgba(0,255,0,0.1)' }} />
+                <Mail className="w-full h-full text-gray-400" />
               )}
             </div>
 
