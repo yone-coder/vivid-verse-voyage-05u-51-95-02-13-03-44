@@ -1,4 +1,3 @@
-
 import React from 'react';
 import LanguageSelector from './LanguageSelector';
 
@@ -40,6 +39,8 @@ const MainLoginScreen: React.FC<MainLoginScreenProps> = ({
   return (
     <div className="min-h-screen bg-white flex flex-col px-4">
       <div className="pt-4 pb-4 flex items-center justify-between">
+        {/* Swapped positions: LanguageSelector on left, Flag on right */}
+        <LanguageSelector selectedLanguage={selectedLanguage} setSelectedLanguage={setSelectedLanguage} />
         <div className="flex items-center">
           <img 
             src={`https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/${currentLang?.country.toLowerCase()}.svg`}
@@ -47,7 +48,6 @@ const MainLoginScreen: React.FC<MainLoginScreenProps> = ({
             className="w-8 h-8 rounded-full object-cover"
           />
         </div>
-        <LanguageSelector selectedLanguage={selectedLanguage} setSelectedLanguage={setSelectedLanguage} />
       </div>
 
       <div className="flex-1 flex flex-col justify-center w-full p-4">
