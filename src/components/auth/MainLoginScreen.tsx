@@ -69,7 +69,7 @@ const MainLoginScreen: React.FC<MainLoginScreenProps> = ({
             <Lottie 
               animationData={animationData} 
               loop={true} 
-              style={{ width: 300, height: 300 }}
+              style={{ width: 200, height: 200 }}
             />
           ) : (
             <div className="shimmer-wrapper" />
