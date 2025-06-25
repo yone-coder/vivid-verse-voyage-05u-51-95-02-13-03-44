@@ -35,7 +35,9 @@ const AccountPage: React.FC = () => {
 
   const handleSignOut = async () => {
     try {
-      console.log('Sign out clicked');
+      console.log('Sign out clicked - clearing authentication');
+      localStorage.removeItem('isAuthenticated');
+      window.dispatchEvent(new Event('authStateChanged'));
     } catch (error) {
       console.error('Error signing out:', error);
     }
