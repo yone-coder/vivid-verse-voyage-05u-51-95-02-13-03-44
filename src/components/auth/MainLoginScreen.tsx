@@ -37,7 +37,7 @@ const MainLoginScreen: React.FC<MainLoginScreenProps> = ({
 
   const currentLang = languages.find(lang => lang.code === selectedLanguage);
 
-  // Updated to use your provided Lottie URL
+  // Lottie animation URL
   const lottieUrl = 'https://lottie.host/67390598-e140-4d3c-ad5b-fa8e572fddb7/bFJV5M8lWj.json';
 
   const [animationData, setAnimationData] = React.useState<any>(null);
@@ -69,16 +69,14 @@ const MainLoginScreen: React.FC<MainLoginScreenProps> = ({
             <Lottie 
               animationData={animationData} 
               loop={true} 
-              style={{ width: 150, height: 150 }}
+              style={{ width: 300, height: 300 }} // Increased size here
             />
           ) : (
             <p className="text-center text-gray-500">Loading animation...</p>
           )}
         </div>
 
-        <div className="flex justify-center mb-8">
-          <div className="w-16 h-1 bg-red-500 rounded-full"></div>
-        </div>
+        {/* Removed the red bar below the Lottie */}
 
         <div className="space-y-3 mb-6">
           <button className="w-full flex items-center justify-center gap-3 py-3 px-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
