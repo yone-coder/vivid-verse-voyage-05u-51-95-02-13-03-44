@@ -6,6 +6,8 @@ const COMMON_DOMAINS = [
   'yahoo.com',
   'outlook.com',
   'hotmail.com',
+'protonmail.com',
+'proton.me',
   'icloud.com',
 ];
 
