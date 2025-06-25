@@ -369,6 +369,21 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
         </div>
 
         <div className="text-center">
+<div className="text-center mb-6">
+  <p className="text-gray-600 text-sm">
+    Don't have an account?{' '}
+    <button
+      type="button"
+      onClick={() => alert('Redirect to sign up')}
+      className="text-red-500 hover:underline font-medium focus:outline-none"
+      disabled={isLoading}
+    >
+      Sign up
+    </button>
+  </p>
+</div>
+
+
           <div className="flex items-center justify-center gap-2">
             <svg
               className="w-4 h-4 text-gray-500"
