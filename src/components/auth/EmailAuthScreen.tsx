@@ -230,7 +230,7 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col px-4">
+   <div className="min-h-screen bg-white flex flex-col px-4">
       {/* Header */}
       <div className="pt-2 pb-3 flex items-center justify-between">
         <button
@@ -287,41 +287,44 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
             Email address
           </label>
           <div className="relative">
+            {/* Left side - Email icon */}
             <div className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 z-10">
-  {isLoading ? (
-    <svg
-      className="animate-spin text-gray-500"
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <circle
-        className="opacity-25"
-        cx="12"
-        cy="12"
-        r="10"
-        strokeWidth="4"
-      />
-      <path
-        className="opacity-75"
-        fill="currentColor"
-        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-      />
-    </svg>
-  ) : showFavicon && faviconUrl ? (
-    <img
-      src={faviconUrl}
-      alt={`${currentDomain} favicon`}
-      className="w-full h-full object-contain"
-      onError={handleFaviconError}
-      onLoad={handleFaviconLoad}
-    />
-  ) : (
-    <Mail className="w-full h-full text-gray-400" />
-  )}
-</div>
+              <Mail className="w-full h-full text-gray-400" />
+            </div>
 
+            {/* Right side - Spinner/Favicon */}
+            <div className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 z-10">
+              {isLoading ? (
+                <svg
+                  className="animate-spin text-gray-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  />
+                </svg>
+              ) : showFavicon && faviconUrl ? (
+                <img
+                  src={faviconUrl}
+                  alt={`${currentDomain} favicon`}
+                  className="w-full h-full object-contain"
+                  onError={handleFaviconError}
+                  onLoad={handleFaviconLoad}
+                />
+              ) : null}
+            </div>
 
             <input
               id="email"
@@ -332,7 +335,7 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
               autoComplete="email"
               ref={emailInputRef}
               disabled={isLoading}
-              className="relative w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors bg-transparent disabled:opacity-50"
+              className="relative w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors bg-transparent disabled:opacity-50"
             />
           </div>
         </div>
@@ -391,20 +394,19 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
         </div>
 
         <div className="text-center">
-<div className="text-center mb-6">
-  <p className="text-gray-600 text-sm">
-    Don't have an account?{' '}
-    <button
-      type="button"
-      onClick={() => alert('Redirect to sign up')}
-      className="text-red-500 hover:underline font-medium focus:outline-none"
-      disabled={isLoading}
-    >
-      Sign up
-    </button>
-  </p>
-</div>
-
+          <div className="text-center mb-6">
+            <p className="text-gray-600 text-sm">
+              Don't have an account?{' '}
+              <button
+                type="button"
+                onClick={() => alert('Redirect to sign up')}
+                className="text-red-500 hover:underline font-medium focus:outline-none"
+                disabled={isLoading}
+              >
+                Sign up
+              </button>
+            </p>
+          </div>
 
           <div className="flex items-center justify-center gap-2">
             <svg
