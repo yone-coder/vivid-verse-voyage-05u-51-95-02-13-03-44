@@ -12,14 +12,14 @@ const COMMON_DOMAINS = [
 ];
 
 // Your new email SVG converted to base64 data URL
-const EMAIL_SVG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDQ4IDQ4Ij4KPHBhdGggZmlsbD0iI2QxYzRlOSIgZD0iTTQyLjQ0OSw5LjI2NEwyNi4zNTUsMjIuMDg4Yy0xLjQwMSwxLjExNy0zLjQwNCwxLjExMi00LjgtMC4wMUw1LjUzNSw5LjE5OAlDNC45MDksOC43MjEsNCw5LjE2MSw0LDkuOTQxdjUuNjAzdjE5LjczMmMwLDIuMDc2LDEuNzA2LDMuNzU4LDMuODEsMy43NThINDAuMTljMi4xMDQsMCwzLjgxLTEuNjgzLDMuODEtMy43NThWOS45OTUJQzQ0LDkuMjA1LDQzLjA3Miw4Ljc2Nyw0Mi40NDksOS4yNjR6Ij48L3BhdGg+PHBhdGggZmlsbD0iIzdjNGRmZiIgZD0iTTM1LjQyOSwxNC44NThsLTEzLjc5LDEwLjk4OGMtMS40LDEuMTE1LTMuMzk5LDEuMTEyLTQuNzk2LTAuMDA3TDQsMTUuNTQ1djE5LjczMgljMCwyLjA3NiwxLjcwNiwzLjc1OCwzLjgxLDMuNzU4aDI3LjYxOVYxNC44NTh6Ij48L3BhdGg+Cjwvc3ZnPg==';
+const EMAIL_SVG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDQ4IDQ4Ij4KPHBhdGggZmlsbD0iI2QxYzRlOSIgZD0iTTQyLjQ0OSw5LjI2NEwyNi4zNTUsMjIuMDg4Yy0xLjQwMSwxLjExNy0zLjQwNCwxLjExMi00LjgtMC4wMUw1LjUzNSw5LjE5OElDNC45MDksOC43MjEsNCw5LjE2MSw0LDkuOTQxdjUuNjAzdjE5LjczMmMwLDIuMDc2LDEuNzA2LDMuNzU4LDMuODEsMy43NThINDAuMTljMi4xMDQsMCwzLjgxLTEuNjgzLDMuODEtMy43NThWOS45OTUJQzQ0LDkuMjA1LDQzLjA3Miw4Ljc2Nyw0Mi40NDksOS4yNjR6Ij48L3BhdGg+PHBhdGggZmlsbD0iIzdjNGRmZiIgZD0iTTM1LjQyOSwxNC44NThsLTEzLjc5LDEwLjk4OGMtMS40LDEuMTE1LTMuMzk5LDEuMTEyLTQuNzk2LTAuMDA3TDQsMTUuNTQ1djE5LjczMgljMCwyLjA3NiwxLjcwNiwzLjc1OCwzLjgxLDMuNzU4aDI3LjYxOVYxNC44NTh6Ij48L3BhdGg+Cjwvc3ZnPg==';
 
 const GMAIL_SVG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDQ4IDQ4Ij4KPHBhdGggZmlsbD0iIzRjYWY1MCIgZD0iTTQ1LDE2LjJsLTUsMi43NWwtNSw0Ljc1TDM1LDQwaDdjMS42NTcsMCwzLTEuMzQzLDMtM1YxNi4yeiI+PC9wYXRoPjxwYXRoIGZpbGw9IiMxZTg4ZTUiIGQ9Ik0zLDE2LjJsMy42MTQsMS43MUwxMywyMy43VjQwSDZjLTEuNjU3LDAtMy0xLjM0My0zLTNWMTYuMnoiPjwvcGF0aD4KPHBvbHlnb24gZmlsbD0iI2U1MzkzNSIgcG9pbnRzPSIzNSwxMS4yIDI0LDE5LjQ1IDEzLDExLjIgMTIsMTcgMTMsMjMuNyAyNCwzMS45NSAzNSwyMy43IDM2LDE3Ij48L3BvbHlnb24+PHBhdGggZmlsbD0iI2M2MjgyOCIgZD0iTTMsMTIuMjk4VjE2LjJsMTAsNy41VjExLjJMOS44NzYsOC44NTlDOS4xMzIsOC4zMDEsOC4yMjgsOCw3LjI5OCw4aDBDNC45MjQsOCwzLDkuOTI0LDMsMTIuMjk4eiI+PC9wYXRoPjxwYXRoIGZpbGw9IiNmYmMwMmQiIGQ9Ik00NSwxMi4yOThWMTYuMmwtMTAsNy42VjExLjJsMy4xMjQtMi4zNDFDMzguODY4LDguMzAxLDM5Ljc3Miw4LDQwLjcwMiw4aDAgQzQzLjA3Niw4LDQ1LDkuOTI0LDQ1LDEyLjI5OHoiPjwvcGF0aD4KPC9zdmc+';
 
 const FAVICON_OVERRIDES: Record<string, string> = {
   // Keep Gmail with its specific branding
   'gmail.com': GMAIL_SVG,
-  
+
   // Other email providers with their favicons
   'yahoo.com': 'https://s.yimg.com/rz/l/favicon.ico',
   'outlook.com': 'https://outlook.com/favicon.ico',
@@ -27,7 +27,7 @@ const FAVICON_OVERRIDES: Record<string, string> = {
   'icloud.com': 'https://www.icloud.com/favicon.ico',
   'protonmail.com': EMAIL_SVG,
   'proton.me': EMAIL_SVG,
-  
+
   // You could also use your email icon as a fallback for any email domain
   // 'default': EMAIL_SVG,
 };
@@ -180,13 +180,24 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
 
   const handleEmailChange = (value: string) => {
     setEmail(value);
+    
+    // Show domain suggestions when user types @ at the end or has @ but no domain yet
+    const atIndex = value.lastIndexOf('@');
+    if (atIndex !== -1) {
+      const afterAt = value.slice(atIndex + 1);
+      // Show suggestions if there's nothing after @ or if there's text that doesn't contain a dot yet
+      setShowDomainSuggestions(afterAt === '' || (!afterAt.includes('.') && afterAt.length < 15));
+    } else {
+      setShowDomainSuggestions(false);
+    }
   };
 
   const handleDomainClick = (domain: string) => {
-    const atIndex = email.indexOf('@');
+    const atIndex = email.lastIndexOf('@');
     const localPart = atIndex === -1 ? email : email.slice(0, atIndex);
     const newEmail = `${localPart}@${domain}`;
     setEmail(newEmail);
+    setShowDomainSuggestions(false); // Hide suggestions after selection
     emailInputRef.current?.focus();
   };
 
@@ -304,20 +315,22 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
           </div>
         </div>
 
-        {/* Domain suggestions as buttons */}
-        <div className="mb-6 flex flex-wrap gap-3">
-          {COMMON_DOMAINS.map((domainOption) => (
-            <button
-              key={domainOption}
-              type="button"
-              onClick={() => handleDomainClick(domainOption)}
-              disabled={isLoading}
-              className="px-3 py-1 rounded-full border border-gray-300 text-gray-700 hover:border-red-500 hover:text-red-600 transition-colors active:scale-95 focus:outline-none focus:ring-2 focus:ring-red-500"
-            >
-              @{domainOption}
-            </button>
-          ))}
-        </div>
+        {/* Domain suggestions as buttons - only show when typing @ */}
+        {showDomainSuggestions && (
+          <div className="mb-6 flex flex-wrap gap-3">
+            {COMMON_DOMAINS.map((domainOption) => (
+              <button
+                key={domainOption}
+                type="button"
+                onClick={() => handleDomainClick(domainOption)}
+                disabled={isLoading}
+                className="px-3 py-1 rounded-full border border-gray-300 text-gray-700 hover:border-red-500 hover:text-red-600 transition-colors active:scale-95 focus:outline-none focus:ring-2 focus:ring-red-500"
+              >
+                @{domainOption}
+              </button>
+            ))}
+          </div>
+        )}
 
         <div className="space-y-3 mb-8">
           <button
