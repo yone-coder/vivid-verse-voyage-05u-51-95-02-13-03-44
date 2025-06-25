@@ -12,8 +12,8 @@ const COMMON_DOMAINS = [
 const FAVICON_OVERRIDES: Record<string, string> = {
   'gmail.com': 'https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico',
   'yahoo.com': 'https://s.yimg.com/rz/l/favicon.ico',
-  'outlook.com': 'https://res.cdn.office.net/assets/mail/favicon-57eaf8c3f8.ico',
-  'hotmail.com': 'https://res.cdn.office.net/assets/mail/favicon-57eaf8c3f8.ico',
+  'outlook.com': 'https://outlook.com/favicon.ico',
+  'hotmail.com': 'https://outlook.com/favicon.ico',
   'icloud.com': 'https://www.icloud.com/favicon.ico',
 };
 
