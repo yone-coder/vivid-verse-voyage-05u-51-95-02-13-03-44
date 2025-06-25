@@ -1,7 +1,14 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowLeft, Mail, HelpCircle } from 'lucide-react';
 import { toast } from 'sonner';
+
+const COMMON_DOMAINS = [
+  'gmail.com',
+  'yahoo.com',
+  'outlook.com',
+  'hotmail.com',
+  'icloud.com',
+];
 
 interface EmailAuthScreenProps {
   onBack: () => void;
@@ -11,31 +18,38 @@ interface EmailAuthScreenProps {
   initialEmail?: string;
 }
 
-const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({ 
-  onBack, 
-  selectedLanguage, 
-  onContinueWithPassword, 
+const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
+  onBack,
+  selectedLanguage,
+  onContinueWithPassword,
   onContinueWithCode,
-  initialEmail = ''
+  initialEmail = '',
 }) => {
   const [email, setEmail] = useState(initialEmail);
   const [isEmailValid, setIsEmailValid] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
   const emailInputRef = useRef<HTMLInputElement>(null);
 
-  // Update email validation when component mounts or initialEmail changes
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
   useEffect(() => {
     if (initialEmail) {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       setIsEmailValid(emailRegex.test(initialEmail));
     }
   }, [initialEmail]);
 
   const handleEmailChange = (value: string) => {
     setEmail(value);
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     setIsEmailValid(emailRegex.test(value));
+  };
+
+  const handleDomainClick = (domain: string) => {
+    const atIndex = email.indexOf('@');
+    const localPart = atIndex === -1 ? email : email.slice(0, atIndex);
+    const newEmail = `${localPart}@${domain}`;
+    setEmail(newEmail);
+    setIsEmailValid(emailRegex.test(newEmail));
+    emailInputRef.current?.focus();
   };
 
   const handleContinueWithPassword = async () => {
@@ -44,7 +58,7 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
     setIsLoading(true);
     try {
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       onContinueWithPassword(email);
     } catch (error) {
       console.error('Error checking user:', error);
@@ -64,7 +78,8 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
   };
 
   const domain = email.split('@')[1] || '';
-  const faviconUrl = faviconOverrides[domain] || `https://www.google.com/s2/favicons?domain=${domain}`;
+  const faviconUrl =
+    faviconOverrides[domain] || `https://www.google.com/s2/favicons?domain=${domain}`;
 
   return (
     <div className="min-h-screen bg-white flex flex-col px-4">
@@ -116,8 +131,11 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
         </div>
 
         {/* Email input */}
-        <div className="mb-6 relative">
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+        <div className="mb-2 relative">
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-gray-700 mb-2"
+          >
             Email address
           </label>
           <div className="relative">
@@ -148,6 +166,21 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
           </div>
         </div>
 
+        {/* Domain suggestions as buttons */}
+        <div className="mb-6 flex flex-wrap gap-3">
+          {COMMON_DOMAINS.map((domainOption) => (
+            <button
+              key={domainOption}
+              type="button"
+              onClick={() => handleDomainClick(domainOption)}
+              disabled={isLoading}
+              className="px-3 py-1 rounded-full border border-gray-300 text-gray-700 hover:border-red-500 hover:text-red-600 transition-colors active:scale-95 focus:outline-none focus:ring-2 focus:ring-red-500"
+            >
+              @{domainOption}
+            </button>
+          ))}
+        </div>
+
         <div className="space-y-3 mb-8">
           <button
             disabled={!isEmailValid || isLoading}
@@ -173,8 +206,12 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
             }`}
             type="button"
           >
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+            <svg
+              className="w-5 h-5"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
             </svg>
             <span>Send Verification Code</span>
           </button>
@@ -182,8 +219,13 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
 
         <div className="text-center">
           <div className="flex items-center justify-center gap-2">
-            <svg className="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M18,8A6,6 0 0,0 12,2A6,6 0 0,0 6,8H4C2.89,8 2,8.89 2,10V20A2,2 0 0,0 4,22H20A2,2 0 0,0 22,20V10C22,8.89 21.1,8 20,8H18M12,4A4,4 0 0,1 16,8H8A4,4 0 0,1 12,4Z"/>
+            <svg
+              className="w-4 h-4 text-gray-500"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <path d="M18,8A6,6 0 0,0 12,2A6,6 0 0,0 6,8H4C2.89,8 2,8.89 2,10V20A2,2 0 0,0 4,22H20A2,2 0 0,0 22,20V10C22,8.89 21.1,8 20,8H18M12,4A4,4 0 0,1 16,8H8A4,4 0 0,1 12,4Z" />
             </svg>
             <span className="text-gray-500 text-sm">Your email is safe with us</span>
           </div>
