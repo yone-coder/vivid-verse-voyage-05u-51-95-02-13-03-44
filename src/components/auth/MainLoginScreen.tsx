@@ -37,8 +37,8 @@ const MainLoginScreen: React.FC<MainLoginScreenProps> = ({
 
   const currentLang = languages.find(lang => lang.code === selectedLanguage);
 
-  // Replace this URL with your actual Lottie JSON URL
-  const lottieUrl = 'https://assets9.lottiefiles.com/packages/lf20_abcdef.json';
+  // Updated to use your provided Lottie URL
+  const lottieUrl = 'https://lottie.host/67390598-e140-4d3c-ad5b-fa8e572fddb7/bFJV5M8lWj.json';
 
   const [animationData, setAnimationData] = React.useState<any>(null);
 
