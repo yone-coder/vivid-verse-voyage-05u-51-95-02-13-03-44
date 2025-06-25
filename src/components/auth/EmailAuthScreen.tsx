@@ -230,7 +230,7 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
   };
 
   return (
-   <div className="min-h-screen bg-white flex flex-col px-4">
+  <div className="min-h-screen bg-white flex flex-col px-4">
       {/* Header */}
       <div className="pt-2 pb-3 flex items-center justify-between">
         <button
@@ -287,14 +287,24 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
             Email address
           </label>
           <div className="relative">
-            {/* Left side - Email icon */}
+            {/* Left side - Email icon or Favicon */}
             <div className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 z-10">
-              <Mail className="w-full h-full text-gray-400" />
+              {showFavicon && faviconUrl ? (
+                <img
+                  src={faviconUrl}
+                  alt={`${currentDomain} favicon`}
+                  className="w-full h-full object-contain"
+                  onError={handleFaviconError}
+                  onLoad={handleFaviconLoad}
+                />
+              ) : (
+                <Mail className="w-full h-full text-gray-400" />
+              )}
             </div>
 
-            {/* Right side - Spinner/Favicon */}
-            <div className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 z-10">
-              {isLoading ? (
+            {/* Right side - Spinner only */}
+            {isLoading && (
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 z-10">
                 <svg
                   className="animate-spin text-gray-500"
                   xmlns="http://www.w3.org/2000/svg"
@@ -315,16 +325,8 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
                     d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
                   />
                 </svg>
-              ) : showFavicon && faviconUrl ? (
-                <img
-                  src={faviconUrl}
-                  alt={`${currentDomain} favicon`}
-                  className="w-full h-full object-contain"
-                  onError={handleFaviconError}
-                  onLoad={handleFaviconLoad}
-                />
-              ) : null}
-            </div>
+              </div>
+            )}
 
             <input
               id="email"
