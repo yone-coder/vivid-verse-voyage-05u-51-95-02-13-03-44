@@ -288,18 +288,40 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
           </label>
           <div className="relative">
             <div className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 z-10">
-              {showFavicon && faviconUrl ? (
-                <img
-                  src={faviconUrl}
-                  alt={`${currentDomain} favicon`}
-                  className="w-full h-full object-contain"
-                  onError={handleFaviconError}
-                  onLoad={handleFaviconLoad}
-                />
-              ) : (
-                <Mail className="w-full h-full text-gray-400" />
-              )}
-            </div>
+  {isLoading ? (
+    <svg
+      className="animate-spin text-gray-500"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <circle
+        className="opacity-25"
+        cx="12"
+        cy="12"
+        r="10"
+        strokeWidth="4"
+      />
+      <path
+        className="opacity-75"
+        fill="currentColor"
+        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+      />
+    </svg>
+  ) : showFavicon && faviconUrl ? (
+    <img
+      src={faviconUrl}
+      alt={`${currentDomain} favicon`}
+      className="w-full h-full object-contain"
+      onError={handleFaviconError}
+      onLoad={handleFaviconLoad}
+    />
+  ) : (
+    <Mail className="w-full h-full text-gray-400" />
+  )}
+</div>
+
 
             <input
               id="email"
