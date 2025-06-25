@@ -287,8 +287,7 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
             Email address
           </label>
           <div className="relative">
-            <div className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 z-10">
-
+            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 z-10">
   {isLoading ? (
     <svg
       className="animate-spin text-gray-500"
