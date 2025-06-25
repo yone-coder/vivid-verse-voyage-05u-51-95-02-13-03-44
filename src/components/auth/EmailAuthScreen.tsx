@@ -54,6 +54,7 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
   const [currentDomain, setCurrentDomain] = useState('');
   const [faviconUrl, setFaviconUrl] = useState('');
   const [showFavicon, setShowFavicon] = useState(false);
+  const [showDomainSuggestions, setShowDomainSuggestions] = useState(false);
   const emailInputRef = useRef<HTMLInputElement>(null);
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
