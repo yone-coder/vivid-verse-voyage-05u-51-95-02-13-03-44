@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Check } from 'lucide-react';
 
@@ -30,10 +29,10 @@ const SuccessScreen: React.FC<SuccessScreenProps> = ({ email, onContinue }) => {
       setShowContent(true);
     }, 800);
 
-    // Auto-redirect after 3 seconds
+    // Auto-redirect after 6 seconds (increased from 3 seconds)
     const redirectTimer = setTimeout(() => {
       onContinue();
-    }, 3000);
+    }, 6000);
 
     return () => {
       clearTimeout(checkmarkTimer);
