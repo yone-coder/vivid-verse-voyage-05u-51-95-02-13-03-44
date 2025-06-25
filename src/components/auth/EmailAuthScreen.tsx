@@ -270,6 +270,20 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
           <div>Domain: "{currentDomain}"</div>
           <div>Show Favicon: {showFavicon ? 'Yes' : 'No'}</div>
           <div>Favicon URL: {faviconUrl}</div>
+          <div>Has URL: {faviconUrl ? 'Yes' : 'No'}</div>
+          <div>Should Render: {(showFavicon && faviconUrl) ? 'Yes' : 'No'}</div>
+          {faviconUrl && (
+            <div className="mt-2">
+              <div>Test favicon here:</div>
+              <img 
+                src={faviconUrl} 
+                alt="test" 
+                className="w-5 h-5 border border-blue-500"
+                onLoad={() => console.log('DEBUG: Test favicon loaded')}
+                onError={() => console.log('DEBUG: Test favicon failed')}
+              />
+            </div>
+          )}
         </div>
 
         {/* Email input */}
@@ -281,18 +295,24 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
             Email address
           </label>
           <div className="relative">
-            {showFavicon && faviconUrl ? (
-              <img
-                src={faviconUrl}
-                alt={`${currentDomain} favicon`}
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5"
-                onError={handleFaviconError}
-                onLoad={handleFaviconLoad}
-                style={{ display: 'block' }}
-              />
-            ) : (
-              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-            )}
+            {/* Debug: Always show both elements to see which is rendering */}
+            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 z-10">
+              {showFavicon && faviconUrl ? (
+                <img
+                  src={faviconUrl}
+                  alt={`${currentDomain} favicon`}
+                  className="w-full h-full object-contain"
+                  onError={handleFaviconError}
+                  onLoad={handleFaviconLoad}
+                  style={{ 
+                    display: 'block',
+                    backgroundColor: 'rgba(255,0,0,0.1)' // Red tint to see if it's there
+                  }}
+                />
+              ) : (
+                <Mail className="w-full h-full text-gray-400" style={{ backgroundColor: 'rgba(0,255,0,0.1)' }} />
+              )}
+            </div>
 
             <input
               id="email"
