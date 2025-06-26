@@ -1,13 +1,13 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { ArrowLeft, Mail, HelpCircle } from 'lucide-react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { ArrowLeft, Mail, HelpCircle, Check } from 'lucide-react';
 
 const COMMON_DOMAINS = [
   'gmail.com',
   'yahoo.com',
   'outlook.com',
   'hotmail.com',
-'protonmail.com',
-'proton.me',
+  'protonmail.com',
+  'proton.me',
   'icloud.com',
 ];
 
@@ -17,21 +17,17 @@ const EMAIL_SVG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5
 const GMAIL_SVG = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDQ4IDQ4Ij4KPHBhdGggZmlsbD0iIzRjYWY1MCIgZD0iTTQ1LDE2LjJsLTUsMi43NWwtNSw0Ljc1TDM1LDQwaDdjMS42NTcsMCwzLTEuMzQzLDMtM1YxNi4yeiI+PC9wYXRoPjxwYXRoIGZpbGw9IiMxZTg4ZTUiIGQ9Ik0zLDE2LjJsMy42MTQsMS43MUwxMywyMy43VjQwSDZjLTEuNjU3LDAtMy0xLjM0My0zLTNWMTYuMnoiPjwvcGF0aD4KPHBvbHlnb24gZmlsbD0iI2U1MzkzNSIgcG9pbnRzPSIzNSwxMS4yIDI0LDE5LjQ1IDEzLDExLjIgMTIsMTcgMTMsMjMuNyAyNCwzMS45NSAzNSwyMy43IDM2LDE3Ij48L3BvbHlnb24+PHBhdGggZmlsbD0iI2M2MjgyOCIgZD0iTTMsMTIuMjk4VjE2LjJsMTAsNy41VjExLjJMOS44NzYsOC44NTlDOS4xMzIsOC4zMDEsOC4yMjgsOCw3LjI5OCw4aDBDNC45MjQsOCwzLDkuOTI0LDMsMTIuMjk4eiI+PC9wYXRoPjxwYXRoIGZpbGw9IiNmYmMwMmQiIGQ9Ik00NSwxMi4yOThWMTYuMmwtMTAsNy42VjExLjJsMy4xMjQtMi4zNDFDMzguODY4LDguMzAxLDM5Ljc3Miw4LDQwLjcwMiw4aDAgQzQzLjA3Niw4LDQ1LDkuOTI0LDQ1LDEyLjI5OHoiPjwvcGF0aD4KPC9zdmc+';
 
 const FAVICON_OVERRIDES: Record<string, string> = {
-  // Keep Gmail with its specific branding
   'gmail.com': GMAIL_SVG,
-
-  // Other email providers with their favicons
   'yahoo.com': 'https://s.yimg.com/rz/l/favicon.ico',
   'outlook.com': 'https://outlook.com/favicon.ico',
   'hotmail.com': 'https://outlook.com/favicon.ico',
   'icloud.com': 'https://www.icloud.com/favicon.ico',
   'protonmail.com': EMAIL_SVG,
   'proton.me': EMAIL_SVG,
-
-  // You could also use your email icon as a fallback for any email domain
-  // 'default': EMAIL_SVG,
 };
 
+// Email checking states - like a traffic light system
+type EmailCheckState = 'unchecked' | 'checking' | 'exists' | 'not-exists' | 'error';
 
 interface EmailAuthScreenProps {
   onBack: () => void;
@@ -55,9 +51,64 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
   const [faviconUrl, setFaviconUrl] = useState('');
   const [showFavicon, setShowFavicon] = useState(false);
   const [showDomainSuggestions, setShowDomainSuggestions] = useState(false);
+  
+  // New state for email checking - this tracks the backend verification
+  const [emailCheckState, setEmailCheckState] = useState<EmailCheckState>('unchecked');
+  const [lastCheckedEmail, setLastCheckedEmail] = useState('');
+  
   const emailInputRef = useRef<HTMLInputElement>(null);
+  const debounceTimeoutRef = useRef<NodeJS.Timeout>();
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  // Function to check email with backend API
+  const checkEmailExists = useCallback(async (emailToCheck: string): Promise<boolean> => {
+    try {
+      const response = await fetch('https://supabase-y8ak.onrender.com/api/check-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: emailToCheck }),
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        return data.exists;
+      } else {
+        throw new Error(data.message || 'Failed to check email');
+      }
+    } catch (error) {
+      console.error('Error checking email:', error);
+      throw error;
+    }
+  }, []);
+
+  // Debounced email checking - waits for user to stop typing before checking
+  const debouncedEmailCheck = useCallback((emailToCheck: string) => {
+    // Clear any existing timeout
+    if (debounceTimeoutRef.current) {
+      clearTimeout(debounceTimeoutRef.current);
+    }
+
+    // Set new timeout - this is like waiting for someone to stop knocking
+    debounceTimeoutRef.current = setTimeout(async () => {
+      // Only check if email is valid and different from last checked
+      if (emailRegex.test(emailToCheck) && emailToCheck !== lastCheckedEmail) {
+        setEmailCheckState('checking');
+        
+        try {
+          const exists = await checkEmailExists(emailToCheck);
+          setEmailCheckState(exists ? 'exists' : 'not-exists');
+          setLastCheckedEmail(emailToCheck);
+        } catch (error) {
+          setEmailCheckState('error');
+          setLastCheckedEmail(emailToCheck);
+        }
+      }
+    }, 800); // Wait 800ms after user stops typing - good balance between responsiveness and API efficiency
+  }, [checkEmailExists, lastCheckedEmail]);
 
   // Extract domain from email
   const extractDomain = (emailValue: string): string => {
@@ -65,18 +116,15 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
     const parts = emailValue.split('@');
     if (parts.length !== 2) return '';
     const domain = parts[1].trim();
-    // Must have at least one dot and not be empty
     return domain.includes('.') && domain.length > 3 ? domain : '';
   };
 
   // Function to update favicon based on email value
   const updateFavicon = (emailValue: string) => {
     const domain = extractDomain(emailValue);
-
     setCurrentDomain(domain);
 
     if (domain) {
-      // Get favicon URL
       const url = FAVICON_OVERRIDES[domain] || `https://www.google.com/s2/favicons?domain=${domain}&sz=20`;
       setFaviconUrl(url);
       setShowFavicon(true);
@@ -96,7 +144,6 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
     const input = emailInputRef.current;
     if (!input) return;
 
-    // Direct DOM value checker
     const syncWithDOM = () => {
       const domValue = input.value;
       if (domValue !== email && domValue.length > 0) {
@@ -107,7 +154,6 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
       return false;
     };
 
-    // Event handlers
     const handleFocus = () => {
       setTimeout(syncWithDOM, 50);
       setTimeout(syncWithDOM, 200);
@@ -126,7 +172,6 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
       syncWithDOM();
     };
 
-    // MutationObserver to watch for value changes
     const observer = new MutationObserver(() => {
       syncWithDOM();
     });
@@ -136,7 +181,6 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
       attributeFilter: ['value']
     });
 
-    // Continuous polling for the first few seconds
     const pollInterval = setInterval(() => {
       syncWithDOM();
     }, 100);
@@ -145,13 +189,11 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
       clearInterval(pollInterval);
     }, 5000);
 
-    // Add all event listeners
     input.addEventListener('focus', handleFocus);
     input.addEventListener('blur', handleBlur);
     input.addEventListener('input', handleInput);
     input.addEventListener('change', handleChange);
 
-    // Initial check
     setTimeout(syncWithDOM, 100);
 
     return () => {
@@ -165,11 +207,20 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
     };
   }, [email]);
 
-  // Validate email format
+  // Validate email format and trigger backend checking
   useEffect(() => {
     const isValid = emailRegex.test(email);
     setIsEmailValid(isValid);
-  }, [email]);
+
+    // Reset check state when email becomes invalid
+    if (!isValid) {
+      setEmailCheckState('unchecked');
+      setLastCheckedEmail('');
+    } else {
+      // Trigger debounced email checking for valid emails
+      debouncedEmailCheck(email);
+    }
+  }, [email, debouncedEmailCheck]);
 
   // Initialize with initial email
   useEffect(() => {
@@ -178,14 +229,22 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
     }
   }, [initialEmail]);
 
+  // Clean up timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
+    };
+  }, []);
+
   const handleEmailChange = (value: string) => {
     setEmail(value);
-    
+
     // Show domain suggestions when user types @ at the end or has @ but no domain yet
     const atIndex = value.lastIndexOf('@');
     if (atIndex !== -1) {
       const afterAt = value.slice(atIndex + 1);
-      // Show suggestions if there's nothing after @ or if there's text that doesn't contain a dot yet
       setShowDomainSuggestions(afterAt === '' || (!afterAt.includes('.') && afterAt.length < 15));
     } else {
       setShowDomainSuggestions(false);
@@ -197,19 +256,20 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
     const localPart = atIndex === -1 ? email : email.slice(0, atIndex);
     const newEmail = `${localPart}@${domain}`;
     setEmail(newEmail);
-    setShowDomainSuggestions(false); // Hide suggestions after selection
+    setShowDomainSuggestions(false);
     emailInputRef.current?.focus();
   };
 
   const handleContinueWithPassword = async () => {
-    if (!isEmailValid || isLoading) return;
+    // Only allow password continuation if email exists in database
+    if (!isEmailValid || isLoading || emailCheckState !== 'exists') return;
 
     setIsLoading(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 500)); // Brief delay for UX
       onContinueWithPassword(email);
     } catch (error) {
-      console.error('Error checking user:', error);
+      console.error('Error continuing with password:', error);
       onContinueWithPassword(email);
     } finally {
       setIsLoading(false);
@@ -217,7 +277,8 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
   };
 
   const handleContinueWithCode = () => {
-    if (!isEmailValid || isLoading) return;
+    // Allow code verification for both existing and new emails
+    if (!isEmailValid || isLoading || emailCheckState === 'checking') return;
     onContinueWithCode(email);
   };
 
@@ -229,8 +290,65 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
     // Icon loaded successfully
   };
 
+  // Determine what to show in the right side of input based on email check state
+  const getRightSideIcon = () => {
+    if (isLoading) {
+      // Show spinner when doing final authentication
+      return (
+        <div className="w-5 h-5">
+          <svg className="animate-spin text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <circle className="opacity-25" cx="12" cy="12" r="10" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+          </svg>
+        </div>
+      );
+    }
+
+    if (emailCheckState === 'checking') {
+      // Show spinner when checking email existence
+      return (
+        <div className="w-5 h-5">
+          <svg className="animate-spin text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <circle className="opacity-25" cx="12" cy="12" r="10" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+          </svg>
+        </div>
+      );
+    }
+
+    if (emailCheckState === 'exists') {
+      // Show checkmark when email exists
+      return <Check className="w-5 h-5 text-green-500" />;
+    }
+
+    // For unchecked, not-exists, or error states, show nothing
+    return null;
+  };
+
+  // Determine button states based on email check status
+  const getPasswordButtonState = () => {
+    if (!isEmailValid) return { disabled: true, text: 'Continue with Password' };
+    if (emailCheckState === 'checking') return { disabled: true, text: 'Checking...' };
+    if (emailCheckState === 'exists') return { disabled: false, text: 'Continue with Password' };
+    if (emailCheckState === 'not-exists') return { disabled: true, text: 'Account Not Found' };
+    if (emailCheckState === 'error') return { disabled: true, text: 'Check Connection' };
+    return { disabled: true, text: 'Continue with Password' };
+  };
+
+  const getCodeButtonState = () => {
+    if (!isEmailValid) return { disabled: true, text: 'Send Verification Code' };
+    if (emailCheckState === 'checking') return { disabled: true, text: 'Checking...' };
+    if (emailCheckState === 'exists') return { disabled: false, text: 'Send Login Code' };
+    if (emailCheckState === 'not-exists') return { disabled: false, text: 'Create Account' };
+    if (emailCheckState === 'error') return { disabled: false, text: 'Send Verification Code' };
+    return { disabled: true, text: 'Send Verification Code' };
+  };
+
+  const passwordButtonState = getPasswordButtonState();
+  const codeButtonState = getCodeButtonState();
+
   return (
-  <div className="min-h-screen bg-white flex flex-col px-4">
+    <div className="min-h-screen bg-white flex flex-col px-4">
       {/* Header */}
       <div className="pt-2 pb-3 flex items-center justify-between">
         <button
@@ -302,31 +420,10 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
               )}
             </div>
 
-            {/* Right side - Spinner only */}
-            {isLoading && (
-              <div className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 z-10">
-                <svg
-                  className="animate-spin text-gray-500"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    strokeWidth="4"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-                  />
-                </svg>
-              </div>
-            )}
+            {/* Right side - Status icon based on email check state */}
+            <div className="absolute right-3 top-1/2 transform -translate-y-1/2 z-10">
+              {getRightSideIcon()}
+            </div>
 
             <input
               id="email"
@@ -360,25 +457,27 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
         )}
 
         <div className="space-y-3 mb-8">
+          {/* Password button - only enabled when email exists */}
           <button
-            disabled={!isEmailValid || isLoading}
+            disabled={passwordButtonState.disabled || isLoading}
             onClick={handleContinueWithPassword}
             className={`w-full flex items-center justify-center gap-3 py-4 px-4 rounded-lg font-medium transition-all ${
-              isEmailValid && !isLoading
+              !passwordButtonState.disabled && !isLoading
                 ? 'bg-red-500 text-white hover:bg-red-600 active:scale-98'
                 : 'bg-gray-200 text-gray-400 cursor-not-allowed'
             }`}
             type="button"
           >
             <Mail className="w-5 h-5" />
-            <span>{isLoading ? 'Checking...' : 'Continue with Password'}</span>
+            <span>{passwordButtonState.text}</span>
           </button>
 
+          {/* Code button - enabled for both existing and new emails */}
           <button
-            disabled={!isEmailValid || isLoading}
+            disabled={codeButtonState.disabled || isLoading}
             onClick={handleContinueWithCode}
             className={`w-full flex items-center justify-center gap-3 py-4 px-4 border-2 rounded-lg font-medium transition-all ${
-              isEmailValid && !isLoading
+              !codeButtonState.disabled && !isLoading
                 ? 'border-red-500 text-red-500 hover:bg-red-50 active:scale-98'
                 : 'border-gray-300 text-gray-400 cursor-not-allowed'
             }`}
@@ -391,9 +490,18 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
             >
               <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
             </svg>
-            <span>Send Verification Code</span>
+            <span>{codeButtonState.text}</span>
           </button>
         </div>
+
+        {/* Status message based on email check state */}
+        {emailCheckState === 'error' && (
+          <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <p className="text-yellow-800 text-sm text-center">
+              Connection issue. You can still continue with verification code.
+            </p>
+          </div>
+        )}
 
         <div className="text-center">
           <div className="text-center mb-6">
