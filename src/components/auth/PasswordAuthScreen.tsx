@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from 'react';
 import { ArrowLeft, Lock, Mail, Eye, EyeOff, HelpCircle } from 'lucide-react';
 
@@ -50,6 +49,17 @@ const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({ email, onBack, 
 
   return (
     <div className="min-h-screen bg-white flex flex-col px-4">
+      <style jsx>{`
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active {
+          -webkit-box-shadow: 0 0 0 30px white inset !important;
+          -webkit-text-fill-color: #374151 !important;
+          padding-left: 2.5rem !important;
+        }
+      `}</style>
+
       {/* Header */}
       <div className="pt-2 pb-3 flex items-center justify-between">
         <button
@@ -133,9 +143,9 @@ const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({ email, onBack, 
             Password
           </label>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 z-10 pointer-events-none" />
 
-           <input
+            <input
               id="password"
               type={showPassword ? 'text' : 'password'}
               value={password}
@@ -144,17 +154,13 @@ const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({ email, onBack, 
               autoComplete="current-password"
               ref={passwordInputRef}
               disabled={isLoading}
-              className="relative w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors bg-white disabled:opacity-50"
-              style={{
-                WebkitBoxShadow: '0 0 0 1000px white inset',
-                WebkitTextFillColor: 'inherit'
-              }}
+              className="relative w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors bg-transparent disabled:opacity-50"
             />
 
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 z-10"
               aria-label={showPassword ? 'Hide password' : 'Show password'}
               disabled={isLoading}
             >
