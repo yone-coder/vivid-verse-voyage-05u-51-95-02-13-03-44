@@ -144,7 +144,11 @@ const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({ email, onBack, 
               autoComplete="current-password"
               ref={passwordInputRef}
               disabled={isLoading}
-              className="relative w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors bg-transparent disabled:opacity-50"
+              className="relative w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors bg-white disabled:opacity-50"
+              style={{
+                WebkitBoxShadow: '0 0 0 1000px white inset',
+                WebkitTextFillColor: 'inherit'
+              }}
             />
 
             <button
