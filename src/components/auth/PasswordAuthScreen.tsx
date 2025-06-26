@@ -4,7 +4,7 @@ import { ArrowLeft, Lock, Mail, Eye, EyeOff, HelpCircle } from 'lucide-react';
 interface PasswordAuthScreenProps {
   email: string;
   onBack: () => void;
-  onSignInSuccess: () => void;
+  onSignInSuccess: (userData: any, token: string) => void;
 }
 
 const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({ email, onBack, onSignInSuccess }) => {
@@ -12,12 +12,18 @@ const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({ email, onBack, 
   const [showPassword, setShowPassword] = useState(false);
   const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const passwordInputRef = useRef<HTMLInputElement>(null);
+
+  // Your backend API base URL
+  const API_BASE_URL = 'https://supabase-y8ak.onrender.com/api';
 
   const handlePasswordChange = (value: string) => {
     setPassword(value);
     setIsPasswordValid(value.length >= 8);
+    // Clear error when user starts typing
+    if (error) setError('');
   };
 
   const handleChangeEmail = () => {
@@ -29,15 +35,47 @@ const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({ email, onBack, 
     if (!isPasswordValid || isLoading) return;
 
     setIsLoading(true);
+    setError('');
+
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      onSignInSuccess();
+      const response = await fetch(`${API_BASE_URL}/signin`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Sign in failed');
+      }
+
+      if (data.success) {
+        // Store token in memory (you might want to use a state management solution)
+        console.log('Sign in successful:', data);
+        
+        // Call the success callback with user data and token
+        onSignInSuccess(data.user, data.token);
+      } else {
+        throw new Error(data.message || 'Sign in failed');
+      }
+
     } catch (error) {
       console.error('Sign in failed:', error);
+      setError(error instanceof Error ? error.message : 'Sign in failed. Please try again.');
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleForgotPassword = () => {
+    // You can implement password reset functionality here
+    alert('Password reset functionality coming soon!');
   };
 
   const faviconOverrides: Record<string, string> = {
@@ -137,6 +175,13 @@ const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({ email, onBack, 
           </div>
         </div>
 
+        {/* Error message */}
+        {error && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-red-600 text-sm">{error}</p>
+          </div>
+        )}
+
         {/* Password input */}
         <div className="mb-6 relative">
           <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
@@ -150,6 +195,11 @@ const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({ email, onBack, 
               type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={(e) => handlePasswordChange(e.target.value)}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter' && isPasswordValid && !isLoading) {
+                  handleSignIn();
+                }
+              }}
               placeholder="Enter your password"
               autoComplete="current-password"
               ref={passwordInputRef}
@@ -187,6 +237,7 @@ const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({ email, onBack, 
 
         <div className="text-center">
           <button 
+            onClick={handleForgotPassword}
             className="text-red-500 font-medium hover:text-red-600 mb-4" 
             type="button"
             disabled={isLoading}
