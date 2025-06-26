@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { ArrowLeft, Mail, HelpCircle, Check } from 'lucide-react';
+import { ArrowLeft, Mail, HelpCircle, Check, X } from 'lucide-react';
 
 const COMMON_DOMAINS = [
   'gmail.com',
@@ -293,7 +293,7 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
   // Determine what to show in the right side of input based on email check state
   const getRightSideIcon = () => {
     if (isLoading) {
-      // Show spinner when doing final authentication
+      // Show spinner when doing final authentication - this happens after email check is complete
       return (
         <div className="w-5 h-5">
           <svg className="animate-spin text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -305,7 +305,7 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
     }
 
     if (emailCheckState === 'checking') {
-      // Show spinner when checking email existence
+      // Show blue spinner when actively checking email existence with backend
       return (
         <div className="w-5 h-5">
           <svg className="animate-spin text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -317,11 +317,27 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
     }
 
     if (emailCheckState === 'exists') {
-      // Show checkmark when email exists
+      // Show green checkmark when email exists in database - user can log in
       return <Check className="w-5 h-5 text-green-500" />;
     }
 
-    // For unchecked, not-exists, or error states, show nothing
+    if (emailCheckState === 'not-exists') {
+      // Show red X when email is not found in database - clearer feedback than no icon
+      return <X className="w-5 h-5 text-red-500" />;
+    }
+
+    if (emailCheckState === 'error') {
+      // Show exclamation mark for API errors - different from "not found"
+      return (
+        <div className="w-5 h-5">
+          <svg className="text-orange-500" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+          </svg>
+        </div>
+      );
+    }
+
+    // For unchecked state, show nothing - user hasn't entered a valid email yet
     return null;
   };
 
