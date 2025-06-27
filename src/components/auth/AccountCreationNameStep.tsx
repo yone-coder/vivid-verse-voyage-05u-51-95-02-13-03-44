@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { ArrowLeft, User, Mail, Lock } from 'lucide-react';
 import { Button } from '../ui/button';
@@ -119,7 +118,9 @@ const AccountCreationNameStep: React.FC<AccountCreationNameStepProps> = ({
               First Name
             </label>
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <div className="absolute left-3 top-1/2 transform -translate-y-1/2 z-10 pointer-events-none">
+                <User className="w-5 h-5 text-gray-400" />
+              </div>
               <Input
                 id="firstName"
                 type="text"
@@ -136,7 +137,9 @@ const AccountCreationNameStep: React.FC<AccountCreationNameStepProps> = ({
               Last Name
             </label>
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <div className="absolute left-3 top-1/2 transform -translate-y-1/2 z-10 pointer-events-none">
+                <User className="w-5 h-5 text-gray-400" />
+              </div>
               <Input
                 id="lastName"
                 type="text"
