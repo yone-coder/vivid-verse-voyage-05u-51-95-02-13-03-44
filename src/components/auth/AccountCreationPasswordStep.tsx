@@ -1,24 +1,32 @@
 import React, { useState } from 'react';
-import { ArrowLeft, User, Mail } from 'lucide-react';
+import { ArrowLeft, Lock, Eye, EyeOff, Mail } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { FAVICON_OVERRIDES } from '../../constants/email';
 
-interface AccountCreationNameStepProps {
+interface AccountCreationPasswordStepProps {
   email: string;
+  firstName: string;
+  lastName: string;
   onBack: () => void;
-  onChangeEmail: () => void;
-  onContinue: (firstName: string, lastName: string) => void;
+  onContinue: () => void;
+  onError: (error: string) => void;
+  isLoading?: boolean;
 }
 
-const AccountCreationNameStep: React.FC<AccountCreationNameStepProps> = ({
+const AccountCreationPasswordStep: React.FC<AccountCreationPasswordStepProps> = ({
   email,
+  firstName,
+  lastName,
   onBack,
-  onChangeEmail,
   onContinue,
+  onError,
+  isLoading: parentLoading = false,
 }) => {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const extractDomain = (emailValue: string): string => {
@@ -39,7 +47,7 @@ const AccountCreationNameStep: React.FC<AccountCreationNameStepProps> = ({
 
   const faviconUrl = getFaviconUrl(email);
 
-  const createAccount = async (fullName: string) => {
+  const createAccount = async () => {
     try {
       const response = await fetch('https://supabase-y8ak.onrender.com/api/signup', {
         method: 'POST',
@@ -49,7 +57,7 @@ const AccountCreationNameStep: React.FC<AccountCreationNameStepProps> = ({
         body: JSON.stringify({
           email: email,
           password: password,
-          full_name: fullName,
+          full_name: `${firstName} ${lastName}`,
         }),
       });
 
@@ -66,33 +74,68 @@ const AccountCreationNameStep: React.FC<AccountCreationNameStepProps> = ({
     }
   };
 
+  const validatePassword = (pwd: string): string | null => {
+    if (pwd.length < 8) {
+      return 'Password must be at least 8 characters long';
+    }
+    if (!/(?=.*[a-z])/.test(pwd)) {
+      return 'Password must contain at least one lowercase letter';
+    }
+    if (!/(?=.*[A-Z])/.test(pwd)) {
+      return 'Password must contain at least one uppercase letter';
+    }
+    if (!/(?=.*\d)/.test(pwd)) {
+      return 'Password must contain at least one number';
+    }
+    return null;
+  };
+
   const handleContinue = async () => {
-    if (!firstName.trim() || !lastName.trim()) return;
-    
+    // Validate all required fields
+    if (!email || !password) {
+      onError('Email and password are required');
+      return;
+    }
+
+    if (!firstName.trim() || !lastName.trim()) {
+      onError('Name information is missing. Please go back and enter your name.');
+      return;
+    }
+
+    // Validate password
+    const passwordError = validatePassword(password);
+    if (passwordError) {
+      onError(passwordError);
+      return;
+    }
+
+    // Check password confirmation
+    if (password !== confirmPassword) {
+      onError('Passwords do not match');
+      return;
+    }
+
     setIsLoading(true);
     try {
-      const fullName = `${firstName.trim()} ${lastName.trim()}`;
+      // Create the account
+      await createAccount();
       
-      // Call the API to create the account
-      await createAccount(fullName);
-      
-      // If successful, call the onContinue callback
-      onContinue(firstName.trim(), lastName.trim());
+      // If successful, proceed to success step
+      onContinue();
     } catch (error) {
-      // Handle the error
       const errorMessage = error instanceof Error ? error.message : 'Account creation failed';
-      if (onError) {
-        onError(errorMessage);
-      } else {
-        // Fallback error handling - you might want to show a toast or alert
-        alert(`Error: ${errorMessage}`);
-      }
+      onError(errorMessage);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const isFormValid = firstName.trim().length > 0 && lastName.trim().length > 0;
+  const loading = isLoading || parentLoading;
+  const isFormValid = 
+    password.length >= 8 && 
+    confirmPassword.length >= 8 && 
+    password === confirmPassword &&
+    validatePassword(password) === null;
 
   return (
     <div className="min-h-screen bg-white flex flex-col px-4">
@@ -101,7 +144,7 @@ const AccountCreationNameStep: React.FC<AccountCreationNameStepProps> = ({
         <button
           onClick={onBack}
           className="flex items-center justify-center w-10 h-10 hover:bg-gray-100 rounded-full transition-colors active:scale-95"
-          disabled={isLoading}
+          disabled={loading}
         >
           <ArrowLeft className="w-5 h-5 text-gray-700" />
         </button>
@@ -113,7 +156,7 @@ const AccountCreationNameStep: React.FC<AccountCreationNameStepProps> = ({
       <div className="mb-6 px-0">
         <div className="flex items-center gap-2 mb-2">
           <div className="flex-1 h-1 bg-red-500 rounded-full"></div>
-          <div className="flex-1 h-1 bg-gray-300 rounded-full"></div>
+          <div className="flex-1 h-1 bg-red-500 rounded-full"></div>
           <div className="flex-1 h-1 bg-gray-300 rounded-full"></div>
         </div>
       </div>
@@ -122,90 +165,103 @@ const AccountCreationNameStep: React.FC<AccountCreationNameStepProps> = ({
       <div className="flex-1 flex flex-col w-full max-w-md mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-semibold text-gray-900 mb-2">
-            What's your name?
+            Create your password
           </h1>
           <p className="text-gray-600">
-            We'll use this to personalize your experience
+            Choose a secure password for your account
           </p>
         </div>
 
-        {/* Email Display */}
+        {/* Account Info Summary */}
         <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-6 h-6">
-                {faviconUrl ? (
-                  <img
-                    src={faviconUrl}
-                    alt="Email provider favicon"
-                    className="w-full h-full object-contain"
-                  />
-                ) : (
-                  <Mail className="w-full h-full text-gray-400" />
-                )}
-              </div>
-              <span className="text-gray-700 font-medium">{email}</span>
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-5 h-5">
+              {faviconUrl ? (
+                <img
+                  src={faviconUrl}
+                  alt="Email provider favicon"
+                  className="w-full h-full object-contain"
+                />
+              ) : (
+                <Mail className="w-full h-full text-gray-400" />
+              )}
             </div>
-            <button
-              onClick={onChangeEmail}
-              className="text-red-500 hover:text-red-600 font-medium text-sm"
-              disabled={isLoading}
-            >
-              Change
-            </button>
+            <span className="text-gray-700 font-medium">{email}</span>
           </div>
+          <p className="text-gray-600 text-sm ml-8">
+            {firstName} {lastName}
+          </p>
         </div>
 
-        {/* Name Form */}
+        {/* Password Form */}
         <div className="space-y-4 mb-8">
           <div>
-            <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
-              First Name
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              Password
             </label>
             <div className="relative">
-              <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
               <Input
-                id="firstName"
-                type="text"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                placeholder="Enter your first name"
-                className="pl-10"
-                disabled={isLoading}
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                className="pl-10 pr-10"
+                disabled={loading}
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                disabled={loading}
+              >
+                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
             </div>
+            <p className="text-xs text-gray-500 mt-1">
+              Must be at least 8 characters with uppercase, lowercase, and number
+            </p>
           </div>
 
           <div>
-            <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">
-              Last Name
+            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+              Confirm Password
             </label>
             <div className="relative">
-              <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
               <Input
-                id="lastName"
-                type="text"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                placeholder="Enter your last name"
-                className="pl-10"
-                disabled={isLoading}
+                id="confirmPassword"
+                type={showConfirmPassword ? 'text' : 'password'}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Confirm your password"
+                className="pl-10 pr-10"
+                disabled={loading}
               />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                disabled={loading}
+              >
+                {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
             </div>
           </div>
         </div>
 
         <Button
           onClick={handleContinue}
-          disabled={!isFormValid || isLoading}
+          disabled={!isFormValid || loading}
           className="w-full mb-6"
           size="lg"
         >
-          {isLoading ? 'Loading...' : 'Continue'}
+          {loading ? 'Creating Account...' : 'Create Account'}
         </Button>
       </div>
     </div>
   );
 };
 
-export default AccountCreationNameStep;
+export default AccountCreationPasswordStep;
