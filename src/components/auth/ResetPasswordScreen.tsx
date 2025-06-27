@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { ArrowLeft, HelpCircle, Mail, CheckCircle } from 'lucide-react';
+import { ArrowLeft, HelpCircle, Mail } from 'lucide-react';
 import { FAVICON_OVERRIDES } from '../../constants/email';
 
 interface ResetPasswordScreenProps {
@@ -14,7 +14,7 @@ const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
   onResetSuccess,
   initialEmail = '',
 }) => {
-  const [email, setEmail] = useState(initialEmail);
+  const [email] = useState(initialEmail);
   const [isLoading, setIsLoading] = useState(false);
   const [resetState, setResetState] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
@@ -44,14 +44,6 @@ const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
   };
 
   const { url: faviconUrl, show: showFavicon } = updateFavicon(email);
-
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-    if (resetState === 'error') {
-      setResetState('idle');
-      setErrorMessage('');
-    }
-  };
 
   const handleSendResetLink = async () => {
     if (!isEmailValid(email) || isLoading) return;
@@ -87,12 +79,6 @@ const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
       setErrorMessage('Network error. Please check your connection and try again.');
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && isEmailValid(email) && !isLoading) {
-      handleSendResetLink();
     }
   };
 
@@ -147,7 +133,7 @@ const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
             Forgot your password?
           </h1>
           <p className="text-gray-600">
-            Enter your email address and we'll send you a link to reset your password
+            We'll send a reset link to your email address below
           </p>
         </div>
 
@@ -170,32 +156,18 @@ const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
             <input
               type="email"
               value={email}
-              onChange={handleEmailChange}
-              onKeyPress={handleKeyPress}
-              placeholder="Enter your email address"
-              className={`w-full pl-12 pr-12 py-4 text-lg border-2 rounded-xl focus:outline-none transition-all duration-200 ${
+              placeholder="Your email address"
+              className={`w-full pl-12 pr-4 py-4 text-lg border-2 rounded-xl bg-gray-50 text-gray-700 cursor-not-allowed focus:outline-none ${
                 resetState === 'error'
-                  ? 'border-red-300 focus:border-red-500 bg-red-50'
+                  ? 'border-red-300'
                   : resetState === 'sent'
-                  ? 'border-green-300 focus:border-green-500 bg-green-50'
-                  : 'border-gray-200 focus:border-red-500'
+                  ? 'border-green-300'
+                  : 'border-gray-200'
               }`}
-              disabled={isLoading || resetState === 'sent'}
+              disabled={true}
+              readOnly={true}
               autoComplete="email"
-              autoFocus
             />
-            
-            <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
-              {resetState === 'sending' && (
-                <div className="animate-spin rounded-full h-5 w-5 border-2 border-red-500 border-t-transparent"></div>
-              )}
-              {resetState === 'sent' && (
-                <CheckCircle className="w-5 h-5 text-green-500" />
-              )}
-              {resetState === 'error' && (
-                <Mail className="w-5 h-5 text-red-500" />
-              )}
-            </div>
           </div>
         </div>
 
@@ -209,7 +181,7 @@ const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
         {resetState === 'sent' && (
           <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl">
             <div className="flex items-center gap-2 mb-2">
-              <CheckCircle className="w-5 h-5 text-green-600" />
+              <Mail className="w-5 h-5 text-green-600" />
               <p className="text-green-800 font-medium">Reset link sent!</p>
             </div>
             <p className="text-green-700 text-sm">
