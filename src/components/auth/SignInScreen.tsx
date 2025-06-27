@@ -102,6 +102,13 @@ export default function LoginPage() {
     onForgotPasswordClick={() => setCurrentScreen('forgot-password')} // 👈 add this line
   />
 )}
+
+{currentScreen === 'forgot-password' && (
+  <ForgotPasswordScreen 
+    email={emailForPassword}
+    onBack={() => setCurrentScreen('password')}
+  />
+)}
       
       {currentScreen === 'verification' && (
         <VerificationCodeScreen 
