@@ -13,7 +13,8 @@ interface PasswordAuthScreenProps {
 const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({ 
   email, 
   onBack, 
-  onSignInSuccess 
+  onSignInSuccess,
+  onForgotPasswordClick // ✅ add it here
 }) => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
