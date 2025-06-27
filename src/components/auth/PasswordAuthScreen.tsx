@@ -7,6 +7,7 @@ interface PasswordAuthScreenProps {
   email: string;
   onBack: () => void;
   onSignInSuccess: () => void;
+  onForgotPasswordClick: () => void; // ➕ Add this
 }
 
 const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({ 
