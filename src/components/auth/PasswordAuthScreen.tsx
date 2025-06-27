@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from 'react';
 import { ArrowLeft, Lock, Key, Check, HelpCircle, Eye, EyeOff, Mail, Loader2 } from 'lucide-react';
 import { FAVICON_OVERRIDES } from '../../constants/email';
@@ -37,7 +36,6 @@ const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({
     setError('');
     
     try {
-      // Simulate password authentication API call
       const response = await fetch(`${API_BASE_URL}/signin`, {
         method: 'POST',
         headers: {
@@ -87,7 +85,6 @@ const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({
       const data = await response.json();
 
       if (response.ok) {
-        // Navigate to verification screen - this would be handled by parent component
         console.log('Verification code sent successfully');
       } else {
         setError(data.message || 'Failed to send verification code. Please try again.');
