@@ -20,16 +20,26 @@ const AccountCreationScreen: React.FC<AccountCreationScreenProps> = ({
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleNameStepContinue = (newFirstName: string, newLastName: string) => {
-    setFirstName(newFirstName);
-    setLastName(newLastName);
+    // Clear any previous errors
+    setError(null);
+    
+    // Validate names
+    if (!newFirstName.trim() || !newLastName.trim()) {
+      setError('First name and last name are required');
+      return;
+    }
+    
+    setFirstName(newFirstName.trim());
+    setLastName(newLastName.trim());
     setCurrentStep('password');
   };
 
   const handlePasswordStepContinue = () => {
-    // Account creation happens in the password step now
-    console.log('Account created successfully for:', { email, firstName, lastName });
+    // Account creation is now handled in the password step component
+    // Just move to success step when called
     setCurrentStep('success');
   };
 
@@ -42,6 +52,7 @@ const AccountCreationScreen: React.FC<AccountCreationScreenProps> = ({
   };
 
   const handlePasswordStepBack = () => {
+    setError(null); // Clear errors when going back
     setCurrentStep('name');
   };
 
@@ -51,7 +62,6 @@ const AccountCreationScreen: React.FC<AccountCreationScreenProps> = ({
 
   const handleError = (errorMessage: string) => {
     setError(errorMessage);
-    // You might want to show a toast notification here
     console.error('Account creation error:', errorMessage);
     
     // Optional: Clear error after a few seconds
@@ -62,31 +72,38 @@ const AccountCreationScreen: React.FC<AccountCreationScreenProps> = ({
     setError(null);
   };
 
+  // Error display component
+  const ErrorBanner = () => (
+    error ? (
+      <div className="fixed top-4 left-4 right-4 z-50 bg-red-50 border border-red-200 rounded-lg p-4 shadow-lg">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+            <div className="text-red-600 text-sm font-medium">
+              {error}
+            </div>
+          </div>
+          <button
+            onClick={clearError}
+            className="text-red-600 hover:text-red-800 text-sm font-medium ml-4"
+          >
+            ×
+          </button>
+        </div>
+      </div>
+    ) : null
+  );
+
   if (currentStep === 'name') {
     return (
       <div>
-        {error && (
-          <div className="fixed top-4 left-4 right-4 z-50 bg-red-50 border border-red-200 rounded-lg p-4 shadow-lg">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <div className="text-red-600 text-sm font-medium">
-                  {error}
-                </div>
-              </div>
-              <button
-                onClick={clearError}
-                className="text-red-600 hover:text-red-800 text-sm font-medium"
-              >
-                ×
-              </button>
-            </div>
-          </div>
-        )}
+        <ErrorBanner />
         <AccountCreationNameStep
           email={email}
           onBack={handleNameStepBack}
           onChangeEmail={handleChangeEmail}
           onContinue={handleNameStepContinue}
+          initialFirstName={firstName}
+          initialLastName={lastName}
         />
       </div>
     );
@@ -95,23 +112,7 @@ const AccountCreationScreen: React.FC<AccountCreationScreenProps> = ({
   if (currentStep === 'password') {
     return (
       <div>
-        {error && (
-          <div className="fixed top-4 left-4 right-4 z-50 bg-red-50 border border-red-200 rounded-lg p-4 shadow-lg">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <div className="text-red-600 text-sm font-medium">
-                  {error}
-                </div>
-              </div>
-              <button
-                onClick={clearError}
-                className="text-red-600 hover:text-red-800 text-sm font-medium"
-              >
-                ×
-              </button>
-            </div>
-          </div>
-        )}
+        <ErrorBanner />
         <AccountCreationPasswordStep
           email={email}
           firstName={firstName}
@@ -119,6 +120,7 @@ const AccountCreationScreen: React.FC<AccountCreationScreenProps> = ({
           onBack={handlePasswordStepBack}
           onContinue={handlePasswordStepContinue}
           onError={handleError}
+          isLoading={isLoading}
         />
       </div>
     );
