@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import AccountCreationNameStep from './AccountCreationNameStep';
 import AccountCreationPasswordStep from './AccountCreationPasswordStep';
@@ -20,7 +19,7 @@ const AccountCreationScreen: React.FC<AccountCreationScreenProps> = ({
   const [currentStep, setCurrentStep] = useState<Step>('name');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
   const handleNameStepContinue = (newFirstName: string, newLastName: string) => {
     setFirstName(newFirstName);
@@ -28,9 +27,9 @@ const AccountCreationScreen: React.FC<AccountCreationScreenProps> = ({
     setCurrentStep('password');
   };
 
-  const handlePasswordStepContinue = (newPassword: string) => {
-    setPassword(newPassword);
-    console.log('Creating account for:', { email, firstName, lastName });
+  const handlePasswordStepContinue = () => {
+    // Account creation happens in the password step now
+    console.log('Account created successfully for:', { email, firstName, lastName });
     setCurrentStep('success');
   };
 
@@ -50,26 +49,78 @@ const AccountCreationScreen: React.FC<AccountCreationScreenProps> = ({
     onAccountCreated();
   };
 
+  const handleError = (errorMessage: string) => {
+    setError(errorMessage);
+    // You might want to show a toast notification here
+    console.error('Account creation error:', errorMessage);
+    
+    // Optional: Clear error after a few seconds
+    setTimeout(() => setError(null), 5000);
+  };
+
+  const clearError = () => {
+    setError(null);
+  };
+
   if (currentStep === 'name') {
     return (
-      <AccountCreationNameStep
-        email={email}
-        onBack={handleNameStepBack}
-        onChangeEmail={handleChangeEmail}
-        onContinue={handleNameStepContinue}
-      />
+      <div>
+        {error && (
+          <div className="fixed top-4 left-4 right-4 z-50 bg-red-50 border border-red-200 rounded-lg p-4 shadow-lg">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <div className="text-red-600 text-sm font-medium">
+                  {error}
+                </div>
+              </div>
+              <button
+                onClick={clearError}
+                className="text-red-600 hover:text-red-800 text-sm font-medium"
+              >
+                ×
+              </button>
+            </div>
+          </div>
+        )}
+        <AccountCreationNameStep
+          email={email}
+          onBack={handleNameStepBack}
+          onChangeEmail={handleChangeEmail}
+          onContinue={handleNameStepContinue}
+        />
+      </div>
     );
   }
 
   if (currentStep === 'password') {
     return (
-      <AccountCreationPasswordStep
-        email={email}
-        firstName={firstName}
-        lastName={lastName}
-        onBack={handlePasswordStepBack}
-        onContinue={handlePasswordStepContinue}
-      />
+      <div>
+        {error && (
+          <div className="fixed top-4 left-4 right-4 z-50 bg-red-50 border border-red-200 rounded-lg p-4 shadow-lg">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <div className="text-red-600 text-sm font-medium">
+                  {error}
+                </div>
+              </div>
+              <button
+                onClick={clearError}
+                className="text-red-600 hover:text-red-800 text-sm font-medium"
+              >
+                ×
+              </button>
+            </div>
+          </div>
+        )}
+        <AccountCreationPasswordStep
+          email={email}
+          firstName={firstName}
+          lastName={lastName}
+          onBack={handlePasswordStepBack}
+          onContinue={handlePasswordStepContinue}
+          onError={handleError}
+        />
+      </div>
     );
   }
 
