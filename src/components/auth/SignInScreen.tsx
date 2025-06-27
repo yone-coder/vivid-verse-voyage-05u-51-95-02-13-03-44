@@ -94,12 +94,13 @@ export default function LoginPage() {
       )}
       
       {currentScreen === 'password' && (
-        <PasswordAuthScreen 
-          email={emailForPassword} 
-          onBack={handleBack}
-          onSignInSuccess={handleSignInSuccess}
-        />
-      )}
+  <PasswordAuthScreen 
+    email={emailForPassword} 
+    onBack={handleBack}
+    onSignInSuccess={handleSignInSuccess}
+    onForgotPasswordClick={() => setCurrentScreen('verification')} // 👈 add this line
+  />
+)}
       
       {currentScreen === 'verification' && (
         <VerificationCodeScreen 
