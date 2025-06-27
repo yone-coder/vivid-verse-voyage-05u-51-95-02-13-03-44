@@ -9,7 +9,6 @@ import SuccessScreen from './SuccessScreen';
 
 type ScreenType = 'login' | 'email' | 'password' | 'verification' | 'success';
 
-// Main LoginPage Component
 export default function LoginPage() {
   const [currentScreen, setCurrentScreen] = useState<ScreenType>('login');
   const [selectedLanguage, setSelectedLanguage] = useState('ht');
@@ -43,11 +42,6 @@ export default function LoginPage() {
     setEmailForPassword(email);
     setCurrentScreen('verification');
     console.log('Sending verification code to:', email);
-  };
-
-  const handleResendCode = (email: string) => {
-    console.log('Resending verification code to:', email);
-    // Here you would typically call your API to resend the code
   };
 
   const handleSignInSuccess = () => {
@@ -92,7 +86,6 @@ export default function LoginPage() {
         <VerificationCodeScreen 
           email={emailForPassword} 
           onBack={handleBack}
-          onResendCode={handleResendCode}
           onVerificationSuccess={handleSignInSuccess}
         />
       )}
