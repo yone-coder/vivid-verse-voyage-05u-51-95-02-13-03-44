@@ -99,7 +99,7 @@ export default function LoginPage() {
     email={emailForPassword} 
     onBack={handleBack}
     onSignInSuccess={handleSignInSuccess}
-    onForgotPasswordClick={() => setCurrentScreen('verification')} // 👈 add this line
+    onForgotPasswordClick={() => setCurrentScreen('forgot-password')} // 👈 add this line
   />
 )}
       
