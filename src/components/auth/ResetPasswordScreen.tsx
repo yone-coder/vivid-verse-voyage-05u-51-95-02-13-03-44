@@ -1,5 +1,7 @@
+
 import React, { useState } from 'react';
 import { ArrowLeft, HelpCircle, Mail, CheckCircle } from 'lucide-react';
+import { FAVICON_OVERRIDES } from '../../constants/email';
 
 interface ResetPasswordScreenProps {
   onBack: () => void;
@@ -23,6 +25,25 @@ const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
+
+  const extractDomain = (emailValue: string): string => {
+    if (!emailValue.includes('@')) return '';
+    const parts = emailValue.split('@');
+    if (parts.length !== 2) return '';
+    const domain = parts[1].trim();
+    return domain.includes('.') && domain.length > 3 ? domain : '';
+  };
+
+  const updateFavicon = (emailValue: string) => {
+    const domain = extractDomain(emailValue);
+    if (domain) {
+      const url = FAVICON_OVERRIDES[domain] || `https://www.google.com/s2/favicons?domain=${domain}&sz=20`;
+      return { url, show: true, domain };
+    }
+    return { url: '', show: false, domain: '' };
+  };
+
+  const { url: faviconUrl, show: showFavicon } = updateFavicon(email);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -77,6 +98,10 @@ const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
 
   const canSendReset = isEmailValid(email) && !isLoading && resetState !== 'sent';
 
+  const handleFaviconError = () => {
+    // Favicon failed to load
+  };
+
   return (
     <div className="min-h-screen bg-white flex flex-col px-4">
       {/* Header */}
@@ -129,13 +154,26 @@ const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
         {/* Email Input */}
         <div className="mb-6">
           <div className="relative">
+            <div className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 z-10">
+              {showFavicon && faviconUrl ? (
+                <img
+                  src={faviconUrl}
+                  alt="Email provider favicon"
+                  className="w-full h-full object-contain"
+                  onError={handleFaviconError}
+                />
+              ) : (
+                <Mail className="w-full h-full text-gray-400" />
+              )}
+            </div>
+
             <input
               type="email"
               value={email}
               onChange={handleEmailChange}
               onKeyPress={handleKeyPress}
               placeholder="Enter your email address"
-              className={`w-full px-4 py-4 pr-12 text-lg border-2 rounded-xl focus:outline-none transition-all duration-200 ${
+              className={`w-full pl-12 pr-12 py-4 text-lg border-2 rounded-xl focus:outline-none transition-all duration-200 ${
                 resetState === 'error'
                   ? 'border-red-300 focus:border-red-500 bg-red-50'
                   : resetState === 'sent'
@@ -153,9 +191,6 @@ const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
               )}
               {resetState === 'sent' && (
                 <CheckCircle className="w-5 h-5 text-green-500" />
-              )}
-              {resetState === 'idle' && (
-                <Mail className={`w-5 h-5 ${isEmailValid(email) ? 'text-red-500' : 'text-gray-400'}`} />
               )}
               {resetState === 'error' && (
                 <Mail className="w-5 h-5 text-red-500" />
