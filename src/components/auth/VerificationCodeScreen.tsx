@@ -1,7 +1,5 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowLeft, Key, Mail, HelpCircle, Loader2 } from 'lucide-react';
-import { FAVICON_OVERRIDES } from '../../constants/email';
 
 interface VerificationCodeScreenProps {
   email: string;
@@ -131,8 +129,12 @@ const VerificationCodeScreen: React.FC<VerificationCodeScreenProps> = ({
     }
   };
 
+  const faviconOverrides: Record<string, string> = {
+    'gmail.com': 'https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico',
+  };
+
   const domain = email.split('@')[1] || '';
-  const faviconUrl = FAVICON_OVERRIDES[domain] || `https://www.google.com/s2/favicons?domain=${domain}`;
+  const faviconUrl = faviconOverrides[domain] || `https://www.google.com/s2/favicons?domain=${domain}`;
 
   return (
     <div className="min-h-screen bg-white flex flex-col px-4">
