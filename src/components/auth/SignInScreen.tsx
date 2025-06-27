@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MainLoginScreen from './MainLoginScreen';
@@ -72,6 +71,12 @@ export default function LoginPage() {
     setCurrentScreen('create-account');
   };
 
+  const handleResetSuccess = (email: string) => {
+    console.log('Password reset link sent to:', email);
+    // Optionally redirect back to password screen or show success message
+    setCurrentScreen('password');
+  };
+
   return (
     <div className="min-h-screen bg-white">
       {currentScreen === 'login' && (
@@ -95,20 +100,21 @@ export default function LoginPage() {
       )}
       
       {currentScreen === 'password' && (
-  <PasswordAuthScreen 
-    email={emailForPassword} 
-    onBack={handleBack}
-    onSignInSuccess={handleSignInSuccess}
-    onForgotPasswordClick={() => setCurrentScreen('forgot-password')} // 👈 add this line
-  />
-)}
+        <PasswordAuthScreen 
+          email={emailForPassword} 
+          onBack={handleBack}
+          onSignInSuccess={handleSignInSuccess}
+          onForgotPasswordClick={() => setCurrentScreen('forgot-password')}
+        />
+      )}
 
-{currentScreen === 'forgot-password' && (
-  <ResetPasswordScreen 
-    email={emailForPassword}
-    onBack={() => setCurrentScreen('password')}
-  />
-)}
+      {currentScreen === 'forgot-password' && (
+        <ResetPasswordScreen 
+          initialEmail={emailForPassword}
+          onBack={() => setCurrentScreen('password')}
+          onResetSuccess={handleResetSuccess}
+        />
+      )}
       
       {currentScreen === 'verification' && (
         <VerificationCodeScreen 
