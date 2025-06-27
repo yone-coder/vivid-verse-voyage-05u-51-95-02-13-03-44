@@ -6,24 +6,23 @@ import { FAVICON_OVERRIDES } from '../../constants/email';
 
 interface AccountCreationNameStepProps {
   email: string;
-  password: string; // Add password prop
   onBack: () => void;
   onChangeEmail: () => void;
   onContinue: (firstName: string, lastName: string) => void;
-  onError?: (error: string) => void; // Add error handler prop
+  initialFirstName?: string;
+  initialLastName?: string;
 }
 
 const AccountCreationNameStep: React.FC<AccountCreationNameStepProps> = ({
   email,
-  password,
   onBack,
   onChangeEmail,
   onContinue,
-  onError,
+  initialFirstName = '',
+  initialLastName = '',
 }) => {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [firstName, setFirstName] = useState(initialFirstName);
+  const [lastName, setLastName] = useState(initialLastName);
 
   const extractDomain = (emailValue: string): string => {
     if (!emailValue.includes('@')) return '';
@@ -43,57 +42,11 @@ const AccountCreationNameStep: React.FC<AccountCreationNameStepProps> = ({
 
   const faviconUrl = getFaviconUrl(email);
 
-  const createAccount = async (fullName: string) => {
-    try {
-      const response = await fetch('https://supabase-y8ak.onrender.com/api/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: email,
-          password: password,
-          full_name: fullName,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error('Account creation failed:', error);
-      throw error;
-    }
-  };
-
-  const handleContinue = async () => {
+  const handleContinue = () => {
     if (!firstName.trim() || !lastName.trim()) return;
     
-    setIsLoading(true);
-    try {
-      const fullName = `${firstName.trim()} ${lastName.trim()}`;
-      
-      // Call the API to create the account
-      await createAccount(fullName);
-      
-      // If successful, call the onContinue callback
-      onContinue(firstName.trim(), lastName.trim());
-    } catch (error) {
-      // Handle the error
-      const errorMessage = error instanceof Error ? error.message : 'Account creation failed';
-      if (onError) {
-        onError(errorMessage);
-      } else {
-        // Fallback error handling - you might want to show a toast or alert
-        alert(`Error: ${errorMessage}`);
-      }
-    } finally {
-      setIsLoading(false);
-    }
+    // Just pass the names to the parent - don't create account here
+    onContinue(firstName.trim(), lastName.trim());
   };
 
   const isFormValid = firstName.trim().length > 0 && lastName.trim().length > 0;
@@ -105,7 +58,6 @@ const AccountCreationNameStep: React.FC<AccountCreationNameStepProps> = ({
         <button
           onClick={onBack}
           className="flex items-center justify-center w-10 h-10 hover:bg-gray-100 rounded-full transition-colors active:scale-95"
-          disabled={isLoading}
         >
           <ArrowLeft className="w-5 h-5 text-gray-700" />
         </button>
@@ -153,7 +105,6 @@ const AccountCreationNameStep: React.FC<AccountCreationNameStepProps> = ({
             <button
               onClick={onChangeEmail}
               className="text-red-500 hover:text-red-600 font-medium text-sm"
-              disabled={isLoading}
             >
               Change
             </button>
@@ -175,7 +126,6 @@ const AccountCreationNameStep: React.FC<AccountCreationNameStepProps> = ({
                 onChange={(e) => setFirstName(e.target.value)}
                 placeholder="Enter your first name"
                 className="pl-10"
-                disabled={isLoading}
               />
             </div>
           </div>
@@ -193,7 +143,6 @@ const AccountCreationNameStep: React.FC<AccountCreationNameStepProps> = ({
                 onChange={(e) => setLastName(e.target.value)}
                 placeholder="Enter your last name"
                 className="pl-10"
-                disabled={isLoading}
               />
             </div>
           </div>
@@ -201,11 +150,11 @@ const AccountCreationNameStep: React.FC<AccountCreationNameStepProps> = ({
 
         <Button
           onClick={handleContinue}
-          disabled={!isFormValid || isLoading}
+          disabled={!isFormValid}
           className="w-full mb-6"
           size="lg"
         >
-          {isLoading ? 'Creating Account...' : 'Create Account'}
+          Continue
         </Button>
       </div>
     </div>
