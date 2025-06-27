@@ -1,5 +1,6 @@
+
 import React, { useState, useRef } from 'react';
-import { ArrowLeft, Lock, Key, Check, HelpCircle, Eye, EyeOff, Mail, Loader2 } from 'lucide-react';
+import { ArrowLeft, Lock, Check, HelpCircle, Eye, EyeOff, Mail, Loader2 } from 'lucide-react';
 import { FAVICON_OVERRIDES } from '../../constants/email';
 
 interface PasswordAuthScreenProps {
@@ -65,38 +66,6 @@ const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({
     }
   };
 
-  const handleSendVerificationCode = async () => {
-    if (isLoading) return;
-    
-    setIsLoading(true);
-    setError('');
-    
-    try {
-      const response = await fetch(`${API_BASE_URL}/send-otp`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: email
-        }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        console.log('Verification code sent successfully');
-      } else {
-        setError(data.message || 'Failed to send verification code. Please try again.');
-      }
-    } catch (error) {
-      console.error('Error sending OTP:', error);
-      setError('Network error. Please check your connection and try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const domain = email.split('@')[1] || '';
   const faviconUrl = FAVICON_OVERRIDES[domain] || `https://www.google.com/s2/favicons?domain=${domain}`;
 
@@ -145,7 +114,7 @@ const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({
             Enter your password
           </h1>
           <p className="text-gray-600">
-            We'll send you a verification code or you can sign in with your password
+            Sign in with your password
           </p>
         </div>
 
@@ -249,22 +218,6 @@ const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({
             )}
             <span>
               {isLoading ? 'Signing In...' : 'Sign In'}
-            </span>
-          </button>
-
-          <button
-            disabled={isLoading}
-            onClick={handleSendVerificationCode}
-            className={`w-full flex items-center justify-center gap-3 py-4 px-4 border-2 border-red-500 text-red-500 rounded-lg font-medium transition-all hover:bg-red-50 active:scale-98 disabled:opacity-50 disabled:cursor-not-allowed`}
-            type="button"
-          >
-            {isLoading ? (
-              <Loader2 className="w-5 h-5 animate-spin" />
-            ) : (
-              <Key className="w-5 h-5" />
-            )}
-            <span>
-              {isLoading ? 'Sending...' : 'Send Verification Code'}
             </span>
           </button>
         </div>

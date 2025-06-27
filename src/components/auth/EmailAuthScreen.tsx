@@ -19,6 +19,8 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [showDomainSuggestions, setShowDomainSuggestions] = useState(false);
 
+  const API_BASE_URL = 'https://supabase-y8ak.onrender.com/api';
+
   const handleEmailChange = (value: string) => {
     setEmail(value);
 
@@ -54,9 +56,38 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
     }
   };
 
-  const handleContinueWithCode = () => {
+  const handleContinueWithCode = async () => {
     if (!isEmailValid || isLoading || emailCheckState === 'checking') return;
-    onContinueWithCode(email);
+    
+    setIsLoading(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/send-otp`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log('Verification code sent successfully');
+        onContinueWithCode(email);
+      } else {
+        console.error('Failed to send OTP:', data.message);
+        // Still proceed to verification screen even if sending fails
+        onContinueWithCode(email);
+      }
+    } catch (error) {
+      console.error('Error sending OTP:', error);
+      // Still proceed to verification screen even if there's a network error
+      onContinueWithCode(email);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
