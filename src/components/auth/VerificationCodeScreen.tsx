@@ -1,25 +1,27 @@
-
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowLeft, Key, Mail, HelpCircle } from 'lucide-react';
+import { ArrowLeft, Key, Mail, HelpCircle, Loader2 } from 'lucide-react';
 
 interface VerificationCodeScreenProps {
   email: string;
   onBack: () => void;
-  onResendCode: (email: string) => void;
   onVerificationSuccess: () => void;
 }
 
 const VerificationCodeScreen: React.FC<VerificationCodeScreenProps> = ({ 
   email, 
   onBack, 
-  onResendCode, 
   onVerificationSuccess 
 }) => {
   const [code, setCode] = useState(['', '', '', '', '', '']);
   const [isComplete, setIsComplete] = useState(false);
   const [timeLeft, setTimeLeft] = useState<number>(60);
   const [canResend, setCanResend] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isResending, setIsResending] = useState(false);
+  const [error, setError] = useState<string>('');
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  const API_BASE_URL = 'https://supabase-y8ak.onrender.com/api';
 
   useEffect(() => {
     if (timeLeft > 0) {
@@ -37,6 +39,7 @@ const VerificationCodeScreen: React.FC<VerificationCodeScreenProps> = ({
     newCode[index] = value;
     setCode(newCode);
     setIsComplete(newCode.every(digit => digit !== ''));
+    setError(''); // Clear any previous errors
 
     // Auto-focus next input
     if (value && index < 5) {
@@ -50,15 +53,79 @@ const VerificationCodeScreen: React.FC<VerificationCodeScreenProps> = ({
     }
   };
 
-  const handleResendCode = () => {
-    setTimeLeft(60);
-    setCanResend(false);
-    onResendCode(email);
+  const handleResendCode = async () => {
+    setIsResending(true);
+    setError('');
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/send-otp`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setTimeLeft(60);
+        setCanResend(false);
+        // Clear the code inputs
+        setCode(['', '', '', '', '', '']);
+        setIsComplete(false);
+        // Focus first input
+        inputRefs.current[0]?.focus();
+      } else {
+        setError(data.message || 'Failed to resend code. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error resending OTP:', error);
+      setError('Network error. Please check your connection and try again.');
+    } finally {
+      setIsResending(false);
+    }
   };
 
-  const handleVerifyCode = () => {
-    if (isComplete) {
-      onVerificationSuccess();
+  const handleVerifyCode = async () => {
+    if (!isComplete) return;
+    
+    setIsLoading(true);
+    setError('');
+    
+    const otpCode = code.join('');
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/verify-otp`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          otp: otpCode
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        onVerificationSuccess();
+      } else {
+        setError(data.message || 'Invalid verification code. Please try again.');
+        // Clear the code inputs on error
+        setCode(['', '', '', '', '', '']);
+        setIsComplete(false);
+        // Focus first input
+        inputRefs.current[0]?.focus();
+      }
+    } catch (error) {
+      console.error('Error verifying OTP:', error);
+      setError('Network error. Please check your connection and try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -145,6 +212,13 @@ const VerificationCodeScreen: React.FC<VerificationCodeScreenProps> = ({
           </div>
         </div>
 
+        {/* Error message */}
+        {error && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-red-600 text-sm text-center">{error}</p>
+          </div>
+        )}
+
         {/* Code input */}
         <div className="mb-6">
           <label className="block text-sm font-medium text-gray-700 mb-4">
@@ -161,7 +235,12 @@ const VerificationCodeScreen: React.FC<VerificationCodeScreenProps> = ({
                 value={digit}
                 onChange={(e) => handleCodeChange(index, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
-                className="w-12 h-12 text-center text-lg font-semibold border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
+                disabled={isLoading}
+                className={`w-12 h-12 text-center text-lg font-semibold border rounded-lg outline-none transition-colors ${
+                  error 
+                    ? 'border-red-300 focus:ring-2 focus:ring-red-500 focus:border-red-500' 
+                    : 'border-gray-300 focus:ring-2 focus:ring-red-500 focus:border-red-500'
+                } ${isLoading ? 'bg-gray-50' : 'bg-white'}`}
               />
             ))}
           </div>
@@ -172,10 +251,12 @@ const VerificationCodeScreen: React.FC<VerificationCodeScreenProps> = ({
           {canResend ? (
             <button
               onClick={handleResendCode}
-              className="text-red-500 font-medium hover:text-red-600"
+              disabled={isResending}
+              className="text-red-500 font-medium hover:text-red-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mx-auto"
               type="button"
             >
-              Resend verification code
+              {isResending && <Loader2 className="w-4 h-4 animate-spin" />}
+              {isResending ? 'Sending...' : 'Resend verification code'}
             </button>
           ) : (
             <p className="text-gray-500 text-sm">
@@ -187,17 +268,23 @@ const VerificationCodeScreen: React.FC<VerificationCodeScreenProps> = ({
         {/* Sign in button */}
         <div className="space-y-3 mb-8">
           <button
-            disabled={!isComplete}
+            disabled={!isComplete || isLoading}
             onClick={handleVerifyCode}
             className={`w-full flex items-center justify-center gap-3 py-4 px-4 rounded-lg font-medium transition-all ${
-              isComplete
+              isComplete && !isLoading
                 ? 'bg-red-500 text-white hover:bg-red-600 active:scale-98'
                 : 'bg-gray-200 text-gray-400 cursor-not-allowed'
             }`}
             type="button"
           >
-            <Key className="w-5 h-5" />
-            <span>Verify & Sign In</span>
+            {isLoading ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              <Key className="w-5 h-5" />
+            )}
+            <span>
+              {isLoading ? 'Verifying...' : 'Verify & Sign In'}
+            </span>
           </button>
         </div>
 
