@@ -104,7 +104,7 @@ export default function LoginPage() {
 )}
 
 {currentScreen === 'forgot-password' && (
-  <ForgotPasswordScreen 
+  <ResetPasswordScreen 
     email={emailForPassword}
     onBack={() => setCurrentScreen('password')}
   />
