@@ -45,14 +45,14 @@ const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
 
   const { url: faviconUrl, show: showFavicon } = updateFavicon(email);
 
-  const handleSendResetLink = async () => {
+  const handleSendResetCode = async () => {
     if (!isEmailValid(email) || isLoading) return;
 
     setIsLoading(true);
     setResetState('sending');
     
     try {
-      const response = await fetch(`${API_BASE_URL}/reset-password`, {
+      const response = await fetch(`${API_BASE_URL}/request-password-reset`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -64,17 +64,17 @@ const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
 
       const data = await response.json();
 
-      if (response.ok) {
+      if (response.ok && data.success) {
         setResetState('sent');
         setTimeout(() => {
           onResetSuccess(email);
         }, 2000);
       } else {
         setResetState('error');
-        setErrorMessage(data.message || 'Failed to send reset link. Please try again.');
+        setErrorMessage(data.message || 'Failed to send reset code. Please try again.');
       }
     } catch (error) {
-      console.error('Error sending reset link:', error);
+      console.error('Error sending reset code:', error);
       setResetState('error');
       setErrorMessage('Network error. Please check your connection and try again.');
     } finally {
@@ -133,7 +133,7 @@ const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
             Forgot your password?
           </h1>
           <p className="text-gray-600">
-            We'll send a reset link to your email address below
+            We'll send a reset code to your email address below
           </p>
         </div>
 
@@ -182,17 +182,17 @@ const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
           <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl">
             <div className="flex items-center gap-2 mb-2">
               <Mail className="w-5 h-5 text-green-600" />
-              <p className="text-green-800 font-medium">Reset link sent!</p>
+              <p className="text-green-800 font-medium">Reset code sent!</p>
             </div>
             <p className="text-green-700 text-sm">
-              Check your email for a link to reset your password. If it doesn't appear within a few minutes, check your spam folder.
+              Check your email for a reset code. If it doesn't appear within a few minutes, check your spam folder.
             </p>
           </div>
         )}
 
-        {/* Send Reset Link Button */}
+        {/* Send Reset Code Button */}
         <button
-          onClick={handleSendResetLink}
+          onClick={handleSendResetCode}
           disabled={!canSendReset}
           className={`w-full py-4 px-6 rounded-xl text-lg font-medium transition-all duration-200 mb-6 ${
             canSendReset
@@ -206,9 +206,9 @@ const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
               Sending...
             </div>
           ) : resetState === 'sent' ? (
-            'Reset link sent'
+            'Reset code sent'
           ) : (
-            'Send reset link'
+            'Send reset code'
           )}
         </button>
 
@@ -237,7 +237,7 @@ const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
           >
             <path d="M18,8A6,6 0 0,0 12,2A6,6 0 0,0 6,8H4C2.89,8 2,8.89 2,10V20A2,2 0 0,0 4,22H20A2,2 0 0,0 22,20V10C22,8.89 21.1,8 20,8H18M12,4A4,4 0 0,1 16,8H8A4,4 0 0,1 12,4Z" />
           </svg>
-          <span className="text-gray-500 text-sm">Reset links expire in 24 hours</span>
+          <span className="text-gray-500 text-sm">Reset codes expire in 10 minutes</span>
         </div>
       </div>
     </div>

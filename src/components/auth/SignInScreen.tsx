@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MainLoginScreen from './MainLoginScreen';
 import EmailAuthScreen from './EmailAuthScreen';
@@ -7,13 +8,16 @@ import VerificationCodeScreen from './VerificationCodeScreen';
 import AccountCreationScreen from './AccountCreationScreen';
 import SuccessScreen from './SuccessScreen';
 import ResetPasswordScreen from './ResetPasswordScreen';
+import OTPResetScreen from './OTPResetScreen';
+import NewPasswordScreen from './NewPasswordScreen';
 
-type ScreenType = 'login' | 'email' | 'password' | 'verification' | 'create-account' | 'success' | 'forgot-password';
+type ScreenType = 'login' | 'email' | 'password' | 'verification' | 'create-account' | 'success' | 'forgot-password' | 'otp-reset' | 'new-password';
 
 export default function LoginPage() {
   const [currentScreen, setCurrentScreen] = useState<ScreenType>('login');
   const [selectedLanguage, setSelectedLanguage] = useState('ht');
   const [emailForPassword, setEmailForPassword] = useState('');
+  const [resetOTP, setResetOTP] = useState('');
 
   const navigate = useNavigate();
 
@@ -32,7 +36,13 @@ export default function LoginPage() {
       setCurrentScreen('email');
     } else if (currentScreen === 'email') {
       setCurrentScreen('login');
-      setEmailForPassword(''); // Clear email when going back to login
+      setEmailForPassword('');
+    } else if (currentScreen === 'forgot-password') {
+      setCurrentScreen('password');
+    } else if (currentScreen === 'otp-reset') {
+      setCurrentScreen('forgot-password');
+    } else if (currentScreen === 'new-password') {
+      setCurrentScreen('otp-reset');
     }
   };
 
@@ -72,9 +82,19 @@ export default function LoginPage() {
   };
 
   const handleResetSuccess = (email: string) => {
-    console.log('Password reset link sent to:', email);
-    // Optionally redirect back to password screen or show success message
-    setCurrentScreen('password');
+    console.log('Password reset code sent to:', email);
+    setCurrentScreen('otp-reset');
+  };
+
+  const handleOTPVerified = (email: string, otp: string) => {
+    console.log('OTP verified for password reset:', email);
+    setResetOTP(otp);
+    setCurrentScreen('new-password');
+  };
+
+  const handlePasswordResetSuccess = () => {
+    console.log('Password reset completed successfully');
+    setCurrentScreen('success');
   };
 
   return (
@@ -111,8 +131,25 @@ export default function LoginPage() {
       {currentScreen === 'forgot-password' && (
         <ResetPasswordScreen 
           initialEmail={emailForPassword}
-          onBack={() => setCurrentScreen('password')}
+          onBack={handleBack}
           onResetSuccess={handleResetSuccess}
+        />
+      )}
+
+      {currentScreen === 'otp-reset' && (
+        <OTPResetScreen 
+          email={emailForPassword}
+          onBack={handleBack}
+          onOTPVerified={handleOTPVerified}
+        />
+      )}
+
+      {currentScreen === 'new-password' && (
+        <NewPasswordScreen 
+          email={emailForPassword}
+          otp={resetOTP}
+          onBack={handleBack}
+          onPasswordResetSuccess={handlePasswordResetSuccess}
         />
       )}
       
