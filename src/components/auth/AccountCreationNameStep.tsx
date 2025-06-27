@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { ArrowLeft, User, Mail } from 'lucide-react';
 import { Button } from '../ui/button';
@@ -7,16 +6,20 @@ import { FAVICON_OVERRIDES } from '../../constants/email';
 
 interface AccountCreationNameStepProps {
   email: string;
+  password: string; // Add password prop
   onBack: () => void;
   onChangeEmail: () => void;
   onContinue: (firstName: string, lastName: string) => void;
+  onError?: (error: string) => void; // Add error handler prop
 }
 
 const AccountCreationNameStep: React.FC<AccountCreationNameStepProps> = ({
   email,
+  password,
   onBack,
   onChangeEmail,
   onContinue,
+  onError,
 }) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -40,13 +43,54 @@ const AccountCreationNameStep: React.FC<AccountCreationNameStepProps> = ({
 
   const faviconUrl = getFaviconUrl(email);
 
+  const createAccount = async (fullName: string) => {
+    try {
+      const response = await fetch('https://supabase-y8ak.onrender.com/api/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+          full_name: fullName,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Account creation failed:', error);
+      throw error;
+    }
+  };
+
   const handleContinue = async () => {
     if (!firstName.trim() || !lastName.trim()) return;
     
     setIsLoading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 500));
+      const fullName = `${firstName.trim()} ${lastName.trim()}`;
+      
+      // Call the API to create the account
+      await createAccount(fullName);
+      
+      // If successful, call the onContinue callback
       onContinue(firstName.trim(), lastName.trim());
+    } catch (error) {
+      // Handle the error
+      const errorMessage = error instanceof Error ? error.message : 'Account creation failed';
+      if (onError) {
+        onError(errorMessage);
+      } else {
+        // Fallback error handling - you might want to show a toast or alert
+        alert(`Error: ${errorMessage}`);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -161,7 +205,7 @@ const AccountCreationNameStep: React.FC<AccountCreationNameStepProps> = ({
           className="w-full mb-6"
           size="lg"
         >
-          {isLoading ? 'Loading...' : 'Continue'}
+          {isLoading ? 'Creating Account...' : 'Create Account'}
         </Button>
       </div>
     </div>
