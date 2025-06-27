@@ -5,9 +5,10 @@ import MainLoginScreen from './MainLoginScreen';
 import EmailAuthScreen from './EmailAuthScreen';
 import PasswordAuthScreen from './PasswordAuthScreen';
 import VerificationCodeScreen from './VerificationCodeScreen';
+import AccountCreationScreen from './AccountCreationScreen';
 import SuccessScreen from './SuccessScreen';
 
-type ScreenType = 'login' | 'email' | 'password' | 'verification' | 'success';
+type ScreenType = 'login' | 'email' | 'password' | 'verification' | 'create-account' | 'success';
 
 export default function LoginPage() {
   const [currentScreen, setCurrentScreen] = useState<ScreenType>('login');
@@ -27,6 +28,8 @@ export default function LoginPage() {
       setCurrentScreen('email');
     } else if (currentScreen === 'password') {
       setCurrentScreen('email');
+    } else if (currentScreen === 'create-account') {
+      setCurrentScreen('email');
     } else if (currentScreen === 'email') {
       setCurrentScreen('login');
       setEmailForPassword(''); // Clear email when going back to login
@@ -44,14 +47,28 @@ export default function LoginPage() {
     console.log('Sending verification code to:', email);
   };
 
+  const handleCreateAccount = (email: string) => {
+    setEmailForPassword(email);
+    setCurrentScreen('create-account');
+  };
+
   const handleSignInSuccess = () => {
     console.log('Sign in completed successfully');
+    setCurrentScreen('success');
+  };
+
+  const handleAccountCreated = () => {
+    console.log('Account created successfully');
     setCurrentScreen('success');
   };
 
   const handleContinueToDashboard = () => {
     console.log('Manual redirect to homepage from success screen');
     navigate('/');
+  };
+
+  const handleSignUpClick = () => {
+    setCurrentScreen('create-account');
   };
 
   return (
@@ -70,6 +87,8 @@ export default function LoginPage() {
           selectedLanguage={selectedLanguage}
           onContinueWithPassword={handleContinueWithPassword}
           onContinueWithCode={handleContinueWithCode}
+          onCreateAccount={handleCreateAccount}
+          onSignUpClick={handleSignUpClick}
           initialEmail={emailForPassword}
         />
       )}
@@ -87,6 +106,14 @@ export default function LoginPage() {
           email={emailForPassword} 
           onBack={handleBack}
           onVerificationSuccess={handleSignInSuccess}
+        />
+      )}
+      
+      {currentScreen === 'create-account' && (
+        <AccountCreationScreen
+          email={emailForPassword}
+          onBack={handleBack}
+          onAccountCreated={handleAccountCreated}
         />
       )}
       

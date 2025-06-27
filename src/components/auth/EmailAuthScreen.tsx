@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { ArrowLeft, HelpCircle } from 'lucide-react';
 import { EmailAuthScreenProps } from '../../types/email';
@@ -13,6 +12,8 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
   selectedLanguage,
   onContinueWithPassword,
   onContinueWithCode,
+  onCreateAccount,
+  onSignUpClick,
   initialEmail = '',
 }) => {
   const { email, setEmail, isEmailValid, emailCheckState } = useEmailValidation(initialEmail);
@@ -90,6 +91,21 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
     }
   };
 
+  const handleCreateAccountClick = async () => {
+    if (!isEmailValid || isLoading || emailCheckState === 'checking') return;
+    
+    setIsLoading(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      onCreateAccount(email);
+    } catch (error) {
+      console.error('Error navigating to create account:', error);
+      onCreateAccount(email);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white flex flex-col px-4">
       {/* Header */}
@@ -158,6 +174,7 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
           isLoading={isLoading}
           onContinueWithPassword={handleContinueWithPassword}
           onContinueWithCode={handleContinueWithCode}
+          onCreateAccount={handleCreateAccountClick}
         />
 
         <EmailStatusMessage emailCheckState={emailCheckState} />
@@ -168,7 +185,7 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
               Don't have an account?{' '}
               <button
                 type="button"
-                onClick={() => alert('Redirect to sign up')}
+                onClick={onSignUpClick}
                 className="text-red-500 hover:underline font-medium focus:outline-none"
                 disabled={isLoading}
               >

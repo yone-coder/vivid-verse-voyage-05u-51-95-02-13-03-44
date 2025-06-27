@@ -6,5 +6,7 @@ export interface EmailAuthScreenProps {
   selectedLanguage: string;
   onContinueWithPassword: (email: string) => void;
   onContinueWithCode: (email: string) => void;
+  onCreateAccount: (email: string) => void;
+  onSignUpClick: () => void;
   initialEmail?: string;
 }
