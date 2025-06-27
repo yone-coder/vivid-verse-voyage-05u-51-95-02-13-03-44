@@ -1,5 +1,6 @@
+
 import React, { useState } from 'react';
-import { ArrowLeft, User, Mail } from 'lucide-react';
+import { ArrowLeft, User, Mail, Lock } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { FAVICON_OVERRIDES } from '../../constants/email';
@@ -118,7 +119,7 @@ const AccountCreationNameStep: React.FC<AccountCreationNameStepProps> = ({
               First Name
             </label>
             <div className="relative">
-              <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
               <Input
                 id="firstName"
                 type="text"
@@ -135,7 +136,7 @@ const AccountCreationNameStep: React.FC<AccountCreationNameStepProps> = ({
               Last Name
             </label>
             <div className="relative">
-              <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
               <Input
                 id="lastName"
                 type="text"
