@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MainLoginScreen from './MainLoginScreen';
@@ -92,7 +91,6 @@ export default function LoginPage() {
         <VerificationCodeScreen 
           email={emailForPassword} 
           onBack={handleBack}
-          onResendCode={handleResendCode}
           onVerificationSuccess={handleSignInSuccess}
         />
       )}

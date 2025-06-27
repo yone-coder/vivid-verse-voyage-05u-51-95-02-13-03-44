@@ -1,34 +1,33 @@
+
 import React, { useState, useRef } from 'react';
-import { ArrowLeft, Lock, Mail, Eye, EyeOff, HelpCircle } from 'lucide-react';
+import { ArrowLeft, Lock, Key, Check, HelpCircle, Eye, EyeOff, Mail, Loader2 } from 'lucide-react';
+import { FAVICON_OVERRIDES } from '../../constants/email';
 
 interface PasswordAuthScreenProps {
   email: string;
   onBack: () => void;
-  onSignInSuccess: (userData: any, token: string) => void;
+  onSignInSuccess: () => void;
 }
 
-const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({ email, onBack, onSignInSuccess }) => {
+const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({ 
+  email, 
+  onBack, 
+  onSignInSuccess 
+}) => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState<string>('');
 
   const passwordInputRef = useRef<HTMLInputElement>(null);
 
-  // Your backend API base URL
   const API_BASE_URL = 'https://supabase-y8ak.onrender.com/api';
 
   const handlePasswordChange = (value: string) => {
     setPassword(value);
     setIsPasswordValid(value.length >= 8);
-    // Clear error when user starts typing
-    if (error) setError('');
-  };
-
-  const handleChangeEmail = () => {
-    console.log('Change email clicked');
-    onBack(); // Navigate back to email step
+    setError(''); // Clear any previous errors
   };
 
   const handleSignIn = async () => {
@@ -36,8 +35,9 @@ const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({ email, onBack, 
 
     setIsLoading(true);
     setError('');
-
+    
     try {
+      // Simulate password authentication API call
       const response = await fetch(`${API_BASE_URL}/signin`, {
         method: 'POST',
         headers: {
@@ -46,65 +46,72 @@ const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({ email, onBack, 
         body: JSON.stringify({
           email: email,
           password: password
-        })
+        }),
       });
 
       const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(data.message || 'Sign in failed');
-      }
-
-      if (data.success) {
-        // Store token in memory (you might want to use a state management solution)
-        console.log('Sign in successful:', data);
-        
-        // Call the success callback with user data and token
-        onSignInSuccess(data.user, data.token);
+      if (response.ok) {
+        onSignInSuccess();
       } else {
-        throw new Error(data.message || 'Sign in failed');
+        setError(data.message || 'Invalid email or password. Please try again.');
+        setPassword('');
+        setIsPasswordValid(false);
+        passwordInputRef.current?.focus();
       }
-
     } catch (error) {
-      console.error('Sign in failed:', error);
-      setError(error instanceof Error ? error.message : 'Sign in failed. Please try again.');
+      console.error('Error signing in:', error);
+      setError('Network error. Please check your connection and try again.');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleForgotPassword = () => {
-    // You can implement password reset functionality here
-    alert('Password reset functionality coming soon!');
-  };
+  const handleSendVerificationCode = async () => {
+    if (isLoading) return;
+    
+    setIsLoading(true);
+    setError('');
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/send-otp`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email
+        }),
+      });
 
-  const faviconOverrides: Record<string, string> = {
-    'gmail.com': 'https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico',
+      const data = await response.json();
+
+      if (response.ok) {
+        // Navigate to verification screen - this would be handled by parent component
+        console.log('Verification code sent successfully');
+      } else {
+        setError(data.message || 'Failed to send verification code. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error sending OTP:', error);
+      setError('Network error. Please check your connection and try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const domain = email.split('@')[1] || '';
-  const faviconUrl = faviconOverrides[domain] || `https://www.google.com/s2/favicons?domain=${domain}`;
+  const faviconUrl = FAVICON_OVERRIDES[domain] || `https://www.google.com/s2/favicons?domain=${domain}`;
 
   return (
     <div className="min-h-screen bg-white flex flex-col px-4">
-      <style jsx>{`
-        input:-webkit-autofill,
-        input:-webkit-autofill:hover,
-        input:-webkit-autofill:focus,
-        input:-webkit-autofill:active {
-          -webkit-box-shadow: 0 0 0 30px white inset !important;
-          -webkit-text-fill-color: #374151 !important;
-          padding-left: 2.5rem !important;
-        }
-      `}</style>
-
       {/* Header */}
       <div className="pt-2 pb-3 flex items-center justify-between">
         <button
           onClick={onBack}
-          className="flex items-center justify-center w-10 h-10 hover:bg-gray-100 rounded-full transition-colors active:scale-95"
-          aria-label="Go back"
           disabled={isLoading}
+          className="flex items-center justify-center w-10 h-10 hover:bg-gray-100 rounded-full transition-colors active:scale-95 disabled:opacity-50"
+          aria-label="Go back"
         >
           <ArrowLeft className="w-5 h-5 text-gray-700" />
         </button>
@@ -141,7 +148,7 @@ const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({ email, onBack, 
             Enter your password
           </h1>
           <p className="text-gray-600">
-            Sign in with your password
+            We'll send you a verification code or you can sign in with your password
           </p>
         </div>
 
@@ -165,10 +172,10 @@ const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({ email, onBack, 
               <span className="text-gray-700">{email}</span>
             </div>
             <button
-              onClick={handleChangeEmail}
-              className="text-red-500 font-medium hover:text-red-600 text-sm"
-              type="button"
+              onClick={onBack}
               disabled={isLoading}
+              className="text-red-500 font-medium hover:text-red-600 text-sm disabled:opacity-50"
+              type="button"
             >
               Change
             </button>
@@ -178,7 +185,7 @@ const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({ email, onBack, 
         {/* Error message */}
         {error && (
           <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-red-600 text-sm">{error}</p>
+            <p className="text-red-600 text-sm text-center">{error}</p>
           </div>
         )}
 
@@ -188,14 +195,14 @@ const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({ email, onBack, 
             Password
           </label>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 z-10 pointer-events-none" />
+            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
 
             <input
               id="password"
               type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={(e) => handlePasswordChange(e.target.value)}
-              onKeyPress={(e) => {
+              onKeyDown={(e) => {
                 if (e.key === 'Enter' && isPasswordValid && !isLoading) {
                   handleSignIn();
                 }
@@ -204,22 +211,30 @@ const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({ email, onBack, 
               autoComplete="current-password"
               ref={passwordInputRef}
               disabled={isLoading}
-              className="relative w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors bg-transparent disabled:opacity-50"
+              className={`relative w-full pl-10 pr-12 py-3 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors bg-white disabled:bg-gray-50 disabled:cursor-not-allowed ${
+                error 
+                  ? 'border-red-300' 
+                  : 'border-gray-300'
+              }`}
             />
 
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 z-10"
-              aria-label={showPassword ? 'Hide password' : 'Show password'}
               disabled={isLoading}
+              className="absolute right-10 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 disabled:opacity-50"
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
               {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
             </button>
+
+            {isPasswordValid && !error && (
+              <Check className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-500" />
+            )}
           </div>
         </div>
 
-        <div className="mb-8">
+        <div className="space-y-3 mb-8">
           <button
             disabled={!isPasswordValid || isLoading}
             onClick={handleSignIn}
@@ -230,17 +245,39 @@ const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({ email, onBack, 
             }`}
             type="button"
           >
-            <Lock className="w-5 h-5" />
-            <span>{isLoading ? 'Signing In...' : 'Sign In'}</span>
+            {isLoading ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              <Lock className="w-5 h-5" />
+            )}
+            <span>
+              {isLoading ? 'Signing In...' : 'Sign In'}
+            </span>
+          </button>
+
+          <button
+            disabled={isLoading}
+            onClick={handleSendVerificationCode}
+            className={`w-full flex items-center justify-center gap-3 py-4 px-4 border-2 border-red-500 text-red-500 rounded-lg font-medium transition-all hover:bg-red-50 active:scale-98 disabled:opacity-50 disabled:cursor-not-allowed`}
+            type="button"
+          >
+            {isLoading ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              <Key className="w-5 h-5" />
+            )}
+            <span>
+              {isLoading ? 'Sending...' : 'Send Verification Code'}
+            </span>
           </button>
         </div>
 
         <div className="text-center">
           <button 
-            onClick={handleForgotPassword}
-            className="text-red-500 font-medium hover:text-red-600 mb-4" 
+            className="text-red-500 font-medium hover:text-red-600 mb-4 disabled:opacity-50" 
             type="button"
             disabled={isLoading}
+            onClick={() => alert('Forgot password functionality would be implemented here')}
           >
             Forgot password?
           </button>
