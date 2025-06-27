@@ -7,6 +7,7 @@ import PasswordAuthScreen from './PasswordAuthScreen';
 import VerificationCodeScreen from './VerificationCodeScreen';
 import AccountCreationScreen from './AccountCreationScreen';
 import SuccessScreen from './SuccessScreen';
+import ResetPasswordScreen from './ResetPasswordScreen';
 
 type ScreenType = 'login' | 'email' | 'password' | 'verification' | 'create-account' | 'success';
 
