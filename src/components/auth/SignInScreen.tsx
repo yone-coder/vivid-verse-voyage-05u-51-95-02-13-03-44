@@ -9,7 +9,7 @@ import AccountCreationScreen from './AccountCreationScreen';
 import SuccessScreen from './SuccessScreen';
 import ResetPasswordScreen from './ResetPasswordScreen';
 
-type ScreenType = 'login' | 'email' | 'password' | 'verification' | 'create-account' | 'success';
+type ScreenType = 'login' | 'email' | 'password' | 'verification' | 'create-account' | 'success' | 'forgot-password';
 
 export default function LoginPage() {
   const [currentScreen, setCurrentScreen] = useState<ScreenType>('login');
