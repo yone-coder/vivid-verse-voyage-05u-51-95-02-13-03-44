@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { ArrowLeft, Lock, Eye, EyeOff, Mail } from 'lucide-react';
 import { Button } from '../ui/button';
@@ -10,7 +9,8 @@ interface AccountCreationPasswordStepProps {
   firstName: string;
   lastName: string;
   onBack: () => void;
-  onContinue: (password: string) => void;
+  onContinue: () => void; // No need to pass password anymore since we're creating account here
+  onError?: (error: string) => void; // Add error handler prop
 }
 
 const AccountCreationPasswordStep: React.FC<AccountCreationPasswordStepProps> = ({
@@ -19,6 +19,7 @@ const AccountCreationPasswordStep: React.FC<AccountCreationPasswordStepProps> = 
   lastName,
   onBack,
   onContinue,
+  onError,
 }) => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -44,13 +45,52 @@ const AccountCreationPasswordStep: React.FC<AccountCreationPasswordStepProps> = 
 
   const faviconUrl = getFaviconUrl(email);
 
+  const createAccount = async () => {
+    try {
+      const response = await fetch('https://supabase-y8ak.onrender.com/api/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+          full_name: `${firstName} ${lastName}`,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Account creation failed:', error);
+      throw error;
+    }
+  };
+
   const handleContinue = async () => {
     if (!isFormValid) return;
     
     setIsLoading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      onContinue(password);
+      // Call the API to create the account
+      await createAccount();
+      
+      // If successful, call the onContinue callback
+      onContinue();
+    } catch (error) {
+      // Handle the error
+      const errorMessage = error instanceof Error ? error.message : 'Account creation failed';
+      if (onError) {
+        onError(errorMessage);
+      } else {
+        // Fallback error handling - you might want to show a toast or alert
+        alert(`Error: ${errorMessage}`);
+      }
     } finally {
       setIsLoading(false);
     }
