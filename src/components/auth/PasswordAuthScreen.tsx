@@ -225,13 +225,13 @@ const PasswordAuthScreen: React.FC<PasswordAuthScreenProps> = ({
 
         <div className="text-center">
           <button 
-            className="text-red-500 font-medium hover:text-red-600 mb-4 disabled:opacity-50" 
-            type="button"
-            disabled={isLoading}
-            onClick={() => alert('Forgot password functionality would be implemented here')}
-          >
-            Forgot password?
-          </button>
+  className="text-red-500 font-medium hover:text-red-600 mb-4 disabled:opacity-50" 
+  type="button"
+  disabled={isLoading}
+  onClick={onForgotPasswordClick}
+>
+  Forgot password?
+</button>
 
           <div className="flex items-center justify-center gap-2">
             <svg className="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
