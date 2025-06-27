@@ -1,30 +1,24 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Lock, Eye, EyeOff, Mail } from 'lucide-react';
+import { ArrowLeft, User, Mail } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { FAVICON_OVERRIDES } from '../../constants/email';
 
-interface AccountCreationPasswordStepProps {
+interface AccountCreationNameStepProps {
   email: string;
-  firstName: string;
-  lastName: string;
   onBack: () => void;
-  onContinue: () => void; // No need to pass password anymore since we're creating account here
-  onError?: (error: string) => void; // Add error handler prop
+  onChangeEmail: () => void;
+  onContinue: (firstName: string, lastName: string) => void;
 }
 
-const AccountCreationPasswordStep: React.FC<AccountCreationPasswordStepProps> = ({
+const AccountCreationNameStep: React.FC<AccountCreationNameStepProps> = ({
   email,
-  firstName,
-  lastName,
   onBack,
+  onChangeEmail,
   onContinue,
-  onError,
 }) => {
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const extractDomain = (emailValue: string): string => {
@@ -45,7 +39,7 @@ const AccountCreationPasswordStep: React.FC<AccountCreationPasswordStepProps> = 
 
   const faviconUrl = getFaviconUrl(email);
 
-  const createAccount = async () => {
+  const createAccount = async (fullName: string) => {
     try {
       const response = await fetch('https://supabase-y8ak.onrender.com/api/signup', {
         method: 'POST',
@@ -55,7 +49,7 @@ const AccountCreationPasswordStep: React.FC<AccountCreationPasswordStepProps> = 
         body: JSON.stringify({
           email: email,
           password: password,
-          full_name: `${firstName} ${lastName}`,
+          full_name: fullName,
         }),
       });
 
@@ -73,15 +67,17 @@ const AccountCreationPasswordStep: React.FC<AccountCreationPasswordStepProps> = 
   };
 
   const handleContinue = async () => {
-    if (!isFormValid) return;
+    if (!firstName.trim() || !lastName.trim()) return;
     
     setIsLoading(true);
     try {
+      const fullName = `${firstName.trim()} ${lastName.trim()}`;
+      
       // Call the API to create the account
-      await createAccount();
+      await createAccount(fullName);
       
       // If successful, call the onContinue callback
-      onContinue();
+      onContinue(firstName.trim(), lastName.trim());
     } catch (error) {
       // Handle the error
       const errorMessage = error instanceof Error ? error.message : 'Account creation failed';
@@ -96,9 +92,7 @@ const AccountCreationPasswordStep: React.FC<AccountCreationPasswordStepProps> = 
     }
   };
 
-  const isPasswordValid = password.length >= 8;
-  const doPasswordsMatch = password === confirmPassword && confirmPassword.length > 0;
-  const isFormValid = isPasswordValid && doPasswordsMatch;
+  const isFormValid = firstName.trim().length > 0 && lastName.trim().length > 0;
 
   return (
     <div className="min-h-screen bg-white flex flex-col px-4">
@@ -119,7 +113,7 @@ const AccountCreationPasswordStep: React.FC<AccountCreationPasswordStepProps> = 
       <div className="mb-6 px-0">
         <div className="flex items-center gap-2 mb-2">
           <div className="flex-1 h-1 bg-red-500 rounded-full"></div>
-          <div className="flex-1 h-1 bg-red-500 rounded-full"></div>
+          <div className="flex-1 h-1 bg-gray-300 rounded-full"></div>
           <div className="flex-1 h-1 bg-gray-300 rounded-full"></div>
         </div>
       </div>
@@ -128,92 +122,76 @@ const AccountCreationPasswordStep: React.FC<AccountCreationPasswordStepProps> = 
       <div className="flex-1 flex flex-col w-full max-w-md mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-semibold text-gray-900 mb-2">
-            Create a password
+            What's your name?
           </h1>
           <p className="text-gray-600">
-            Choose a secure password for your account
+            We'll use this to personalize your experience
           </p>
         </div>
 
-        {/* User Info Display */}
+        {/* Email Display */}
         <div className="mb-6 p-4 bg-gray-50 rounded-lg">
-          <div className="flex items-center gap-3 mb-2">
-            <div className="w-6 h-6">
-              {faviconUrl ? (
-                <img
-                  src={faviconUrl}
-                  alt="Email provider favicon"
-                  className="w-full h-full object-contain"
-                />
-              ) : (
-                <Mail className="w-full h-full text-gray-400" />
-              )}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-6 h-6">
+                {faviconUrl ? (
+                  <img
+                    src={faviconUrl}
+                    alt="Email provider favicon"
+                    className="w-full h-full object-contain"
+                  />
+                ) : (
+                  <Mail className="w-full h-full text-gray-400" />
+                )}
+              </div>
+              <span className="text-gray-700 font-medium">{email}</span>
             </div>
-            <span className="text-gray-700 font-medium">{email}</span>
-          </div>
-          <div className="text-gray-600 text-sm">
-            {firstName} {lastName}
+            <button
+              onClick={onChangeEmail}
+              className="text-red-500 hover:text-red-600 font-medium text-sm"
+              disabled={isLoading}
+            >
+              Change
+            </button>
           </div>
         </div>
 
-        {/* Password Form */}
+        {/* Name Form */}
         <div className="space-y-4 mb-8">
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-              Password
+            <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
+              First Name
             </label>
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
               <Input
-                id="password"
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
-                className="pl-10 pr-10"
+                id="firstName"
+                type="text"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                placeholder="Enter your first name"
+                className="pl-10"
                 disabled={isLoading}
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                disabled={isLoading}
-              >
-                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-              </button>
             </div>
-            {password.length > 0 && !isPasswordValid && (
-              <p className="text-red-500 text-xs mt-1">Password must be at least 8 characters</p>
-            )}
           </div>
 
           <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
-              Confirm Password
+            <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">
+              Last Name
             </label>
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+              <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
               <Input
-                id="confirmPassword"
-                type={showConfirmPassword ? 'text' : 'password'}
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Confirm your password"
-                className="pl-10 pr-10"
+                id="lastName"
+                type="text"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                placeholder="Enter your last name"
+                className="pl-10"
                 disabled={isLoading}
               />
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                disabled={isLoading}
-              >
-                {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-              </button>
             </div>
-            {confirmPassword.length > 0 && !doPasswordsMatch && (
-              <p className="text-red-500 text-xs mt-1">Passwords don't match</p>
-            )}
           </div>
         </div>
 
@@ -223,11 +201,11 @@ const AccountCreationPasswordStep: React.FC<AccountCreationPasswordStepProps> = 
           className="w-full mb-6"
           size="lg"
         >
-          {isLoading ? 'Creating Account...' : 'Create Account'}
+          {isLoading ? 'Loading...' : 'Continue'}
         </Button>
       </div>
     </div>
   );
 };
 
-export default AccountCreationPasswordStep;
+export default AccountCreationNameStep;
