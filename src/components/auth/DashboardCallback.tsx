@@ -21,21 +21,23 @@ const DashboardCallback: React.FC = () => {
           localStorage.setItem('isAuthenticated', 'true');
           localStorage.setItem('user', JSON.stringify(authStatus.user));
           
-          // Generate a simple token for local use (you can enhance this)
+          // Generate a simple token for local use
           localStorage.setItem('authToken', 'authenticated_' + Date.now());
           
-          // Trigger auth state change event
+          // Trigger auth state change event to notify MainLayout
           window.dispatchEvent(new Event('authStateChanged'));
           
-          // Redirect to main application
-          navigate('/');
+          // Small delay to ensure state is updated
+          setTimeout(() => {
+            navigate('/', { replace: true });
+          }, 100);
         } else {
           console.error('Authentication failed - user not authenticated');
-          navigate('/signin?error=auth_failed');
+          navigate('/signin?error=auth_failed', { replace: true });
         }
       } catch (error) {
         console.error('Error handling dashboard callback:', error);
-        navigate('/signin?error=callback_error');
+        navigate('/signin?error=callback_error', { replace: true });
       }
     };
 

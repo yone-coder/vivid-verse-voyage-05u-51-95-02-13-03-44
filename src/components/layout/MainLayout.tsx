@@ -23,7 +23,7 @@ function MainLayoutContent() {
   const isAccountPage = pathname === "/account";
   const isComponentsPage = pathname === "/components";
 
-  // Check authentication status on mount
+  // Check authentication status on mount and when auth state changes
   useEffect(() => {
     const checkAuthStatus = async () => {
       console.log('MainLayout: Checking authentication status...');
@@ -57,6 +57,7 @@ function MainLayoutContent() {
 
     // Listen for authentication changes
     const handleAuthChange = () => {
+      console.log('Auth state changed event received');
       checkAuthStatus();
     };
 
