@@ -10,6 +10,8 @@ import LocationsPage from "@/pages/LocationsPage";
 import AccountPage from "@/pages/AccountPage";
 import ComponentsPage from "@/pages/ComponentsPage";
 import NotFound from "@/components/NotFound";
+import SignInScreen from "@/components/auth/SignInScreen";
+import OAuthCallback from "@/components/auth/OAuthCallback";
 
 // Component that renders the appropriate transfer page based on device
 const TransferPageRouter = () => (
@@ -20,6 +22,14 @@ const TransferPageRouter = () => (
 );
 
 export const router = createBrowserRouter([
+  {
+    path: "/signin",
+    element: <SignInScreen />
+  },
+  {
+    path: "/auth/callback",
+    element: <OAuthCallback />
+  },
   {
     path: "/",
     element: <MainLayout />,
