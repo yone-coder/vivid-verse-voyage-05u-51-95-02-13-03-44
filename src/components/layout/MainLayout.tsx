@@ -8,6 +8,7 @@ import PremiumBankingHeader from "@/components/layout/PremiumBankingHeader";
 import DesktopHeader from "@/components/desktop/DesktopHeader";
 import SignInScreen from "@/components/auth/SignInScreen";
 import { Outlet, useLocation } from "react-router-dom";
+import { authService } from "@/services/authService";
 
 function MainLayoutContent() {
   const isMobile = useIsMobile();
@@ -24,12 +25,31 @@ function MainLayoutContent() {
 
   // Check authentication status on mount
   useEffect(() => {
-    const checkAuthStatus = () => {
-      const authStatus = localStorage.getItem('isAuthenticated');
-      const isLoggedIn = authStatus === 'true';
+    const checkAuthStatus = async () => {
+      console.log('MainLayout: Checking authentication status...');
       
-      console.log('Checking auth status:', isLoggedIn);
-      setIsAuthenticated(isLoggedIn);
+      // First check local storage
+      const localAuthStatus = localStorage.getItem('isAuthenticated');
+      
+      if (localAuthStatus === 'true') {
+        // Also verify with backend
+        const backendAuthStatus = await authService.checkAuthStatus();
+        
+        if (backendAuthStatus.authenticated) {
+          console.log('User authenticated via backend:', backendAuthStatus.user);
+          setIsAuthenticated(true);
+        } else {
+          console.log('Backend auth check failed, clearing local auth');
+          localStorage.removeItem('isAuthenticated');
+          localStorage.removeItem('authToken');
+          localStorage.removeItem('user');
+          setIsAuthenticated(false);
+        }
+      } else {
+        console.log('No local authentication found');
+        setIsAuthenticated(false);
+      }
+      
       setIsCheckingAuth(false);
     };
 

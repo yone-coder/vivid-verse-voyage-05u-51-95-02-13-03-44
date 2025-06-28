@@ -52,8 +52,9 @@ const MainLoginScreen: React.FC<MainLoginScreenProps> = ({
 
   const handleGoogleSignIn = async () => {
     try {
-      // Redirect to your backend Google OAuth endpoint
-      const authUrl = 'https://supabase-y8ak.onrender.com/api/auth/google';
+      console.log('Initiating Google OAuth...');
+      // Use your backend Google OAuth endpoint
+      const authUrl = 'https://google-oauth-backend-2uta.onrender.com/auth/google';
       window.location.href = authUrl;
     } catch (error) {
       console.error('Error initiating Google sign-in:', error);
