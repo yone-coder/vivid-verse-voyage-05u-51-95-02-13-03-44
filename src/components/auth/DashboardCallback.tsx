@@ -15,21 +15,14 @@ const DashboardCallback: React.FC = () => {
         const authStatus = await authService.checkAuthStatus();
         
         if (authStatus.authenticated) {
-          console.log('User authenticated successfully:', authStatus.user);
+          console.log('Google OAuth successful, user data received:', authStatus.user);
           
-          // Store authentication data
-          localStorage.setItem('isAuthenticated', 'true');
-          localStorage.setItem('user', JSON.stringify(authStatus.user));
+          // Store the Google user data temporarily for the sign-up process
+          localStorage.setItem('googleUserData', JSON.stringify(authStatus.user));
           
-          // Generate a simple token for local use
-          localStorage.setItem('authToken', 'authenticated_' + Date.now());
-          
-          // Trigger auth state change event to notify MainLayout
-          window.dispatchEvent(new Event('authStateChanged'));
-          
-          // Small delay to ensure state is updated
+          // Redirect to sign-up page to complete registration
           setTimeout(() => {
-            navigate('/', { replace: true });
+            navigate('/signin', { replace: true });
           }, 100);
         } else {
           console.error('Authentication failed - user not authenticated');
@@ -48,8 +41,8 @@ const DashboardCallback: React.FC = () => {
     <div className="min-h-screen bg-white flex items-center justify-center">
       <div className="text-center max-w-md mx-auto p-6">
         <div className="w-8 h-8 border-4 border-red-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-        <h2 className="text-xl font-semibold text-gray-800 mb-2">Completing Sign In</h2>
-        <p className="text-gray-600">Please wait while we finish setting up your account...</p>
+        <h2 className="text-xl font-semibold text-gray-800 mb-2">Processing Google Sign In</h2>
+        <p className="text-gray-600">Please wait while we set up your account...</p>
       </div>
     </div>
   );

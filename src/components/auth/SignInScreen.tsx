@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MainLoginScreen from './MainLoginScreen';
 import EmailAuthScreen from './EmailAuthScreen';
@@ -20,6 +19,29 @@ export default function LoginPage() {
   const [resetOTP, setResetOTP] = useState('');
 
   const navigate = useNavigate();
+
+  // Check for Google OAuth data on component mount
+  useEffect(() => {
+    const googleUserData = localStorage.getItem('googleUserData');
+    if (googleUserData) {
+      try {
+        const userData = JSON.parse(googleUserData);
+        console.log('Google user data found, redirecting to account creation:', userData);
+        
+        // Set the email from Google data
+        setEmailForPassword(userData.email || '');
+        
+        // Clear the temporary Google user data
+        localStorage.removeItem('googleUserData');
+        
+        // Redirect to account creation screen
+        setCurrentScreen('create-account');
+      } catch (error) {
+        console.error('Error parsing Google user data:', error);
+        localStorage.removeItem('googleUserData');
+      }
+    }
+  }, []);
 
   const handleContinueWithEmail = () => {
     setCurrentScreen('email');
