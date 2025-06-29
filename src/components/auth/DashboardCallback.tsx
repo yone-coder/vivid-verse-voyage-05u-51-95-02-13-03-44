@@ -17,13 +17,35 @@ const DashboardCallback: React.FC = () => {
         if (authStatus.authenticated) {
           console.log('Google OAuth successful, user data received:', authStatus.user);
           
-          // Store the Google user data temporarily for the sign-up process
-          localStorage.setItem('googleUserData', JSON.stringify(authStatus.user));
+          // Check if user already exists in your database
+          const userExists = await checkUserExists(authStatus.user.email);
           
-          // Redirect to sign-up page to complete registration
-          setTimeout(() => {
-            navigate('/signin', { replace: true });
-          }, 100);
+          if (userExists) {
+            console.log('Existing user found, logging in...');
+            
+            // Store authentication data for existing user
+            localStorage.setItem('isAuthenticated', 'true');
+            localStorage.setItem('user', JSON.stringify(authStatus.user));
+            localStorage.setItem('authToken', 'authenticated_' + Date.now());
+            
+            // Trigger auth state change event
+            window.dispatchEvent(new Event('authStateChanged'));
+            
+            // Redirect to dashboard
+            setTimeout(() => {
+              navigate('/', { replace: true });
+            }, 100);
+          } else {
+            console.log('New user, redirecting to sign-up...');
+            
+            // Store the Google user data temporarily for the sign-up process
+            localStorage.setItem('googleUserData', JSON.stringify(authStatus.user));
+            
+            // Redirect to sign-up page to complete registration
+            setTimeout(() => {
+              navigate('/signin', { replace: true });
+            }, 100);
+          }
         } else {
           console.error('Authentication failed - user not authenticated');
           navigate('/signin?error=auth_failed', { replace: true });
@@ -37,12 +59,37 @@ const DashboardCallback: React.FC = () => {
     handleCallback();
   }, [navigate]);
 
+  // Function to check if user exists in your database
+  const checkUserExists = async (email: string): Promise<boolean> => {
+    try {
+      const response = await fetch('https://supabase-y8ak.onrender.com/api/check-user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        return data.exists;
+      }
+      
+      // If check fails, assume user doesn't exist (safer to redirect to signup)
+      return false;
+    } catch (error) {
+      console.error('Error checking user existence:', error);
+      // If check fails, assume user doesn't exist
+      return false;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white flex items-center justify-center">
       <div className="text-center max-w-md mx-auto p-6">
         <div className="w-8 h-8 border-4 border-red-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
         <h2 className="text-xl font-semibold text-gray-800 mb-2">Processing Google Sign In</h2>
-        <p className="text-gray-600">Please wait while we set up your account...</p>
+        <p className="text-gray-600">Please wait while we check your account...</p>
       </div>
     </div>
   );
