@@ -2,6 +2,7 @@
 import React from 'react';
 import Lottie from 'lottie-react';
 import LanguageSelector from './LanguageSelector';
+import { supabase } from '@/integrations/supabase/client';
 
 interface Language {
   code: string;
@@ -52,10 +53,17 @@ const MainLoginScreen: React.FC<MainLoginScreenProps> = ({
 
   const handleGoogleSignIn = async () => {
     try {
-      console.log('Initiating Google OAuth...');
-      // Use your backend Google OAuth endpoint
-      const authUrl = 'https://google-oauth-backend-2uta.onrender.com/auth/google';
-      window.location.href = authUrl;
+      console.log('Initiating Google OAuth with Supabase...');
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/`
+        }
+      });
+
+      if (error) {
+        console.error('Error with Google sign-in:', error.message);
+      }
     } catch (error) {
       console.error('Error initiating Google sign-in:', error);
     }
