@@ -1,79 +1,56 @@
-
+// AuthSuccess.js - Component to handle OAuth callback
 import React, { useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-const AuthSuccessCallback: React.FC = () => {
+const AuthSuccess = () => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const location = useLocation();
 
   useEffect(() => {
-    const handleCallback = async () => {
-      console.log('Auth success callback - processing OAuth response...');
-      
-      try {
-        const token = searchParams.get('token');
-        const userParam = searchParams.get('user');
-        const isNewUser = searchParams.get('new') === 'true';
-        
-        if (!token || !userParam) {
-          console.error('Missing token or user data in callback');
-          navigate('/signin?error=missing_data', { replace: true });
-          return;
-        }
+    const processAuthCallback = () => {
+      const urlParams = new URLSearchParams(location.search);
+      const token = urlParams.get('token');
+      const userData = urlParams.get('user');
+      const isNewUser = urlParams.get('new') === 'true';
 
-        // Parse user data
-        const userData = JSON.parse(decodeURIComponent(userParam));
-        console.log('Google OAuth successful, user data received:', userData);
-        console.log('Is new user:', isNewUser);
-
-        if (isNewUser) {
-          console.log('New user detected, redirecting to account creation...');
+      if (token && userData) {
+        try {
+          // Parse user data
+          const user = JSON.parse(decodeURIComponent(userData));
           
-          // Store the Google user data temporarily for the sign-up process
-          localStorage.setItem('googleUserData', JSON.stringify({
-            email: userData.email,
-            name: userData.name,
-            picture: userData.picture
-          }));
-          
-          // Redirect to sign-up page to complete registration
-          setTimeout(() => {
-            navigate('/signin', { replace: true });
-          }, 100);
-        } else {
-          console.log('Existing user found, logging in...');
-          
-          // Store authentication data for existing user
-          localStorage.setItem('isAuthenticated', 'true');
-          localStorage.setItem('user', JSON.stringify(userData));
+          // Store token in localStorage or your preferred method
           localStorage.setItem('authToken', token);
+          localStorage.setItem('user', JSON.stringify(user));
           
-          // Trigger auth state change event
-          window.dispatchEvent(new Event('authStateChanged'));
+          console.log('Auth successful:', { user, isNewUser });
           
-          // Redirect to dashboard
-          setTimeout(() => {
-            navigate('/', { replace: true });
-          }, 100);
+          // Redirect based on whether user is new or returning
+          if (isNewUser) {
+            navigate('/onboarding'); // or wherever you want new users to go
+          } else {
+            navigate('/dashboard'); // or your main app route
+          }
+        } catch (error) {
+          console.error('Error processing auth callback:', error);
+          navigate('/login?error=processing_failed');
         }
-      } catch (error) {
-        console.error('Error handling auth success callback:', error);
-        navigate('/signin?error=callback_error', { replace: true });
+      } else {
+        console.error('Missing token or user data in callback');
+        navigate('/login?error=missing_data');
       }
     };
 
-    handleCallback();
-  }, [navigate, searchParams]);
+    processAuthCallback();
+  }, [location, navigate]);
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center">
-      <div className="text-center max-w-md mx-auto p-6">
-        <div className="w-8 h-8 border-4 border-red-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-        <h2 className="text-xl font-semibold text-gray-800 mb-2">Processing Google Sign In</h2>
-        <p className="text-gray-600">Please wait while we complete your authentication...</p>
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+        <p className="mt-4 text-gray-600">Completing sign in...</p>
       </div>
     </div>
   );
 };
 
-export default AuthSuccessCallback;
+export default AuthSuccess;
