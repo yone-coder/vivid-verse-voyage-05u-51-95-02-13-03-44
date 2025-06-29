@@ -28,37 +28,50 @@ function MainLayoutContent() {
     const checkAuthStatus = async () => {
       console.log('MainLayout: Checking authentication status...');
       
-      // First check local storage
+      // First check local storage for immediate response
       const localAuthStatus = localStorage.getItem('isAuthenticated');
+      const localAuthToken = localStorage.getItem('authToken');
       
-      if (localAuthStatus === 'true') {
-        // Also verify with backend
-        const backendAuthStatus = await authService.checkAuthStatus();
+      if (localAuthStatus === 'true' && localAuthToken) {
+        console.log('Local authentication found, user is authenticated');
+        setIsAuthenticated(true);
+        setIsCheckingAuth(false);
         
-        if (backendAuthStatus.authenticated) {
-          console.log('User authenticated via backend:', backendAuthStatus.user);
-          setIsAuthenticated(true);
-        } else {
-          console.log('Backend auth check failed, clearing local auth');
-          localStorage.removeItem('isAuthenticated');
-          localStorage.removeItem('authToken');
-          localStorage.removeItem('user');
-          setIsAuthenticated(false);
+        // Optionally verify with backend in the background
+        try {
+          const backendAuthStatus = await authService.checkAuthStatus();
+          if (!backendAuthStatus.authenticated) {
+            console.log('Backend auth check failed, but keeping local auth for now');
+          }
+        } catch (error) {
+          console.log('Backend auth check failed, but keeping local auth');
         }
       } else {
         console.log('No local authentication found');
         setIsAuthenticated(false);
+        setIsCheckingAuth(false);
       }
-      
-      setIsCheckingAuth(false);
     };
 
     checkAuthStatus();
 
     // Listen for authentication changes
     const handleAuthChange = () => {
-      console.log('Auth state changed event received');
-      checkAuthStatus();
+      console.log('Auth state changed event received in MainLayout');
+      // Small delay to ensure localStorage is updated
+      setTimeout(() => {
+        const localAuthStatus = localStorage.getItem('isAuthenticated');
+        const localAuthToken = localStorage.getItem('authToken');
+        
+        if (localAuthStatus === 'true' && localAuthToken) {
+          console.log('Auth state changed: User is now authenticated');
+          setIsAuthenticated(true);
+        } else {
+          console.log('Auth state changed: User is not authenticated');
+          setIsAuthenticated(false);
+        }
+        setIsCheckingAuth(false);
+      }, 100);
     };
 
     window.addEventListener('authStateChanged', handleAuthChange);

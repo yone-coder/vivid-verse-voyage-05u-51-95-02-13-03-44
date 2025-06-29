@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Check } from 'lucide-react';
 
@@ -12,12 +13,15 @@ const SuccessScreen: React.FC<SuccessScreenProps> = ({ email, onContinue }) => {
 
   useEffect(() => {
     // Set authentication state immediately when success screen is shown
+    console.log('Setting authentication state for user:', email);
     localStorage.setItem('isAuthenticated', 'true');
+    localStorage.setItem('authToken', 'authenticated_' + Date.now());
+    localStorage.setItem('user', JSON.stringify({ email }));
     
     // Dispatch custom event to notify other components
     window.dispatchEvent(new Event('authStateChanged'));
     
-    console.log('User authenticated successfully, setting localStorage');
+    console.log('User authenticated successfully, localStorage updated');
 
     // Start checkmark animation immediately
     const checkmarkTimer = setTimeout(() => {
@@ -29,17 +33,18 @@ const SuccessScreen: React.FC<SuccessScreenProps> = ({ email, onContinue }) => {
       setShowContent(true);
     }, 800);
 
-    // Auto-redirect after 6 seconds (increased from 3 seconds)
+    // Auto-redirect after 3 seconds (reduced from 6 seconds for better UX)
     const redirectTimer = setTimeout(() => {
+      console.log('Auto-redirecting to homepage after successful authentication');
       onContinue();
-    }, 6000);
+    }, 3000);
 
     return () => {
       clearTimeout(checkmarkTimer);
       clearTimeout(contentTimer);
       clearTimeout(redirectTimer);
     };
-  }, [onContinue]);
+  }, [onContinue, email]);
 
   return (
     <div className="min-h-screen bg-white flex flex-col px-4">
@@ -78,6 +83,14 @@ const SuccessScreen: React.FC<SuccessScreenProps> = ({ email, onContinue }) => {
           <p className="text-sm text-gray-400">
             Redirecting to homepage...
           </p>
+          
+          {/* Manual continue button for immediate access */}
+          <button
+            onClick={onContinue}
+            className="mt-4 px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+          >
+            Continue to App
+          </button>
         </div>
 
         {/* Security message */}
