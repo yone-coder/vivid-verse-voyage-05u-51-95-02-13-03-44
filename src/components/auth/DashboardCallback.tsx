@@ -62,20 +62,23 @@ const DashboardCallback: React.FC = () => {
   // Function to check if user exists in your database
   const checkUserExists = async (email: string): Promise<boolean> => {
     try {
-      const response = await fetch('https://supabase-y8ak.onrender.com/api/check-user', {
+      const response = await fetch('https://google-oauth-backend-2uta.onrender.com/api/check-user', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({ email }),
       });
 
       if (response.ok) {
         const data = await response.json();
+        console.log('User check response:', data);
         return data.exists;
       }
       
       // If check fails, assume user doesn't exist (safer to redirect to signup)
+      console.log('User check failed, assuming new user');
       return false;
     } catch (error) {
       console.error('Error checking user existence:', error);
