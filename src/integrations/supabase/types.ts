@@ -81,6 +81,36 @@ export type Database = {
         }
         Relationships: []
       }
+      otp_codes: {
+        Row: {
+          created_at: string | null
+          email: string
+          expires_at: string
+          id: string
+          otp_code: string
+          purpose: string | null
+          used: boolean | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          expires_at: string
+          id?: string
+          otp_code: string
+          purpose?: string | null
+          used?: boolean | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          expires_at?: string
+          id?: string
+          otp_code?: string
+          purpose?: string | null
+          used?: boolean | null
+        }
+        Relationships: []
+      }
       product_images: {
         Row: {
           alt: string
@@ -148,26 +178,53 @@ export type Database = {
       }
       profiles: {
         Row: {
+          auth_provider: string | null
           avatar_url: string | null
+          bio: string | null
           created_at: string
+          email: string | null
           full_name: string | null
+          google_access_token: string | null
+          google_id: string | null
           id: string
+          last_login: string | null
+          password_hash: string | null
+          phone: string | null
+          profile_picture: string | null
           updated_at: string
           username: string | null
         }
         Insert: {
+          auth_provider?: string | null
           avatar_url?: string | null
+          bio?: string | null
           created_at?: string
+          email?: string | null
           full_name?: string | null
+          google_access_token?: string | null
+          google_id?: string | null
           id: string
+          last_login?: string | null
+          password_hash?: string | null
+          phone?: string | null
+          profile_picture?: string | null
           updated_at?: string
           username?: string | null
         }
         Update: {
+          auth_provider?: string | null
           avatar_url?: string | null
+          bio?: string | null
           created_at?: string
+          email?: string | null
           full_name?: string | null
+          google_access_token?: string | null
+          google_id?: string | null
           id?: string
+          last_login?: string | null
+          password_hash?: string | null
+          phone?: string | null
+          profile_picture?: string | null
           updated_at?: string
           username?: string | null
         }
@@ -271,6 +328,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      cleanup_expired_otps: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       join_game_room: {
         Args: { p_room_id: string; p_user_id: string }
         Returns: {
