@@ -15,6 +15,7 @@ import OAuthCallback from "@/components/auth/OAuthCallback";
 import DashboardCallback from "@/components/auth/DashboardCallback";
 import AuthSuccessCallback from "@/components/auth/AuthSuccessCallback";
 import AuthErrorCallback from "@/components/auth/AuthErrorCallback";
+import AuthCallback from "@/components/auth/AuthCallback";
 
 // Component that renders the appropriate transfer page based on device
 const TransferPageRouter = () => (
@@ -31,7 +32,7 @@ export const router = createBrowserRouter([
   },
   {
     path: "/auth/callback",
-    element: <OAuthCallback />
+    element: <AuthCallback />
   },
   {
     path: "/auth/success",

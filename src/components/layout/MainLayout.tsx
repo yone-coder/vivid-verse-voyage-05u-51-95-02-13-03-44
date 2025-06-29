@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Footer from "@/components/layout/Footer";
@@ -8,7 +7,7 @@ import PremiumBankingHeader from "@/components/layout/PremiumBankingHeader";
 import DesktopHeader from "@/components/desktop/DesktopHeader";
 import SignInScreen from "@/components/auth/SignInScreen";
 import { Outlet, useLocation } from "react-router-dom";
-import { authService } from "@/services/authService";
+import { supabase } from '@/integrations/supabase/client';
 
 function MainLayoutContent() {
   const isMobile = useIsMobile();
@@ -28,46 +27,69 @@ function MainLayoutContent() {
     const checkAuthStatus = async () => {
       console.log('MainLayout: Checking authentication status...');
       
-      // First check local storage for immediate response
-      const localAuthStatus = localStorage.getItem('isAuthenticated');
-      const localAuthToken = localStorage.getItem('authToken');
-      
-      if (localAuthStatus === 'true' && localAuthToken) {
-        console.log('Local authentication found, user is authenticated');
-        setIsAuthenticated(true);
-        setIsCheckingAuth(false);
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
         
-        // Optionally verify with backend in the background
-        try {
-          const backendAuthStatus = await authService.checkAuthStatus();
-          if (!backendAuthStatus.authenticated) {
-            console.log('Backend auth check failed, but keeping local auth for now');
-          }
-        } catch (error) {
-          console.log('Backend auth check failed, but keeping local auth');
+        if (session) {
+          console.log('User is authenticated:', session.user);
+          setIsAuthenticated(true);
+          
+          // Update localStorage for consistency with existing code
+          localStorage.setItem('isAuthenticated', 'true');
+          localStorage.setItem('authToken', session.access_token);
+          localStorage.setItem('user', JSON.stringify(session.user));
+        } else {
+          console.log('No active session found');
+          setIsAuthenticated(false);
+          
+          // Clear localStorage
+          localStorage.removeItem('isAuthenticated');
+          localStorage.removeItem('authToken');
+          localStorage.removeItem('user');
         }
-      } else {
-        console.log('No local authentication found');
+      } catch (error) {
+        console.error('Error checking auth status:', error);
         setIsAuthenticated(false);
+      } finally {
         setIsCheckingAuth(false);
       }
     };
 
     checkAuthStatus();
 
-    // Listen for authentication changes
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        console.log('Auth state changed:', event, session?.user?.email);
+        
+        if (session) {
+          setIsAuthenticated(true);
+          localStorage.setItem('isAuthenticated', 'true');
+          localStorage.setItem('authToken', session.access_token);
+          localStorage.setItem('user', JSON.stringify(session.user));
+        } else {
+          setIsAuthenticated(false);
+          localStorage.removeItem('isAuthenticated');
+          localStorage.removeItem('authToken');
+          localStorage.removeItem('user');
+        }
+        
+        setIsCheckingAuth(false);
+      }
+    );
+
+    // Listen for custom auth change events (for backward compatibility)
     const handleAuthChange = () => {
-      console.log('Auth state changed event received in MainLayout');
-      // Small delay to ensure localStorage is updated
+      console.log('Custom auth state changed event received in MainLayout');
       setTimeout(() => {
         const localAuthStatus = localStorage.getItem('isAuthenticated');
         const localAuthToken = localStorage.getItem('authToken');
         
         if (localAuthStatus === 'true' && localAuthToken) {
-          console.log('Auth state changed: User is now authenticated');
+          console.log('Custom auth state changed: User is now authenticated');
           setIsAuthenticated(true);
         } else {
-          console.log('Auth state changed: User is not authenticated');
+          console.log('Custom auth state changed: User is not authenticated');
           setIsAuthenticated(false);
         }
         setIsCheckingAuth(false);
@@ -75,7 +97,11 @@ function MainLayoutContent() {
     };
 
     window.addEventListener('authStateChanged', handleAuthChange);
-    return () => window.removeEventListener('authStateChanged', handleAuthChange);
+    
+    return () => {
+      subscription.unsubscribe();
+      window.removeEventListener('authStateChanged', handleAuthChange);
+    };
   }, []);
 
   // Hide splash screen after 4 seconds
