@@ -1,4 +1,5 @@
-import React from 'react';
+
+import React, { useEffect, useState } from 'react';
 import {
   Card,
   CardContent,
@@ -29,19 +30,59 @@ import {
   EyeOff
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { supabase } from '@/integrations/supabase/client';
+import type { User as SupabaseUser } from '@supabase/supabase-js';
 
 const AccountPage: React.FC = () => {
   const [showPassword, setShowPassword] = React.useState(false);
+  const [user, setUser] = useState<SupabaseUser | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        setUser(user);
+      } catch (error) {
+        console.error('Error fetching user:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getUser();
+  }, []);
 
   const handleSignOut = async () => {
     try {
-      console.log('Sign out clicked - clearing authentication');
-      localStorage.removeItem('isAuthenticated');
-      window.dispatchEvent(new Event('authStateChanged'));
+      console.log('Sign out clicked - signing out from Supabase');
+      await supabase.auth.signOut();
+      // The MainLayout will handle the redirect automatically
     } catch (error) {
       console.error('Error signing out:', error);
     }
   };
+
+  const getInitials = (name: string | null | undefined) => {
+    if (!name) return 'U';
+    return name.split(' ').map(n => n[0]).join('').toUpperCase();
+  };
+
+  const getDisplayName = () => {
+    if (user?.user_metadata?.full_name) return user.user_metadata.full_name;
+    if (user?.user_metadata?.name) return user.user_metadata.name;
+    return user?.email?.split('@')[0] || 'User';
+  };
+
+  if (loading) {
+    return (
+      <div className="container mx-auto p-4 md:p-6 pb-20 max-w-4xl">
+        <div className="flex items-center justify-center h-64">
+          <div className="w-8 h-8 border-4 border-red-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto p-4 md:p-6 pb-20 max-w-4xl">
@@ -75,19 +116,19 @@ const AccountPage: React.FC = () => {
           <CardContent className="space-y-6">
             <div className="flex items-center gap-4">
               <Avatar className="w-16 h-16">
-                <AvatarImage src="" alt="Profile" />
+                <AvatarImage src={user?.user_metadata?.avatar_url || user?.user_metadata?.picture} alt="Profile" />
                 <AvatarFallback className="text-lg">
-                  JD
+                  {getInitials(getDisplayName())}
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1">
                 <h3 className="text-lg font-semibold">
-                  John Doe
+                  {getDisplayName()}
                 </h3>
-                <p className="text-sm text-muted-foreground">john.doe@example.com</p>
+                <p className="text-sm text-muted-foreground">{user?.email}</p>
                 <Badge variant="secondary" className="mt-1">
                   <Shield className="w-3 h-3 mr-1" />
-                  Verified Account
+                  {user?.email_confirmed_at ? 'Verified Account' : 'Unverified Account'}
                 </Badge>
               </div>
             </div>
@@ -97,7 +138,7 @@ const AccountPage: React.FC = () => {
                 <Label htmlFor="full-name">Full Name</Label>
                 <Input
                   id="full-name"
-                  defaultValue="John Doe"
+                  defaultValue={getDisplayName()}
                   readOnly
                   className="bg-muted"
                 />
@@ -107,7 +148,7 @@ const AccountPage: React.FC = () => {
                 <Input
                   id="email"
                   type="email"
-                  defaultValue="john.doe@example.com"
+                  defaultValue={user?.email || ''}
                   readOnly
                   className="bg-muted"
                 />
@@ -116,7 +157,7 @@ const AccountPage: React.FC = () => {
                 <Label htmlFor="phone">Phone Number</Label>
                 <Input
                   id="phone"
-                  defaultValue="+1 (555) 123-4567"
+                  defaultValue={user?.phone || 'Not provided'}
                   readOnly
                   className="bg-muted"
                 />
@@ -125,7 +166,25 @@ const AccountPage: React.FC = () => {
                 <Label htmlFor="location">Location</Label>
                 <Input
                   id="location"
-                  defaultValue="New York, USA"
+                  defaultValue="Not provided"
+                  readOnly
+                  className="bg-muted"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="provider">Sign-in Provider</Label>
+                <Input
+                  id="provider"
+                  defaultValue={user?.app_metadata?.provider || 'email'}
+                  readOnly
+                  className="bg-muted capitalize"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="created">Account Created</Label>
+                <Input
+                  id="created"
+                  defaultValue={user?.created_at ? new Date(user.created_at).toLocaleDateString() : 'Unknown'}
                   readOnly
                   className="bg-muted"
                 />
@@ -146,39 +205,43 @@ const AccountPage: React.FC = () => {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="current-password">Current Password</Label>
-              <div className="relative">
-                <Input
-                  id="current-password"
-                  type={showPassword ? "text" : "password"}
-                  defaultValue="••••••••"
-                  readOnly
-                  className="bg-muted pr-10"
-                />
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 h-auto p-1"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            {user?.app_metadata?.provider === 'email' && (
+              <>
+                <div className="space-y-2">
+                  <Label htmlFor="current-password">Current Password</Label>
+                  <div className="relative">
+                    <Input
+                      id="current-password"
+                      type={showPassword ? "text" : "password"}
+                      defaultValue="••••••••"
+                      readOnly
+                      className="bg-muted pr-10"
+                    />
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 h-auto p-1"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </Button>
+                  </div>
+                </div>
+                <Button variant="outline" className="w-full">
+                  Change Password
                 </Button>
-              </div>
-            </div>
-            <Button variant="outline" className="w-full">
-              Change Password
-            </Button>
+              </>
+            )}
             <div className="flex items-center justify-between p-3 border rounded-lg">
               <div className="flex items-center gap-3">
                 <Shield className="w-5 h-5 text-green-600" />
                 <div>
-                  <p className="font-medium">Two-Factor Authentication</p>
-                  <p className="text-sm text-muted-foreground">Add an extra layer of security</p>
+                  <p className="font-medium">Email Verification</p>
+                  <p className="text-sm text-muted-foreground">Verify your email address</p>
                 </div>
               </div>
-              <Badge variant="outline" className="text-green-600 border-green-600">
-                Enabled
+              <Badge variant={user?.email_confirmed_at ? "secondary" : "destructive"} className={user?.email_confirmed_at ? "text-green-600 border-green-600" : ""}>
+                {user?.email_confirmed_at ? 'Verified' : 'Unverified'}
               </Badge>
             </div>
           </CardContent>
