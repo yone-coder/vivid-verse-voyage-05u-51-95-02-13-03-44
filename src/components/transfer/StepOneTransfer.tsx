@@ -129,7 +129,7 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
             <Input
               id="amount"
               type="number"
-              className="pl-10 pr-24 text-5xl font-light border border-gray-300 shadow-none focus-visible:ring-0 bg-white text-emerald-900 placeholder-slate-400 placeholder:text-5xl placeholder:font-light h-16 focus:bg-white focus:border-gray-400 transition-colors duration-200 rounded-lg"
+              className="pl-10 pr-24 text-5xl font-light border border-gray-300 shadow-none focus-visible:ring-0 bg-white text-emerald-900 placeholder-slate-400 placeholder:text-2xl placeholder:font-normal h-16 focus:bg-white focus:border-gray-400 transition-colors duration-200 rounded-lg"
               placeholder="0.00"
               value={amount}
               onChange={(e) => handleSendAmountChange(e.target.value)}
