@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { Languages, ChevronDown, X, Check } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Language {
   code: string;
@@ -16,6 +17,7 @@ interface LanguageSelectorProps {
 
 const LanguageSelector: React.FC<LanguageSelectorProps> = ({ selectedLanguage, setSelectedLanguage }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const { setCurrentLanguage } = useLanguage();
 
   const languages: Language[] = [
     { code: 'ht', name: 'Kreyòl Ayisyen', country: 'HT', countryName: 'Haiti' },
@@ -27,7 +29,6 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({ selectedLanguage, s
     { code: 'it', name: 'Italiano', country: 'IT', countryName: 'Italy' },
     { code: 'zh', name: '中文', country: 'CN', countryName: 'China' },
     { code: 'ja', name: '日本語', country: 'JP', countryName: 'Japan' },
-    
     { code: 'ru', name: 'Русский', country: 'RU', countryName: 'Russia' },
   ];
 
@@ -35,7 +36,9 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({ selectedLanguage, s
 
   const handleLanguageSelect = (langCode: string) => {
     setSelectedLanguage(langCode);
+    setCurrentLanguage(langCode);
     setIsOpen(false);
+    console.log('Language changed to:', langCode);
   };
 
   return (
