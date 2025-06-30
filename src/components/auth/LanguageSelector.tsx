@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Languages, ChevronDown, X, Check } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -18,6 +17,11 @@ interface LanguageSelectorProps {
 const LanguageSelector: React.FC<LanguageSelectorProps> = ({ selectedLanguage, setSelectedLanguage }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { setCurrentLanguage } = useLanguage();
+
+  // Sync the context with the prop on mount and when selectedLanguage changes
+  useEffect(() => {
+    setCurrentLanguage(selectedLanguage);
+  }, [selectedLanguage, setCurrentLanguage]);
 
   const languages: Language[] = [
     { code: 'ht', name: 'Kreyòl Ayisyen', country: 'HT', countryName: 'Haiti' },
