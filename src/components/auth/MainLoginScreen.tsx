@@ -49,22 +49,10 @@ const MainLoginScreen: React.FC<MainLoginScreenProps> = ({
     try {
       console.log('Initiating Google OAuth with Supabase...');
       
-      // Get the proper redirect URL - redirect to homepage
-      const getRedirectUrl = () => {
-        const currentOrigin = window.location.origin;
-        console.log('Current origin:', currentOrigin);
-        
-        // If we're on localhost, use the production Lovable app URL
-        if (currentOrigin.includes('localhost')) {
-          // Extract the project name from the URL or use a default
-          const projectName = window.location.hostname.split('.')[0] || 'your-app';
-          return `https://${projectName}.lovable.app/`;
-        }
-        
-        return `${currentOrigin}/`;
-      };
-
-      const redirectUrl = getRedirectUrl();
+      // Get the current origin and construct the auth callback URL
+      const currentOrigin = window.location.origin;
+      const redirectUrl = `${currentOrigin}/auth/callback`;
+      
       console.log('Using redirect URL:', redirectUrl);
 
       const { error } = await supabase.auth.signInWithOAuth({
