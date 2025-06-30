@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { ArrowLeft, HelpCircle } from 'lucide-react';
 import { EmailAuthScreenProps } from '../../types/email';
@@ -45,9 +46,11 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
   const handleContinueWithPassword = async () => {
     if (!isEmailValid || isLoading || emailCheckState !== 'exists') return;
 
+    console.log('EmailAuthScreen: handleContinueWithPassword called for email:', email);
     setIsLoading(true);
     try {
       await new Promise((resolve) => setTimeout(resolve, 500));
+      console.log('EmailAuthScreen: Calling onContinueWithPassword');
       onContinueWithPassword(email);
     } catch (error) {
       console.error('Error continuing with password:', error);
@@ -60,6 +63,7 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
   const handleContinueWithCode = async () => {
     if (!isEmailValid || isLoading || emailCheckState === 'checking') return;
     
+    console.log('EmailAuthScreen: handleContinueWithCode called for email:', email);
     setIsLoading(true);
     try {
       const response = await fetch(`${API_BASE_URL}/send-otp`, {
@@ -76,15 +80,18 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
 
       if (response.ok) {
         console.log('Verification code sent successfully');
+        console.log('EmailAuthScreen: Calling onContinueWithCode');
         onContinueWithCode(email);
       } else {
         console.error('Failed to send OTP:', data.message);
         // Still proceed to verification screen even if sending fails
+        console.log('EmailAuthScreen: Calling onContinueWithCode (fallback)');
         onContinueWithCode(email);
       }
     } catch (error) {
       console.error('Error sending OTP:', error);
       // Still proceed to verification screen even if there's a network error
+      console.log('EmailAuthScreen: Calling onContinueWithCode (error fallback)');
       onContinueWithCode(email);
     } finally {
       setIsLoading(false);
@@ -94,9 +101,11 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
   const handleCreateAccountClick = async () => {
     if (!isEmailValid || isLoading || emailCheckState === 'checking') return;
     
+    console.log('EmailAuthScreen: handleCreateAccountClick called for email:', email);
     setIsLoading(true);
     try {
       await new Promise((resolve) => setTimeout(resolve, 500));
+      console.log('EmailAuthScreen: Calling onCreateAccount');
       onCreateAccount(email);
     } catch (error) {
       console.error('Error navigating to create account:', error);
@@ -111,7 +120,10 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
       {/* Header */}
       <div className="pt-2 pb-3 flex items-center justify-between">
         <button
-          onClick={onBack}
+          onClick={() => {
+            console.log('EmailAuthScreen: Back button clicked');
+            onBack();
+          }}
           className="flex items-center justify-center w-10 h-10 hover:bg-gray-100 rounded-full transition-colors active:scale-95"
           aria-label="Go back"
           disabled={isLoading}
@@ -185,7 +197,10 @@ const EmailAuthScreen: React.FC<EmailAuthScreenProps> = ({
               Don't have an account?{' '}
               <button
                 type="button"
-                onClick={onSignUpClick}
+                onClick={() => {
+                  console.log('EmailAuthScreen: Sign up link clicked');
+                  onSignUpClick();
+                }}
                 className="text-red-500 hover:underline font-medium focus:outline-none"
                 disabled={isLoading}
               >
