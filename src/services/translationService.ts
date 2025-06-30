@@ -1,4 +1,6 @@
 
+import { supabase } from '@/integrations/supabase/client';
+
 interface TranslationRequest {
   text: string;
   targetLanguage: string;
@@ -33,28 +35,28 @@ class TranslationService {
     }
 
     try {
-      // Call our Supabase edge function
-      const response = await fetch('/functions/v1/translate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      console.log('Calling Supabase translation function with:', { text, targetLanguage, sourceLanguage });
+      
+      // Use Supabase client to invoke the edge function
+      const { data, error } = await supabase.functions.invoke('translate', {
+        body: {
           text,
           targetLanguage,
           sourceLanguage
-        })
+        }
       });
 
-      if (!response.ok) {
-        throw new Error(`Translation API error: ${response.status}`);
+      if (error) {
+        console.error('Supabase function error:', error);
+        throw error;
       }
 
-      const data = await response.json();
-      const translatedText = data.translatedText || text;
+      const translatedText = data?.translatedText || text;
       
       // Cache the result
       this.cache.set(cacheKey, translatedText);
+      
+      console.log('Translation successful:', { original: text, translated: translatedText });
       
       return { translatedText };
     } catch (error) {
