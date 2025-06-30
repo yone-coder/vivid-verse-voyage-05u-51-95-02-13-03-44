@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ChevronDown, TrendingUp } from 'lucide-react';
+import { ChevronDown, TrendingUp, Send, Receipt, Calculator } from 'lucide-react';
 
 interface StepOneTransferProps {
   amount: string;
@@ -80,7 +80,7 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
       <div className="bg-gradient-to-br from-blue-50 via-white to-indigo-50 rounded-xl border border-blue-200/60 p-3 shadow-sm">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+            <TrendingUp className="w-4 h-4 text-blue-600" />
             <span className="text-sm font-semibold text-slate-700">Live Exchange Rate</span>
           </div>
           <div className="flex items-center gap-2">
@@ -115,7 +115,7 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
         <div className="p-4 pb-3">
           <div className="flex items-center justify-between mb-3">
             <Label htmlFor="amount" className="text-xs font-bold text-emerald-800 uppercase tracking-wide flex items-center gap-1">
-              <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
+              <Send className="w-4 h-4 text-emerald-600" />
               Send Amount
             </Label>
             <div className="text-xs text-emerald-600 font-medium bg-emerald-100 px-2 py-0.5 rounded-full">
@@ -163,7 +163,7 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
         <div className="p-4 pb-3">
           <div className="flex items-center justify-between mb-3">
             <Label htmlFor="receiverAmount" className="text-xs font-bold text-violet-800 uppercase tracking-wide flex items-center gap-1">
-              <div className="w-2 h-2 bg-violet-500 rounded-full"></div>
+              <Receipt className="w-4 h-4 text-violet-600" />
               Receiver Gets
             </Label>
             <div className="text-xs text-violet-600 font-medium bg-violet-100 px-2 py-0.5 rounded-full">
@@ -191,30 +191,30 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
       </div>
 
       {/* Fee Breakdown */}
-      <div className="bg-gradient-to-br from-amber-50 via-white to-orange-50 rounded-xl border border-amber-200/60 shadow-md p-4 hover:shadow-lg transition-shadow duration-200">
-        <div className="space-y-3">
-          <div className="flex items-center justify-between pb-2">
+      <div className="bg-gradient-to-br from-amber-50 via-white to-orange-50 rounded-xl border border-amber-200/60 shadow-md p-3 hover:shadow-lg transition-shadow duration-200">
+        <div className="space-y-2">
+          <div className="flex items-center justify-between pb-1">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
-              <span className="text-sm font-bold text-amber-800 uppercase tracking-wide">Fee Breakdown</span>
+              <Calculator className="w-3 h-3 text-amber-600" />
+              <span className="text-xs font-bold text-amber-800 uppercase tracking-wide">Fee Breakdown</span>
             </div>
             <div className="text-xs text-amber-600 font-medium bg-amber-100 px-2 py-0.5 rounded-full">
               Summary
             </div>
           </div>
-          <div className="flex items-center justify-between text-sm py-2">
+          <div className="flex items-center justify-between text-xs py-1">
             <span className="text-amber-700 font-medium">Transfer fee</span>
-            <span className="font-bold text-amber-900 text-lg">
+            <span className="font-bold text-amber-900">
               {selectedCurrencyData.symbol}{transferFee.toFixed(2)}
             </span>
           </div>
-          <div className="border-t border-amber-200 pt-3">
+          <div className="border-t border-amber-200 pt-2">
             <div className="flex items-center justify-between">
-              <span className="font-bold text-amber-900 text-lg flex items-center gap-1">
-                <div className="w-2 h-2 bg-amber-600 rounded-full"></div>
+              <span className="font-bold text-amber-900 text-sm flex items-center gap-1">
+                <Calculator className="w-3 h-3 text-amber-700" />
                 Total to pay
               </span>
-              <span className="text-2xl font-bold text-amber-900 bg-amber-100 px-3 py-1 rounded-lg">
+              <span className="text-xl font-bold text-amber-900">
                 {selectedCurrencyData.symbol}{totalAmount.toFixed(2)}
               </span>
             </div>
