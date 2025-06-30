@@ -90,7 +90,7 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
             <div className="flex items-center gap-1">
               <TrendingUp className="w-3 h-3 text-green-600" />
               <span className="font-bold text-slate-800 text-lg">
-                1 {selectedCurrency} = {currentRate.toFixed(2)} HTG
+                1{selectedCurrencyData.symbol} = {currentRate.toFixed(0)}G
               </span>
             </div>
           </div>
