@@ -48,10 +48,29 @@ const MainLoginScreen: React.FC<MainLoginScreenProps> = ({
   const handleGoogleSignIn = async () => {
     try {
       console.log('Initiating Google OAuth with Supabase...');
+      
+      // Get the proper redirect URL - use production URL if available, otherwise current origin
+      const getRedirectUrl = () => {
+        const currentUrl = window.location.origin;
+        
+        // If we're on localhost, use the production URL
+        if (currentUrl.includes('localhost')) {
+          // Extract the Lovable app URL from the current hostname if possible
+          const hostname = window.location.hostname;
+          if (hostname.includes('lovable.app')) {
+            return `https://${hostname}/auth/callback`;
+          }
+          // Fallback to the current origin for local development
+          return `${currentUrl}/auth/callback`;
+        }
+        
+        return `${currentUrl}/auth/callback`;
+      };
+
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`
+          redirectTo: getRedirectUrl()
         }
       });
 
