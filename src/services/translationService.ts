@@ -1,4 +1,5 @@
 
+
 import { supabase } from '@/integrations/supabase/client';
 import { authTranslations } from '@/translations/auth';
 
@@ -89,6 +90,22 @@ class TranslationService {
       };
       
       return spanishTranslations[text] || null;
+    }
+
+    // For Portuguese
+    if (targetLanguage === 'pt') {
+      const portugueseTranslations: Record<string, string> = {
+        'Continue with Google': 'Continuar com Google',
+        'Continue with Email': 'Continuar com Email',
+        'Continue with Phone Number': 'Continuar com Número de Telefone',
+        'Secure Authentication': 'Autenticação Segura',
+        'Terms of Service': 'Termos de Serviço',
+        'Privacy Policy': 'Política de Privacidade',
+        'and': 'e',
+        'By proceeding, you confirm that you\'ve read and agree to our': 'Ao prosseguir, você confirma que leu e concorda com nossos'
+      };
+      
+      return portugueseTranslations[text] || null;
     }
 
     return null;

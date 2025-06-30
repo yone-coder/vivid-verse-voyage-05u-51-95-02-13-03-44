@@ -29,13 +29,6 @@ const MainLoginScreen: React.FC<MainLoginScreenProps> = ({
     { code: 'en', name: 'English', country: 'US', countryName: 'United States' },
     { code: 'es', name: 'Español', country: 'ES', countryName: 'Spain' },
     { code: 'pt', name: 'Português', country: 'PT', countryName: 'Portugal' },
-    { code: 'de', name: 'Deutsch', country: 'DE', countryName: 'Germany' },
-    { code: 'it', name: 'Italiano', country: 'IT', countryName: 'Italy' },
-    { code: 'zh', name: '中文', country: 'CN', countryName: 'China' },
-    { code: 'ja', name: '日本語', country: 'JP', countryName: 'Japan' },
-    { code: 'ko', name: '한국어', country: 'KR', countryName: 'South Korea' },
-    { code: 'ar', name: 'العربية', country: 'SA', countryName: 'Saudi Arabia' },
-    { code: 'ru', name: 'Русский', country: 'RU', countryName: 'Russia' },
   ];
 
   const currentLang = languages.find(lang => lang.code === selectedLanguage);

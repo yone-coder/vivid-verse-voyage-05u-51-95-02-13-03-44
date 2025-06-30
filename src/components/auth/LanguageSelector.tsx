@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Languages, ChevronDown, X, Check } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -29,11 +30,6 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({ selectedLanguage, s
     { code: 'en', name: 'English', country: 'US', countryName: 'United States' },
     { code: 'es', name: 'Español', country: 'ES', countryName: 'Spain' },
     { code: 'pt', name: 'Português', country: 'PT', countryName: 'Portugal' },
-    { code: 'de', name: 'Deutsch', country: 'DE', countryName: 'Germany' },
-    { code: 'it', name: 'Italiano', country: 'IT', countryName: 'Italy' },
-    { code: 'zh', name: '中文', country: 'CN', countryName: 'China' },
-    { code: 'ja', name: '日本語', country: 'JP', countryName: 'Japan' },
-    { code: 'ru', name: 'Русский', country: 'RU', countryName: 'Russia' },
   ];
 
   const currentLang = languages.find(lang => lang.code === selectedLanguage);
