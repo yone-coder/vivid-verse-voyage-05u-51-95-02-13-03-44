@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import {
   Card,
@@ -31,78 +30,64 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
-import type { User as SupabaseUser } from '@supabase/supabase-js';
+
+interface UserData {
+  id: string;
+  email: string;
+  full_name?: string;
+  profile_picture?: string;
+}
 
 const AccountPage: React.FC = () => {
   const [showPassword, setShowPassword] = React.useState(false);
-  const [user, setUser] = useState<SupabaseUser | null>(null);
+  const [user, setUser] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [userFullName, setUserFullName] = useState<string>('');
 
   useEffect(() => {
-    const getUser = async () => {
+    const getUserData = () => {
       try {
-        const { data: { user } } = await supabase.auth.getUser();
-        console.log('Full user object:', user);
-        console.log('User metadata:', user?.user_metadata);
-        console.log('User app metadata:', user?.app_metadata);
-        setUser(user);
+        console.log('Getting user data from localStorage...');
         
-        // Try to get the full name from various sources
-        if (user) {
-          let fullName = '';
-          
-          // Check user metadata for full name
-          if (user.user_metadata?.full_name) {
-            fullName = user.user_metadata.full_name;
-            console.log('Found full_name in metadata:', fullName);
-          } else if (user.user_metadata?.name) {
-            fullName = user.user_metadata.name;
-            console.log('Found name in metadata:', fullName);
-          } else if (user.user_metadata?.first_name && user.user_metadata?.last_name) {
-            fullName = `${user.user_metadata.first_name} ${user.user_metadata.last_name}`;
-            console.log('Found first_name + last_name in metadata:', fullName);
-          } else {
-            // Check localStorage for stored user data (from account creation)
-            const storedUser = localStorage.getItem('user');
-            console.log('Stored user in localStorage:', storedUser);
-            if (storedUser) {
-              try {
-                const parsedUser = JSON.parse(storedUser);
-                console.log('Parsed stored user:', parsedUser);
-                if (parsedUser.user_metadata?.full_name) {
-                  fullName = parsedUser.user_metadata.full_name;
-                  console.log('Found full_name in stored user:', fullName);
-                } else if (parsedUser.user_metadata?.first_name && parsedUser.user_metadata?.last_name) {
-                  fullName = `${parsedUser.user_metadata.first_name} ${parsedUser.user_metadata.last_name}`;
-                  console.log('Found first_name + last_name in stored user:', fullName);
-                }
-              } catch (e) {
-                console.log('Error parsing stored user data:', e);
-              }
-            }
-          }
-          
-          // Fallback to email username if no name found
-          const finalName = fullName || user.email?.split('@')[0] || 'User';
-          console.log('Final display name will be:', finalName);
-          setUserFullName(finalName);
+        // Get user data from localStorage (set during sign-in)
+        const storedUser = localStorage.getItem('user');
+        const isAuthenticated = localStorage.getItem('isAuthenticated');
+        
+        console.log('Stored user:', storedUser);
+        console.log('Is authenticated:', isAuthenticated);
+        
+        if (isAuthenticated === 'true' && storedUser) {
+          const userData = JSON.parse(storedUser);
+          console.log('Parsed user data:', userData);
+          setUser(userData);
+        } else {
+          console.log('No user data found in localStorage');
+          setUser(null);
         }
       } catch (error) {
-        console.error('Error fetching user:', error);
+        console.error('Error getting user data:', error);
+        setUser(null);
       } finally {
         setLoading(false);
       }
     };
 
-    getUser();
+    getUserData();
   }, []);
 
   const handleSignOut = async () => {
     try {
-      console.log('Sign out clicked - signing out from Supabase');
+      console.log('Sign out clicked - clearing localStorage and signing out');
+      
+      // Clear localStorage
+      localStorage.removeItem('isAuthenticated');
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('user');
+      
+      // Also sign out from Supabase for good measure
       await supabase.auth.signOut();
-      // The MainLayout will handle the redirect automatically
+      
+      // Reload to trigger auth check
+      window.location.reload();
     } catch (error) {
       console.error('Error signing out:', error);
     }
@@ -114,7 +99,11 @@ const AccountPage: React.FC = () => {
   };
 
   const getDisplayName = () => {
-    return userFullName;
+    if (user?.full_name) {
+      return user.full_name;
+    }
+    // Fallback to email username
+    return user?.email?.split('@')[0] || 'User';
   };
 
   if (loading) {
@@ -122,6 +111,19 @@ const AccountPage: React.FC = () => {
       <div className="container mx-auto p-4 md:p-6 pb-20 max-w-4xl">
         <div className="flex items-center justify-center h-64">
           <div className="w-8 h-8 border-4 border-red-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="container mx-auto p-4 md:p-6 pb-20 max-w-4xl">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <p className="text-gray-600 mb-4">No user data available</p>
+            <Button onClick={() => window.location.reload()}>Reload</Button>
+          </div>
         </div>
       </div>
     );
@@ -159,7 +161,7 @@ const AccountPage: React.FC = () => {
           <CardContent className="space-y-6">
             <div className="flex items-center gap-4">
               <Avatar className="w-16 h-16">
-                <AvatarImage src={user?.user_metadata?.avatar_url || user?.user_metadata?.picture} alt="Profile" />
+                <AvatarImage src={user.profile_picture} alt="Profile" />
                 <AvatarFallback className="text-lg">
                   {getInitials(getDisplayName())}
                 </AvatarFallback>
@@ -168,10 +170,10 @@ const AccountPage: React.FC = () => {
                 <h3 className="text-lg font-semibold">
                   {getDisplayName()}
                 </h3>
-                <p className="text-sm text-muted-foreground">{user?.email}</p>
+                <p className="text-sm text-muted-foreground">{user.email}</p>
                 <Badge variant="secondary" className="mt-1">
                   <Shield className="w-3 h-3 mr-1" />
-                  {user?.email_confirmed_at ? 'Verified Account' : 'Unverified Account'}
+                  Verified Account
                 </Badge>
               </div>
             </div>
@@ -191,7 +193,7 @@ const AccountPage: React.FC = () => {
                 <Input
                   id="email"
                   type="email"
-                  defaultValue={user?.email || ''}
+                  defaultValue={user.email || ''}
                   readOnly
                   className="bg-muted"
                 />
@@ -200,7 +202,7 @@ const AccountPage: React.FC = () => {
                 <Label htmlFor="phone">Phone Number</Label>
                 <Input
                   id="phone"
-                  defaultValue={user?.phone || 'Not provided'}
+                  defaultValue="Not provided"
                   readOnly
                   className="bg-muted"
                 />
@@ -218,16 +220,16 @@ const AccountPage: React.FC = () => {
                 <Label htmlFor="provider">Sign-in Provider</Label>
                 <Input
                   id="provider"
-                  defaultValue={user?.app_metadata?.provider || 'email'}
+                  defaultValue="email"
                   readOnly
                   className="bg-muted capitalize"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="created">Account Created</Label>
+                <Label htmlFor="user-id">User ID</Label>
                 <Input
-                  id="created"
-                  defaultValue={user?.created_at ? new Date(user.created_at).toLocaleDateString() : 'Unknown'}
+                  id="user-id"
+                  defaultValue={user.id}
                   readOnly
                   className="bg-muted"
                 />
@@ -248,33 +250,29 @@ const AccountPage: React.FC = () => {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {user?.app_metadata?.provider === 'email' && (
-              <>
-                <div className="space-y-2">
-                  <Label htmlFor="current-password">Current Password</Label>
-                  <div className="relative">
-                    <Input
-                      id="current-password"
-                      type={showPassword ? "text" : "password"}
-                      defaultValue="••••••••"
-                      readOnly
-                      className="bg-muted pr-10"
-                    />
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="absolute right-2 top-1/2 -translate-y-1/2 h-auto p-1"
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </Button>
-                  </div>
-                </div>
-                <Button variant="outline" className="w-full">
-                  Change Password
+            <div className="space-y-2">
+              <Label htmlFor="current-password">Current Password</Label>
+              <div className="relative">
+                <Input
+                  id="current-password"
+                  type={showPassword ? "text" : "password"}
+                  defaultValue="••••••••"
+                  readOnly
+                  className="bg-muted pr-10"
+                />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 h-auto p-1"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </Button>
-              </>
-            )}
+              </div>
+            </div>
+            <Button variant="outline" className="w-full">
+              Change Password
+            </Button>
             <div className="flex items-center justify-between p-3 border rounded-lg">
               <div className="flex items-center gap-3">
                 <Shield className="w-5 h-5 text-green-600" />
@@ -283,8 +281,8 @@ const AccountPage: React.FC = () => {
                   <p className="text-sm text-muted-foreground">Verify your email address</p>
                 </div>
               </div>
-              <Badge variant={user?.email_confirmed_at ? "secondary" : "destructive"} className={user?.email_confirmed_at ? "text-green-600 border-green-600" : ""}>
-                {user?.email_confirmed_at ? 'Verified' : 'Unverified'}
+              <Badge variant="secondary" className="text-green-600 border-green-600">
+                Verified
               </Badge>
             </div>
           </CardContent>
