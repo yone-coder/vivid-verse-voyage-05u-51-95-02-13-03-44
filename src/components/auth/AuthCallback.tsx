@@ -9,9 +9,9 @@ const AuthCallback: React.FC = () => {
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
-        console.log('Processing auth callback...');
+        console.log('Processing Supabase OAuth callback...');
         
-        // Get the session from URL hash
+        // Handle the OAuth callback using Supabase's built-in method
         const { data, error } = await supabase.auth.getSession();
         
         if (error) {
@@ -34,8 +34,27 @@ const AuthCallback: React.FC = () => {
           // Redirect to homepage
           navigate('/', { replace: true });
         } else {
-          console.log('No session found, redirecting to signin');
-          navigate('/signin');
+          console.log('No session found, checking URL hash...');
+          
+          // If no session yet, the tokens might still be in the URL hash
+          // Supabase should automatically handle this, but let's wait a moment
+          setTimeout(async () => {
+            const { data: retryData, error: retryError } = await supabase.auth.getSession();
+            
+            if (retryData.session) {
+              console.log('Session found on retry:', retryData.session.user);
+              
+              localStorage.setItem('isAuthenticated', 'true');
+              localStorage.setItem('authToken', retryData.session.access_token);
+              localStorage.setItem('user', JSON.stringify(retryData.session.user));
+              
+              window.dispatchEvent(new Event('authStateChanged'));
+              navigate('/', { replace: true });
+            } else {
+              console.log('Still no session, redirecting to signin');
+              navigate('/signin');
+            }
+          }, 1000);
         }
       } catch (error) {
         console.error('Error processing auth callback:', error);
