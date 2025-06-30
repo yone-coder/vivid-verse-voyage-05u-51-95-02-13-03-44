@@ -4,9 +4,10 @@ import MainLoginScreen from './MainLoginScreen';
 import EmailAuthScreen from './EmailAuthScreen';
 import VerificationCodeScreen from './VerificationCodeScreen';
 import PasswordAuthScreen from './PasswordAuthScreen';
+import SuccessScreen from './SuccessScreen';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 
-type ScreenType = 'main' | 'email' | 'verification' | 'password';
+type ScreenType = 'main' | 'email' | 'verification' | 'password' | 'success';
 
 const SignInScreen: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState<ScreenType>('main');
@@ -58,17 +59,23 @@ const SignInScreen: React.FC = () => {
 
   const handleVerificationSuccess = () => {
     console.log('Verification successful, user authenticated');
-    // TODO: Navigate to main app or dashboard
+    setCurrentScreen('success');
   };
 
   const handleSignInSuccess = () => {
     console.log('Sign in successful, user authenticated');
-    // TODO: Navigate to main app or dashboard
+    setCurrentScreen('success');
   };
 
   const handleForgotPasswordClick = () => {
     console.log('Forgot password clicked');
     // TODO: Navigate to forgot password screen
+  };
+
+  const handleContinueToApp = () => {
+    console.log('Continuing to main app');
+    // This will trigger the MainLayout to re-check auth status and show the main app
+    window.location.reload();
   };
 
   return (
@@ -108,6 +115,13 @@ const SignInScreen: React.FC = () => {
             onBack={handleBackFromPassword}
             onSignInSuccess={handleSignInSuccess}
             onForgotPasswordClick={handleForgotPasswordClick}
+          />
+        )}
+
+        {currentScreen === 'success' && (
+          <SuccessScreen
+            email={userEmail}
+            onContinue={handleContinueToApp}
           />
         )}
       </div>
