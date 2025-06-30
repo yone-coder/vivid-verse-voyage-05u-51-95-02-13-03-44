@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import {
   Card,
@@ -37,12 +36,44 @@ const AccountPage: React.FC = () => {
   const [showPassword, setShowPassword] = React.useState(false);
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const [userFullName, setUserFullName] = useState<string>('');
 
   useEffect(() => {
     const getUser = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
         setUser(user);
+        
+        // Try to get the full name from various sources
+        if (user) {
+          let fullName = '';
+          
+          // Check user metadata for full name
+          if (user.user_metadata?.full_name) {
+            fullName = user.user_metadata.full_name;
+          } else if (user.user_metadata?.name) {
+            fullName = user.user_metadata.name;
+          } else if (user.user_metadata?.first_name && user.user_metadata?.last_name) {
+            fullName = `${user.user_metadata.first_name} ${user.user_metadata.last_name}`;
+          } else {
+            // Check localStorage for stored user data (from account creation)
+            const storedUser = localStorage.getItem('user');
+            if (storedUser) {
+              try {
+                const parsedUser = JSON.parse(storedUser);
+                if (parsedUser.user_metadata?.full_name) {
+                  fullName = parsedUser.user_metadata.full_name;
+                } else if (parsedUser.user_metadata?.first_name && parsedUser.user_metadata?.last_name) {
+                  fullName = `${parsedUser.user_metadata.first_name} ${parsedUser.user_metadata.last_name}`;
+                }
+              } catch (e) {
+                console.log('Error parsing stored user data:', e);
+              }
+            }
+          }
+          
+          setUserFullName(fullName || user.email?.split('@')[0] || 'User');
+        }
       } catch (error) {
         console.error('Error fetching user:', error);
       } finally {
@@ -69,9 +100,7 @@ const AccountPage: React.FC = () => {
   };
 
   const getDisplayName = () => {
-    if (user?.user_metadata?.full_name) return user.user_metadata.full_name;
-    if (user?.user_metadata?.name) return user.user_metadata.name;
-    return user?.email?.split('@')[0] || 'User';
+    return userFullName;
   };
 
   if (loading) {
