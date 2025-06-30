@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import {
   Card,
@@ -42,6 +43,9 @@ const AccountPage: React.FC = () => {
     const getUser = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
+        console.log('Full user object:', user);
+        console.log('User metadata:', user?.user_metadata);
+        console.log('User app metadata:', user?.app_metadata);
         setUser(user);
         
         // Try to get the full name from various sources
@@ -51,20 +55,27 @@ const AccountPage: React.FC = () => {
           // Check user metadata for full name
           if (user.user_metadata?.full_name) {
             fullName = user.user_metadata.full_name;
+            console.log('Found full_name in metadata:', fullName);
           } else if (user.user_metadata?.name) {
             fullName = user.user_metadata.name;
+            console.log('Found name in metadata:', fullName);
           } else if (user.user_metadata?.first_name && user.user_metadata?.last_name) {
             fullName = `${user.user_metadata.first_name} ${user.user_metadata.last_name}`;
+            console.log('Found first_name + last_name in metadata:', fullName);
           } else {
             // Check localStorage for stored user data (from account creation)
             const storedUser = localStorage.getItem('user');
+            console.log('Stored user in localStorage:', storedUser);
             if (storedUser) {
               try {
                 const parsedUser = JSON.parse(storedUser);
+                console.log('Parsed stored user:', parsedUser);
                 if (parsedUser.user_metadata?.full_name) {
                   fullName = parsedUser.user_metadata.full_name;
+                  console.log('Found full_name in stored user:', fullName);
                 } else if (parsedUser.user_metadata?.first_name && parsedUser.user_metadata?.last_name) {
                   fullName = `${parsedUser.user_metadata.first_name} ${parsedUser.user_metadata.last_name}`;
+                  console.log('Found first_name + last_name in stored user:', fullName);
                 }
               } catch (e) {
                 console.log('Error parsing stored user data:', e);
@@ -72,7 +83,10 @@ const AccountPage: React.FC = () => {
             }
           }
           
-          setUserFullName(fullName || user.email?.split('@')[0] || 'User');
+          // Fallback to email username if no name found
+          const finalName = fullName || user.email?.split('@')[0] || 'User';
+          console.log('Final display name will be:', finalName);
+          setUserFullName(finalName);
         }
       } catch (error) {
         console.error('Error fetching user:', error);
