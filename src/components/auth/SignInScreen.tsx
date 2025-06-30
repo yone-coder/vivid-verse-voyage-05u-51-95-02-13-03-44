@@ -1,13 +1,13 @@
-
 import React, { useState } from 'react';
 import MainLoginScreen from './MainLoginScreen';
 import EmailAuthScreen from './EmailAuthScreen';
 import VerificationCodeScreen from './VerificationCodeScreen';
 import PasswordAuthScreen from './PasswordAuthScreen';
 import SuccessScreen from './SuccessScreen';
+import AccountCreationScreen from './AccountCreationScreen';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 
-type ScreenType = 'main' | 'email' | 'verification' | 'password' | 'success';
+type ScreenType = 'main' | 'email' | 'verification' | 'password' | 'success' | 'account-creation';
 
 const SignInScreen: React.FC = () => {
   const [currentScreen, setCurrentScreen] = useState<ScreenType>('main');
@@ -39,7 +39,7 @@ const SignInScreen: React.FC = () => {
   const handleCreateAccount = (email: string) => {
     console.log('Create account for:', email);
     setUserEmail(email);
-    // TODO: Navigate to account creation screen
+    setCurrentScreen('account-creation');
   };
 
   const handleSignUpClick = () => {
@@ -76,6 +76,16 @@ const SignInScreen: React.FC = () => {
     console.log('Continuing to main app');
     // This will trigger the MainLayout to re-check auth status and show the main app
     window.location.reload();
+  };
+
+  const handleBackFromAccountCreation = () => {
+    console.log('Navigating back to email screen from account creation');
+    setCurrentScreen('email');
+  };
+
+  const handleAccountCreated = () => {
+    console.log('Account created successfully, user authenticated');
+    setCurrentScreen('success');
   };
 
   return (
@@ -115,6 +125,14 @@ const SignInScreen: React.FC = () => {
             onBack={handleBackFromPassword}
             onSignInSuccess={handleSignInSuccess}
             onForgotPasswordClick={handleForgotPasswordClick}
+          />
+        )}
+
+        {currentScreen === 'account-creation' && (
+          <AccountCreationScreen
+            email={userEmail}
+            onBack={handleBackFromAccountCreation}
+            onAccountCreated={handleAccountCreated}
           />
         )}
 
