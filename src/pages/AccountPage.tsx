@@ -44,21 +44,66 @@ const AccountPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const getUserData = () => {
+    const getUserData = async () => {
       try {
-        console.log('Getting user data from localStorage...');
+        console.log('Getting user data...');
         
-        // Get user data from localStorage (set during sign-in)
+        // First check localStorage
         const storedUser = localStorage.getItem('user');
         const isAuthenticated = localStorage.getItem('isAuthenticated');
         
-        console.log('Stored user:', storedUser);
+        console.log('Stored user from localStorage:', storedUser);
         console.log('Is authenticated:', isAuthenticated);
         
         if (isAuthenticated === 'true' && storedUser) {
           const userData = JSON.parse(storedUser);
-          console.log('Parsed user data:', userData);
-          setUser(userData);
+          console.log('Parsed user data from localStorage:', userData);
+          
+          // Try to get additional profile data from Supabase
+          try {
+            const { data: { user: supabaseUser }, error: userError } = await supabase.auth.getUser();
+            console.log('Supabase user:', supabaseUser);
+            
+            if (supabaseUser && !userError) {
+              // Get user profile from profiles table if it exists
+              const { data: profile, error: profileError } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', supabaseUser.id)
+                .single();
+              
+              console.log('Profile data from Supabase:', profile);
+              console.log('Profile error:', profileError);
+              
+              // Merge data from localStorage and Supabase
+              const completeUserData = {
+                id: supabaseUser.id,
+                email: userData.email || supabaseUser.email,
+                full_name: profile?.full_name || supabaseUser.user_metadata?.full_name || userData.full_name,
+                profile_picture: profile?.avatar_url || supabaseUser.user_metadata?.avatar_url
+              };
+              
+              console.log('Complete merged user data:', completeUserData);
+              setUser(completeUserData);
+            } else {
+              // Fallback to localStorage data only
+              setUser({
+                id: userData.id || 'unknown',
+                email: userData.email,
+                full_name: userData.full_name,
+                profile_picture: userData.profile_picture
+              });
+            }
+          } catch (supabaseError) {
+            console.log('Supabase not available, using localStorage only:', supabaseError);
+            // Fallback to localStorage data
+            setUser({
+              id: userData.id || 'unknown',
+              email: userData.email,
+              full_name: userData.full_name,
+              profile_picture: userData.profile_picture
+            });
+          }
         } else {
           console.log('No user data found in localStorage');
           setUser(null);
