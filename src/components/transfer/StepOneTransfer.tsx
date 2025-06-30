@@ -1,9 +1,8 @@
-
 import React, { useState, useEffect } from 'react';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, TrendingUp, ArrowRightLeft } from 'lucide-react';
 import { getAllExchangeRates, CurrencyRates } from '@/utils/currencyConverter';
 
 interface StepOneTransferProps {
@@ -27,15 +26,15 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [isLive, setIsLive] = useState(false);
 
-  // Currency options
+  // Currency options with enhanced data
   const currencies = [
-    { code: 'USD', name: 'US Dollar', symbol: '$' },
-    { code: 'EUR', name: 'Euro', symbol: '€' },
-    { code: 'GBP', name: 'British Pound', symbol: '£' },
-    { code: 'CAD', name: 'Canadian Dollar', symbol: 'C$' },
-    { code: 'AUD', name: 'Australian Dollar', symbol: 'A$' },
-    { code: 'CHF', name: 'Swiss Franc', symbol: 'CHF' },
-    { code: 'JPY', name: 'Japanese Yen', symbol: '¥' }
+    { code: 'USD', name: 'US Dollar', symbol: '$', flag: '🇺🇸' },
+    { code: 'EUR', name: 'Euro', symbol: '€', flag: '🇪🇺' },
+    { code: 'GBP', name: 'British Pound', symbol: '£', flag: '🇬🇧' },
+    { code: 'CAD', name: 'Canadian Dollar', symbol: 'C$', flag: '🇨🇦' },
+    { code: 'AUD', name: 'Australian Dollar', symbol: 'A$', flag: '🇦🇺' },
+    { code: 'CHF', name: 'Swiss Franc', symbol: 'CHF', flag: '🇨🇭' },
+    { code: 'JPY', name: 'Japanese Yen', symbol: '¥', flag: '🇯🇵' }
   ];
 
   // Fetch live rates on component mount
@@ -77,107 +76,145 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
   const totalAmount = sendAmount + transferFee;
 
   return (
-    <div className="space-y-4">
-      {/* Exchange Rate Section */}
-      <div className="bg-gradient-to-r from-slate-50 to-gray-100 rounded-xl border border-gray-300 p-3">
-        <div className="flex items-center justify-between">
-          <span className="text-sm font-medium text-slate-700">Exchange rate</span>
+    <div className="space-y-8">
+      {/* Enhanced Exchange Rate Section */}
+      <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-2xl border border-blue-200/50 p-6 shadow-sm">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <TrendingUp className="h-5 w-5 text-blue-600" />
+            <span className="text-lg font-semibold text-gray-800">Live Exchange Rate</span>
+          </div>
           <div className="flex items-center gap-2">
             {isLoadingRates && (
-              <div className="w-4 h-4 border-2 border-slate-600 border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
             )}
-            <span className="font-bold text-slate-800">
-              1 {selectedCurrency} = {currentRate.toFixed(2)} HTG
-            </span>
-          </div>
-        </div>
-        {lastUpdated && (
-          <div className="text-xs text-slate-500 mt-1">
-            {isLive ? 'Live BRH rate' : 'Cached rate'} • Updated {lastUpdated.toLocaleTimeString()}
-          </div>
-        )}
-      </div>
-
-      {/* Send Amount Input with Currency Selection */}
-      <div className="bg-white rounded-xl border border-gray-400 shadow-sm overflow-hidden">
-        <div className="p-3 pb-2">
-          <Label htmlFor="amount" className="text-xs font-bold text-slate-700 mb-2 block uppercase tracking-wide">
-            Send Amount
-          </Label>
-          <div className="relative">
-            <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-              <span className="text-slate-700 font-bold text-sm">{selectedCurrencyData.symbol}</span>
-            </div>
-            <Input
-              id="amount"
-              type="number"
-              className="pl-8 pr-20 text-2xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-slate-900 placeholder-slate-400 placeholder:text-2xl placeholder:font-light h-12"
-              placeholder="0.00"
-              value={amount}
-              onChange={(e) => handleSendAmountChange(e.target.value)}
-              min="0"
-              step="0.01"
-            />
-            <div className="absolute inset-y-0 right-3 flex items-center">
-              <Select value={selectedCurrency} onValueChange={setSelectedCurrency}>
-                <SelectTrigger className="h-6 w-auto border-0 bg-slate-200 text-slate-700 font-bold text-xs px-2 py-1 rounded-full focus:ring-0 shadow-none">
-                  <SelectValue>{selectedCurrency}</SelectValue>
-                </SelectTrigger>
-                <SelectContent className="bg-white z-50">
-                  {currencies.map((currency) => (
-                    <SelectItem key={currency.code} value={currency.code}>
-                      <div className="flex items-center space-x-1">
-                        <span className="font-medium">{currency.symbol}</span>
-                        <span className="text-xs">{currency.code}</span>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Receiver Amount Display */}
-      <div className="bg-white rounded-xl border border-gray-400 shadow-sm overflow-hidden">
-        <div className="p-3 pb-2">
-          <Label htmlFor="receiverAmount" className="text-xs font-bold text-slate-700 mb-2 block uppercase tracking-wide">
-            Receiver Gets
-          </Label>
-          <div className="relative">
-            <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-              <span className="text-slate-700 font-bold text-sm">HTG</span>
-            </div>
-            <Input
-              id="receiverAmount"
-              type="text"
-              className="pl-12 pr-12 text-2xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-slate-900 h-12"
-              value={receiverAmount}
-              readOnly
-            />
-            <div className="absolute inset-y-0 right-3 flex items-center">
-              <span className="text-xs font-bold text-slate-700 bg-slate-200 px-2 py-0.5 rounded-full">
-                HTG
+            <div className="bg-white/80 backdrop-blur-sm rounded-lg px-3 py-1 border border-blue-200/50">
+              <span className="font-bold text-gray-900 text-lg">
+                1 {selectedCurrency} = {currentRate.toFixed(2)} HTG
               </span>
             </div>
           </div>
         </div>
+        {lastUpdated && (
+          <div className="flex items-center gap-2 text-sm text-blue-700">
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+            <span className="font-medium">
+              {isLive ? 'Live BRH rate' : 'Cached rate'} • Updated {lastUpdated.toLocaleTimeString()}
+            </span>
+          </div>
+        )}
       </div>
 
-      {/* Fee Breakdown */}
-      <div className="bg-gradient-to-r from-slate-50 to-gray-100 rounded-xl border border-gray-300 p-3">
-        <div className="space-y-2">
-          <div className="flex items-center justify-between text-xs">
-            <span className="text-slate-600 font-medium">Transfer fee</span>
-            <span className="font-bold text-slate-800">
+      {/* Enhanced Send Amount Section */}
+      <div className="space-y-6">
+        <div className="bg-white rounded-2xl border-2 border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group hover:border-blue-300">
+          <div className="bg-gradient-to-r from-gray-50 to-blue-50/30 px-6 py-4 border-b border-gray-100">
+            <Label htmlFor="amount" className="text-sm font-bold text-gray-700 uppercase tracking-wider flex items-center gap-2">
+              <span className="text-blue-600">💸</span>
+              You Send
+            </Label>
+          </div>
+          <div className="p-6">
+            <div className="relative">
+              <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none z-10">
+                <span className="text-gray-600 font-bold text-xl">{selectedCurrencyData.symbol}</span>
+              </div>
+              <Input
+                id="amount"
+                type="number"
+                className="pl-12 pr-32 text-3xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-gray-900 placeholder-gray-400 placeholder:text-3xl placeholder:font-light h-16 text-center"
+                placeholder="0.00"
+                value={amount}
+                onChange={(e) => handleSendAmountChange(e.target.value)}
+                min="0"
+                step="0.01"
+              />
+              <div className="absolute inset-y-0 right-4 flex items-center">
+                <Select value={selectedCurrency} onValueChange={setSelectedCurrency}>
+                  <SelectTrigger className="h-10 w-auto border border-gray-200 bg-gray-50 hover:bg-gray-100 text-gray-700 font-semibold text-sm px-4 py-2 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm transition-all duration-200">
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">{selectedCurrencyData.flag}</span>
+                      <SelectValue>{selectedCurrency}</SelectValue>
+                    </div>
+                  </SelectTrigger>
+                  <SelectContent className="bg-white z-50 border border-gray-200 rounded-xl shadow-xl">
+                    {currencies.map((currency) => (
+                      <SelectItem key={currency.code} value={currency.code}>
+                        <div className="flex items-center space-x-3 py-1">
+                          <span className="text-lg">{currency.flag}</span>
+                          <div className="flex flex-col">
+                            <div className="flex items-center gap-2">
+                              <span className="font-semibold">{currency.symbol}</span>
+                              <span className="font-medium">{currency.code}</span>
+                            </div>
+                            <span className="text-xs text-gray-500">{currency.name}</span>
+                          </div>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Enhanced Conversion Arrow */}
+        <div className="flex justify-center">
+          <div className="bg-blue-100 rounded-full p-3 shadow-md">
+            <ArrowRightLeft className="h-6 w-6 text-blue-600" />
+          </div>
+        </div>
+
+        {/* Enhanced Receiver Amount Section */}
+        <div className="bg-white rounded-2xl border-2 border-green-200 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group hover:border-green-300">
+          <div className="bg-gradient-to-r from-green-50 to-emerald-50/30 px-6 py-4 border-b border-green-100">
+            <Label htmlFor="receiverAmount" className="text-sm font-bold text-gray-700 uppercase tracking-wider flex items-center gap-2">
+              <span className="text-green-600">🇭🇹</span>
+              Recipient Gets
+            </Label>
+          </div>
+          <div className="p-6">
+            <div className="relative">
+              <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none z-10">
+                <span className="text-gray-600 font-bold text-xl">HTG</span>
+              </div>
+              <Input
+                id="receiverAmount"
+                type="text"
+                className="pl-16 pr-20 text-3xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-gray-900 h-16 text-center"
+                value={receiverAmount}
+                readOnly
+              />
+              <div className="absolute inset-y-0 right-4 flex items-center">
+                <div className="bg-green-100 text-green-700 font-bold text-sm px-4 py-2 rounded-xl border border-green-200">
+                  🇭🇹 HTG
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Enhanced Fee Breakdown */}
+      <div className="bg-gradient-to-br from-slate-50 via-gray-50 to-blue-50/30 rounded-2xl border border-gray-200 p-6 shadow-sm">
+        <div className="space-y-4">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-600 font-medium flex items-center gap-2">
+              <span className="text-blue-500">📊</span>
+              Transfer fee
+            </span>
+            <span className="font-bold text-gray-800 text-lg">
               {selectedCurrencyData.symbol}{transferFee.toFixed(2)}
             </span>
           </div>
-          <div className="border-t border-gray-200 pt-2">
+          <div className="border-t border-gray-200 pt-4">
             <div className="flex items-center justify-between">
-              <span className="font-bold text-slate-900 text-sm">Total to pay</span>
-              <span className="text-xl font-bold text-slate-800">
+              <span className="font-bold text-gray-900 text-lg flex items-center gap-2">
+                <span className="text-green-600">💰</span>
+                Total to pay
+              </span>
+              <span className="text-2xl font-bold text-gray-900 bg-white px-4 py-2 rounded-xl border border-gray-200 shadow-sm">
                 {selectedCurrencyData.symbol}{totalAmount.toFixed(2)}
               </span>
             </div>
