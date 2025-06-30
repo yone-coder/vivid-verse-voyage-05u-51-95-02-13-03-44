@@ -49,7 +49,7 @@ const MainLoginScreen: React.FC<MainLoginScreenProps> = ({
     try {
       console.log('Initiating Google OAuth with Supabase...');
       
-      // Get the proper redirect URL - use production URL, never localhost
+      // Get the proper redirect URL - redirect to homepage
       const getRedirectUrl = () => {
         const currentOrigin = window.location.origin;
         console.log('Current origin:', currentOrigin);
@@ -58,10 +58,10 @@ const MainLoginScreen: React.FC<MainLoginScreenProps> = ({
         if (currentOrigin.includes('localhost')) {
           // Extract the project name from the URL or use a default
           const projectName = window.location.hostname.split('.')[0] || 'your-app';
-          return `https://${projectName}.lovable.app/auth/callback`;
+          return `https://${projectName}.lovable.app/`;
         }
         
-        return `${currentOrigin}/auth/callback`;
+        return `${currentOrigin}/`;
       };
 
       const redirectUrl = getRedirectUrl();
