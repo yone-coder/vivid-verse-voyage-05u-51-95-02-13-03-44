@@ -26,6 +26,7 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
   const [isLoadingRates, setIsLoadingRates] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [isLive, setIsLive] = useState(false);
+  const [isUpdatingFromReceiver, setIsUpdatingFromReceiver] = useState(false);
 
   // Currency options
   const currencies = [
@@ -63,13 +64,29 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
   const currentRate = liveRates[selectedCurrency] || 127.5;
 
   useEffect(() => {
-    const sendAmount = parseFloat(amount) || 0;
-    const htgAmount = sendAmount * currentRate;
-    setReceiverAmount(htgAmount.toFixed(2));
-  }, [amount, currentRate]);
+    if (!isUpdatingFromReceiver) {
+      const sendAmount = parseFloat(amount) || 0;
+      const htgAmount = sendAmount * currentRate;
+      setReceiverAmount(htgAmount.toFixed(2));
+    }
+  }, [amount, currentRate, isUpdatingFromReceiver]);
 
   const handleSendAmountChange = (value: string) => {
+    setIsUpdatingFromReceiver(false);
     onAmountChange(value);
+  };
+
+  const handleReceiverAmountChange = (value: string) => {
+    setIsUpdatingFromReceiver(true);
+    setReceiverAmount(value);
+    
+    // Calculate corresponding send amount
+    const htgAmount = parseFloat(value) || 0;
+    const sendAmount = htgAmount / currentRate;
+    onAmountChange(sendAmount.toFixed(2));
+    
+    // Reset flag after a short delay
+    setTimeout(() => setIsUpdatingFromReceiver(false), 100);
   };
 
   const sendAmount = parseFloat(amount) || 0;
@@ -159,7 +176,7 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
         </div>
       </div>
 
-      {/* Receiver Amount Display */}
+      {/* Receiver Amount Input - Now Editable */}
       <div className="bg-gradient-to-br from-emerald-50 via-white to-teal-50 rounded-xl border border-emerald-200 shadow-lg shadow-emerald-100/50 overflow-hidden backdrop-blur-sm">
         <div className="p-3 pb-2 relative">
           <div className="absolute top-2 right-2">
@@ -176,10 +193,13 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
             </div>
             <Input
               id="receiverAmount"
-              type="text"
-              className="pl-12 pr-12 text-2xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-emerald-900 h-12 focus:outline-none"
+              type="number"
+              className="pl-12 pr-12 text-2xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-emerald-900 placeholder-emerald-400 placeholder:text-2xl placeholder:font-light h-12 transition-colors duration-200 w-full outline-none"
+              placeholder="0.00"
               value={receiverAmount}
-              readOnly
+              onChange={(e) => handleReceiverAmountChange(e.target.value)}
+              min="0"
+              step="0.01"
             />
             <div className="absolute inset-y-0 right-3 flex items-center">
               <span className="text-xs font-bold text-emerald-700 bg-gradient-to-r from-emerald-100 to-teal-100 px-2 py-0.5 rounded-full border border-emerald-200 shadow-sm">
