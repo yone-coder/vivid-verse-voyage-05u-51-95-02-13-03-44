@@ -89,130 +89,54 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({
   const paymentMethod = transferDetails?.deliveryMethod === 'moncash' ? 'MonCash' : 'NatCash';
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-2">
-        <Label htmlFor="firstName" className="text-base font-medium text-gray-700">
-          What's their full name?
-        </Label>
-        <div className="grid grid-cols-2 gap-3">
-          <Input
-            id="firstName"
-            type="text"
-            placeholder="First name"
-            value={receiverDetails.firstName}
-            onChange={(e) => handleInputChange('firstName', e.target.value)}
-            className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+    <div className="w-full bg-white p-4">
+  <FormHeader />
+  
+  <div className="space-y-8">
+    {/* Personal Information Section */}
+    <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+      <h3 className="text-lg font-medium text-gray-900 mb-4 pb-2 border-b border-gray-200">
+        Personal Information
+      </h3>
+      <div className="space-y-6">
+        <NameFields 
+          receiverDetails={receiverDetails}
+          handleInputChange={handleInputChange}
+        />
+        
+        {/* Phone Number Section */}
+        {!isMonCashOrNatCash && (
+          <PhoneField 
+            receiverDetails={receiverDetails}
+            handleInputChange={handleInputChange}
           />
-          <Input
-            id="lastName"
-            type="text"
-            placeholder="Last name"
-            value={receiverDetails.lastName}
-            onChange={(e) => handleInputChange('lastName', e.target.value)}
-            className="border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+        )}
+
+        {isMonCashOrNatCash && (
+          <MonCashPhoneField 
+            receiverDetails={receiverDetails}
+            handleInputChange={handleInputChange}
+            paymentMethod={paymentMethod}
           />
-        </div>
-      </div>
-
-      {/* Conditionally render regular phone number field - hide for MonCash/NatCash */}
-      {!isMonCashOrNatCash && (
-        <div className="space-y-2">
-          <Label htmlFor="phoneNumber" className="text-base font-medium text-gray-700">
-            What's their phone number?
-          </Label>
-          <div className="flex">
-            <div className="flex items-center px-3 border border-r-0 border-gray-300 bg-gray-50 rounded-l-md">
-              <span className="text-sm text-gray-600">+509</span>
-            </div>
-            <Input
-              id="phoneNumber"
-              type="tel"
-              placeholder="Enter phone number"
-              value={receiverDetails.phoneNumber}
-              onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
-              className="rounded-l-none border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-            />
-          </div>
-        </div>
-      )}
-
-      {/* MonCash/NatCash Phone Number Field */}
-      {isMonCashOrNatCash && (
-        <div className="space-y-2">
-          <Label htmlFor="moncashPhoneNumber" className="text-base font-medium text-gray-700">
-            What's their {paymentMethod} phone number?
-          </Label>
-          <div className="flex">
-            <div className="flex items-center px-3 border border-r-0 border-gray-300 bg-gray-50 rounded-l-md">
-              <span className="text-sm text-gray-600">+509</span>
-            </div>
-            <Input
-              id="moncashPhoneNumber"
-              type="tel"
-              placeholder={`Enter ${paymentMethod} phone number`}
-              value={receiverDetails.moncashPhoneNumber || ''}
-              onChange={(e) => handleInputChange('moncashPhoneNumber', e.target.value)}
-              className="rounded-l-none border-gray-300 focus:border-blue-500 focus:ring-blue-500"
-            />
-          </div>
-          
-          {/* Notice about account eligibility */}
-          <div className="flex items-start space-x-2 p-3 bg-amber-50 border border-amber-200 rounded-md">
-            <AlertCircle className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" />
-            <div className="text-sm text-amber-800">
-              <p className="font-medium mb-1">Important Notice</p>
-              <p>
-                Please ensure the {paymentMethod} phone number is eligible to receive payments and the account is upgraded. 
-                Unverified or basic accounts may not be able to receive transfers.
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <div className="space-y-2">
-        <Label htmlFor="department" className="text-base font-medium text-gray-700">
-          Which department are they in?
-        </Label>
-        <Select 
-          value={receiverDetails.department || ""} 
-          onValueChange={handleDepartmentChange}
-        >
-          <SelectTrigger className="w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500">
-            <SelectValue placeholder="Select department" />
-          </SelectTrigger>
-          <SelectContent className="bg-white z-50">
-            {haitiDepartments.map((dept) => (
-              <SelectItem key={dept} value={dept}>
-                {dept}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="commune" className="text-base font-medium text-gray-700">
-          Which city or commune are they in?
-        </Label>
-        <Select 
-          value={receiverDetails.commune || ""} 
-          onValueChange={handleCommuneChange}
-          disabled={!receiverDetails.department}
-        >
-          <SelectTrigger className="w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 disabled:bg-gray-100">
-            <SelectValue placeholder={receiverDetails.department ? "Select commune" : "Select department first"} />
-          </SelectTrigger>
-          <SelectContent className="bg-white z-50">
-            {receiverDetails.department && communesByDepartment[receiverDetails.department]?.map((commune) => (
-              <SelectItem key={commune} value={commune}>
-                {commune}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        )}
       </div>
     </div>
+
+    {/* Location Section */}
+    <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+      <h3 className="text-lg font-medium text-gray-900 mb-4 pb-2 border-b border-gray-200">
+        Location Details
+      </h3>
+      <LocationFields 
+        receiverDetails={receiverDetails}
+        handleDepartmentChange={handleDepartmentChange}
+        handleCommuneChange={handleCommuneChange}
+      />
+    </div>
+  </div>
+
+  <SubmitButton />
+</div>
   );
 };
 
