@@ -76,17 +76,19 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
   const totalAmount = sendAmount + transferFee;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {/* Exchange Rate Section */}
-      <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-slate-50 rounded-xl border border-blue-200/50 shadow-sm p-3 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-white/60 to-transparent pointer-events-none"></div>
-        <div className="relative flex items-center justify-between">
-          <span className="text-sm font-semibold text-slate-700 tracking-wide">Exchange rate</span>
+      <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-2xl border border-blue-200/60 p-4 shadow-sm backdrop-blur-sm">
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-semibold text-slate-700 flex items-center gap-2">
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+            Exchange rate
+          </span>
           <div className="flex items-center gap-3">
             {isLoadingRates && (
-              <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
             )}
-            <div className="bg-white/70 backdrop-blur-sm rounded-lg px-3 py-1.5 border border-white/40 shadow-sm">
+            <div className="bg-white/70 backdrop-blur-sm rounded-lg px-3 py-1 shadow-sm">
               <span className="font-bold text-slate-800 text-sm">
                 1 {selectedCurrency} = {currentRate.toFixed(2)} HTG
               </span>
@@ -94,46 +96,44 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
           </div>
         </div>
         {lastUpdated && (
-          <div className="text-xs text-slate-600 mt-2 flex items-center gap-1.5 relative">
-            <div className={`w-2 h-2 rounded-full ${isLive ? 'bg-green-400 animate-pulse' : 'bg-amber-400'}`}></div>
-            <span className="font-medium">
-              {isLive ? 'Live BRH rate' : 'Cached rate'} • Updated {lastUpdated.toLocaleTimeString()}
-            </span>
+          <div className="text-xs text-slate-600 mt-2 flex items-center gap-1">
+            <div className={`w-1.5 h-1.5 rounded-full ${isLive ? 'bg-green-500' : 'bg-amber-500'}`}></div>
+            {isLive ? 'Live BRH rate' : 'Cached rate'} • Updated {lastUpdated.toLocaleTimeString()}
           </div>
         )}
       </div>
 
       {/* Send Amount Input with Currency Selection */}
-      <div className="bg-white rounded-xl border border-gray-400 shadow-sm overflow-hidden">
-        <div className="p-3 pb-2">
-          <Label htmlFor="amount" className="text-xs font-bold text-slate-700 mb-2 block uppercase tracking-wide">
+      <div className="bg-white rounded-2xl border border-gray-200 shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+        <div className="p-5 pb-4">
+          <Label htmlFor="amount" className="text-xs font-bold text-slate-700 mb-3 block uppercase tracking-wider">
             Send Amount
           </Label>
           <div className="relative">
-            <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-              <span className="text-slate-700 font-bold text-sm">{selectedCurrencyData.symbol}</span>
+            <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none z-10">
+              <span className="text-slate-700 font-bold text-lg">{selectedCurrencyData.symbol}</span>
             </div>
             <Input
               id="amount"
               type="number"
-              className="pl-8 pr-20 text-2xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-slate-900 placeholder-slate-400 placeholder:text-2xl placeholder:font-light h-12"
+              className="pl-10 pr-24 text-3xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-slate-900 placeholder-slate-400 placeholder:text-3xl placeholder:font-light h-14"
               placeholder="0.00"
               value={amount}
               onChange={(e) => handleSendAmountChange(e.target.value)}
               min="0"
               step="0.01"
             />
-            <div className="absolute inset-y-0 right-3 flex items-center">
+            <div className="absolute inset-y-0 right-4 flex items-center">
               <Select value={selectedCurrency} onValueChange={setSelectedCurrency}>
-                <SelectTrigger className="h-6 w-auto border-0 bg-slate-200 text-slate-700 font-bold text-xs px-2 py-1 rounded-full focus:ring-0 shadow-none">
+                <SelectTrigger className="h-8 w-auto border-0 bg-gradient-to-r from-slate-100 to-slate-200 hover:from-slate-200 hover:to-slate-300 text-slate-700 font-bold text-xs px-3 py-2 rounded-full focus:ring-2 focus:ring-blue-500/20 shadow-sm transition-all duration-200">
                   <SelectValue>{selectedCurrency}</SelectValue>
                 </SelectTrigger>
-                <SelectContent className="bg-white z-50">
+                <SelectContent className="bg-white border border-gray-200 shadow-xl rounded-xl z-50">
                   {currencies.map((currency) => (
-                    <SelectItem key={currency.code} value={currency.code}>
-                      <div className="flex items-center space-x-1">
-                        <span className="font-medium">{currency.symbol}</span>
-                        <span className="text-xs">{currency.code}</span>
+                    <SelectItem key={currency.code} value={currency.code} className="hover:bg-blue-50 transition-colors">
+                      <div className="flex items-center space-x-2">
+                        <span className="font-semibold">{currency.symbol}</span>
+                        <span className="text-xs text-slate-600">{currency.code}</span>
                       </div>
                     </SelectItem>
                   ))}
@@ -145,24 +145,24 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
       </div>
 
       {/* Receiver Amount Display */}
-      <div className="bg-white rounded-xl border border-gray-400 shadow-sm overflow-hidden">
-        <div className="p-3 pb-2">
-          <Label htmlFor="receiverAmount" className="text-xs font-bold text-slate-700 mb-2 block uppercase tracking-wide">
+      <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl border border-emerald-200/60 shadow-lg overflow-hidden">
+        <div className="p-5 pb-4">
+          <Label htmlFor="receiverAmount" className="text-xs font-bold text-slate-700 mb-3 block uppercase tracking-wider">
             Receiver Gets
           </Label>
           <div className="relative">
-            <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-              <span className="text-slate-700 font-bold text-sm">HTG</span>
+            <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none z-10">
+              <span className="text-slate-700 font-bold text-lg">HTG</span>
             </div>
             <Input
               id="receiverAmount"
               type="text"
-              className="pl-12 pr-12 text-2xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-slate-900 h-12"
+              className="pl-16 pr-16 text-3xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-slate-900 h-14"
               value={receiverAmount}
               readOnly
             />
-            <div className="absolute inset-y-0 right-3 flex items-center">
-              <span className="text-xs font-bold text-slate-700 bg-slate-200 px-2 py-0.5 rounded-full">
+            <div className="absolute inset-y-0 right-4 flex items-center">
+              <span className="text-xs font-bold text-slate-700 bg-white/70 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-sm">
                 HTG
               </span>
             </div>
@@ -171,20 +171,25 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
       </div>
 
       {/* Fee Breakdown */}
-      <div className="bg-gradient-to-r from-slate-50 to-gray-100 rounded-xl border border-gray-300 p-3">
-        <div className="space-y-2">
-          <div className="flex items-center justify-between text-xs">
-            <span className="text-slate-600 font-medium">Transfer fee</span>
-            <span className="font-bold text-slate-800">
+      <div className="bg-gradient-to-br from-gray-50 via-slate-50 to-gray-100 rounded-2xl border border-gray-200 p-5 shadow-sm">
+        <div className="space-y-3">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-slate-600 font-medium flex items-center gap-2">
+              <div className="w-1.5 h-1.5 bg-slate-400 rounded-full"></div>
+              Transfer fee
+            </span>
+            <span className="font-bold text-slate-800 bg-white/60 px-2 py-1 rounded-lg">
               {selectedCurrencyData.symbol}{transferFee.toFixed(2)}
             </span>
           </div>
-          <div className="border-t border-gray-200 pt-2">
+          <div className="border-t border-gray-300/50 pt-3">
             <div className="flex items-center justify-between">
-              <span className="font-bold text-slate-900 text-sm">Total to pay</span>
-              <span className="text-xl font-bold text-slate-800">
-                {selectedCurrencyData.symbol}{totalAmount.toFixed(2)}
-              </span>
+              <span className="font-bold text-slate-900 text-base">Total to pay</span>
+              <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-xl shadow-sm">
+                <span className="text-xl font-bold">
+                  {selectedCurrencyData.symbol}{totalAmount.toFixed(2)}
+                </span>
+              </div>
             </div>
           </div>
         </div>
