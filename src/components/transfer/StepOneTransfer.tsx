@@ -113,7 +113,6 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
       </div>
 
       {/* Send Amount Input with Currency Selection */}
-      <div className="p-8 bg-gray-50 min-h-screen flex items-center justify-center">
       <div className="bg-gradient-to-br from-purple-500 via-pink-500 to-orange-400 rounded-xl border-0 shadow-xl overflow-hidden backdrop-blur-sm p-[1px]">
         <div className="bg-white/95 backdrop-blur-sm rounded-xl h-full">
         <div className="p-3 pb-2">
@@ -153,10 +152,9 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
               </Select>
             </div>
           </div>
-      </div>
+        </div>
         </div>
       </div>
-    </div>
 
       {/* Receiver Amount Display */}
       <div className="bg-white rounded-xl border border-gray-400 shadow-sm overflow-hidden">
