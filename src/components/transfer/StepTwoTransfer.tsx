@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -89,7 +90,7 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({
   const paymentMethod = transferDetails?.deliveryMethod === 'moncash' ? 'MonCash' : 'NatCash';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-4">
+    <div className="p-4">
       <div className="max-w-2xl mx-auto">
         <div className="mb-4 text-center">
           <h2 className="text-2xl font-bold text-gray-800 mb-1">Receiver Details</h2>
