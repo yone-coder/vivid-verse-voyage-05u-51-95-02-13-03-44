@@ -26,7 +26,7 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
   const [isLoadingRates, setIsLoadingRates] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [isLive, setIsLive] = useState(false);
-  const [isUpdatingFromReceiver, setIsUpdatingFromReceiver] = useState(false);
+  const [lastEditedField, setLastEditedField] = useState<'send' | 'receive'>('send');
 
   // Currency options
   const currencies = [
@@ -63,30 +63,32 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
   const selectedCurrencyData = currencies.find(c => c.code === selectedCurrency) || currencies[0];
   const currentRate = liveRates[selectedCurrency] || 127.5;
 
+  // Update receiver amount when send amount or rate changes (but not when user is editing receiver)
   useEffect(() => {
-    if (!isUpdatingFromReceiver) {
+    if (lastEditedField === 'send') {
       const sendAmount = parseFloat(amount) || 0;
       const htgAmount = sendAmount * currentRate;
       setReceiverAmount(htgAmount.toFixed(2));
     }
-  }, [amount, currentRate, isUpdatingFromReceiver]);
+  }, [amount, currentRate, lastEditedField]);
+
+  // Update send amount when receiver amount or rate changes (but not when user is editing sender)
+  useEffect(() => {
+    if (lastEditedField === 'receive' && receiverAmount) {
+      const htgAmount = parseFloat(receiverAmount) || 0;
+      const sendAmount = htgAmount / currentRate;
+      onAmountChange(sendAmount.toFixed(2));
+    }
+  }, [receiverAmount, currentRate, lastEditedField, onAmountChange]);
 
   const handleSendAmountChange = (value: string) => {
-    setIsUpdatingFromReceiver(false);
+    setLastEditedField('send');
     onAmountChange(value);
   };
 
   const handleReceiverAmountChange = (value: string) => {
-    setIsUpdatingFromReceiver(true);
+    setLastEditedField('receive');
     setReceiverAmount(value);
-    
-    // Calculate corresponding send amount
-    const htgAmount = parseFloat(value) || 0;
-    const sendAmount = htgAmount / currentRate;
-    onAmountChange(sendAmount.toFixed(2));
-    
-    // Reset flag after a short delay
-    setTimeout(() => setIsUpdatingFromReceiver(false), 100);
   };
 
   const sendAmount = parseFloat(amount) || 0;
