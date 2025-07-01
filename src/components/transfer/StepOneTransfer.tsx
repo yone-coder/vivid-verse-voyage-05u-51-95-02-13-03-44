@@ -1,8 +1,9 @@
+
 import React, { useState, useEffect } from 'react';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ChevronDown, Send,ArrowDownLeft, TrendingUp, Clock } from 'lucide-react';
+import { ChevronDown, Send, ArrowDownLeft, ArrowUpRight, TrendingUp, Clock } from 'lucide-react';
 import { getAllExchangeRates, CurrencyRates } from '@/utils/currencyConverter';
 
 interface StepOneTransferProps {
@@ -113,21 +114,24 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
       </div>
 
       {/* Send Amount Input with Currency Selection */}
-      <div className="bg-gradient-to-br from-purple-500 via-pink-500 to-orange-400 rounded-xl border-0 shadow-xl overflow-hidden backdrop-blur-sm p-[1px]">
-        <div className="bg-white/95 backdrop-blur-sm rounded-xl h-full">
-        <div className="p-3 pb-2">
-          <Label htmlFor="amount" className="text-xs font-semibold text-purple-700 mb-2 flex items-center gap-1.5 uppercase tracking-wider">
-            <Send size={14} className="text-purple-600" />
+      <div className="bg-gradient-to-br from-purple-50 via-white to-pink-50 rounded-xl border border-purple-200 shadow-lg shadow-purple-100/50 overflow-hidden backdrop-blur-sm">
+        <div className="p-3 pb-2 relative">
+          <div className="absolute top-2 right-2">
+            <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-1.5 rounded-full shadow-sm">
+              <ArrowUpRight className="w-3 h-3 text-white" />
+            </div>
+          </div>
+          <Label htmlFor="amount" className="text-xs font-bold text-purple-800 mb-2 block uppercase tracking-wide">
             Send Amount
           </Label>
           <div className="relative">
             <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-              <span className="text-purple-700 font-semibold text-lg">{selectedCurrencyData.symbol}</span>
+              <span className="text-purple-700 font-bold text-sm">{selectedCurrencyData.symbol}</span>
             </div>
             <Input
               id="amount"
               type="number"
-              className="pl-8 pr-20 text-2xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-slate-900 placeholder-purple-400 placeholder:text-2xl placeholder:font-light h-12 transition-colors duration-200 w-full outline-none"
+              className="pl-12 pr-20 text-2xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-purple-900 placeholder-purple-400 placeholder:text-2xl placeholder:font-light h-12 transition-colors duration-200 w-full outline-none"
               placeholder="0.00"
               value={amount}
               onChange={(e) => handleSendAmountChange(e.target.value)}
@@ -153,39 +157,38 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
             </div>
           </div>
         </div>
-        </div>
       </div>
 
       {/* Receiver Amount Display */}
-     <div className="bg-gradient-to-br from-emerald-50 via-white to-teal-50 rounded-xl border border-emerald-200 shadow-lg shadow-emerald-100/50 overflow-hidden backdrop-blur-sm">
-  <div className="p-3 pb-2 relative">
-    <div className="absolute top-2 right-2">
-      <div className="bg-gradient-to-r from-emerald-500 to-teal-500 p-1.5 rounded-full shadow-sm">
-        <ArrowDownLeft className="w-3 h-3 text-white" />
+      <div className="bg-gradient-to-br from-emerald-50 via-white to-teal-50 rounded-xl border border-emerald-200 shadow-lg shadow-emerald-100/50 overflow-hidden backdrop-blur-sm">
+        <div className="p-3 pb-2 relative">
+          <div className="absolute top-2 right-2">
+            <div className="bg-gradient-to-r from-emerald-500 to-teal-500 p-1.5 rounded-full shadow-sm">
+              <ArrowDownLeft className="w-3 h-3 text-white" />
+            </div>
+          </div>
+          <Label htmlFor="receiverAmount" className="text-xs font-bold text-emerald-800 mb-2 block uppercase tracking-wide">
+            Receiver Gets
+          </Label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+              <span className="text-emerald-700 font-bold text-sm">HTG</span>
+            </div>
+            <Input
+              id="receiverAmount"
+              type="text"
+              className="pl-12 pr-12 text-2xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-emerald-900 h-12 focus:outline-none"
+              value={receiverAmount}
+              readOnly
+            />
+            <div className="absolute inset-y-0 right-3 flex items-center">
+              <span className="text-xs font-bold text-emerald-700 bg-gradient-to-r from-emerald-100 to-teal-100 px-2 py-0.5 rounded-full border border-emerald-200 shadow-sm">
+                HTG
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-    <Label htmlFor="receiverAmount" className="text-xs font-bold text-emerald-800 mb-2 block uppercase tracking-wide">
-      Receiver Gets
-    </Label>
-    <div className="relative">
-      <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-        <span className="text-emerald-700 font-bold text-sm">HTG</span>
-      </div>
-      <Input
-        id="receiverAmount"
-        type="text"
-        className="pl-12 pr-12 text-2xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-emerald-900 h-12 focus:outline-none"
-        value={receiverAmount}
-        readOnly
-      />
-      <div className="absolute inset-y-0 right-3 flex items-center">
-        <span className="text-xs font-bold text-emerald-700 bg-gradient-to-r from-emerald-100 to-teal-100 px-2 py-0.5 rounded-full border border-emerald-200 shadow-sm">
-          HTG
-        </span>
-      </div>
-    </div>
-  </div>
-</div>
 
       {/* Fee Breakdown */}
       <div className="bg-gradient-to-r from-slate-50 to-gray-100 rounded-xl border border-gray-300 p-3">
