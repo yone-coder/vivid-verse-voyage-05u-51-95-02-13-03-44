@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ChevronDown, Send, ArrowDownLeft, ArrowUpRight, TrendingUp, Clock } from 'lucide-react';
+import { ChevronDown, Send,CreditCard, ArrowRight, ArrowDownLeft, ArrowUpRight, TrendingUp, Clock } from 'lucide-react';
 import { getAllExchangeRates, CurrencyRates } from '@/utils/currencyConverter';
 
 interface StepOneTransferProps {
@@ -213,24 +213,30 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
       </div>
 
       {/* Fee Breakdown */}
-      <div className="bg-gradient-to-r from-slate-50 to-gray-100 rounded-xl border border-gray-300 p-3">
-        <div className="space-y-2">
-          <div className="flex items-center justify-between text-xs">
-            <span className="text-slate-600 font-medium">Transfer fee</span>
-            <span className="font-bold text-slate-800">
-              {selectedCurrencyData.symbol}{transferFee.toFixed(2)}
-            </span>
-          </div>
-          <div className="border-t border-gray-200 pt-2">
-            <div className="flex items-center justify-between">
-              <span className="font-bold text-slate-900 text-sm">Total to pay</span>
-              <span className="text-xl font-bold text-slate-800">
-                {selectedCurrencyData.symbol}{totalAmount.toFixed(2)}
-              </span>
-            </div>
-          </div>
-        </div>
+      <div className="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl border border-blue-200 p-3 shadow-sm">
+  <div className="space-y-2">
+    <div className="flex items-center justify-between text-xs">
+      <span className="text-blue-700 font-medium flex items-center gap-1">
+        <CreditCard className="w-3 h-3" />
+        Transfer fee
+      </span>
+      <span className="font-bold text-blue-900">
+        {selectedCurrencyData.symbol}{transferFee.toFixed(2)}
+      </span>
+    </div>
+    <div className="border-t border-blue-200 pt-2">
+      <div className="flex items-center justify-between">
+        <span className="font-bold text-blue-900 text-sm flex items-center gap-1">
+          <ArrowRight className="w-4 h-4" />
+          Total to pay
+        </span>
+        <span className="text-xl font-bold text-blue-900">
+          {selectedCurrencyData.symbol}{totalAmount.toFixed(2)}
+        </span>
       </div>
+    </div>
+  </div>
+</div>
     </div>
   );
 };
