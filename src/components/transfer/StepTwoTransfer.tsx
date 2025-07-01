@@ -90,7 +90,14 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({
 
   return (
     <div className="w-full bg-white p-4">
-  <FormHeader />
+  <div className="text-center mb-8">
+    <h2 className="text-2xl font-semibold text-gray-900 mb-2">
+      Receiver Details
+    </h2>
+    <p className="text-gray-600">
+      Please provide the recipient's information
+    </p>
+  </div>
   
   <div className="space-y-8">
     {/* Personal Information Section */}
@@ -135,7 +142,11 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({
     </div>
   </div>
 
-  <SubmitButton />
+  <div className="pt-8 mt-8">
+    <button className="w-full py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 focus:outline-none focus:ring-4 focus:ring-blue-200">
+      Continue
+    </button>
+  </div>
 </div>
   );
 };
