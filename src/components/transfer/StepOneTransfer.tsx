@@ -157,26 +157,29 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
       </div>
 
       {/* Receiver Amount Display */}
-      <div className="bg-white rounded-xl border border-gray-400 shadow-sm overflow-hidden">
-        <div className="p-3 pb-2">
-          <Label htmlFor="receiverAmount" className="text-xs font-bold text-slate-700 mb-2 block uppercase tracking-wide">
-            Receiver Gets
-          </Label>
-          <div className="relative">
-            <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-              <span className="text-slate-700 font-bold text-sm">HTG</span>
-            </div>
-            <Input
-              id="receiverAmount"
-              type="text"
-              className="pl-12 pr-12 text-2xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-slate-900 h-12"
-              value={receiverAmount}
-              readOnly
-            />
-            <div className="absolute inset-y-0 right-3 flex items-center">
-              <span className="text-xs font-bold text-slate-700 bg-slate-200 px-2 py-0.5 rounded-full">
-                HTG
-              </span>
+     <div className="bg-gradient-to-br from-green-500 via-teal-500 to-blue-400 rounded-xl border-0 shadow-xl overflow-hidden backdrop-blur-sm p-[1px]">
+        <div className="bg-white/95 backdrop-blur-sm rounded-xl h-full">
+          <div className="p-3 pb-2">
+            <Label htmlFor="receiverAmount" className="text-xs font-semibold text-green-700 mb-2 flex items-center gap-1.5 uppercase tracking-wider">
+              <ArrowDownLeft size={14} className="text-green-600" />
+              Receiver Gets
+            </Label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                <span className="text-green-700 font-semibold text-lg">G</span>
+              </div>
+              <Input
+                id="receiverAmount"
+                type="text"
+                className="pl-12 pr-12 text-2xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-slate-900 h-12 w-full outline-none"
+                value={receiverAmount}
+                readOnly
+              />
+              <div className="absolute inset-y-0 right-3 flex items-center">
+                <span className="text-xs font-semibold text-green-700 bg-gradient-to-r from-green-100 to-teal-100 px-2 py-0.5 rounded-full">
+                  HTG
+                </span>
+              </div>
             </div>
           </div>
         </div>
