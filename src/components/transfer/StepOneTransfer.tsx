@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ChevronDown, TrendingUp, Clock } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import { getAllExchangeRates, CurrencyRates } from '@/utils/currencyConverter';
 
 interface StepOneTransferProps {
@@ -77,37 +77,28 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
 
   return (
     <div className="space-y-4">
-      {/* Exchange Rate Section - Flat & Clean */}
-      <div className="bg-gray-50 rounded-lg border border-gray-200 p-3">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2">
-            <TrendingUp className="w-4 h-4 text-gray-600" />
-            <span className="text-sm font-medium text-gray-900">Exchange Rate</span>
-          </div>
-          <div className="flex items-center gap-2">
+      {/* Exchange Rate Section */}
+      <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-slate-50 rounded-xl border border-blue-200/50 shadow-sm p-3 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-white/60 to-transparent pointer-events-none"></div>
+        <div className="relative flex items-center justify-between">
+          <span className="text-sm font-semibold text-slate-700 tracking-wide">Exchange rate</span>
+          <div className="flex items-center gap-3">
             {isLoadingRates && (
-              <div className="w-3 h-3 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
             )}
-            <div className="flex items-center gap-1.5 bg-white rounded-md px-2.5 py-1 border border-gray-200">
-              <span className="text-sm text-gray-600">
-                1 {selectedCurrency} =
-              </span>
-              <span className="font-semibold text-gray-900 text-sm">
-                {currentRate.toFixed(2)} HTG
+            <div className="bg-white/70 backdrop-blur-sm rounded-lg px-3 py-1.5 border border-white/40 shadow-sm">
+              <span className="font-bold text-slate-800 text-sm">
+                1 {selectedCurrency} = {currentRate.toFixed(2)} HTG
               </span>
             </div>
           </div>
         </div>
-        
         {lastUpdated && (
-          <div className="flex items-center justify-between text-xs text-gray-500">
-            <div className="flex items-center gap-1.5">
-              <Clock className="w-3 h-3" />
-              <span>
-                {isLive ? 'Live BRH rate' : 'Cached rate'}
-              </span>
-            </div>
-            <span>Updated {lastUpdated.toLocaleTimeString()}</span>
+          <div className="text-xs text-slate-600 mt-2 flex items-center gap-1.5 relative">
+            <div className={`w-2 h-2 rounded-full ${isLive ? 'bg-green-400 animate-pulse' : 'bg-amber-400'}`}></div>
+            <span className="font-medium">
+              {isLive ? 'Live BRH rate' : 'Cached rate'} • Updated {lastUpdated.toLocaleTimeString()}
+            </span>
           </div>
         )}
       </div>
