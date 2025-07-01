@@ -78,40 +78,49 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
 
   return (
     <div className="space-y-4">
-      {/* Exchange Rate Section - Polished */}
-      <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-xl border border-blue-200/50 shadow-sm backdrop-blur-sm p-3 relative overflow-hidden">
-        {/* Subtle background pattern */}
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-100/20 to-transparent opacity-50"></div>
+      {/* Exchange Rate Section - Enhanced Polish */}
+      <div className="bg-gradient-to-br from-blue-50/80 via-indigo-50/60 to-purple-50/40 rounded-2xl border border-blue-200/30 shadow-lg backdrop-blur-lg p-4 relative overflow-hidden">
+        {/* Enhanced background pattern */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-blue-100/30 via-transparent to-purple-100/20"></div>
+        <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-blue-200/20 to-transparent rounded-full blur-xl"></div>
+        <div className="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-tr from-indigo-200/20 to-transparent rounded-full blur-lg"></div>
         
         <div className="relative z-10">
-          <div className="flex items-center justify-between mb-1">
-            <div className="flex items-center gap-2">
-              <TrendingUp className="w-4 h-4 text-blue-600" />
-              <span className="text-sm font-semibold text-blue-900">Exchange Rate</span>
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2.5">
+              <div className="p-1.5 bg-blue-100/50 rounded-lg backdrop-blur-sm border border-blue-200/30">
+                <TrendingUp className="w-4 h-4 text-blue-600" />
+              </div>
+              <span className="text-sm font-bold text-blue-900 tracking-wide">Exchange Rate</span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               {isLoadingRates && (
-                <div className="w-3 h-3 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
               )}
-              <div className="flex items-center gap-1 bg-white/80 backdrop-blur-sm rounded-lg px-3 py-1 border border-blue-200/30">
-                <span className="text-sm text-blue-700 font-medium">
+              <div className="flex items-center gap-2 bg-white/90 backdrop-blur-sm rounded-xl px-4 py-2.5 border border-blue-200/40 shadow-sm">
+                <span className="text-sm text-blue-700 font-semibold">
                   1 {selectedCurrency} =
                 </span>
-                <span className="font-bold text-blue-900 text-sm">
-                  {currentRate.toFixed(2)} HTG
+                <span className="font-bold text-blue-900 text-lg">
+                  {currentRate.toFixed(2)}
+                </span>
+                <span className="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
+                  HTG
                 </span>
               </div>
             </div>
           </div>
           
           {lastUpdated && (
-            <div className="flex items-center gap-1 text-xs text-blue-600/80">
-              <Clock className="w-3 h-3" />
-              <span className="font-medium">
+            <div className="flex items-center gap-2 text-xs text-blue-600/70 bg-white/40 backdrop-blur-sm rounded-lg px-3 py-1.5 border border-blue-200/20">
+              <div className="p-1 bg-blue-100/50 rounded-full">
+                <Clock className="w-3 h-3 text-blue-600" />
+              </div>
+              <span className="font-semibold">
                 {isLive ? 'Live BRH rate' : 'Cached rate'}
               </span>
-              <span className="text-blue-500">•</span>
-              <span>Updated {lastUpdated.toLocaleTimeString()}</span>
+              <span className="text-blue-400">•</span>
+              <span className="font-medium">Updated {lastUpdated.toLocaleTimeString()}</span>
             </div>
           )}
         </div>
