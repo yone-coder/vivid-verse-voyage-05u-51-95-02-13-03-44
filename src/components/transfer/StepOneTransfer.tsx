@@ -113,19 +113,22 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
       </div>
 
       {/* Send Amount Input with Currency Selection */}
-      <div className="bg-white rounded-xl border border-gray-400 shadow-sm overflow-hidden">
+      <div className="p-8 bg-gray-50 min-h-screen flex items-center justify-center">
+      <div className="bg-gradient-to-br from-purple-500 via-pink-500 to-orange-400 rounded-xl border-0 shadow-xl overflow-hidden backdrop-blur-sm p-[1px]">
+        <div className="bg-white/95 backdrop-blur-sm rounded-xl h-full">
         <div className="p-3 pb-2">
-          <Label htmlFor="amount" className="text-xs font-bold text-slate-700 mb-2 block uppercase tracking-wide">
+          <Label htmlFor="amount" className="text-xs font-semibold text-purple-700 mb-2 flex items-center gap-1.5 uppercase tracking-wider">
+            <Send size={14} className="text-purple-600" />
             Send Amount
           </Label>
           <div className="relative">
             <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-              <span className="text-slate-700 font-bold text-sm">{selectedCurrencyData.symbol}</span>
+              <span className="text-purple-700 font-semibold text-lg">{selectedCurrencyData.symbol}</span>
             </div>
             <Input
               id="amount"
               type="number"
-              className="pl-8 pr-20 text-2xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-slate-900 placeholder-slate-400 placeholder:text-2xl placeholder:font-light h-12"
+              className="pl-8 pr-20 text-2xl font-light border-0 shadow-none focus-visible:ring-0 bg-transparent text-slate-900 placeholder-purple-400 placeholder:text-2xl placeholder:font-light h-12 transition-colors duration-200 w-full outline-none"
               placeholder="0.00"
               value={amount}
               onChange={(e) => handleSendAmountChange(e.target.value)}
@@ -134,15 +137,15 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
             />
             <div className="absolute inset-y-0 right-3 flex items-center">
               <Select value={selectedCurrency} onValueChange={setSelectedCurrency}>
-                <SelectTrigger className="h-6 w-auto border-0 bg-slate-200 text-slate-700 font-bold text-xs px-2 py-1 rounded-full focus:ring-0 shadow-none">
+                <SelectTrigger className="h-6 w-auto border-0 bg-gradient-to-r from-purple-100 to-pink-100 hover:from-purple-200 hover:to-pink-200 text-purple-700 font-semibold text-xs px-2 py-1 rounded-full focus:ring-0 shadow-none transition-all duration-200">
                   <SelectValue>{selectedCurrency}</SelectValue>
                 </SelectTrigger>
-                <SelectContent className="bg-white z-50">
+                <SelectContent className="bg-white border border-purple-200 shadow-xl z-50">
                   {currencies.map((currency) => (
                     <SelectItem key={currency.code} value={currency.code}>
                       <div className="flex items-center space-x-1">
-                        <span className="font-medium">{currency.symbol}</span>
-                        <span className="text-xs">{currency.code}</span>
+                        <span className="font-medium text-purple-700">{currency.symbol}</span>
+                        <span className="text-xs text-purple-600">{currency.code}</span>
                       </div>
                     </SelectItem>
                   ))}
@@ -150,8 +153,10 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
               </Select>
             </div>
           </div>
+      </div>
         </div>
       </div>
+    </div>
 
       {/* Receiver Amount Display */}
       <div className="bg-white rounded-xl border border-gray-400 shadow-sm overflow-hidden">
