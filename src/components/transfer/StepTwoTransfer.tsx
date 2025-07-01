@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -90,23 +91,23 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({
   const paymentMethod = transferDetails?.deliveryMethod === 'moncash' ? 'MonCash' : 'NatCash';
 
   return (
-    <div className="p-4">
+    <div className="p-2">
       <div className="max-w-2xl mx-auto">
-        <div className="mb-4 text-center">
+        <div className="mb-3 text-center">
           <h2 className="text-2xl font-bold text-gray-800 mb-1">Receiver Details</h2>
           <p className="text-gray-600">Please provide the recipient's information</p>
         </div>
         
-        <div className="space-y-3">
+        <div className="space-y-2">
             {/* Personal Information Card */}
-            <div className="bg-gradient-to-br from-white to-blue-50/30 rounded-xl border border-blue-100 shadow-sm p-3 space-y-3">
-              <h3 className="text-lg font-medium text-gray-800 mb-2 pb-1 border-b border-blue-100">Personal Information</h3>
+            <div className="bg-gradient-to-br from-white to-blue-50/30 rounded-xl border border-blue-100 shadow-sm p-2 space-y-2">
+              <h3 className="text-lg font-medium text-gray-800 mb-1 pb-1 border-b border-blue-100">Personal Information</h3>
               
               <div className="space-y-2">
                 <Label htmlFor="firstName" className="text-base font-medium text-gray-700">
                   What's their full name?
                 </Label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-2">
                   <Input
                     id="firstName"
                     type="text"
@@ -184,8 +185,8 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({
             </div>
 
             {/* Location Information Card */}
-            <div className="bg-gradient-to-br from-white to-purple-50/30 rounded-xl border border-purple-100 shadow-sm p-3 space-y-3">
-              <h3 className="text-lg font-medium text-gray-800 mb-2 pb-1 border-b border-purple-100">Location Information</h3>
+            <div className="bg-gradient-to-br from-white to-purple-50/30 rounded-xl border border-purple-100 shadow-sm p-2 space-y-2">
+              <h3 className="text-lg font-medium text-gray-800 mb-1 pb-1 border-b border-purple-100">Location Information</h3>
               
               <div className="space-y-2">
                 <Label htmlFor="department" className="text-base font-medium text-gray-700">
@@ -203,10 +204,6 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({
                       <SelectItem 
                         key={dept} 
                         value={dept}
-                        onSelect={(value) => {
-                          handleDepartmentChange(value);
-                          document.querySelector('[data-department-select]').click();
-                        }}
                       >
                         {dept}
                       </SelectItem>
@@ -232,10 +229,6 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({
                       <SelectItem 
                         key={commune} 
                         value={commune}
-                        onSelect={(value) => {
-                          handleCommuneChange(value);
-                          document.querySelector('[data-commune-select]').click();
-                        }}
                       >
                         {commune}
                       </SelectItem>
@@ -244,10 +237,6 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({
                 </Select>
               </div>
           </div>
-          
-          <button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 mt-3">
-            Continue
-          </button>
         </div>
       </div>
     </div>
@@ -255,3 +244,4 @@ const StepTwoTransfer: React.FC<StepTwoTransferProps> = ({
 };
 
 export default StepTwoTransfer;
+
