@@ -78,26 +78,38 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
 
   return (
     <div className="space-y-4">
-      {/* Exchange Rate Section - Polished */}
-      <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-xl border border-blue-200/50 shadow-sm backdrop-blur-sm p-3 relative overflow-hidden">
-        {/* Subtle background pattern */}
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-100/20 to-transparent opacity-50"></div>
+      {/* Exchange Rate Section - Ultra Polished */}
+      <div className="relative rounded-xl border border-slate-200/60 shadow-lg overflow-hidden backdrop-blur-sm">
+        {/* Multi-layered background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50/80 to-purple-100/60"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-white/20 via-transparent to-blue-50/30"></div>
         
-        <div className="relative z-10">
+        {/* Subtle pattern overlay */}
+        <div className="absolute inset-0 opacity-[0.03]" style={{
+          backgroundImage: `radial-gradient(circle at 1px 1px, rgb(0,0,0) 1px, transparent 0)`,
+          backgroundSize: '20px 20px'
+        }}></div>
+        
+        {/* Accent border */}
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-300/60 to-transparent"></div>
+        
+        <div className="relative z-10 p-3">
           <div className="flex items-center justify-between mb-1">
             <div className="flex items-center gap-2">
-              <TrendingUp className="w-4 h-4 text-blue-600" />
-              <span className="text-sm font-semibold text-blue-900">Exchange Rate</span>
+              <div className="p-1.5 rounded-lg bg-blue-500/10 backdrop-blur-sm">
+                <TrendingUp className="w-4 h-4 text-blue-600" />
+              </div>
+              <span className="text-sm font-semibold text-slate-800 tracking-tight">Exchange Rate</span>
             </div>
             <div className="flex items-center gap-2">
               {isLoadingRates && (
-                <div className="w-3 h-3 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-3 h-3 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
               )}
-              <div className="flex items-center gap-1 bg-white/80 backdrop-blur-sm rounded-lg px-3 py-1 border border-blue-200/30">
-                <span className="text-sm text-blue-700 font-medium">
+              <div className="flex items-center gap-1.5 bg-white/90 backdrop-blur-sm rounded-lg px-3 py-1.5 border border-white/40 shadow-sm">
+                <span className="text-sm text-slate-600 font-medium">
                   1 {selectedCurrency} =
                 </span>
-                <span className="font-bold text-blue-900 text-sm">
+                <span className="font-bold text-slate-900 text-sm bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
                   {currentRate.toFixed(2)} HTG
                 </span>
               </div>
@@ -105,16 +117,21 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
           </div>
           
           {lastUpdated && (
-            <div className="flex items-center gap-1 text-xs text-blue-600/80">
-              <Clock className="w-3 h-3" />
+            <div className="flex items-center gap-1.5 text-xs text-slate-500/80">
+              <div className="p-0.5 rounded-sm bg-blue-100/60">
+                <Clock className="w-3 h-3 text-blue-500" />
+              </div>
               <span className="font-medium">
                 {isLive ? 'Live BRH rate' : 'Cached rate'}
               </span>
-              <span className="text-blue-500">•</span>
+              <span className="text-slate-400">•</span>
               <span>Updated {lastUpdated.toLocaleTimeString()}</span>
             </div>
           )}
         </div>
+        
+        {/* Bottom glow effect */}
+        <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-slate-200/40 to-transparent"></div>
       </div>
 
       {/* Send Amount Input with Currency Selection */}
