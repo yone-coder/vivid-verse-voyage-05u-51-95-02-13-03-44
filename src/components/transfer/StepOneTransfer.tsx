@@ -1,8 +1,9 @@
+
 import React, { useState, useEffect } from 'react';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, TrendingUp, Clock } from 'lucide-react';
 import { getAllExchangeRates, CurrencyRates } from '@/utils/currencyConverter';
 
 interface StepOneTransferProps {
@@ -77,24 +78,43 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
 
   return (
     <div className="space-y-4">
-      {/* Exchange Rate Section */}
-      <div className="bg-gradient-to-r from-slate-50 to-gray-100 rounded-xl border border-gray-300 p-3">
-        <div className="flex items-center justify-between">
-          <span className="text-sm font-medium text-slate-700">Exchange rate</span>
-          <div className="flex items-center gap-2">
-            {isLoadingRates && (
-              <div className="w-4 h-4 border-2 border-slate-600 border-t-transparent rounded-full animate-spin"></div>
-            )}
-            <span className="font-bold text-slate-800">
-              1 {selectedCurrency} = {currentRate.toFixed(2)} HTG
-            </span>
+      {/* Exchange Rate Section - Polished */}
+      <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-xl border border-blue-200/50 shadow-sm backdrop-blur-sm p-3 relative overflow-hidden">
+        {/* Subtle background pattern */}
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-100/20 to-transparent opacity-50"></div>
+        
+        <div className="relative z-10">
+          <div className="flex items-center justify-between mb-1">
+            <div className="flex items-center gap-2">
+              <TrendingUp className="w-4 h-4 text-blue-600" />
+              <span className="text-sm font-semibold text-blue-900">Exchange Rate</span>
+            </div>
+            <div className="flex items-center gap-2">
+              {isLoadingRates && (
+                <div className="w-3 h-3 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+              )}
+              <div className="flex items-center gap-1 bg-white/80 backdrop-blur-sm rounded-lg px-3 py-1 border border-blue-200/30">
+                <span className="text-sm text-blue-700 font-medium">
+                  1 {selectedCurrency} =
+                </span>
+                <span className="font-bold text-blue-900 text-sm">
+                  {currentRate.toFixed(2)} HTG
+                </span>
+              </div>
+            </div>
           </div>
+          
+          {lastUpdated && (
+            <div className="flex items-center gap-1 text-xs text-blue-600/80">
+              <Clock className="w-3 h-3" />
+              <span className="font-medium">
+                {isLive ? 'Live BRH rate' : 'Cached rate'}
+              </span>
+              <span className="text-blue-500">•</span>
+              <span>Updated {lastUpdated.toLocaleTimeString()}</span>
+            </div>
+          )}
         </div>
-        {lastUpdated && (
-          <div className="text-xs text-slate-500 mt-1">
-            {isLive ? 'Live BRH rate' : 'Cached rate'} • Updated {lastUpdated.toLocaleTimeString()}
-          </div>
-        )}
       </div>
 
       {/* Send Amount Input with Currency Selection */}
@@ -188,5 +208,3 @@ const StepOneTransfer: React.FC<StepOneTransferProps> = ({ amount, onAmountChang
 };
 
 export default StepOneTransfer;
-
-
